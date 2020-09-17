@@ -212,9 +212,11 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
-    public Map<String, String> importRoleXmlValidation(File xmlFile, int userFileSize, CommonsMultipartFile sessionFile) throws DocumentException {
+    public Map<String, String> importRoleXmlValidation(File xmlFile, int userFileSize, CommonsMultipartFile sessionFile, List<EgpUserRoleDto> egpUserRoleDtos) throws DocumentException {
         Map<String, String> fileErrorMap = IaisCommonUtils.genNewHashMap();
         String errorKey = "userRoleUploadError";
+        String errorUserIdKey = "userRoleUploadUserId";
+        String errorRoleKey = "userRoleUploadRole";
         //vali size and type
         String fileName = sessionFile.getOriginalFilename();
         String substring = fileName.substring(fileName.lastIndexOf('.') + 1);
@@ -233,43 +235,60 @@ public class IntranetUserServiceImpl implements IntranetUserService {
         Element root = document.getRootElement();
         //ele
         List list = root.elements();
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = 1; i <= list.size(); i++) {
             try {
+                boolean errorData = true;
                 Element element = (Element) list.get(i);
                 String userId = element.element("userId").getText();
                 String roleId = element.element("roleId").getText();
                 if(StringUtil.isEmpty(userId)){
-                    fileErrorMap.put(errorKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "userId","field"));
-                    return fileErrorMap;
+                    errorData = false;
+                    fileErrorMap.put(errorUserIdKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "userId","field"));
                 }
                 if(StringUtil.isEmpty(roleId)){
-                    fileErrorMap.put(errorKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "roleId","field"));
-                    return fileErrorMap;
+                    errorData = false;
+                    fileErrorMap.put(errorRoleKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "roleId","field"));
                 }
                 OrgUserDto oldOrgUserDto = findIntranetUserByUserId(userId);
                 if(oldOrgUserDto == null){
-                    fileErrorMap.put(errorKey, "USER_ERR011");
-                    return fileErrorMap;
+                    errorData = false;
+                    fileErrorMap.put(errorUserIdKey + i, "USER_ERR012");
                 }
-                List<Role> rolesByDomain = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
-               /* if(!rolesByDomain.contains(roleId)){
-                    fileErrorMap.put(errorKey, "USER_ERR011");
-                    return fileErrorMap;
-                }*/
+                List<Role> rolesByDomain = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);//NOSONAR
+                //egp contains role
+                fileErrorMap = containsRoleVal(rolesByDomain, roleId, fileErrorMap, errorUserIdKey + i, errorData);//NOSONAR
                 List<OrgUserRoleDto> orgUserRoleDtos = retrieveRolesByuserAccId(userId);
                 if(!IaisCommonUtils.isEmpty(orgUserRoleDtos)){
                     for(OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos){
                         if(orgUserRoleDto != null){
                             if(roleId.equals(orgUserRoleDto.getRoleName())){
-                                fileErrorMap.put(errorKey, "USER_ERR011");
-                                return fileErrorMap;
+                                errorData = false;
+                                fileErrorMap.put(errorUserIdKey + i, "USER_ERR011");
                             }
                         }
                     }
                 }
+                if(!errorData){
+                    EgpUserRoleDto egpUserRoleDto = new EgpUserRoleDto();
+                    egpUserRoleDto.setUserId(userId);
+                    egpUserRoleDto.setRoleId(roleId);
+                    egpUserRoleDtos.add(egpUserRoleDto);
+                }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 continue;
+            }
+        }
+        return fileErrorMap;
+    }
+
+    private Map<String, String> containsRoleVal(List<Role> rolesByDomain, String roleId, Map<String, String> fileErrorMap, String errorKey, boolean errorData) {
+        if(!IaisCommonUtils.isEmpty(rolesByDomain)){//NOSONAR
+            for(Role role : rolesByDomain){
+                String id = role.getId();
+                if(!(roleId.equals(id))){
+                    fileErrorMap.put(errorKey, "USER_ERR013");
+                }
             }
         }
         return fileErrorMap;

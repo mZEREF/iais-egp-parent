@@ -24,30 +24,68 @@
           <div class="tab-content">
             <h2 class="component-title">Import Users</h2>
             <span class="error-msg" name="iaisErrorMsg" id="error_userRoleUploadError"></span>
-            <table class="table">
-              <thead>
-              <tr>
-                <th>No.</th>
-                <th>User ID</th>
-                <th>Role ID</th>
-              </tr>
-              </thead>
-              <tbody>
-              <c:forEach var="user" items="${egpUserRoleDtos}" varStatus="status">
-                <tr>
-                  <td>
-                    <p><c:out value="${status.count}"></c:out></p>
-                  </td>
-                  <td>
-                    <p><c:out value="${user.userId}"></c:out></p>
-                  </td>
-                  <td>
-                    <p><c:out value="${user.roleId}"></c:out></p>
-                  </td>
-                </tr>
-              </c:forEach>
-              </tbody>
-            </table>
+            <div class="table-gp">
+              <table class="table application-group">
+                <thead>
+                  <tr>
+                    <th>No.</th>
+                    <th>User ID</th>
+                    <th>Role ID</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <c:choose>
+                    <c:when test="${'FAIL' eq ackSuccessFlag}">
+                      <c:forEach var="user" items="${egpUserRoleDtos}" varStatus="status">
+                        <tr>
+                          <td>
+                            <p><c:out value="${status.count}"></c:out></p>
+                          </td>
+                          <td>
+                            <p><c:out value="${user.userId}"></c:out></p>
+                            <br><span class="error-msg" name="iaisErrorMsg" id="error_userRoleUploadUserId${status.count}"></span>
+                          </td>
+                          <td>
+                            <p><c:out value="${user.roleId}"></c:out></p>
+                            <br><span class="error-msg" name="iaisErrorMsg" id="error_userRoleUploadRole${status.count}"></span>
+                          </td>
+                          <td>
+                            <p><c:out value="FAIL"></c:out></p>
+                          </td>
+                        </tr>
+                      </c:forEach>
+                    </c:when>
+                    <c:when test="${'SUCCESS' eq ackSuccessFlag}">
+                      <c:forEach var="user" items="${egpUserRoleDtos}" varStatus="status">
+                        <tr>
+                          <td>
+                            <p><c:out value="${status.count}"></c:out></p>
+                          </td>
+                          <td>
+                            <p><c:out value="${user.userId}"></c:out></p>
+                          </td>
+                          <td>
+                            <p><c:out value="${user.roleId}"></c:out></p>
+                          </td>
+                          <td>
+                            <p><c:out value="SUCCESS"></c:out></p>
+                          </td>
+                        </tr>
+                      </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                      <tr>
+                        <td>
+                          <iais:message key="ACK018" escape="true"></iais:message>
+                          <!--No Record!!-->
+                        </td>
+                      </tr>
+                    </c:otherwise>
+                  </c:choose>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

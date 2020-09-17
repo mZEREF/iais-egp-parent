@@ -57,7 +57,7 @@ public interface IntranetUserService {
       * @return: Map<String, String>
       * @Descripation: importRoleXmlValidation
       */
-    Map<String, String> importRoleXmlValidation(File xmlFile, int userFileSize, CommonsMultipartFile sessionFile) throws DocumentException;
+    Map<String, String> importRoleXmlValidation(File xmlFile, int userFileSize, CommonsMultipartFile sessionFile, List<EgpUserRoleDto> egpUserRoleDtos) throws DocumentException;
 
     /**
       * @author: shicheng

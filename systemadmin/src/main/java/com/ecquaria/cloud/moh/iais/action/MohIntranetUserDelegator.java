@@ -1285,20 +1285,21 @@ public class MohIntranetUserDelegator {
         File file = File.createTempFile("temp", "xml");
         File xmlFile = inputStreamToFile(sessionFile.getInputStream(), file);
         //validate xml file
-        Map<String, String> fileErrorMap = intranetUserService.importRoleXmlValidation(xmlFile, userFileSize, sessionFile);
+        List<EgpUserRoleDto> egpUserRoleDtos = IaisCommonUtils.genNewArrayList();
+        Map<String, String> fileErrorMap = intranetUserService.importRoleXmlValidation(xmlFile, userFileSize, sessionFile, egpUserRoleDtos);
         if(fileErrorMap != null && fileErrorMap.size() > 0){
-            ParamUtil.setRequestAttr(bpc.request,"ackSuccessFlag", AppConsts.FALSE);
+            if(fileErrorMap.containsKey("userRoleUploadError")){
+                ParamUtil.setRequestAttr(bpc.request,"ackSuccessFlag", "");
+            } else {
+                ParamUtil.setRequestAttr(bpc.request,"ackSuccessFlag", AppConsts.FAIL);
+            }
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(fileErrorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         } else {
-            List<EgpUserRoleDto> egpUserRoleDtos = intranetUserService.importRoleXml(xmlFile);
-            ParamUtil.setRequestAttr(bpc.request,"egpUserRoleDtos", egpUserRoleDtos);
+            egpUserRoleDtos = intranetUserService.importRoleXml(xmlFile);
+            ParamUtil.setRequestAttr(bpc.request,"ackSuccessFlag", AppConsts.SUCCESS);
         }
-    }
-
-    private List<OrgUserRoleDto> importRoleXml(File xmlFile) {
-        List<OrgUserRoleDto> orgUserRoleDtos = IaisCommonUtils.genNewArrayList();
-        return orgUserRoleDtos;
+        ParamUtil.setRequestAttr(bpc.request,"egpUserRoleDtos", egpUserRoleDtos);
     }
 
     private List<SelectOption> getStatusOption() {
