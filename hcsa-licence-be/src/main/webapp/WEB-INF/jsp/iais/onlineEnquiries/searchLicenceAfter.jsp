@@ -422,7 +422,7 @@
                                         <tr>
                                             <c:if test="${cease==1}">
                                                 <td class="form-check" onclick="javascript:controlCease('${isASO}')" >
-                                                    <c:if test="${pool.licenceStatus!='Lapsed'&&pool.licenceStatus!='Ceased'&&pool.licenceStatus!='Expired'&&pool.licenceStatus!='Inactive'&&pool.licenceId!=null}">
+                                                    <c:if test="${pool.licenceStatus=='Active'&&pool.licenceId!=null}">
                                                         <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
                                                                name="appIds" value="${pool.appId}|${pool.isCessation}|${pool.licenceId}|${pool.licenceStatus}"   >
                                                         <label class="form-check-label" for="licence${status.index + 1}"><span
@@ -495,7 +495,7 @@
         </c:if>
     </iais:body>
     <div class="row" height="1" style="display: none ;color:#ff0000;" id="selectDecisionMsg">
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<iais:message key="CESS_ERR002" escape="true"></iais:message>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<iais:message key="CESS_ERR002" escape="flase"></iais:message>
     </div>
     <iais:action style="text-align:right;">
         <a class="btn btn-secondary" onclick="$(this).attr('class', 'btn btn-secondary disabled')" href="${pageContext.request.contextPath}/officer-online-enquiries-information-file">Download</a>
