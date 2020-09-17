@@ -5,10 +5,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
 import com.ecquaria.cloud.role.Role;
+import org.dom4j.DocumentException;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.rbac.user.UserIdentifier;
 
+import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author weilu
@@ -45,4 +49,22 @@ public interface IntranetUserService {
 
 
     SearchResult<WorkingGroupQueryDto> getWorkingGroupBySearchParam(@RequestBody SearchParam searchParam);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/9/16
+      * @Param: xmlFile
+      * @return: Map<String, String>
+      * @Descripation: importRoleXmlValidation
+      */
+    Map<String, String> importRoleXmlValidation(File xmlFile, int userFileSize, CommonsMultipartFile sessionFile) throws DocumentException;
+
+    /**
+      * @author: shicheng
+      * @Date 2020/9/16
+      * @Param: xmlFile
+      * @return: importRoleXml
+      * @Descripation: save role data
+      */
+    List<EgpUserRoleDto> importRoleXml(File xmlFile) throws DocumentException;
 }

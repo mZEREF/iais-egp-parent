@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
@@ -25,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -78,6 +80,9 @@ public class MohIntranetUserDelegator {
     @Autowired
     private IntranetUserService intranetUserService;
 
+    @Autowired
+    private SystemParamConfig systemParamConfig;
+
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>user");
         HttpServletRequest request = bpc.request;
@@ -87,6 +92,7 @@ public class MohIntranetUserDelegator {
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, null);
         ParamUtil.setSessionAttr(bpc.request, "roleMap", null);
         ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", null);
+        ParamUtil.setSessionAttr(bpc.request, "userFileSize", null);
         SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter, true);
         QueryHelp.setMainSql("systemAdmin", "IntranetUserQuery", searchParam);
         SearchResult searchResult = intranetUserService.doQuery(searchParam);
@@ -94,6 +100,9 @@ public class MohIntranetUserDelegator {
             ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.SEARCH_PARAM, searchParam);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.SEARCH_RESULT, searchResult);
         }
+        //set system max file size
+        int userFileSize = systemParamConfig.getUploadFileLimit();
+        ParamUtil.setSessionAttr(bpc.request, "userFileSize", userFileSize);
     }
 
     public void prepareData(BaseProcessClass bpc) {
@@ -1260,6 +1269,36 @@ public class MohIntranetUserDelegator {
             }
         }
         return errors;
+    }
+
+    /**
+     * StartStep: importUserRole
+     *
+     * @param bpc
+     * @throws
+     */
+    public void apptInspectionDateStep1(BaseProcessClass bpc) throws IOException, DocumentException {
+        log.debug(StringUtil.changeForLog("the importUserRole start ...."));
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        CommonsMultipartFile sessionFile = (CommonsMultipartFile) request.getFile("userRoleUpload");
+        int userFileSize = (int)ParamUtil.getSessionAttr(bpc.request, "userFileSize");
+        File file = File.createTempFile("temp", "xml");
+        File xmlFile = inputStreamToFile(sessionFile.getInputStream(), file);
+        //validate xml file
+        Map<String, String> fileErrorMap = intranetUserService.importRoleXmlValidation(xmlFile, userFileSize, sessionFile);
+        if(fileErrorMap != null && fileErrorMap.size() > 0){
+            ParamUtil.setRequestAttr(bpc.request,"ackSuccessFlag", AppConsts.FALSE);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(fileErrorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+        } else {
+            List<EgpUserRoleDto> egpUserRoleDtos = intranetUserService.importRoleXml(xmlFile);
+            ParamUtil.setRequestAttr(bpc.request,"egpUserRoleDtos", egpUserRoleDtos);
+        }
+    }
+
+    private List<OrgUserRoleDto> importRoleXml(File xmlFile) {
+        List<OrgUserRoleDto> orgUserRoleDtos = IaisCommonUtils.genNewArrayList();
+        return orgUserRoleDtos;
     }
 
     private List<SelectOption> getStatusOption() {
