@@ -92,11 +92,18 @@
     <JavaCode defClass="" executor="" methodName="deleteAhoc_OnStepProcess_0" name="deleteAhoc_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="changeTab" x="350" y="280">
+  <AutomaticStep defClass="" executor="" icon="" name="changeTab" x="340" y="250">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="changeTab_OnStepProcess_0" name="changeTab_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="saveDraft" x="190" y="460">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="saveDraft_OnStepProcess_0" name="saveDraft_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -213,16 +220,22 @@
    <position>{(800,490)(321,549)(340,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Page1" style="rectanular">
-   <position>{(520,270)(440,370)}</position>
+   <position>{(520,270)(450,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doCheckList" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
-   <position>{(440,370)(263,376)(210,270)}</position>
+   <position>{(450,380)(263,376)(210,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/changeTab" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
-   <position>{(440,370)(370,300)}</position>
+   <position>{(450,380)(360,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/changeTab" style="rectanular">
-   <position>{(370,300)(520,270)}</position>
+   <position>{(360,270)(520,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/saveDraft" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(450,380)(210,480)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/saveDraft" style="rectanular">
+   <position>{(210,480)(520,270)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -246,10 +259,11 @@
    <SwitchCase component="/Steps/AutomaticStep/addAhoc" value="&quot;add&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/saveAhoc" value="&quot;delete&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="420" y="350">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="430" y="360">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/doCheckList" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/changeTab" value="&quot;change&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/saveDraft" value="&quot;saveDraft&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

@@ -1,9 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -331,6 +328,14 @@ public class FillUpCheckListGetAppClientFallBack implements FillUpCheckListGetAp
 
     @Override
     public FeignResponseEntity<List<AdhocDraftDto>> getAdhocChecklistDraftsByAdhocItemIdIn(List<String> itemList) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<CheckListDraftAllDto> saveDraftAnswerForCheckList(CheckListDraftAllDto checkListDraftAllDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

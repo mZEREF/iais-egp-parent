@@ -1,9 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -167,4 +164,6 @@ public interface FillUpCheckListGetAppClient {
     FeignResponseEntity <List<AppPremInsDraftDto>> getInspDraftAnswer(@RequestBody List<String> preChklIds);
     @PostMapping(value = "/iais-application-be/adhoc-draft-item/all-results",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AdhocDraftDto>> getAdhocChecklistDraftsByAdhocItemIdIn(@RequestBody List<String> itemList);
+    @PostMapping(value = "/iais-pre-ins-chkl-be/app-premises/pre-inspect-chkl/save-draft-answer", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<CheckListDraftAllDto> saveDraftAnswerForCheckList(@RequestBody CheckListDraftAllDto checkListDraftAllDto);
 }

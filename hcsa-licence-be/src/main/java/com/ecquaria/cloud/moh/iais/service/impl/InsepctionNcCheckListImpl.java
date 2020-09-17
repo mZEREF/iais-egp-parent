@@ -4,12 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
@@ -1110,5 +1105,16 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 }
             }
         }
+    }
+
+    @Override
+    public void saveDraftChecklist(InspectionFillCheckListDto infillDto, AdCheckListShowDto showDto, InspectionFDtosDto serListDto, String appPremId) {
+        CheckListDraftAllDto checkListDraftAllDto = new CheckListDraftAllDto();
+        checkListDraftAllDto.setCommonDto(infillDto);
+        checkListDraftAllDto.setFdtoList(serListDto.getFdtoList());
+        checkListDraftAllDto.setAdCheckListShowDto(showDto);
+        checkListDraftAllDto.setRefNo(appPremId);
+        checkListDraftAllDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        fillUpCheckListGetAppClient.saveDraftAnswerForCheckList(checkListDraftAllDto);
     }
 }

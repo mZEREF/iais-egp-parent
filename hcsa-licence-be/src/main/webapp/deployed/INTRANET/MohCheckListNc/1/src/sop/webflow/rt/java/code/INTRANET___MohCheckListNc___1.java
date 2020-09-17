@@ -79,4 +79,9 @@ public class INTRANET___MohCheckListNc___1 extends BaseProcessClass {
 		// 		changeTab->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "changeTab", this);
 	}
+
+	public void saveDraft_OnStepProcess_0() throws Exception {
+		// 		saveDraft->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "saveDraftChecklist", this);
+	}
 }

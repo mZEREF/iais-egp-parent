@@ -257,9 +257,14 @@
                             </div>
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <div align="left">
+                                    <div style="float:left">
                                         <a class="back" href="#" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a>
                                     </div>
+                                    <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status}">
+                                        <div style="float:right">
+                                            <button class="btn btn-primary next" type="button" onclick="javascript:doSaveDraftCheckList();">Save Draft</button>
+                                        </div>
+                                    </c:if>
                                 </div>
                             </div>
                         </div>
@@ -296,5 +301,9 @@
         var comdivck =document.getElementById(comdivId);
         $("#"+divId).hide();
         $("#"+comdivId).hide();
+    }
+
+    function doSaveDraftCheckList(){
+        SOP.Crud.cfxSubmit("mainForm", "saveDraft");
     }
 </script>
