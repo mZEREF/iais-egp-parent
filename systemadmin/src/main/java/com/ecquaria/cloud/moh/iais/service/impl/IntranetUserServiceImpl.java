@@ -252,10 +252,10 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                     return fileErrorMap;
                 }
                 List<Role> rolesByDomain = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
-                if(!rolesByDomain.contains(roleId)){
+               /* if(!rolesByDomain.contains(roleId)){
                     fileErrorMap.put(errorKey, "USER_ERR011");
                     return fileErrorMap;
-                }
+                }*/
                 List<OrgUserRoleDto> orgUserRoleDtos = retrieveRolesByuserAccId(userId);
                 if(!IaisCommonUtils.isEmpty(orgUserRoleDtos)){
                     for(OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos){

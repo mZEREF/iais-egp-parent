@@ -13,19 +13,25 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.mockito.mockpolicies.Slf4jMockPolicy;
 import org.powermock.core.classloader.annotations.MockPolicy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.context.ApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+
+import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * AuditTrailHelperTest
@@ -35,13 +41,20 @@ import java.lang.reflect.InvocationTargetException;
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({AuditTrailHelper.class, MiscUtil.class})
+@PrepareForTest({AuditTrailHelper.class, MiscUtil.class, RedisCacheHelper.class, ApplicationContext.class, IaisEGPHelper.class})
 public class AuditTrailHelperTest {
     private MockHttpServletRequest request = new MockHttpServletRequest();
+
+
     @Test
     public  void testAuditFunction(){
         PowerMockito.mockStatic(MiscUtil.class);
+        PowerMockito.mockStatic(IaisEGPHelper.class);
         PowerMockito.when(MiscUtil.getCurrentRequest()).thenReturn(request);
+
+        RedisCacheHelper redisCacheHelper = PowerMockito.mock(RedisCacheHelper.class);
+        ApplicationContext context = PowerMockito.mock(ApplicationContext.class);
+        when(context.getBean(RedisCacheHelper.class)).thenReturn(redisCacheHelper);
         AuditTrailHelper.auditFunction("UnitTest","testAuditFunction");
         Assert.assertTrue(true);
     }

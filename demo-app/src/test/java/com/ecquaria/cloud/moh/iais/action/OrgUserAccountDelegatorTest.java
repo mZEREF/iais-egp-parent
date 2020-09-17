@@ -16,10 +16,12 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.sample.OrgUserAccountSampleDto;
+import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserAccountSampleService;
@@ -36,6 +38,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
+import org.springframework.context.ApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -50,7 +53,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({OrgUserAccountSampleDelegator.class,CrudHelper.class,WebValidationHelper.class,
          MiscUtil.class,ParamUtil.class,
-        QueryHelp.class})
+        QueryHelp.class, RedisCacheHelper.class, ApplicationContext.class, IaisEGPHelper.class})
 public class OrgUserAccountDelegatorTest {
     @InjectMocks
     private OrgUserAccountSampleDelegator orgUserAccountDelegator;
@@ -79,6 +82,11 @@ public class OrgUserAccountDelegatorTest {
 
     @Test
     public void testdoStart(){
+        PowerMockito.mockStatic(IaisEGPHelper.class);
+        RedisCacheHelper redisCacheHelper = PowerMockito.mock(RedisCacheHelper.class);
+        ApplicationContext context = PowerMockito.mock(ApplicationContext.class);
+        when(context.getBean(RedisCacheHelper.class)).thenReturn(redisCacheHelper);
+
         orgUserAccountDelegator.doStart(bpc);
         Assert.assertTrue(true);
     }

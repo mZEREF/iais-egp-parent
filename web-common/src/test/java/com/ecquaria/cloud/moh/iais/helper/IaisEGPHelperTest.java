@@ -16,6 +16,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import java.lang.reflect.Constructor;
@@ -31,6 +32,7 @@ import org.powermock.core.classloader.annotations.MockPolicy;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.context.ApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
@@ -46,7 +48,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({IaisEGPHelper.class, MiscUtil.class, ParamUtil.class})
+@PrepareForTest({IaisEGPHelper.class, MiscUtil.class, ParamUtil.class,  RedisCacheHelper.class, ApplicationContext.class})
 @PowerMockIgnore("javax.management.*")
 public class IaisEGPHelperTest {
 
@@ -63,6 +65,11 @@ public class IaisEGPHelperTest {
 
     @Test
     public void testSetAuditLoginInfo() {
+        PowerMockito.mockStatic(IaisEGPHelper.class);
+        RedisCacheHelper redisCacheHelper = PowerMockito.mock(RedisCacheHelper.class);
+        ApplicationContext context = PowerMockito.mock(ApplicationContext.class);
+        when(context.getBean(RedisCacheHelper.class)).thenReturn(redisCacheHelper);
+
         IaisEGPHelper.setAuditLoginUserInfo(null);
         AuditTrailDto dto = new AuditTrailDto();
         PowerMockito.mockStatic(MiscUtil.class);
