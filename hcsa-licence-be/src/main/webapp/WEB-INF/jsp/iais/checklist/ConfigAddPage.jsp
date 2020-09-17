@@ -43,7 +43,7 @@
 
             <div class="serviceFieldGroup">
                 <div class="form-group">
-                    <iais:field value="Service Name" id="serviceNameField"></iais:field>
+                    <iais:field value="Service" id="serviceNameField"></iais:field>
                     <div class="col-md-5">
                         <iais:select name="svcName" id="svcName" options="svcNameSelect" firstOption="Please Select"
                                      value="${svcName}"></iais:select>
