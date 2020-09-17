@@ -7,6 +7,7 @@
                 <input type="hidden" name="poExistingPsn" value="0"/>
                 <input type="hidden" name="poIndexNo" value=""/>
                  <input type="hidden" name="poIsPartEdit" value="1"/>
+                 <input type="hidden" name="loadingType" value=""/>
                 <div class="row">
                   <div class="control control-caption-horizontal">
                     <div class=" form-group form-horizontal formgap">
@@ -146,6 +147,7 @@
             <input type="hidden" name="dpoExistingPsn" value="0"/>
             <input type="hidden" name="dpoIsPartEdit" value="1"/>
             <input type="hidden" name="dpoIndexNo" value=""/>
+            <input type="hidden" name="dpoLoadingType" value=""/>
             <div class="row">
               <div class="control control-caption-horizontal">
                 <div class=" form-group form-horizontal formgap">
@@ -208,7 +210,7 @@
                         </div>
                       </div>
                       <div class="col-sm-4">
-                        <input name="deputyIdNo" type="text" class="form-control control-input control-set-font control-font-normal" autocomplete="off" value="" size="30">
+                        <input name="deputyIdNo" type="text" class="dpoIdNoVal form-control control-input control-set-font control-font-normal" autocomplete="off" value="" size="30">
                         <span class="error-msg" name="iaisErrorMsg" id="error_deputyIdNo"></span>
                       </div>
                     </div>

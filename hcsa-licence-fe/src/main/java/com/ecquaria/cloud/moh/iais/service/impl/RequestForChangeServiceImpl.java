@@ -1442,6 +1442,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
+    public List<FeUserDto> getFeUserDtoByLicenseeId(String licenseeId) {
+        return organizationLienceseeClient.getFeUserDtoByLicenseeId(licenseeId).getEntity();
+    }
+
+    @Override
     public void sendRfcPaymentOnlineOrGIROSuccesedEmail(AppSubmissionDto appSubmissionDto) throws IOException, TemplateException {
         String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();

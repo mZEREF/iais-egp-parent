@@ -57,6 +57,7 @@
                 <input type="hidden" name="existingPsn" value="0"/>
                 <input type="hidden" name="isPartEdit" value="0"/>
                 <input type="hidden" name="mapIndexNo" value="${medAlertPsn.cgoIndexNo}"/>
+                <input type="hidden" name="loadingType" value="${medAlertPsn.loadingType}"/>
                 <div class="row">
                     <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
@@ -132,12 +133,12 @@
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="">
-                                        <iais:select cssClass="idType"  name="idType"  value="${medAlertPsn.idType}" options="IdTypeSelect"></iais:select>
+                                        <iais:select cssClass="idType idTypeSel"  name="idType"  value="${medAlertPsn.idType}" options="IdTypeSelect"></iais:select>
                                         <span class="error-msg" id="error_idTyp${status.index}" name="iaisErrorMsg"></span>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
-                                    <iais:input maxLength="9" type="text" name="idNo" value="${medAlertPsn.idNo}"></iais:input>
+                                    <iais:input cssClass="idNoVal" maxLength="9" type="text" name="idNo" value="${medAlertPsn.idNo}"></iais:input>
                                     <span class="error-msg" id="error_idNo${status.index}" name="iaisErrorMsg"></span>
                                 </div>
                             </div>
@@ -259,6 +260,8 @@
 
         mapDel();
 
+        retrieveData();
+
         $('select.assignSel').trigger('change');
 
         $('input[name="licPerson"]').each(function (k,v) {
@@ -325,6 +328,7 @@
                     var emptyData = {};
                     fillPsnForm($medAlertContentEle,emptyData);
                     $medAlertContentEle.find('input[name="licPerson"]').val('0');
+                    $medAlertContentEle.find('input[name="loadingType"]').val('');
                 }
             }else if('newOfficer' == assignSelVal){
                 $medAlertContentEle.find('div.medAlertPerson').removeClass('hidden');
@@ -333,6 +337,7 @@
                     var emptyData = {};
                     fillPsnForm($medAlertContentEle,emptyData);
                     $medAlertContentEle.find('input[name="licPerson"]').val('0');
+                    $medAlertContentEle.find('input[name="loadingType"]').val('');
                 }
             }else{
                 $medAlertContentEle.find('div.medAlertPerson').removeClass('hidden');
@@ -370,6 +375,7 @@
 
                         changePsnItem();
 
+                        retrieveData();
                         <!--set Scrollbar -->
                         $("div.assignSel->ul").mCustomScrollbar({
                                 advanced:{
@@ -410,5 +416,105 @@
         $('#isEditHiddenVal').val('1');
     });
 
+    var retrieveData = function () {
+        $('.idNoVal').blur(function () {
+            var $mapContentEle = $(this).closest('div.medAlertContent');
+            var idNo = $(this).val();
+            var idType = $mapContentEle.find('select[name="idType"]').val();
+            if(idNo == '' || idType == ''){
+                return;
+            }
+            var data = {
+                'idNo':idNo,
+                'idType':idType
+            };
+            $.ajax({
+                'url':'${pageContext.request.contextPath}/user-account-info',
+                'dataType':'json',
+                'data':data,
+                'type':'POST',
+                'success':function (data) {
+                    console.log("suc");
+                    if(data != null ) {
+                        console.log(data);
+                        if(data.resCode == '200'){
+                            $mapContentEle.find('input[name="loadingType"]').val('PLT002');
+                            fillDataByBlur($mapContentEle,data.resultJson);
+                            $mapContentEle.find('input[name="idNo"]').css('border-color','');
+                            $mapContentEle.find('input[name="idNo"]').css('color','');
+                            $mapContentEle.find('input[name="idNo"]').prop('disabled',false);
+                            $mapContentEle.find('select[name="idType"]').next().removeClass('disabled');
+                        }else{
+                            unDisabledPartPage($mapContentEle);
+                            $mapContentEle.find('input[name="loadingType"]').val('');
+                        }
+                    }
+                },
+                'error':function (data) {
+                    console.log("err");
+                }
+            });
+        });
+    }
+
+    var fillDataByBlur = function ($mapContentEle,data) {
+        var idNo = data.idNo;
+        if(idNo != '' && idNo != null && idNo != 'undefined'){
+            $mapContentEle.find('input[name="idNo"]').val(idNo);
+        }
+        var name = data.name;
+        if(name != '' && name != null && name != 'undefined'){
+            $mapContentEle.find('input[name="name"]').val(name);
+        }
+        var mobileNo = data.mobileNo;
+        if(mobileNo != '' && mobileNo != null && mobileNo != 'undefined'){
+            $mapContentEle.find('input[name="mobileNo"]').val(data.mobileNo);
+        }
+        var officeTelNo = data.officeTelNo;
+        if(officeTelNo != '' && officeTelNo != null && officeTelNo != 'undefined'){
+            $mapContentEle.find('input[name="officeTelNo"]').val(data.officeTelNo);
+        }
+        var emailAddr = data.emailAddr;
+        if(emailAddr != '' && emailAddr != null && emailAddr != 'undefined'){
+            $mapContentEle.find('input[name="emailAddress"]').val(data.emailAddr);
+        }
+
+        var salutation = data.salutation;
+        if(salutation != null || salutation !='undefined' || salutation != ''){
+            $mapContentEle.find('select[name="salutation"]').val(salutation);
+            var salutationVal = $mapContentEle.find('option[value="' + salutation + '"]').html();
+            $mapContentEle.find('select[name="salutation"]').next().find('.current').html(salutationVal);
+        }
+
+        var designation = data.designation;
+        if(designation != null || designation !='undefined' || designation != ''){
+            $mapContentEle.find('select[name="designation"]').val(designation);
+            var designationVal = $mapContentEle.find('option[value="' + designation + '"]').html();
+            $mapContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
+        }
+
+        var preferredMode = data.preferredMode;
+        if(preferredMode != null && preferredMode !='undefined' && preferredMode != ''){
+            if('3' == preferredMode){
+                $mapContentEle.find('input.preferredMode').prop('checked',true);
+            }else{
+                $mapContentEle.find('input.preferredMode').each(function () {
+                    if(preferredMode == $(this).val()){
+                        $(this).prop('checked',true);
+                    }
+                });
+            }
+        }
+
+
+        var $psnContentEle = $mapContentEle.find('div.medAlertPerson');
+        //add disabled not add input disabled style
+        personDisable($psnContentEle,'','Y');
+        var psnEditDto = data.psnEditDto;
+        setPsnDisabled($psnContentEle,psnEditDto);
+        $mapContentEle.find('input[name="licPerson"]').val('1');
+        $mapContentEle.find('input[name="existingPsn"]').val('1');
+
+    }
 
 </script>

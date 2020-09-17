@@ -61,6 +61,7 @@
                     <input type="hidden" name="poExistingPsn" value="0"/>
                     <input type="hidden" name="poIsPartEdit" value="0"/>
                     <input type="hidden" name="poIndexNo" value="${principalOfficer.cgoIndexNo}"/>
+                    <input type="hidden" name="loadingType" value="${principalOfficer.loadingType}"/>
                     <div class="row">
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
@@ -338,6 +339,7 @@
                     <input type="hidden" name="dpoExistingPsn" value="0"/>
                     <input type="hidden" name="dpoIsPartEdit" value="0"/>
                     <input type="hidden" name="dpoIndexNo" value="${deputy.cgoIndexNo}"/>
+                    <input type="hidden" name="dpoLoadingType" value="${deputy.loadingType}"/>
                     <div class="row" <c:if test="${status.first}">style="margin-top:-4%;"</c:if> >
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
@@ -415,7 +417,7 @@
                               </div>
                             </div>
                             <div class="col-sm-4">
-                              <input autocomplete="off"  name="deputyIdNo" maxlength="9" type="text"  class=" form-control control-input control-set-font control-font-normal" value="${deputy.idNo}" size="30">
+                              <input autocomplete="off"  name="deputyIdNo" maxlength="9" type="text"  class="dpoIdNoVal form-control control-input control-set-font control-font-normal" value="${deputy.idNo}" size="30">
                               <span class="error-msg"  name="iaisErrorMsg" id="error_deputyIdNo${status.index}"></span>
                             </div>
                           </div>
@@ -552,6 +554,10 @@
         doEditDpo();
 
         dpoDropDown();
+
+        retrieveData();
+
+        dpoRetrieveData();
 
         $('select.poSelect').trigger('change');
         $('select.deputySelect').trigger('change');
@@ -706,6 +712,7 @@
                 }
                 $poContentEle.find('input[name="poLicPerson"]').val('0');
                 $poContentEle.find('input[name="poExistingPsn"]').val('0');
+                $poContentEle.find('input[name="loadingType"]').val('');
             }else if('-1' == selectVal){
                 $poContentEle.find('div.principalOfficers').addClass('hidden');
                 if(0 != init) {
@@ -713,6 +720,7 @@
                 }
                 $poContentEle.find('input[name="poLicPerson"]').val('0');
                 $poContentEle.find('input[name="poExistingPsn"]').val('0');
+                $poContentEle.find('input[name="loadingType"]').val('');
             }else{
                 $poContentEle.find('div.principalOfficers').removeClass('hidden');
                 if(init == 0){
@@ -734,15 +742,17 @@
                 if(0 != init) {
                     fillDpoData($dpoContentEle, data);
                 }
-                $dpoContentEle.find('input[name="poLicPerson"]').val('0');
+                $dpoContentEle.find('input[name="dpoLicPerson"]').val('0');
                 $dpoContentEle.find('input[name="dpoExistingPsn"]').val('0');
+                $dpoContentEle.find('input[name="dpoLoadingType"]').val('');
             }else if('-1' == selectVal){
                 $dpoContentEle.find('div.deputyPrincipalOfficers').addClass('hidden');
                 if(0 != init) {
                     fillDpoData($dpoContentEle, data);
                 }
-                $dpoContentEle.find('input[name="poLicPerson"]').val('0');
+                $dpoContentEle.find('input[name="dpoLicPerson"]').val('0');
                 $dpoContentEle.find('input[name="dpoExistingPsn"]').val('0');
+                $dpoContentEle.find('input[name="dpoLoadingType"]').val('');
             }else{
                 $dpoContentEle.find('div.deputyPrincipalOfficers').removeClass('hidden');
                 if(init == 0){
@@ -794,6 +804,7 @@
                         removePo();
                         //retrieveData();
                         removePo();
+                        retrieveData();
                         <!--set Scrollbar -->
                         $("div.poSelect->ul").mCustomScrollbar({
                                 advanced:{
@@ -839,6 +850,7 @@
                         $('.deputyPoSelect').unbind();
                         dpoSelect();
                         removeDpo();
+                        dpoRetrieveData();
                         <!--set Scrollbar -->
                         $("div.deputyPoSelect->ul").mCustomScrollbar({
                                 advanced:{
@@ -897,6 +909,101 @@
             $('#isEditDpoHiddenVal').val('1');
         });
     }
+
+    var fillPoDataByBlur = function ($poContentEle,data) {
+        var idNo = data.idNo;
+        if(idNo != '' && idNo != null && idNo != 'undefined'){
+            $poContentEle.find('input[name="idNo"]').val(idNo);
+        }
+        var name = data.name;
+        if(name != '' && name != null && name != 'undefined'){
+            $poContentEle.find('input[name="name"]').val(name);
+        }
+        var mobileNo = data.mobileNo;
+        if(mobileNo != '' && mobileNo != null && mobileNo != 'undefined'){
+            $poContentEle.find('input[name="mobileNo"]').val(data.mobileNo);
+        }
+        var officeTelNo = data.officeTelNo;
+        if(officeTelNo != '' && officeTelNo != null && officeTelNo != 'undefined'){
+            $poContentEle.find('input[name="officeTelNo"]').val(data.officeTelNo);
+        }
+        var emailAddr = data.emailAddr;
+        if(emailAddr != '' && emailAddr != null && emailAddr != 'undefined'){
+            $poContentEle.find('input[name="emailAddress"]').val(data.emailAddr);
+        }
+
+        var salutation = data.salutation;
+        if(salutation != null || salutation !='undefined' || salutation != ''){
+            $poContentEle.find('select[name="salutation"]').val(salutation);
+            var salutationVal = $poContentEle.find('option[value="' + salutation + '"]').html();
+            $poContentEle.find('select[name="salutation"]').next().find('.current').html(salutationVal);
+        }
+
+        var designation = data.designation;
+        if(designation != null || designation !='undefined' || designation != ''){
+            $poContentEle.find('select[name="designation"]').val(designation);
+            var designationVal = $poContentEle.find('option[value="' + designation + '"]').html();
+            $poContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
+        }
+
+
+        var $psnContentEle = $poContentEle.find('div.principalOfficers');
+        //add disabled not add input disabled style
+        personDisable($psnContentEle,'','Y');
+        var psnEditDto = data.psnEditDto;
+        setPoPsnDisabled($psnContentEle,psnEditDto);
+        $poContentEle.find('input[name="poLicPerson"]').val('1');
+        $poContentEle.find('input[name="poExistingPsn"]').val('1');
+
+    }
+
+    var fillDpoDataByBlur = function ($dpoContentEle,data) {
+        var idNo = data.idNo;
+        if(idNo != '' && idNo != null && idNo != 'undefined'){
+            $dpoContentEle.find('input[name="deputyIdNo"]').val(idNo);
+        }
+        var name = data.name;
+        if(name != '' && name != null && name != 'undefined'){
+            $dpoContentEle.find('input[name="deputyName"]').val(name);
+        }
+        var mobileNo = data.mobileNo;
+        if(mobileNo != '' && mobileNo != null && mobileNo != 'undefined'){
+            $dpoContentEle.find('input[name="deputyMobileNo"]').val(data.mobileNo);
+        }
+        var officeTelNo = data.officeTelNo;
+        if(officeTelNo != '' && officeTelNo != null && officeTelNo != 'undefined'){
+            $dpoContentEle.find('input[name="deputyOfficeTelNo"]').val(data.officeTelNo);
+        }
+        var emailAddr = data.emailAddr;
+        if(emailAddr != '' && emailAddr != null && emailAddr != 'undefined'){
+            $dpoContentEle.find('input[name="deputyEmailAddr"]').val(data.emailAddr);
+        }
+
+        var salutation = data.salutation;
+        if(salutation != null || salutation !='undefined' || salutation != ''){
+            $dpoContentEle.find('select[name="deputySalutation"]').val(salutation);
+            var salutationVal = $dpoContentEle.find('option[value="' + salutation + '"]').html();
+            $dpoContentEle.find('select[name="deputySalutation"]').next().find('.current').html(salutationVal);
+        }
+
+        var designation = data.designation;
+        if(designation != null || designation !='undefined' || designation != ''){
+            $dpoContentEle.find('select[name="deputyDesignation"]').val(designation);
+            var designationVal = $dpoContentEle.find('option[value="' + designation + '"]').html();
+            $dpoContentEle.find('select[name="deputyDesignation"]').next().find('.current').html(designationVal);
+        }
+
+
+        var $psnContentEle = $dpoContentEle.find('div.deputyPrincipalOfficers');
+        //add disabled not add input disabled style
+        personDisable($psnContentEle,'','Y');
+        var psnEditDto = data.psnEditDto;
+        setPoPsnDisabled($psnContentEle,psnEditDto);
+        $dpoContentEle.find('input[name="dpoLicPerson"]').val('1');
+        $dpoContentEle.find('input[name="dpoExistingPsn"]').val('1');
+
+    }
+
     var fillPoData = function ($poContentEle,data) {
         $poContentEle.find('input[name="idNo"]').val(data.idNo);
         $poContentEle.find('input[name="name"]').val(data.name);
@@ -941,53 +1048,55 @@
             unDisabledPartPage($poContentEle.find('div.principalOfficers'));
             $poContentEle.find('input[name="poLicPerson"]').val('0');
             $poContentEle.find('input[name="poExistingPsn"]').val('0');
+            $poContentEle.find('input[name="loadingType"]').val('');
         }
     }
 
-    var fillDpoData = function ($poContentEle,data) {
-        $poContentEle.find('input[name="deputyIdNo"]').val(data.idNo);
-        $poContentEle.find('input[name="deputyName"]').val(data.name);
-        $poContentEle.find('input[name="deputyMobileNo"]').val(data.mobileNo);
-        $poContentEle.find('input[name="deputyOfficeTelNo"]').val(data.officeTelNo);
-        $poContentEle.find('input[name="deputyEmailAddr"]').val(data.emailAddr);
+    var fillDpoData = function ($dpoContentEle,data) {
+        $dpoContentEle.find('input[name="deputyIdNo"]').val(data.idNo);
+        $dpoContentEle.find('input[name="deputyName"]').val(data.name);
+        $dpoContentEle.find('input[name="deputyMobileNo"]').val(data.mobileNo);
+        $dpoContentEle.find('input[name="deputyOfficeTelNo"]').val(data.officeTelNo);
+        $dpoContentEle.find('input[name="deputyEmailAddr"]').val(data.emailAddr);
         <!--salutation-->
         var salutation = data.salutation;
         if(salutation == null || salutation =='undefined' || salutation == ''){
             salutation = '';
         }
-        $poContentEle.find('select[name="deputySalutation"]').val(salutation);
-        var salutationVal = $poContentEle.find('option[value="' + salutation + '"]').html();
-        $poContentEle.find('select[name="deputySalutation"]').next().find('.current').html(salutationVal);
+        $dpoContentEle.find('select[name="deputySalutation"]').val(salutation);
+        var salutationVal = $dpoContentEle.find('option[value="' + salutation + '"]').html();
+        $dpoContentEle.find('select[name="deputySalutation"]').next().find('.current').html(salutationVal);
         <!-- idType-->
         var idType = data.idType;
         if(idType == null || idType =='undefined' || idType == ''){
             idType = '';
         }
-        $poContentEle.find('select[name="deputyIdType"]').val(idType);
-        var idTypeVal = $poContentEle.find('option[value="' + idType + '"]').html();
-        $poContentEle.find('select[name="deputyIdType"]').next().find('.current').html(idTypeVal);
+        $dpoContentEle.find('select[name="deputyIdType"]').val(idType);
+        var idTypeVal = $dpoContentEle.find('option[value="' + idType + '"]').html();
+        $dpoContentEle.find('select[name="deputyIdType"]').next().find('.current').html(idTypeVal);
         <!--Designation  -->
         var designation = data.designation;
         if(designation == null || designation =='undefined' || designation == ''){
             designation = '';
         }
-        $poContentEle.find('select[name="deputyDesignation"]').val(designation);
-        var designationVal = $poContentEle.find('option[value="' + designation + '"]').html();
-        $poContentEle.find('select[name="deputyDesignation"]').next().find('.current').html(designationVal);
+        $dpoContentEle.find('select[name="deputyDesignation"]').val(designation);
+        var designationVal = $dpoContentEle.find('option[value="' + designation + '"]').html();
+        $dpoContentEle.find('select[name="deputyDesignation"]').next().find('.current').html(designationVal);
 
         var isLicPerson = data.licPerson;
         if('1' == isLicPerson){
-            var $psnContentEle = $poContentEle.find('div.deputyPrincipalOfficers');
+            var $psnContentEle = $dpoContentEle.find('div.deputyPrincipalOfficers');
             //add disabled not add input disabled style
             personDisable($psnContentEle,'','Y');
             var psnEditDto = data.psnEditDto;
             setDpoPsnDisabled($psnContentEle,psnEditDto);
-            $poContentEle.find('input[name="dpoLicPerson"]').val('1');
-            $poContentEle.find('input[name="dpoExistingPsn"]').val('1');
+            $dpoContentEle.find('input[name="dpoLicPerson"]').val('1');
+            $dpoContentEle.find('input[name="dpoExistingPsn"]').val('1');
         }else{
-            unDisabledPartPage($poContentEle.find('div.deputyPrincipalOfficers'));
-            $poContentEle.find('input[name="dpoLicPerson"]').val('0');
-            $poContentEle.find('input[name="dpoExistingPsn"]').val('0');
+            unDisabledPartPage($dpoContentEle.find('div.deputyPrincipalOfficers'));
+            $dpoContentEle.find('input[name="dpoLicPerson"]').val('0');
+            $dpoContentEle.find('input[name="dpoExistingPsn"]').val('0');
+            $dpoContentEle.find('input[name="dpoLoadingType"]').val('');
         }
     }
 
@@ -1126,4 +1235,89 @@
             $('#isEditDpoHiddenVal').val('1');
         });
     }
+
+
+    var retrieveData = function () {
+        $('.idNoVal').blur(function () {
+            var $poContentEle = $(this).closest('div.po-content');
+            var idNo = $(this).val();
+            var idType = $poContentEle.find('select[name="idType"]').val();
+            if(idNo == '' || idType == ''){
+                return;
+            }
+            var data = {
+                'idNo':idNo,
+                'idType':idType
+            };
+            $.ajax({
+                'url':'${pageContext.request.contextPath}/user-account-info',
+                'dataType':'json',
+                'data':data,
+                'type':'POST',
+                'success':function (data) {
+                    console.log("suc");
+                    if(data != null ) {
+                        console.log(data);
+                        if(data.resCode == '200'){
+                            $poContentEle.find('input[name="loadingType"]').val('PLT002');
+                            fillPoDataByBlur($poContentEle,data.resultJson);
+                            $poContentEle.find('input[name="idNo"]').css('border-color','');
+                            $poContentEle.find('input[name="idNo"]').css('color','');
+                            $poContentEle.find('input[name="idNo"]').prop('disabled',false);
+                            $poContentEle.find('select[name="idType"]').next().removeClass('disabled');
+                        }else{
+                            unDisabledPartPage($poContentEle);
+                            $poContentEle.find('input[name="loadingType"]').val('');
+                        }
+                    }
+                },
+                'error':function (data) {
+                    console.log("err");
+                }
+            });
+        });
+    }
+
+
+    var dpoRetrieveData = function () {
+        $('.dpoIdNoVal').blur(function () {
+            var $dpoContentEle = $(this).closest('div.dpo-content');
+            var idNo = $(this).val();
+            var idType = $dpoContentEle.find('select[name="deputyIdType"]').val();
+            if(idNo == '' || idType == ''){
+                return;
+            }
+            var data = {
+                'idNo':idNo,
+                'idType':idType
+            };
+            $.ajax({
+                'url':'${pageContext.request.contextPath}/user-account-info',
+                'dataType':'json',
+                'data':data,
+                'type':'POST',
+                'success':function (data) {
+                    console.log("suc");
+                    if(data != null ) {
+                        console.log(data);
+                        if(data.resCode == '200'){
+                            $dpoContentEle.find('input[name="dpoLoadingType"]').val('PLT002');
+                            fillDpoDataByBlur($dpoContentEle,data.resultJson);
+                            $dpoContentEle.find('input[name="deputyIdNo"]').css('border-color','');
+                            $dpoContentEle.find('input[name="deputyIdNo"]').css('color','');
+                            $dpoContentEle.find('input[name="deputyIdNo"]').prop('disabled',false);
+                            $dpoContentEle.find('select[name="deputyIdType"]').next().removeClass('disabled');
+                        }else{
+                            unDisabledPartPage($dpoContentEle);
+                            $dpoContentEle.find('input[name="dpoLoadingType"]').val('');
+                        }
+                    }
+                },
+                'error':function (data) {
+                    console.log("err");
+                }
+            });
+        });
+    }
+
 </script>

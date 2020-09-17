@@ -14,13 +14,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
@@ -976,18 +978,7 @@ public class NewApplicationAjaxController {
             person.setLicPerson(appSvcPersonAndExtDto.isLicPerson());
         }
         if(person != null && !person.isLicPerson()){
-            List<AppSvcPersonExtDto> appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
-            AppSvcPersonExtDto appSvcPersonExtDto = new AppSvcPersonExtDto();
-            if(!IaisCommonUtils.isEmpty(appSvcPersonExtDtos)){
-                appSvcPersonExtDtos.sort((h1,h2)->h1.getServiceCode().compareTo(h2.getServiceCode()));
-                appSvcPersonExtDto = appSvcPersonExtDtos.get(0);
-            }
-            Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
-            person = MiscUtil.transferEntityDto(appSvcPersonExtDto,AppSvcPrincipalOfficersDto.class,fieldMap,person);
-            //transfer
-            person.setLicPerson(appSvcPersonAndExtDto.isLicPerson());
-            AppPsnEditDto appPsnEditDto = NewApplicationHelper.setNeedEditField(person);
-            person.setPsnEditDto(appPsnEditDto);
+            person = getAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,person);
         }else{
             person = NewApplicationHelper.genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,false);
         }
@@ -1100,6 +1091,42 @@ public class NewApplicationAjaxController {
     }
 
 
+    @PostMapping(value = "/user-account-info")
+    public @ResponseBody
+    AjaxResDto getUserAccountInfo(HttpServletRequest request){
+        String idType = ParamUtil.getString(request,"idType");
+        String idNo = ParamUtil.getString(request,"idNo");
+        List<FeUserDto> feUserDtos  = (List<FeUserDto>) ParamUtil.getSessionAttr(request,NewApplicationDelegator.CURR_ORG_USER_ACCOUNT);
+        String resCode = "404";
+        AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
+        if(feUserDtos != null && !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo)){
+            for(FeUserDto feUserDto:feUserDtos){
+                String userIdType = MasterCodeUtil.getCodeDesc(feUserDto.getIdType());
+                if(idType.equals(userIdType) && idNo.equals(feUserDto.getIdNumber())){
+                    Map<String,AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
+                    if(psnMap != null){
+                        AppSvcPersonAndExtDto appSvcPersonAndExtDto = psnMap.get(NewApplicationHelper.getPersonKey(idType,idNo));
+//                        if(!ApplicationConsts.PERSON_LOADING_TYPE_BLUR.equals(appSvcPersonAndExtDto)){
+//                            log.info(StringUtil.changeForLog("can not loading this type data"));
+//                            continue;
+//                        }
+                        AppSvcPersonDto appSvcPersonDto = appSvcPersonAndExtDto.getPersonDto();
+                        if(appSvcPersonDto != null){
+                            appSvcPrincipalOfficersDto = MiscUtil.transferEntityDto(appSvcPersonDto,AppSvcPrincipalOfficersDto.class);
+                            appSvcPrincipalOfficersDto.setLicPerson(appSvcPersonAndExtDto.isLicPerson());
+                        }
+                        appSvcPrincipalOfficersDto = getAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,appSvcPrincipalOfficersDto);
+
+                        resCode = "200";
+                    }
+                }
+            }
+        }
+        AjaxResDto ajaxResDto = new AjaxResDto();
+        ajaxResDto.setResCode(resCode);
+        ajaxResDto.setResultJson(appSvcPrincipalOfficersDto);
+        return ajaxResDto;
+    }
 
     //=============================================================================
     //private method
@@ -1112,5 +1139,24 @@ public class NewApplicationAjaxController {
             }
         }
         return  null;
+    }
+
+    private AppSvcPrincipalOfficersDto getAppSvcPrincipalOfficersDto(AppSvcPersonAndExtDto appSvcPersonAndExtDto,AppSvcPrincipalOfficersDto person){
+        if(appSvcPersonAndExtDto == null){
+            return person;
+        }
+        List<AppSvcPersonExtDto> appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
+        AppSvcPersonExtDto appSvcPersonExtDto = new AppSvcPersonExtDto();
+        if(!IaisCommonUtils.isEmpty(appSvcPersonExtDtos)){
+            appSvcPersonExtDtos.sort((h1,h2)->h1.getServiceCode().compareTo(h2.getServiceCode()));
+            appSvcPersonExtDto = appSvcPersonExtDtos.get(0);
+        }
+        Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
+        person = MiscUtil.transferEntityDto(appSvcPersonExtDto,AppSvcPrincipalOfficersDto.class,fieldMap,person);
+        //transfer
+        person.setLicPerson(appSvcPersonAndExtDto.isLicPerson());
+        AppPsnEditDto appPsnEditDto = NewApplicationHelper.setNeedEditField(person);
+        person.setPsnEditDto(appPsnEditDto);
+        return person;
     }
 }

@@ -1969,6 +1969,7 @@ public class ClinicalLaboratoryDelegator {
             String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
             String[] poIsPartEdit = ParamUtil.getStrings(request,"poIsPartEdit");
             String[] poIndexNos = ParamUtil.getStrings(request,"poIndexNo");
+            String[] loadingTypes = ParamUtil.getStrings(request,"loadingType");
             int length =  0;
             if(assignSelect != null){
                 length = assignSelect.length;
@@ -1981,6 +1982,8 @@ public class ClinicalLaboratoryDelegator {
                 boolean getPageData = false;
                 String assign = assignSelect[i];
                 String licPsn = poLicPerson[i];
+                String loadingType = loadingTypes[i];
+                boolean loadingByBlur = NewApplicationConstant.NEW_PSN.equals(assign) && AppConsts.YES.equals(licPsn) && ApplicationConsts.PERSON_LOADING_TYPE_BLUR.equals(loadingType);
                 //for rfi,rfc,renew use
 //                String existingPsn = poExistingPsn[i];
                 AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
@@ -1988,7 +1991,9 @@ public class ClinicalLaboratoryDelegator {
                     if (assign != null) {
                         if(isExistingPsn(assign,licPsn)){
                             chooseExisting = true;
-                        }else{
+                        }else if(loadingByBlur){
+                            chooseExisting = true;
+                        } else{
                             getPageData = true;
                         }
                     }
@@ -2004,6 +2009,7 @@ public class ClinicalLaboratoryDelegator {
                                 poIndexNos = removeArrIndex(poIndexNos, i);
                                 poIsPartEdit = removeArrIndex(poIsPartEdit, i);
                                 poLicPerson = removeArrIndex(poLicPerson, i);
+                                loadingTypes = removeArrIndex(loadingTypes,i);
                                 //dropdown cannot disabled
                                 assignSelect = removeArrIndex(assignSelect, i);
                                 salutation = removeArrIndex(salutation, i);
@@ -2020,6 +2026,8 @@ public class ClinicalLaboratoryDelegator {
                         if(isExistingPsn(assign,licPsn)){
                             //add cgo and choose existing
                             chooseExisting = true;
+                        }else if(loadingByBlur){
+                            chooseExisting = true;
                         }else{
                             getPageData = true;
                         }
@@ -2030,8 +2038,13 @@ public class ClinicalLaboratoryDelegator {
                 }
                 log.info(StringUtil.changeForLog("chooseExisting:"+chooseExisting));
                 log.info(StringUtil.changeForLog("getPageData:"+getPageData));
+                String assignSel = assignSelect[i];
                 if(chooseExisting){
-                    appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
+                    if(loadingByBlur){
+                        assignSel = NewApplicationHelper.getPersonKey(idType[i],idNo[i]);
+                    }
+                    appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSel);
+                    appSvcPrincipalOfficersDto.setLoadingType(loadingType);
                     AppPsnEditDto appPsnEditDto;
                     try {
                         appPsnEditDto = NewApplicationHelper.setNeedEditField(appSvcPrincipalOfficersDto);
@@ -2068,15 +2081,17 @@ public class ClinicalLaboratoryDelegator {
                     if(StringUtil.isEmpty(appSvcPrincipalOfficersDto.getCgoIndexNo())){
                         appSvcPrincipalOfficersDto.setCgoIndexNo(UUID.randomUUID().toString());
                     }
-                    appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
+                    appSvcPrincipalOfficersDto.setAssignSelect(assignSel);
                     appSvcPrincipalOfficersDto.setLicPerson(true);
                     appSvcPrincipalOfficersDto.setSelectDropDown(true);
                     appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+                    appSvcPrincipalOfficersDto.setPsnEditDto(appPsnEditDto);
                     appSvcPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
                     //change arr index
                     poExistingPsn = removeArrIndex(poExistingPsn,i);
                     poLicPerson = removeArrIndex(poLicPerson, i);
                     poIndexNos = removeArrIndex(poIndexNos, i);
+                    loadingTypes = removeArrIndex(loadingTypes,i);
                     //dropdown cannot disabled
                     assignSelect = removeArrIndex(assignSelect, i);
                     salutation = removeArrIndex(salutation, i);
@@ -2092,7 +2107,7 @@ public class ClinicalLaboratoryDelegator {
                         appSvcPrincipalOfficersDto.setCgoIndexNo(poIndexNo);
                     }
                     appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
-                    appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
+                    appSvcPrincipalOfficersDto.setAssignSelect(assignSel);
                     appSvcPrincipalOfficersDto.setSalutation(salutation[i]);
                     appSvcPrincipalOfficersDto.setName(name[i]);
                     appSvcPrincipalOfficersDto.setIdType(idType[i]);
@@ -2128,6 +2143,7 @@ public class ClinicalLaboratoryDelegator {
             String[] deputyEmailAddr = ParamUtil.getStrings(request, "deputyEmailAddr");
             String[] dpoIsPartEdit = ParamUtil.getStrings(request,"dpoIsPartEdit");
             String[] dpoIndexNos = ParamUtil.getStrings(request,"dpoIndexNo");
+            String[] dpoLoadingTypes = ParamUtil.getStrings(request,"dpoLoadingType");
             int length = 0;
             if(assignSelect != null){
                 length = assignSelect.length;
@@ -2141,12 +2157,16 @@ public class ClinicalLaboratoryDelegator {
                 String licPsn = dpoLicPerson[i];
                 boolean chooseExisting = false;
                 boolean getPageData = false;
+                String loadingType = dpoLoadingTypes[i];
+                boolean loadingByBlur = NewApplicationConstant.NEW_PSN.equals(assign) && AppConsts.YES.equals(licPsn) && ApplicationConsts.PERSON_LOADING_TYPE_BLUR.equals(loadingType);
                 //for rfi,rfc,renew use
                 String existingPsn = dpoExistingPsn[i];
                 //new and not rfi
                 if(!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                     if (assign != null) {
                         if (isExistingPsn(assign,licPsn)) {
+                            chooseExisting = true;
+                        }else if(loadingByBlur){
                             chooseExisting = true;
                         }else{
                             getPageData = true;
@@ -2164,6 +2184,7 @@ public class ClinicalLaboratoryDelegator {
                                 dpoIndexNos = removeArrIndex(dpoIndexNos, i);
                                 dpoIsPartEdit = removeArrIndex(dpoIsPartEdit, i);
                                 dpoLicPerson = removeArrIndex(dpoLicPerson, i);
+                                dpoLoadingTypes = removeArrIndex(dpoLoadingTypes,i);
                                 //dropdown cannot disabled
                                 assignSelect = removeArrIndex(assignSelect, i);
                                 deputySalutation = removeArrIndex(deputySalutation, i);
@@ -2180,6 +2201,8 @@ public class ClinicalLaboratoryDelegator {
                         if(isExistingPsn(assign,licPsn)){
                             //add cgo and choose existing
                             chooseExisting = true;
+                        }else if(loadingByBlur){
+                            chooseExisting = true;
                         }else{
                             getPageData = true;
                         }
@@ -2189,8 +2212,13 @@ public class ClinicalLaboratoryDelegator {
                 }
                 log.info(StringUtil.changeForLog("chooseExisting:"+chooseExisting));
                 log.info(StringUtil.changeForLog("getPageData:"+getPageData));
+                String assignSel = assignSelect[i];
                 if(chooseExisting){
-                    appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
+                    if(loadingByBlur){
+                        assignSel = NewApplicationHelper.getPersonKey(deputyIdType[i],deputyIdNo[i]);
+                    }
+                    appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSel);
+                    appSvcPrincipalOfficersDto.setLoadingType(loadingType);
                     String dpoIndexNo = dpoIndexNos[i];
                     if (StringUtil.isEmpty(dpoIndexNo)) {
                         appSvcPrincipalOfficersDto.setCgoIndexNo(UUID.randomUUID().toString());
@@ -2229,14 +2257,16 @@ public class ClinicalLaboratoryDelegator {
                     if (appPsnEditDto.isEmailAddr()) {
                         deputyEmailAddr = NewApplicationHelper.setPsnValue(deputyEmailAddr, i, appSvcPrincipalOfficersDto, "emailAddr");
                     }
-                    appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
+                    appSvcPrincipalOfficersDto.setAssignSelect(assignSel);
                     appSvcPrincipalOfficersDto.setLicPerson(true);
                     appSvcPrincipalOfficersDto.setSelectDropDown(true);
                     appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+                    appSvcPrincipalOfficersDto.setPsnEditDto(appPsnEditDto);
                     appSvcPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
                     //change arr index
                     dpoLicPerson = removeArrIndex(dpoLicPerson, i);
                     dpoExistingPsn = removeArrIndex(dpoExistingPsn,i);
+                    dpoLoadingTypes = removeArrIndex(dpoLoadingTypes,i);
                     //dropdown cannot disabled
                     assignSelect = removeArrIndex(assignSelect, i);
                     deputySalutation = removeArrIndex(deputySalutation, i);
@@ -2252,7 +2282,7 @@ public class ClinicalLaboratoryDelegator {
                         appSvcPrincipalOfficersDto.setCgoIndexNo(dpoIndexNo);
                     }
                     appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-                    appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
+                    appSvcPrincipalOfficersDto.setAssignSelect(assignSel);
                     appSvcPrincipalOfficersDto.setSalutation(deputySalutation[i]);
                     appSvcPrincipalOfficersDto.setName(deputyName[i]);
                     appSvcPrincipalOfficersDto.setIdType(deputyIdType[i]);
@@ -2643,6 +2673,7 @@ public class ClinicalLaboratoryDelegator {
         String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
         String[] isPartEdit = ParamUtil.getStrings(request,"isPartEdit");
         String[] mapIndexNos = ParamUtil.getStrings(request,"mapIndexNo");
+        String[] loadingTypes = ParamUtil.getStrings(request,"loadingType");
         List<AppSvcPrincipalOfficersDto> medAlertPersons = IaisCommonUtils.genNewArrayList();
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(request, currentSvcId);
@@ -2656,10 +2687,14 @@ public class ClinicalLaboratoryDelegator {
             String licPsn = licPerson[i];
             boolean chooseExisting = false;
             boolean getPageData = false;
+            String loadingType = loadingTypes[i];
+            boolean loadingByBlur = NewApplicationConstant.NEW_PSN.equals(assign) && AppConsts.YES.equals(licPsn) && ApplicationConsts.PERSON_LOADING_TYPE_BLUR.equals(loadingType);
             String existPsn = existingPsn[i];
             if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                 if (assign != null) {
                     if (isExistingPsn(assign, licPsn)) {
+                        chooseExisting = true;
+                    }else if(loadingByBlur){
                         chooseExisting = true;
                     } else {
                         getPageData = true;
@@ -2677,6 +2712,7 @@ public class ClinicalLaboratoryDelegator {
                             mapIndexNos = removeArrIndex(mapIndexNos, i);
                             isPartEdit = removeArrIndex(isPartEdit, i);
                             licPerson = removeArrIndex(licPerson, i);
+                            loadingTypes = removeArrIndex(loadingTypes,i);
                             //dropdown cannot disabled
                             assignSelect = removeArrIndex(assignSelect, i);
                             salutation = removeArrIndex(salutation, i);
@@ -2694,6 +2730,8 @@ public class ClinicalLaboratoryDelegator {
                     if(isExistingPsn(assign,licPsn)){
                         //add cgo and choose existing
                         chooseExisting = true;
+                    }else if(loadingByBlur){
+                        chooseExisting = true;
                     }else{
                         getPageData = true;
                     }
@@ -2704,8 +2742,13 @@ public class ClinicalLaboratoryDelegator {
             log.info(StringUtil.changeForLog("chooseExisting:"+chooseExisting));
             log.info(StringUtil.changeForLog("getPageData:"+getPageData));
             String[] preferredModes = ParamUtil.getStrings(request, "preferredMode" + preferredModeLength);
-            if (chooseExisting) {
-                appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
+            String assignSel = assignSelect[i];
+            if(chooseExisting){
+                if(loadingByBlur){
+                    assignSel = NewApplicationHelper.getPersonKey(idType[i],idNo[i]);
+                }
+                appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSel);
+                appSvcPrincipalOfficersDto.setLoadingType(loadingType);
                 try {
                     appPsnEditDto = NewApplicationHelper.setNeedEditField(appSvcPrincipalOfficersDto);
                 } catch (Exception e) {
@@ -2744,13 +2787,15 @@ public class ClinicalLaboratoryDelegator {
                     appSvcPrincipalOfficersDto.setCgoIndexNo(UUID.randomUUID().toString());
                 }
                 appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
-                appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
+                appSvcPrincipalOfficersDto.setAssignSelect(assignSel);
                 appSvcPrincipalOfficersDto.setLicPerson(true);
                 appSvcPrincipalOfficersDto.setSelectDropDown(true);
+                appSvcPrincipalOfficersDto.setPsnEditDto(appPsnEditDto);
                 medAlertPersons.add(appSvcPrincipalOfficersDto);
                 //change arr index
                 licPerson = removeArrIndex(licPerson, i);
                 existingPsn = removeArrIndex(existingPsn,i);
+                loadingTypes = removeArrIndex(loadingTypes,i);
                 //dropdown cannot disabled
                 assignSelect = removeArrIndex(assignSelect, i);
                 salutation = removeArrIndex(salutation, i);
@@ -2766,7 +2811,7 @@ public class ClinicalLaboratoryDelegator {
                     appSvcPrincipalOfficersDto.setCgoIndexNo(mapIndexNo);
                 }
                 appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
-                appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
+                appSvcPrincipalOfficersDto.setAssignSelect(assignSel);
                 appSvcPrincipalOfficersDto.setSalutation(salutation[i]);
                 appSvcPrincipalOfficersDto.setName(name[i]);
                 appSvcPrincipalOfficersDto.setIdType(idType[i]);

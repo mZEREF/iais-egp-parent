@@ -1190,6 +1190,9 @@ public class NewApplicationHelper {
                 appSvcPersonExtDto.setServiceCode(svcCode);
                 appSvcPersonExtDto.setAssignSelect(person.getAssignSelect());
                 appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
+                if(IaisCommonUtils.isEmpty(appSvcPersonExtDtos)){
+                    appSvcPersonExtDtos = IaisCommonUtils.genNewArrayList();
+                }
                 appSvcPersonExtDtos.add(appSvcPersonExtDto);
                 newPersonAndExtDto.setPersonDto(appSvcPersonDto);
                 newPersonAndExtDto.setPersonExtDtoList(appSvcPersonExtDtos);
@@ -1412,8 +1415,8 @@ public class NewApplicationHelper {
         return personMap;
     }
 
-    public static Map<String,AppSvcPersonAndExtDto> getLicPsnIntoSelMap(List<PersonnelListQueryDto> licPsnDtos) {
-        Map<String,AppSvcPersonAndExtDto> personMap = IaisCommonUtils.genNewHashMap();
+    public static Map<String,AppSvcPersonAndExtDto> getLicPsnIntoSelMap(List<PersonnelListQueryDto> licPsnDtos,Map<String, AppSvcPersonAndExtDto> personMap) {
+//        Map<String,AppSvcPersonAndExtDto> personMap = IaisCommonUtils.genNewHashMap();
         if (!IaisCommonUtils.isEmpty(licPsnDtos)) {
             Map<String,String> specialtyAttr = getSpecialtyAttr();
             for (PersonnelListQueryDto psnDto : licPsnDtos) {
@@ -1997,6 +2000,10 @@ public class NewApplicationHelper {
             appPsnEditDto.setSpeciality(true);
             appPsnEditDto.setProfRegNo(true);
             appPsnEditDto.setProfessionType(true);
+            if(ApplicationConsts.PERSON_LOADING_TYPE_BLUR.equals(person.getLoadingType())){
+                appPsnEditDto.setIdType(true);
+                appPsnEditDto.setIdNo(true);
+            }
         }
         return appPsnEditDto;
     }
@@ -2038,7 +2045,7 @@ public class NewApplicationHelper {
             appSvcPersonExtDto = new AppSvcPersonExtDto();
 
         }
-        if(removeCurrExt){
+        if(removeCurrExt && !IaisCommonUtils.isEmpty(appSvcPersonExtDtos)){
             appSvcPersonExtDtos.remove(appSvcPersonExtDto);
         }
         Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();

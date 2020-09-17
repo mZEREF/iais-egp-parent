@@ -301,6 +301,7 @@
                 unDisabledPartPage($CurrentPsnEle.find('.new-officer-form'));
             }else{
                 unDisabledPartPage($CurrentPsnEle.find('.medAlertPerson'));
+                $CurrentPsnEle.find('input[name="loadingType"]').val('');
             }
             $CurrentPsnEle.find('input[name="licPerson"]').val('0');
             $CurrentPsnEle.find('input[name="existingPsn"]').val('0');

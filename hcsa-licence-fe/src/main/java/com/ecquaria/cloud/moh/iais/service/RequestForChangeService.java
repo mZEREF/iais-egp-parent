@@ -105,4 +105,5 @@ public interface RequestForChangeService {
     void sendRfcLicenseeEmail(AppSubmissionDto appSubmissionDto) throws IOException, TemplateException;
     void sendRfcEmailToOfficer(AppSubmissionDto appSubmissionDto) throws IOException, TemplateException;
     void sendRfcPaymentOnlineOrGIROSuccesedEmail(AppSubmissionDto appSubmissionDto) throws IOException, TemplateException;
+    List<FeUserDto> getFeUserDtoByLicenseeId(String licenseeId);
     }

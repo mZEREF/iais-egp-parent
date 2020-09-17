@@ -61,4 +61,6 @@ public interface OrganizationLienceseeClient {
     @GetMapping(path = "/iais-internet-user/user-account-orgid", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<FeUserDto>> getAccountByOrgId(@RequestParam(value = "orgId")String orgId);
 
+    @GetMapping(path = "/iais-internet-user/user-info-list", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<FeUserDto>> getFeUserDtoByLicenseeId(@RequestParam(value = "licenseeId") String licenseeId);
 }

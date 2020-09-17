@@ -4,9 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConfig;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
-import com.ecquaria.cloud.moh.iais.api.config.GatewayStripeConfig;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
-import com.ecquaria.cloud.moh.iais.api.services.GatewayStripeAPI;
 import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -18,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
@@ -56,6 +55,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -177,6 +177,7 @@ public class NewApplicationDelegator {
     //isClickEdit
     public static final String IS_EDIT = "isEdit";
 
+    public static final String CURR_ORG_USER_ACCOUNT = "currOrgUserAccount";
     @Autowired
     private ServiceConfigService serviceConfigService;
 
@@ -251,6 +252,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, LICPERSONSELECTMAP, null);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
         ParamUtil.setSessionAttr(bpc.request,ASSESSMENTCONFIG,null);
+        ParamUtil.setSessionAttr(bpc.request,CURR_ORG_USER_ACCOUNT,null);
         HashMap<String, String> coMap = new HashMap<>(4);
         coMap.put("premises", "");
         coMap.put("document", "");
@@ -5253,8 +5255,36 @@ public class NewApplicationDelegator {
         Map<String, AppSvcPersonAndExtDto> licPersonMap = IaisCommonUtils.genNewHashMap();
         if (loginContext != null) {
             appSubmissionDto.setLicenseeId(loginContext.getLicenseeId());
+            //user account
+            List<FeUserDto> feUserDtos = requestForChangeService.getFeUserDtoByLicenseeId(loginContext.getLicenseeId());
+            ParamUtil.setSessionAttr(bpc.request,CURR_ORG_USER_ACCOUNT, (Serializable) feUserDtos);
+            if(!IaisCommonUtils.isEmpty(feUserDtos)){
+                for(FeUserDto feUserDto:feUserDtos){
+                    String idType = MasterCodeUtil.getCodeDesc(feUserDto.getIdType());
+                    String idNo = feUserDto.getIdNumber();
+                    if(StringUtil.isEmpty(idNo) || StringUtil.isEmpty(idType)){
+                        continue;
+                    }
+                    AppSvcPersonAndExtDto appSvcPersonAndExtDto = new AppSvcPersonAndExtDto();
+                    AppSvcPersonDto appSvcPersonDto = new AppSvcPersonDto();
+                    appSvcPersonDto.setCurPersonelId("");
+                    appSvcPersonDto.setSalutation(feUserDto.getSalutation());
+                    appSvcPersonDto.setName(feUserDto.getDisplayName());
+                    appSvcPersonDto.setIdType(idType);
+                    appSvcPersonDto.setIdNo(idNo);
+                    appSvcPersonDto.setDesignation(feUserDto.getDesignation());
+                    appSvcPersonDto.setMobileNo(feUserDto.getMobileNo());
+                    appSvcPersonDto.setEmailAddr(feUserDto.getEmail());
+                    appSvcPersonDto.setOfficeTelNo(feUserDto.getOfficeTelNo());
+                    appSvcPersonAndExtDto.setPersonDto(appSvcPersonDto);
+                    appSvcPersonAndExtDto.setLicPerson(true);
+                    appSvcPersonAndExtDto.setLoadingType(ApplicationConsts.PERSON_LOADING_TYPE_BLUR);
+                    licPersonMap.put(NewApplicationHelper.getPersonKey(idType,idNo),appSvcPersonAndExtDto);
+                }
+            }
+            //existing person
             List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
-            licPersonMap = NewApplicationHelper.getLicPsnIntoSelMap(licPersonList);
+            licPersonMap = NewApplicationHelper.getLicPsnIntoSelMap(licPersonList,licPersonMap);
             ParamUtil.setSessionAttr(bpc.request, LICPERSONSELECTMAP, (Serializable) licPersonMap);
             Object draft = ParamUtil.getSessionAttr(bpc.request, DRAFTCONFIG);
             //set data into psnMap
