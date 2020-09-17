@@ -4,7 +4,9 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConfig;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
+import com.ecquaria.cloud.moh.iais.api.config.GatewayStripeConfig;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
+import com.ecquaria.cloud.moh.iais.api.services.GatewayStripeAPI;
 import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -54,7 +56,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -116,9 +117,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
-import java.sql.Time;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -127,9 +126,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.regex.Pattern;
-
-import static java.util.regex.Pattern.compile;
 
 /**
  * egator
@@ -2854,7 +2850,18 @@ public class NewApplicationDelegator {
             fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
             fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDto.getAppGrpNo());
             try {
-                String html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, GatewayConfig.return_url);
+                String html="";
+                switch (payMethod){
+                    case ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT:
+                        html = GatewayStripeAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, GatewayStripeConfig.return_url);
+                        break;
+                    case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
+                        html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, GatewayConfig.return_url);break;
+                    case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
+                        html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, GatewayConfig.return_url);break;
+                    default: html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, GatewayConfig.return_url);break;
+
+                }
                 ParamUtil.setRequestAttr(bpc.request, "jumpHtml", html);
             } catch (Exception e) {
                 log.info(e.getMessage(), e);

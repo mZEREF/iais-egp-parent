@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
+import com.ecquaria.cloud.moh.iais.api.services.GatewayStripeAPI;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
@@ -1160,7 +1161,18 @@ public class RequestForChangeMenuDelegator {
             fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
             fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDtos.get(0).getAppGrpNo());
             try {
-                String html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, "/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/doPayment");
+                String url="/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/doPayment";
+                String html="";
+                switch (payMethod){
+                    case ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT:
+                        html = GatewayStripeAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, url);
+                        break;
+                    case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
+                        html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, url);break;
+                    case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
+                        html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, url);break;
+                    default: html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, url);break;
+                }
                 ParamUtil.setRequestAttr(bpc.request, "jumpHtml", html);
             } catch (Exception e) {
                 log.info(e.getMessage(), e);

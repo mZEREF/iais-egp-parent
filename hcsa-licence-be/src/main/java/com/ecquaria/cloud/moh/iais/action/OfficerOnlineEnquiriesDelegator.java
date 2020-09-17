@@ -1212,9 +1212,8 @@ public class OfficerOnlineEnquiriesDelegator {
                         Date[] obj = set.toArray(new Date[0]);
                         Arrays.sort(obj);
                         Date inspDate=obj[0];
-                        String appId=map.get(inspDate);
-                        AppPremisesCorrelationDto appPremisesCorrelationDto1 = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
-                        AppPremPreInspectionNcDto appPremPreInspectionNcDto1 = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationDto1.getId()).getEntity();
+                        String appCorrId=map.get(inspDate);
+                        AppPremPreInspectionNcDto appPremPreInspectionNcDto1 = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appCorrId).getEntity();
                         if (appPremPreInspectionNcDto1 != null) {
                             String ncId = appPremPreInspectionNcDto1.getId();
                             List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();

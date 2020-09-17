@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
+import com.ecquaria.cloud.moh.iais.api.services.GatewayStripeAPI;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -1194,7 +1195,18 @@ public class WithOutRenewalDelegator {
             fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
             fieldMap.put(GatewayConstants.SVCREF_NO, groupNo);
             try {
-                String html= GatewayAPI.create_partner_trade_by_buyer(fieldMap,bpc.request,backUrl);
+                String html="";
+                switch (payMethod){
+                    case ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT:
+                        html = GatewayStripeAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, backUrl);
+                        break;
+                    case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
+                        html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, backUrl);break;
+                    case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
+                        html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, backUrl);break;
+                    default: html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, backUrl);break;
+
+                }
                 ParamUtil.setRequestAttr(bpc.request,"jumpHtml",html);
                 bpc.request.setAttribute("paymentAmount", totalAmount);
             } catch (Exception e) {
