@@ -32,6 +32,8 @@ public class LicenseeCompanyDelegate {
 
     @Autowired
     OrgUserManageService orgUserManageService;
+    @Autowired
+    MyInfoAjax myInfoAjax;
     /**
      * StartStep: doStart
      *
@@ -55,9 +57,13 @@ public class LicenseeCompanyDelegate {
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
         String curdType = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if("refresh".equals(curdType)){
-            String organizationId = loginContext.getOrgId();
-            OrganizationDto organizationDto = orgUserManageService.getOrganizationById(organizationId);
-            orgUserManageService.refreshLicensee(organizationDto.getUenNo());
+            if("Company".equals(MasterCodeUtil.getCodeDesc(licenseeDto.getLicenseeType()))) {
+                String organizationId = loginContext.getOrgId();
+                OrganizationDto organizationDto = orgUserManageService.getOrganizationById(organizationId);
+                orgUserManageService.refreshLicensee(organizationDto.getUenNo());
+            }else{
+                myInfoAjax.getMyInfo(loginContext.getNricNum());
+            }
         }
         String type = ParamUtil.getString(bpc.request,"licenseView");
         if(type != null && !StringUtils.isEmpty(type) ){

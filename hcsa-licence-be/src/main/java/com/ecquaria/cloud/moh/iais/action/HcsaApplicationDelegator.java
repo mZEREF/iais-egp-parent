@@ -2475,24 +2475,56 @@ public class HcsaApplicationDelegator {
 
 
     private  void  sendAppealReject(String licenseeId, ApplicationDto applicationDto) throws IOException, TemplateException {
+        log.info("start send email sms and msg");
+        log.info(StringUtil.changeForLog("appNo: " + applicationDto.getApplicationNo()));
+        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+        Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
+        templateContent.put("ApplicantName", licenseeDto.getName());
+        templateContent.put("ApplicationType",  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        templateContent.put("ApplicationNo", applicationDto.getApplicationNo());
+        templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
 
-        String applicationType = applicationDto.getApplicationType();
-        String applicationNo = applicationDto.getApplicationNo();
-        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
-            Map<String,Object> map=new HashMap<>();
-            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate("3BA1C87A-5F7D-EA11-BE82-000C29F371DC").getEntity();
-            if(msgTemplateDto!=null){
-                map.put("applicationNumber",applicationNo);
-                String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), map);
-                EmailDto emailDto = new EmailDto();
-                emailDto.setContent(mesContext);
-                emailDto.setSender(mailSender);
-                emailDto.setSubject("MOH IAIS – Appeal, "+applicationNo+" , is Rejected");
-                emailDto.setClientQueryCode(applicationNo);
-                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-                emailClient.sendNotification(emailDto).getEntity();
-            }
-        }
+        List<AppPremiseMiscDto> premiseMiscDtoList = cessationClient.getAppPremiseMiscDtoListByAppId(applicationDto.getId()).getEntity();
+        AppPremiseMiscDto premiseMiscDto = premiseMiscDtoList.get(0);
+        String reason = premiseMiscDto.getReason();
+
+        templateContent.put("content", reason);
+        templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
+        String subject = "MOH IAIS – Appeal for "+ MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType())+", "+applicationDto.getApplicationNo()+" is rejected";
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_EMAIL);
+        emailParam.setTemplateContent(templateContent);
+        emailParam.setSubject(subject);
+        emailParam.setQueryCode(applicationDto.getApplicationNo());
+        emailParam.setReqRefNum(applicationDto.getApplicationNo());
+        emailParam.setRefId(applicationDto.getApplicationNo());
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+
+        notificationHelper.sendNotification(emailParam);
+        EmailParam smsParam = new EmailParam();
+        smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_SMS);
+        smsParam.setSubject(subject);
+        smsParam.setTemplateContent(templateContent);
+        smsParam.setQueryCode(applicationDto.getApplicationNo());
+        smsParam.setReqRefNum(applicationDto.getApplicationNo());
+        smsParam.setRefId(applicationDto.getApplicationNo());
+        smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        notificationHelper.sendNotification(smsParam);
+
+        EmailParam msgParam = new EmailParam();
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_MSG);
+        msgParam.setTemplateContent(templateContent);
+        msgParam.setSubject(subject);
+        msgParam.setQueryCode(applicationDto.getApplicationNo());
+        msgParam.setReqRefNum(applicationDto.getApplicationNo());
+        List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        svcCodeList.add(svcDto.getSvcCode());
+        msgParam.setSvcCodeList(svcCodeList);
+        msgParam.setRefId(applicationDto.getApplicationNo());
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        notificationHelper.sendNotification(msgParam);
+        log.info("end send email sms and msg");
     }
 
     private void initData(BaseProcessClass bpc) throws IOException {

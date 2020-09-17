@@ -1108,7 +1108,13 @@ public class ServiceMenuDelegator {
             url.append("https://").append(bpc.request.getServerName())
                     .append("/main-web/eservice/INTERNET/MohLicenseeCompanyDetail");
 //            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            String licenseeurl = url.toString() + "?licenseView=Licensee";
+            String licenseeurl = "";
+            if("LICT001".equals(licenseeDto.getLicenseeType())){
+                licenseeurl = url.toString() + "?licenseView=Licensee";
+            }else{
+                licenseeurl = url.toString() + "?licenseView=Solo";
+            }
+
             String authorisedUrl = url.toString() + "?licenseView=Authorised";
             String medAlertUrl= url.toString() + "?licenseView=MedAlert";
             List<FeUserDto> feUserDtos = requestForChangeService.getAccountByOrgId(loginContext.getOrgId());
