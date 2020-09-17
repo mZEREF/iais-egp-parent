@@ -310,8 +310,7 @@ public class NotificationHelper {
 				} else {
 					mesContext = emailTemplate;
 				}
-				//replace num
-				mesContext = MessageTemplateUtil.replaceNum(mesContext);
+
 				if (StringUtil.isEmpty(subject)) {
 					subject = msgTemplateDto.getTemplateName();
 				}
@@ -418,6 +417,9 @@ public class NotificationHelper {
 									mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
 								}
 							}
+
+							//replace num
+							mesContext = MessageTemplateUtil.replaceNum(mesContext);
 							emailDto.setContent(mesContext);
 							emailDto.setReceipts(officerEmails);
 							if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {

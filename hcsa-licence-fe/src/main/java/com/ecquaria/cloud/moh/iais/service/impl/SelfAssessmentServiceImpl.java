@@ -264,16 +264,16 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
                 String svcId = applicationDto.getServiceId();
                 String appType = MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
-                Date appDate = applicationDto.getEffectiveDate();
+                Date appDate = applicationDto.getCreateAt();
 
                 tlAppType = appType;
                 tlDate = appDate;
 
                 templateContent.put("applicationNo", appNo);
                 templateContent.put("applicationType", appType);
-                templateContent.put("applicationDate", Formatter.formatDateTime(appDate));
+                templateContent.put("applicationDate", Formatter.formatDate(appDate));
                 templateContent.put("officer_name", "");
-                templateContent.put("inspectionDate", Formatter.formatDateTime(appDate));
+                //templateContent.put("inspectionDate", Formatter.formatDate(appDate));
                 HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(svcId);
 
                 if (serviceDto != null) {
@@ -304,7 +304,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         String emailRandomStr_003 = IaisEGPHelper.generateRandomString(26);
         emailContent_003.put("applicationNo", tlGroupNumber);
         emailContent_003.put("applicationType", tlAppType);
-        emailContent_003.put("applicationDate", Formatter.formatDateTime(tlDate));
+        emailContent_003.put("applicationDate", Formatter.formatDate(tlDate));
         emailContent_003.put("serviceNames", svcNameList);
         emailContent_003.put("systemLink", loginUrl);
         emailContent_003.put("officer_name", "");
