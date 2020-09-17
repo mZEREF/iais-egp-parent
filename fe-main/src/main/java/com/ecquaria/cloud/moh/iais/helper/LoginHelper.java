@@ -15,6 +15,7 @@ import sop.rbac.user.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -36,6 +37,7 @@ public final class LoginHelper {
         auditTrailDto.setLoginType(loginType);
         auditTrailDto.setModule("login");
         auditTrailDto.setFunctionName("login");
+        auditTrailDto.setLoginTime(new Date());
         IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
         trailDtoList.add(auditTrailDto);
         SubmissionClient client = SpringContextHelper.getContext().getBean(SubmissionClient.class);

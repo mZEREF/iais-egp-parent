@@ -31,6 +31,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -119,6 +120,7 @@ public class BackendLoginDelegator {
         auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTRANET);
         auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN);
         IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
+        auditTrailDto.setLoginTime(new Date());
         trailDtoList.add(auditTrailDto);
         try {
             String eventRefNo = String.valueOf(System.currentTimeMillis());
