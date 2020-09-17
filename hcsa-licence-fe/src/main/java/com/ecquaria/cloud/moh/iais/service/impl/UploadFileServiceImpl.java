@@ -268,6 +268,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                    }
                    String string = eicGateway(s + AppServicesConsts.ZIP_NAME, AppServicesConsts.BACKUPS + File.separator + s + AppServicesConsts.ZIP_NAME, groupId);
            /*        String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,AppServicesConsts.BACKUPS + File.separator+s+AppServicesConsts.ZIP_NAME,groupId);*/
+                   log.info(StringUtil.changeForLog("----"+string));
                    if(!string.equals("SUCCESS")){
                        MiscUtil.deleteFile(curFile);
                        flag=false;
@@ -291,6 +292,11 @@ public class UploadFileServiceImpl implements UploadFileService {
                 "saveFileName", currentApp + "-" + currentDomain,
                 ProcessFileTrackDto.class.getName(), JsonUtil.parseToJson(processFileTrackDto));
         FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getAppEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
+        if(fetchResult!=null){
+           log.info(StringUtil.changeForLog("------"+JsonUtil.parseToJson(fetchResult)));
+        }else {
+            log.info(StringUtil.changeForLog("------ null----"));
+        }
         if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
             EicRequestTrackingDto entity = fetchResult.getEntity();
             if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){

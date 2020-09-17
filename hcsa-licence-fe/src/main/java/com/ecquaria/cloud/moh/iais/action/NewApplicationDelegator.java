@@ -663,7 +663,8 @@ public class NewApplicationDelegator {
                 }
             }
         }
-
+        String flag = bpc.request.getParameter("flag");
+        bpc.request.setAttribute("transfer",flag);
         log.info(StringUtil.changeForLog("the do preparePayment end ...."));
     }
 
