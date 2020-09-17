@@ -1,23 +1,20 @@
-package com.ecquaria.cloud.moh.myinfo.action;
+package com.ecquaria.cloud.moh.iais.action;
+
+import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
+import com.ecquaria.sz.commons.util.StringUtil;
+import com.lowagie.text.pdf.codec.Base64;
+import ecq.commons.config.Config;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONObject;
+import org.springframework.stereotype.Controller;
 
 import java.security.SecureRandom;
 import java.security.Signature;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.myinfo.client.model.MyinfoUtil;
-import com.ecquaria.sz.commons.util.StringUtil;
-import com.lowagie.text.pdf.codec.Base64;
-import lombok.extern.slf4j.Slf4j;
-
-
-import ecq.commons.config.Config;
-import net.sf.json.JSONObject;
-import org.springframework.stereotype.Controller;
 
 
 @Controller

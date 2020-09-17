@@ -11,8 +11,19 @@
  */
 
 
-package com.ecquaria.cloud.moh.myinfo.client.model;
+package com.ecquaria.cloud.moh.iais.model;
 
+
+import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.auth.MyInfoClient;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import ecq.commons.config.Config;
+import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.util.encoders.Base64;
+import org.jose4j.jwa.AlgorithmConstraints;
+import org.jose4j.jwe.JsonWebEncryption;
+import org.jose4j.jws.JsonWebSignature;
+import org.springframework.context.ApplicationContext;
 
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -20,19 +31,6 @@ import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.List;
-
-import com.ecquaria.cloud.helper.SpringContextHelper;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.myinfo.client.auth.MyInfoClient;
-import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.util.encoders.Base64;
-
-
-import ecq.commons.config.Config;
-import org.jose4j.jwa.AlgorithmConstraints;
-import org.jose4j.jwe.JsonWebEncryption;
-import org.jose4j.jws.JsonWebSignature;
-import org.springframework.context.ApplicationContext;
 
 
 /**

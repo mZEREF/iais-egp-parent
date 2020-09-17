@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.myinfo.client.auth;
+package com.ecquaria.cloud.moh.iais.auth;
 
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -13,6 +13,6 @@ public interface MyInfoClient {
 
     @GetMapping(value = "/testInfo/myinfo/person-basic/{uinfin}/",consumes = "application/jose",produces="application/jose")
     ResponseEntity<String> searchDataByIdNumber(@RequestHeader("Authorization") String authorization, @PathVariable(name = "uinfin") String idNumber,
-                                                @RequestParam(name = "attributes")String[] attrs, @RequestParam(name = "clientId")String clientId,
-                                                @RequestParam(name = "singpassEserviceId")String singPassEServiceId, @RequestParam(name = "txnNo", required = false)String txnNo);
+                                                @RequestParam(name = "attributes") String[] attrs, @RequestParam(name = "clientId") String clientId,
+                                                @RequestParam(name = "singpassEserviceId") String singPassEServiceId, @RequestParam(name = "txnNo", required = false) String txnNo);
 }
