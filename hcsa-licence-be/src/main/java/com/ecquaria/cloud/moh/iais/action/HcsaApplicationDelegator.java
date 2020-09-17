@@ -1288,6 +1288,8 @@ public class HcsaApplicationDelegator {
         String externalRemarks = ParamUtil.getString(bpc.request,"comments");
         String applicationType = applicationDto.getApplicationType();
         String serviceId = applicationDto.getServiceId();
+        String appId = applicationDto.getId();
+        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
         try{
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
                 AppPremiseMiscDto premiseMiscDto = (AppPremiseMiscDto)ParamUtil.getSessionAttr(bpc.request, "premiseMiscDto");
@@ -1301,8 +1303,13 @@ public class HcsaApplicationDelegator {
             }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
                 String licenceId = applicationDto.getOriginLicenceId();
                 HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-                maskParams.put("licenceId",licenceId);
-                sendCessationMessage(licenceId,applicationNo,licenseeId,maskParams,serviceId);
+                String appGrpPremId = "";
+                if(appPremisesCorrelationDto != null){
+                    appGrpPremId = appPremisesCorrelationDto.getAppGrpPremId();
+                    maskParams.put("premiseId",appGrpPremId);
+                }
+                maskParams.put("appId",appId);
+                sendCessationMessage(appId,appGrpPremId,applicationNo,licenseeId,maskParams,serviceId);
             }
             applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId, licenseeDto, loginContext, externalRemarks);
         }catch (Exception e){
@@ -1415,14 +1422,15 @@ public class HcsaApplicationDelegator {
         sendMessage(subject,licenseeId,mesContext,maskParams,serviceId,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
     }
 
-    private void sendCessationMessage(String licenceId,String appNo, String licenseeId,HashMap<String, String> maskParams,String serviceId){
-        if(StringUtil.isEmpty(licenceId)
+    private void sendCessationMessage(String appId,String appGrpPremId,String appNo, String licenseeId,HashMap<String, String> maskParams,String serviceId){
+        if(StringUtil.isEmpty(appId)
                 || StringUtil.isEmpty(licenseeId)
                 || StringUtil.isEmpty(serviceId)
-                || StringUtil.isEmpty(appNo)){
+                || StringUtil.isEmpty(appNo)
+                || StringUtil.isEmpty(appGrpPremId)){
             return;
         }
-        String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ InboxConst.URL_LICENCE_WEB_MODULE+"MohCessationApplication&licenceId=" + licenceId;
+        String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ InboxConst.URL_LICENCE_WEB_MODULE+"MohCessationApplication?appId=" + appId + "&premiseId=" + appGrpPremId;
         String subject = MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION + appNo;
         String mesContext = "Please click the link <a href='" + url + "'>here</a> for submission.";
         sendMessage(subject,licenseeId,mesContext,maskParams,serviceId,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
