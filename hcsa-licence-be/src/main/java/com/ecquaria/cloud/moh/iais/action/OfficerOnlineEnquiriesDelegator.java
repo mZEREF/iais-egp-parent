@@ -1179,7 +1179,13 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
             }
         }else {
-            AppPremisesRecommendationDto appPreRecommentdationDtoDateRoot = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+            AppPremisesRecommendationDto appPreRecommentdationDtoDateRoot=null;
+            try{
+                appPreRecommentdationDtoDateRoot =
+                        fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+            }catch (Exception e){
+                log.info(e.getMessage());
+            }
             AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(rfiApplicationQueryDto.getAppCorrId()).getEntity();
             if (appPremPreInspectionNcDto != null) {
                 String ncId = appPremPreInspectionNcDto.getId();
