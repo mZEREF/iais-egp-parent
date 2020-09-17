@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewHciNameDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.HfsmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
@@ -134,10 +135,6 @@ public class LicenceViewServiceDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) bpc.request.getSession().getAttribute("applicationViewDto");
         if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
             return;
-        }
-        ApplicationGroupDto groupDto = applicationViewDto.getApplicationGroupDto();
-        if(groupDto!=null){
-            authorisedPerson(bpc.request,groupDto.getLicenseeId());
         }
         AppEditSelectDto appEditSelectDto;
         appEditSelectDto=(AppEditSelectDto) bpc.request.getSession().getAttribute("appEditSelectDto");
@@ -371,9 +368,14 @@ public class LicenceViewServiceDelegator {
             }
             premise(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto());
         }
+        ApplicationGroupDto groupDto = applicationViewDto.getApplicationGroupDto();
+        if(groupDto!=null){
+            authorisedPerson(bpc.request,groupDto.getLicenseeId(),appSubmissionDto);
+        }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         prepareViewServiceForm(bpc);
         disciplinaryRecord(appSubmissionDto);
+
     }
 
     private void disciplinaryRecord(AppSubmissionDto appSubmissionDto){
@@ -409,6 +411,18 @@ public class LicenceViewServiceDelegator {
         list.addAll(redNo);
         ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
         professionalParameterDto.setRegNo(list);
+        List<OrgUserDto> authorisedPerson = appSubmissionDto.getAuthorisedPerson();
+        List<LicenseeKeyApptPersonDto> boardMember = appSubmissionDto.getBoardMember();
+        if(authorisedPerson!=null){
+           for(OrgUserDto orgUserDto : authorisedPerson){
+               list.add(orgUserDto.getIdNumber());
+           }
+        }
+        if(boardMember!=null){
+            for(LicenseeKeyApptPersonDto apptPersonDto : boardMember){
+                list.add(apptPersonDto.getIdNo());
+            }
+        }
         professionalParameterDto.setClientId("22222");
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String format = simpleDateFormat.format(new Date());
@@ -420,12 +434,12 @@ public class LicenceViewServiceDelegator {
                 signature2.date(), signature2.authorization()).getEntity();
         List<ProfessionalResponseDto> entity1 = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
+        List<HfsmsDto> hfsmsDtos = applicationClient.getHfsmsDtoByIdNo(list).getEntity();
+        HashMap<String,List<HfsmsDto>> hashMap=IaisCommonUtils.genNewHashMap();
 
-        for(ProfessionalResponseDto professionalResponseDto :entity1){
 
-        }
     }
-    private void authorisedPerson( HttpServletRequest request,String licenseeId){
+    private void authorisedPerson( HttpServletRequest request,String licenseeId,AppSubmissionDto appSubmissionDto){
         if(licenseeId==null){
             return;
         }
@@ -434,8 +448,8 @@ public class LicenceViewServiceDelegator {
             String organizationId = oldLicenceDto.getOrganizationId();
             List<OrgUserDto> orgUserDtos = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(organizationId).getEntity();
             List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtos = organizationClient.getLicenseeKeyApptPersonByLiceseeId(licenseeId).getEntity();
-            request.getSession().setAttribute("AuthorisedPerson",orgUserDtos);
-            request.getSession().setAttribute("BoardMember",licenseeKeyApptPersonDtos);
+            appSubmissionDto.setAuthorisedPerson(orgUserDtos);
+            appSubmissionDto.setBoardMember(licenseeKeyApptPersonDtos);
         }
     }
     private void oldAuthorisedPerson( HttpServletRequest request,String licenseeId){

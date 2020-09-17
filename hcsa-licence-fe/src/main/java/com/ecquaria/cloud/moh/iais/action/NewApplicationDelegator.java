@@ -2206,8 +2206,9 @@ public class NewApplicationDelegator {
         }else {
             flag1=true;
         }
-
-
+        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = n.get(0).getAppSvcPersonnelDtoList();
+        List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = o.get(0).getAppSvcPersonnelDtoList();
+        boolean eqServicePseronnel = eqServicePseronnel(appSvcPersonnelDtoList, oldAppSvcPersonnelDtoList);
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = n.get(0).getAppSvcPrincipalOfficersDtoList();
         List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList = o.get(0).getAppSvcPrincipalOfficersDtoList();
         boolean eqSvcPrincipalOfficers = eqSvcPrincipalOfficers(appSvcPrincipalOfficersDtoList, oldAppSvcPrincipalOfficersDtoList);
@@ -2220,7 +2221,7 @@ public class NewApplicationDelegator {
         List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = o.get(0).getAppSvcMedAlertPersonList();
         boolean eqMeadrter = eqMeadrter(appSvcMedAlertPersonList, oldAppSvcMedAlertPersonList);
 
-        if (!flag || !flag1 || eqSvcPrincipalOfficers || eqCgo || eqMeadrter) {
+        if (!flag || !flag1 || eqSvcPrincipalOfficers || eqCgo || eqMeadrter || eqServicePseronnel) {
             return true;
 
         }
@@ -2319,10 +2320,22 @@ public class NewApplicationDelegator {
 
         return appSubmissionDtoList;
     }
+    private boolean eqServicePseronnel(List<AppSvcPersonnelDto> appSvcPersonnelDtoList , List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList){
+        if(appSvcPersonnelDtoList==null){
+            appSvcPersonnelDtoList=new ArrayList<>();
+        }
+        if(oldAppSvcPersonnelDtoList==null){
+            oldAppSvcPersonnelDtoList=new ArrayList<>();
+        }
+        if(!appSvcPersonnelDtoList.equals(oldAppSvcPersonnelDtoList)){
+            return true;
+        }
+        return false;
+    }
     private List<AppGrpPrimaryDocDto> copyGrpPrimaryDoc(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos){
 
         if(appGrpPrimaryDocDtos==null){
-            return new ArrayList<AppGrpPrimaryDocDto>();
+            return new ArrayList<>();
         }
         List<AppGrpPrimaryDocDto> list=new ArrayList<>(appGrpPrimaryDocDtos.size());
         for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){

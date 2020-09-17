@@ -743,7 +743,7 @@
                                           </div>
                                         </div>
                                       </div>
-                                    <c:forEach items="${BoardMember}" var="Board" varStatus="status">
+                                    <c:forEach items="${appSubmissionDto.boardMember}" var="Board" varStatus="status">
                                       <div class="row" style="margin-top: 1%;margin-bottom: 1%">
                                       <div class="col-md-6"><label>Board Member ${status.index+1}</label></div>
                                       </div>
@@ -783,7 +783,7 @@
                                       <div class="row">
                                         <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
                                           <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
-                                          <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px">
+                                          <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                             <tr>
                                               <td>Indentification No.</td>
                                               <td>Case No.</td>
@@ -813,7 +813,7 @@
 
                                     </c:forEach>
 
-                                    <c:forEach items="${AuthorisedPerson}" var="Authorised" varStatus="status">
+                                    <c:forEach items="${appSubmissionDto.authorisedPerson}" var="Authorised" varStatus="status">
                                       <div class="row" style="margin-top: 1%;margin-bottom: 1%">
                                         <div class="col-md-6">
                                           <label>Authorised Person ${status.index+1}</label>
@@ -847,7 +847,7 @@
                                       <div class="row">
                                         <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
                                           <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
-                                          <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px">
+                                          <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                             <tr>
                                               <td>Indentification No.</td>
                                               <td>Case No.</td>
