@@ -855,8 +855,8 @@ public class WithOutRenewalDelegator {
         for(AppSubmissionDto appSubmissionDto : noAutoAppSubmissionDtos){
             appSubmissionDto.setAppGrpNo(appGrpNo);
         }
-        appFeeDetailsDto.setApplicationNo(appGrpNo + "-01");
-        appSubmissionService.saveAppFeeDetails(appFeeDetailsDto);
+//        appFeeDetailsDto.setApplicationNo(appGrpNo + "-01");
+//        appSubmissionService.saveAppFeeDetails(appFeeDetailsDto);
         appSubmissionDtos1.addAll(noAutoAppSubmissionDtos);
 
         if (!autoAppSubmissionDtos.isEmpty()) {
@@ -923,24 +923,18 @@ public class WithOutRenewalDelegator {
         if(IaisCommonUtils.isEmpty(detailFeeDtoList) || IaisCommonUtils.isEmpty(appSubmissionDtoList)){
             return;
         }
+        int index = 0;
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
-            for(FeeExtDto feeExtDto : detailFeeDtoList){
-                String svcName = feeExtDto.getSvcNames().get(0);
-                if(StringUtil.isEmpty(svcName)){
-                    continue;
-                }else{
-                    if(svcName.equals(appSubmissionDto.getServiceName())){
-                        Double lateFeeAmount = feeExtDto.getLateFeeAmoumt();
-                        Double amount = feeExtDto.getAmount();
-                        appSubmissionDto.setLateFee(lateFeeAmount);
-                        appSubmissionDto.setLateFeeStr(Formatter.formatterMoney(lateFeeAmount));
-                        appSubmissionDto.setAmount(amount);
-                        appSubmissionDto.setAmountStr(Formatter.formatterMoney(amount));
-                        appFeeDetailsDto.setBaseFee(lateFeeAmount);
-                        appFeeDetailsDto.setLaterFee(amount);
-                    }
-                }
-            }
+            FeeExtDto feeExtDto = detailFeeDtoList.get(index);
+            Double lateFeeAmount = feeExtDto.getLateFeeAmoumt();
+            Double amount = feeExtDto.getAmount();
+            appSubmissionDto.setLateFee(lateFeeAmount);
+            appSubmissionDto.setLateFeeStr(Formatter.formatterMoney(lateFeeAmount));
+            appSubmissionDto.setAmount(amount);
+            appSubmissionDto.setAmountStr(Formatter.formatterMoney(amount));
+            appFeeDetailsDto.setBaseFee(lateFeeAmount);
+            appFeeDetailsDto.setLaterFee(amount);
+            index ++;
         }
     }
 
