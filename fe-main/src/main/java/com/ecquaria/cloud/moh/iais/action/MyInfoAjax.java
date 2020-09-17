@@ -1,13 +1,17 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
+import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.sz.commons.util.StringUtil;
 import com.lowagie.text.pdf.codec.Base64;
 import ecq.commons.config.Config;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
 import java.security.SecureRandom;
@@ -20,8 +24,8 @@ import java.util.Random;
 @Controller
 @Slf4j
 public class MyInfoAjax {
-
-
+	@Autowired
+	private EicGatewayFeMainClient eicGatewayFeMainClient;
     public MyInfoDto getMyInfo(String NircNum){
 
 		String flag = Config.get("moh.halp.myinfo.enable");
@@ -51,7 +55,7 @@ public class MyInfoAjax {
 		return null;
 	}
 
-	private static MyInfoDto updateDtoFromResponse(MyInfoDto dto, String response) {
+	private  MyInfoDto updateDtoFromResponse(MyInfoDto dto, String response) {
 		if (StringUtil.isEmpty(response))
 			return dto;
 		
@@ -103,7 +107,7 @@ public class MyInfoAjax {
 		return dto;
 	}
 
-	private static String getMyInfoResponse(String idNum) throws Exception {
+	private  String getMyInfoResponse(String idNum) throws Exception {
     	String keyStore                     = Config.get("myinfo.jws.priclientkey");
 		String	appId 						= Config.get("myinfo.application.id");
 		String 	clientId 					= Config.get("myinfo.client.id");
@@ -136,11 +140,24 @@ public class MyInfoAjax {
         }
 
         //call get data
-		String response = MyinfoUtil.getPersonBasic(authorization, idNum, list,clientId, singPassEServiceId, txnNo);
+		String response = getPersonBasic(authorization, idNum, list,clientId, singPassEServiceId, txnNo);
 		return response;
 	}
-
-	private static List<String> getAttrList() {
+	/**
+	 * Retrieves Person data from MyInfo
+	 *
+	 * Retrieves Person data from MyInfo based on UIN/FIN. This API does not require authorisation token, and retrieves only a user&#39;s basic profile (i.e. excluding CPF and IRAS data)  The available returned attributes from this API includes  - name: Name - hanyupinyinname: HanYuPinYin - aliasname: Alias - hanyupinyinaliasname: HanYuPinYinAlias - marriedname: MarriedName - sex: Sex - race: Race - dialect: Dialect - nationality: Nationality - dob: DOB - birthcountry: BirthCountry - vehno: VehNo - regadd: RegAdd - mailadd: MailAdd - billadd: BillAdd - housingtype: HousingType - hdbtype: HDBType - email: Email - homeno: HomeNo - mobileno: MobileNo - marital: Marital - marriagedate: MarriageDate - divorcedate: DivorceDate - householdincome: HouseholdIncome - relationships: Relationships - edulevel: EduLevel - gradyear: GradYear - schoolname: SchoolName - occupation: Occupation - employment: Employment  Note - null values indicate that the field is unavailable
+	 * @throws Exception
+	 */
+	public  String getPersonBasic( String authorization,String idNumber,List<String> attributes,String clientId,String singPassEServiceId,String txnNo) throws Exception {
+		ApplicationContext context = SpringContextHelper.getContext();
+		if (context == null){
+			return null;
+		}
+		String  encipheredData = eicGatewayFeMainClient.getMyInfoEic(authorization,idNumber,attributes.toArray(new String[attributes.size()]),clientId,singPassEServiceId,txnNo).getBody();
+		return MyinfoUtil.decodeEncipheredData(encipheredData);
+	}
+	private List<String> getAttrList() {
 		String[] ss = {"name","email", "mobileno","regadd"};
 		List<String> list = Arrays.asList(ss);
 		return list;

@@ -58,7 +58,7 @@ public class MyinfoUtil {
         return decodeEncipheredData(encipheredData);
     }
 
-    private static String decodeEncipheredData(String encipheredData) throws Exception {
+    public static String decodeEncipheredData(String encipheredData) throws Exception {
     	if(StringUtil.isEmpty(encipheredData)){
     		return encipheredData;
 		}
