@@ -102,17 +102,20 @@ public class LicenseeCompanyDelegate {
 
     public void authorised(BaseProcessClass bpc) {
         log.debug("****preparePage Process ****");
+        String id = ParamUtil.getMaskedString(bpc.request,"authorisedId");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<FeUserDto> feUserDtos = orgUserManageService.getAccountByOrgId(loginContext.getOrgId());
         if(feUserDtos!= null && feUserDtos.size() > 0){
-            FeUserDto feUserDto = feUserDtos.get(0);
-            String nric = "XXXX"+((FeUserDto) feUserDto).getIdentityNo().substring(3) + "(NRIC)";
-            feUserDto.setDesignation(MasterCodeUtil.getCodeDesc(feUserDto.getDesignation()));
-            ParamUtil.setRequestAttr(bpc.request,"nric",nric);
-            ParamUtil.setRequestAttr(bpc.request,"feuser",feUserDto);
+            for (FeUserDto item:feUserDtos
+                 ) {
+                if(item.getId().equals(id)){
+                    String nric = "XXXX"+((FeUserDto) item).getIdentityNo().substring(3) + "(NRIC)";
+                    item.setDesignation(MasterCodeUtil.getCodeDesc(item.getDesignation()));
+                    ParamUtil.setRequestAttr(bpc.request,"nric",nric);
+                    ParamUtil.setRequestAttr(bpc.request,"feuser",item);
+                }
+            }
         }
-
-
     }
 
     public void medAlert(BaseProcessClass bpc) {

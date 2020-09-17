@@ -1235,11 +1235,14 @@ public class BackendInboxDelegator {
             //HcsaConsts.ROUTING_STAGE_INS
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =  appPremisesRoutingHistoryService.
                     getAppPremisesRoutingHistoryForCurrentStage(appNo,"14848A70-820B-EA11-BE7D-000C29F371DC",RoleConsts.USER_ROLE_INSPECTIOR,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT);
+
             if(appPremisesRoutingHistoryDto == null){
+                log.info(StringUtil.changeForLog("appPremisesRoutingHistoryDto is null"));
                 appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.
                         getAppPremisesRoutingHistoryForCurrentStage(appNo,HcsaConsts.ROUTING_STAGE_ASO);
             }
             if(appPremisesRoutingHistoryDto != null){
+                log.info(StringUtil.changeForLog("appPremisesRoutingHistoryDto.getRoleId() ：" + appPremisesRoutingHistoryDto.getRoleId()));
                 rollBack(bpc,applicationViewDto,appPremisesRoutingHistoryDto.getStageId(),ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
                         appPremisesRoutingHistoryDto.getRoleId(),appPremisesRoutingHistoryDto.getWrkGrpId(),appPremisesRoutingHistoryDto.getActionby(),taskDto);
             }else{

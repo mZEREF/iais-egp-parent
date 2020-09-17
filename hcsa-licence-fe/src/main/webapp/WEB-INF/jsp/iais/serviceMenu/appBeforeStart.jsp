@@ -58,7 +58,7 @@
                 <p>Licensee: <strong>${licensee.name}</strong> </p>
               </div>
               <div class="license-edit">
-                <p><a class="license-view" href="javascript:void(0);" onclick="popUplicensee('${licenseeurl}')">View</a></p>
+                <p><a class="license-view" href="javascript:void(0);" onclick="popUplicensee('${licenseeurl}',0)">View</a></p>
               </div>
             </div>
             <c:if test="${!empty feUserDtos}">
@@ -68,7 +68,7 @@
                     <p>Authorised User ${(status.index + 1)}: <strong>${item.displayName}</strong> </p>
                   </div>
                   <div class="license-edit">
-                    <p><a class="authorise-view" href="javascript:void(0);" onclick="popUplicensee('${authorisedUrl}')">View</a></p>
+                    <p><a class="authorise-view" href="javascript:void(0);" onclick="popUplicensee('${authorisedUrl}','<iais:mask name="authorisedId" value="{item.id}"/>')">View</a></p>
                   </div>
                 </div>
               </c:forEach>
@@ -123,7 +123,10 @@
 
   }
 
-  function popUplicensee(url){
+  function popUplicensee(url,id){
+    if(id != 0){
+      url = url + "&authorisedId=" +id;
+    }
     window.open(url);
   }
 

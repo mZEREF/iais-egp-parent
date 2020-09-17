@@ -1113,13 +1113,12 @@ public class ServiceMenuDelegator {
             String medAlertUrl= url.toString() + "?licenseView=MedAlert";
             List<FeUserDto> feUserDtos = requestForChangeService.getAccountByOrgId(loginContext.getOrgId());
 
-            ParamUtil.setRequestAttr(bpc.request,"licenseeurl",licenseeurl);
-            ParamUtil.setRequestAttr(bpc.request,"authorisedUrl",authorisedUrl);
-            ParamUtil.setRequestAttr(bpc.request,"medAlertUrl",medAlertUrl);
-            ParamUtil.setRequestAttr(bpc.request,"licensee",licenseeDto);
-            ParamUtil.setRequestAttr(bpc.request,"keyperson",keyApptPersonDtos);
-            ParamUtil.setRequestAttr(bpc.request,"feUserDtos",feUserDtos);
-
+            ParamUtil.setSessionAttr(bpc.request,"licenseeurl",licenseeurl);
+            ParamUtil.setSessionAttr(bpc.request,"authorisedUrl",authorisedUrl);
+            ParamUtil.setSessionAttr(bpc.request,"medAlertUrl",medAlertUrl);
+            ParamUtil.setSessionAttr(bpc.request,"licensee",licenseeDto);
+            ParamUtil.setSessionAttr(bpc.request,"keyperson",(Serializable) keyApptPersonDtos);
+            ParamUtil.setSessionAttr(bpc.request,"feUserDtos",(Serializable) feUserDtos);
             ParamUtil.setSessionAttr(bpc.request, "baseSvcIdList", (Serializable) baseSvcIds);
             ParamUtil.setSessionAttr(bpc.request, "speSvcIdList", (Serializable) speSvcIds);
             ParamUtil.setSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST, (Serializable) appSvcRelatedInfoDtos);
