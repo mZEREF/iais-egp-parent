@@ -30,6 +30,8 @@ public interface CessationFeService {
 
     Map<String, String> saveCessations(List<AppCessationDto> appCessationDtos,LoginContext loginContext);
 
+    void saveRfiCessations(List<AppCessationDto> appCessationDtos,LoginContext loginContext,String rfiAppId);
+
     List<String> listHciName();
 
     List<AppSpecifiedLicDto> getSpecLicInfo(List<String> licIds);
@@ -40,7 +42,7 @@ public interface CessationFeService {
 
     String getStageId(String serviceId,String appType);
 
-    List<AppCessLicDto> initRfiData(List<String> licIds);
+    List<AppCessLicDto> initRfiData(String appId,String premiseId);
 
 
 }

@@ -4,16 +4,14 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
@@ -50,6 +48,9 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -101,6 +102,8 @@ public class CessationFeServiceImpl implements CessationFeService {
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
+    @Autowired
+    private Environment env;
 
 
     private final static String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
@@ -197,7 +200,6 @@ public class CessationFeServiceImpl implements CessationFeService {
         Map<String, String> appIdPremisesMap = IaisCommonUtils.genNewHashMap();
         licPremiseIdMap.forEach((licId, premiseIds) -> {
             List<String> licIds = IaisCommonUtils.genNewArrayList();
-            licIds.clear();
             licIds.add(licId);
             AppSubmissionDto appSubmissionDto = licenceClient.getAppSubmissionDtos(licIds).getEntity().get(0);
             Map<String, String> transform = transform(appSubmissionDto, licenseeId, premiseIds);
@@ -215,6 +217,19 @@ public class CessationFeServiceImpl implements CessationFeService {
         });
         cessationClient.saveCessation(appCessMiscDtos).getEntity();
         return appIdPremisesMap;
+    }
+
+    @Override
+    public void saveRfiCessations(List<AppCessationDto> appCessationDtos, LoginContext loginContext, String rfiAppId) {
+        String licenseeId = loginContext.getLicenseeId();
+        List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
+        ApplicationDto applicationDto = applicationClient.getApplicationById(rfiAppId).getEntity();
+        String originLicenceId = applicationDto.getOriginLicenceId();
+        List<String> licIds = IaisCommonUtils.genNewArrayList();
+        licIds.add(originLicenceId);
+        AppSubmissionDto appSubmissionDto = licenceClient.getAppSubmissionDtos(licIds).getEntity().get(0);
+        transformRfi(appSubmissionDto, licenseeId, applicationDto);
+        cessationClient.saveCessation(appCessMiscDtos).getEntity();
     }
 
 
@@ -473,44 +488,41 @@ public class CessationFeServiceImpl implements CessationFeService {
     }
 
     @Override
-    public List<AppCessLicDto> initRfiData(List<String> licIds) {
+    public List<AppCessLicDto> initRfiData(String appId,String premiseId) {
+        ApplicationDto entity = applicationClient.getApplicationById(appId).getEntity();
+        String originLicenceId = entity.getOriginLicenceId();
+        List<String> licIds = IaisCommonUtils.genNewArrayList();
+        licIds.add(originLicenceId);
         List<AppCessLicDto> appCessDtosByLicIds = getAppCessDtosByLicIds(licIds);
         List<AppCessHciDto> appCessHciDtos = appCessDtosByLicIds.get(0).getAppCessHciDtos();
         appCessHciDtos.clear();
-        String licId = licIds.get(0);
-        List<ApplicationDto> applicationDtos = applicationClient.getApplicationsByLicId(licId).getEntity();
-        if (!IaisCommonUtils.isEmpty(applicationDtos)) {
-            for (ApplicationDto applicationDto : applicationDtos) {
-                AppCessMiscDto appCessMiscDto = cessationClient.getAppMiscDtoByAppId(applicationDto.getId()).getEntity();
-                AppCessHciDto appCessHciDto = new AppCessHciDto();
-                Date effectiveDate = appCessMiscDto.getEffectiveDate();
-                String reason = appCessMiscDto.getReason();
-                String otherReason = appCessMiscDto.getOtherReason();
-                String patTransType = appCessMiscDto.getPatTransType();
-                String patTransTo = appCessMiscDto.getPatTransTo();
-                appCessHciDto.setPatientSelect(patTransType);
-                appCessHciDto.setReason(reason);
-                appCessHciDto.setOtherReason(otherReason);
-                appCessHciDto.setEffectiveDate(effectiveDate);
-                if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
-                    appCessHciDto.setPatHciName(patTransTo);
-                    appCessHciDto.setPatNeedTrans(Boolean.TRUE);
-                } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
-                    appCessHciDto.setPatRegNo(patTransTo);
-                    appCessHciDto.setPatNeedTrans(Boolean.TRUE);
-                } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
-                    appCessHciDto.setPatOthers(patTransTo);
-                    appCessHciDto.setPatNeedTrans(Boolean.TRUE);
-                } else {
-                    String remarks = appCessMiscDto.getPatNoReason();
-                    appCessHciDto.setPatNoRemarks(remarks);
-                    appCessHciDto.setPatNeedTrans(Boolean.FALSE);
-                }
-                appCessHciDtos.add(appCessHciDto);
-            }
-        }else {
-            return null;
+        AppCessMiscDto appCessMiscDto = cessationClient.getAppMiscDtoByAppId(appId).getEntity();
+        AppCessHciDto appCessHciDto = new AppCessHciDto();
+        Date effectiveDate = appCessMiscDto.getEffectiveDate();
+        String reason = appCessMiscDto.getReason();
+        String otherReason = appCessMiscDto.getOtherReason();
+        String patTransType = appCessMiscDto.getPatTransType();
+        String patTransTo = appCessMiscDto.getPatTransTo();
+        appCessHciDto.setPatientSelect(patTransType);
+        appCessHciDto.setReason(reason);
+        appCessHciDto.setOtherReason(otherReason);
+        appCessHciDto.setEffectiveDate(effectiveDate);
+        appCessHciDto.setPremiseId(premiseId);
+        if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+            appCessHciDto.setPatHciName(patTransTo);
+            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+        } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+            appCessHciDto.setPatRegNo(patTransTo);
+            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+        } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+            appCessHciDto.setPatOthers(patTransTo);
+            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+        } else {
+            String remarks = appCessMiscDto.getPatNoReason();
+            appCessHciDto.setPatNoRemarks(remarks);
+            appCessHciDto.setPatNeedTrans(Boolean.FALSE);
         }
+        appCessHciDtos.add(appCessHciDto);
         return appCessDtosByLicIds;
     }
 
@@ -582,6 +594,62 @@ public class CessationFeServiceImpl implements CessationFeService {
         }
         return map;
     }
+
+    private void transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) {
+        Double amount = 0.0;
+        AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
+        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+        String svcId = hcsaServiceDto.getId();
+        String svcCode = hcsaServiceDto.getSvcCode();
+        appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
+        appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
+        appSubmissionDto.setAppGrpId(applicationDto.getAppGrpId());
+        ApplicationGroupDto entity1 = applicationClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
+        appSubmissionDto.setAppNo(applicationDto.getApplicationNo());
+        Integer version = applicationDto.getVersion();
+        appSubmissionDto.setAppVersion(version+1);
+        appSubmissionDto.setFromBe(false);
+        appSubmissionDto.setAppGrpNo(entity1.getGroupNo());
+        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
+        appSubmissionDto.setAmount(amount);
+        appSubmissionDto.setAuditTrailDto(internet);
+        appSubmissionDto.setPreInspection(true);
+        appSubmissionDto.setRequirement(true);
+        appSubmissionDto.setLicenseeId(licenseeId);
+        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+        setRiskToDto(appSubmissionDto);
+        //status
+        List<AppPremisesRoutingHistoryDto> hisList;
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+        Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
+        params.put("appNo", applicationDto.getApplicationNo());
+        hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
+        if(hisList!=null){
+            for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : hisList){
+                if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())
+                        || InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())){
+                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                        applicationDto.setStatus(ApplicationConsts.PENDING_ASO_REPLY);
+                    }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                        applicationDto.setStatus(ApplicationConsts.PENDING_PSO_REPLY);
+                    }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                        applicationDto.setStatus(ApplicationConsts.PENDING_INP_REPLY);
+                    }
+                }
+            }
+        }
+        AppSubmissionDto entity = applicationClient.saveSubmision(appSubmissionDto).getEntity();
+        AppSubmissionDto appSubmissionDtoSave = applicationClient.saveApps(entity).getEntity();
+        appSubmissionDtoSave.getApplicationDtos();
+    }
+
 
     private AppCessMiscDto setMiscData(AppCessationDto appCessationDto, String appId) {
         Date effectiveDate = appCessationDto.getEffectiveDate();

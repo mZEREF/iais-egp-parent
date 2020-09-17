@@ -7,7 +7,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.*;
+import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -57,27 +59,50 @@ public class CessationApplicationFeDelegator {
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>CessationApplicationDelegator");
+        String rfiAppId = "";
+        String rfiPremiseId = "";
+        try{
+            rfiAppId = ParamUtil.getMaskedString(bpc.request, "appId");
+            rfiPremiseId = ParamUtil.getMaskedString(bpc.request, "premiseId");
+        }catch (MaskAttackException e){
+            log.error(e.getMessage(), e);
+            try{
+                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+            } catch (IOException ioe){
+                log.error(ioe.getMessage(), ioe);
+                return;
+            }
+        }
         AuditTrailHelper.auditFunction("Cessation Application", "Cessation Application");
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, null);
         ParamUtil.setSessionAttr(bpc.request, "specLicInfo", null);
         ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag", null);
+        ParamUtil.setSessionAttr(bpc.request, "rfiAppId", null);
+        ParamUtil.setSessionAttr(bpc.request, "rfiPremiseId", null);
+        ParamUtil.setSessionAttr(bpc.request, "rfiAppId", rfiAppId);
+        ParamUtil.setSessionAttr(bpc.request, "rfiPremiseId", rfiPremiseId);
     }
 
     public void init(BaseProcessClass bpc) {
         List<String> licIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licIds");
-        String licenceId = ParamUtil.getRequestString(bpc.request, "licenceId");
-//        licenceId =  "7B3EDEE7-A7ED-EA11-8B79-000C293F0C99" ;
-        boolean isGrpLicence = cessationFeService.isGrpLicence(licIds);
-        List<AppCessLicDto> appCessDtosByLicIds = cessationFeService.getAppCessDtosByLicIds(licIds);
-        if(!StringUtil.isEmpty(licenceId)){
-            List<AppCessLicDto> appCessLicDtos = cessationFeService.initRfiData(licIds);
+        List<AppCessLicDto> appCessDtosByLicIds = IaisCommonUtils.genNewArrayList();
+        String rfiAppId = (String)ParamUtil.getSessionAttr(bpc.request, "rfiAppId");
+        String rfiPremiseId = (String)ParamUtil.getSessionAttr(bpc.request, "rfiPremiseId");
+        if(!StringUtil.isEmpty(rfiAppId)&&!StringUtil.isEmpty(rfiPremiseId)){
+            List<AppCessLicDto> appCessLicDtos = cessationFeService.initRfiData(rfiAppId,rfiPremiseId);
             appCessDtosByLicIds = appCessLicDtos ;
         }
-        List<AppSpecifiedLicDto> specLicInfo = cessationFeService.getSpecLicInfo(licIds);
-        if (specLicInfo.size() > 0) {
-            ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) specLicInfo);
-            ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag", "exist");
+        if(!IaisCommonUtils.isEmpty(licIds)){
+            boolean isGrpLicence = cessationFeService.isGrpLicence(licIds);
+            appCessDtosByLicIds = cessationFeService.getAppCessDtosByLicIds(licIds);
+            List<AppSpecifiedLicDto> specLicInfo = cessationFeService.getSpecLicInfo(licIds);
+            if (specLicInfo.size() > 0) {
+                ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) specLicInfo);
+                ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag", "exist");
+                ParamUtil.setSessionAttr(bpc.request, "isGrpLic",isGrpLicence);
+            }
         }
+
         int size = appCessDtosByLicIds.size();
         List<SelectOption> reasonOption = getReasonOption();
         List<SelectOption> patientsOption = getPatientsOption();
@@ -86,7 +111,6 @@ public class CessationApplicationFeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "patientsOption", (Serializable) patientsOption);
         ParamUtil.setSessionAttr(bpc.request, "size", size);
         ParamUtil.setSessionAttr(bpc.request, READINFO, null);
-        ParamUtil.setSessionAttr(bpc.request, "isGrpLic",isGrpLicence);
     }
 
     public void prepareData(BaseProcessClass bpc) {
@@ -163,8 +187,16 @@ public class CessationApplicationFeDelegator {
 
     public void saveData(BaseProcessClass bpc) throws Exception {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String rfiAppId = (String)ParamUtil.getSessionAttr(bpc.request, "rfiAppId");
+        String rfiPremiseId = (String)ParamUtil.getSessionAttr(bpc.request, "rfiPremiseId");
         List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
-        Map<String, String> appIdPremisesMap = cessationFeService.saveCessations(appCessationDtos, loginContext);
+        Map<String, String> appIdPremisesMap = IaisCommonUtils.genNewHashMap();
+        if(!StringUtil.isEmpty(rfiAppId)&&!StringUtil.isEmpty(rfiPremiseId)){
+            cessationFeService.saveRfiCessations(appCessationDtos, loginContext, rfiAppId);
+            appIdPremisesMap.put(rfiPremiseId,rfiAppId);
+        }else {
+            appIdPremisesMap = cessationFeService.saveCessations(appCessationDtos, loginContext);
+        }
         List<AppCessatonConfirmDto> confirmDto = cessationFeService.getConfirmDto(appCessationDtos, appIdPremisesMap, loginContext);
         ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) confirmDto);
     }
