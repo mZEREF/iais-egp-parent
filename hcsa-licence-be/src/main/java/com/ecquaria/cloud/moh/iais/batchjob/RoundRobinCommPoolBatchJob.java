@@ -464,7 +464,11 @@ public class RoundRobinCommPoolBatchJob {
         AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(applicationDto.getId()).getEntity();
         Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
         map.put("applicant", licenseeDto.getName());
-        map.put("hciName", appGrpPremisesDto.getHciName());
+        String hciName = appGrpPremisesDto.getHciName();
+        if(StringUtil.isEmpty(hciName)){
+            hciName = "";
+        }
+        map.put("hciName", hciName);
         map.put("date", dateStr);
         map.put("dateTime", dateTime);
         map.put("systemLink", url);
