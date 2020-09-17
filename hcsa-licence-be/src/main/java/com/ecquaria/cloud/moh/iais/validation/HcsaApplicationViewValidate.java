@@ -173,7 +173,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                                 String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","The field", "field");
                                 errMap.put("rollBack", errMsg);
                             }
-                        } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage) && !ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+                        } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage) && !ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType) && !isWithdrawal && !isCessation){
                             //rfiSelectValue
                             String rfiSelectValue = ParamUtil.getRequestString(request, "rfiSelectValue");
                             if(StringUtil.isEmpty(rfiSelectValue)){

@@ -243,6 +243,15 @@
             </div>
         </div>
     </div>
+    <c:if test="${rfi=='rfi'}">
+        <div class="row">
+            <div class="col-xs-12 col-sm-10" style="margin-bottom: 1%">
+                <div class="text-right text-center-mobile">
+                    <a class="btn btn-primary" href="#" id="submit">Submit</a>
+                </div>
+            </div>
+        </div>
+    </c:if>
 </form>
 
 <style>
@@ -406,6 +415,12 @@
                 }
             }
         }
+    });
+    $('#submit').click(function () {
+        // SOP.Crud.cfxSubmit("mainForm", "submit","submit","");
+        window.opener=null;
+        window.open('','_self');
+        window.close();
     });
 
 </script>

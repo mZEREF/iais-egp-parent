@@ -490,7 +490,7 @@
     function rfiValidate(){
         //error_nextStage
         var selectValue = $("[name='nextStage']").val();
-        if (selectValue == "PROCRFI" && ${!isAppealType}) {
+        if (selectValue == "PROCRFI" && ${!isAppealType && !isWithDrawal &&!isCessation}) {
             var rfiSelectValue = $('#rfiSelectValue').val();
             if(rfiSelectValue == null || rfiSelectValue == ''){
                 $('#error_nextStage').html("Please select at least 1 section to unlock");
