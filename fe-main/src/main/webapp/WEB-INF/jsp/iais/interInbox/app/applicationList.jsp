@@ -178,7 +178,7 @@
                                                     <c:if test="${app.canRecall}">
                                                         <option value="Recall">Recall</option>
                                                     </c:if>
-                                                    <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}}">
+                                                    <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
                                                         <option value="Assessment">Assessment</option>
                                                     </c:if>
                                                 </select>
