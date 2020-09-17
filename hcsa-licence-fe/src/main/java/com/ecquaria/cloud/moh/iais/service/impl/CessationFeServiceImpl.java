@@ -607,9 +607,6 @@ public class CessationFeServiceImpl implements CessationFeService {
         appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
         appSubmissionDto.setAppGrpId(applicationDto.getAppGrpId());
         ApplicationGroupDto entity1 = applicationClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
-        appSubmissionDto.setAppNo(applicationDto.getApplicationNo());
-        Integer version = applicationDto.getVersion();
-        appSubmissionDto.setAppVersion(version+1);
         appSubmissionDto.setFromBe(false);
         appSubmissionDto.setAppGrpNo(entity1.getGroupNo());
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
