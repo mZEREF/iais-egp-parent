@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.impl.ApplicationServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -144,7 +145,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                     appealTypeValidate(errMap,request,applicationType,roleId,taskDto.getTaskKey());
                 }
                 if (StringUtil.isEmpty(nextStage)) {
-                    errMap.put("nextStage", "GENERAL_ERR0024");
+                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","The field", "field");
+                    errMap.put("nextStage", errMsg);
                 } else {
                     if(isFinalStage){
                         // final stage
@@ -153,7 +155,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                             String verified = ParamUtil.getRequestString(request, "verified");
                             ParamUtil.setRequestAttr(request, "selectVerified", verified);
                             if (StringUtil.isEmpty(verified)) {
-                                errMap.put("verified", "GENERAL_ERR0024");
+                                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","The field", "field");
+                                errMap.put("verified", errMsg);
                             }
                             // if role is AOS or PSO ,check verified's value
                             if (RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)) {
@@ -167,7 +170,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                             String rollBack = ParamUtil.getRequestString(request, "rollBack");
                             ParamUtil.setRequestAttr(request, "selectRollBack", rollBack);
                             if (StringUtil.isEmpty(rollBack)) {
-                                errMap.put("rollBack", "GENERAL_ERR0024");
+                                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","The field", "field");
+                                errMap.put("rollBack", errMsg);
                             }
                         } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage) && !ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
                             //rfiSelectValue
