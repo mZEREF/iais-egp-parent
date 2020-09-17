@@ -162,6 +162,27 @@
     <JavaCode defClass="" executor="" methodName="importSubmit_OnStepProcess_0" name="importSubmit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="importUserRole" x="800" y="60">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="importUserRole_OnStepProcess_0" name="importUserRole_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="exportUserRole" x="860" y="130">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="exportUserRole_OnStepProcess_0" name="exportUserRole_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="Step2" processname="IntrantUserRoleExport" project="INTRANET" version="-1" x="1020" y="130">
+   <Description/>
+
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="UserList" stageIndicator="" x="280" y="60">
@@ -201,6 +222,12 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="dumpAck" stageIndicator="" x="720" y="320">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="importUserRoleSuccessPage" stageIndicator="" x="940" y="60">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -294,13 +321,13 @@
    <position>{(960,260)(970,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doChange" style="oblique">
-   <position>{(970,380)(980,630)}</position>
+   <position>{(970,380)(980,640)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond3" style="oblique">
-   <position>{(980,630)(580,640)}</position>
+   <position>{(980,640)(580,640)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doStatus" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
-   <position>{(980,630)(1028,638)(820,200)}</position>
+   <position>{(980,640)(1028,638)(820,200)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Export" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(580,80)(730,210)}</position>
@@ -368,6 +395,18 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/importPage" style="oblique">
    <position>{(900,340)(938,614)(580,640)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/importUserRole" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(580,80)(820,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/importUserRoleSuccessPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/importUserRole" style="rectanular">
+   <position>{(820,80)(960,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/exportUserRole" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(580,80)(880,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Step2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/exportUserRole" style="rectanular">
+   <position>{(880,150)(1040,150)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/PrepareCreate" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="200" y="550">
@@ -376,7 +415,7 @@
   <Condition componentIfFalse="/Steps/AutomaticStep/PrepareEdit" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="340" y="550">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Steps/AutomaticStep/doStatus" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;true&quot;" x="960" y="610">
+  <Condition componentIfFalse="/Steps/AutomaticStep/doStatus" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;true&quot;" x="960" y="620">
    <Description/>
   </Condition>
   <Condition componentIfFalse="/Steps/AutomaticStep/PrepareRole" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond4" operator="=" rightOperand="&quot;true&quot;" x="430" y="530">
@@ -403,6 +442,8 @@
    <SwitchCase component="/Steps/AutomaticStep/import" value="&quot;doImport&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PrepareRole" value="&quot;doRole&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/flash" value="&quot;importCancel&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/importUserRole" value="&quot;importUserRole&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/exportUserRole" value=""/>
   </Switch>
  </Switches>
  <Branches/>
