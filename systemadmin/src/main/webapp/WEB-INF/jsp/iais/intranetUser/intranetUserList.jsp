@@ -102,7 +102,7 @@
     function doExportRole() {
         if ($("input[type='checkbox']").is(':checked')) {
             $('#exportError').hide();
-            submitUser('doExportRole');
+            submitUser('exportUserRole');
         } else {
             $('#exportError').show();
         }
