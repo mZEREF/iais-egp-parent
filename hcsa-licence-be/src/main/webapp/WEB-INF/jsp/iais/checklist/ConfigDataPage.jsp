@@ -68,7 +68,7 @@
 
         <br><br>
         <div class="form-group">
-          <label class="col-md-2" style="padding-top: 15px">Service Name &nbsp;</label>
+          <label class="col-md-2" style="padding-top: 15px">Service</label>
           <div class="col-md-5">
             <iais:select name="svcName" id="svcName" options = "svcNameSelect" firstOption="Please Select" value="${param.svcName}"></iais:select>
           </div>
