@@ -832,9 +832,9 @@ public class LicenceApproveBatchjob {
                     //create the document and lic_document from the primary doc.
                     List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = applicationListDto.getAppGrpPrimaryDocDtos();
                     List<AppSvcDocDto> appSvcDocDtos = applicationListDto.getAppSvcDocDtos();
-                    List<LicDocumentRelationDto> licDocumentRelationDto1s = getLicDocumentRelationDto(appGrpPrimaryDocDtos,
+                    List<LicDocumentRelationDto> licDocumentRelationDto1s = getLicDocumentRelationDto(licDocumentRelationDtos,appGrpPrimaryDocDtos,
                             appSvcDocDtos, appPremisesCorrelationDtos, premisesGroupDtos);
-                    licDocumentRelationDtos.addAll(licDocumentRelationDto1s);
+                    //licDocumentRelationDtos.addAll(licDocumentRelationDto1s);
 
                     //create the lic_fee_group_item
                     //do not need create in the Dto
@@ -1026,7 +1026,7 @@ public class LicenceApproveBatchjob {
                 //create the document and lic_document from the primary doc.
                 List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = applicationListDto.getAppGrpPrimaryDocDtos();
                 List<AppSvcDocDto> appSvcDocDtos = applicationListDto.getAppSvcDocDtos();
-                List<LicDocumentRelationDto> licDocumentRelationDtos = getLicDocumentRelationDto(appGrpPrimaryDocDtos,
+                List<LicDocumentRelationDto> licDocumentRelationDtos = getLicDocumentRelationDto(null,appGrpPrimaryDocDtos,
                         appSvcDocDtos, appPremisesCorrelationDtos, premisesGroupDtos);
                 superLicDto.setLicDocumentRelationDto(licDocumentRelationDtos);
 
@@ -1408,6 +1408,7 @@ public class LicenceApproveBatchjob {
         boolean result = false;
         log.info(StringUtil.changeForLog("The isExist start ..."));
         log.info(StringUtil.changeForLog("The fileRepoId is -->:" + fileRepoId));
+        log.info(StringUtil.changeForLog("The licDocumentRelationDtos.size() is -->:" + licDocumentRelationDtos.size()));
         if (!IaisCommonUtils.isEmpty(licDocumentRelationDtos) && !StringUtil.isEmpty(fileRepoId)) {
             for (LicDocumentRelationDto licDocumentRelationDto : licDocumentRelationDtos) {
                 DocumentDto documentDto = licDocumentRelationDto.getDocumentDto();
@@ -1421,10 +1422,13 @@ public class LicenceApproveBatchjob {
         return result;
     }
 
-    private List<LicDocumentRelationDto> getLicDocumentRelationDto(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos, List<AppSvcDocDto> appSvcDocDtos,
+    private List<LicDocumentRelationDto> getLicDocumentRelationDto(List<LicDocumentRelationDto> licDocumentRelationDtos,
+                                                                   List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos, List<AppSvcDocDto> appSvcDocDtos,
                                                                    List<AppPremisesCorrelationDto> appPremisesCorrelationDtos, List<PremisesGroupDto> premisesGroupDtos) {
         log.info(StringUtil.changeForLog("The getLicDocumentRelationDto start ..."));
-        List<LicDocumentRelationDto> licDocumentRelationDtos = IaisCommonUtils.genNewArrayList();
+        if(licDocumentRelationDtos==null){
+            licDocumentRelationDtos = IaisCommonUtils.genNewArrayList();
+        }
         if (appGrpPrimaryDocDtos != null) {
             for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos) {
                 if (isExist(licDocumentRelationDtos, appGrpPrimaryDocDto.getFileRepoId())) {
@@ -1457,6 +1461,9 @@ public class LicenceApproveBatchjob {
         }
         if (appSvcDocDtos != null) {
             for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
+                if (isExist(licDocumentRelationDtos, appSvcDocDto.getFileRepoId())) {
+                    continue;
+                }
                 LicDocumentRelationDto licDocumentRelationDto = new LicDocumentRelationDto();
                 DocumentDto documentDto = MiscUtil.transferEntityDto(appSvcDocDto, DocumentDto.class);
                 documentDto.setId(null);
