@@ -96,7 +96,7 @@ public class FeUserClientFallback implements FeUserClient{
     }
 
     @Override
-    public FeignResponseEntity<OrganizationDto> createCropUser(OrganizationDto organizationDto) {
+    public FeignResponseEntity<OrganizationDto> createCorpPassUser(OrganizationDto organizationDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

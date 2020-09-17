@@ -232,7 +232,7 @@ public class FECorppassLandingDelegator {
                 feUserDto.setIdType(IaisEGPHelper.checkIdentityNoType(feUserDto.getIdentityNo()));
                 organizationDto.setFeUserDto(feUserDto);
 
-                FeUserDto postUpdate = orgUserManageService.createCropUser(organizationDto);
+                FeUserDto postUpdate = orgUserManageService.createCorpPassUser(organizationDto);
 
                 User user = new User();
                 user.setDisplayName(postUpdate.getDisplayName());

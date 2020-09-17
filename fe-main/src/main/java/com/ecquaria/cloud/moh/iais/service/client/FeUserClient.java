@@ -58,7 +58,7 @@ public interface FeUserClient {
     FeignResponseEntity<FeUserDto> getUserByNricAndUen(@PathVariable(value = "uen") String uen, @PathVariable(value = "nric") String nric);
 
     @PostMapping(path = "/iais-internet-user/organization/user-account/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<OrganizationDto> createCropUser(@RequestBody OrganizationDto organizationDto);
+    FeignResponseEntity<OrganizationDto> createCorpPassUser(@RequestBody OrganizationDto organizationDto);
 
     @GetMapping(value = "/iais-internet-user/user-info/{userId}")
     FeignResponseEntity<InterInboxUserDto> findUserInfoByUserId(@PathVariable("userId")String UserId);

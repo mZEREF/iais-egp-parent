@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -59,18 +58,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Autowired
     private EicGatewayFeMainClient eicGatewayFeMainClient;
-
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
 
     @Value("${spring.application.name}")
     private String currentApp;
@@ -141,7 +128,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         int status = result.getStatusCode();
         if (status == HttpStatus.SC_OK){
             OrganizationDto postCreate = result.getEntity();
-            saveAccountInfotmation(postCreate);
+            syncAccountInformationToBackend(postCreate);
             return postCreate;
         }else {
             return null;
@@ -149,14 +136,11 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     public void callFeEicCreateAccount(OrganizationDto organizationDto){
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        eicGatewayFeMainClient.syncAccountDataFormFe(organizationDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+        eicGatewayFeMainClient.syncAccountDataFormFe(organizationDto);
 
     }
 
-    private FeUserDto saveAccountInfotmation(OrganizationDto postCreate){
+    private FeUserDto syncAccountInformationToBackend(OrganizationDto postCreate){
         EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ORGANIZATION_CLIENT, OrgUserManageServiceImpl.class.getName(),
                 "callFeEicCreateAccount", currentApp + "-" + currentDomain,
                 OrganizationDto.class.getName(), JsonUtil.parseToJson(postCreate));
@@ -166,7 +150,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
                 EicRequestTrackingDto entity = fetchResult.getEntity();
                 if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
-                    postCreate.setLicenseeDto(new LicenseeDto());
                     callFeEicCreateAccount(postCreate);
                     entity.setProcessNum(1);
                     Date now = new Date();
@@ -183,42 +166,33 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
         //create egp user
         FeUserDto postCreateUser = postCreate.getFeUserDto();
-
         createClientUser(postCreateUser);
-
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        eicGatewayFeMainClient.getUen(postCreate.getUenNo(), signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
 
         return postCreateUser;
     }
 
     @Override
     public void refreshLicensee(String uen){
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        eicGatewayFeMainClient.getUen(uen, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+        eicGatewayFeMainClient.getUen(uen);
 
     }
 
     @Override
-    public FeUserDto createCropUser(OrganizationDto organizationDto) {
-        FeignResponseEntity<OrganizationDto> result = feUserClient.createCropUser(organizationDto);
+    public FeUserDto createCorpPassUser(OrganizationDto organizationDto) {
+        FeignResponseEntity<OrganizationDto> result = feUserClient.createCorpPassUser(organizationDto);
         OrganizationDto postCreate = result.getEntity();
 
+        if (postCreate != null && !StringUtil.isEmpty(postCreate.getUenNo())){
+            eicGatewayFeMainClient.getUen(postCreate.getUenNo());
+        }
 
-        return saveAccountInfotmation(postCreate);
+        return syncAccountInformationToBackend(postCreate);
     }
 
     @Override
     public void updateUserBe(OrganizationDto organizationDto){
         try {
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            eicGatewayFeMainClient.syncAccountDataFormFe(organizationDto, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
+            eicGatewayFeMainClient.syncAccountDataFormFe(organizationDto);
         }catch (Exception e){
             log.error(StringUtil.changeForLog("encounter failure when sync account data to be"));
             log.error(e.getMessage(), e);

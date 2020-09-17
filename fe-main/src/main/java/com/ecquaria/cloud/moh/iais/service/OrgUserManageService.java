@@ -30,7 +30,7 @@ public interface OrgUserManageService {
 
     OrganizationDto createSingpassAccount(OrganizationDto organizationDto);
 
-    FeUserDto createCropUser(OrganizationDto organizationDto);
+    FeUserDto createCorpPassUser(OrganizationDto organizationDto);
 
     void refreshLicensee(String uen);
 
