@@ -57,6 +57,8 @@ public final class ChecklistHelper {
     private ChecklistHelper(){}
 
     public static boolean validateFile(HttpServletRequest request, MultipartFile file){
+
+
         if (file == null || file.isEmpty()){
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0020"));
             return true;
@@ -69,7 +71,9 @@ public final class ChecklistHelper {
         }
 
         if (FileUtils.outFileSize(file.getSize())){
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0004"));
+            int maxSize = SystemParamUtil.getFileMaxLimit(10);
+            String replaceMsg = MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxSize),"sizeMax");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, replaceMsg));
             return true;
         }
 
