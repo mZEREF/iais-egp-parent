@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -227,8 +228,10 @@ public class CessationFeServiceImpl implements CessationFeService {
         String originLicenceId = applicationDto.getOriginLicenceId();
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         licIds.add(originLicenceId);
-        AppSubmissionDto appSubmissionDto = licenceClient.getAppSubmissionDtos(licIds).getEntity().get(0);
-        transformRfi(appSubmissionDto, licenseeId, applicationDto);
+        AppSubmissionDto appSubmissionDto = applicationClient.getAppSubmissionDtoByAppNo(applicationDto.getApplicationNo()).getEntity();
+        String appId = transformRfi(appSubmissionDto, licenseeId, applicationDto);
+        AppCessMiscDto appCessMiscDto = setMiscData(appCessationDtos.get(0), appId);
+        appCessMiscDtos.add(appCessMiscDto);
         cessationClient.saveCessation(appCessMiscDtos).getEntity();
     }
 
@@ -427,12 +430,16 @@ public class CessationFeServiceImpl implements CessationFeService {
             }
         }
         applicationClient.updateApplicationList(applicationDtos);
+        String serviceId = applicationDtos.get(0).getServiceId();
+        String appStatus = getStageId(serviceId, ApplicationConsts.APPLICATION_TYPE_CESSATION);
         List<String> licNos = IaisCommonUtils.genNewArrayList();
-        for (AppCessatonConfirmDto appCessatonConfirmDto : appCessationDtosConfirms) {
-            String licenceNo = appCessatonConfirmDto.getLicenceNo();
-            Date effectiveDate = appCessatonConfirmDto.getEffectiveDate();
-            if (effectiveDate.before(new Date())) {
-                licNos.add(licenceNo);
+        if (StringUtil.isEmpty(appStatus)) {
+            for (AppCessatonConfirmDto appCessatonConfirmDto : appCessationDtosConfirms) {
+                String licenceNo = appCessatonConfirmDto.getLicenceNo();
+                Date effectiveDate = appCessatonConfirmDto.getEffectiveDate();
+                if (effectiveDate.before(new Date())) {
+                    licNos.add(licenceNo);
+                }
             }
         }
         if (!licNos.isEmpty()) {
@@ -488,7 +495,7 @@ public class CessationFeServiceImpl implements CessationFeService {
     }
 
     @Override
-    public List<AppCessLicDto> initRfiData(String appId,String premiseId) {
+    public List<AppCessLicDto> initRfiData(String appId, String premiseId) {
         ApplicationDto entity = applicationClient.getApplicationById(appId).getEntity();
         String originLicenceId = entity.getOriginLicenceId();
         List<String> licIds = IaisCommonUtils.genNewArrayList();
@@ -595,56 +602,60 @@ public class CessationFeServiceImpl implements CessationFeService {
         return map;
     }
 
-    private void transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) {
+    private String transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) {
+        AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
+        appSubmissionRequestInformationDto.setOldAppSubmissionDto(appSubmissionDto);
+        AppSubmissionDto newAppSubmissionDto = appSubmissionDto;
         Double amount = 0.0;
         AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
-        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
-        String svcId = hcsaServiceDto.getId();
-        String svcCode = hcsaServiceDto.getSvcCode();
-        appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
-        appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
-        appSubmissionDto.setAppGrpId(applicationDto.getAppGrpId());
+//        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = newAppSubmissionDto.getAppSvcRelatedInfoDtoList();
+//        String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
+//        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+//        String svcId = hcsaServiceDto.getId();
+//        String svcCode = hcsaServiceDto.getSvcCode();
+//        appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
+//        appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
+        newAppSubmissionDto.setAppGrpId(applicationDto.getAppGrpId());
         ApplicationGroupDto entity1 = applicationClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
-        appSubmissionDto.setFromBe(false);
-        appSubmissionDto.setAppGrpNo(entity1.getGroupNo());
-        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
-        appSubmissionDto.setAmount(amount);
-        appSubmissionDto.setAuditTrailDto(internet);
-        appSubmissionDto.setPreInspection(true);
-        appSubmissionDto.setRequirement(true);
-        appSubmissionDto.setLicenseeId(licenseeId);
-        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
-        setRiskToDto(appSubmissionDto);
+        newAppSubmissionDto.setFromBe(false);
+        newAppSubmissionDto.setAppGrpNo(entity1.getGroupNo());
+        newAppSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
+        newAppSubmissionDto.setAmount(amount);
+        newAppSubmissionDto.setAuditTrailDto(internet);
+        newAppSubmissionDto.setPreInspection(true);
+        newAppSubmissionDto.setRequirement(true);
+        newAppSubmissionDto.setLicenseeId(licenseeId);
+        newAppSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+        newAppSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+        setRiskToDto(newAppSubmissionDto);
+        appSubmissionRequestInformationDto.setAppSubmissionDto(newAppSubmissionDto);
         //status
-        List<AppPremisesRoutingHistoryDto> hisList;
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        String gatewayUrl = env.getProperty("iais.inter.gateway.url");
-        Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
-        params.put("appNo", applicationDto.getApplicationNo());
-        hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
-                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
-        if(hisList!=null){
-            for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : hisList){
-                if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())
-                        || InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())){
-                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
-                        applicationDto.setStatus(ApplicationConsts.PENDING_ASO_REPLY);
-                    }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
-                        applicationDto.setStatus(ApplicationConsts.PENDING_PSO_REPLY);
-                    }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS.equals(appPremisesRoutingHistoryDto.getAppStatus())){
-                        applicationDto.setStatus(ApplicationConsts.PENDING_INP_REPLY);
-                    }
-                }
-            }
-        }
-        AppSubmissionDto entity = applicationClient.saveSubmision(appSubmissionDto).getEntity();
-        AppSubmissionDto appSubmissionDtoSave = applicationClient.saveApps(entity).getEntity();
-        appSubmissionDtoSave.getApplicationDtos();
+//        List<AppPremisesRoutingHistoryDto> hisList;
+//        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+//        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+//        String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+//        Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
+//        params.put("appNo", applicationDto.getApplicationNo());
+//        hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
+//                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+//                signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
+//        if(hisList!=null){
+//            for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : hisList){
+//                if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())
+//                        || InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())){
+//                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+//                        applicationDto.setStatus(ApplicationConsts.PENDING_ASO_REPLY);
+//                    }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+//                        applicationDto.setStatus(ApplicationConsts.PENDING_PSO_REPLY);
+//                    }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+//                        applicationDto.setStatus(ApplicationConsts.PENDING_INP_REPLY);
+//                    }
+//                }
+//            }
+//        }
+        AppSubmissionDto appSubmissionDto1 = applicationClient.saveRfcCessationSubmision(appSubmissionRequestInformationDto).getEntity();
+        String appId = appSubmissionDto1.getApplicationDtos().get(0).getId();
+        return appId;
     }
 
 
