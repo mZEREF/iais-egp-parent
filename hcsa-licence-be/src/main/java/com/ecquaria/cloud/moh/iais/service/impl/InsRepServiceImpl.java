@@ -434,11 +434,9 @@ public class InsRepServiceImpl implements InsRepService {
                 return;
             }
         } else {
-            if(!StringUtil.isEmpty(recommendation)){
-                appPremisesRecommendationDto.setVersion(1);
-                saveRecommendation(appPremisesRecommendationDto);
-                return;
-            }
+            appPremisesRecommendationDto.setVersion(1);
+            saveRecommendation(appPremisesRecommendationDto);
+            return;
         }
     }
 
