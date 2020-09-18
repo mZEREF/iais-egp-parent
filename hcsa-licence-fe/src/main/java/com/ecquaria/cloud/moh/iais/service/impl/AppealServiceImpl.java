@@ -816,16 +816,14 @@ public class AppealServiceImpl implements AppealService {
         saveData(request);
         String newApplicationNo = arrayToString(applicationDtoListlist,appNo);
         request.setAttribute("newApplicationNo", appNo);
-        //todo send email
-//        try {
-//            sendEmail(request);
-//            sendAdminEmail(request);
-            //send email sms msg
+        try {
+            String svcName = licenceDto.getSvcName();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
             LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
-            sendAllNotification(entity1, licenceDto, licenseeDto);
-//        } catch (Exception e) {
-//            log.error(e.getMessage(), e);
-//        }
+            sendAllNotification(appNo,"appeal", licenceDto, licenseeDto,hcsaServiceDto);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
         return appNo;
     }
 
@@ -947,15 +945,14 @@ public class AppealServiceImpl implements AppealService {
         request.setAttribute("draftStatus", AppConsts.COMMON_STATUS_IACTIVE);
         saveData(request);
         request.setAttribute("newApplicationNo", s);
-//        try {
-//            sendEmail(request);
-//            sendAdminEmail(request);
+        try {
             LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(entity.getLicenseeId()).getEntity();
-            sendAllNotification(applicationDto, null,licenseeDto);
-//        } catch (Exception e) {
-//            log.error(e.getMessage(), e);
-//        }
-        //todo send email
+            String serviceId = applicationDto.getServiceId();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+            sendAllNotification(appNo,"appeal", null, licenseeDto,hcsaServiceDto);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
         return s;
     }
 
@@ -1125,26 +1122,26 @@ public class AppealServiceImpl implements AppealService {
         return email;
     }
 
-    private void sendAllNotification(ApplicationDto applicationDto,LicenceDto licenceDto, LicenseeDto licenseeDto){
+    private void sendAllNotification(String appNo,String appType,LicenceDto licenceDto, LicenseeDto licenseeDto,HcsaServiceDto hcsaServiceDto){
         log.info("start send email sms and msg");
-        log.info(StringUtil.changeForLog("appNo: " + applicationDto.getApplicationNo()));
+        log.info(StringUtil.changeForLog("appNo: " + appNo));
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
         templateContent.put("ApplicantName", licenseeDto.getName());
-        templateContent.put("ApplicationType",  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
-        templateContent.put("ApplicationNo", applicationDto.getApplicationNo());
+        templateContent.put("ApplicationType",  MasterCodeUtil.getCodeDesc(appType));
+        templateContent.put("ApplicationNo", appNo);
         templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
         templateContent.put("newSystem", loginUrl);
         templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
-        String subject = "MOH IAIS - Your "+ MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType())+", "+applicationDto.getApplicationNo()+" has been submitted";
+        String subject = "MOH IAIS - Your "+ MasterCodeUtil.getCodeDesc(appType)+", "+appNo+" has been submitted";
         EmailParam emailParam = new EmailParam();
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_GENERIC_EMAIL);
         emailParam.setTemplateContent(templateContent);
         emailParam.setSubject(subject);
-        emailParam.setQueryCode(applicationDto.getApplicationNo());
-        emailParam.setReqRefNum(applicationDto.getApplicationNo());
+        emailParam.setQueryCode(appNo);
+        emailParam.setReqRefNum(appNo);
         if(licenceDto == null){
-            emailParam.setRefId(applicationDto.getApplicationNo());
+            emailParam.setRefId(appNo);
             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
         }else{
             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
@@ -1156,10 +1153,10 @@ public class AppealServiceImpl implements AppealService {
         smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_GENERIC_SMS);
         smsParam.setSubject(subject);
         smsParam.setTemplateContent(templateContent);
-        smsParam.setQueryCode(applicationDto.getApplicationNo());
-        smsParam.setReqRefNum(applicationDto.getApplicationNo());
+        smsParam.setQueryCode(appNo);
+        smsParam.setReqRefNum(appNo);
         if(licenceDto == null) {
-            smsParam.setRefId(applicationDto.getApplicationNo());
+            smsParam.setRefId(appNo);
             smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
         }else{
             smsParam.setRefId(licenceDto.getId());
@@ -1170,14 +1167,13 @@ public class AppealServiceImpl implements AppealService {
         msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_GENERIC_MSG);
         msgParam.setTemplateContent(templateContent);
         msgParam.setSubject(subject);
-        msgParam.setQueryCode(applicationDto.getApplicationNo());
-        msgParam.setReqRefNum(applicationDto.getApplicationNo());
+        msgParam.setQueryCode(appNo);
+        msgParam.setReqRefNum(appNo);
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-        HcsaServiceDto svcDto = appConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
-        svcCodeList.add(svcDto.getSvcCode());
+        svcCodeList.add(hcsaServiceDto.getSvcCode());
         msgParam.setSvcCodeList(svcCodeList);
         if(licenceDto == null) {
-            msgParam.setRefId(applicationDto.getApplicationNo());
+            msgParam.setRefId(appNo);
             msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         }else{
             msgParam.setRefId(licenceDto.getId());
