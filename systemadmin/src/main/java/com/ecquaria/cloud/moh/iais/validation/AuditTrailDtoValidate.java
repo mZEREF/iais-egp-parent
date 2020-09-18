@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 
-import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.audit.AuditTrailConstants;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -12,9 +11,9 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,9 +26,6 @@ import java.util.Map;
 @Component
 public class AuditTrailDtoValidate implements CustomizeValidator {
     private static final int MONTH_DAY = 7;
-
-    @Autowired
-	private SystemParamConfig systemParamConfig;
 
 	@Override
     public Map<String, String> validate(HttpServletRequest request) {
@@ -50,7 +46,7 @@ public class AuditTrailDtoValidate implements CustomizeValidator {
 							int reduceDay = getReduceDay(IaisEGPHelper.parseToDate(startDate, AppConsts.DEFAULT_DATE_FORMAT),
 									IaisEGPHelper.parseToDate(endDate, AppConsts.DEFAULT_DATE_FORMAT));
 
-							int value = systemParamConfig.getAuditTrailSearchWeek();
+							int value = SystemParamUtil.getAuditTrailSearchWeek();
 							value = value == 0 ? 3 : value;
 							log.info(StringUtil.changeForLog("audit trail week" + value));
 							String msg = MessageUtil.getMessageDesc("GENERAL_ERR0010");

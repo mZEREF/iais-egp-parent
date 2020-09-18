@@ -45,4 +45,28 @@ public class SystemParamUtil {
     public static int getReminderRectification(){
         return systemParamConfig.getReminderRectification();
     }
+
+    public static int getOneTimeIdCount() {
+        return systemParamConfig.getOneTimeIdCount();
+    }
+
+    public static int getLicGenDay() {
+        return systemParamConfig.getLicGenDay();
+    }
+
+    public static int getRoundRobinCpDays() {
+        return systemParamConfig.getRoundRobinCpDays();
+    }
+
+    public static String getUploadFileType() {
+        return systemParamConfig.getUploadFileType();
+    }
+
+    public static int getLicenceIsEligible() {
+        return systemParamConfig.getLicenceIsEligible();
+    }
+
+    public static int getAuditTrailSearchWeek() {
+        return systemParamConfig.getAuditTrailSearchWeek();
+    }
 }
