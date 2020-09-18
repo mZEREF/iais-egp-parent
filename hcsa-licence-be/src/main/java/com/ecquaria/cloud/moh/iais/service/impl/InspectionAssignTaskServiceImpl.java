@@ -697,7 +697,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 applicationService.updateFEApplicaiton(applicationDto1);
                 //update inspection status
                 updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_RESCHEDULING_APPLICANT_ACCEPT_DATE);
-                taskService.updateTask(td);
                 taskService.createTasks(taskDtoList);
                 inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtoList);
                 createMessage(url, applicationDto, applicationGroupDto, maskParams, inspDate, address, applicationDtos);
