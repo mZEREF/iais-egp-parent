@@ -215,6 +215,7 @@ public class InspectionMergeSendNcEmailDelegator {
             Map<String,Object> mapTableTemplate=IaisCommonUtils.genNewHashMap();
             MsgTemplateDto msgTableTemplateDto= notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_TABLE_12);
             int sn=1;
+            StringBuilder stringTable=new StringBuilder();
             for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
             ) {
                 try{
@@ -251,14 +252,13 @@ public class InspectionMergeSendNcEmailDelegator {
                         mapTableTemplate.put("Observation_Recommendation",StringUtil.viewHtml(stringBuilder));
                         sn++;
                     }
+                    stringTable.append(MsgUtil.getTemplateMessageByContent(msgTableTemplateDto.getMessageContent(),mapTableTemplate));
                 }catch (Exception e){
                     log.error(e.getMessage(), e);
                 }
             }
-
-            msgTableTemplateDto.setMessageContent(MsgUtil.getTemplateMessageByContent(msgTableTemplateDto.getMessageContent(),mapTableTemplate));
             mapTemplate.put("ApplicationNumber", appNos.toString());
-            mapTemplate.put("NC_DETAILS_AND_Observation_Recommendation",msgTableTemplateDto.getMessageContent());
+            mapTemplate.put("NC_DETAILS_AND_Observation_Recommendation",stringTable.toString());
             mapTemplate.put("HALP", AppConsts.MOH_SYSTEM_NAME);
             mapTemplate.put("DDMMYYYY", StringUtil.viewHtml(Formatter.formatDateTime(new Date(),Formatter.DATE)));
             mapTemplate.put("Inspector_mail_Address", leadDto.getEmail());
