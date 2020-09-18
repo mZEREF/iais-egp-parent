@@ -57,6 +57,7 @@ public class ExportUserRoleDelegator {
         if(ids!=null){
             byte[] xml = createXML(bpc,ids);
             bpc.request.setAttribute("xml", xml);
+            bpc.request.setAttribute("fileName", "intranetUserRole.xml");
         }
     }
 

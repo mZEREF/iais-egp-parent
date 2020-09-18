@@ -2,7 +2,8 @@
 <%@page import = "java.io.BufferedOutputStream" %>
 <%
     byte[] content = (byte[])request.getAttribute("xml");
-    String fileName = "intranetUser.xml" ;
+
+    String fileName = (String)request.getAttribute("fileName");
     response.addHeader("Content-Disposition", "attachment;filename="+fileName);
     response.addHeader("Content-Length", "" + content.length);
     out.clear();
