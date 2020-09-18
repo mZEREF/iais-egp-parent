@@ -1324,6 +1324,9 @@ public class NewApplicationHelper {
                 appSvcPersonExtDto.setServiceCode(svcCode);
                 appSvcPersonExtDto.setAssignSelect(person.getAssignSelect());
                 appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
+                if(IaisCommonUtils.isEmpty(appSvcPersonExtDtos)){
+                    appSvcPersonExtDtos = IaisCommonUtils.genNewArrayList();
+                }
                 appSvcPersonExtDtos.add(appSvcPersonExtDto);
                 newPersonAndExtDto.setPersonDto(appSvcPersonDto);
                 newPersonAndExtDto.setPersonExtDtoList(appSvcPersonExtDtos);
@@ -1453,6 +1456,9 @@ public class NewApplicationHelper {
                     personMap.put(personMapKey, appSvcPersonAndExtDto);
                 }else{
                     List<AppSvcPersonExtDto> appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
+                    if(IaisCommonUtils.isEmpty(appSvcPersonExtDtos)){
+                        appSvcPersonExtDtos = IaisCommonUtils.genNewArrayList();
+                    }
 //                    AppSvcPersonExtDto currSvcPsnExtDto = getPsnExtDtoBySvcCode(appSvcPersonExtDtos,svcCode);
                     AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,true);
 
