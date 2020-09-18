@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionForAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
@@ -191,5 +192,11 @@ public class BeEicGatewayClient {
                                                                String date, String authorization, String dateSec, String authorizationSec) {
         return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/app-svc-key-personel", HttpMethod.POST, appealPersonnel,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, AppSvcKeyPersonnelDto.class);
+    }
+
+    public FeignResponseEntity<List> saveHciNameByDto(List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos,
+                                                                 String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/app-premises-sync", HttpMethod.PUT, appGrpPremisesEntityDtos,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, AppGrpPremisesEntityDto.class);
     }
 }

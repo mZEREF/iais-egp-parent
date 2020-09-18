@@ -142,11 +142,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 Set<String> apptRefNoSet = new HashSet<>(apptRefNos);
                 apptRefNos = new ArrayList<>(apptRefNoSet);
                 //save eic record
-                ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
-                apptAppInfoShowDto.setApptRefNo(apptRefNos);
-                EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "getApptSystemDate",
-                        "hcsa-licence-web-internet", ApptAppInfoShowDto.class.getName(), JsonUtil.parseToJson(apptAppInfoShowDto));
-                String eicRefNo = eicRequestTrackingDto.getRefNo();
                 List<ApptRequestDto> apptRequestDtos = feEicGatewayClient.getAppointmentByApptRefNo(apptRefNos, signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization()).getEntity();
                 Map<String, List<ApptUserCalendarDto>> apptInspDateMap = new LinkedHashMap<>(apptRequestDtos.size());
@@ -155,15 +150,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                         apptInspDateMap.put(apptRequestDto.getApptRefNo(), apptRequestDto.getUserClandars());
                     }
                 }
-                //get eic record
-                eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-                //update eic record status
-                eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-                eicRequestTrackingDtos.add(eicRequestTrackingDto);
-                appEicClient.updateStatus(eicRequestTrackingDtos);
-
                 if(apptInspDateMap != null) {
                     apptFeConfirmDateDto.setApptInspDateMap(apptInspDateMap);
                     setSystemDateMap(apptFeConfirmDateDto);

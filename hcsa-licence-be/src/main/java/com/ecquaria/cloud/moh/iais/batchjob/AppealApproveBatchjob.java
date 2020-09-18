@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
@@ -22,10 +23,14 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
+import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
@@ -68,6 +73,10 @@ public class AppealApproveBatchjob {
     private String mailSender;
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
+    @Autowired
+    private EicRequestTrackingHelper eicRequestTrackingHelper;
+    @Autowired
+    private AppEicClient appEicClient;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -314,7 +323,7 @@ public class AppealApproveBatchjob {
                 signature2.date(), signature2.authorization());
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationAddCGO is end ..."));
     }
-    private void applicationChangeHciName(List<ApplicationDto> appealApplicaiton,List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,
+    public void applicationChangeHciName(List<ApplicationDto> appealApplicaiton,List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,
                                           List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,
                                           AppealApproveDto appealApproveDto, List<ApplicationGroupDto> appealApplicationGroupDtos) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is start ..."));
@@ -334,6 +343,20 @@ public class AppealApproveBatchjob {
                 //todo eic save hci Name
                 HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
                 HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                //save eic record
+                EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.batchjob.AppealApproveBatchjob", "applicationChangeHciName",
+                        "hcsa-licence-web-intranet", List.class.getName(), JsonUtil.parseToJson(appealAppGrpPremisesDto));
+                String eicRefNo = eicRequestTrackingDto.getRefNo();
+                beEicGatewayClient.saveHciNameByDto(appealAppGrpPremisesDto, signature.date(), signature.authorization(),
+                        signature2.date(), signature2.authorization());
+                //get eic record
+                eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
+                //update eic record status
+                eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
+                eicRequestTrackingDtos.add(eicRequestTrackingDto);
+                appEicClient.updateStatus(eicRequestTrackingDtos);
            }
         }
         if (appealDto == null) {
