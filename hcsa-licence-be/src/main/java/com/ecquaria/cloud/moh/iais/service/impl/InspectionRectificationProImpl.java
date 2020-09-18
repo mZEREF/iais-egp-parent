@@ -264,12 +264,12 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
             eicRequestTrackingDtos.add(eicRequestTrackingDto);
             appEicClient.updateStatus(eicRequestTrackingDtos);
+            String applicationNo = applicationDto.getApplicationNo();
             String url = HmacConstants.HTTPS +"://" + SystemParamUtil.getInterServerName() +
                     MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION +
-                    taskDto.getRefNo() + "&recVersion=" + version;
+                    applicationNo + "&recVersion=" + version;
             HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-            maskParams.put("appPremCorrId", taskDto.getRefNo());
-            String applicationNo = applicationDto.getApplicationNo();
+            maskParams.put("applicationNo", applicationNo);
             Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
             LicenseeDto licDto = licenseeService.getLicenseeDtoById(applicationViewDto.getApplicationGroupDto().getLicenseeId());
             map.put("APPLICANT_NAME",licDto.getName());

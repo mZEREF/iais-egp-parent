@@ -75,7 +75,7 @@ public class ExportUserRoleDelegator {
                 if(!IaisCommonUtils.isEmpty(orgUserRoleDtos)){
                     String userIdText = orgUserDto.getUserId();
                     for(OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos){
-                        String roleIdText = orgUserRoleDto.getId();
+                        String roleIdText = orgUserRoleDto.getRoleName();
                         Element userGroup = userGroups.addElement("user-group");
                         Element userId = userGroup.addElement("userId");
                         Element roleId = userGroup.addElement("roleId");

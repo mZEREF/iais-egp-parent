@@ -178,7 +178,7 @@
             $('#error_userUploadFile').html('The file has exceeded the maximum upload size of '+ userFileSize + 'M.');
             dismissWaiting();
         } else {
-            const file = $("#userRoleUpload").get(0).files[0];
+            const file = $("#userRoleUpload").val();
             const ext = file.slice(file.lastIndexOf(".") + 1).toLowerCase();
             if ("xml" != ext) {
                 $('#error_userUploadFile').html('Only files with the following extensions are allowed: XML. Please re-upload the file.');
