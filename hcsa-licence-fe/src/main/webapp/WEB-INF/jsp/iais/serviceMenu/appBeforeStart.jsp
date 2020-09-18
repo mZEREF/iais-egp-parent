@@ -61,7 +61,7 @@
                 <p><a class="license-view" href="javascript:void(0);" onclick="popUplicensee('${licenseeurl}',0)">View</a></p>
               </div>
             </div>
-            <c:if test="${!empty feUserDtos && 'LICT001'.equals(licensee.icenseeType)}">
+            <c:if test="${!empty feUserDtos && 'LICT001'.equals(licensee.licenseeType)}">
               <c:forEach var="item" items="${feUserDtos}" varStatus="status">
                 <div class="license-info-row">
                   <div class="licnese-info">
