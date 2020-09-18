@@ -122,7 +122,7 @@ public final class FileUtils {
     public static boolean outFileSize(long fileSize){
         double sizeDbl = Calculator.div(fileSize, Calculator.mul(0x400, 0x400), 1);
         sizeDbl = Math.ceil(sizeDbl);
-        if (sizeDbl > SystemParamUtil.getFileMaxLimit(10)) {
+        if (sizeDbl > SystemParamUtil.getFileMaxLimit()) {
             return true;
         }
         return false;

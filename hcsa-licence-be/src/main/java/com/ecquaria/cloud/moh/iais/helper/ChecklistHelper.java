@@ -71,7 +71,7 @@ public final class ChecklistHelper {
         }
 
         if (FileUtils.outFileSize(file.getSize())){
-            int maxSize = SystemParamUtil.getFileMaxLimit(10);
+            int maxSize = SystemParamUtil.getFileMaxLimit();
             String replaceMsg = MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxSize),"sizeMax");
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, replaceMsg));
             return true;

@@ -12,16 +12,37 @@ import org.springframework.context.ApplicationContext;
 
 @Slf4j
 public class SystemParamUtil {
-    private static ApplicationContext context = SpringContextHelper.getContext();
+    private static ApplicationContext context;
+    private static SystemParamConfig systemParamConfig;
+    static {
+        context = SpringContextHelper.getContext();
+
+        if (context != null){
+            systemParamConfig = context.getBean(SystemParamConfig.class);
+
+            if (systemParamConfig == null){
+                log.info("systemParamConfig  is null .........");
+            }
+        }else {
+            log.info("application context is null .........");
+        }
+    }
 
     private SystemParamUtil(){}
 
-    public static int getFileMaxLimit(int defaultVal){
-        SystemParamConfig systemParamConfig =  context.getBean(SystemParamConfig.class);
-        if (systemParamConfig != null){
-            return systemParamConfig.getUploadFileLimit();
-        }
+    public static int getFileMaxLimit(){
+       return systemParamConfig.getUploadFileLimit();
+    }
 
-        return defaultVal;
+    public static String getIntraServerName(){
+       return systemParamConfig.getIntraServerName();
+    }
+
+    public static String getInterServerName(){
+       return systemParamConfig.getInterServerName();
+    }
+
+    public static int getReminderRectification(){
+        return systemParamConfig.getReminderRectification();
     }
 }

@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
@@ -46,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
@@ -114,9 +114,6 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
 
     @Autowired
     private FileRepoClient fileRepoClient;
-
-    @Autowired
-    private SystemParamConfig systemParamConfig;
 
     @Autowired
     private ApplicationService applicationService;
@@ -267,7 +264,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
             eicRequestTrackingDtos.add(eicRequestTrackingDto);
             appEicClient.updateStatus(eicRequestTrackingDtos);
-            String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
+            String url = HmacConstants.HTTPS +"://" + SystemParamUtil.getInterServerName() +
                     MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION +
                     taskDto.getRefNo() + "&recVersion=" + version;
             HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
