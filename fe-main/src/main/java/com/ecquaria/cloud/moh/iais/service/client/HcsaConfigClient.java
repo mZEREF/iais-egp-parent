@@ -19,4 +19,7 @@ import java.util.List;
 public interface HcsaConfigClient {
     @GetMapping(value = "/iais-hcsa-service/active-service",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceDto>> getActiveServices();
+
+    @GetMapping(value = "/iais-hcsa-service/all-service", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaServiceDto>> allHcsaService();
 }

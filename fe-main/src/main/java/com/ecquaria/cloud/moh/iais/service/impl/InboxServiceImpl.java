@@ -300,8 +300,6 @@ public class InboxServiceImpl implements InboxService {
         }
         if(result){
             appInboxClient.updateFeAppStatus(recallApplicationDto.getAppId(),ApplicationConsts.APPLICATION_STATUS_RECALLED);
-//            String draftNo = appInboxClient.getDraftNumber(recallApplicationDto.getAppNo()).getEntity();
-//            appInboxClient.updateDraftStatus(draftNo,ACTIVE).getEntity();
         }
         return result;
     }

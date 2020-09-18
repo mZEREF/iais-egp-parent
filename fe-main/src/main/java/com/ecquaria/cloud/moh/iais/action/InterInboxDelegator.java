@@ -765,7 +765,7 @@ public class InterInboxDelegator {
 
     }
    public  String getRepalceService(){
-       List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getActiveServices().getEntity();
+       List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.allHcsaService().getEntity();
        if(IaisCommonUtils.isEmpty(hcsaServiceDtos)){
            return null;
        }
