@@ -91,4 +91,9 @@ public class MasterCodeServiceImpl implements MasterCodeService {
     public void inactiveMasterCode() {
         saMasterCodeClient.inactiveMasterCode();
     }
+
+    @Override
+    public MasterCodeDto getMaxVersionMsDto(String masterCodeKey) {
+        return saMasterCodeClient.getMaxVersionMsDto(masterCodeKey).getEntity();
+    }
 }

@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.assessmentGuide.GuideConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MasterCodeConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
@@ -13,11 +12,21 @@ import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeCategoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeToExcelDto;
-import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +36,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
+import sop.util.CopyUtil;
+import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,8 +45,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * @Author Hua_Chong
@@ -684,7 +702,7 @@ public class MasterCodeDelegator {
      * @param bpc
      * @throws
      */
-    public void doEdit(BaseProcessClass bpc) throws ParseException {
+    public void doEdit(BaseProcessClass bpc) throws ParseException, CloneNotSupportedException {
         logAboutStart("doEdit");
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_TYPE);
@@ -692,7 +710,10 @@ public class MasterCodeDelegator {
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
             return;
         }
-        MasterCodeDto masterCodeDto = (MasterCodeDto) ParamUtil.getSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR);
+        MasterCodeDto oldMasterCodeDto = (MasterCodeDto) ParamUtil.getSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR);
+        String codeCategory = masterCodeService.findCodeCategoryByDescription(oldMasterCodeDto.getCodeCategory());
+        oldMasterCodeDto.setCodeCategory(codeCategory);
+        MasterCodeDto masterCodeDto = (MasterCodeDto) CopyUtil.copyMutableObject(oldMasterCodeDto);
         getEditValueFromPage(masterCodeDto, request);
         if (StringUtil.isEmpty(masterCodeDto.getVersion())){
             masterCodeDto.setVersion(1f);
@@ -718,20 +739,33 @@ public class MasterCodeDelegator {
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
             return;
         }
-        String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
-        masterCodeDto.setCodeCategory(codeCategory);
-        masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-        masterCodeService.updateMasterCode(masterCodeDto);
 
+        //update old
+        LocalDate oldToDate = LocalDate.parse(DateUtil.formatDate(oldMasterCodeDto.getEffectiveTo(),Formatter.DATE), DateTimeFormatter.ofPattern(Formatter.DATE));
+        LocalDate newFromDate = LocalDate.parse(DateUtil.formatDate(masterCodeDto.getEffectiveFrom(),Formatter.DATE), DateTimeFormatter.ofPattern(Formatter.DATE));
+        LocalDate nowDate = LocalDate.now();
+        if(oldToDate.isEqual(newFromDate) || newFromDate.isBefore(oldToDate)){
+            //oldDate = newDate -1
+            oldToDate = newFromDate.plusDays(-1);
+        }
+        ZoneId zone = ZoneId.systemDefault();
+        Instant instant = oldToDate.atStartOfDay().atZone(zone).toInstant();
+        oldMasterCodeDto.setEffectiveTo(Date.from(instant));
+        masterCodeService.updateMasterCode(oldMasterCodeDto);
+        //create new
         masterCodeDto.setMasterCodeId(null);
         Float oldVersion =  masterCodeDto.getVersion();
         if (StringUtil.isEmpty(oldVersion)){
             masterCodeDto.setVersion(1f);
         }else{
-            masterCodeDto.setVersion(masterCodeDto.getVersion() + 1);
+            //get max version ms
+            MasterCodeDto maxMsDto = masterCodeService.getMaxVersionMsDto(oldMasterCodeDto.getMasterCodeKey());
+            masterCodeDto.setVersion(maxMsDto.getVersion() + 1);
         }
-        masterCodeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        masterCodeService.saveMasterCode(masterCodeDto);
+        if(nowDate.isBefore(newFromDate)){
+            masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+        }
+        masterCodeService.updateMasterCode(masterCodeDto);
         ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
         ParamUtil.setRequestAttr(request, "UPDATED_DATE", new Date());
 

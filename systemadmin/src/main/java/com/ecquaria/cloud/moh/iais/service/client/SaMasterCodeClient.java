@@ -72,4 +72,7 @@ public interface SaMasterCodeClient {
 
     @PutMapping(value = "/iais-mastercode/master-code/expired-or-not-effect")
     FeignResponseEntity<Void> inactiveMasterCode();
+
+    @GetMapping(path = "/iais-mastercode/max-version")
+    FeignResponseEntity<MasterCodeDto> getMaxVersionMsDto(@RequestParam(value = "masterCodeKey") String masterCodeKey);
 }
