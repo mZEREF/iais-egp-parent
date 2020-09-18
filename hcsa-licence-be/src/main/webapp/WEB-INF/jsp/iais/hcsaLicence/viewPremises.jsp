@@ -508,8 +508,9 @@
                                       <div class="col-xs-6 col-md-6">
                                         <c:if test="${appGrpPrimaryDocDto.docSize!=null}">
                                               <span class="newVal " attr="${appGrpPrimaryDocDto.docSize}${appGrpPrimaryDocDto.docName}">
-                                              <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
-                                                     value="${appGrpPrimaryDocDto.fileRepoId}"/>&fileRepoName=${appGrpPrimaryDocDto.docName}" title="Download" class="downloadFile">${appGrpPrimaryDocDto.docName}</a><c:out value="(${appGrpPrimaryDocDto.docSize})KB"/>
+                                              <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
+                                                     value="${appGrpPrimaryDocDto.fileRepoId}"/>&fileRepoName=${appGrpPrimaryDocDto.docName}" title="Download" class="downloadFile"><span id="${appGrpPrimaryDocDto.fileRepoId}Down">trueDown</span></a>
+                                                <a onclick="doVerifyFileGo('${appGrpPrimaryDocDto.fileRepoId}')">${appGrpPrimaryDocDto.docName}<c:out value="(${appGrpPrimaryDocDto.docSize})KB"/></a>
                                             </span>
                                         </c:if>
                                         <c:if test="${appGrpPrimaryDocDto.docSize==null}">
@@ -953,7 +954,7 @@
                   </div>
                 </div>
               </div>
-
+              <iais:confirm msg="GENERAL_ACK018"  needCancel="false" callBack="tagConfirmCallbacksupport()" popupOrder="support" ></iais:confirm>
               <div class="application-tab-footer">
                 <div class="row">
                   <div class="col-xs-12 col-sm-6">
@@ -1013,5 +1014,26 @@
   });
 
 
+    function doVerifyFileGo(verify) {
+        showWaiting();
+        var data = {"repoId":verify};
+        $.post(
+            "${pageContext.request.contextPath}/verifyFileExist",
+            data,
+            function (data) {
+                if(data != null ){
+                    if(data.verify == 'N'){
+                        $('#support').modal('show');
+                    }else {
+                        $("#"+verify+"Down").click();
+                    }
+                    dismissWaiting();
+                }
+            }
+        )
+    }
 
+    function tagConfirmCallbacksupport(){
+        $('#support').modal('hide');
+    }
 </script>
