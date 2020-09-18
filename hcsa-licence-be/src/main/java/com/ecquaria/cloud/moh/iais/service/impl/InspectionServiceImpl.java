@@ -372,6 +372,16 @@ public class InspectionServiceImpl implements InspectionService {
         return userIds;
     }
 
+    @Override
+    public List<String> getWorkIdsByLogin(LoginContext loginContext) {
+        List<String> workGroupIdList = IaisCommonUtils.genNewArrayList();
+        List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
+        for(UserGroupCorrelationDto ugcDto:userGroupCorrelationDtos){
+            workGroupIdList.add(ugcDto.getGroupId());
+        }
+        return workGroupIdList;
+    }
+
     private String getMemberNameByUserId(String userId) {
         String memberName = HcsaConsts.HCSA_PREMISES_HCI_NULL;
         if(!StringUtil.isEmpty(userId)) {
@@ -384,6 +394,8 @@ public class InspectionServiceImpl implements InspectionService {
     private InspectionSubPoolQueryDto getLeadByAppPremCorrId(TaskDto taskDto, List<AppPremisesCorrelationDto> appPremisesCorrelationDtos, InspectionSubPoolQueryDto iDto) {
         if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)) {
             for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos) {
+                String refNo = taskDto.getRefNo();
+                log.error("==============="+refNo);
                 if (appPremisesCorrelationDto.getId().equals(taskDto.getRefNo())) {
                     List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
                     List<String> leadName = getWorkGroupLeadsByGroupId(taskDto.getWkGrpId(), orgUserDtos);

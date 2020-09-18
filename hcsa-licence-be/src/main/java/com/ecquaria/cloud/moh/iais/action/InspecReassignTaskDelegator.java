@@ -120,10 +120,10 @@ public class InspecReassignTaskDelegator {
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             List<String> workGroupIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "workGroupIds");
             PoolRoleCheckDto poolRoleCheckDto = new PoolRoleCheckDto();
-            poolRoleCheckDto = inspectionAssignTaskService.getRoleOptionByKindPool(loginContext, AppConsts.SUPERVISOR_POOL, poolRoleCheckDto);
+            poolRoleCheckDto = inspectionAssignTaskService.getRoleOptionByKindPool(loginContext, AppConsts.COMMON_POOL, poolRoleCheckDto);
             List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds, loginContext);
             if (IaisCommonUtils.isEmpty(workGroupIds)) {
-                workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
+                workGroupIds = inspectionService.getWorkIdsByLogin(loginContext);
             }
             GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto) ParamUtil.getSessionAttr(bpc.request, "groupRoleFieldDto");
             if (groupRoleFieldDto == null) {
@@ -219,7 +219,7 @@ public class InspecReassignTaskDelegator {
         }
         GroupRoleFieldDto groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
         //get Members Option
-        List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
+        List<String> workGroupIds = inspectionService.getWorkIdsByLogin(loginContext);
         groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
         //get userId
         String memberValue = "";
@@ -292,12 +292,14 @@ public class InspecReassignTaskDelegator {
         String loginUserId = loginContext.getUserId();
         List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
         Integer isLeadForGroup = userGroupCorrelationDtos.get(0).getIsLeadForGroup();
+        String curRole = loginContext.getCurRoleId();
         if (1 == isLeadForGroup) {
-            String curRole = loginContext.getCurRoleId();
             for (String workGrpId : workGroupIds) {
                 List<TaskDto> supervisorPoolByGroupWordId = inspectionService.getSupervisorPoolByGroupWordId(workGrpId);
                 for (TaskDto tDto : supervisorPoolByGroupWordId) {
-                    taskDtoList.add(tDto);
+                    if(curRole.equals(tDto.getRoleId())){
+                        taskDtoList.add(tDto);
+                    }
                 }
             }
         } else {
@@ -305,7 +307,7 @@ public class InspecReassignTaskDelegator {
                 List<TaskDto> taskDtos = inspectionService.getReassignPoolByGroupWordId(workGrpId);
                 for (TaskDto tDto : taskDtos) {
                     String userId = tDto.getUserId();
-                    if (loginUserId.equals(userId)) {
+                    if (loginUserId.equals(userId)&&curRole.equals(tDto.getRoleId())) {
                         taskDtoList.add(tDto);
                     }
                 }

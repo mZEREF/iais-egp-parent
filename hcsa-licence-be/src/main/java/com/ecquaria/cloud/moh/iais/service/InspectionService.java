@@ -203,4 +203,7 @@ public interface InspectionService {
       * @Descripation: getUserIdByWorkGrpId
       */
     List<String> getUserIdByWorkGrpId(String workGrpId);
+
+
+    List<String> getWorkIdsByLogin(LoginContext loginContext);
 }

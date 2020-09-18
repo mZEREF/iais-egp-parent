@@ -181,6 +181,10 @@
     inspectorSearchTaskSubmit('search');
   }
 
+  $("#supervisorPoolRole").change(function() {
+    doInspectorSearchTaskSearch();
+  });
+
   function jumpToPagechangePage(){
     inspectorSearchTaskSubmit('page');
   }
