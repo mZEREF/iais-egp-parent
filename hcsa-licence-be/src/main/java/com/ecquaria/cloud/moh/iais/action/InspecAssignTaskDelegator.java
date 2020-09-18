@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -310,12 +309,9 @@ public class InspecAssignTaskDelegator {
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<TaskDto> commPools = (List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
-        String taskId = inspecTaskCreAndAssDto.getTaskId();
-        TaskDto taskDto = taskService.getTaskById(taskId);
-        if(TaskConsts.TASK_STATUS_COMPLETED.equals(taskDto.getTaskStatus()) || TaskConsts.TASK_STATUS_REMOVE.equals(taskDto.getTaskStatus())){
+        String saveFlag = inspectionAssignTaskService.routingTaskByCommonPool(commPools, inspecTaskCreAndAssDto, internalRemarks, loginContext);
+        if(AppConsts.FAIL.equals(saveFlag)){
             ParamUtil.setRequestAttr(bpc.request,"taskHasBeenAssigned", AppConsts.TRUE);
-        } else {
-            inspectionAssignTaskService.routingTaskByCommonPool(commPools, inspecTaskCreAndAssDto, internalRemarks, loginContext);
         }
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
     }

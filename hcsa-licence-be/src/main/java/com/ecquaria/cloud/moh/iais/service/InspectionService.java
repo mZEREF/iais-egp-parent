@@ -84,7 +84,7 @@ public interface InspectionService {
      * @return: void
      * @Descripation: Assign Task For Inspectors
      */
-    void assignTaskForInspectors(InspectionTaskPoolListDto inspectionTaskPoolListDto, List<TaskDto> commPools,
+    String assignTaskForInspectors(InspectionTaskPoolListDto inspectionTaskPoolListDto, List<TaskDto> commPools,
                                  String internalRemarks, ApplicationDto applicationDto, TaskDto taskDto, ApplicationViewDto applicationViewDto);
 
     /**
@@ -103,7 +103,7 @@ public interface InspectionService {
      * @return: void
      * @Descripation: routing Task By Pool
      */
-    void routingTaskByPool(InspectionTaskPoolListDto inspectionTaskPoolListDto, List<TaskDto> commPools, String internalRemarks);
+    String routingTaskByPool(InspectionTaskPoolListDto inspectionTaskPoolListDto, List<TaskDto> commPools, String internalRemarks);
 
     /**
      * @author: shicheng

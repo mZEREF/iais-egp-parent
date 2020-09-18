@@ -471,7 +471,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    public void assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationViewDto applicationViewDto,
+    public String assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationViewDto applicationViewDto,
                                         String internalRemarks, TaskDto taskDto, LoginContext loginContext) {
         List<SelectOption> inspectorCheckList = inspecTaskCreAndAssDto.getInspectorCheck();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -503,31 +503,36 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     inspecTaskCreAndAssDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     inspecTaskCreAndAssDto.setTaskDtos(commPools);
                     inspecTaskCreAndAssDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
-                    organizationClient.assignCommonPool(inspecTaskCreAndAssDto);
-                    AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(td.getRefNo(), td.getTaskKey()).getEntity();
-                    createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), internalRemarks,
-                            InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
-                    if (inspectorCheckList != null && inspectorCheckList.size() > 0) {
-                        for (int i = 0; i < inspectorCheckList.size(); i++) {
-                            if (ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())) {
-                                String fastTrack = inspecTaskCreAndAssDto.getFastTrackCheck();
-                                if(!StringUtil.isEmpty(fastTrack)){
-                                    applicationDto.setFastTracking(true);
+                    inspecTaskCreAndAssDto = organizationClient.assignCommonPool(inspecTaskCreAndAssDto).getEntity();
+                    if(inspecTaskCreAndAssDto != null) {
+                        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(td.getRefNo(), td.getTaskKey()).getEntity();
+                        createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), internalRemarks,
+                                InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
+                        if (inspectorCheckList != null && inspectorCheckList.size() > 0) {
+                            for (int i = 0; i < inspectorCheckList.size(); i++) {
+                                if (ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())) {
+                                    String fastTrack = inspecTaskCreAndAssDto.getFastTrackCheck();
+                                    if (!StringUtil.isEmpty(fastTrack)) {
+                                        applicationDto.setFastTracking(true);
+                                    } else {
+                                        applicationDto.setFastTracking(false);
+                                    }
+                                    ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
+                                    applicationService.updateFEApplicaiton(applicationDto1);
+                                    inspecTaskCreAndAssDto.setApplicationStatus(applicationDto1.getStatus());
+                                    createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), null, td.getWkGrpId());
                                 } else {
-                                    applicationDto.setFastTracking(false);
+                                    createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
                                 }
-                                ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
-                                applicationService.updateFEApplicaiton(applicationDto1);
-                                inspecTaskCreAndAssDto.setApplicationStatus(applicationDto1.getStatus());
-                                createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), null, td.getWkGrpId());
-                            } else {
-                                createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
                             }
                         }
+                    } else {
+                        return AppConsts.FAIL;
                     }
                 }
             }
         }
+        return AppConsts.SUCCESS;
     }
 
     @Override
@@ -1188,10 +1193,10 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    public void routingTaskByCommonPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks, LoginContext loginContext) {
+    public String routingTaskByCommonPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks, LoginContext loginContext) {
         TaskDto taskDto = getTaskDtoByPool(commPools, inspecTaskCreAndAssDto);
         ApplicationViewDto applicationViewDto = searchByAppCorrId(inspecTaskCreAndAssDto.getAppCorrelationId());
-        assignTaskForInspectors(commPools, inspecTaskCreAndAssDto, applicationViewDto, internalRemarks, taskDto, loginContext);
+        String saveFlag = assignTaskForInspectors(commPools, inspecTaskCreAndAssDto, applicationViewDto, internalRemarks, taskDto, loginContext);
         if(!StringUtil.isEmpty(inspecTaskCreAndAssDto.getInspManHours())){
             //create inspManHours recommendation or update
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR).getEntity();
@@ -1209,6 +1214,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             }
             fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
         }
+        return saveFlag;
     }
 
     private TaskDto getTaskDtoByPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {

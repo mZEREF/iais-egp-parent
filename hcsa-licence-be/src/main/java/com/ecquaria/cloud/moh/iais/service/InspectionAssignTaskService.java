@@ -87,7 +87,7 @@ public interface InspectionAssignTaskService {
      * @return: void
      * @Descripation: update Common Pool and create Inspector Task
      */
-    void assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationViewDto applicationViewDto, String internalRemarks, TaskDto taskDto, LoginContext loginContext);
+    String assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationViewDto applicationViewDto, String internalRemarks, TaskDto taskDto, LoginContext loginContext);
 
     /**
       * @author: shicheng
@@ -133,7 +133,7 @@ public interface InspectionAssignTaskService {
      * @return: void
      * @Descripation: routing Task By CommonPool
      */
-    void routingTaskByCommonPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks, LoginContext loginContext);
+    String routingTaskByCommonPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks, LoginContext loginContext);
 
     /**
      * @author: shicheng
