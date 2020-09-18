@@ -36,15 +36,16 @@ public class MyInfoAjax {
 				return null;
 			}
 			try{
-				MyInfoDto dto = new MyInfoDto();
 				String responseStr = getMyInfoResponse(NircNum);
-				if (responseStr != null){
+				if (!StringUtil.isEmpty(responseStr)){
+					MyInfoDto dto = new MyInfoDto();
 					dto = updateDtoFromResponse(dto, responseStr);
+					log.info(JsonUtil.parseToJson(dto));
+					return dto;
 				}else {
 					log.info("----get myinfo is null----");
 				}
-				log.info(JsonUtil.parseToJson(dto));
-				return dto;
+				return null;
 			} catch (Exception e) {
 				log.error(e.getMessage(),e);
 			}
