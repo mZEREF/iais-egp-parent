@@ -21,4 +21,5 @@ public interface AssessmentGuideService {
     public SearchResult<MenuLicenceDto> getMenuLicence(SearchParam searchParam);
     Boolean isNewLicensee(String licenseeId);
     List<String> getHciFromPendAppAndLic(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos);
+    void deleteDraftNUmber(List<String> draftNumbers);
 }

@@ -144,6 +144,7 @@ public class HalpAssessmentGuideDelegator {
         log.info(StringUtil.changeForLog("prepareData start ..."));
         ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED, null);
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, null);
+        ParamUtil.setSessionAttr(bpc.request,SELECT_DRAFT_NO,null);
         String action = (String) ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
         if(StringUtil.isEmpty(action)){
             action = "chooseSvc";
@@ -539,6 +540,7 @@ public class HalpAssessmentGuideDelegator {
             String new_ack001 = MessageUtil.getMessageDesc("NEW_ACK001");
             bpc.request.setAttribute("new_ack001",new_ack001);
             bpc.request.setAttribute(SELECT_DRAFT_NO, entity);
+            bpc.request.getSession().setAttribute(SELECT_DRAFT_NO, entity);
         }
     }
 
@@ -1122,7 +1124,7 @@ public class HalpAssessmentGuideDelegator {
                 bpc.request.getSession().setAttribute("DraftNumber", attribute);
             }else if(attribute!=null){
                 //back to curr page
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"loading");
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"doBack");
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_LICENCE);
             }
         }
@@ -1134,6 +1136,9 @@ public class HalpAssessmentGuideDelegator {
             String attribute =(String)bpc.request.getAttribute(SELECT_DRAFT_NO);
             if("continue".equals(crud_action_value)){
                 bpc.request.getSession().setAttribute(SELECT_DRAFT_NO, draftNo);
+                List<String> list=new ArrayList<>(1);
+                list.add(draftNo);
+                assessmentGuideService.deleteDraftNUmber(list);
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
                 bpc.request.getSession().setAttribute("DraftNumber", attribute);

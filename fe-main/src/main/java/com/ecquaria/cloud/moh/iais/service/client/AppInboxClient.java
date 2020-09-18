@@ -13,6 +13,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -94,4 +95,6 @@ public interface AppInboxClient {
     FeignResponseEntity<ApplicationDraftDto>  getDraftInfoByAppNo(@RequestParam("appNo") String appNo);
     @GetMapping(value = "/iais-application/pending-app-premises",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppGrpPremisesEntityDto>> getPendAppPremises(@RequestParam("licenseeId") String licenseeId, @RequestParam("svcIdStr") String svcIdStr);
+    @DeleteMapping(value = "/iais-submission/draft-by-numbers",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> deleteDraftNUmber(@RequestBody List<String> draftNumbers);
 }

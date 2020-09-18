@@ -4,6 +4,7 @@
     <div class="applyLicence">
         <div class="form-check-gp">
             <div class="component-gp">
+                <input type="hidden" name="draftNo"/>
                 <div class="disabledPart">
                     <%@include file="comm/chooseSvcContent.jsp"%>
                 </div>
@@ -51,6 +52,10 @@
     $("#submitService").hide();
 
     $(document).ready(function () {
+        if( $('#draftsave').val()!=null && $('#draftsave').val()!=''){
+            $('#saveDraft').modal('show');
+        }
+
         //disabled
         $('.disabledPart').find('input[type="radio"]').prop('disabled',true);
         $('.disabledPart').find('input[type="checkbox"]').prop('disabled',true);
@@ -60,11 +65,12 @@
         });
 
         $('#licContinue').click(function () {
-            if( $('#draftsave').val()!=null|| $('#draftsave').val()!==''){
+            /*if( $('#draftsave').val()!=null|| $('#draftsave').val()!==''){
                 $('#saveDraft').modal('show');
             }else {
                 submit(null,'next','next');
-            }
+            }*/
+            submit(null,'next','next');
         });
 
 
