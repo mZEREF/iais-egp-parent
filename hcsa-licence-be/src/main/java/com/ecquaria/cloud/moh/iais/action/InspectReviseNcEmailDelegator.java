@@ -426,12 +426,21 @@ public class InspectReviseNcEmailDelegator {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS,RoleConsts.USER_ROLE_INSPECTION_LEAD);
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS,RoleConsts.USER_ROLE_AO1);
 
-        try {
-            if(appPremisesRoutingHistoryDto.getUpdatedDt().compareTo(appPremisesRoutingHistoryDto1.getUpdatedDt()) <= 0) {
-                appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW});
+
+        if(appPremisesRoutingHistoryDto==null){
+            appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW});
+        }
+        if (appPremisesRoutingHistoryDto1==null) {
+            appTypeOption=MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW});
+        }
+        if(appPremisesRoutingHistoryDto!=null&&appPremisesRoutingHistoryDto1!=null){
+            try {
+                if(appPremisesRoutingHistoryDto.getUpdatedDt().compareTo(appPremisesRoutingHistoryDto1.getUpdatedDt()) <= 0) {
+                    appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW});
+                }
+            }catch (Exception e){
+                log.error(e.getMessage(), e);
             }
-        }catch (Exception e){
-            log.error(e.getMessage(), e);
         }
 
 
