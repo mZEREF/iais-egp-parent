@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.SyncAuditTrailRecordsService;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,15 @@ public class SyncFEAuditTrailBatchjob {
         @Override
         public void run() {
             try {
-                List<AuditTrailEntityDto>  atList = syncAuditTrailRecordsService.getAuditTrailsByMigrated1();
+                List<AuditTrailEntityDto> atList;
+                synchronized (this){
+                    atList = syncAuditTrailRecordsService.getAuditTrailsByMigrated1();
+                }
+
+                if (IaisCommonUtils.isEmpty(atList)){
+                    log.info("========>>>atList>>>>>>>> end");
+                    return;
+                }
 
                 log.info("------------------- getData  start --------------");
 
