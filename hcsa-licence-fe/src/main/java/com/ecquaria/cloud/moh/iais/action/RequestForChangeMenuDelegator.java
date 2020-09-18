@@ -293,7 +293,9 @@ public class RequestForChangeMenuDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         appEditSelectDto.setPremisesEdit(true);
-        appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
+        if(appEditSelectDto != null){
+            appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
+        }
         PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
