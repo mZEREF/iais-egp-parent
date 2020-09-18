@@ -340,7 +340,6 @@ public class AppealApproveBatchjob {
                 appGrpPremisesDto1.setHciName(hciName);
                 appGrpPremisesDto1.setAuditTrailDto(intranet);
                 appealAppGrpPremisesDto.add(appGrpPremisesDto1);
-                //todo eic save hci Name
                 HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
                 HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
                 //save eic record
