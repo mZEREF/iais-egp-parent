@@ -115,6 +115,7 @@ public class AccessUtil {
                 if (lDto != null) {
                     loginContext.setLicenseeId(lDto.getId());
                     loginContext.setUenNo(lDto.getUenNo());
+                    loginContext.setNricNum(orgUser.getIdNumber());
                     loginContext.setLicenseeEntityType(lDto.getLicenseeEntityDto().getEntityType());
                 }
             }
