@@ -758,7 +758,7 @@ public class ServiceMenuDelegator {
         int premHcisLength = premHcis.size();
         boolean allSpecNew = chooseDiff && !chooseExist && premHcisLength == 0;
         boolean existAndNew = chooseExist && chooseDiff;
-        String err007 = MessageUtil.getMessageDesc("NEW_ERR0007");
+        String err007 = "You are not able to select premises of different";
         if(premHcisLength > 1){
             //choose existing premises not same
             erroMsg = err007;
