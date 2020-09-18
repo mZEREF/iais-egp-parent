@@ -488,10 +488,12 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     List<String> taskUserIds = IaisCommonUtils.genNewArrayList();
                     taskUserIds.add(taskUserId);
                     ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
-                    assignReschedulingTask(td, taskUserIds, applicationDtos, auditTrailDto, applicationGroupDto, inspecTaskCreAndAssDto.getInspManHours(), loginContext);
+                    String saveFlag = assignReschedulingTask(td, taskUserIds, applicationDtos, auditTrailDto, applicationGroupDto, inspecTaskCreAndAssDto.getInspManHours(), loginContext);
+                    return saveFlag;
                 } else if(RoleConsts.USER_ROLE_BROADCAST.equals(td.getRoleId())){
                     //broadcast task assign
-                    assignBroadcastTask(td, applicationDtos, auditTrailDto, loginContext);
+                    String saveFlag = assignBroadcastTask(td, applicationDtos, auditTrailDto, loginContext);
+                    return saveFlag;
                 } else {
                     //get score
                     List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, td.getTaskKey());
@@ -560,7 +562,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    public void assignReschedulingTask(TaskDto td, List<String> taskUserIds, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
+    public String assignReschedulingTask(TaskDto td, List<String> taskUserIds, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
                                        ApplicationGroupDto applicationGroupDto, String inspManHours, LoginContext loginContext) {
         //update
         td.setSlaDateCompleted(new Date());
@@ -651,6 +653,43 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     ApplicationDto appDto = inspectionTaskClient.getApplicationByCorreId(premCorrId).getEntity();
                     applicationDtoLists.add(appDto);
                 }
+                TaskDto updateTask = taskService.updateTask(td);
+                if(updateTask != null) {
+                    saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, apptUserIdSvrIdMap, premCorrIds, auditTrailDto, appHistoryId, inspManHours);
+                    //update App
+                    ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
+                    applicationDto1.setAuditTrailDto(auditTrailDto);
+                    applicationService.updateFEApplicaiton(applicationDto1);
+                    //update inspection status
+                    updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_RESCHEDULING_APPLICANT_ACCEPT_DATE);
+                    taskService.createTasks(taskDtoList);
+                    inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtoList);
+                    createMessage(url, applicationDto, applicationGroupDto, maskParams, inspDate, address, applicationDtoLists);
+                } else {
+                    return AppConsts.FAIL;
+                }
+            } else {
+                TaskDto updateTask = taskService.updateTask(td);
+                if(updateTask != null) {
+                    //update App
+                    ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
+                    applicationDto1.setAuditTrailDto(auditTrailDto);
+                    applicationService.updateFEApplicaiton(applicationDto1);
+                    //update inspection status
+                    updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_RESCHEDULING_APPLICANT_ACCEPT_DATE);
+                    taskService.createTasks(taskDtoList);
+                    inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtoList);
+                } else {
+                    return AppConsts.FAIL;
+                }
+            }
+        } else {
+            List<String> premCorrIds = IaisCommonUtils.genNewArrayList();
+            premCorrIds.add(appPremCorrId);
+            //get all users
+            Map<String, String> apptUserIdSvrIdMap = getSchedulingUsersByAppList(applicationDtos, taskUserIds, applicationDto);
+            TaskDto updateTask = taskService.updateTask(td);
+            if(updateTask != null) {
                 saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, apptUserIdSvrIdMap, premCorrIds, auditTrailDto, appHistoryId, inspManHours);
                 //update App
                 ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
@@ -661,35 +700,12 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 taskService.updateTask(td);
                 taskService.createTasks(taskDtoList);
                 inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtoList);
-                createMessage(url, applicationDto, applicationGroupDto, maskParams, inspDate, address, applicationDtoLists);
+                createMessage(url, applicationDto, applicationGroupDto, maskParams, inspDate, address, applicationDtos);
             } else {
-                //update App
-                ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
-                applicationDto1.setAuditTrailDto(auditTrailDto);
-                applicationService.updateFEApplicaiton(applicationDto1);
-                //update inspection status
-                updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_RESCHEDULING_APPLICANT_ACCEPT_DATE);
-                taskService.updateTask(td);
-                taskService.createTasks(taskDtoList);
-                inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtoList);
+                return AppConsts.FAIL;
             }
-        } else {
-            List<String> premCorrIds = IaisCommonUtils.genNewArrayList();
-            premCorrIds.add(appPremCorrId);
-            //get all users
-            Map<String, String> apptUserIdSvrIdMap = getSchedulingUsersByAppList(applicationDtos, taskUserIds, applicationDto);
-            saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, apptUserIdSvrIdMap, premCorrIds, auditTrailDto, appHistoryId, inspManHours);
-            //update App
-            ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
-            applicationDto1.setAuditTrailDto(auditTrailDto);
-            applicationService.updateFEApplicaiton(applicationDto1);
-            //update inspection status
-            updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_RESCHEDULING_APPLICANT_ACCEPT_DATE);
-            taskService.updateTask(td);
-            taskService.createTasks(taskDtoList);
-            inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtoList);
-            createMessage(url, applicationDto, applicationGroupDto, maskParams, inspDate, address, applicationDtos);
         }
+        return AppConsts.SUCCESS;
     }
 
     private void createMessage(String url, ApplicationDto applicationDto, ApplicationGroupDto applicationGroupDto, HashMap<String, String> maskParams,
@@ -1055,60 +1071,65 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         appInspectionStatusClient.update(appInspectionStatusDto);
     }
 
-    private void assignBroadcastTask(TaskDto td, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto, LoginContext loginContext) {
+    private String assignBroadcastTask(TaskDto td, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto, LoginContext loginContext) {
         //get role and stage
         Set<String> roleIdSet = loginContext.getRoleIds();
         List<String> roleIds = new ArrayList<>(roleIdSet);
         Map<String, String> stageRoleMap = MiscUtil.getStageRoleByBroadcast(roleIds);
         if(stageRoleMap != null){
-            List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
-            for(Map.Entry<String, String> map : stageRoleMap.entrySet()){
-                td.setSlaDateCompleted(new Date());
-                td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
-                td.setAuditTrailDto(auditTrailDto);
-                taskService.updateTask(td);
-                ApplicationDto applicationDto = applicationDtos.get(0);
-                createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), td.getTaskKey(), null,
-                        InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, td.getRoleId(), null, td.getWkGrpId());
-                String subStage = null;
-                String stageId;
-                String role = map.getValue();
-                if(RoleConsts.USER_ROLE_AO1.equals(role)){
-                    stageId = getAoOneStage(applicationDto.getApplicationNo());
-                    if(HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
-                        subStage = HcsaConsts.ROUTING_STAGE_POT;
+            td.setSlaDateCompleted(new Date());
+            td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
+            td.setAuditTrailDto(auditTrailDto);
+            TaskDto updateTask = taskService.updateTask(td);
+            if(updateTask != null) {
+                List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
+                for (Map.Entry<String, String> map : stageRoleMap.entrySet()) {
+                    ApplicationDto applicationDto = applicationDtos.get(0);
+                    createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), td.getTaskKey(), null,
+                            InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, td.getRoleId(), null, td.getWkGrpId());
+                    String subStage = null;
+                    String stageId;
+                    String role = map.getValue();
+                    if (RoleConsts.USER_ROLE_AO1.equals(role)) {
+                        stageId = getAoOneStage(applicationDto.getApplicationNo());
+                        if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
+                            subStage = HcsaConsts.ROUTING_STAGE_POT;
+                        }
+                    } else {
+                        stageId = map.getKey();
                     }
-                } else {
-                    stageId = map.getKey();
+                    List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, stageId);
+                    hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+                    int score = hcsaSvcStageWorkingGroupDtos.get(0).getCount();
+                    String processUrl = getProcessUrlByRoleAndStageId(role, stageId);
+                    TaskDto taskDto = new TaskDto();
+                    taskDto.setId(null);
+                    taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+                    taskDto.setPriority(td.getPriority());
+                    taskDto.setRefNo(td.getRefNo());
+                    taskDto.setSlaAlertInDays(td.getSlaAlertInDays());
+                    taskDto.setSlaDateCompleted(null);
+                    taskDto.setSlaInDays(td.getSlaInDays());
+                    taskDto.setSlaRemainInDays(null);
+                    taskDto.setTaskKey(stageId);
+                    taskDto.setTaskType(td.getTaskType());
+                    taskDto.setWkGrpId(td.getWkGrpId());
+                    taskDto.setUserId(loginContext.getUserId());
+                    taskDto.setDateAssigned(new Date());
+                    taskDto.setRoleId(td.getRoleId());
+                    taskDto.setAuditTrailDto(auditTrailDto);
+                    taskDto.setProcessUrl(processUrl);
+                    taskDto.setScore(score);
+                    taskDto.setApplicationNo(td.getApplicationNo());
+                    taskDtoList.add(taskDto);
+                    createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, null, null, td.getRoleId(), subStage, td.getWkGrpId());
                 }
-                List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, stageId);
-                hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-                int score = hcsaSvcStageWorkingGroupDtos.get(0).getCount();
-                String processUrl = getProcessUrlByRoleAndStageId(role, stageId);
-                TaskDto taskDto = new TaskDto();
-                taskDto.setId(null);
-                taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
-                taskDto.setPriority(td.getPriority());
-                taskDto.setRefNo(td.getRefNo());
-                taskDto.setSlaAlertInDays(td.getSlaAlertInDays());
-                taskDto.setSlaDateCompleted(null);
-                taskDto.setSlaInDays(td.getSlaInDays());
-                taskDto.setSlaRemainInDays(null);
-                taskDto.setTaskKey(stageId);
-                taskDto.setTaskType(td.getTaskType());
-                taskDto.setWkGrpId(td.getWkGrpId());
-                taskDto.setUserId(loginContext.getUserId());
-                taskDto.setDateAssigned(new Date());
-                taskDto.setRoleId(td.getRoleId());
-                taskDto.setAuditTrailDto(auditTrailDto);
-                taskDto.setProcessUrl(processUrl);
-                taskDto.setScore(score);
-                taskDto.setApplicationNo(td.getApplicationNo());
-                taskDtoList.add(taskDto);
-                createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, null, null, td.getRoleId(), subStage, td.getWkGrpId());
+                taskService.createTasks(taskDtoList);
+            } else {
+                return AppConsts.FAIL;
             }
-            taskService.createTasks(taskDtoList);
         }
+        return AppConsts.SUCCESS;
     }
 
     private String getProcessUrlByRoleAndStageId(String role, String stageId) {

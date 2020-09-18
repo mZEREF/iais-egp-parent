@@ -477,7 +477,8 @@ public class InspectionServiceImpl implements InspectionService {
                             taskUserIds.add(so.getValue());
                         }
                         ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
-                        inspectionAssignTaskService.assignReschedulingTask(td, taskUserIds, applicationDtos, auditTrailDto, applicationGroupDto, null, null);
+                        String saveFlag = inspectionAssignTaskService.assignReschedulingTask(td, taskUserIds, applicationDtos, auditTrailDto, applicationGroupDto, null, null);
+                        return saveFlag;
                     } else {
                         td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
                         td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -511,12 +512,16 @@ public class InspectionServiceImpl implements InspectionService {
                     inspectionTaskPoolListDto.setTaskDto(td);
                     inspectionTaskPoolListDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     inspectionTaskPoolListDto.setTaskDtos(commPools);
-                    organizationClient.assignSupTasks(inspectionTaskPoolListDto);
-                    AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(td.getRefNo(), td.getTaskKey()).getEntity();
-                    createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), internalRemarks, InspectionConstants.PROCESS_DECI_SUPER_USER_POOL_ASSIGN, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
-                    if(inspectorCheckList != null && inspectorCheckList.size() > 0){
-                        for(int i = 0; i < inspectorCheckList.size(); i++){
-                            createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
+                    inspectionTaskPoolListDto = organizationClient.assignSupTasks(inspectionTaskPoolListDto).getEntity();
+                    if(inspectionTaskPoolListDto == null) {
+                        return AppConsts.FAIL;
+                    } else {
+                        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(td.getRefNo(), td.getTaskKey()).getEntity();
+                        createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), internalRemarks, InspectionConstants.PROCESS_DECI_SUPER_USER_POOL_ASSIGN, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
+                        if (inspectorCheckList != null && inspectorCheckList.size() > 0) {
+                            for (int i = 0; i < inspectorCheckList.size(); i++) {
+                                createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
+                            }
                         }
                     }
                 }

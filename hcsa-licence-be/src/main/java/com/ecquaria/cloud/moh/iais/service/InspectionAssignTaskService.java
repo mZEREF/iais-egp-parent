@@ -96,7 +96,7 @@ public interface InspectionAssignTaskService {
       * @return: void
       * @Descripation: 
       */
-    void assignReschedulingTask(TaskDto td, List<String> taskUserIds, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
+    String assignReschedulingTask(TaskDto td, List<String> taskUserIds, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
                                 ApplicationGroupDto applicationGroupDto, String inspManHours, LoginContext loginContext);
 
     /**
