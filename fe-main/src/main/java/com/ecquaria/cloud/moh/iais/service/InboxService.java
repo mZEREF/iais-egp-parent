@@ -35,7 +35,7 @@ public interface InboxService {
     boolean updateMsgStatus(String[] msgId);
     Boolean canRecallApplication(RecallApplicationDto recallApplicationDto);
     List<RecallApplicationDto> canRecallApplications(List<RecallApplicationDto> recallApplicationDtos);
-    Boolean recallApplication(RecallApplicationDto recallApplicationDto);
+    RecallApplicationDto recallApplication(RecallApplicationDto recallApplicationDto);
     public Map<String,String> checkRenewalStatus(String licenceId);
     void updateMsgStatusTo(String msgId,String msgStatus);
     Boolean checkEligibility(String appId);

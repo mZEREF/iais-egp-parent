@@ -1033,14 +1033,15 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         String appId = ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
         String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
+        String appGroupId = ParamUtil.getString(request, "action_grp_value");
         RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
         recallApplicationDto.setAppId(appId);
         recallApplicationDto.setAppNo(appNo);
-        try{
-            inboxService.recallApplication(recallApplicationDto);
-        }catch (Exception e){
+        recallApplicationDto.setAppGrpId(appGroupId);
+        recallApplicationDto = inboxService.recallApplication(recallApplicationDto);
+        if ("RECALLMSG001".equals(recallApplicationDto.getMessage())){
             ParamUtil.setRequestAttr(bpc.request,"needDelDraftMsg",AppConsts.YES);
-            ParamUtil.setRequestAttr(bpc.request,"delDraftAckMsg","The background task is not generated");
+            ParamUtil.setRequestAttr(bpc.request,"delDraftAckMsg","This data is being processed. Please try again later");
         }
     }
 

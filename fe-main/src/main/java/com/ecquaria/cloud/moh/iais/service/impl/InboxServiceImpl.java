@@ -246,7 +246,7 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
-    public Boolean recallApplication(RecallApplicationDto recallApplicationDto) {
+    public RecallApplicationDto recallApplication(RecallApplicationDto recallApplicationDto) {
         boolean result = false;
         List<String> refNoList = IaisCommonUtils.genNewArrayList();
         String appId = recallApplicationDto.getAppId();
@@ -275,7 +275,6 @@ public class InboxServiceImpl implements InboxService {
 
         }catch (Exception e){
             log.error(e.getMessage(),e);
-            return result;
         }
         if (recallApplicationDto.getResult()){
             try {
@@ -295,13 +294,12 @@ public class InboxServiceImpl implements InboxService {
 
             }catch (Exception e){
                 log.error(e.getMessage(),e);
-                return result;
             }
         }
-        if(result){
+        if(result || "RECALLMSG002".equals(recallApplicationDto.getMessage())){
             appInboxClient.updateFeAppStatus(recallApplicationDto.getAppId(),ApplicationConsts.APPLICATION_STATUS_RECALLED);
         }
-        return result;
+        return recallApplicationDto;
     }
 
     @Override

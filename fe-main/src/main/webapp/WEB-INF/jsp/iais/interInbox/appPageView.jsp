@@ -126,6 +126,7 @@
         }if ("Recall" == action) {
             showWaiting();
             $("[name='action_no_value']").val(appNo);
+            $("[name='action_grp_value']").val(appGrpId);
             $("[name='action_id_value']").val(appId);
             submit("appDoRecall");
         }
