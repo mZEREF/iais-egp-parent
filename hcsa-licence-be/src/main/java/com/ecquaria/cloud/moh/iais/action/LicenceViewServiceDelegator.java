@@ -374,40 +374,44 @@ public class LicenceViewServiceDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         prepareViewServiceForm(bpc);
-        disciplinaryRecord(appSubmissionDto);
+        disciplinaryRecord(appSubmissionDto,bpc.request);
 
     }
 
-    private void disciplinaryRecord(AppSubmissionDto appSubmissionDto){
+    private void disciplinaryRecord(AppSubmissionDto appSubmissionDto,HttpServletRequest request){
         if(appSubmissionDto==null){
             return;
         }
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+        AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
         List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
         Set<String> redNo=new HashSet<>();
+        Set<String> idNoSet=new HashSet<>();
+        List<String> list = new ArrayList<>();
+        List<String> idList=new ArrayList<>();
         if(appSvcCgoDtoList!=null){
             for(AppSvcCgoDto appSvcCgoDto : appSvcCgoDtoList){
                 String idNo = appSvcCgoDto.getIdNo();
                 String profRegNo = appSvcCgoDto.getProfRegNo();
-                redNo.add(idNo);
+                idNoSet.add(idNo);
                 redNo.add(profRegNo);
             }
         }
         if(appSvcPrincipalOfficersDtoList!=null){
             for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtoList){
                 String idNo = appSvcPrincipalOfficersDto.getIdNo();
-                redNo.add(idNo);
+                idNoSet.add(idNo);
             }
         }
         if(appSvcMedAlertPersonList!=null){
             for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcMedAlertPersonList){
                 String idNo = appSvcPrincipalOfficersDto.getIdNo();
-                redNo.add(idNo);
+                idNoSet.add(idNo);
             }
         }
-        List<String> list = new ArrayList<>();
+
         list.addAll(redNo);
         ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
         professionalParameterDto.setRegNo(list);
@@ -415,14 +419,37 @@ public class LicenceViewServiceDelegator {
         List<LicenseeKeyApptPersonDto> boardMember = appSubmissionDto.getBoardMember();
         if(authorisedPerson!=null){
            for(OrgUserDto orgUserDto : authorisedPerson){
-               list.add(orgUserDto.getIdNumber());
+               idNoSet.add(orgUserDto.getIdNumber());
            }
         }
         if(boardMember!=null){
             for(LicenseeKeyApptPersonDto apptPersonDto : boardMember){
-                list.add(apptPersonDto.getIdNo());
+                idNoSet.add(apptPersonDto.getIdNo());
             }
         }
+        if(oldAppSubmissionDto!=null){
+            AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+            List<AppSvcCgoDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
+            if(oldAppSvcCgoDtoList!=null){
+                for(AppSvcCgoDto appSvcCgoDto : oldAppSvcCgoDtoList){
+                    idNoSet.add(appSvcCgoDto.getIdNo());
+                }
+            }
+            List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList = oldAppSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+            if(oldAppSvcPrincipalOfficersDtoList!=null){
+                for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : oldAppSvcPrincipalOfficersDtoList){
+                    idNoSet.add(appSvcPrincipalOfficersDto.getIdNo());
+                }
+            }
+            List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = oldAppSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+            if(oldAppSvcMedAlertPersonList!=null){
+                for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : oldAppSvcMedAlertPersonList){
+                    idNoSet.add(appSvcPrincipalOfficersDto.getIdNo());
+                }
+            }
+        }
+
+        idList.addAll(idNoSet);
         professionalParameterDto.setClientId("22222");
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String format = simpleDateFormat.format(new Date());
@@ -434,9 +461,21 @@ public class LicenceViewServiceDelegator {
                 signature2.date(), signature2.authorization()).getEntity();
         List<ProfessionalResponseDto> entity1 = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
-        List<HfsmsDto> hfsmsDtos = applicationClient.getHfsmsDtoByIdNo(list).getEntity();
+        List<HfsmsDto> hfsmsDtos = applicationClient.getHfsmsDtoByIdNo(idList).getEntity();
         HashMap<String,List<HfsmsDto>> hashMap=IaisCommonUtils.genNewHashMap();
-
+        for(HfsmsDto hfsmsDto : hfsmsDtos){
+            String identificationNo = hfsmsDto.getIdentificationNo();
+            List<HfsmsDto> hfsmsDtoList = hashMap.get(identificationNo);
+            if(hfsmsDtoList==null){
+                hfsmsDtoList=new ArrayList<>();
+                hfsmsDtoList.add(hfsmsDto);
+                hashMap.put(identificationNo,hfsmsDtoList);
+            }else {
+                hfsmsDtoList.add(hfsmsDto);
+                hashMap.put(identificationNo,hfsmsDtoList);
+            }
+        }
+        request.getSession().setAttribute("hashMap",(Serializable)hashMap);
 
     }
     private void authorisedPerson( HttpServletRequest request,String licenseeId,AppSubmissionDto appSubmissionDto){

@@ -1459,6 +1459,7 @@ public class NewApplicationHelper {
                     if(IaisCommonUtils.isEmpty(appSvcPersonExtDtos)){
                         appSvcPersonExtDtos = IaisCommonUtils.genNewArrayList();
                     }
+
 //                    AppSvcPersonExtDto currSvcPsnExtDto = getPsnExtDtoBySvcCode(appSvcPersonExtDtos,svcCode);
                     AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,true);
 

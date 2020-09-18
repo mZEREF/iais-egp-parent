@@ -581,19 +581,60 @@
                                         </div>
                                       </div>
 
-                                      <div class="row">
+                                      <div class="row img-show">
                                         <div class="col-md-6">
                                           UEN Number
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6">
                                             <span>${newLicenceDto.uenNo}
-                                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                              <c:if test="${empty hashMap[newLicenceDto.uenNo]}">
+                                                <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                              </c:if>
+                                              <c:if test="${not empty hashMap[newLicenceDto.uenNo]}">
+                                                <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNew(this)" width="25" height="25" alt="NETS">
+                                              </c:if>
                                             </span>
                                           </div>
                                         </div>
                                       </div>
+                                      <c:if test="${not empty hashMap[newLicenceDto.uenNo]}">
+                                        <div class="row new-img-show" >
+                                          <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
+                                            <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                                            <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                                              <tr>
+                                                <td>Indentification No.</td>
+                                                <td>Case No.</td>
+                                                <td>Case Type Description</td>
+                                                <td>Case Status Description</td>
+                                                <td>Offence Description</td>
+                                                <td>Outcome Description</td>
+                                                <td>Outcome Issue Date</td>
+                                                <td>Prosecuton Outcome Description</td>
+                                                <td>Created Date</td>
+                                                <td>Update Date</td>
+                                              </tr>
+                                              <c:forEach items="${hashMap[newLicenceDto.uenNo]}" var="map">
+                                                <tr>
+                                                  <td>${map.identificationNo}</td>
+                                                  <td>${map.caseNo}</td>
+                                                  <td>${map.caseType}</td>
+                                                  <td>Case Status Description</td>
+                                                  <td>${map.offenceDesc}</td>
+                                                  <td>${map.outcome}</td>
+                                                  <td><fmt:formatDate value="${map.issueDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                                  <td>${map.prosecutionOutcome}</td>
+                                                  <td><fmt:formatDate value="${map.createdDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                                </tr>
+                                              </c:forEach>
+                                              <tr></tr>
 
+                                            </table>
+                                          </div>
+                                        </div>
+                                      </c:if>
                                       <div class="row">
                                         <div class="col-md-6">
                                           Name of Licensee
@@ -769,37 +810,60 @@
                                         </div>
                                       </div>
 
-                                        <div class="row">
+                                        <div class="row img-show">
                                           <div class="col-md-6">
                                             ID No.
                                           </div>
                                           <div class="col-md-6">
                                             <div class="col-md-6">
                                               <span class="newVal " attr="${Board.idNo}">${Board.idNo}
-                                              <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                                <c:if test="${empty hashMap[Board.idNo]}">
+                                                  <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                                </c:if>
+                                                <c:if test="${not empty hashMap[Board.idNo]}">
+                                                  <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNew(this)" width="25" height="25" alt="NETS">
+                                                </c:if>
                                               </span>
                                             </div>
                                           </div>
                                         </div>
-                                      <div class="row">
-                                        <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
-                                          <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
-                                          <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                                            <tr>
-                                              <td>Indentification No.</td>
-                                              <td>Case No.</td>
-                                              <td>Case Type Description</td>
-                                              <td>Case Status Description</td>
-                                              <td>Offence Description</td>
-                                              <td>Outcome Description</td>
-                                              <td>Outcome Issue Date</td>
-                                              <td>Prosecuton Outcome Description</td>
-                                              <td>Created Date</td>
-                                              <td>Update Date</td>
-                                            </tr>
-                                          </table>
+                                      <c:if test="${not empty hashMap[Board.idNo]}">
+                                        <div class="row new-img-show" style="display: none">
+                                          <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
+                                            <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                                            <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                                              <tr>
+                                                <td>Indentification No.</td>
+                                                <td>Case No.</td>
+                                                <td>Case Type Description</td>
+                                                <td>Case Status Description</td>
+                                                <td>Offence Description</td>
+                                                <td>Outcome Description</td>
+                                                <td>Outcome Issue Date</td>
+                                                <td>Prosecuton Outcome Description</td>
+                                                <td>Created Date</td>
+                                                <td>Update Date</td>
+                                              </tr>
+                                              <c:forEach items="${hashMap[Board.idNo]}" var="map">
+                                                <tr>
+                                                  <td>${map.identificationNo}</td>
+                                                  <td>${map.caseNo}</td>
+                                                  <td>${map.caseType}</td>
+                                                  <td>Case Status Description</td>
+                                                  <td>${map.offenceDesc}</td>
+                                                  <td>${map.outcome}</td>
+                                                  <td><fmt:formatDate value="${map.issueDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                                  <td>${map.prosecutionOutcome}</td>
+                                                  <td><fmt:formatDate value="${map.createdDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                                </tr>
+                                              </c:forEach>
+                                              <tr></tr>
+
+                                            </table>
+                                          </div>
                                         </div>
-                                      </div>
+                                      </c:if>
                                         <div class="row">
                                           <div class="col-md-6">
                                             Designation
@@ -832,38 +896,61 @@
                                         </div>
                                       </div>
 
-                                      <div class="row">
+                                      <div class="row img-show">
                                         <div class="col-md-6">
                                           ID No.
                                         </div>
                                         <div class="col-md-6">
                                           <div  class="col-md-6">
                                             <span  class="newVal " attr="${Authorised.idNumber}">${Authorised.idNumber}
-                                             <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                              <c:if test="${empty hashMap[Authorised.idNumber]}">
+                                                <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                              </c:if>
+                                              <c:if test="${not empty hashMap[Authorised.idNumber]}">
+                                                <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNew(this)" width="25" height="25" alt="NETS">
+                                              </c:if>
                                             </span>
                                           </div>
                                         </div>
                                       </div>
+                                      <c:if test="${not empty hashMap[Authorised.idNumber]}">
+                                        <div class="row new-img-show" style="display:none;">
+                                          <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
+                                            <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                                            <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                                              <tr>
+                                                <td>Indentification No.</td>
+                                                <td>Case No.</td>
+                                                <td>Case Type Description</td>
+                                                <td>Case Status Description</td>
+                                                <td>Offence Description</td>
+                                                <td>Outcome Description</td>
+                                                <td>Outcome Issue Date</td>
+                                                <td>Prosecuton Outcome Description</td>
+                                                <td>Created Date</td>
+                                                <td>Update Date</td>
+                                              </tr>
+                                              <c:forEach items="${hashMap[Authorised.idNumber]}" var="map">
+                                                <tr>
+                                                  <td>${map.identificationNo}</td>
+                                                  <td>${map.caseNo}</td>
+                                                  <td>${map.caseType}</td>
+                                                  <td>Case Status Description</td>
+                                                  <td>${map.offenceDesc}</td>
+                                                  <td>${map.outcome}</td>
+                                                  <td><fmt:formatDate value="${map.issueDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                                  <td>${map.prosecutionOutcome}</td>
+                                                  <td><fmt:formatDate value="${map.createdDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                                </tr>
+                                              </c:forEach>
+                                              <tr></tr>
 
-                                      <div class="row">
-                                        <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
-                                          <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
-                                          <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                                            <tr>
-                                              <td>Indentification No.</td>
-                                              <td>Case No.</td>
-                                              <td>Case Type Description</td>
-                                              <td>Case Status Description</td>
-                                              <td>Offence Description</td>
-                                              <td>Outcome Description</td>
-                                              <td>Outcome Issue Date</td>
-                                              <td>Prosecuton Outcome Description</td>
-                                              <td>Created Date</td>
-                                              <td>Update Date</td>
-                                            </tr>
-                                          </table>
+                                            </table>
+                                          </div>
                                         </div>
-                                      </div>
+                                      </c:if>
+
 
                                       <div class="row">
                                         <div class="col-md-6">
@@ -977,9 +1064,7 @@
 <script>
 
     function closeThis(obj){
-        $(obj).next("table").attr("style","display: none");
-        $(obj).attr("style","display: none");
-        $(obj).prev("label").attr("style","display: none");
+       $(obj).closest('div.row').attr("style","display:none");
     }
   $(document).ready(function () {
       <c:if test="${pageAppEditSelectDto.docEdit}">
@@ -1014,6 +1099,12 @@
   });
 
 
+    function showThisTableNew(obj) {
+        $(obj).closest('div.img-show').next("div.new-img-show").removeAttr("style");
+    }
+    function showThisTableOld(obj) {
+        $(obj).closest('div.img-show').next("div.old-img-show").removeAttr("style");
+    }
     function doVerifyFileGo(verify) {
         showWaiting();
         var data = {"repoId":verify};

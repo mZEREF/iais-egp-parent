@@ -140,21 +140,105 @@
                   </td>
                   <td>
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                    <div class="col-xs-6">
+
+                    <div class="col-xs-6 img-show">
                       <span class="newVal " attr="${cgo.idNo}">
                         <c:out value="${cgo.idNo}"/>
-                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                        <c:if test="${empty hashMap[cgo.idNo]}">
+                          <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                        </c:if>
+                        <c:if test="${not empty hashMap[cgo.idNo]}">
+                          <img src="/hcsa-licence-web/img/2020109171436.png" width="25" onclick="showThisTableNewService(this)" height="25" alt="NETS">
+                        </c:if>
                       </span>
-
-
                     </div>
-                    <div class="col-xs-6">
+
+                    <div class="col-xs-6 img-show">
                       <span class="oldVal" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}"  style="display: none">
                           ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}
-                         <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                        <c:if test="${empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo]}">
+                          <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                        </c:if>
+                         <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo]}">
+                           <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableOldService(this)" width="25" height="25" alt="NETS">
+                         </c:if>
                       </span>
-
                     </div>
+
+                    <c:if test="${not empty hashMap[cgo.idNo]}">
+                      <div class="row new-img-show" style="display: none">
+                        <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%">
+                          <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                          <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                            <tr>
+                              <td>Indentification No.</td>
+                              <td>Case No.</td>
+                              <td>Case Type Description</td>
+                              <td>Case Status Description</td>
+                              <td>Offence Description</td>
+                              <td>Outcome Description</td>
+                              <td>Outcome Issue Date</td>
+                              <td>Prosecuton Outcome Description</td>
+                              <td>Created Date</td>
+                              <td>Update Date</td>
+                            </tr>
+                            <c:forEach items="${hashMap[cgo.idNo]}" var="map">
+                              <tr>
+                                <td>${map.identificationNo}</td>
+                                <td>${map.caseNo}</td>
+                                <td>${map.caseType}</td>
+                                <td>Case Status Description</td>
+                                <td>${map.offenceDesc}</td>
+                                <td>${map.outcome}</td>
+                                <td><fmt:formatDate value="${map.issueDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                <td>${map.prosecutionOutcome}</td>
+                                <td><fmt:formatDate value="${map.createdDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                <td><fmt:formatDate value="${map.updatedDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                              </tr>
+                            </c:forEach>
+                            <tr></tr>
+
+                          </table>
+                        </div>
+                      </div>
+                    </c:if>
+                    <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo]}">
+                      <div class="row old-img-show" style="display: none">
+                        <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%">
+                          <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                          <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center;">
+                            <tr>
+                              <td>Indentification No.</td>
+                              <td>Case No.</td>
+                              <td>Case Type Description</td>
+                              <td>Case Status Description</td>
+                              <td>Offence Description</td>
+                              <td>Outcome Description</td>
+                              <td>Outcome Issue Date</td>
+                              <td>Prosecuton Outcome Description</td>
+                              <td>Created Date</td>
+                              <td>Update Date</td>
+                            </tr>
+                            <c:forEach items="${hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo]}" var="map">
+                              <tr>
+                                <td>${map.identificationNo}</td>
+                                <td>${map.caseNo}</td>
+                                <td>${map.caseType}</td>
+                                <td>Case Status Description</td>
+                                <td>${map.offenceDesc}</td>
+                                <td>${map.outcome}</td>
+                                <td><fmt:formatDate value="${map.issueDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                <td>${map.prosecutionOutcome}</td>
+                                <td><fmt:formatDate value="${map.createdDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                <td><fmt:formatDate value="${map.updatedDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                              </tr>
+                            </c:forEach>
+                            <tr></tr>
+
+                          </table>
+                        </div>
+                      </div>
+                    </c:if>
                     </p>
                   </td>
                 </tr>
@@ -465,13 +549,16 @@
                         </td>
                         <td>
 
-                          <div class="col-xs-6">
+                          <div class="col-xs-6 img-show">
                             <span class="newVal " attr="${appSvcPersonnelDtoList.profRegNo}" ><c:out value="${appSvcPersonnelDtoList.profRegNo}"/>
-                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                              <c:if test="${empty hashMap[appSvcPersonnelDtoList.profRegNo]}">
+                                <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                              </c:if>
+
                             </span>
 
                           </div>
-                          <div class="col-xs-6">
+                          <div class="col-xs-6 img-show">
                             <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}
                             <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                             </span>
@@ -852,16 +939,100 @@
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                      <div class="col-xs-6">
+                      <div class="col-xs-6 img-show">
                         <span class="newVal "  attr="${po.idNo}"><c:out value="${po.idNo}"/>
-                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS"></span>
-
-                    </div>
-                      <div class="col-xs-6">
+                          <c:if test="${empty hashMap[po.idNo]}">
+                             <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS"></span>
+                          </c:if>
+                          <c:if test="${not empty hashMap[po.idNo]}">
+                            <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS"></span>
+                          </c:if>
+                      </div>
+                      <div class="col-xs-6 img-show">
                         <span class="oldVal " id="ponewVal${status.index}" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"  style="display: none">
                            <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"/>
-                          <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS"></span>
+                          <c:if test="${empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo]}">
+                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS"></span>
+                          </c:if>
+                          <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo]}">
+                            <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableOldService(this)" width="25" height="25" alt="NETS"></span>
+                          </c:if>
                       </div>
+                      <c:if test="${not empty hashMap[po.idNo]}">
+                        <div class="row new-img-show" style="display: none">
+                          <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%">
+                            <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                            <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                              <tr>
+                                <td>Indentification No.</td>
+                                <td>Case No.</td>
+                                <td>Case Type Description</td>
+                                <td>Case Status Description</td>
+                                <td>Offence Description</td>
+                                <td>Outcome Description</td>
+                                <td>Outcome Issue Date</td>
+                                <td>Prosecuton Outcome Description</td>
+                                <td>Created Date</td>
+                                <td>Update Date</td>
+                              </tr>
+                              <c:forEach items="${hashMap[po.idNo]}" var="map">
+                                <tr>
+                                  <td>${map.identificationNo}</td>
+                                  <td>${map.caseNo}</td>
+                                  <td>${map.caseType}</td>
+                                  <td>Case Status Description</td>
+                                  <td>${map.offenceDesc}</td>
+                                  <td>${map.outcome}</td>
+                                  <td><fmt:formatDate value="${map.issueDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                  <td>${map.prosecutionOutcome}</td>
+                                  <td><fmt:formatDate value="${map.createdDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                </tr>
+                              </c:forEach>
+                              <tr></tr>
+
+                            </table>
+                          </div>
+                        </div>
+                      </c:if>
+
+                      <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo]}">
+                        <div class="row old-img-show" style="display: none">
+                          <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%">
+                            <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                            <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                              <tr>
+                                <td>Indentification No.</td>
+                                <td>Case No.</td>
+                                <td>Case Type Description</td>
+                                <td>Case Status Description</td>
+                                <td>Offence Description</td>
+                                <td>Outcome Description</td>
+                                <td>Outcome Issue Date</td>
+                                <td>Prosecuton Outcome Description</td>
+                                <td>Created Date</td>
+                                <td>Update Date</td>
+                              </tr>
+                              <c:forEach items="${hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo]}" var="map">
+                                <tr>
+                                  <td>${map.identificationNo}</td>
+                                  <td>${map.caseNo}</td>
+                                  <td>${map.caseType}</td>
+                                  <td>Case Status Description</td>
+                                  <td>${map.offenceDesc}</td>
+                                  <td>${map.outcome}</td>
+                                  <td><fmt:formatDate value="${map.issueDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                  <td>${map.prosecutionOutcome}</td>
+                                  <td><fmt:formatDate value="${map.createdDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                </tr>
+                              </c:forEach>
+                              <tr></tr>
+
+                            </table>
+                          </div>
+                        </div>
+                      </c:if>
 
                       </p>
                     </td>
@@ -1004,23 +1175,105 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="col-xs-6">
+                    <td class="col-xs-6 img-show">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No.</p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                      <div class="col-xs-6">
+                      <div class="col-xs-6 img-show">
                         <span class="newVal " attr="${appSvcMedAlertPerson.idNo}"><c:out value="${appSvcMedAlertPerson.idNo}"/>
-                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                          <c:if test="${empty hashMap[appSvcMedAlertPerson.idNo]}">
+                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                          </c:if>
+                          <c:if test="${not empty hashMap[appSvcMedAlertPerson.idNo]}">
+                            <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
+                          </c:if>
                         </span>
-
-                    </div>
-                      <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}
-                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                        </span>
-
                       </div>
+                      <div class="col-xs-6 img-show">
+                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}
+                            <c:if test="${empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo]}">
+                              <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                            </c:if>
+                           <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo]}">
+                             <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableOldService(this)" width="25" height="25" alt="NETS">
+                           </c:if>
+                        </span>
+                      </div>
+                      <c:if test="${not empty hashMap[appSvcMedAlertPerson.idNo]}">
+                        <div class="row new-img-show" style="display: none">
+                          <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%">
+                            <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                            <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                              <tr>
+                                <td>Indentification No.</td>
+                                <td>Case No.</td>
+                                <td>Case Type Description</td>
+                                <td>Case Status Description</td>
+                                <td>Offence Description</td>
+                                <td>Outcome Description</td>
+                                <td>Outcome Issue Date</td>
+                                <td>Prosecuton Outcome Description</td>
+                                <td>Created Date</td>
+                                <td>Update Date</td>
+                              </tr>
+                              <c:forEach items="${hashMap[appSvcMedAlertPerson.idNo]}" var="map">
+                                <tr>
+                                  <td>${map.identificationNo}</td>
+                                  <td>${map.caseNo}</td>
+                                  <td>${map.caseType}</td>
+                                  <td>Case Status Description</td>
+                                  <td>${map.offenceDesc}</td>
+                                  <td>${map.outcome}</td>
+                                  <td><fmt:formatDate value="${map.issueDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                  <td>${map.prosecutionOutcome}</td>
+                                  <td><fmt:formatDate value="${map.createdDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                </tr>
+                              </c:forEach>
+                              <tr></tr>
+
+                            </table>
+                          </div>
+                        </div>
+                      </c:if>
+                      <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo]}">
+                        <div class="row old-img-show" style="display: none">
+                          <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%">
+                            <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                            <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                              <tr>
+                                <td>Indentification No.</td>
+                                <td>Case No.</td>
+                                <td>Case Type Description</td>
+                                <td>Case Status Description</td>
+                                <td>Offence Description</td>
+                                <td>Outcome Description</td>
+                                <td>Outcome Issue Date</td>
+                                <td>Prosecuton Outcome Description</td>
+                                <td>Created Date</td>
+                                <td>Update Date</td>
+                              </tr>
+                              <c:forEach items="${hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo]}" var="map">
+                                <tr>
+                                  <td>${map.identificationNo}</td>
+                                  <td>${map.caseNo}</td>
+                                  <td>${map.caseType}</td>
+                                  <td>Case Status Description</td>
+                                  <td>${map.offenceDesc}</td>
+                                  <td>${map.outcome}</td>
+                                  <td><fmt:formatDate value="${map.issueDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                  <td>${map.prosecutionOutcome}</td>
+                                  <td><fmt:formatDate value="${map.createdDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="yyyy/MM/dd"></fmt:formatDate></td>
+                                </tr>
+                              </c:forEach>
+                              <tr></tr>
+
+                            </table>
+                          </div>
+                        </div>
+                      </c:if>
                       </p>
                     </td>
                   </tr>
@@ -1207,6 +1460,17 @@
             jQuery.attr("style","");
         }
     });
+    function closeThis(obj){
+        $(obj).closest('div.row').attr("style","display:none");
+    }
+
+
+    function showThisTableNewService(obj) {
+        $(obj).closest('div.img-show').closest('td').find("div.new-img-show").removeAttr("style");
+    }
+    function showThisTableOldService(obj) {
+        $(obj).closest('div.img-show').closest('td').find('div.old-img-show').removeAttr("style");
+    }
     hideImg('newVal', 'oldVal');
     function hideImg(newValClass, oldValClass) {
         $('.' + oldValClass).each(function () {
