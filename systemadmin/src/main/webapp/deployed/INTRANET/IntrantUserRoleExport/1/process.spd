@@ -17,11 +17,21 @@
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
- <Pages/>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="IntrantUserRoleExportDoPage" stageIndicator="" x="440" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/IntrantUserRoleExportDo" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/IntrantUserRoleExportStart" style="rectanular">
    <position>{(120,120)(300,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/IntrantUserRoleExportDoPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/IntrantUserRoleExportDo" style="rectanular">
+   <position>{(300,120)(460,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
