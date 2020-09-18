@@ -72,7 +72,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -170,16 +169,6 @@ public class InspectionMergeSendNcEmailDelegator {
             appCorrDto.setId(correlationId);
             appPremisesCorrelationDtos.add(appCorrDto);
         }
-        Iterator<AppPremisesCorrelationDto> iterator=appPremisesCorrelationDtos.iterator();
-        while (iterator.hasNext()){
-            AppPremisesCorrelationDto appPremisesCorrelationDto=iterator.next();
-            try {
-                inspEmailService.getInsertEmail(appPremisesCorrelationDto.getId());
-            }catch (Exception e){
-                iterator.remove();
-            }
-
-        }
 
         List<String> appPremCorrIds= IaisCommonUtils.genNewArrayList();
         List<String> svcNames=IaisCommonUtils.genNewArrayList();
@@ -198,7 +187,7 @@ public class InspectionMergeSendNcEmailDelegator {
             mapTemplate.put("inspection_lead", leadDto.getDisplayName());
             mapTemplate.put("ApplicantName", licenseeDto.getName());
             mapTemplate.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getApplicationType()}).get(0).getText());
-            mapTemplate.put("ApplicationNumber", applicationViewDto.getApplicationDto().getApplicationNo());
+            StringBuilder appNos= new StringBuilder();
             mapTemplate.put("ApplicationDate", applicationViewDto.getSubmissionDate());
             mapTemplate.put("systemLink", loginUrl);
             mapTemplate.put("HCI_CODE", applicationViewDto.getHciCode());
@@ -231,6 +220,7 @@ public class InspectionMergeSendNcEmailDelegator {
                 try{
                     appPremCorrIds.add(appPremisesCorrelationDto.getId());
                     ApplicationViewDto appViewDto = inspEmailService.getAppViewByCorrelationId(appPremisesCorrelationDto.getId());
+                    appNos.append(appViewDto.getApplicationDto().getApplicationNo()).append(" ");
                     svcNames.add(inspectionService.getHcsaServiceDtoByServiceId(appViewDto.getApplicationDto().getServiceId()).getSvcName());
 
                     AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremisesCorrelationDto.getId(),InspectionConstants.RECOM_TYPE_TCU);
@@ -267,7 +257,7 @@ public class InspectionMergeSendNcEmailDelegator {
             }
 
             msgTableTemplateDto.setMessageContent(MsgUtil.getTemplateMessageByContent(msgTableTemplateDto.getMessageContent(),mapTableTemplate));
-
+            mapTemplate.put("ApplicationNumber", appNos.toString());
             mapTemplate.put("NC_DETAILS_AND_Observation_Recommendation",msgTableTemplateDto.getMessageContent());
             mapTemplate.put("HALP", AppConsts.MOH_SYSTEM_NAME);
             mapTemplate.put("DDMMYYYY", StringUtil.viewHtml(Formatter.formatDateTime(new Date(),Formatter.DATE)));
