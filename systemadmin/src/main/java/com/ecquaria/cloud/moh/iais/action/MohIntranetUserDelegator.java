@@ -1302,6 +1302,23 @@ public class MohIntranetUserDelegator {
         ParamUtil.setRequestAttr(bpc.request,"egpUserRoleDtos", egpUserRoleDtos);
     }
 
+    /**
+     * StartStep: exportUserRole
+     *
+     * @param bpc
+     * @throws
+     */
+    public void exportUserRole(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the exportUserRole start ...."));
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String[] ids = ParamUtil.getStrings(request, "userUid");
+        if (ids == null || ids.length == 0) {
+            ParamUtil.setRequestAttr(request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            return;
+        }
+        ParamUtil.setRequestAttr(bpc.request, "ids", ids);
+    }
+
     private List<SelectOption> getStatusOption() {
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("CMSTAT001", "Active");

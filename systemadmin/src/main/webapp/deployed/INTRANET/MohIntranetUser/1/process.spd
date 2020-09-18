@@ -443,7 +443,7 @@
    <SwitchCase component="/Steps/AutomaticStep/PrepareRole" value="&quot;doRole&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/flash" value="&quot;importCancel&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/importUserRole" value="&quot;importUserRole&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/exportUserRole" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/exportUserRole" value="&quot;exportUserRole&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
