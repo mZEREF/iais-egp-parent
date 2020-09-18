@@ -282,7 +282,7 @@ public class InspectReviseNcEmailDelegator {
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             completedTask(taskDto);
 
-            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_AO1);
+            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS);
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
             hcsaSvcStageWorkingGroupDto.setType(applicationViewDto.getApplicationDto().getApplicationType());
@@ -294,7 +294,7 @@ public class InspectReviseNcEmailDelegator {
             taskDto1.setTaskType(taskDto.getTaskType());
             taskDto1.setRoleId(RoleConsts.USER_ROLE_AO1);
             taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
-            taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_AO1);
+            taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
             taskDto1.setUserId(appPremisesRoutingHistoryDto.getActionby());
             List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
