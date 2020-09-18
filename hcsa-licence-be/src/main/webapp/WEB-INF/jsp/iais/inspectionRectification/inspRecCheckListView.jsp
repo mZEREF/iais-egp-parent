@@ -72,7 +72,7 @@
                           </tr>
                           </thead>
                           <tbody>
-                          <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="two">
+                          <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
                             <tr>
                               <td class="row_no">${(status.index + 1) }</td>
                               <td>${item.incqDto.regClauseNo}</td>
