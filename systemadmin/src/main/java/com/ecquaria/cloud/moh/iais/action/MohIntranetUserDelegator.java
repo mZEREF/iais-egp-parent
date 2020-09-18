@@ -1277,7 +1277,7 @@ public class MohIntranetUserDelegator {
      * @param bpc
      * @throws
      */
-    public void apptInspectionDateStep1(BaseProcessClass bpc) throws IOException, DocumentException {
+    public void importUserRole(BaseProcessClass bpc) throws IOException, DocumentException {
         log.debug(StringUtil.changeForLog("the importUserRole start ...."));
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CommonsMultipartFile sessionFile = (CommonsMultipartFile) request.getFile("userRoleUpload");

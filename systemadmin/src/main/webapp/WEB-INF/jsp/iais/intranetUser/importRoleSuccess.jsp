@@ -28,10 +28,10 @@
               <table class="table application-group">
                 <thead>
                   <tr>
-                    <th>No.</th>
-                    <th>User ID</th>
-                    <th>Role ID</th>
-                    <th>Status</th>
+                    <th style="width:10%;">No.</th>
+                    <th style="width:30%;">User ID</th>
+                    <th style="width:30%;">Role ID</th>
+                    <th style="width:30%;">Status</th>
                   </tr>
                 </thead>
                 <tbody>

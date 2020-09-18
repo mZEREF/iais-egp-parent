@@ -238,32 +238,37 @@ public class IntranetUserServiceImpl implements IntranetUserService {
         for (int i = 1; i <= list.size(); i++) {
             try {
                 boolean errorData = true;
-                Element element = (Element) list.get(i);
+                Element element = (Element) list.get(i - 1);
                 String userId = element.element("userId").getText();
                 String roleId = element.element("roleId").getText();
                 if(StringUtil.isEmpty(userId)){
                     errorData = false;
-                    fileErrorMap.put(errorUserIdKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "userId","field"));
+                    fileErrorMap.put(errorUserIdKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "User ID","field"));
+                } else {
+                    OrgUserDto oldOrgUserDto = findIntranetUserByUserId(userId);
+                    if(oldOrgUserDto == null){
+                        errorData = false;
+                        fileErrorMap.put(errorUserIdKey + i, "USER_ERR012");
+                    }
                 }
                 if(StringUtil.isEmpty(roleId)){
                     errorData = false;
-                    fileErrorMap.put(errorRoleKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "roleId","field"));
+                    fileErrorMap.put(errorRoleKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Role ID","field"));
+                } else {
+                    List<Role> rolesByDomain = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);//NOSONAR
+                    //egp contains role
+                    fileErrorMap = containsRoleVal(rolesByDomain, roleId, fileErrorMap, errorRoleKey + i, errorData);//NOSONAR
                 }
-                OrgUserDto oldOrgUserDto = findIntranetUserByUserId(userId);
-                if(oldOrgUserDto == null){
-                    errorData = false;
-                    fileErrorMap.put(errorUserIdKey + i, "USER_ERR012");
-                }
-                List<Role> rolesByDomain = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);//NOSONAR
-                //egp contains role
-                fileErrorMap = containsRoleVal(rolesByDomain, roleId, fileErrorMap, errorUserIdKey + i, errorData);//NOSONAR
-                List<OrgUserRoleDto> orgUserRoleDtos = retrieveRolesByuserAccId(userId);
-                if(!IaisCommonUtils.isEmpty(orgUserRoleDtos)){
-                    for(OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos){
-                        if(orgUserRoleDto != null){
-                            if(roleId.equals(orgUserRoleDto.getRoleName())){
-                                errorData = false;
-                                fileErrorMap.put(errorUserIdKey + i, "USER_ERR011");
+                if(!StringUtil.isEmpty(userId) && !StringUtil.isEmpty(roleId)) {
+                    OrgUserDto oldOrgUserDto = findIntranetUserByUserId(userId);
+                    List<OrgUserRoleDto> orgUserRoleDtos = retrieveRolesByuserAccId(oldOrgUserDto.getId());
+                    if (!IaisCommonUtils.isEmpty(orgUserRoleDtos)) {
+                        for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                            if (orgUserRoleDto != null) {
+                                if (roleId.equals(orgUserRoleDto.getRoleName())) {
+                                    errorData = false;
+                                    fileErrorMap.put(errorUserIdKey + i, "USER_ERR011");
+                                }
                             }
                         }
                     }
@@ -284,11 +289,13 @@ public class IntranetUserServiceImpl implements IntranetUserService {
 
     private Map<String, String> containsRoleVal(List<Role> rolesByDomain, String roleId, Map<String, String> fileErrorMap, String errorKey, boolean errorData) {
         if(!IaisCommonUtils.isEmpty(rolesByDomain)){//NOSONAR
+            List<String> systemRoleId = IaisCommonUtils.genNewArrayList();
             for(Role role : rolesByDomain){
                 String id = role.getId();
-                if(!(roleId.equals(id))){
-                    fileErrorMap.put(errorKey, "USER_ERR013");
-                }
+                systemRoleId.add(id);
+            }
+            if(!systemRoleId.contains(roleId)){
+                fileErrorMap.put(errorKey, "USER_ERR013");
             }
         }
         return fileErrorMap;
