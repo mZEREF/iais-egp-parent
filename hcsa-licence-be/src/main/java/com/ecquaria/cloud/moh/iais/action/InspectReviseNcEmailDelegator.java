@@ -423,8 +423,8 @@ public class InspectReviseNcEmailDelegator {
             }
         }
         List<SelectOption> appTypeOption=MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW});
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS);
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_AO1);
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS,RoleConsts.USER_ROLE_INSPECTION_LEAD);
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS,RoleConsts.USER_ROLE_AO1);
 
         try {
             if(appPremisesRoutingHistoryDto.getUpdatedDt().compareTo(appPremisesRoutingHistoryDto1.getUpdatedDt()) <= 0) {
