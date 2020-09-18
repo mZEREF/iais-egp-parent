@@ -90,7 +90,7 @@ public class EicGatewayFeMainClient {
 
     public ResponseEntity<String> getMyInfoEic(@RequestHeader("Authorization") String authorizationMyInfo, @PathVariable(name = "uinfin") String idNumber,
                                                @RequestParam(name = "attributes") String[] attrs, @RequestParam(name = "clientId") String clientId,
-                                               @RequestParam(name = "singpassEserviceId") String singPassEServiceId, @RequestParam(name = "txnNo", required = false) String txnNo) {
+                                               @RequestParam(name = "singpassEserviceId") String singPassEServiceId, @RequestParam(name = "txnNo", required = false) String txnNo,String myInfoPath) {
         Map<String, Object> params = IaisCommonUtils.genNewHashMap();
         params.put("uinfin", idNumber);
         params.put("attributes",attrs);
@@ -101,9 +101,11 @@ public class EicGatewayFeMainClient {
         }
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        HttpHeaders httpHeaders = IaisEGPHelper.getHttpHeadersForEic( new MediaType("application/jose"), signature.date(), signature.authorization(),
+        HttpHeaders httpHeaders = IaisEGPHelper.getHttpHeadersForEic( new MediaType("application","jose"), signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
         httpHeaders.add("authorization-Myinfo",authorizationMyInfo);
-        return  IaisCommonUtils.callEicGatewayWithHeaderParam(gateWayUrl + "/v1/myinfo-server/testInfo/myinfo/person-basic/{uinfin}/",HttpMethod.GET,params,httpHeaders,String.class);
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append(gateWayUrl).append("/v1/myinfo-server/").append(myInfoPath).append("/v2/person-basic/{uinfin}/");
+        return  IaisCommonUtils.callEicGatewayWithHeaderParam(stringBuffer.toString(),HttpMethod.GET,params,httpHeaders,String.class);
     }
 }
