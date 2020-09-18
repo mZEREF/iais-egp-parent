@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
+import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -35,6 +36,10 @@ import java.util.Map;
 public class FESingpassLandingDelegator {
     @Autowired
     private OrgUserManageService orgUserManageService;
+
+
+    @Autowired
+    private MyInfoAjax myInfoAjax;
 
     /**
      * StartStep: startStep
@@ -123,17 +128,21 @@ public class FESingpassLandingDelegator {
     public void receiveUserInfo(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String identityNo = ParamUtil.getRequestString(request, UserConstants.ENTITY_ID);
+
         log.info("receiveUserInfo===========>>>Start");
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
-
         String idType = IaisEGPHelper.checkIdentityNoType(identityNo);
-
         FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNricAndType(identityNo, idType);
-
         if (feUserDto != null){
             ParamUtil.setRequestAttr(request, "isFirstLogin", IaisEGPConstant.NO);
         }else {
             feUserDto = new FeUserDto();
+            MyInfoDto myInfoDto = myInfoAjax.getMyInfo(identityNo);
+            if (myInfoDto != null){
+                feUserDto.setEmail(myInfoDto.getEmail());
+                feUserDto.setMobileNo(myInfoDto.getMobileNo());
+            }
+
             feUserDto.setIdentityNo(identityNo);
             feUserDto.setIdType(idType);
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_CAN_EDIT_USERINFO, IaisEGPConstant.NO);
