@@ -94,7 +94,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             String decisionValue = ParamUtil.getString(request,"decisionValues");
 
             if(StringUtil.isEmpty(decisionValue)){
-                errMap.put("decisionValues","GENERAL_ERR0024");
+                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","The field", "field");
+                errMap.put("decisionValues",errMsg);
             }else{
                 if(!isRequestForChange){
                     if(DECISION_APPROVAL.equals(decisionValue)){
@@ -114,7 +115,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             if (isRouteBackStatus(status) || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
                 String nextStageReplys = ParamUtil.getRequestString(request, "nextStageReplys");
                 if (StringUtil.isEmpty(nextStageReplys)) {
-                    errMap.put("nextStageReplys", "GENERAL_ERR0024");
+                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","The field", "field");
+                    errMap.put("nextStageReplys", errMsg);
                 } else {
                     ParamUtil.setRequestAttr(request, "selectNextStageReply", nextStageReplys);
                 }
@@ -173,7 +175,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                                 String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","The field", "field");
                                 errMap.put("rollBack", errMsg);
                             }
-                        } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage) && !ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType) && !isWithdrawal && !isCessation){
+                        } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage) && !ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
                             //rfiSelectValue
                             String rfiSelectValue = ParamUtil.getRequestString(request, "rfiSelectValue");
                             if(StringUtil.isEmpty(rfiSelectValue)){
