@@ -38,7 +38,7 @@
             <#if personnelRegnNo??> AND (charindex( :personnelRegnNo, appSvcPer.PROF_REG_NO )>0 OR charindex( :personnelRegnNo, appGrpPerExt.PROF_REG_NO )>0)</#if>
             <#if personnelRole??> AND  appKeyPsn.PSN_TYPE = :personnelRole</#if>
             <#if svc_id??> AND app.SERVICE_ID = :svc_id</#if>
-            <#if hciCode??> AND  (T3.HCI_CODE IS NULL OR T3.HCI_CODE = :hciCode)</#if>
+            <#if licHciCode??> AND  ${licHciCode}</#if>
 
             <#if licence_status??>AND :licence_status = :licence_status</#if>
             <#if start_date??>AND :start_date = :start_date</#if>
@@ -86,7 +86,7 @@
             <#if licence_no??> AND charindex(:licence_no, lic.licence_no )>0</#if>
             <#if app_id??> AND licApp.APPLICATION_ID = :app_id</#if>
             <#if org_ids??> AND lic.ORGANIZATION_ID in( :org_ids)</#if>
-            <#if hciCode??> AND charindex(:hciCode, Prem.HCI_CODE )>0</#if>
+            <#if licHciCode??> AND  ${licHciCode}</#if>
             <#if hciName??> AND charindex(:hciName, Prem.HCI_NAME )>0</#if>
             <#if hciStreetName??> AND charindex(:hciStreetName, Prem.STREET_NAME )>0</#if>
             <#if hciPostalCode??> AND charindex(:hciPostalCode, Prem.POSTAL_CODE )>0</#if>
