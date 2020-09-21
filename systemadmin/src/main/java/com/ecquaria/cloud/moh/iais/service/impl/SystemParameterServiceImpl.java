@@ -80,9 +80,6 @@ public class SystemParameterServiceImpl implements SystemParameterService {
         dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         SystemParameterDto postUpdate = systemClient.saveSystemParameter(dto).getEntity();
 
-
-        int test = config.getDraftValidity();
-        System.out.println(test);
         EicRequestTrackingDto postSaveTrack = trackingHelper.clientSaveEicRequestTracking(EicClientConstant.SYSTEM_ADMIN_CLIENT, SystemParameterServiceImpl.class.getName(),
                 "callEicCreateSystemParameter", currentApp + "-" + currentDomain,
                 SystemParameterDto.class.getName(), JsonUtil.parseToJson(postUpdate));
@@ -112,6 +109,7 @@ public class SystemParameterServiceImpl implements SystemParameterService {
     public void callEicCreateSystemParameter(SystemParameterDto systemParameterDto){
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        systemParameterDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         eicGatewayClient.saveSystemParameterFe(systemParameterDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
     }
