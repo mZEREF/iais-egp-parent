@@ -41,28 +41,24 @@
           <div class="license-info-gp">
             <div class="license-info-row">
               <div class="licnese-info">
-                <p>Licensee: <strong>Greenwood Clinic</strong> </p>
+                <p>Licensee: <strong>${licensee.name}</strong> </p>
               </div>
               <div class="license-edit">
-                <p><a class="license-view">View</a></p>
+                <p><a class="license-view" href="javascript:void(0);" onclick="popUplicensee('${licenseeurl}',0)">View</a></p>
               </div>
             </div>
-            <div class="license-info-row">
-              <div class="licnese-info">
-                <p>Authorised User 1: <strong>Mo Delan</strong> </p>
-              </div>
-              <div class="license-edit">
-                <p><a class="authorise-view">View</a></p>
-              </div>
-            </div>
-            <div class="license-info-row">
-              <div class="licnese-info">
-                <p>Authorised User 2: <strong>Linda Tan</strong> </p>
-              </div>
-              <div class="license-edit">
-                <p><a class="authorise-view">View</a></p>
-              </div>
-            </div>
+            <c:if test="${!empty feUserDtos && 'LICT001'.equals(licensee.licenseeType)}">
+              <c:forEach var="item" items="${feUserDtos}" varStatus="status">
+                <div class="license-info-row">
+                  <div class="licnese-info">
+                    <p>Authorised User ${(status.index + 1)}: <strong>${item.displayName}</strong> </p>
+                  </div>
+                  <div class="license-edit">
+                    <p><a class="authorise-view" href="javascript:void(0);" onclick="popUplicensee('${authorisedUrl}','<iais:mask name="authorisedId${status.index}" value="${item.id}"/>','authorisedId${status.index}')">View</a></p>
+                  </div>
+                </div>
+              </c:forEach>
+            </c:if>
 
           </div>
         </div>
@@ -100,21 +96,30 @@
       $("#mainForm").submit();
   }
 
-  $(".license-view").click(function () {
-      $("input[name='switch_action_type']").val("showlicense");
-      $("input[name='crud_action_additional']").val("Licensee");
-      $("#mainForm").submit();
-  });
+  // $(".license-view").click(function () {
+  //     $("input[name='switch_action_type']").val("showlicense");
+  //     $("input[name='crud_action_additional']").val("Licensee");
+  //     $("#mainForm").submit();
+  // });
+  //
+  // $(".authorise-view").click(function () {
+  //     $("input[name='switch_action_type']").val("showlicense");
+  //     $("input[name='crud_action_additional']").val("Authorised");
+  //     $("#mainForm").submit();
+  // });
+  //
+  // $(".medAlert-view").click(function () {
+  //     $("input[name='switch_action_type']").val("showlicense");
+  //     $("input[name='crud_action_additional']").val("MedAlert");
+  //     $("#mainForm").submit();
+  // });
 
-  $(".authorise-view").click(function () {
-      $("input[name='switch_action_type']").val("showlicense");
-      $("input[name='crud_action_additional']").val("Authorised");
-      $("#mainForm").submit();
-  });
-
-  $(".medAlert-view").click(function () {
-      $("input[name='switch_action_type']").val("showlicense");
-      $("input[name='crud_action_additional']").val("MedAlert");
-      $("#mainForm").submit();
-  });
+  function popUplicensee(url,id,name){
+    if(id != 0){
+      url = url + "&"+name+"=" +id+ "&name=" + name+"&licenseeCompanyflag=pop";
+    }else{
+      url = url + "&licenseeCompanyflag=pop";
+    }
+    window.open(url,"_blank", "scrollbars=yes,resizable=1,modal=false,alwaysRaised=yes");
+  }
 </script>

@@ -65,13 +65,13 @@
             </div>
 
         </div>
-
-        <div class="row">
-            <div class="col-xs-2 col-md-2">
-                <a align="left" class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
+        <c:if test="${'common'.equals(flag)}">
+            <div class="row">
+                <div class="col-xs-2 col-md-2">
+                    <a align="left" class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
+                </div>
             </div>
-        </div>
-
+        </c:if>
     </div>
 </form>
 <script type="text/javascript">

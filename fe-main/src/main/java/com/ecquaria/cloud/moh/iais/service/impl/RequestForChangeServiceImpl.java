@@ -5,10 +5,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnlAssessQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SelfPremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminMainFeClient;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +43,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     
     @Autowired
     SystemAdminMainFeClient systemAdminClient;
+
+    @Autowired
+    FeAdminClient feAdminClient;
     
     @Override
     public List<PremisesListQueryDto> getPremisesList(String licenseeId) {
@@ -69,6 +81,21 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     public SearchResult<PersonnelQueryDto> searchPsnInfo(SearchParam searchParam) {
         return licenceClient.searchPsnInfo(searchParam).getEntity();
+    }
+
+    @Override
+    public LicenseeDto getLicenseeByOrgId(String orgId){
+        return feAdminClient.getLicenseeByOrgId(orgId).getEntity().get(0);
+    }
+
+    @Override
+    public List<LicenseeKeyApptPersonDto> getLicenseeKeyApptPersonDtoListByLicenseeId(String licenseeId) {
+        return feAdminClient.getLicenseeKeyApptPersonDtoListByLicenseeId(licenseeId).getEntity();
+    }
+
+    @Override
+    public List<FeUserDto> getAccountByOrgId(String orgId){
+        return feAdminClient.getAccountByOrgId(orgId).getEntity();
     }
 
     @Override

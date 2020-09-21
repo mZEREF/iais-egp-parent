@@ -68,7 +68,7 @@
                     <p>Authorised User ${(status.index + 1)}: <strong>${item.displayName}</strong> </p>
                   </div>
                   <div class="license-edit">
-                    <p><a class="authorise-view" href="javascript:void(0);" onclick="popUplicensee('${authorisedUrl}','<iais:mask name="authorisedId" value="{item.id}"/>')">View</a></p>
+                    <p><a class="authorise-view" href="javascript:void(0);" onclick="popUplicensee('${authorisedUrl}','<iais:mask name="authorisedId${status.index}" value="${item.id}"/>','authorisedId${status.index}')">View</a></p>
                   </div>
                 </div>
               </c:forEach>
@@ -123,11 +123,13 @@
 
   }
 
-  function popUplicensee(url,id){
+  function popUplicensee(url,id,name){
     if(id != 0){
-      url = url + "&authorisedId=" +id;
+      url = url + "&"+name+"=" +id+ "&name=" + name+"&licenseeCompanyflag=pop";
+    }else{
+      url = url + "&licenseeCompanyflag=pop";
     }
-    window.open(url);
+    window.open(url,"_blank", "scrollbars=yes,resizable=1,modal=false,alwaysRaised=yes");
   }
 
   // $(".license-view").click(function () {

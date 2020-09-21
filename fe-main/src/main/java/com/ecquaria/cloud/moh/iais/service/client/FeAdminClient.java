@@ -30,6 +30,9 @@ public interface FeAdminClient {
     @GetMapping(value = "/iais-internet-user/organization-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrganizationDto> getOrganizationById(@RequestParam("id") String id);
 
+    @GetMapping(path = "/iais-internet-user/user-account-orgid", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<FeUserDto>> getAccountByOrgId(@RequestParam(value = "orgId")String orgId);
+
     @RequestMapping(path = "/iais-internet-user/add-admin-account",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FeUserDto> addAdminAccount(@RequestBody FeUserDto feUserDto);
 
@@ -41,6 +44,9 @@ public interface FeAdminClient {
 
     @GetMapping(value = "/iais-licensee/licenseesByOrgId/{orgId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenseeDto>> getLicenseeByOrgId(@PathVariable(name = "orgId") String orgId);
+
+    @GetMapping(value = "/iais-licensee/licenseeKeyApptPersonByLicId/{licenseeId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenseeKeyApptPersonDto>> getLicenseeKeyApptPersonDtoListByLicenseeId(@PathVariable("licenseeId") String licenseeId);
 
     @GetMapping(value = "/iais-licensee/getPersonByid/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenseeKeyApptPersonDto>> getPersonByid(@PathVariable(name = "id") String id);

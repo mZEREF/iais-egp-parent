@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPerson
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -41,8 +42,7 @@ public class LicenseeCompanyDelegate {
      * @throws
      */
     public void start(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction("LicenseeSoloDelegate", "LicenseeSoloDelegate");
-        log.debug("****doStart Process ****");
+
     }
 
     /**
@@ -52,6 +52,10 @@ public class LicenseeCompanyDelegate {
      * @throws
      */
     public void prepare(BaseProcessClass bpc) {
+        String name = ParamUtil.getString(bpc.request,"name");
+        String id = ParamUtil.getMaskedString(bpc.request,name);
+        ParamUtil.setSessionAttr(bpc.request,"licenseeId",id);
+        AuditTrailHelper.auditFunction("LicenseeCompanyDelegate", "LicenseeCompanyDelegate");
         log.debug("****preparePage Process ****");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
@@ -98,6 +102,11 @@ public class LicenseeCompanyDelegate {
 
     public void licensee(BaseProcessClass bpc) {
         log.debug("****preparePage Process ****");
+        String flag = ParamUtil.getString(bpc.request,"licenseeCompanyflag");
+        if(StringUtil.isEmpty(flag)){
+            flag = "common";
+        }
+        ParamUtil.setRequestAttr(bpc.request,"licenseeCompanyflag",flag);
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
         List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDto = orgUserManageService.getPersonById(loginContext.getLicenseeId());
@@ -108,7 +117,12 @@ public class LicenseeCompanyDelegate {
 
     public void authorised(BaseProcessClass bpc) {
         log.debug("****preparePage Process ****");
-        String id = ParamUtil.getMaskedString(bpc.request,"authorisedId");
+        String flag = ParamUtil.getString(bpc.request,"licenseeCompanyflag");
+        if(StringUtil.isEmpty(flag)){
+            flag = "common";
+        }
+        ParamUtil.setRequestAttr(bpc.request,"flag",flag);
+        String id = (String)ParamUtil.getSessionAttr(bpc.request,"licenseeId");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<FeUserDto> feUserDtos = orgUserManageService.getAccountByOrgId(loginContext.getOrgId());
         if(feUserDtos!= null && feUserDtos.size() > 0){
