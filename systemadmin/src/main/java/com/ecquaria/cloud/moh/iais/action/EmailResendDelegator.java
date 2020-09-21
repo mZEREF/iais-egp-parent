@@ -162,9 +162,9 @@ public class EmailResendDelegator {
         ParamUtil.setSessionAttr(bpc.request,"notiId",notiId);
 
         if(blastManagementDtoById.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
-            blastManagementDtoById.setStatus("acitve");
+            blastManagementDtoById.setStatus("Acitve");
         }else{
-            blastManagementDtoById.setStatus("inacitve");
+            blastManagementDtoById.setStatus("Inacitve");
         }
         setTimeSelection(bpc);
         ParamUtil.setSessionAttr(bpc.request,"resendBlastedit",blastManagementDtoById);
