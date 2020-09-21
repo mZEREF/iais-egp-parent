@@ -6,16 +6,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfo
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
 
 /**
  * RequestForInformationClient
@@ -38,12 +38,6 @@ public interface RequestForInformationClient {
 
     @GetMapping (value = "/hcsa-reqForInfo/licence-one-rfi/{reqForInfoId}")
     FeignResponseEntity<LicPremisesReqForInfoDto> getLicPreReqForInfo(@PathVariable("reqForInfoId")String id);
-
-    @DeleteMapping(value = "/hcsa-reqForInfo/licence-cancel-rfi",consumes = MediaType.APPLICATION_JSON_VALUE)
-    void deleteLicPremisesReqForInfo(@RequestBody String id);
-
-    @PostMapping(value = "/hcsa-reqForInfo/licence-accept-rfi",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    void acceptLicPremisesReqForInfo(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto);
 
     @PostMapping(value = "/hcsa-reqForInfo/update-rfi",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicPremisesReqForInfoDto> updateLicPremisesReqForInfoFe(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto);

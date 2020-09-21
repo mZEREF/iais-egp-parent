@@ -293,17 +293,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     }
 
     @Override
-    public void deleteLicPremisesReqForInfo(String id) {
-        requestForInformationClient.deleteLicPremisesReqForInfo(id);
-
-    }
-
-    @Override
-    public void acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
-        requestForInformationClient.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
-
-    }
-    @Override
     public byte[] downloadFile(String fileRepoId) {
         return fileRepoClient.getFileFormDataBase(fileRepoId).getEntity();
     }

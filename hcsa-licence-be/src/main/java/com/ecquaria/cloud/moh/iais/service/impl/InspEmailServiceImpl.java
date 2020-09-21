@@ -55,6 +55,7 @@ public class InspEmailServiceImpl implements InspEmailService {
     @Override
     public String updateEmailDraft(InspectionEmailTemplateDto inspectionEmailTemplateDto) {
         inspectionEmailTemplateDto.setMessageContent(StringUtil.removeNonUtf8(inspectionEmailTemplateDto.getMessageContent()));
+        inspectionEmailTemplateDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return insEmailClient.updateEmailDraft(inspectionEmailTemplateDto).getEntity();
     }
 

@@ -52,19 +52,7 @@ public class RequestForInformationClientFallback implements RequestForInformatio
         return entity;
     }
 
-    @Override
-    public void deleteLicPremisesReqForInfo(String id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-    }
 
-    @Override
-    public void acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-    }
     @Override
     public FeignResponseEntity<LicPremisesReqForInfoDto> updateLicPremisesReqForInfoFe(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
