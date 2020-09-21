@@ -1123,10 +1123,10 @@ public class NewApplicationDelegator {
             String effectiveDateStr = ParamUtil.getString(bpc.request, "rfcEffectiveDate");
             if (!StringUtil.isEmpty(effectiveDateStr)) {
                 appSubmissionDto.setEffectiveDateStr(effectiveDateStr);
-                String configDateSize = MasterCodeUtil.getCodeDesc("EFFDATE");
+                int configDateSize = systemParamConfig.getRfcPeriodEffdate();
                 LocalDate effectiveDate = LocalDate.parse(effectiveDateStr, DateTimeFormatter.ofPattern(Formatter.DATE));
                 LocalDate today = LocalDate.now();
-                LocalDate configDate = LocalDate.now().plusDays(Integer.parseInt(configDateSize));
+                LocalDate configDate = LocalDate.now().plusDays(configDateSize);
                 if (effectiveDate.isBefore(today)) {
                     errorMap.put("rfcEffectiveDate", "RFC_ERR012");
                 } else if (effectiveDate.isAfter(configDate)) {
