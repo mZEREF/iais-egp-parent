@@ -510,10 +510,10 @@ public class ConfigServiceImpl implements ConfigService {
                 if(pageMandatoryCount.matches("^[0-9]+$")){
                     int i1 = Integer.parseInt(pageMandatoryCount);
                     if (i1<0){
-                        errorMap.put("mandatoryCountCGO", "CHKLMD001_ERR003");
+                        errorMap.put("mandatoryCountCGO", "GENERAL_ERR0002");
                     }
                 }else {
-                    errorMap.put("mandatoryCount"+i,"CHKLMD001_ERR003");
+                    errorMap.put("mandatoryCount"+i,"GENERAL_ERR0002");
                 }
             }
             if (StringUtil.isEmpty(pageMaximumCount)) {
@@ -522,10 +522,10 @@ public class ConfigServiceImpl implements ConfigService {
                 if(pageMaximumCount.matches("^[0-9]+$")){
                     int i1 = Integer.parseInt(pageMandatoryCount);
                     if(i1<0){
-                        errorMap.put("maximumCount"+i,"CHKLMD001_ERR003");
+                        errorMap.put("maximumCount"+i,"GENERAL_ERR0002");
                     }
                 }else {
-                    errorMap.put("maximumCount"+i,"CHKLMD001_ERR003");
+                    errorMap.put("maximumCount"+i,"GENERAL_ERR0002");
                 }
             }
             if(!StringUtil.isEmpty(mandatoryCount)&&!StringUtil.isEmpty(maximumCount)){

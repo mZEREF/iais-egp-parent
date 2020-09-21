@@ -91,6 +91,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Override
     public FeUserDto editUserAccount(FeUserDto feUserDto){
+        feUserDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return feUserClient.editUserAccount(feUserDto).getEntity();
     }
 
