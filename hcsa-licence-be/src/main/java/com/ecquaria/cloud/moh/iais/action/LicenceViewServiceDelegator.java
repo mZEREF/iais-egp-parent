@@ -126,6 +126,7 @@ public class LicenceViewServiceDelegator {
      */
     public void PrepareViewData(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData start ..."));
+        ParamUtil.setSessionAttr(bpc.request, "appealSpecialDocDto",null);
         String rfi = bpc.request.getParameter("rfi");
         String requestRfi = (String)bpc.request.getAttribute("rfi");
         if (!StringUtil.isEmpty(rfi)||!StringUtil.isEmpty(requestRfi)) {

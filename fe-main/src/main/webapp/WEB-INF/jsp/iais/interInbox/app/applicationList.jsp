@@ -323,7 +323,7 @@
 
             <iais:confirm msg="${delDraftConfMsg}" needFungDuoJi="false" popupOrder="deleteDraftModal" callBack="delDraftCancelBtn()" title=" " cancelFunc="delDraftYesBtn()" cancelBtnDesc="OK" yesBtnDesc="Cancel" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"  />
             <iais:confirm msg="${delDraftAckMsg}" needFungDuoJi="false" popupOrder="deleteDraftMessage"  title=" " callBack="delDraftMsgYesBtn()"  needCancel="false" />
-            <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftAppealAppealByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteAppealAppealDraft()"></iais:confirm>
+            <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftAppealAppealByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteAppealAppealDraft()"/>
            <input type="hidden" name="appealApplication" id="appealApplication" value="${appealApplication}">
         </div>
     </div>

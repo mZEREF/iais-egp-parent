@@ -49,8 +49,7 @@
                     <div class="document-upload-list">
                         <h3>File upload for Withdrawal Reasons</h3>
                         <div class="file-upload-gp">
-                            <div id="delFile" style="margin-top: 13px;color: #1F92FF;"
-                                 hidden="hidden">
+                            <div id="delFile" style="margin-top: 13px;color: #1F92FF;">
                                 <c:if test="${not empty appealSpecialDocDto}">
                                     <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo&fileRo=<iais:mask name="fileRo"  value="${appealSpecialDocDto.fileRepoId}"/>&fileRepoName=${appealSpecialDocDto.docName}"
                                        title="Download" class="downloadFile"><c:out
