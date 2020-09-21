@@ -88,6 +88,7 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
         if(taskEmailDtoList != null) {
             for (TaskEmailDto item : taskEmailDtoList
             ) {
+                log.info(StringUtil.changeForLog("getApplicationBytaskId:" +item.getRefNo()));
                 //get application
                 ApplicationDto applicationDto = applicationService.getApplicationBytaskId(item.getRefNo());
                 String stage;
@@ -98,6 +99,7 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                 } else {
                     stage = item.getTaskKey();
                 }
+                log.info(StringUtil.changeForLog("applicationDto:" +applicationDto.getApplicationNo()));
                 HcsaSvcKpiDto hcsaSvcKpiDto = kpiAndReminderService.searchKpi(HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId()).getSvcCode(), applicationDto.getApplicationType());
                 if(hcsaSvcKpiDto != null) {
                     //get current stage worked days
