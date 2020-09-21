@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplate
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -33,6 +34,7 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.Date;
@@ -87,9 +89,13 @@ public class CessationEffectiveDateBatchjob {
     }
 
     public void doBatchJob(BaseProcessClass bpc) {
+        String effectiveDateStr = ParamUtil.getRequestString(bpc.request, "setTime");
+        Date date = new Date();
+        if(!StringUtil.isEmpty(effectiveDateStr)){
+            date = DateUtil.parseDate(effectiveDateStr, AppConsts.DEFAULT_DATE_FORMAT);
+        }
         //licence
         log.debug(StringUtil.changeForLog("The CessationLicenceBatchJob is doBatchJob ..."));
-        Date date = new Date();
         List<LicenceDto> licenceDtos = IaisCommonUtils.genNewArrayList();
         List<ApplicationGroupDto> applicationGroupDtos = cessationClient.listAppGrpForCess().getEntity();
         log.info(StringUtil.changeForLog("====================appGrpGtos  size ==================" + applicationGroupDtos.size()));

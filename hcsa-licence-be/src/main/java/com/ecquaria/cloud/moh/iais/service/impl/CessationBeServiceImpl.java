@@ -479,6 +479,7 @@ public class CessationBeServiceImpl implements CessationBeService {
     }
 
     private AppCessMiscDto setMiscData(AppCessationDto appCessationDto, String appId) {
+        AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         Date effectiveDate = appCessationDto.getEffectiveDate();
         String reason = appCessationDto.getReason();
         String otherReason = appCessationDto.getOtherReason();
@@ -497,6 +498,7 @@ public class CessationBeServiceImpl implements CessationBeService {
         appCessMiscDto.setPatNoReason(patNoRemarks);
         appCessMiscDto.setPatTransType(patientSelect);
         appCessMiscDto.setAppId(appId);
+        appCessMiscDto.setAuditTrailDto(currentAuditTrailDto);
         if (!StringUtil.isEmpty(patHciName)) {
             appCessMiscDto.setPatTransTo(patHciName);
         }

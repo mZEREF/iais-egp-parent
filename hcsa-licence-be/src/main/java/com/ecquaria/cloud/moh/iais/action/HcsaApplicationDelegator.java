@@ -106,6 +106,7 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationProcessUploadFileValidate;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
 import com.ecquaria.cloudfeign.FeignException;
+import com.ecquaria.csrfguard.action.IAction;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -1799,8 +1800,11 @@ public class HcsaApplicationDelegator {
                     ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
                     if (oldApplication != null){
                         String oldAppNo = oldApplication.getApplicationNo();
+                        oldApplication.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW);
+                        List<ApplicationDto> applicationDtosReturn = IaisCommonUtils.genNewArrayList();
+                        applicationDtosReturn.add(oldApplication);
                         if (!StringUtil.isEmpty(oldAppNo)){
-                            List<ApplicationDto> applicationReturnFeeDtos = hcsaConfigClient.returnFee(applicationDtos).getEntity();
+                            List<ApplicationDto> applicationReturnFeeDtos = hcsaConfigClient.returnFee(applicationDtosReturn).getEntity();
                             if (applicationReturnFeeDtos != null){
                                 Double returnFee = applicationReturnFeeDtos.get(0).getReturnFee();
                                 if (returnFee != null && returnFee >0d){
