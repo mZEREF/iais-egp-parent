@@ -1562,7 +1562,7 @@ public class HalpAssessmentGuideDelegator {
                 cessationError = MessageUtil.getMessageDesc("INBOX_ACK011");
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
                 bpc.request.setAttribute("cessationError",cessationError);
-                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licPremIdValue);
+                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
                 return ;
             }
         }
@@ -1598,7 +1598,7 @@ public class HalpAssessmentGuideDelegator {
             ParamUtil.setRequestAttr(bpc.request, InboxConst.LIC_CEASED_ERR_RESULT, Boolean.TRUE);
             cessationError = MessageUtil.getMessageDesc("CESS_ERR002");
             bpc.request.setAttribute("cessationError",cessationError);
-            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licPremIdValue);
+            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
         } else {
             ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
             StringBuilder url = new StringBuilder();
