@@ -301,6 +301,7 @@ public class RequestForInformationDelegator {
             isNeedDoc = true;
             for(String docTi :docTitle){
                 LicPremisesReqForInfoDocDto licPremisesReqForInfoDocDto1=new LicPremisesReqForInfoDocDto();
+                licPremisesReqForInfoDocDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 licPremisesReqForInfoDocDto1.setTitle(docTi);
                 licPremisesReqForInfoDocDto1.setDocName("");
                 licPremisesReqForInfoDocDtos.add(licPremisesReqForInfoDocDto1);
@@ -312,6 +313,7 @@ public class RequestForInformationDelegator {
             for(String infoTi :infoTitle){
                 LicPremisesReqForInfoReplyDto licPremisesReqForInfoReplyDto=new LicPremisesReqForInfoReplyDto();
                 licPremisesReqForInfoReplyDto.setTitle(infoTi);
+                licPremisesReqForInfoReplyDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 licPremisesReqForInfoReplyDtos.add(licPremisesReqForInfoReplyDto);
             }
         }

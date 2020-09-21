@@ -850,6 +850,7 @@
                                                         <td class="col-xs-4">
                                                             <p>
                                                                 <c:out value="${appPremisesRecommendationDto.followUpAction}"/>
+                                                                <c:if test="${empty appPremisesRecommendationDto.followUpAction}">-</c:if>
                                                             </p>
                                                         </td>
                                                         <td class="col-xs-4"></td>
@@ -871,6 +872,7 @@
                                                         </td>
                                                         <td class="col-xs-4">
                                                             <c:out value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/>
+                                                            <c:if test="${empty appPremisesRecommendationDto.engageEnforcementRemarks}">-</c:if>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>

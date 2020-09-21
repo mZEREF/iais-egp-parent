@@ -82,6 +82,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
     @Override
     public LicPremisesReqForInfoDto acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
+        licPremisesReqForInfoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return responseForInformationClient.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto).getEntity();
     }
 
