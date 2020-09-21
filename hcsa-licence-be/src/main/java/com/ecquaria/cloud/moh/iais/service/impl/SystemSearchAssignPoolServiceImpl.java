@@ -248,10 +248,12 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
                     List<SelectOption> officerOption = IaisCommonUtils.genNewArrayList();
                     int officerNo = 0;
                     for(OrgUserDto orgUserDto : orgUserDtoList){
-                        userIdMap.put(officerNo + "", orgUserDto.getId());
-                        SelectOption so = new SelectOption(officerNo + "", orgUserDto.getDisplayName());
-                        officerOption.add(so);
-                        officerNo++;
+                        if(orgUserDto.getAvailable()) {
+                            userIdMap.put(officerNo + "", orgUserDto.getId());
+                            SelectOption so = new SelectOption(officerNo + "", orgUserDto.getDisplayName());
+                            officerOption.add(so);
+                            officerNo++;
+                        }
                     }
                     groupCheckUserIdMap.put(workGroupNo + "", userIdMap);
                     inspectorByGroup.put(workGroupNo + "", officerOption);
