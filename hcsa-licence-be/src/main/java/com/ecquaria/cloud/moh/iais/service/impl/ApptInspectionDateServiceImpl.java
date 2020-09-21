@@ -317,6 +317,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         cancelOrConfirmApptDate(apptCalendarStatusDto);
 
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         for(TaskDto taskDto1 : taskDtos) {
             String appPremCorrId = taskDto1.getRefNo();
             AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
@@ -325,7 +326,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             appPremisesInspecApptDto.setSpecificInspDate(apptInspectionDateDto.getSpecificDate());
             appPremisesInspecApptDto.setId(null);
             appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            appPremisesInspecApptDto.setAuditTrailDto(auditTrailDto);
             appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
             //save Inspection date
