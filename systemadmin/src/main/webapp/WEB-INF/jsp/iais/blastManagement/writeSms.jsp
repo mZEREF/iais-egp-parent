@@ -33,7 +33,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="col-xs-4 col-md-4 control-label">Select Recipients</label>
+                            <iais:field value="Select Recipients" required="true"/>
                             <iais:value width="10">
                                 <iais:select name="distribution" firstOption="Please Select" options="distribution" value=""></iais:select>
                             </iais:value>
@@ -69,7 +69,7 @@
                         </div>
                         <div class="col-xs-12 col-sm-6">
                             <div class="text-right text-center-mobile">
-                                <a class="btn btn-primary" id="saveDis" >Save</a>
+                                <a class="btn btn-primary" id="saveDis" >Send</a>
                             </div>
                         </div>
                     </div>

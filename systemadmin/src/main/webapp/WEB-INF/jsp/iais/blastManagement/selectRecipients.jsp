@@ -20,7 +20,7 @@
                             <li class="tracker-item active">Select Recipients to send</li>
                         </ul>
                         <div class="form-group">
-                            <label class="col-xs-4 col-md-4 control-label">Use a distribution list</label>
+                            <iais:field value="Use a distribution list" required="true"/>
                             <iais:value width="10">
                                 <iais:select name="distribution" options="distribution" firstOption="Please Select" value="${edit.distributionId}"></iais:select>
                                 <span class="error-distribution" name="iaisErrorMsg" id="error_distribution"></span>
