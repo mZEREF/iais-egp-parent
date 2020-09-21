@@ -23,6 +23,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -248,7 +250,43 @@ public class AppealApproveBatchjob {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationRejection is start ..."));
         ApplicationGroupDto applicationGroupDto = appealApproveDto.getAppealApplicationGroupDto();
         ApplicationDto appealApplicationDto = appealApproveDto.getAppealApplicationDto();
+
+        AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
+        String relateRecId = appealDto.getRelateRecId();
+        Integer recomInNumber = null;
+        String chronoUnit = null;
+        ApplicationDto oldApplication = applicationClient.getApplicationById(relateRecId).getEntity();
+        if(oldApplication != null){
+            String serviceId = oldApplication.getServiceId();
+            HcsaServiceDto serviceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+            if(serviceDto != null){
+                RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
+                riskAcceptiionDto.setScvCode(serviceDto.getSvcCode());
+                riskAcceptiionDto.setRiskScore(5.0);
+                List<RiskAcceptiionDto> listRiskAcceptiionDto = IaisCommonUtils.genNewArrayList();
+                listRiskAcceptiionDto.add(riskAcceptiionDto);
+                List<RiskResultDto> listRiskResult = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();
+                if(!IaisCommonUtils.isEmpty(listRiskResult)){
+                    RiskResultDto riskResultDto = listRiskResult.get(0);
+                    String dateType = riskResultDto.getDateType();
+                    Integer timeCount = riskResultDto.getTimeCount();
+                    if(!StringUtil.isEmpty(dateType)){
+                        chronoUnit = dateType;
+                    }
+                    recomInNumber = timeCount;
+                }
+            }
+        }
+
         AppPremisesRecommendationDto appPremisesRecommendationDto = appealApproveDto.getAppPremisesRecommendationDto();
+        if(appPremisesRecommendationDto != null){
+            if(!StringUtil.isEmpty(chronoUnit)){
+                appPremisesRecommendationDto.setChronoUnit(chronoUnit);
+            }
+            if(recomInNumber != null){
+                appPremisesRecommendationDto.setRecomInNumber(recomInNumber);
+            }
+        }
         AppPremisesRecommendationDto newAppPremisesRecommendationDto = appealApproveDto.getNewAppPremisesRecommendationDto();
         if(applicationGroupDto!=null && appPremisesRecommendationDto !=null && newAppPremisesRecommendationDto!=null && appealApplicationDto!=null){
             String recomDecision = newAppPremisesRecommendationDto.getRecomDecision();

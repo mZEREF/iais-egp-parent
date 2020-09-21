@@ -892,6 +892,7 @@ public class HcsaApplicationDelegator {
                 workingGroupDto.setGroupName(applicationDto.getApplicationNo());
                 workingGroupDto.setGroupDomain(AppConsts.DOMAIN_TEMPORARY);
             }
+            workingGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             workingGroupDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             broadcastOrganizationDto.setWorkingGroupDto(workingGroupDto);
 
@@ -909,6 +910,7 @@ public class HcsaApplicationDelegator {
                     userGroupCorrelationDto.setUserId(id);
                     userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     userGroupCorrelationDto.setIsLeadForGroup(Integer.valueOf(AppConsts.NO));
+                    userGroupCorrelationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     userGroupCorrelationDtoList.add(userGroupCorrelationDto);
                 }
             }
@@ -916,6 +918,7 @@ public class HcsaApplicationDelegator {
 
             //complated this task and create the history
             TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+            taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             taskDto =  completedTask(taskDto);
             broadcastOrganizationDto.setComplateTask(taskDto);
             String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
@@ -927,6 +930,7 @@ public class HcsaApplicationDelegator {
             broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto)CopyUtil.copyMutableObject(applicationDto));
             //update application status
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST);
+            applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             broadcastApplicationDto.setApplicationDto(applicationDto);
             //create the new task and create the history
             TaskDto taskDtoNew = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),taskDto.getTaskKey(),TaskConsts.TASK_TYPE_MAIN_FLOW, taskDto.getRefNo(),null,
@@ -1743,6 +1747,7 @@ public class HcsaApplicationDelegator {
                 LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
                 licAppCorrelationDto.setLicenceId(originLicenceId);
                 licAppCorrelationDto.setApplicationId(applicationDto.getId());
+                licAppCorrelationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 hcsaLicenceClient.saveLicenceAppCorrelation(licAppCorrelationDto);
             }
         }
@@ -1767,6 +1772,7 @@ public class HcsaApplicationDelegator {
                             AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
                             appReturnFeeDto.setApplicationNo(oldApplicationNo);
                             appReturnFeeDto.setReturnAmount(Double.parseDouble(returnFee));
+                            appReturnFeeDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                             appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL);
                             List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
                             saveReturnFeeDtos.add(appReturnFeeDto);
@@ -1811,6 +1817,7 @@ public class HcsaApplicationDelegator {
                                     appReturnFeeDto.setApplicationNo(oldAppNo);
                                     appReturnFeeDto.setReturnAmount(returnFee);
                                     appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW);
+                                    appReturnFeeDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                                     List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
                                     saveReturnFeeDtos.add(appReturnFeeDto);
                                     broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
@@ -1843,6 +1850,7 @@ public class HcsaApplicationDelegator {
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
             applicationDto.setNeedNewLicNo(true);
         }
+        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setApplicationDto(applicationDto);
         // send the task
         if(!StringUtil.isEmpty(stageId)){
@@ -1866,6 +1874,7 @@ public class HcsaApplicationDelegator {
                     WorkingGroupDto workingGroupDto = broadcastOrganizationDto1.getWorkingGroupDto();
                     broadcastOrganizationDto.setRollBackworkingGroupDto((WorkingGroupDto) CopyUtil.copyMutableObject(workingGroupDto));
                     workingGroupDto = changeStatusWrokGroup(workingGroupDto,AppConsts.COMMON_STATUS_DELETED);
+                    workingGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     broadcastOrganizationDto.setWorkingGroupDto(workingGroupDto);
                     List<UserGroupCorrelationDto> userGroupCorrelationDtos = broadcastOrganizationDto1.getUserGroupCorrelationDtoList();
                     List<UserGroupCorrelationDto> cloneUserGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
@@ -1879,6 +1888,7 @@ public class HcsaApplicationDelegator {
             }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus)){
                 if(applicationDto.isFastTracking()){
                     TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,newCorrelationId);
+                    newTaskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     broadcastOrganizationDto.setCreateTask(newTaskDto);
                 }
                 List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
@@ -1898,6 +1908,7 @@ public class HcsaApplicationDelegator {
                     || ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING.equals(appStatus)){
                 AppInspectionStatusDto appInspectionStatusDto = new AppInspectionStatusDto();
                 appInspectionStatusDto.setAppPremCorreId(taskDto.getRefNo());
+                appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_APPOINTMENT_INSPECTION_DATE);
                 broadcastApplicationDto.setAppInspectionStatusDto(appInspectionStatusDto);
                 TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,newCorrelationId);
@@ -2361,6 +2372,7 @@ public class HcsaApplicationDelegator {
         if(userGroupCorrelationDtos!= null && userGroupCorrelationDtos.size() >0){
             for (UserGroupCorrelationDto userGroupCorrelationDto : userGroupCorrelationDtos){
                 userGroupCorrelationDto.setStatus(status);
+                userGroupCorrelationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 result.add(userGroupCorrelationDto);
             }
         }
