@@ -1,9 +1,13 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
@@ -18,26 +22,33 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
-import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +78,14 @@ public class AppealApproveBatchjob {
     private ApplicationClient applicationClient;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
+    @Autowired
+    private NotificationHelper notificationHelper;
+    @Autowired
+    private OrganizationClient organizationClient;
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private EmailClient emailClient;
     @Value("${iais.email.sender}")
@@ -113,6 +132,7 @@ public class AppealApproveBatchjob {
                       ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
                       AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
                       if(applicationDto!= null && appealDto != null){
+                          Date oriExpiry = appealApproveDto.getLicenceDto().getExpiryDate();
                           log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationDto no is -->"+applicationDto.getApplicationNo()));
                           String  appealType = appealDto.getAppealType();
                           log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealType  is -->"+appealType));
@@ -131,7 +151,14 @@ public class AppealApproveBatchjob {
 //                            break;
                               default:break;
                           }
-                        /*  appealOther(appealApplicaiton,rollBackApplication,applicationDto);*/
+                          try {
+                              String reason = appealApproveDto.getAppPremiseMiscDto().getReason();
+                              sendAllEmailApproved(applicationDto,reason,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealDto.getOtherReason(),oriExpiry);
+                          }catch (Exception e){
+
+                          }
+
+                          /*  appealOther(appealApplicaiton,rollBackApplication,applicationDto);*/
                       }
                   }
                   rollBackApplicationGroupDtos.add(applicationGroupDto);
@@ -309,14 +336,6 @@ public class AppealApproveBatchjob {
             appealApplicationGroupDtos.add(a);
         }
 
-        if(appealDto != null){
-            try {
-                sendEmailApproved(appealApproveDto.getApplicationDto(),ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO,"",
-                        "","" );
-            }catch (Exception e){
-                log.error(e.getMessage(),e);
-            }
-        }
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         beEicGatewayClient.updateAppSvcKeyPersonnelDto(appealPersonnel,signature.date(), signature.authorization(),
@@ -373,20 +392,6 @@ public class AppealApproveBatchjob {
         ApplicationGroupDto a=(ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto);
         a.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
         appealApplicationGroupDtos.add(a);
-        try {
-            if(appealDto!=null){
-                String relateRecId = appealDto.getRelateRecId();
-                if(!StringUtil.isEmpty(relateRecId)){
-                    ApplicationDto applicationDto = applicationClient.getApplicationById(relateRecId).getEntity();
-                    if(applicationDto!=null){
-                        sendEmailApproved(applicationDto,ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME,"","",appealDto.getNewHciName());
-                    }
-                }
-            }
-        }catch (Exception e){
-
-            log.error(e.getMessage(),e);
-        }
 
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is end ..."));
     }
@@ -410,13 +415,6 @@ public class AppealApproveBatchjob {
 
             appealLicenceDto.setExpiryDate(expiryDate);
             appealLicence.add(appealLicenceDto);
-            try {
-                sendEmailApproved(applicationDto,ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD,"",expiryDate.toString(),"");
-            }catch (Exception e){
-
-            log.error(e.getMessage(),e);
-
-            }
         }else{
             log.error(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence licenceDto is null or newLicYears <0"));
         }
@@ -433,61 +431,112 @@ public class AppealApproveBatchjob {
             appealApplicaiton.add(appealApplicaitonDto);
         }
 
-        try {
-
-            sendEmailApproved(applicationDto,ApplicationConsts.CESSATION_REASON_OTHER,"","","");
-
-        }catch (Exception e){
-
-            log.error(e.getMessage(),e);
-
-        }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealOther is end ..."));
     }
 
+    public void  sendAllEmailApproved(ApplicationDto applicationDto,String reason,LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto,String otherReason,Date oriExpiry) throws IOException, TemplateException {
+        String paymentMethodName = "";
+        log.info("start send email sms and msg");
+        ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+        String licenseeId = applicationGroupDto.getLicenseeId();
+        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
 
-    public void  sendEmailApproved(ApplicationDto application,String reason,String money,String date, String hciName) throws IOException, TemplateException {
-        MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("5B9EADD2-F27D-EA11-BE82-000C29F371DC").getEntity();
-        if(entity!=null){
-            Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-            map.put("applicationNumber",application.getApplicationNo());
-            StringBuilder stringBuilder=new StringBuilder();
-            if(ApplicationConsts.APPEAL_REASON_APPLICATION_REJECTION.equals(reason)){
+        if(ApplicationConsts.APPEAL_REASON_APPLICATION_REJECTION.equals(reason)){
 
-
-            }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE.equals(reason)){
-                stringBuilder.append("For refund cases:  A refund of ").append(money).append(" has been credited back to your account.");
-
-            }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)){
-
-            }else if(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD.equals(reason)){
-
-                stringBuilder.append("For licence period adjustment: The licence period is now ").append(date);
-
-            }else if(ApplicationConsts.APPEAL_REASON_OTHER.equals(reason)){
-
-
-            }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME.equals(reason)){
-                stringBuilder.append("For application change hci name : The hci name is now ").append(hciName);
-
+        }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE.equals(reason)){
+            //return fee
+            if (ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS.equals(applicationGroupDto.getPmtStatus())) {
+                paymentMethodName = "onlinePayment";
+            }else if (ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(applicationGroupDto.getPmtStatus())) {
+                paymentMethodName = "GIRO";
             }
-            map.put("reason",stringBuilder.toString());
-            String messageContent = entity.getMessageContent();
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
-            EmailDto emailDto=new EmailDto();
-            emailDto.setClientQueryCode("Appeal approved");
-            emailDto.setSender(mailSender);
-            emailDto.setContent(templateMessageByContent);
-            emailDto.setSubject("MOH IAIS – Appeal -"+application.getApplicationNo()+" is approved");
-            String grpId = application.getAppGrpId();
-            ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(grpId).getEntity();
-            String licenseeId = applicationGroupDto.getLicenseeId();
-            List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
-            if(licenseeEmailAddrs!=null){
-                emailDto.setReceipts(licenseeEmailAddrs);
-                emailClient.sendNotification(emailDto);
-            }
+        }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)){
+
+        }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME.equals(reason)){
+
+        }else if(ApplicationConsts.APPEAL_REASON_OTHER.equals(reason)){
+            //ohter
+            paymentMethodName = "other";
+        }else if(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD.equals(reason)){
+        //licence
+            paymentMethodName = "applicable";
+        }else{
+            paymentMethodName = "other";
         }
+        Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
+        templateContent.put("ApplicantName", licenseeDto.getName());
+        templateContent.put("ApplicationType",  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        templateContent.put("ApplicationNo", applicationDto.getApplicationNo());
+        templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+        templateContent.put("newSystem", loginUrl);
+
+        templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
+        templateContent.put("paymentMethod", paymentMethodName);
+        if ("onlinePayment".equals(paymentMethodName)) {
+            AppReturnFeeDto appReturnFeeDto = applicationClient.getReturnFeeByAppNo(applicationDto.getApplicationNo()).getEntity();
+            templateContent.put("returnAmount", Formatter.formatterMoney(appReturnFeeDto.getReturnAmount()));
+            templateContent.put("paymentMode", paymentMethodName);
+            templateContent.put("adminFee", "100");
+
+        } else if ("GIRO".equals(paymentMethodName)) {
+            AppReturnFeeDto appReturnFeeDto = applicationClient.getReturnFeeByAppNo(applicationDto.getApplicationNo()).getEntity();
+            templateContent.put("returnAmount", Formatter.formatterMoney(appReturnFeeDto.getReturnAmount()));
+            templateContent.put("adminFee", "100");
+        }else if ("applicable".equals(paymentMethodName)) {
+            Date expiryDate;
+            try {
+                LicenceDto appealLicenceDto = (LicenceDto) CopyUtil.copyMutableObject(licenceDto);
+                Date startDate = appealLicenceDto.getStartDate();
+                expiryDate= LicenceUtil.getExpiryDate(startDate,appPremisesRecommendationDto);
+            }catch (Exception e){
+                expiryDate=new Date();
+            }
+            templateContent.put("serviceName", licenceDto.getSvcName());
+            templateContent.put("licenceNo", licenceDto.getLicenceNo());
+            templateContent.put("licenceEndDate", Formatter.formatDate(oriExpiry));
+            templateContent.put("newEndDate", Formatter.formatDate(expiryDate));
+        }else{
+            templateContent.put("content", otherReason);
+        }
+
+        String subject = "MOH IAIS – Appeal for "+ MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType())+", "+applicationDto.getApplicationNo()+" is approved";
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_APPROVE_EMAIL);
+        emailParam.setTemplateContent(templateContent);
+        emailParam.setSubject(subject);
+        emailParam.setQueryCode(applicationDto.getApplicationNo());
+        emailParam.setReqRefNum(applicationDto.getApplicationNo());
+        emailParam.setRefId(applicationDto.getApplicationNo());
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+
+        notificationHelper.sendNotification(emailParam);
+        EmailParam smsParam = new EmailParam();
+        smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_APPROVE_SMS);
+        smsParam.setSubject(subject);
+        smsParam.setTemplateContent(templateContent);
+        smsParam.setQueryCode(applicationDto.getApplicationNo());
+        smsParam.setReqRefNum(applicationDto.getApplicationNo());
+        smsParam.setRefId(applicationDto.getApplicationNo());
+        smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        notificationHelper.sendNotification(smsParam);
+
+        EmailParam msgParam = new EmailParam();
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_APPROVE_MSG);
+        msgParam.setTemplateContent(templateContent);
+        msgParam.setSubject(subject);
+        msgParam.setQueryCode(applicationDto.getApplicationNo());
+        msgParam.setReqRefNum(applicationDto.getApplicationNo());
+        List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        svcCodeList.add(svcDto.getSvcCode());
+        msgParam.setSvcCodeList(svcCodeList);
+        msgParam.setRefId(applicationDto.getApplicationNo());
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        notificationHelper.sendNotification(msgParam);
+        log.info("end send email sms and msg");
+
+
 
     }
 

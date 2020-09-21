@@ -2484,11 +2484,13 @@ public class HcsaApplicationDelegator {
         templateContent.put("ApplicationNo", applicationDto.getApplicationNo());
         templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
 
-        List<AppPremiseMiscDto> premiseMiscDtoList = cessationClient.getAppPremiseMiscDtoListByAppId(applicationDto.getId()).getEntity();
-        AppPremiseMiscDto premiseMiscDto = premiseMiscDtoList.get(0);
+        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
+
+        AppPremiseMiscDto premiseMiscDto = applicationClient.getAppPremisesMisc(appPremisesCorrelationDto.getId()).getEntity();
+
         String reason = premiseMiscDto.getReason();
 
-        templateContent.put("content", reason);
+        templateContent.put("content", MasterCodeUtil.getCodeKeyByCodeValue(reason));
         templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
         String subject = "MOH IAIS – Appeal for "+ MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType())+", "+applicationDto.getApplicationNo()+" is rejected";
         EmailParam emailParam = new EmailParam();

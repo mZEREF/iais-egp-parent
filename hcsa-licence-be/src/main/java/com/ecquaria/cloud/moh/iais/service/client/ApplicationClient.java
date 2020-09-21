@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.HfsmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -284,6 +285,9 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-application-be/application/grp-premises/{appPreId}")
     FeignResponseEntity<AppGrpPremisesEntityDto> getAppGrpPremise(@PathVariable(name = "appPreId")String appPreId);
 
+    @GetMapping(value = "/iais-application-be/get-returnfee-appNo")
+    FeignResponseEntity<AppReturnFeeDto> getReturnFeeByAppNo(@PathVariable(name = "appNo")String appNo);
+
     @GetMapping(value = "/iais-application-be/application/pending-reminder/self-assessment/", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<SelfAssMtEmailDto>> getPendingSubmitSelfAss(@RequestParam("msgKey") String msgKey);
 
@@ -301,4 +305,7 @@ public interface ApplicationClient {
     FeignResponseEntity<AppSvcCgoDto> getApplicationCgoByAppId(@RequestParam(name = "applicationId") String applicationId,@RequestParam("psnType") String psnType);
     @PostMapping(value = "/hfsms-case-no",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HfsmsDto>> getHfsmsDtoByIdNo(@RequestBody List<String> idNos);
+
+    @GetMapping(value = "/iais-cessation/application-premises-misc",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity <AppPremiseMiscDto>getAppPremisesMisc(@RequestParam("correId") String correId);
 }
