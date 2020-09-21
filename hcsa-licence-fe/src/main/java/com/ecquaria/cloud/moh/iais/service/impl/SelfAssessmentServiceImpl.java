@@ -290,20 +290,31 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                         put("recomType", InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
                     }};
 
-                    AppPremisesRecommendationDto appPremisesRecommendation=
-                        gatewayClient.getBeAppPremisesRecommendationByIdAndType(reqParams).getEntity();
-                    if (Optional.ofNullable(appPremisesRecommendation).isPresent()){
-                        Date inspectionDate = appPremisesRecommendation.getRecomInDate();
-                        templateContent.put("inspectionDate", Formatter.formatDate(inspectionDate));
+                    try {
+                        AppPremisesRecommendationDto appPremisesRecommendation=
+                                gatewayClient.getBeAppPremisesRecommendationByIdAndType(reqParams).getEntity();
+                        if (Optional.ofNullable(appPremisesRecommendation).isPresent()){
+                            Date inspectionDate = appPremisesRecommendation.getRecomInDate();
+
+                            log.info(StringUtil.changeForLog("===>>>>>>>>inspectionDate>>>>>>> " + inspectionDate));
+                            templateContent.put("inspectionDate", Formatter.formatDate(inspectionDate));
+                        }
+
+                        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                            String originLicId = applicationDto.getOriginLicenceId();
+                            LicenceDto licenceDto = licenceClient.getLicBylicId(originLicId).getEntity();
+
+                            log.info(StringUtil.changeForLog("===>>>>>>>>inspectionDate>>>>>>> " + licenceDto.getEndDate()));
+
+                            Optional.ofNullable(licenceDto).ifPresent(i -> {
+                                templateContent.put("licenceDueDate", Formatter.formatDate( i.getEndDate()));
+                            });
+                        }
+                    }catch (Exception e){
+                        // this try catch will remove after test case
+                        log.error(e.getMessage(), e);
                     }
 
-                    if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
-                        String originLicId = applicationDto.getOriginLicenceId();
-                        LicenceDto licenceDto = licenceClient.getLicBylicId(originLicId).getEntity();
-                        Optional.ofNullable(licenceDto).ifPresent(i -> {
-                            templateContent.put("inspectionDate", Formatter.formatDate( i.getEndDate()));
-                        });
-                    }
 
                     HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(svcId);
                     Optional.ofNullable(serviceDto).ifPresent(i -> {
