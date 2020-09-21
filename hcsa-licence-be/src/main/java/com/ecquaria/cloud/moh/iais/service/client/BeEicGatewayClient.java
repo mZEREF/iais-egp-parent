@@ -176,10 +176,10 @@ public class BeEicGatewayClient {
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, HttpStatus.class);
     }
 
-    public FeignResponseEntity<HttpStatus> updateFeLicDto(List<LicenceDto> licenceDtos, String date,
+    public FeignResponseEntity<List> updateFeLicDto(List<LicenceDto> licenceDtos, String date,
                                                    String authorization, String dateSec, String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-licence-status", HttpMethod.PUT, licenceDtos,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, HttpStatus.class);
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/hcsa-licence-status", HttpMethod.PUT, licenceDtos,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, LicenceDto.class);
     }
 
     public FeignResponseEntity<HttpStatus> saveFeServiceConfig(HcsaServiceConfigDto hcsaServiceConfigDto,
