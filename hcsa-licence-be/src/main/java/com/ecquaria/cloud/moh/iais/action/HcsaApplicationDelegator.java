@@ -286,6 +286,7 @@ public class HcsaApplicationDelegator {
                         appEditSelectDto.setPremisesEdit(true);
                         appEditSelectDto.setDocEdit(true);
                         appEditSelectDto.setServiceEdit(true);
+                        appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                         applicationViewDto.setAppEditSelectDto(appEditSelectDto);
                     }
                 }
@@ -295,6 +296,7 @@ public class HcsaApplicationDelegator {
                 appEditSelectDto.setPremisesEdit(true);
                 appEditSelectDto.setDocEdit(true);
                 appEditSelectDto.setMedAlertEdit(true);
+                appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 appEditSelectDto.setServiceEdit(true);
                 appEditSelectDto.setPoEdit(true);
                 appEditSelectDto.setDpoEdit(true);
@@ -1089,15 +1091,6 @@ public class HcsaApplicationDelegator {
             //RFC Application - Send notification to transferor when licence transfer application is rejected
             Map<String,Object> rejectMap=IaisCommonUtils.genNewHashMap();
             rejectMap.put("applicationId",applicationNo);
-            //sendRFCRejectEmail(licenseeId,applicationViewDto.getApplicationDto().getServiceId());
-            //RFC Application - Send SMS to transferee when licence transfer application is rejected
-            //sendSMS(msgId,licenseeId,notifyMap);
-            //RFC Application - Send SMS to transferor when licence transfer application is rejected
-//            if(result != null){
-//                sendSMS(msgId,result.getLicenseeId(),notifyMap);
-//            }else {
-//                log.info("-----RFC Application - Send SMS to transferor when licence transfer application is rejected. licenseeId is null---------");
-//            }
             try{
                 LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
                 String applicationName = licenseeDto.getName();
@@ -1535,31 +1528,6 @@ public class HcsaApplicationDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, "appPremisesRecommendationDto", initRecommendationDto);
     }
-
-    private void sendRejectEmail(String applicationNo,String licenseeId,String groupNo){
-        //send email
-//        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_ID).getEntity();
-//        if(msgTemplateDto != null){
-//            Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
-//            tempMap.put("applicationNumber",StringUtil.viewHtml(applicationNo));
-//            tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-//
-//            String mesContext = null;
-//            try {
-//                mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
-//            } catch (IOException | TemplateException e) {
-//                log.error(e.getMessage(),e);
-//            }
-
-            EmailDto emailDto = new EmailDto();
-            emailDto.setContent("New Application Reject Context");
-            emailDto.setSubject(" MOH HALP - New Application - " + applicationNo + " is Rejected");
-            emailDto.setSender(mailSender);
-            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-            emailDto.setClientQueryCode(groupNo);
-            //send
-            emailClient.sendNotification(emailDto).getEntity();
-        }
 
     public void sendRouteBackEmail(String licenseeId,ApplicationViewDto applicationViewDto) throws Exception{
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
