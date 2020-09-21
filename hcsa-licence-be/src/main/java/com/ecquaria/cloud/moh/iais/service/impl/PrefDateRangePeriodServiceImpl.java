@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.PrefDateRangePeriodService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -65,6 +66,7 @@ public class PrefDateRangePeriodServiceImpl implements PrefDateRangePeriodServic
 
     @Override
     public Boolean savePrefInspPeriod(HcsaServicePrefInspPeriodDto period) {
+        period.setTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         period.setPeriodAfterApp(transformToDay(period.getPeriodAfterApp()));
         period.setPeriodBeforeExp(transformToDay(period.getPeriodBeforeExp()));
 

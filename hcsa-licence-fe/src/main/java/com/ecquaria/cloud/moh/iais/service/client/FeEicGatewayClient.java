@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ProcessReSchedulingDto
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -21,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingS
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -42,6 +44,18 @@ import java.util.Map;
 public class FeEicGatewayClient {
     @Value("${iais.inter.gateway.url}")
     private String gateWayUrl;
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     public FeignResponseEntity<String> saveFile(ProcessFileTrackDto processFileTrackDto,
                                         String date, String authorization, String dateSec, String authorizationSec) {
@@ -68,6 +82,14 @@ public class FeEicGatewayClient {
                                          String date, String authorization, String dateSec, String authorizationSec) {
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/app-file-sync-trackings", HttpMethod.POST, processFileTrackDto,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
+    }
+
+    public FeignResponseEntity<AppPremisesRecommendationDto> getBeAppPremisesRecommendationByIdAndType(Map<String, Object> params) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return IaisEGPHelper.callEicGatewayWithParam(gateWayUrl + "/v1/app-recom/", HttpMethod.GET, params,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization(), AppPremisesRecommendationDto.class);
     }
 
     public FeignResponseEntity<IaisApiResult> routeSelfAssessment(FeSelfAssessmentSyncDataDto selfDeclSyncDataDto,

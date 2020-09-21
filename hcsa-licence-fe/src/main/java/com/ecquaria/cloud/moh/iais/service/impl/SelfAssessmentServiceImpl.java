@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
@@ -14,10 +15,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -40,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
@@ -52,6 +56,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -80,6 +85,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Autowired
     private SystemParamConfig systemParamConfig;
+
+    @Autowired
+    private LicenceClient licenceClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -246,57 +254,78 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
         for (String s : correlationIds){
             ApplicationDto applicationDto = applicationClient.getApplicationByCorrId(s).getEntity();
-            if (applicationDto != null){
-                String appNo = applicationDto.getApplicationNo();
-                emailGroupId_003 = applicationDto.getAppGrpId();
-                tlGroupNumber = appNo.substring(0, appNo.length() - 3);
-                List<AppGrpPremisesDto> appGrpPremisesList = appSubmissionService.getAppGrpPremisesDto(appNo);
-                if (!IaisCommonUtils.isEmpty(appGrpPremisesList)){
-                    AppGrpPremisesDto appGrpPremises = appGrpPremisesList.get(0);
-                    if (appGrpPremises != null){
-                        String address = IaisEGPHelper.getAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(), appGrpPremises.getBuildingName(),
-                                appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode());
-                        templateContent.put("hciName", appGrpPremises.getHciName());
-                        templateContent.put("hciCode", appGrpPremises.getHciCode());
-                        templateContent.put("hciAddress", address);
+            if (Optional.ofNullable(applicationDto).isPresent()){
+                    String appNo = applicationDto.getApplicationNo();
+                    String appType = MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
+                    emailGroupId_003 = applicationDto.getAppGrpId();
+                    tlGroupNumber = appNo.substring(0, appNo.length() - 3);
+                    List<AppGrpPremisesDto> appGrpPremisesList = appSubmissionService.getAppGrpPremisesDto(appNo);
+
+                    if (Optional.ofNullable(appGrpPremisesList).isPresent()){
+                        AppGrpPremisesDto appGrpPremises = appGrpPremisesList.get(0);
+                        if (Optional.ofNullable(appGrpPremises).isPresent()){
+                            String address = IaisEGPHelper.getAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(), appGrpPremises.getBuildingName(),
+                                    appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode());
+                            templateContent.put("hciName", appGrpPremises.getHciName());
+                            templateContent.put("hciCode", appGrpPremises.getHciCode());
+                            templateContent.put("hciAddress", address);
+                        }
                     }
-                }
 
-                String svcId = applicationDto.getServiceId();
-                String appType = MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
-                Date appDate = applicationDto.getCreateAt();
+                    String svcId = applicationDto.getServiceId();
 
-                tlAppType = appType;
-                tlDate = appDate;
+                    Date appDate = applicationDto.getCreateAt();
 
-                templateContent.put("applicationNo", appNo);
-                templateContent.put("applicationType", appType);
-                templateContent.put("applicationDate", Formatter.formatDate(appDate));
-                templateContent.put("officer_name", "");
-                //templateContent.put("inspectionDate", Formatter.formatDate(appDate));
-                HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(svcId);
+                    tlAppType = appType;
+                    tlDate = appDate;
 
-                if (serviceDto != null) {
-                    String svcName = serviceDto.getSvcName();
-                    templateContent.put("serviceName", svcName);
+                    templateContent.put("applicationNo", appNo);
+                    templateContent.put("applicationType", appType);
+                    templateContent.put("applicationDate", Formatter.formatDate(appDate));
+                    templateContent.put("officer_name", "");
 
-                    svcNameList.add(svcName);
-                }
+                    // get inspection from eic
+                    HashMap<String, Object > reqParams = new HashMap<String, Object>(){{
+                        put("appPremId",  s);
+                        put("recomType", InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
+                    }};
 
-                String randomStr = IaisEGPHelper.generateRandomString(26);
-                templateContent.put("MOH_GROUP_NAME", AppConsts.MOH_AGENCY_NAM_GROUP);
-                templateContent.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+                    AppPremisesRecommendationDto appPremisesRecommendation=
+                        gatewayClient.getBeAppPremisesRecommendationByIdAndType(reqParams).getEntity();
+                    if (Optional.ofNullable(appPremisesRecommendation).isPresent()){
+                        Date inspectionDate = appPremisesRecommendation.getRecomInDate();
+                        templateContent.put("inspectionDate", Formatter.formatDate(inspectionDate));
+                    }
 
-                EmailParam email_004 = new EmailParam();
-                email_004.setTemplateId(email_004_template);
-                email_004.setTemplateContent(templateContent);
-                email_004.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR);
-                email_004.setReqRefNum(randomStr);
-                email_004.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                email_004.setRefId(appNo);
-                email_004.setModuleType(NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK);
-                email_004.setSmsOnlyOfficerHour(false);
-                notificationHelper.sendNotification(email_004);
+                    if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                        String originLicId = applicationDto.getOriginLicenceId();
+                        LicenceDto licenceDto = licenceClient.getLicBylicId(originLicId).getEntity();
+                        Optional.ofNullable(licenceDto).ifPresent(i -> {
+                            templateContent.put("inspectionDate", Formatter.formatDate( i.getEndDate()));
+                        });
+                    }
+
+                    HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(svcId);
+                    Optional.ofNullable(serviceDto).ifPresent(i -> {
+                        String svcName = serviceDto.getSvcName();
+                        templateContent.put("serviceName", svcName);
+                        svcNameList.add(svcName);
+                    });
+
+                    String randomStr = IaisEGPHelper.generateRandomString(26);
+                    templateContent.put("MOH_GROUP_NAME", AppConsts.MOH_AGENCY_NAM_GROUP);
+                    templateContent.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+
+                    EmailParam email_004 = new EmailParam();
+                    email_004.setTemplateId(email_004_template);
+                    email_004.setTemplateContent(templateContent);
+                    email_004.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR);
+                    email_004.setReqRefNum(randomStr);
+                    email_004.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                    email_004.setRefId(appNo);
+                    email_004.setModuleType(NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK);
+                    email_004.setSmsOnlyOfficerHour(false);
+                    notificationHelper.sendNotification(email_004);
             }
         }
 
@@ -352,7 +381,12 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Override
     public void saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList) {
-        //TODO if from inbox , should not create task
+       //TODO if from inbox , should not create task
+        if (!IaisCommonUtils.isEmpty(selfAssessmentList)){
+            //set audit trail
+            selfAssessmentList.get(0).setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        }
+
         FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> result =  applicationClient.saveAllSelfAssessment(selfAssessmentList);
         if (result.getStatusCode() == HttpStatus.SC_OK){
             FeSelfAssessmentSyncDataDto syncDataDto = new FeSelfAssessmentSyncDataDto();

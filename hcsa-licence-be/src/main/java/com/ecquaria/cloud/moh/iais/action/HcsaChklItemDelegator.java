@@ -238,6 +238,7 @@ public class HcsaChklItemDelegator {
             return;
         }
 
+        chklItemDtos.get(0).setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         boolean duplicationRecord = hcsaChklService.submitCloneItem(chklItemDtos).booleanValue();
         if (duplicationRecord){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);

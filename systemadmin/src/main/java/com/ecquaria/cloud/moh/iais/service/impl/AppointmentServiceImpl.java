@@ -64,16 +64,19 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
 	public Boolean createBlackedOutCalendar(ApptBlackoutDateDto blackoutDateDto) {
+		blackoutDateDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 		return onlineApptClient.createBlackedOutCalendar(blackoutDateDto).getEntity();
 	}
 
 	@Override
 	public Boolean updateBlackedOutCalendar(ApptBlackoutDateDto blackoutDateDto) {
+		blackoutDateDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 		return onlineApptClient.updateBlackedOutCalendar(blackoutDateDto).getEntity();
 	}
 
 	@Override
 	public Boolean inActiveBlackedOutCalendar(ApptBlackoutDateDto blackoutDateDto) {
+		blackoutDateDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 		return onlineApptClient.inActiveBlackedOutCalendar(blackoutDateDto).getEntity();
 	}
 
@@ -89,6 +92,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 	@Override
 	public ApptNonWorkingDateDto updateNonWorkingDate(ApptNonWorkingDateDto nonWorkingDateDto) {
+		nonWorkingDateDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 		return onlineApptClient.updateNonWorkingDate(nonWorkingDateDto).getEntity();
 	}
 
