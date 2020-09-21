@@ -151,7 +151,7 @@ public class InspectionServiceImpl implements InspectionService {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         //create history, update application, update/create inspection status
         String saveFlag = assignTaskForInspectors(inspectionTaskPoolListDto, commPools, internalRemarks, applicationDto, taskDto, applicationViewDto);
-        if(!StringUtil.isEmpty(inspectionTaskPoolListDto.getInspManHours())){
+        if(!StringUtil.isEmpty(inspectionTaskPoolListDto.getInspManHours()) && AppConsts.SUCCESS.equals(saveFlag)){
             //create inspManHours recommendation
             AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
             appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());

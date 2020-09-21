@@ -1227,7 +1227,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         TaskDto taskDto = getTaskDtoByPool(commPools, inspecTaskCreAndAssDto);
         ApplicationViewDto applicationViewDto = searchByAppCorrId(inspecTaskCreAndAssDto.getAppCorrelationId());
         String saveFlag = assignTaskForInspectors(commPools, inspecTaskCreAndAssDto, applicationViewDto, internalRemarks, taskDto, loginContext);
-        if(!StringUtil.isEmpty(inspecTaskCreAndAssDto.getInspManHours())){
+        if(!StringUtil.isEmpty(inspecTaskCreAndAssDto.getInspManHours()) && AppConsts.SUCCESS.equals(saveFlag)){
             //create inspManHours recommendation or update
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR).getEntity();
             if(appPremisesRecommendationDto != null){
