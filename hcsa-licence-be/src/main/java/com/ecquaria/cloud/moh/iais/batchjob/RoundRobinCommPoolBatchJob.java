@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -67,6 +68,12 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -78,11 +85,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * RoundRobinCommPoolBatchJob
@@ -753,15 +755,24 @@ public class RoundRobinCommPoolBatchJob {
         return applicationViewService.updateApplicaiton(applicationDto);
     }
 
-    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId) {
+    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
+        log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos start ...."));
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
-        for (ApplicationDto applicationDto : applicationDtos) {
+        log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos stageId -->:"+stageId));
+        for(ApplicationDto applicationDto : applicationDtos){
+            AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setStageId(stageId);
             hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
             hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
+            if(appGrpPremisesEntityDto != null){
+                hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
+            }else{
+                log.error(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos this APP do not have the premise :"+applicationDto.getApplicationNo()));
+            }
             hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
         }
+        log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos end ...."));
         return hcsaSvcStageWorkingGroupDtos;
     }
 
