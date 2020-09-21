@@ -106,11 +106,8 @@ public class LicenceServiceImpl implements LicenceService {
     private String secSecretKey;
 
     @Override
-    public List<ApplicationLicenceDto> getCanGenerateApplications(int day) {
-        Map<String,Object> param = IaisCommonUtils.genNewHashMap();
-        param.put("day",day);
-
-        return   applicationClient.getGroup(day).getEntity();
+    public List<ApplicationLicenceDto> getCanGenerateApplications(GenerateLicenceDto generateLicenceDto) {
+        return   applicationClient.getGroup(generateLicenceDto).getEntity();
     }
 
     @Override

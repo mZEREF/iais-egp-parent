@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.GenerateLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
@@ -24,7 +25,7 @@ import java.util.List;
  * @date 11/29/2019
  */
 public interface LicenceService {
-    List<ApplicationLicenceDto> getCanGenerateApplications(int day);
+    List<ApplicationLicenceDto> getCanGenerateApplications(GenerateLicenceDto generateLicenceDto);
     List<HcsaServiceDto> getHcsaServiceById(List<String> serviceIds);
     String getHciCode(String serviceCode);
     String getLicenceNo(String hciCode,String serviceCode,AppPremisesRecommendationDto appPremisesRecommendationDto);

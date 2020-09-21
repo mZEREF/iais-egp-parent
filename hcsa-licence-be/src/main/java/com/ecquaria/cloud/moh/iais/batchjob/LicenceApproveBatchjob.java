@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.GenerateLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.DocumentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
@@ -145,9 +146,13 @@ public class LicenceApproveBatchjob {
 
     public void doBatchJob(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is start ..."));
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         int day = systemParamConfig.getLicGenDay();
         //get can Generate Licence
-        List<ApplicationLicenceDto> applicationLicenceDtos = licenceService.getCanGenerateApplications(day);
+        GenerateLicenceDto generateLicenceDto = new GenerateLicenceDto();
+        generateLicenceDto.setAuditTrailDto(auditTrailDto);
+        generateLicenceDto.setDay(day);
+        List<ApplicationLicenceDto> applicationLicenceDtos = licenceService.getCanGenerateApplications(generateLicenceDto);
         if (applicationLicenceDtos == null || applicationLicenceDtos.size() == 0) {
             log.debug(StringUtil.changeForLog("This time do not have need Generate Licences."));
             return;
@@ -196,7 +201,7 @@ public class LicenceApproveBatchjob {
                         //update baseApplicationNo expiry Date
                         updateExpiryDateByBaseApplicationNo(licenceGroupDtos);
                         //
-                        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+
                         EventBusLicenceGroupDtos eventBusLicenceGroupDtos = new EventBusLicenceGroupDtos();
                         String evenRefNum = String.valueOf(System.currentTimeMillis());
                         eventBusLicenceGroupDtos.setEventRefNo(evenRefNum);
