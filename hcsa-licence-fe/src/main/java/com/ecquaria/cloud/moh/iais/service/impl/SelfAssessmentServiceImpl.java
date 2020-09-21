@@ -374,6 +374,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 
+        data.setAuditTrail(IaisEGPHelper.getCurrentAuditTrailDto());
         IaisApiResult apiResult = gatewayClient.routeSelfAssessment(data, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
 

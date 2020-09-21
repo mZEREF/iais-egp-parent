@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -8,14 +9,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterQueryDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.SystemParameterService;
-import com.ecquaria.cloud.moh.iais.service.client.ConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.IntranetUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
@@ -35,8 +35,9 @@ public class SystemParameterServiceImpl implements SystemParameterService {
     @Autowired
     private SystemClient systemClient;
 
+
     @Autowired
-    private ConfigClient configClient;
+    private SystemParamConfig config;
 
     @Autowired
     private IntranetUserClient userClient;
@@ -79,6 +80,9 @@ public class SystemParameterServiceImpl implements SystemParameterService {
         dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         SystemParameterDto postUpdate = systemClient.saveSystemParameter(dto).getEntity();
 
+
+        int test = config.getDraftValidity();
+        System.out.println(test);
         EicRequestTrackingDto postSaveTrack = trackingHelper.clientSaveEicRequestTracking(EicClientConstant.SYSTEM_ADMIN_CLIENT, SystemParameterServiceImpl.class.getName(),
                 "callEicCreateSystemParameter", currentApp + "-" + currentDomain,
                 SystemParameterDto.class.getName(), JsonUtil.parseToJson(postUpdate));
