@@ -1624,7 +1624,9 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 licParam.addParam("licenseeId",typeStr);
             }
-
+            if(!StringUtil.isEmpty(parm.getFilters().get("hciCode"))){
+                licParam.addParam("licHciCode", "(Prem.HCI_CODE = '"+parm.getFilters().get("hciCode")+"')");
+            }
             QueryHelp.setMainSql(RFI_QUERY,"licenceQuery",licParam);
             SearchResult<RfiLicenceQueryDto> licResult =requestForInformationService.licenceDoQuery(licParam);
             if(licResult.getRowCount()!=0) {
@@ -1651,6 +1653,9 @@ public class OfficerOnlineEnquiriesDelegator {
                         SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
                         if(parm.getFilters().get("appStatus")!=null&&parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
                             appParam.addParam("appStatus_APPROVED", "(app.status = 'APST005' OR app.status = 'APST050')");
+                        }
+                        if(!StringUtil.isEmpty(parm.getFilters().get("hciCode"))){
+                            licParam.addParam("licHciCode", "(T3.HCI_CODE IS NULL OR T3.HCI_CODE = '"+parm.getFilters().get("hciCode")+"')");
                         }
                         appParam.setPageNo(0);
                         QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
