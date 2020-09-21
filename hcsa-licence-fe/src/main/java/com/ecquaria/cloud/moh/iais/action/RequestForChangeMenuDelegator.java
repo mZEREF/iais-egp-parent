@@ -1402,6 +1402,10 @@ public class RequestForChangeMenuDelegator {
         AppSubmissionListDto appSubmissionListDto = new AppSubmissionListDto();
         Long l = System.currentTimeMillis();
         appSubmissionListDto.setEventRefNo(l.toString());
+        AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+        for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtos){
+            appSubmissionDto1.setAuditTrailDto(currentAuditTrailDto);
+        }
         List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos);
         appSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
         eventBusHelper.submitAsyncRequest(appSubmissionListDto, submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,

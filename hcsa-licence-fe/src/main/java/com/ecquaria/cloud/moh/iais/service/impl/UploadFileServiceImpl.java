@@ -35,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -288,6 +289,8 @@ public class UploadFileServiceImpl implements UploadFileService {
         processFileTrackDto.setFileName(fileName);
         processFileTrackDto.setFilePath(filePath);
         processFileTrackDto.setRefId(groupId);
+        AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
+        processFileTrackDto.setAuditTrailDto(intenet);
         EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, UploadFileServiceImpl.class.getName(),
                 "saveFileName", currentApp + "-" + currentDomain,
                 ProcessFileTrackDto.class.getName(), JsonUtil.parseToJson(processFileTrackDto));

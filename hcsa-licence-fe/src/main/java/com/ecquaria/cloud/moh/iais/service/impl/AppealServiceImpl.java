@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -808,6 +809,8 @@ public class AppealServiceImpl implements AppealService {
 
         }
         appealDto.setAppGrpPremisesDtos(premisesDtos);
+        AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+        appealDto.setAuditTrailDto(currentAuditTrailDto);
         appealDto = applicationClient.submitAppeal(appealDto).getEntity();
         ApplicationGroupDto applicationGroupDto1 = appealDto.getApplicationGroupDto();
         String groupId = applicationGroupDto1.getId();
@@ -930,6 +933,28 @@ public class AppealServiceImpl implements AppealService {
             applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
             s = rfiApplication.getApplicationNo();
             rfiApplication.setStatus(ApplicationConsts.APPLICATION_STATUS_DELETED);
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+            List<AppPremisesRoutingHistoryDto> hisList;
+            Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
+            hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
+                    MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
+            if(hisList!=null){
+                for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : hisList){
+                    if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())
+                            || InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())){
+                        if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                            applicationDto1.setStatus(ApplicationConsts.PENDING_ASO_REPLY);
+                        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                            applicationDto1.setStatus(ApplicationConsts.PENDING_PSO_REPLY);
+                        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                            applicationDto1.setStatus(ApplicationConsts.PENDING_INP_REPLY);
+                        }
+                    }
+                }
+            }
             applicationClient.updateApplication(rfiApplication);
             ParamUtil.setSessionAttr(request,"rfiApplication",rfiApplication);
         }

@@ -398,22 +398,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
            {
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
-        List<AppGrpPersonnelDto> appGrpPersonnel = applicationListDto.getAppGrpPersonnel();
-        for(AppGrpPersonnelDto every:appGrpPersonnel){
-            every.setAuditTrailDto(intranet);
-        }
-        List<AppGrpPersonnelExtDto> appGrpPersonnelExt = applicationListDto.getAppGrpPersonnelExt();
-        for(AppGrpPersonnelExtDto every:appGrpPersonnelExt){
-            every.setAuditTrailDto(intranet);
-        }
-        List<AppGrpPremisesEntityDto> appGrpPremises = applicationListDto.getAppGrpPremises();
-        for(AppGrpPremisesEntityDto every:appGrpPremises){
-            every.setAuditTrailDto(intranet);
-        }
-        List<AppGrpPrimaryDocDto> appGrpPrimaryDoc = applicationListDto.getAppGrpPrimaryDoc();
-        for(AppGrpPrimaryDocDto every:appGrpPrimaryDoc){
-            every.setAuditTrailDto(intranet);
-        }
+
+
         List<ApplicationDto> application = applicationListDto.getApplication();
         List<GobalRiskAccpetDto> accpetDtos=IaisCommonUtils.genNewArrayList();
         for(ApplicationDto every:application){
@@ -442,11 +428,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             log.info("gobalRiskAccpetDtos is error");
         }
 
-
         List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
-        for(ApplicationGroupDto every:applicationGroup){
-            every.setAuditTrailDto(intranet);
-        }
+
         List<AppPremisesCorrelationDto> appPremisesCorrelation = applicationListDto.getAppPremisesCorrelation();
         for(ApplicationDto applicationDto : application){
             String id = applicationDto.getId();
@@ -470,33 +453,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 }
             }
         }
-        for(AppPremisesCorrelationDto every:appPremisesCorrelation){
-            every.setAuditTrailDto(intranet);
-        }
-        List<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklEntity = applicationListDto.getAppPremisesSelfDeclChklEntity();
-        for(AppPremisesSelfDeclChklDto every:appPremisesSelfDeclChklEntity){
-            every.setAuditTrailDto(intranet);
-        }
-        List<AppSvcDocDto> appSvcDoc = applicationListDto.getAppSvcDoc();
-        for(AppSvcDocDto every:appSvcDoc){
-            every.setAuditTrailDto(intranet);
-        }
-        List<AppSvcKeyPersonnelDto> appSvcKeyPersonnel = applicationListDto.getAppSvcKeyPersonnel();
-        for(AppSvcKeyPersonnelDto every:appSvcKeyPersonnel){
-            every.setAuditTrailDto(intranet);
-        }
-        List<AppSvcPersonnelDto> appSvcPersonnel = applicationListDto.getAppSvcPersonnel();
-        for(AppSvcPersonnelDto every:appSvcPersonnel){
-            every.setAuditTrailDto(intranet);
-        }
-        List<AppSvcPremisesScopeDto> appSvcPremisesScope = applicationListDto.getAppSvcPremisesScope();
-        for(AppSvcPremisesScopeDto every:appSvcPremisesScope){
-            every.setAuditTrailDto(intranet);
-        }
-        List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocation = applicationListDto.getAppSvcPremisesScopeAllocation();
-        for(AppSvcPremisesScopeAllocationDto every:appSvcPremisesScopeAllocation){
-            every.setAuditTrailDto(intranet);
-        }
+
+
+
+
+
+
         applicationListDto.setAuditTrailDto(intranet);
         List<ApplicationDto> updateTaskList=IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> cessionOrwith=IaisCommonUtils.genNewArrayList();

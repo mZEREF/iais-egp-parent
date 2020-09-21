@@ -1290,7 +1290,7 @@ public class HalpAssessmentGuideDelegator {
                         inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                     }
                 }else {
-                    String ack030 = MessageUtil.getMessageDesc("ACK030");
+                    String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
                     String replace = ack030.replace("<draft application no>", stringBuilder.toString());
                     bpc.request.setAttribute("draftByLicAppId",replace);
                     bpc.request.setAttribute("isAppealShow","1");
@@ -1585,7 +1585,7 @@ public class HalpAssessmentGuideDelegator {
                     inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }
             }else {
-                String ack030 = MessageUtil.getMessageDesc("ACK030");
+                String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
                 String replace = ack030.replace("<draft application no>", stringBuilder.toString());
                 bpc.request.setAttribute("draftByLicAppId",replace);
                 bpc.request.setAttribute("isCeasedShow","1");
@@ -1795,7 +1795,7 @@ public class HalpAssessmentGuideDelegator {
                         inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                     }
                 }else {
-                    String ack030 = MessageUtil.getMessageDesc("ACK030");
+                    String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
                     String replace = ack030.replace("<draft application no>", stringBuilder.toString());
                     bpc.request.setAttribute("draftByLicAppId",replace);
                     bpc.request.setAttribute("isAmendShow","1");

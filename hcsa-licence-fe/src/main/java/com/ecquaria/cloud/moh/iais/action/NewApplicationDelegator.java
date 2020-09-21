@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
@@ -2035,6 +2036,8 @@ public class NewApplicationDelegator {
         List<AppSubmissionDto> ackPageAppSubmissionDto=new ArrayList<>(2);
         if (!notAutoSaveAppsubmission.isEmpty()) {
             //set missing data
+            AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+            notAutoSaveAppsubmission.get(0).setAuditTrailDto(currentAuditTrailDto);
             for (AppSubmissionDto appSubmissionDto1 : notAutoSaveAppsubmission) {
                 appSubmissionDto1.setEffectiveDateStr(effectiveDateStr);
                 appSubmissionDto1.setEffectiveDate(effectiveDate);
@@ -2068,6 +2071,8 @@ public class NewApplicationDelegator {
         }
         if (!autoSaveAppsubmission.isEmpty()) {
             //set missing data
+            AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+            autoSaveAppsubmission.get(0).setAuditTrailDto(currentAuditTrailDto);
             for (AppSubmissionDto appSubmissionDto1 : autoSaveAppsubmission) {
                 appSubmissionDto1.setEffectiveDateStr(effectiveDateStr);
                 appSubmissionDto1.setEffectiveDate(effectiveDate);

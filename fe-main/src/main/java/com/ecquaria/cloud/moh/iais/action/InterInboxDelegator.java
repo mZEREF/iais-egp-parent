@@ -464,7 +464,7 @@ public class InterInboxDelegator {
                     inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }
             }else {
-                String ack030 = MessageUtil.getMessageDesc("ACK030");
+                String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
                 String replace = ack030.replace("<draft application no>", stringBuilder.toString());
                 bpc.request.setAttribute("draftByLicAppId",replace);
                 bpc.request.setAttribute("isAppealShow","1");
@@ -535,7 +535,7 @@ public class InterInboxDelegator {
                         inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                     }
                 }else {
-                    String ack030 = MessageUtil.getMessageDesc("ACK030");
+                    String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
                     String replace = ack030.replace("<draft application no>", stringBuilder.toString());
                     bpc.request.setAttribute("draftByLicAppId",replace);
                     bpc.request.setAttribute("isShow","1");
@@ -588,7 +588,7 @@ public class InterInboxDelegator {
                             inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                         }
                     }else {
-                        String ack030 = MessageUtil.getMessageDesc("ACK030");
+                        String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
                         String replace = ack030.replace("<draft application no>", stringBuilder.toString());
                         bpc.request.setAttribute("draftByLicAppId",replace);
                         bpc.request.setAttribute("isRenewShow","1");
@@ -676,7 +676,7 @@ public class InterInboxDelegator {
                         inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                     }
                 }else {
-                    String ack030 = MessageUtil.getMessageDesc("ACK030");
+                    String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
                     String replace = ack030.replace("<draft application no>", stringBuilder.toString());
                     bpc.request.setAttribute("draftByLicAppId",replace);
                     bpc.request.setAttribute("isCeaseShow","1");
@@ -908,7 +908,7 @@ public class InterInboxDelegator {
                     inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }
             }else {
-                String ack030 = MessageUtil.getMessageDesc("ACK030");
+                String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
                 String replace = ack030.replace("<draft application no>", stringBuilder.toString());
                 bpc.request.setAttribute("draftByLicAppId",replace);
                 bpc.request.setAttribute("isAppealApplicationShow","1");

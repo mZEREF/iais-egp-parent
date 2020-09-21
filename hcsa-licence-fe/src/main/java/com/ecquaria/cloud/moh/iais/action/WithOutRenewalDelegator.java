@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserCons
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -859,11 +860,12 @@ public class WithOutRenewalDelegator {
 //        appFeeDetailsDto.setApplicationNo(appGrpNo + "-01");
 //        appSubmissionService.saveAppFeeDetails(appFeeDetailsDto);
         appSubmissionDtos1.addAll(noAutoAppSubmissionDtos);
-
+        AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         if (!autoAppSubmissionDtos.isEmpty()) {
             AppSubmissionListDto autoAppSubmissionListDto = new AppSubmissionListDto();
             String autoSubmissionId = generateIdClient.getSeqId().getEntity();
             Long auto = System.currentTimeMillis();
+            autoAppSubmissionDtos.get(0).setAuditTrailDto(currentAuditTrailDto);
             List<AppSubmissionDto> saveutoAppSubmissionDto = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(autoAppSubmissionDtos);
             String autoGrpNo = saveutoAppSubmissionDto.get(0).getAppGrpNo();
             for(AppSubmissionDto appSubmissionDto : autoAppSubmissionDtos){
@@ -875,6 +877,9 @@ public class WithOutRenewalDelegator {
                     EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, l.toString(), bpc.process);
         }
 
+        for(AppSubmissionDto appSubmissionDto : appSubmissionDtos1){
+            appSubmissionDto.setAuditTrailDto(currentAuditTrailDto);
+        }
         List<AppSubmissionDto> appSubmissionDtos3 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos1);
         appSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos3);
         appSubmissionListDto.setEventRefNo(l.toString());
