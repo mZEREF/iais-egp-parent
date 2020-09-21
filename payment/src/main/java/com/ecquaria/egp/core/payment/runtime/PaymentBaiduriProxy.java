@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.SrcSystemConfDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
@@ -91,7 +92,9 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			paymentRequestDto.setReqDt(new Date());
 			paymentRequestDto.setReqRefNo(reqNo);
 			srcSystemConfDto.setReturnUrl(returnUrl);
+			srcSystemConfDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 			paymentRequestDto.setSrcSystemConfDto(srcSystemConfDto);
+			paymentRequestDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 			PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
 
 		}
@@ -167,7 +170,8 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 				paymentDto.setInvoiceNo(fields.get("vpc_ReceiptNo"));
 
 				paymentDto.setPmtStatus(status);
-				PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
+				paymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+		PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
 
 				// update the data's status and time;
 			}else{
