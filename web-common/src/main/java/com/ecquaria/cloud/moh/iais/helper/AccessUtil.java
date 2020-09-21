@@ -111,11 +111,11 @@ public class AccessUtil {
                     loginContext.getWrkGrpIds().addAll(wrkGrps);
                 }
             } else if (AppConsts.USER_DOMAIN_INTERNET.equals(orgUser.getUserDomain())) {
+                loginContext.setNricNum(orgUser.getIdNumber());
                 LicenseeDto lDto = client.getLicenseeByOrgId(orgUser.getOrgId()).getEntity();
                 if (lDto != null) {
                     loginContext.setLicenseeId(lDto.getId());
                     loginContext.setUenNo(lDto.getUenNo());
-                    loginContext.setNricNum(orgUser.getIdNumber());
                     loginContext.setLicenseeEntityType(lDto.getLicenseeEntityDto().getEntityType());
                 }
             }
