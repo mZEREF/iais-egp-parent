@@ -54,11 +54,9 @@
             </tbody>
         </table>
     </div>
-    <c:choose>
-        <c:if test="${!empty ceaseLicenceSearchResult.rows}">
-            <button type="button" class="btn btn-primary CeaseBtn " <c:if test="${!ceasedErrResult}">disabled</c:if> onclick="ceaseSubmit()">NEXT</button>
-        </c:if>
-    </c:choose>
+    <c:if test="${!empty ceaseLicenceSearchResult.rows}">
+        <button type="button" class="btn btn-primary CeaseBtn " <c:if test="${!ceasedErrResult}">disabled</c:if> onclick="ceaseSubmit()">NEXT</button>
+    </c:if>
 </div>
 <script type="text/javascript">
     function ceaseSubmit() {
