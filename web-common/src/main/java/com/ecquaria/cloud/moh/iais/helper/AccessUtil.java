@@ -120,8 +120,6 @@ public class AccessUtil {
                 }
             }
         }
-
-        loginContext.setNricNum(user.getIdentityNo());
         ParamUtil.setSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
     }
     /**

@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserCons
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
@@ -27,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -40,6 +42,8 @@ import java.util.Map;
 public class FeAdminManageDelegate {
     @Autowired
     private OrgUserManageServiceImpl orgUserManageService;
+    @Autowired
+    private MyInfoAjax myInfoAjax;
     /**
      * StartStep: doStart
      *
@@ -144,7 +148,8 @@ public class FeAdminManageDelegate {
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "inbox");
             }
 
-        }else{
+        }
+        else if("save".equalsIgnoreCase(action)){
 
             log.debug(StringUtil.changeForLog("*******************insertDatabase end"));
             String name = ParamUtil.getString(bpc.request,"name");
@@ -226,8 +231,29 @@ public class FeAdminManageDelegate {
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "inbox");
                 }
             }
+        }else {
+            repalceFeUserDtoByMyinfo(bpc.request);
         }
     }
 
+    private FeUserDto repalceFeUserDtoByMyinfo( HttpServletRequest request){
+        log.info("---- relaod feuesr start --------- ");
+        LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(request, "inter_user_attr");
+        if(!StringUtil.isEmpty(loginContext.getNricNum()) && loginContext.getNricNum().equalsIgnoreCase(feUserDto.getIdNumber())){
+            MyInfoDto myInfoDto = myInfoAjax.getMyInfo(loginContext.getNricNum());
+            if(myInfoDto != null){
+                feUserDto.setEmail(myInfoDto.getEmail());
+                feUserDto.setMobileNo(myInfoDto.getMobileNo());
+                feUserDto.setDisplayName(myInfoDto.getUserName());
+                ParamUtil.setSessionAttr(request, "inter_user_attr", feUserDto);
+            }
+        }else {
+            log.info("------- Illegal operation get Myinfo ---------");
+        }
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE, "back");
+        log.info("---- relaod feuesr end --------- ");
+        return feUserDto;
+    }
 
 }

@@ -67,6 +67,9 @@
                                             <div class="col-xs-2 col-md-2">
                                                 <a   style="padding-left: 90px;" align="left" class="back" href="#" onclick="cancel()"><em class="fa fa-angle-left"></em> Back</a></div>
                                             <div class="text-right col-xs-9 col-md-9">
+                                                <c:if test="${iais_Login_User_Info_Attr.nricNum == inter_user_attr.idNumber}">
+                                                <button class="btn btn-primary save" id="reLoadMyInfo" onclick="javascript:reLoadMyInfoTodo()">Refresh Data</button>
+                                                </c:if>
                                                 <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">Save</button>
                                             </div>
                                         </div>
@@ -90,6 +93,11 @@
     }
     function cancel() {
         $("#action").val("cancel");
+        SOP.Crud.cfxSubmit("mainForm");
+    }
+
+    function reLoadMyInfoTodo() {
+        $("#action").val("getMyInfo");
         SOP.Crud.cfxSubmit("mainForm");
     }
 </script>
