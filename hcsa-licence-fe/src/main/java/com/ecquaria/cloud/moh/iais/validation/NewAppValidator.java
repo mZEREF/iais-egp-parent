@@ -8,9 +8,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * NewAppValidator
@@ -37,7 +38,7 @@ public class NewAppValidator implements CustomizeValidator {
                          map.put("postalCode"+i,"cannot be blank ");
                      }else {
                          if(!list.get(i).getPostalCode().matches("^[0-9]{6}$")){
-                             map.put("postalCode"+i,"CHKLMD001_ERR003");
+                             map.put("postalCode"+i,"GENERAL_ERR0002");
                          }
                      }
                     String addrType = list.get(i).getAddrType();

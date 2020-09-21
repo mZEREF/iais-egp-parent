@@ -79,11 +79,11 @@ public class NewApplicationHelper {
                 List<AppSvcChckListDto> listDtos = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
                 int count=0;
                 if(listDtos.isEmpty()){
-                    /*   map.put("checkError","UC_CHKLMD001_ERR002");*/
+                    /*   map.put("checkError","NEW_ERR0012");*/
                 }else {
                     for(int i=0;i<listDtos.size();i++){
                         if(ClinicalLaboratoryDelegator.PLEASEINDICATE.equals(listDtos.get(i).getChkName())&&StringUtil.isEmpty(listDtos.get(i).getOtherScopeName()) ){
-                            map.put("pleaseIndicateError"+premCount,"ERR0009");
+                            map.put("pleaseIndicateError"+premCount,MessageUtil.replaceMessage("GENERAL_ERR0006",ClinicalLaboratoryDelegator.PLEASEINDICATE,"field"));
                         }
 
                         String parentName = listDtos.get(i).getParentName();
@@ -115,7 +115,7 @@ public class NewApplicationHelper {
                     }
                 }
                 if(count!=listDtos.size()){
-                    map.put("checkError","UC_CHKLMD001_ERR002");
+                    map.put("checkError","NEW_ERR0012");
                 }
             premCount++;
         }
@@ -187,12 +187,12 @@ public class NewApplicationHelper {
                     if("FIN".equals(idTyp)){
                         boolean b = SgNoValidator.validateFin(idNo);
                         if(!b){
-                            errMap.put("idNo"+i,"CHKLMD001_ERR005");
+                            errMap.put("idNo"+i,"GENERAL_ERR0008");
                         }
                         stringBuilder1.append(idTyp).append(idNo);
                         if(!StringUtil.isEmpty(stringBuilder1.toString())){
                             if(stringList.contains(stringBuilder1.toString())){
-                                errMap.put("idNo"+i,"UC_CHKLMD001_ERR002");
+                                errMap.put("idNo"+i,"NEW_ERR0012");
                             }else {
                                 stringList.add( stringBuilder1.toString());
                             }
@@ -201,13 +201,13 @@ public class NewApplicationHelper {
                     if("NRIC".equals(idTyp)){
                         boolean b1 = SgNoValidator.validateNric(idNo);
                         if(!b1){
-                            errMap.put("idNo"+i,"CHKLMD001_ERR005");
+                            errMap.put("idNo"+i,"GENERAL_ERR0008");
                         }
                         stringBuilder1.append(idTyp).append(idNo);
 
                         if(!StringUtil.isEmpty(stringBuilder1.toString())){
                             if(stringList.contains(stringBuilder1.toString())){
-                                errMap.put("idNo"+i,"UC_CHKLMD001_ERR002");
+                                errMap.put("idNo"+i,"NEW_ERR0012");
                             }else {
                                 stringList.add( stringBuilder1.toString());
                             }
@@ -233,7 +233,7 @@ public class NewApplicationHelper {
                     errMap.put("mobileNo"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Mobile No. ","field"));
                 }else if (!StringUtil.isEmpty(mobileNo)) {
                     if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                        errMap.put("mobileNo"+i, "CHKLMD001_ERR004");
+                        errMap.put("mobileNo"+i, "GENERAL_ERR0007");
                     }
                 }
                 String emailAddr = appSvcCgoList.get(i).getEmailAddr();
@@ -242,7 +242,7 @@ public class NewApplicationHelper {
                     errMap.put("emailAddr"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address","field"));
                 }else if (!StringUtil.isEmpty(emailAddr)) {
                     if (! ValidationUtils.isEmail(emailAddr)) {
-                        errMap.put("emailAddr"+i, "CHKLMD001_ERR006");
+                        errMap.put("emailAddr"+i, "GENERAL_ERR0014");
                     }else if(emailAddr.length()>66) {
                         errMap.put("emailAddr"+i, "Length is too long");
                     }
@@ -390,24 +390,24 @@ public class NewApplicationHelper {
                         if("FIN".equals(idType)){
                             boolean b = SgNoValidator.validateFin(idNo);
                             if(!b){
-                                oneErrorMap.put("poNRICFIN"+poIndex,"CHKLMD001_ERR005");
+                                oneErrorMap.put("poNRICFIN"+poIndex,"GENERAL_ERR0008");
                             }else {
                                 stringBuilder.append(idType).append(idNo);
                                 String s = stringBuilder.toString();
                                 if(stringList.contains(s)){
-                                    oneErrorMap.put("poNRICFIN"+poIndex,"UC_CHKLMD001_ERR002");
+                                    oneErrorMap.put("poNRICFIN"+poIndex,"NEW_ERR0012");
                                 }
                             }
                         }
                         if("NRIC".equals(idType)){
                             boolean b1 = SgNoValidator.validateNric(idNo);
                             if(!b1){
-                                oneErrorMap.put("poNRICFIN"+poIndex,"CHKLMD001_ERR005");
+                                oneErrorMap.put("poNRICFIN"+poIndex,"GENERAL_ERR0008");
                             }else {
                                 stringBuilder.append(idType).append(idNo);
                                 String s = stringBuilder.toString();
                                 if(stringList.contains(s)){
-                                    oneErrorMap.put("poNRICFIN"+poIndex,"UC_CHKLMD001_ERR002");
+                                    oneErrorMap.put("poNRICFIN"+poIndex,"NEW_ERR0012");
                                 }
                             }
                         }
@@ -417,14 +417,14 @@ public class NewApplicationHelper {
                     if(!StringUtil.isEmpty(mobileNo)){
 
                         if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                            oneErrorMap.put("mobileNo"+poIndex, "CHKLMD001_ERR004");
+                            oneErrorMap.put("mobileNo"+poIndex, "GENERAL_ERR0007");
                         }
                     }else {
                         oneErrorMap.put("mobileNo"+poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","Mobile No. ","field"));
                     }
                     if(!StringUtil.isEmpty(emailAddr)) {
                         if (!  ValidationUtils.isEmail(emailAddr)) {
-                            oneErrorMap.put("emailAddr"+poIndex, "CHKLMD001_ERR006");
+                            oneErrorMap.put("emailAddr"+poIndex, "GENERAL_ERR0014");
                         }else if(emailAddr.length()>66){
 
                         }
@@ -503,24 +503,24 @@ public class NewApplicationHelper {
                 if("FIN".equals(idType)){
                     boolean b = SgNoValidator.validateFin(idNo);
                     if(!b){
-                        oneErrorMap.put("deputyIdNo"+dpoIndex,"CHKLMD001_ERR005");
+                        oneErrorMap.put("deputyIdNo"+dpoIndex,"GENERAL_ERR0008");
                     }else {
                         stringBuilder.append(idType).append(idNo);
                         String s = stringBuilder.toString();
                         if(stringList.contains(s)){
-                            oneErrorMap.put("deputyIdNo"+dpoIndex,"UC_CHKLMD001_ERR002");
+                            oneErrorMap.put("deputyIdNo"+dpoIndex,"NEW_ERR0012");
                         }
                     }
                 }
                 if("NRIC".equals(idType)){
                     boolean b1 = SgNoValidator.validateNric(idNo);
                     if(!b1){
-                        oneErrorMap.put("deputyIdNo"+dpoIndex,"CHKLMD001_ERR005");
+                        oneErrorMap.put("deputyIdNo"+dpoIndex,"GENERAL_ERR0008");
                     }else {
                         stringBuilder.append(idType).append(idNo);
                         String s = stringBuilder.toString();
                         if(stringList.contains(s)){
-                            oneErrorMap.put("deputyIdNo"+dpoIndex,"UC_CHKLMD001_ERR002");
+                            oneErrorMap.put("deputyIdNo"+dpoIndex,"NEW_ERR0012");
                         }
                     }
                 }
@@ -530,14 +530,14 @@ public class NewApplicationHelper {
                 }
                 else {
                     if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                        oneErrorMap.put("deputyMobileNo"+dpoIndex, "CHKLMD001_ERR004");
+                        oneErrorMap.put("deputyMobileNo"+dpoIndex, "GENERAL_ERR0007");
                     }
                 }
                 if(StringUtil.isEmpty(emailAddr)){
                     oneErrorMap.put("deputyEmailAddr"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address ","field"));
                 }else {
                     if (!ValidationUtils.isEmail(emailAddr)) {
-                        oneErrorMap.put("deputyEmailAddr"+dpoIndex, "CHKLMD001_ERR006");
+                        oneErrorMap.put("deputyEmailAddr"+dpoIndex, "GENERAL_ERR0014");
                     }else if(emailAddr.length()>66){
 
                     }
@@ -1000,24 +1000,24 @@ public class NewApplicationHelper {
                     if("FIN".equals(idTyp)){
                         boolean b = SgNoValidator.validateFin(idNo);
                         if(!b){
-                            errMap.put("idNo"+i,"CHKLMD001_ERR005");
+                            errMap.put("idNo"+i,"GENERAL_ERR0008");
                         }
                         stringBuilder1.append(idTyp).append(idNo);
                         if(!StringUtil.isEmpty(stringBuilder1.toString())){
                             if(stringList.contains(stringBuilder1.toString())){
-                                errMap.put("idNo"+i,"UC_CHKLMD001_ERR002");
+                                errMap.put("idNo"+i,"NEW_ERR0012");
                             }
                         }
                     }
                     if("NRIC".equals(idTyp)){
                         boolean b1 = SgNoValidator.validateNric(idNo);
                         if(!b1){
-                            errMap.put("idNo"+i,"CHKLMD001_ERR005");
+                            errMap.put("idNo"+i,"GENERAL_ERR0008");
                         }
                         stringBuilder1.append(idTyp).append(idNo);
                         if(!StringUtil.isEmpty(stringBuilder1.toString())){
                             if(stringList.contains(stringBuilder1.toString())){
-                                errMap.put("idNo"+i,"UC_CHKLMD001_ERR002");
+                                errMap.put("idNo"+i,"NEW_ERR0012");
                             }
                         }
                     }
@@ -1037,7 +1037,7 @@ public class NewApplicationHelper {
                     errMap.put("mobileNo"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Mobile No. ","field"));
                 }else if (!StringUtil.isEmpty(mobileNo)) {
                     if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                        errMap.put("mobileNo"+i, "CHKLMD001_ERR004");
+                        errMap.put("mobileNo"+i, "GENERAL_ERR0007");
                     }
                 }
                 String emailAddr = medAlertPsnDtos.get(i).getEmailAddr();
@@ -1046,7 +1046,7 @@ public class NewApplicationHelper {
                     errMap.put("emailAddr"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address","field"));
                 }else if (!StringUtil.isEmpty(emailAddr)) {
                     if (! ValidationUtils.isEmail(emailAddr)) {
-                        errMap.put("emailAddr"+i, "CHKLMD001_ERR006");
+                        errMap.put("emailAddr"+i, "GENERAL_ERR0014");
                     }else if(emailAddr.length()>66) {
 
                     }

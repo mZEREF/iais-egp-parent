@@ -49,7 +49,7 @@ public class ClinicalOfficerValidate implements CustomizeValidator {
                 boolean b = SgNoValidator.validateFin(idNo);
                 boolean b1 = SgNoValidator.validateNric(idNo);
                 if(!(b||b1)){
-                    map.put("idNo"+i,"CHKLMD001_ERR005");
+                    map.put("idNo"+i,"GENERAL_ERR0008");
                 }else {
                     map.put("idNo"+i,"cannot be blank ");
                 }
@@ -72,7 +72,7 @@ public class ClinicalOfficerValidate implements CustomizeValidator {
                 String mobileNo = appSvcCgoList.get(i).getMobileNo();
                 if(!StringUtil.isEmpty(mobileNo)){
                     if(!mobileNo.matches("^[8|9][0-9]{7}$")){
-                        map.put("mobileNo"+i,"CHKLMD001_ERR004");
+                        map.put("mobileNo"+i,"GENERAL_ERR0007");
                     }
                 } else {
                     map.put("mobileNo"+i,"cannot be blank ");
@@ -80,7 +80,7 @@ public class ClinicalOfficerValidate implements CustomizeValidator {
                 String emailAddr = appSvcCgoList.get(i).getEmailAddr();
                 if(!StringUtil.isEmpty(emailAddr)){
                     if(!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")){
-                        map.put("emailAddr"+i,"CHKLMD001_ERR006");
+                        map.put("emailAddr"+i,"GENERAL_ERR0014");
                     }
                 }
                 else {

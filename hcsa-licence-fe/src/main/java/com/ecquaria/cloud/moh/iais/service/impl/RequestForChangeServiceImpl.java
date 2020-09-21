@@ -540,7 +540,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         if (!StringUtil.isEmpty(onsiteStartHH) && !StringUtil.isEmpty(onsiteStartMM) && !StringUtil.isEmpty(onsiteEndHH) && !StringUtil.isEmpty(onsiteEndMM)) {
                             if (endDate != 0) {
                                 if (endDate < startDate) {
-                                    errorMap.put("onsiteEndMM" + i, "UC_CHKLMD001_ERR008");
+                                    errorMap.put("onsiteEndMM" + i, "NEW_ERR0015");
                                 }
                             }
                         }
@@ -588,24 +588,24 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             int i2 = Integer.parseInt(convStartFromMM);
 
                                             if (i1 >= 24) {
-                                                errorMap.put("onsiteStartToMM" + i + j, "UC_CHKLMD001_ERR009");
+                                                errorMap.put("onsiteStartToMM" + i + j, "NEW_ERR0013");
                                             } else if (i2 >= 60) {
-                                                errorMap.put("onsiteStartToMM" + i + j, "UC_CHKLMD001_ERR010");
+                                                errorMap.put("onsiteStartToMM" + i + j, "NEW_ERR0014");
                                             }
 
                                         } catch (Exception e) {
-                                            errorMap.put("onsiteStartToMM" + i + j, "CHKLMD001_ERR003");
+                                            errorMap.put("onsiteStartToMM" + i + j, "GENERAL_ERR0002");
                                         }
                                         try {
                                             int i3 = Integer.parseInt(onsiteEndToHH);
                                             int i4 = Integer.parseInt(onsiteEndToMM);
                                             if (i3 >= 24) {
-                                                errorMap.put("onsiteEndToMM" + i + j, "UC_CHKLMD001_ERR009");
+                                                errorMap.put("onsiteEndToMM" + i + j, "NEW_ERR0013");
                                             } else if (i4 >= 60) {
-                                                errorMap.put("onsiteEndToMM" + i + j, "UC_CHKLMD001_ERR010");
+                                                errorMap.put("onsiteEndToMM" + i + j, "NEW_ERR0014");
                                             }
                                         } catch (Exception e) {
-                                            errorMap.put("onsiteEndToMM" + i + j, "CHKLMD001_ERR003");
+                                            errorMap.put("onsiteEndToMM" + i + j, "GENERAL_ERR0002");
                                         }
                                         try {
                                             int i1 = Integer.parseInt(convStartFromHH);
@@ -614,7 +614,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             int i4 = Integer.parseInt(onsiteEndToMM);
                                             if (i3 * 60 + i4 != 0) {
                                                 if ((i1 * 60 + i2) > (i3 * 60 + i4)) {
-                                                    errorMap.put("onsiteEndToMM" + i + j, "UC_CHKLMD001_ERR008");
+                                                    errorMap.put("onsiteEndToMM" + i + j, "NEW_ERR0015");
                                                 }
                                             }
                                         } catch (Exception e) {
@@ -631,13 +631,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             int i2 = Integer.parseInt(convStartFromMM);
 
                                             if (i1 >= 24) {
-                                                errorMap.put("onsiteStartToMM" + i + j, "UC_CHKLMD001_ERR009");
+                                                errorMap.put("onsiteStartToMM" + i + j, "NEW_ERR0013");
                                             } else if (i2 >= 60) {
-                                                errorMap.put("onsiteStartToMM" + i + j, "UC_CHKLMD001_ERR010");
+                                                errorMap.put("onsiteStartToMM" + i + j, "NEW_ERR0014");
                                             }
 
                                         } catch (Exception e) {
-                                            errorMap.put("onsiteStartToMM" + i + j, "CHKLMD001_ERR003");
+                                            errorMap.put("onsiteStartToMM" + i + j, "GENERAL_ERR0002");
                                         }
                                     }
                                     if (StringUtil.isEmpty(onsiteEndToHH) && StringUtil.isEmpty(onsiteEndToMM) || StringUtil.isEmpty(onsiteEndToHH) || StringUtil.isEmpty(onsiteEndToMM)) {
@@ -647,12 +647,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             int i3 = Integer.parseInt(onsiteEndToHH);
                                             int i4 = Integer.parseInt(onsiteEndToMM);
                                             if (i3 >= 24) {
-                                                errorMap.put("onsiteEndToMM" + i + j, "UC_CHKLMD001_ERR009");
+                                                errorMap.put("onsiteEndToMM" + i + j, "NEW_ERR0013");
                                             } else if (i4 >= 60) {
-                                                errorMap.put("onsiteEndToMM" + i + j, "UC_CHKLMD001_ERR010");
+                                                errorMap.put("onsiteEndToMM" + i + j, "NEW_ERR0014");
                                             }
                                         } catch (Exception e) {
-                                            errorMap.put("onsiteEndToMM" + i + j, "CHKLMD001_ERR003");
+                                            errorMap.put("onsiteEndToMM" + i + j, "GENERAL_ERR0002");
                                         }
 
                                     }
@@ -677,7 +677,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 String[] s = masterCodeDto.split(" ");
                                 for (int index = 0; index < s.length; index++) {
                                     if (hciName.toUpperCase().contains(s[index].toUpperCase())) {
-                                        errorMap.put("hciName" + i, "CHKLMD001_ERR002");
+                                        errorMap.put("hciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", s[index].toUpperCase(), "keywords"));
                                     }
                                 }
                             }
@@ -749,7 +749,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             if (postalCode.length() < 6) {
                                 errorMap.put("postalCode" + i, "NEW_ERR0004");
                             } else if (!postalCode.matches("^[0-9]{6}$")) {
-                                errorMap.put("postalCode" + i, "CHKLMD001_ERR003");
+                                errorMap.put("postalCode" + i, "GENERAL_ERR0002");
                             } else {
                                 if (!StringUtil.isEmpty(stringBuilder.toString())) {
                                     stringBuilder.append(postalCode);
@@ -819,7 +819,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         if (!StringUtil.isEmpty(conStartHH) && !StringUtil.isEmpty(conStartMM) && !StringUtil.isEmpty(conEndHH) && !StringUtil.isEmpty(conEndMM)) {
                             if (0 != conEndDate) {
                                 if (conEndDate < conStartDate) {
-                                    errorMap.put("conEndMM" + i, "UC_CHKLMD001_ERR008");
+                                    errorMap.put("conEndMM" + i, "NEW_ERR0015");
                                 }
                             }
                         }
@@ -853,7 +853,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                         errorMap.put("convStartToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holidays Operating Hours (Start) ", "field"));
                                     }
                                 } else if (StringUtil.isEmpty(phDate)) {
-                                    errorMap.put("convphDate" + i + j, "UC_CHKLMD001_ERR001");
+                                    errorMap.put("convphDate" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006","convphDate","field"));
                                 }
 
                                 if (StringUtil.isEmpty(convEndToHH) && StringUtil.isEmpty(convEndToMM) & StringUtil.isEmpty(convStartFromHH)
@@ -865,24 +865,24 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             int i1 = Integer.parseInt(convStartFromHH);
                                             int i2 = Integer.parseInt(convStartFromMM);
                                             if (i1 >= 24) {
-                                                errorMap.put("convStartToHH" + i + j, "UC_CHKLMD001_ERR009");
+                                                errorMap.put("convStartToHH" + i + j, "NEW_ERR0013");
                                             } else if (i2 >= 60) {
-                                                errorMap.put("convStartToHH" + i + j, "UC_CHKLMD001_ERR010");
+                                                errorMap.put("convStartToHH" + i + j, "NEW_ERR0014");
                                             }
 
                                         } catch (Exception e) {
-                                            errorMap.put("convStartToHH" + i + j, "CHKLMD001_ERR003");
+                                            errorMap.put("convStartToHH" + i + j, "GENERAL_ERR0002");
                                         }
                                         try {
                                             int i3 = Integer.parseInt(convEndToHH);
                                             int i4 = Integer.parseInt(convEndToMM);
                                             if (i3 >= 24) {
-                                                errorMap.put("convEndToHH" + i + j, "UC_CHKLMD001_ERR009");
+                                                errorMap.put("convEndToHH" + i + j, "NEW_ERR0013");
                                             } else if (i4 >= 60) {
-                                                errorMap.put("convEndToHH" + i + j, "UC_CHKLMD001_ERR010");
+                                                errorMap.put("convEndToHH" + i + j, "NEW_ERR0014");
                                             }
                                         } catch (Exception e) {
-                                            errorMap.put("convEndToHH" + i + j, "CHKLMD001_ERR003");
+                                            errorMap.put("convEndToHH" + i + j, "GENERAL_ERR0002");
                                         }
                                         try {
                                             int i1 = Integer.parseInt(convStartFromHH);
@@ -891,7 +891,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             int i4 = Integer.parseInt(convEndToMM);
                                             if (i3 * 60 + i4 != 0) {
                                                 if ((i1 * 60 + i2) > (i3 * 60 + i4)) {
-                                                    errorMap.put("convEndToHH" + i + j, "UC_CHKLMD001_ERR008");
+                                                    errorMap.put("convEndToHH" + i + j, "NEW_ERR0015");
                                                 }
                                             }
                                         } catch (Exception e) {
@@ -906,9 +906,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             int i1 = Integer.parseInt(convStartFromHH);
                                             int i2 = Integer.parseInt(convStartFromMM);
                                             if (i1 >= 24) {
-                                                errorMap.put("convStartToHH" + i + j, "UC_CHKLMD001_ERR009");
+                                                errorMap.put("convStartToHH" + i + j, "NEW_ERR0013");
                                             } else if (i2 >= 60) {
-                                                errorMap.put("convStartToHH" + i + j, "UC_CHKLMD001_ERR010");
+                                                errorMap.put("convStartToHH" + i + j, "NEW_ERR0014");
                                             }
                                         } catch (Exception e) {
 
@@ -922,9 +922,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             int i3 = Integer.parseInt(convEndToHH);
                                             int i4 = Integer.parseInt(convEndToMM);
                                             if (i3 >= 24) {
-                                                errorMap.put("convEndToHH" + i + j, "UC_CHKLMD001_ERR009");
+                                                errorMap.put("convEndToHH" + i + j, "NEW_ERR0013");
                                             } else if (i4 >= 60) {
-                                                errorMap.put("convEndToHH" + i + j, "UC_CHKLMD001_ERR010");
+                                                errorMap.put("convEndToHH" + i + j, "NEW_ERR0014");
                                             }
 
                                         } catch (Exception e) {
@@ -998,7 +998,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             if (conveyancePostalCode.length() < 6) {
                                 errorMap.put("conveyancePostalCode" + i, "NEW_ERR0004");
                             } else if (!conveyancePostalCode.matches("^[0-9]{6}$")) {
-                                errorMap.put("conveyancePostalCode" + i, "CHKLMD001_ERR003");
+                                errorMap.put("conveyancePostalCode" + i, "GENERAL_ERR0002");
                             } else {
                                 if (!StringUtil.isEmpty(stringBuilder.toString())) {
                                     stringBuilder.append(conveyancePostalCode);
@@ -1096,7 +1096,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             if (offSitePostalCode.length() < 6) {
                                 errorMap.put("offSitePostalCode" + i, "NEW_ERR0004");
                             } else if (!offSitePostalCode.matches("^[0-9]{6}$")) {
-                                errorMap.put("offSitePostalCode" + i, "CHKLMD001_ERR003");
+                                errorMap.put("offSitePostalCode" + i, "GENERAL_ERR0002");
                             } else {
                                 if (!StringUtil.isEmpty(stringBuilder.toString())) {
                                     stringBuilder.append(offSitePostalCode);
@@ -1131,7 +1131,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         if (!StringUtil.isEmpty(offSiteStartHH) && !StringUtil.isEmpty(offSiteStartMM) && !StringUtil.isEmpty(offSiteEndHH) && !StringUtil.isEmpty(offSiteEndMM)) {
                             if (endDate != 0) {
                                 if (endDate < startDate) {
-                                    errorMap.put("offSiteEndMM" + i, "UC_CHKLMD001_ERR008");
+                                    errorMap.put("offSiteEndMM" + i, "NEW_ERR0015");
                                 }
                             }
                         }
@@ -1176,24 +1176,24 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             int i1 = Integer.parseInt(offSiteStartFromHH);
                                             int i2 = Integer.parseInt(offSiteStartFromMM);
                                             if (i1 >= 24) {
-                                                errorMap.put("offSiteStartToHH" + i + j, "UC_CHKLMD001_ERR009");
+                                                errorMap.put("offSiteStartToHH" + i + j, "NEW_ERR0013");
                                             } else if (i2 >= 60) {
-                                                errorMap.put("offSiteStartToHH" + i + j, "UC_CHKLMD001_ERR010");
+                                                errorMap.put("offSiteStartToHH" + i + j, "NEW_ERR0014");
                                             }
 
                                         } catch (Exception e) {
-                                            errorMap.put("offSiteStartToHH" + i + j, "CHKLMD001_ERR003");
+                                            errorMap.put("offSiteStartToHH" + i + j, "GENERAL_ERR0002");
                                         }
                                         try {
                                             int i3 = Integer.parseInt(offSiteEndToHH);
                                             int i4 = Integer.parseInt(offSiteEndToMM);
                                             if (i3 >= 24) {
-                                                errorMap.put("offSiteEndToHH" + i + j, "UC_CHKLMD001_ERR009");
+                                                errorMap.put("offSiteEndToHH" + i + j, "NEW_ERR0013");
                                             } else if (i4 >= 60) {
-                                                errorMap.put("offSiteEndToHH" + i + j, "UC_CHKLMD001_ERR010");
+                                                errorMap.put("offSiteEndToHH" + i + j, "NEW_ERR0014");
                                             }
                                         } catch (Exception e) {
-                                            errorMap.put("offSiteEndToHH" + i + j, "CHKLMD001_ERR003");
+                                            errorMap.put("offSiteEndToHH" + i + j, "GENERAL_ERR0002");
                                         }
                                         try {
                                             int i1 = Integer.parseInt(offSiteStartFromHH);
@@ -1202,7 +1202,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             int i4 = Integer.parseInt(offSiteEndToMM);
                                             if (i3 * 60 + i4 != 0) {
                                                 if ((i1 * 60 + i2) > (i3 * 60 + i4)) {
-                                                    errorMap.put("offSiteEndToHH" + i + j, "UC_CHKLMD001_ERR008");
+                                                    errorMap.put("offSiteEndToHH" + i + j, "NEW_ERR0015");
                                                 }
                                             }
 
@@ -1218,12 +1218,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             int i1 = Integer.parseInt(offSiteStartFromHH);
                                             int i2 = Integer.parseInt(offSiteStartFromMM);
                                             if (i1 >= 24) {
-                                                errorMap.put("offSiteStartToHH" + i + j, "UC_CHKLMD001_ERR009");
+                                                errorMap.put("offSiteStartToHH" + i + j, "NEW_ERR0013");
                                             } else if (i2 >= 60) {
-                                                errorMap.put("offSiteStartToHH" + i + j, "UC_CHKLMD001_ERR010");
+                                                errorMap.put("offSiteStartToHH" + i + j, "NEW_ERR0014");
                                             }
                                         } catch (Exception e) {
-                                            errorMap.put("offSiteStartToHH" + i + j, "CHKLMD001_ERR003");
+                                            errorMap.put("offSiteStartToHH" + i + j, "GENERAL_ERR0002");
 
                                         }
                                     }
@@ -1235,13 +1235,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             int i3 = Integer.parseInt(offSiteEndToHH);
                                             int i4 = Integer.parseInt(offSiteEndToMM);
                                             if (i3 >= 24) {
-                                                errorMap.put("offSiteEndToHH" + i + j, "UC_CHKLMD001_ERR009");
+                                                errorMap.put("offSiteEndToHH" + i + j, "NEW_ERR0013");
                                             } else if (i4 >= 60) {
-                                                errorMap.put("offSiteEndToHH" + i + j, "UC_CHKLMD001_ERR010");
+                                                errorMap.put("offSiteEndToHH" + i + j, "NEW_ERR0014");
                                             }
 
                                         } catch (Exception e) {
-                                            errorMap.put("offSiteEndToHH" + i + j, "CHKLMD001_ERR003");
+                                            errorMap.put("offSiteEndToHH" + i + j, "GENERAL_ERR0002");
 
                                         }
                                     }
@@ -1666,11 +1666,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         } else {
             boolean b = VehNoValidator.validateNumber(conveyanceVehicleNo);
             if (!b) {
-                errorMap.put("conveyanceVehicleNo" + numberCount, "CHKLMD001_ERR008");
+                errorMap.put("conveyanceVehicleNo" + numberCount, "GENERAL_ERR0017");
             }
 
             if (distinctVehicleNo.contains(conveyanceVehicleNo)) {
-                errorMap.put("conveyanceVehicleNo" + numberCount, "CHKLMD001_ERR009");
+                errorMap.put("conveyanceVehicleNo" + numberCount, "NEW_ERR0016");
             } else {
                 distinctVehicleNo.add(conveyanceVehicleNo);
             }
@@ -1683,12 +1683,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             int i2 = Integer.parseInt(onsiteMM);
             date = i1 * 60 + i2 * 1;
             if (i1 >= 24) {
-                errorMap.put(key + i, "UC_CHKLMD001_ERR009");
+                errorMap.put(key + i, "NEW_ERR0013");
             } else if (i2 >= 60) {
-                errorMap.put(key + i, "UC_CHKLMD001_ERR010");
+                errorMap.put(key + i, "NEW_ERR0014");
             }
         } catch (Exception e) {
-            errorMap.put(key + i, "CHKLMD001_ERR003");
+            errorMap.put(key + i, "GENERAL_ERR0002");
         }
         return date;
     }

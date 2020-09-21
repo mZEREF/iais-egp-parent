@@ -620,14 +620,14 @@ public class AppealServiceImpl implements AppealService {
                             if ("FIN".equals(idTyp)) {
                                 boolean b = SgNoValidator.validateFin(idNo);
                                 if (!b) {
-                                    map.put("idNo" + i, "CHKLMD001_ERR005");
+                                    map.put("idNo" + i, "GENERAL_ERR0008");
                                 }
                                 stringBuilder1.append(idTyp).append(idNo);
 
                             } else if ("NRIC".equals(idTyp)) {
                                 boolean b1 = SgNoValidator.validateNric(idNo);
                                 if (!b1) {
-                                    map.put("idNo" + i, "CHKLMD001_ERR005");
+                                    map.put("idNo" + i, "GENERAL_ERR0008");
                                 }
                                 stringBuilder1.append(idTyp).append(idNo);
 
@@ -651,7 +651,7 @@ public class AppealServiceImpl implements AppealService {
                             map.put("mobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Mobile No. ","field"));
                         } else if (!StringUtil.isEmpty(mobileNo)) {
                             if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                                map.put("mobileNo" + i, "CHKLMD001_ERR004");
+                                map.put("mobileNo" + i, "GENERAL_ERR0007");
                             }
                         }
                         String emailAddr = appSvcCgoList.get(i).getEmailAddr();
@@ -659,13 +659,13 @@ public class AppealServiceImpl implements AppealService {
                             map.put("emailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address ","field"));
                         } else if (!StringUtil.isEmpty(emailAddr)) {
                             if (!ValidationUtils.isEmail(emailAddr)) {
-                                map.put("emailAddr" + i, "CHKLMD001_ERR006");
+                                map.put("emailAddr" + i, "GENERAL_ERR0014");
                             }
                         }
                         String s = stringBuilder.toString();
                         if (!StringUtil.isEmpty(stringBuilder1.toString())) {
                             if (s.contains(stringBuilder1.toString())) {
-                                map.put("idNo", "UC_CHKLMD001_ERR002");
+                                map.put("idNo", "NEW_ERR0012");
                             } else {
                                 stringBuilder.append(stringBuilder1.toString());
                             }

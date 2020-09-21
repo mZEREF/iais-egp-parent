@@ -1649,7 +1649,7 @@ public class ClinicalLaboratoryDelegator {
                     errorMap.put("wrkExpYear" + i, errWrkExpYear);
                 } else {
                     if (!wrkExpYear.matches("^[0-9]*$")) {
-                        errorMap.put("wrkExpYear" + i, "CHKLMD001_ERR003");
+                        errorMap.put("wrkExpYear" + i, "GENERAL_ERR0002");
                     }
                 }
             } else if (AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)) {
@@ -1666,7 +1666,7 @@ public class ClinicalLaboratoryDelegator {
                     errorMap.put("wrkExpYear" + i, errWrkExpYear);
                 } else {
                     if (!wrkExpYear.matches("^[0-9]*$")) {
-                        errorMap.put("wrkExpYear" + i, "CHKLMD001_ERR003");
+                        errorMap.put("wrkExpYear" + i, "GENERAL_ERR0002");
                     }
                 }
             } else {
@@ -1701,7 +1701,7 @@ public class ClinicalLaboratoryDelegator {
                         errorMap.put("wrkExpYear" + i, errWrkExpYear);
                     } else {
                         if (!wrkExpYear.matches("^[0-9]*$")) {
-                            errorMap.put("wrkExpYear" + i, "CHKLMD001_ERR003");
+                            errorMap.put("wrkExpYear" + i, "GENERAL_ERR0002");
                         }
                     }
                     if (StringUtil.isEmpty(qualification)) {
@@ -1720,7 +1720,7 @@ public class ClinicalLaboratoryDelegator {
                         errorMap.put("wrkExpYear" + i, errWrkExpYear);
                     } else {
                         if (!wrkExpYear.matches("^[0-9]*$")) {
-                            errorMap.put("wrkExpYear" + i, "CHKLMD001_ERR003");
+                            errorMap.put("wrkExpYear" + i, "GENERAL_ERR0002");
                         }
                     }
                     if (StringUtil.isEmpty(quaification)) {
@@ -2350,7 +2350,7 @@ public class ClinicalLaboratoryDelegator {
                 if (!StringUtil.isEmpty(stringBuilder.toString())) {
                     String string = stringBuilder.toString();
                     String substring = string.substring(0, string.lastIndexOf(','));
-                    String error = MessageUtil.getMessageDesc("UC_CHKLMD001_ERR005");
+                    String error = MessageUtil.getMessageDesc("NEW_ERR0011");
                     if (substring.contains(",")) {
                         error = error.replaceFirst("is", "are");
                     }

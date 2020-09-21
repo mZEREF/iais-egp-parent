@@ -69,7 +69,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
-import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -3264,7 +3263,8 @@ public class NewApplicationDelegator {
                 if (!appSubmissionDto.getAppGrpPremisesDtoList().equals(oldAppSubmissionDto.getAppGrpPremisesDtoList())) {
                     log.info(StringUtil.changeForLog("appGrpPremisesDto" + JsonUtil.parseToJson(appSubmissionDto.getAppGrpPremisesDtoList())));
                     log.info(StringUtil.changeForLog("oldappGrpPremisesDto" + JsonUtil.parseToJson(oldAppSubmissionDto.getAppGrpPremisesDtoList())));
-                    result.put("premiss", "UC_CHKLMD001_ERR001");
+//                    result.put("premiss", "UC_CHKLMD001_ERR001");
+                    result.put("premiss",MessageUtil.replaceMessage("GENERAL_ERR0006","premiss","field"));
                 }
             }
             List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
@@ -3283,7 +3283,8 @@ public class NewApplicationDelegator {
                 if (!appSubmissionDto.getAppGrpPrimaryDocDtos().equals(oldAppSubmissionDto.getAppGrpPrimaryDocDtos())) {
                     log.info(StringUtil.changeForLog("appGrpPrimaryDocDto" + JsonUtil.parseToJson(appSubmissionDto.getAppGrpPrimaryDocDtos())));
                     log.info(StringUtil.changeForLog("oldAppGrpPrimaryDocDto" + JsonUtil.parseToJson(oldAppSubmissionDto.getAppGrpPrimaryDocDtos())));
-                    result.put("document", "UC_CHKLMD001_ERR001");
+//                    result.put("document", "UC_CHKLMD001_ERR001");
+                    result.put("document",MessageUtil.replaceMessage("GENERAL_ERR0006","document","field"));
                 }
             }
 
@@ -3291,7 +3292,8 @@ public class NewApplicationDelegator {
                 if (!appSubmissionDto.getAppSvcRelatedInfoDtoList().equals(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList())) {
                     log.info(StringUtil.changeForLog("AppSvcRelatedInfoDtoList" + JsonUtil.parseToJson(appSubmissionDto.getAppSvcRelatedInfoDtoList())));
                     log.info(StringUtil.changeForLog("oldAppSvcRelatedInfoDtoList" + JsonUtil.parseToJson(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList())));
-                    result.put("serviceId", "UC_CHKLMD001_ERR001");
+//                    result.put("serviceId", "UC_CHKLMD001_ERR001");
+                    result.put("serviceId",MessageUtil.replaceMessage("GENERAL_ERR0006","serviceId","field"));
                 }
             }
         }
@@ -3842,7 +3844,7 @@ public class NewApplicationDelegator {
         Map<String, String> premissMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto, premisesHciList, keyWord, isRfi);
         premissMap.remove("hciNameUsed");
         if (!premissMap.isEmpty()) {
-            previewAndSubmitMap.put("premiss", "UC_CHKLMD001_ERR001");
+            previewAndSubmitMap.put("premiss", MessageUtil.replaceMessage("GENERAL_ERR0006","premiss","field"));
             String premissMapStr = JsonUtil.parseToJson(premissMap);
             log.info(StringUtil.changeForLog("premissMap json str:" + premissMapStr));
             coMap.put("premises", "");
@@ -3871,7 +3873,7 @@ public class NewApplicationDelegator {
         documentValid(bpc.request, documentMap);
         doCommomDocument(bpc.request, documentMap);
         if (!documentMap.isEmpty()) {
-            previewAndSubmitMap.put("document", "UC_CHKLMD001_ERR001");
+            previewAndSubmitMap.put("document", MessageUtil.replaceMessage("GENERAL_ERR0006","document","field"));
             String documentMapStr = JsonUtil.parseToJson(documentMap);
             log.info(StringUtil.changeForLog("documentMap json str:" + documentMapStr));
             coMap.put("document", "");
@@ -4086,17 +4088,23 @@ public class NewApplicationDelegator {
 
 
         boolean flag = false;
+        String errName = MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field");
+        String errDesignation = MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field");
+        String errRegnNo = MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn No.","field");
+        String errWrkExpYear = MessageUtil.replaceMessage("GENERAL_ERR0006","Relevant working experience (Years)","field");
+        String errQualification = MessageUtil.replaceMessage("GENERAL_ERR0006","Qualification","field");
+        String errSelSvcPsnel = MessageUtil.replaceMessage("GENERAL_ERR0006","Select Service Personnel","field");
         for (int i = 0; i < appSvcPersonnelDtos.size(); i++) {
             String personnelSel = appSvcPersonnelDtos.get(i).getPersonnelType();
             if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)) {
                 String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
                 String name = appSvcPersonnelDtos.get(i).getName();
                 if (StringUtil.isEmpty(name)) {
-                    map.put("name" + i, "UC_CHKLMD001_ERR001");
+                    map.put("name" + i, errName);
                     flag = true;
                 }
                 if (StringUtil.isEmpty(profRegNo)) {
-                    map.put("regnNo" + i, "UC_CHKLMD001_ERR001");
+                    map.put("regnNo" + i, errRegnNo);
                     flag = true;
                 }
             }
@@ -4107,24 +4115,24 @@ public class NewApplicationDelegator {
                 String qualification = appSvcPersonnelDtos.get(i).getQualification();
 
                 if (StringUtil.isEmpty(name)) {
-                    map.put("name" + i, "UC_CHKLMD001_ERR001");
+                    map.put("name" + i, errName);
                     flag = true;
                 }
                 if (StringUtil.isEmpty(designation)) {
-                    map.put("designation" + i, "UC_CHKLMD001_ERR001");
+                    map.put("designation" + i, errDesignation);
                     flag = true;
                 }
                 if (StringUtil.isEmpty(wrkExpYear)) {
-                    map.put("wrkExpYear" + i, "UC_CHKLMD001_ERR001");
+                    map.put("wrkExpYear" + i, errWrkExpYear);
                     flag = true;
                 } else {
                     if (!wrkExpYear.matches("^[0-9]*$")) {
-                        map.put("wrkExpYear" + i, "CHKLMD001_ERR003");
+                        map.put("wrkExpYear" + i, "GENERAL_ERR0002");
                         flag = true;
                     }
                 }
                 if (StringUtil.isEmpty(qualification)) {
-                    map.put("qualification" + i, "UC_CHKLMD001_ERR001");
+                    map.put("qualification" + i, errQualification);
                     flag = true;
                 }
             }
@@ -4134,27 +4142,27 @@ public class NewApplicationDelegator {
                 String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
                 String quaification = appSvcPersonnelDtos.get(i).getQualification();
                 if (StringUtil.isEmpty(name)) {
-                    map.put("name" + i, "UC_CHKLMD001_ERR001");
+                    map.put("name" + i, errName);
                     flag = true;
                 }
                 if (StringUtil.isEmpty(wrkExpYear)) {
-                    map.put("wrkExpYear" + i, "UC_CHKLMD001_ERR001");
+                    map.put("wrkExpYear" + i, errWrkExpYear);
                     flag = true;
                 } else {
                     if (!wrkExpYear.matches("^[0-9]*$")) {
-                        map.put("wrkExpYear" + i, "CHKLMD001_ERR003");
+                        map.put("wrkExpYear" + i, "GENERAL_ERR0002");
                         flag = true;
                     }
                 }
                 if (StringUtil.isEmpty(quaification)) {
-                    map.put("quaification" + i, "UC_CHKLMD001_ERR001");
+                    map.put("quaification" + i, errQualification);
                     flag = true;
                 }
             }
             if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)) {
                 String name = appSvcPersonnelDtos.get(i).getName();
                 if (StringUtil.isEmpty(name)) {
-                    map.put("name" + i, "UC_CHKLMD001_ERR001");
+                    map.put("name" + i, errName);
                     flag = true;
                 }
             }
@@ -4186,31 +4194,31 @@ public class NewApplicationDelegator {
         for (int i = 0; i < list.size(); i++) {
             String assignSelect = list.get(i).getAssignSelect();
             if ("".equals(assignSelect) || assignSelect == null) {
-                map.put("cgoassignSelect" + i, "UC_CHKLMD001_ERR001");
+                map.put("cgoassignSelect" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgoassignSelect","field"));
                 flag = true;
             }
             String idType = list.get(i).getIdType();
             if (StringUtil.isEmpty(idType)) {
-                map.put("cgotype" + i, "UC_CHKLMD001_ERR001");
+                map.put("cgotype" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgotype","field"));
                 flag = true;
             }
             String mobileNo = list.get(i).getMobileNo();
             if (StringUtil.isEmpty(mobileNo)) {
-                map.put("cgomobileNo" + i, "UC_CHKLMD001_ERR001");
+                map.put("cgomobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgomobileNo","field"));
                 flag = true;
             } else {
                 if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                    map.put("cgomobileNo" + i, "CHKLMD001_ERR004");
+                    map.put("cgomobileNo" + i, "GENERAL_ERR0007");
                     flag = true;
                 }
             }
             String emailAddr = list.get(i).getEmailAddr();
             if (StringUtil.isEmpty(emailAddr)) {
-                map.put("cgoemailAddr" + i, "UC_CHKLMD001_ERR001");
+                map.put("cgoemailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgoemailAddr","field"));
                 flag = true;
             } else {
                 if (!ValidationUtils.isEmail(emailAddr)) {
-                    map.put("cgoemailAddr" + i, "CHKLMD001_ERR006");
+                    map.put("cgoemailAddr" + i, "GENERAL_ERR0014");
                     flag = true;
                 }
             }
@@ -4294,7 +4302,7 @@ public class NewApplicationDelegator {
 
                 String assignSelect = poDto.get(i).getAssignSelect();
                 if ("-1".equals(assignSelect)) {
-                    oneErrorMap.put("assignSelect" + i, "UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("assignSelect" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","assignSelect","field"));
                 } else {
                     //do by wenkang
                     String mobileNo = poDto.get(i).getMobileNo();
@@ -4307,24 +4315,24 @@ public class NewApplicationDelegator {
                     String idType = poDto.get(i).getIdType();
 
                     if ("-1".equals(idType)) {
-                        oneErrorMap.put("idType" + poIndex, "UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("idType" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","idType","field"));
                     }
                     if (StringUtil.isEmpty(name)) {
-                        oneErrorMap.put("name" + poIndex, "UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("name" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","name","field"));
                     } else if (name.length() > 66) {
 
                     }
                     if (StringUtil.isEmpty(salutation)) {
-                        oneErrorMap.put("salutation" + poIndex, "UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("salutation" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","salutation","field"));
                     }
                     if (StringUtil.isEmpty(designation)) {
-                        oneErrorMap.put("designation" + poIndex, "UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("designation" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","designation","field"));
                     }
                     if (!StringUtil.isEmpty(idNo)) {
                         if ("FIN".equals(idType)) {
                             boolean b = SgNoValidator.validateFin(idNo);
                             if (!b) {
-                                oneErrorMap.put("NRICFIN", "CHKLMD001_ERR005");
+                                oneErrorMap.put("NRICFIN", "GENERAL_ERR0008");
                             } else {
                                 stringBuilder.append(idType).append(idNo);
 
@@ -4333,38 +4341,38 @@ public class NewApplicationDelegator {
                         if ("NRIC".equals(idType)) {
                             boolean b1 = SgNoValidator.validateNric(idNo);
                             if (!b1) {
-                                oneErrorMap.put("NRICFIN", "CHKLMD001_ERR005");
+                                oneErrorMap.put("NRICFIN", "GENERAL_ERR0008");
                             } else {
                                 stringBuilder.append(idType).append(idNo);
 
                             }
                         }
                     } else {
-                        oneErrorMap.put("NRICFIN", "UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("NRICFIN", MessageUtil.replaceMessage("GENERAL_ERR0006","NRICFIN","field"));
                     }
                     if (!StringUtil.isEmpty(mobileNo)) {
 
                         if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                            oneErrorMap.put("mobileNo" + poIndex, "CHKLMD001_ERR004");
+                            oneErrorMap.put("mobileNo" + poIndex, "GENERAL_ERR0007");
                         }
                     } else {
-                        oneErrorMap.put("mobileNo" + poIndex, "UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("mobileNo" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","mobileNo","field"));
                     }
                     if (!StringUtil.isEmpty(emailAddr)) {
                         if (!ValidationUtils.isEmail(emailAddr)) {
-                            oneErrorMap.put("emailAddr" + poIndex, "CHKLMD001_ERR006");
+                            oneErrorMap.put("emailAddr" + poIndex, "GENERAL_ERR0014");
                         } else if (emailAddr.length() > 66) {
 
                         }
                     } else {
-                        oneErrorMap.put("emailAddr" + poIndex, "UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("emailAddr" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","emailAddr","field"));
                     }
                     if (!StringUtil.isEmpty(officeTelNo)) {
                         if (!officeTelNo.matches("^[6][0-9]{7}$")) {
                             oneErrorMap.put("officeTelNo" + poIndex, "GENERAL_ERR0015");
                         }
                     } else {
-                        oneErrorMap.put("officeTelNo" + poIndex, "UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("officeTelNo" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","officeTelNo","field"));
                     }
                 }
                 poIndex++;
@@ -4372,7 +4380,7 @@ public class NewApplicationDelegator {
 
                 if (stringList.contains(s)) {
 
-                    oneErrorMap.put("NRICFIN", "UC_CHKLMD001_ERR002");
+                    oneErrorMap.put("NRICFIN", "NEW_ERR0012");
 
                 } else {
                     stringList.add(stringBuilder.toString());
@@ -4391,34 +4399,34 @@ public class NewApplicationDelegator {
                 String officeTelNo = poDto.get(i).getOfficeTelNo();
 
                 if (StringUtil.isEmpty(designation) || "-1".equals(designation)) {
-                    oneErrorMap.put("deputyDesignation" + dpoIndex, "UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyDesignation" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyDesignation","field"));
                 }
                 if (StringUtil.isEmpty(salutation) || "-1".equals(salutation)) {
-                    oneErrorMap.put("deputySalutation" + dpoIndex, "UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputySalutation" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputySalutation","field"));
                 }
 
                 if (StringUtil.isEmpty(idType) || "-1".equals(idType)) {
-                    oneErrorMap.put("deputyIdType" + dpoIndex, "UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyIdType" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyIdType","field"));
                 }
                 if (StringUtil.isEmpty(name)) {
-                    oneErrorMap.put("deputyName" + dpoIndex, "UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyName" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyName","field"));
                 } else if (name.length() > 66) {
 
                 }
                 if (StringUtil.isEmpty(officeTelNo)) {
-                    oneErrorMap.put("deputyofficeTelNo" + dpoIndex, "UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyofficeTelNo" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyofficeTelNo","field"));
                 } else {
                     if (!officeTelNo.matches("^[6][0-9]{7}$")) {
                         oneErrorMap.put("deputyofficeTelNo" + dpoIndex, "GENERAL_ERR0015");
                     }
                 }
                 if (StringUtil.isEmpty(idNo)) {
-                    oneErrorMap.put("deputyIdNo" + dpoIndex, "UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyIdNo" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyIdNo","field"));
                 }
                 if ("FIN".equals(idType)) {
                     boolean b = SgNoValidator.validateFin(idNo);
                     if (!b) {
-                        oneErrorMap.put("deputyIdNo" + dpoIndex, "CHKLMD001_ERR005");
+                        oneErrorMap.put("deputyIdNo" + dpoIndex, "GENERAL_ERR0008");
                     } else {
                         stringBuilder.append(idType).append(idNo);
                     }
@@ -4426,24 +4434,24 @@ public class NewApplicationDelegator {
                 if ("NRIC".equals(idType)) {
                     boolean b1 = SgNoValidator.validateNric(idNo);
                     if (!b1) {
-                        oneErrorMap.put("deputyIdNo" + dpoIndex, "CHKLMD001_ERR005");
+                        oneErrorMap.put("deputyIdNo" + dpoIndex, "GENERAL_ERR0008");
                     } else {
                         stringBuilder.append(idType).append(idNo);
                     }
                 }
 
                 if (StringUtil.isEmpty(mobileNo)) {
-                    oneErrorMap.put("deputyMobileNo" + dpoIndex, "UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyMobileNo" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyMobileNo","field"));
                 } else {
                     if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                        oneErrorMap.put("deputyMobileNo" + dpoIndex, "CHKLMD001_ERR004");
+                        oneErrorMap.put("deputyMobileNo" + dpoIndex, "GENERAL_ERR0007");
                     }
                 }
                 if (StringUtil.isEmpty(emailAddr)) {
-                    oneErrorMap.put("deputyEmailAddr" + dpoIndex, "UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyEmailAddr" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyEmailAddr","field"));
                 } else {
                     if (!ValidationUtils.isEmail(emailAddr)) {
-                        oneErrorMap.put("deputyEmailAddr" + dpoIndex, "CHKLMD001_ERR006");
+                        oneErrorMap.put("deputyEmailAddr" + dpoIndex, "GENERAL_ERR0014");
                     } else if (emailAddr.length() > 66) {
 
                     }
@@ -4454,7 +4462,7 @@ public class NewApplicationDelegator {
 
                 if (stringList.contains(s) && !StringUtil.isEmpty(s)) {
 
-                    oneErrorMap.put("NRICFIN", "UC_CHKLMD001_ERR002");
+                    oneErrorMap.put("NRICFIN", "NEW_ERR0012");
 
                 } else {
                     stringList.add(stringBuilder.toString());
@@ -4544,45 +4552,6 @@ public class NewApplicationDelegator {
                     }
                     bpc.getSession().setAttribute("coMap", coMap);
                 }
-                String personMapStr = appSubmissionDto.getDropDownPsnMapStr();
-
-//                if(!StringUtil.isEmpty(personMapStr)){
-//                    Map<String,LinkedHashMap<String,Object>> personLinkedMap = JsonUtil.parseToObject(personMapStr,Map.class);
-//                    Map<String,AppSvcPersonAndExtDto> personMap = IaisCommonUtils.genNewHashMap();
-//                    personLinkedMap.forEach((k,v)->{
-//                        AppSvcPersonAndExtDto person = new AppSvcPersonAndExtDto();
-//                        AppSvc
-//
-//                        appSvcPrincipalOfficersDto.setPsnType((String) v.get("psnType"));
-//                        appSvcPrincipalOfficersDto.setAssignSelect((String) v.get("assignSelect"));
-//                        appSvcPrincipalOfficersDto.setSalutation((String) v.get("salutation"));
-//                        appSvcPrincipalOfficersDto.setName((String) v.get("name"));
-//                        appSvcPrincipalOfficersDto.setIdType((String) v.get("idType"));
-//                        appSvcPrincipalOfficersDto.setIdNo((String) v.get("idNo"));
-//                        appSvcPrincipalOfficersDto.setDesignation((String) v.get("designation"));
-//                        appSvcPrincipalOfficersDto.setMobileNo((String) v.get("mobileNo"));
-//                        appSvcPrincipalOfficersDto.setOfficeTelNo((String) v.get("officeTelNo"));
-//                        appSvcPrincipalOfficersDto.setEmailAddr((String) v.get("emailAddr"));
-//                        appSvcPrincipalOfficersDto.setPreferredMode((String) v.get("preferredMode"));
-//                        appSvcPrincipalOfficersDto.setProfessionType((String) v.get("professionType"));
-//                        appSvcPrincipalOfficersDto.setProfRegNo((String) v.get("profRegNo"));
-//                        appSvcPrincipalOfficersDto.setSpeciality((String) v.get("speciality"));
-//                        appSvcPrincipalOfficersDto.setSpecialityOther((String) v.get("specialityOther"));
-//                        appSvcPrincipalOfficersDto.setSubSpeciality((String) v.get("subSpeciality"));
-//                        appSvcPrincipalOfficersDto.setNeedSpcOptList((boolean) v.get("needSpcOptList"));
-//                        List<LinkedHashMap<String,String>> spcOptLinkedMap= (List<LinkedHashMap<String, String>>) v.get("spcOptList");
-//                        List<SelectOption> spcOptList = IaisCommonUtils.genNewArrayList();
-//                        if(!IaisCommonUtils.isEmpty(spcOptLinkedMap)){
-//                            for(LinkedHashMap<String,String> item:spcOptLinkedMap){
-//                                spcOptList.add(new SelectOption(item.get("value"),item.get("text")));
-//                            }
-//                        }
-//                        appSvcPrincipalOfficersDto.setSpcOptList(spcOptList);
-//                        appSvcPrincipalOfficersDto.setSpecialityHtml((String) v.get("specialityHtml"));
-//                        personMap.put(k,appSvcPrincipalOfficersDto);
-//                    });
-//                    ParamUtil.setSessionAttr(bpc.request,PERSONSELECTMAP, (Serializable) personMap);
-//                }
                 if (appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() > 0) {
                     ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
                 } else {
@@ -4877,59 +4846,6 @@ public class NewApplicationDelegator {
 
     private void sortService(List<HcsaServiceDto> list) {
         list.sort((h1, h2) -> h1.getSvcName().compareTo(h2.getSvcName()));
-    }
-
-    private static int validateTime(Map<String, String> errorMap, String onsiteHH, String onsiteMM, int date, String key, int i) {
-        try {
-            int i1 = Integer.parseInt(onsiteHH);
-            int i2 = Integer.parseInt(onsiteMM);
-            date = i1 * 60 + i2 * 1;
-            if (i1 >= 24) {
-                errorMap.put(key + i, "UC_CHKLMD001_ERR009");
-            } else if (i2 >= 60) {
-                errorMap.put(key + i, "UC_CHKLMD001_ERR010");
-            }
-        } catch (Exception e) {
-            errorMap.put(key + i, "CHKLMD001_ERR003");
-        }
-        return date;
-    }
-
-    //todo:move to NewApplicationHelper
-
-    private static void validateVehicleNo(Map<String, String> errorMap, Set<String> distinctVehicleNo, int numberCount, String conveyanceVehicleNo) {
-        if (StringUtil.isEmpty(conveyanceVehicleNo)) {
-            errorMap.put("conveyanceVehicleNo" + numberCount, "UC_CHKLMD001_ERR001");
-        } else {
-            boolean b = VehNoValidator.validateNumber(conveyanceVehicleNo);
-            if (!b) {
-                errorMap.put("conveyanceVehicleNo" + numberCount, "CHKLMD001_ERR008");
-            }
-
-            if (distinctVehicleNo.contains(conveyanceVehicleNo)) {
-                errorMap.put("conveyanceVehicleNo" + numberCount, "CHKLMD001_ERR009");
-            } else {
-                distinctVehicleNo.add(conveyanceVehicleNo);
-            }
-        }
-    }
-
-
-    private Map<String, String> doValidatePremissCgo(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
-        //do validate premiss
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        AppSvcCgoDto appSvcCgoDto = (AppSvcCgoDto) ParamUtil.getSessionAttr(bpc.request, "AppSvcCgoDto");
-        String mobileNo = appSvcCgoDto.getMobileNo();
-        String emailAddr = appSvcCgoDto.getEmailAddr();
-        if (!mobileNo.startsWith("8") || !mobileNo.startsWith("9")) {
-            errorMap.put("mobileNo", "Please key in a valid mobile number");
-        }
-        if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
-            errorMap.put("emailAddr", "Please key in a valid email address");
-        }
-        log.info(StringUtil.changeForLog("the do doValidatePremiss end ...."));
-        return errorMap;
     }
 
     private static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request) {
@@ -5324,33 +5240,6 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request, LICPERSONSELECTMAP, (Serializable) licPersonMap);
             log.info(StringUtil.changeForLog("user info is empty....."));
         }
-        //change
-//        Map<String,AppSvcPrincipalOfficersDto> licPersonMap = IaisCommonUtils.genNewHashMap();
-//        if(loginContext != null){
-//            appSubmissionDto.setLicenseeId(loginContext.getLicenseeId());
-//            List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
-//            //exchange order
-//            licPersonMap = NewApplicationHelper.getLicPsnIntoSelMap(bpc.request,licPersonList);
-//            licPersonMap.forEach((k,v)->{
-//                //set empty field
-//                AppPsnEditDto appPsnEditDto = NewApplicationHelper.setNeedEditField(v);
-//                v.setPsnEditDto(appPsnEditDto);
-//            });
-//            ParamUtil.setSessionAttr(bpc.request,LICPERSONSELECTMAP, (Serializable) licPersonMap);
-//            Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, PERSONSELECTMAP);
-//            if(personMap != null){
-//                licPersonMap.forEach((k,v)->{
-//                    personMap.put(k,v);
-//                });
-//                ParamUtil.setSessionAttr(bpc.request,PERSONSELECTMAP, (Serializable) personMap);
-//            }else{
-//                ParamUtil.setSessionAttr(bpc.request,PERSONSELECTMAP, (Serializable) licPersonMap);
-//            }
-//        }else{
-//            appSubmissionDto.setLicenseeId("");
-//            ParamUtil.setSessionAttr(bpc.request,LICPERSONSELECTMAP, (Serializable) licPersonMap);
-//            log.info(StringUtil.changeForLog("user info is empty....."));
-//        }
     }
 
     private void setPsnDroTo(AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) {
