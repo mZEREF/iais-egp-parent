@@ -52,7 +52,7 @@ public class AuditTrailDtoValidate implements CustomizeValidator {
 							String msg = MessageUtil.getMessageDesc("GENERAL_ERR0010");
 
 							if ((reduceDay >= (value * MONTH_DAY))){
-								errMap.put("actionTime", MessageUtil.formatMessage(msg, String.valueOf(value)));
+								errMap.put("compareDateError", MessageUtil.formatMessage(msg, String.valueOf(value)));
 							}
 						}
 					} catch (ParseException e) {
