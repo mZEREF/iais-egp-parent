@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -20,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
@@ -91,7 +93,7 @@ public class CessationEffectiveDateBatchjob {
     public void doBatchJob(BaseProcessClass bpc) {
         String effectiveDateStr = ParamUtil.getRequestString(bpc.request, "setTime");
         Date date = new Date();
-        if(!StringUtil.isEmpty(effectiveDateStr)){
+        if (!StringUtil.isEmpty(effectiveDateStr)) {
             date = DateUtil.parseDate(effectiveDateStr, AppConsts.DEFAULT_DATE_FORMAT);
         }
         //licence
@@ -112,9 +114,6 @@ public class CessationEffectiveDateBatchjob {
                             String status = applicationDto.getStatus();
                             statusSet.add(status);
                         }
-//                        if (statusSet.size() == 1 &&!statusSet.contains(ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE)) {
-//                            continue;
-//                        }
                         if (statusSet.size() == 1 && statusSet.contains(ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE)) {
                             String originLicenceId = applicationDtos.get(0).getOriginLicenceId();
                             LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
@@ -231,8 +230,10 @@ public class CessationEffectiveDateBatchjob {
 
     private void updateLicencesStatusAndSendMails(List<LicenceDto> licenceDtos, Date date) {
         List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         for (LicenceDto licenceDto : licenceDtos) {
             try {
+                licenceDto.setAuditTrailDto(auditTrailDto);
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
                 licenceDto.setEndDate(date);
                 updateLicenceDtos.add(licenceDto);
@@ -296,6 +297,8 @@ public class CessationEffectiveDateBatchjob {
         if (licenceDto == null) {
             return;
         }
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+        licenceDto.setAuditTrailDto(auditTrailDto);
         licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
         licenceDto.setEndDate(date);
         String svcName = licenceDto.getSvcName();
@@ -358,7 +361,9 @@ public class CessationEffectiveDateBatchjob {
         if (IaisCommonUtils.isEmpty(applicationGroupDtos)) {
             return;
         }
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         for (ApplicationGroupDto applicationGroupDto : applicationGroupDtos) {
+            applicationGroupDto.setAuditTrailDto(auditTrailDto);
             applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_LICENCE_GENERATED);
         }
         applicationClient.updateApplications(applicationGroupDtos);

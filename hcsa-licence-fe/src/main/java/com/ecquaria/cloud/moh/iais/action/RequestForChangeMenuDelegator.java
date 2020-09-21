@@ -779,14 +779,17 @@ public class RequestForChangeMenuDelegator {
             appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
             String editSelect = ParamUtil.getString(bpc.request, "editSelect");
+            AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
             if ("replace".equals(editSelect)) {
                 AppSubmissionDto appSubmissionDto2 = replacePersonnelDate(appSubmissionDto, newPerson);
                 appSubmissionDto.setAutoRfc(false);
                 appSubmissionDto.setAmount(0.0);
                 appSubmissionDto.setAmountStr("$0");
+                appSubmissionDto.setAuditTrailDto(currentAuditTrailDto);
                 appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
                 appSubmissionDtos1.add(appSubmissionDto2);
             } else {
+                appSubmissionDto.setAuditTrailDto(currentAuditTrailDto);
                 AppSubmissionDto appSubmissionDto1 = setPersonnelDate(appSubmissionDto, personnelEditDto);
                 appSubmissionDto.setAutoRfc(true);
                 appSubmissionDto.setAmount(0.0);
@@ -794,7 +797,6 @@ public class RequestForChangeMenuDelegator {
                 appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                 appSubmissionDtos1.add(appSubmissionDto1);
             }
-
         }
         //save
          requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);

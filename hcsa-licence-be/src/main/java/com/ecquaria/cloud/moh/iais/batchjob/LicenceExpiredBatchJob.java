@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -14,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
@@ -103,7 +105,9 @@ public class LicenceExpiredBatchJob {
 
     private void updateLicenceStatus(List<LicenceDto> licenceDtos, Date date) {
         List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         for (LicenceDto licenceDto : licenceDtos) {
+            licenceDto.setAuditTrailDto(auditTrailDto);
             String licId = licenceDto.getId();
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
@@ -183,7 +187,9 @@ public class LicenceExpiredBatchJob {
 
     private void updateLicenceStatusEffect(List<LicenceDto> licenceDtos, Date date) {
         List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         for (LicenceDto licenceDto : licenceDtos) {
+            licenceDto.setAuditTrailDto(auditTrailDto);
             String originLicenceId = licenceDto.getOriginLicenceId();
             LicenceDto interimLicDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
             interimLicDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
