@@ -11,6 +11,11 @@
 <%
     String webroot = IaisEGPConstant.BE_CSS_ROOT;
 %>
+<style>
+    .okBtn{
+        float: right;margin-left: 5px;
+    }
+</style>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -148,7 +153,7 @@
         </div>
         <input hidden id="editDistribution" name="editDistribution" value="">
         <iais:confirm msg="The distribution list cannot be amended as it is still in used by other mass email or sms blast."  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
-        <iais:confirm msg="Are you sure you want to delete this item?"  needCancel="true" callBack="deleteDis()" popupOrder="deleteSupport" ></iais:confirm>
+        <iais:confirm msg="Are you sure you want to delete this item?" yesBtnCls="okBtn btn btn-primary"  needCancel="true" callBack="deleteDis()" popupOrder="deleteSupport" ></iais:confirm>
     </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
