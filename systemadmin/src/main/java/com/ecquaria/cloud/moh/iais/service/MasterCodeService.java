@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeCategoryDto;
@@ -22,6 +23,6 @@ public interface MasterCodeService {
     List<MasterCodeCategoryDto> getAllCodeCategory();
     boolean masterCodeKeyIsExist(String masterCodekey);
     Boolean saveMasterCodeList(List<MasterCodeToExcelDto> masterCodeToExcelDtoList);
-    void inactiveMasterCode();
+    void inactiveMasterCode(AuditTrailDto auditTrailDto);
     MasterCodeDto getMaxVersionMsDto(String masterCodeKey);
 }

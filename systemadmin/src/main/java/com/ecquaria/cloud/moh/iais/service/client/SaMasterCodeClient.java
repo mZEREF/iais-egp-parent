@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeCategoryDto;
@@ -70,8 +71,8 @@ public interface SaMasterCodeClient {
     @PostMapping(value = "/iais-mastercode/master-code/master-code-excel",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> saveMasterCodeExcel(@RequestBody List<MasterCodeToExcelDto> masterCodeToExcelDtoList);
 
-    @PutMapping(value = "/iais-mastercode/master-code/expired-or-not-effect")
-    FeignResponseEntity<Void> inactiveMasterCode();
+    @PutMapping(value = "/iais-mastercode/master-code/expired-or-not-effect",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> inactiveMasterCode(@RequestBody AuditTrailDto auditTrailDto);
 
     @GetMapping(path = "/iais-mastercode/max-version")
     FeignResponseEntity<MasterCodeDto> getMaxVersionMsDto(@RequestParam(value = "masterCodeKey") String masterCodeKey);

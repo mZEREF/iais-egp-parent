@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MasterCodeConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeCategoryDto;
@@ -88,8 +89,8 @@ public class MasterCodeServiceImpl implements MasterCodeService {
     }
 
     @Override
-    public void inactiveMasterCode() {
-        saMasterCodeClient.inactiveMasterCode();
+    public void inactiveMasterCode(AuditTrailDto auditTrailDto) {
+        saMasterCodeClient.inactiveMasterCode(auditTrailDto);
     }
 
     @Override
