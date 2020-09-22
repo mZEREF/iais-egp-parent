@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayStripeConfig;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayStripeAPI;
-import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -4699,7 +4698,6 @@ public class NewApplicationDelegator {
                     }
                     appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
                 }
-
                 String appType = appSubmissionDto.getAppType();
                 boolean isRenewalOrRfc = ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType);
                 appSubmissionDto.setNeedEditController(true);
@@ -4738,8 +4736,19 @@ public class NewApplicationDelegator {
                         if(rfiPremHci.equals(premHci)){
                             appGrpPremisesDto.setRfiCanEdit(true);
                         }
+                        //clear ph id
+                        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+                        if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriodDtos)){
+                            for(AppPremPhOpenPeriodDto phDto:appPremPhOpenPeriodDtos){
+                                phDto.setId(null);
+                                phDto.setPremId(null);
+                            }
+                            appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
+                        }
                     }
+                    appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
                 }
+                ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
             } else {
                 ApplicationDto applicationDto = appSubmissionService.getMaxVersionApp(appNo);
                 if (applicationDto != null) {
