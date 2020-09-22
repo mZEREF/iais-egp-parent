@@ -134,7 +134,7 @@ public class AppealDelegator {
         bpc.getSession().removeAttribute("IdTypeSelect");
         bpc.getSession().removeAttribute("rfiApplication");
         bpc.getSession().removeAttribute("rfi");
-
+        bpc.getSession().removeAttribute("applicationAPPROVED");
         //set upload file config
         setFileConfig(bpc.request);
         log.info("end**************start************");

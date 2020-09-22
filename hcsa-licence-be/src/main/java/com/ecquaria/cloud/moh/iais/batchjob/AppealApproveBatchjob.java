@@ -134,7 +134,6 @@ public class AppealApproveBatchjob {
                       ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
                       AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
                       if(applicationDto!= null && appealDto != null){
-                          Date oriExpiry = appealApproveDto.getLicenceDto().getExpiryDate();
                           log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationDto no is -->"+applicationDto.getApplicationNo()));
                           String  appealType = appealDto.getAppealType();
                           log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealType  is -->"+appealType));
@@ -146,7 +145,7 @@ public class AppealApproveBatchjob {
                                           appealApproveDto);
                                   break;
                               case ApplicationConsts.APPEAL_TYPE_LICENCE :
-                                  appealLicence(applicationDto,appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealType);
+                                  appealLicence(applicationDto,appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealDto.getReason());
                                   break;
 //                        case ApplicationConsts.APPEAL_TYPE_OTHER :
 //                            appealOther(appealApplicaiton,rollBackApplication,applicationDto);
@@ -155,7 +154,7 @@ public class AppealApproveBatchjob {
                           }
                           try {
                               String reason = appealApproveDto.getAppPremiseMiscDto().getReason();
-                              sendAllEmailApproved(applicationDto,reason,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealDto.getOtherReason(),oriExpiry);
+                              sendAllEmailApproved(applicationDto,reason,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealDto.getOtherReason());
                           }catch (Exception e){
 
                           }
@@ -435,15 +434,18 @@ public class AppealApproveBatchjob {
     }
     private void appealLicence(ApplicationDto applicationDto,List<LicenceDto> appealLicence,
                                List<LicenceDto> rollBackLicence,
-                               LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto,String apealType) throws Exception {
+                               LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto,String reason) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence is start ..."));
-        if(ApplicationConsts.APPEAL_REASON_OTHER.equals(apealType)){
+        if(ApplicationConsts.APPEAL_REASON_OTHER.equals(reason)){
             return;
         }
         if(appPremisesRecommendationDto==null){
             return;
         }
         if(licenceDto!=null && appPremisesRecommendationDto != null){
+            if("reject".equals(appPremisesRecommendationDto.getRecomDecision())){
+                return;
+            }
             rollBackLicence.add(licenceDto);
             LicenceDto appealLicenceDto = (LicenceDto) CopyUtil.copyMutableObject(licenceDto);
             Date startDate = appealLicenceDto.getStartDate();
@@ -475,7 +477,7 @@ public class AppealApproveBatchjob {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealOther is end ..."));
     }
 
-    public void  sendAllEmailApproved(ApplicationDto applicationDto,String reason,LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto,String otherReason,Date oriExpiry) throws IOException, TemplateException {
+    public void  sendAllEmailApproved(ApplicationDto applicationDto,String reason,LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto,String otherReason) throws IOException, TemplateException {
         String paymentMethodName = "";
         log.info("start send email sms and msg");
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
@@ -535,7 +537,7 @@ public class AppealApproveBatchjob {
             }
             templateContent.put("serviceName", licenceDto.getSvcName());
             templateContent.put("licenceNo", licenceDto.getLicenceNo());
-            templateContent.put("licenceEndDate", Formatter.formatDate(oriExpiry));
+            templateContent.put("licenceEndDate", Formatter.formatDate(licenceDto.getExpiryDate()));
             templateContent.put("newEndDate", Formatter.formatDate(expiryDate));
         }else{
             templateContent.put("content", otherReason);

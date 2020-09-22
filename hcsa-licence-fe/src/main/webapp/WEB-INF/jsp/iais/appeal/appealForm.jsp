@@ -75,9 +75,9 @@
                 </div>
 
                 <div class="col-xs-12 col-md-10" id="proposedHciName" style="display: none" >
-                  <label style="font-size: 20px">Proposed  HCI Name</label>
+                  <label style="font-size: 20px">Proposed  HCI Name<span class="mandatory"> *</span></label>
                   <input type="text" maxlength="100" name="proposedHciName" value="${appPremiseMiscDto.newHciName}">
-                  <span ></span>
+                  <span class="error-msg" name="iaisErrorMsg" id="error_proposedHciName"></span>
                 </div>
               </div>
 
