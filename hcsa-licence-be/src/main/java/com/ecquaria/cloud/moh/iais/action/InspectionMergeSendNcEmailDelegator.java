@@ -222,7 +222,7 @@ public class InspectionMergeSendNcEmailDelegator {
                 try{
                     appPremCorrIds.add(appPremisesCorrelationDto.getId());
                     ApplicationViewDto appViewDto = inspEmailService.getAppViewByCorrelationId(appPremisesCorrelationDto.getId());
-                    appNos.append(appViewDto.getApplicationDto().getApplicationNo()).append(" ");
+                    appNos.append(appViewDto.getApplicationDto().getApplicationNo()).append(' ');
                     svcNames.add(inspectionService.getHcsaServiceDtoByServiceId(appViewDto.getApplicationDto().getServiceId()).getSvcName());
 
                     AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremisesCorrelationDto.getId(),InspectionConstants.RECOM_TYPE_TCU);
