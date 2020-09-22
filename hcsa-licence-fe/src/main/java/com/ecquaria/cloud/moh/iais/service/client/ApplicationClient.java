@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -314,4 +315,7 @@ public interface ApplicationClient  {
     FeignResponseEntity<AppSubmissionDto> saveRfcCessationSubmision(@RequestBody AppSubmissionRequestInformationDto appSubmissionRequestInformationDto);
     @GetMapping(value = "/appeal/app-premise-misc-dto-relate-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscDtoRelateId(@RequestParam("relateId") String relateId);
+
+    @GetMapping(value = "/iais-application/rfi-withdrawal-info",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<WithdrawnDto> getWithdrawAppInfo(@RequestParam("appNo") String appNo);
 }

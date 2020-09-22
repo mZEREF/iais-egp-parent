@@ -12,5 +12,6 @@ import java.util.Map;
 
 public interface WithdrawalService {
     void saveWithdrawn(List<WithdrawnDto> withdrawnDto);
+    WithdrawnDto getWithdrawAppInfo(String appNo);
     List<WithdrawApplicationDto> getCanWithdrawAppList(List<String[]> appTandS);
 }

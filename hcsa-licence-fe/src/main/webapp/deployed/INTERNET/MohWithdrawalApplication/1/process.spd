@@ -2,14 +2,14 @@
 <Application defaultStart="/Steps/StartStep/start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohWithdrawalApplication" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="start" x="100" y="100">
+  <StartStep defClass="" executor="" icon="" name="start" x="0" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="prepareDate" x="250" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="prepareDate" x="260" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -30,6 +30,13 @@
     <JavaCode defClass="" executor="" methodName="saveDate_OnStepProcess_0" name="saveDate_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="withdrawDoRfi" x="140" y="360">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="withdrawDoRfi_OnStepProcess_0" name="withdrawDoRfi_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="withdrawalPage" stageIndicator="" x="250" y="230">
@@ -44,14 +51,20 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="rfiPage" stageIndicator="" x="420" y="360">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Links>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Direct" name="" sourceName="/Steps/StartStep/start" style="oblique">
-   <position>{(120,120)(270,120)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/StartStep/start" style="oblique">
+   <position>{(20,120)(150,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/withdrawalPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareDate" style="oblique">
-   <position>{(270,120)(270,250)}</position>
+   <position>{(280,120)(270,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/withdrawalStep" linkstyle="Direct" name="" sourceName="/Pages/WebPage/withdrawalPage" style="oblique">
    <position>{(270,250)(420,250)}</position>
@@ -60,7 +73,7 @@
    <position>{(420,250)(610,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(610,250)(270,120)}</position>
+   <position>{(610,250)(280,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/saveDate" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
    <position>{(610,250)(780,250)}</position>
@@ -68,13 +81,31 @@
   <SynchronousLink destinationName="/Pages/WebPage/ackPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/saveDate" style="rectanular">
    <position>{(780,250)(1000,250)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(150,120)(280,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/withdrawDoRfi" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(150,120)(160,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/rfiPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/withdrawDoRfi" style="oblique">
+   <position>{(160,380)(440,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/saveDate" linkstyle="Direct" name="" sourceName="/Pages/WebPage/rfiPage" style="oblique">
+   <position>{(440,380)(785,379)(780,250)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/prepareDate" componentIfTrue="/Steps/AutomaticStep/saveDate" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="590" y="230">
    <Description/>
   </Condition>
  </Conditions>
- <Switches/>
+ <Switches>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/prepareDate" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="130" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/prepareDate" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/withdrawDoRfi" value="&quot;doRfi&quot;"/>
+  </Switch>
+ </Switches>
  <Branches/>
  <Merges/>
  <StudioLabels/>

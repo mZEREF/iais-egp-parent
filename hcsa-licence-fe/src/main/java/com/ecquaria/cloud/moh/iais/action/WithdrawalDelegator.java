@@ -56,9 +56,10 @@ public class WithdrawalDelegator {
     @Autowired
     private ApplicationClient applicationClient;
 
-
+    private LoginContext loginContext = null;
 
     public void start(BaseProcessClass bpc){
+        loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         log.debug(StringUtil.changeForLog("****The Start Step****"));
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
         String withdrawAppNo = ParamUtil.getMaskedString(bpc.request, "withdrawAppNo");
@@ -70,6 +71,16 @@ public class WithdrawalDelegator {
             ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", withdrawAppNo);
         }
         AuditTrailHelper.auditFunction("Withdrawal Application", "Withdrawal Application");
+
+        String rfiWithdrawAppNo = ParamUtil.getMaskedString(bpc.request,"rfiWithdrawAppNo");
+
+        if (!StringUtil.isEmpty(rfiWithdrawAppNo)){
+            WithdrawnDto withdrawnDto = withdrawalService.getWithdrawAppInfo(rfiWithdrawAppNo);
+            ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", withdrawnDto);
+            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "doRfi");
+        }
+        ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", null);
+        ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "");
     }
 
     public void prepareDate(BaseProcessClass bpc){
@@ -90,15 +101,15 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY002","APST029"});
         applicationTandS.add(new String[]{"APTY002","APST023"});
         applicationTandS.add(new String[]{"APTY002","APST024"});
-        applicationTandS. add(new String[]{"APTY002","APST012"});
+        applicationTandS.add(new String[]{"APTY002","APST012"});
         applicationTandS.add(new String[]{"APTY002","APST039"});
         applicationTandS.add(new String[]{"APTY002","APST011"});
         applicationTandS.add(new String[]{"APTY002","APST004"});
 
         applicationTandS.add(new String[]{"APTY004","APST007"});
-        applicationTandS. add(new String[]{"APTY004","APST028"});
-        applicationTandS. add(new String[]{"APTY004","APST003"});
-        applicationTandS. add(new String[]{"APTY004","APST001"});
+        applicationTandS.add(new String[]{"APTY004","APST028"});
+        applicationTandS.add(new String[]{"APTY004","APST003"});
+        applicationTandS.add(new String[]{"APTY004","APST001"});
         applicationTandS.add(new String[]{"APTY004","APST029"});
         applicationTandS.add(new String[]{"APTY004","APST023"});
         applicationTandS.add(new String[]{"APTY004","APST024"});
@@ -107,36 +118,39 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY004","APST011"});
         applicationTandS.add(new String[]{"APTY004","APST004"});
 
-        applicationTandS. add(new String[]{"APTY005","APST007"});
-        applicationTandS. add(new String[]{"APTY005","APST028"});
-        applicationTandS. add(new String[]{"APTY005","APST003"});
+        applicationTandS.add(new String[]{"APTY005","APST007"});
+        applicationTandS.add(new String[]{"APTY005","APST028"});
+        applicationTandS.add(new String[]{"APTY005","APST003"});
         applicationTandS.add(new String[]{"APTY005","APST001"});
         applicationTandS.add(new String[]{"APTY005","APST029"});
-        applicationTandS. add(new String[]{"APTY005","APST023"});
+        applicationTandS.add(new String[]{"APTY005","APST023"});
         applicationTandS.add(new String[]{"APTY005","APST024"});
-        applicationTandS. add(new String[]{"APTY005","APST012"});
+        applicationTandS.add(new String[]{"APTY005","APST012"});
         applicationTandS.add(new String[]{"APTY005","APST039"});
         applicationTandS.add(new String[]{"APTY005","APST011"});
         applicationTandS.add(new String[]{"APTY005","APST004"});
 
-        applicationTandS.  add(new String[]{"APTY001","APST007"});
-        applicationTandS. add(new String[]{"APTY001","APST002"});
-        applicationTandS. add(new String[]{"APTY001","APST012"});
-        applicationTandS. add(new String[]{"APTY001","APST038"});
-        applicationTandS. add(new String[]{"APTY001","APST011"});
-        applicationTandS. add(new String[]{"APTY001","APST023"});
+        applicationTandS.add(new String[]{"APTY001","APST007"});
+        applicationTandS.add(new String[]{"APTY001","APST002"});
+        applicationTandS.add(new String[]{"APTY001","APST012"});
+        applicationTandS.add(new String[]{"APTY001","APST038"});
+        applicationTandS.add(new String[]{"APTY001","APST011"});
+        applicationTandS.add(new String[]{"APTY001","APST023"});
         applicationTandS.add(new String[]{"APTY001","APST039"});
-        applicationTandS. add(new String[]{"APTY001","APST011"});
+        applicationTandS.add(new String[]{"APTY001","APST011"});
 
         List<WithdrawApplicationDto> withdrawAppList =  withdrawalService.getCanWithdrawAppList(applicationTandS);
         PaginationHandler<WithdrawApplicationDto> handler = new PaginationHandler<>("withdrawPagDiv", "withdrawBodyDiv");
         handler.setAllData(withdrawAppList);
         handler.preLoadingPage();
+
+
+
     }
 
     public void withdrawalStep(BaseProcessClass bpc) throws Exception {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+
         String withdrawnReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
         String paramAppNos = ParamUtil.getString(mulReq, "withdraw_app_list");
         List<WithdrawnDto> withdrawnDtoList = IaisCommonUtils.genNewArrayList();
@@ -193,6 +207,14 @@ public class WithdrawalDelegator {
             withdrawalService.saveWithdrawn(withdrawnDtoList);
         }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,isValid);
+    }
+
+    public void withdrawDoRfi(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("****The withdrawDoRfi Step****"));
+        prepareDate(bpc);
+        WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
+        withdrawnDto.setLicenseeId(loginContext.getLicenseeId());
+        ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", withdrawnDto);
     }
 
     public void saveDateStep(BaseProcessClass bpc){

@@ -111,7 +111,8 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = newAppSubmissionDto.getAppSvcRelatedInfoDtoList();
                 if (appSvcRelatedInfoDtoList != null && appSvcRelatedInfoDtoList.size() >0){
                     String serviceId = appSvcRelatedInfoDtoList.get(0).getServiceId();
-                    String appStatus = getAppStatus(serviceId,ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
+                    HcsaServiceDto hcsaServiceDto = appConfigClient.getActiveHcsaServiceDtoById(serviceId).getEntity();
+                    String appStatus = getAppStatus(hcsaServiceDto.getId(),ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
                     if (!StringUtil.isEmpty(appStatus)){
                         applicationDto.setStatus(appStatus);
                     }
@@ -143,6 +144,11 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 }
             });
         }
+    }
+
+    @Override
+    public WithdrawnDto getWithdrawAppInfo(String appNo) {
+        return applicationClient.getWithdrawAppInfo(appNo).getEntity();
     }
 
     @Override

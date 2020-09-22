@@ -11,6 +11,7 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohWithdrawalApplication___1 extends BaseProcessClass {
@@ -31,6 +32,10 @@ public class INTERNET___MohWithdrawalApplication___1 extends BaseProcessClass {
 
 	public void saveDate_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "saveDateStep", this);
+	}
+
+	public void withdrawDoRfi_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "withdrawDoRfi", this);
 	}
 
 }
