@@ -54,7 +54,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -979,54 +978,6 @@ public class InsRepServiceImpl implements InsRepService {
         return appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(corrId, stageId).getEntity();
     }
 
-    @Override
-    public void sendNoteToAdm(String appNo,String refNo,OrgUserDto orgUserDto) {
-        try {
-            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SYSTEM_ADMIN_REMINDER).getEntity();
-            String emailTemplate = msgTemplateDto.getMessageContent();
-            Map<String, Object> templateMap = IaisCommonUtils.genNewHashMap();
-            List<String> receiptEmail = IaisCommonUtils.genNewArrayList();
-            receiptEmail.add(orgUserDto.getEmail());
-            templateMap.put("appNo",appNo);
-            String mesContext;
-            if (templateMap != null && !templateMap.isEmpty()) {
-                try {
-                    mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateMap);
-                } catch (IOException | TemplateException e) {
-                    log.error(e.getMessage(), e);
-                    throw new IaisRuntimeException(e);
-                }
-            } else {
-                mesContext = emailTemplate;
-            }
-            //send email
-            EmailDto emailDto = new EmailDto();
-            emailDto.setContent(mesContext);
-            emailDto.setSubject("MOH HALP - "+appNo+" for your action");
-            emailDto.setSender(mailSender);
-            emailDto.setReceipts(receiptEmail);
-            emailDto.setClientQueryCode(refNo);
-            emailDto.setReqRefNum(refNo);
-            emailClient.sendNotification(emailDto);
-
-            //send sms
-            List<String> mobile = IaisCommonUtils.genNewArrayList();
-            String phoneNo = orgUserDto.getMobileNo();
-            if(!StringUtil.isEmpty(phoneNo)) {
-                mobile.add(phoneNo);
-            }
-            SmsDto smsDto = new SmsDto();
-            smsDto.setSender(mailSender);
-            smsDto.setContent("MOH HALP - "+appNo+" for your action");
-            smsDto.setOnlyOfficeHour(true);
-            smsDto.setReceipts(mobile);
-            smsDto.setReqRefNum(appNo);
-            emailClient.sendSMS(mobile, smsDto, appNo);
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-        }
-    }
-
     private void updateInspectionStatus(String appPremisesCorrelationId, String status) {
         AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremisesCorrelationId).getEntity();
         if (appInspectionStatusDto != null) {
@@ -1111,7 +1062,7 @@ public class InsRepServiceImpl implements InsRepService {
                 List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
                 if(!IaisCommonUtils.isEmpty(orgUserDtos)){
                     userId = orgUserDtos.get(0).getId();
-                    sendNoteToAdm(appNo,taskDto.getRefNo(),orgUserDtos.get(0));
+                    taskService.sendNoteToAdm(appNo,taskDto.getRefNo(),orgUserDtos.get(0));
                 }
             }
             taskDto.setUserId(userId);

@@ -3,9 +3,12 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -15,6 +18,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.SendTaskTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -22,19 +27,22 @@ import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
+
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -58,6 +66,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private HcsaAppClient hcsaAppClient;
+    @Autowired
+    private CommonMsgTemplateClient msgTemplateClient;
+    @Value("${iais.email.sender}")
+    private String mailSender;
+    @Autowired
+    private CommonEmailClient emailClient;
 
 
 
@@ -419,6 +433,54 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskDto> getTaskRfi(String applicationNo) {
         return  taskOrganizationClient.getTaskRfi(applicationNo).getEntity();
+    }
+
+    @Override
+    public void sendNoteToAdm(String appNo,String refNo, OrgUserDto orgUserDto) {
+        try {
+            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SYSTEM_ADMIN_REMINDER).getEntity();
+            String emailTemplate = msgTemplateDto.getMessageContent();
+            Map<String, Object> templateMap = IaisCommonUtils.genNewHashMap();
+            List<String> receiptEmail = IaisCommonUtils.genNewArrayList();
+            receiptEmail.add(orgUserDto.getEmail());
+            templateMap.put("appNo",appNo);
+            String mesContext;
+            if (templateMap != null && !templateMap.isEmpty()) {
+                try {
+                    mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateMap);
+                } catch (IOException | TemplateException e) {
+                    log.error(e.getMessage(), e);
+                    throw new IaisRuntimeException(e);
+                }
+            } else {
+                mesContext = emailTemplate;
+            }
+            //send email
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(mesContext);
+            emailDto.setSubject("MOH HALP - "+appNo+" for your action");
+            emailDto.setSender(mailSender);
+            emailDto.setReceipts(receiptEmail);
+            emailDto.setClientQueryCode(refNo);
+            emailDto.setReqRefNum(refNo);
+            emailClient.sendNotification(emailDto);
+
+            //send sms
+            List<String> mobile = IaisCommonUtils.genNewArrayList();
+            String phoneNo = orgUserDto.getMobileNo();
+            if(!StringUtil.isEmpty(phoneNo)) {
+                mobile.add(phoneNo);
+            }
+            SmsDto smsDto = new SmsDto();
+            smsDto.setSender(mailSender);
+            smsDto.setContent("MOH HALP - "+appNo+" for your action");
+            smsDto.setOnlyOfficeHour(true);
+            smsDto.setReceipts(mobile);
+            smsDto.setReqRefNum(appNo);
+            emailClient.sendSMS(mobile, smsDto, appNo);
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
     }
 
 

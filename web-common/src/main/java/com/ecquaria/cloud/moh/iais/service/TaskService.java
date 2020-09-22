@@ -97,4 +97,6 @@ public interface TaskService {
     List<TaskDto> getTaskByUrlAndRefNo( String refNo, String processUrl);
 
     List<TaskDto> getTaskRfi(String applicationNo);
+
+    void sendNoteToAdm(String appNo,String refNo,OrgUserDto orgUserDto);
 }

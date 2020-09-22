@@ -44,6 +44,5 @@ public interface InsRepService {
     void sendPostInsTaskFeData(String submissionId,String eventRefNum) throws FeignException;
     AppPremisesRoutingHistoryDto getAppPremisesRoutingHistorySubStage(String corrId, String stageId);
 
-    void sendNoteToAdm(String appNo, String refNo,OrgUserDto orgUserDto);
 
 }
