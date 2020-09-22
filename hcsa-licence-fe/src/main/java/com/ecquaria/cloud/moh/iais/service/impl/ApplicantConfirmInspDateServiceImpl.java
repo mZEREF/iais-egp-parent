@@ -762,7 +762,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             if(!StringUtil.isEmpty(licenceId)){
                 LicenceDto licenceDto = licenceClient.getLicBylicId(licenceId).getEntity();
                 Date licenceDueDate = licenceDto.getExpiryDate();
-                licenceDueDateStr = Formatter.formatDateTime(licenceDueDate, "yyyy/MM/dd");
+                licenceDueDateStr = Formatter.formatDateTime(licenceDueDate, "dd/MM/yyyy");
             }
             List<String> appGroupIds = IaisCommonUtils.genNewArrayList();
             appGroupIds.add(appGroupId);
@@ -776,7 +776,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                     }
                 }
             }
-            String submitDtStr = Formatter.formatDateTime(submitDate, "yyyy/MM/dd HH:mm:ss");
+            String submitDtStr = Formatter.formatDateTime(submitDate, "dd/MM/yyyy HH:mm:ss");
             AppGrpPremisesDto appGrpPremisesDto = applicationClient.getAppGrpPremisesByCorrId(appPremCorrId).getEntity();
             String hciName = appGrpPremisesDto.getHciName();
             if(StringUtil.isEmpty(hciName)){
@@ -792,7 +792,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             Date date = apptFeConfirmDateDto.getSaveDate();
             String dateStr = "no date";
             if(date != null){
-                dateStr = Formatter.formatDateTime(date, "yyyy/MM/dd");
+                dateStr = Formatter.formatDateTime(date, "dd/MM/yyyy");
                 StringBuilder html = new StringBuilder(dateStr);
                 html.append(' ');
                 html.append(apptFeConfirmDateDto.getAmPm());
@@ -822,9 +822,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             map.put("officer_name", "officer_name");
             String url = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_BEINBOX;
             map.put("systemLink", url);
+            map.put("reason", apptFeConfirmDateDto.getReason());
             StringBuilder sb = new StringBuilder("MOH HALP - [Internal] Licensee Request to Reschedule Inspection Appointment Date for ");
             sb.append(appNo);
-
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_REJECT_APPT_REQUEST_A_DATE);
             emailParam.setTemplateContent(map);
