@@ -1549,7 +1549,7 @@ public class LicenceViewServiceDelegator {
                 }
             }
             if(!oldAppSvcDocDtoLit.isEmpty()){
-                for(AppSvcDocDto appSvcDocDto : oldAppSvcDocDtos){
+                for(AppSvcDocDto appSvcDocDto : oldAppSvcDocDtoLit){
                     AppSvcDocDto svcDocDto=new AppSvcDocDto();
                     svcDocDto.setSvcDocId(appSvcDocDto.getSvcDocId());
                     appSvcDocDtos.add(svcDocDto);
