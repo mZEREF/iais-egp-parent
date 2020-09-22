@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaServiceClient;
@@ -82,7 +83,13 @@ public final class EicRequestTrackingHelper {
         log.info(StringUtil.changeForLog("eic client request tracking " + client));
         log.info(StringUtil.changeForLog("new eic client ref number" + refNo));
 
-        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        if (IaisEGPHelper.getCurrentAuditTrailDto()!=null) {
+            eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        }else {
+            AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
+            eicRequestTrackingDto.setAuditTrailDto(intenet);
+        }
+
         eicRequestTrackingDto.setActionClsName(actionClsName);
         eicRequestTrackingDto.setDtoClsName(dtoClsName);
         eicRequestTrackingDto.setActionMethod(actionMethod);
