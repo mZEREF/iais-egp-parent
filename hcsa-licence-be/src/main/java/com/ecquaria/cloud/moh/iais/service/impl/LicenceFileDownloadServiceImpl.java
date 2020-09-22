@@ -696,7 +696,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             try {
                 List<TaskDto> taskDtos = sendCessionOrWithdrawal(cessionOrwith);
                 log.info(StringUtil.changeForLog("cession task"+JsonUtil.parseToJson(taskDtos)));
+                TaskHistoryDto taskHistoryDtoCessionOrWithDrawal  = getRoutingTaskForRequestForInformation(cessionOrwith,intranet);
                 onSubmitTaskList.addAll(taskDtos);
+                if(taskHistoryDtoCessionOrWithDrawal != null && !IaisCommonUtils.isEmpty(taskHistoryDtoCessionOrWithDrawal.getAppPremisesRoutingHistoryDtos())){
+                    appPremisesRoutingHistoryDtos.addAll(taskHistoryDtoCessionOrWithDrawal.getAppPremisesRoutingHistoryDtos());
+                }
             }catch (Exception e){
                 log.info(StringUtil.changeForLog("cession error"+e.getMessage()));
             }
