@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloudfeign.FeignException;
@@ -42,5 +43,7 @@ public interface InsRepService {
     InspectionReportDto getInspectorAo(TaskDto taskDto,ApplicationViewDto applicationViewDto);
     void sendPostInsTaskFeData(String submissionId,String eventRefNum) throws FeignException;
     AppPremisesRoutingHistoryDto getAppPremisesRoutingHistorySubStage(String corrId, String stageId);
+
+    void sendNoteToAdm(String appNo, String refNo,OrgUserDto orgUserDto);
 
 }

@@ -7,12 +7,15 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -24,40 +27,35 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRectifiedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.InsRepService;
-import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * @author weilu
@@ -107,6 +105,14 @@ public class InsRepServiceImpl implements InsRepService {
     private TaskOrganizationClient taskOrganizationClient;
     @Autowired
     private HcsaAppClient hcsaAppClient;
+    @Autowired
+    InspEmailService inspEmailService;
+    @Autowired
+    private MsgTemplateClient msgTemplateClient;
+    @Value("${iais.email.sender}")
+    private String mailSender;
+    @Autowired
+    private EmailClient emailClient;
 
     private final String APPROVAL = "Approval";
     private final String REJECT = "Reject";
@@ -434,7 +440,6 @@ public class InsRepServiceImpl implements InsRepService {
                 insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
                 return;
             } else if (REJECT.equals(recommendation)) {
-                oldAppPremisesRecommendationDto.setAuditTrailDto(currentAuditTrailDto);
                 oldAppPremisesRecommendationDto.setId(null);
                 oldAppPremisesRecommendationDto.setRecomDecision(appPremisesRecommendationDto.getRecomDecision());
                 oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -444,7 +449,7 @@ public class InsRepServiceImpl implements InsRepService {
                 oldAppPremisesRecommendationDto.setRemarks(oldAppPremisesRecommendationDto.getRemarks());
                 oldAppPremisesRecommendationDto.setVersion(oldAppPremisesRecommendationDto.getVersion() + 1);
                 oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                insRepClient.saveRecommendationData(appPremisesRecommendationDto);
+                insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
                 return;
             }
         } else {
@@ -974,6 +979,54 @@ public class InsRepServiceImpl implements InsRepService {
         return appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(corrId, stageId).getEntity();
     }
 
+    @Override
+    public void sendNoteToAdm(String appNo,String refNo,OrgUserDto orgUserDto) {
+        try {
+            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SYSTEM_ADMIN_REMINDER).getEntity();
+            String emailTemplate = msgTemplateDto.getMessageContent();
+            Map<String, Object> templateMap = IaisCommonUtils.genNewHashMap();
+            List<String> receiptEmail = IaisCommonUtils.genNewArrayList();
+            receiptEmail.add(orgUserDto.getEmail());
+            templateMap.put("appNo",appNo);
+            String mesContext;
+            if (templateMap != null && !templateMap.isEmpty()) {
+                try {
+                    mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateMap);
+                } catch (IOException | TemplateException e) {
+                    log.error(e.getMessage(), e);
+                    throw new IaisRuntimeException(e);
+                }
+            } else {
+                mesContext = emailTemplate;
+            }
+            //send email
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(mesContext);
+            emailDto.setSubject("MOH HALP - "+appNo+" for your action");
+            emailDto.setSender(mailSender);
+            emailDto.setReceipts(receiptEmail);
+            emailDto.setClientQueryCode(refNo);
+            emailDto.setReqRefNum(refNo);
+            emailClient.sendNotification(emailDto);
+
+            //send sms
+            List<String> mobile = IaisCommonUtils.genNewArrayList();
+            String phoneNo = orgUserDto.getMobileNo();
+            if(!StringUtil.isEmpty(phoneNo)) {
+                mobile.add(phoneNo);
+            }
+            SmsDto smsDto = new SmsDto();
+            smsDto.setSender(mailSender);
+            smsDto.setContent("MOH HALP - "+appNo+" for your action");
+            smsDto.setOnlyOfficeHour(true);
+            smsDto.setReceipts(mobile);
+            smsDto.setReqRefNum(appNo);
+            emailClient.sendSMS(mobile, smsDto, appNo);
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+    }
+
     private void updateInspectionStatus(String appPremisesCorrelationId, String status) {
         AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremisesCorrelationId).getEntity();
         if (appInspectionStatusDto != null) {
@@ -1058,6 +1111,7 @@ public class InsRepServiceImpl implements InsRepService {
                 List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
                 if(!IaisCommonUtils.isEmpty(orgUserDtos)){
                     userId = orgUserDtos.get(0).getId();
+                    sendNoteToAdm(appNo,taskDto.getRefNo(),orgUserDtos.get(0));
                 }
             }
             taskDto.setUserId(userId);

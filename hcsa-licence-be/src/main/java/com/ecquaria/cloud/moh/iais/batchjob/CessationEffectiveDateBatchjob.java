@@ -84,18 +84,12 @@ public class CessationEffectiveDateBatchjob {
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
 
-    private final String EFFECTIVEDATAEQUALDATA = "51AD8B3B-E652-EA11-BE7F-000C29F371DC";
-
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("The CessationEffectiveDateBatchjob is start ..."));
     }
 
     public void doBatchJob(BaseProcessClass bpc) {
-        String effectiveDateStr = ParamUtil.getRequestString(bpc.request, "setTime");
         Date date = new Date();
-        if (!StringUtil.isEmpty(effectiveDateStr)) {
-            date = DateUtil.parseDate(effectiveDateStr, AppConsts.DEFAULT_DATE_FORMAT);
-        }
         //licence
         log.debug(StringUtil.changeForLog("The CessationLicenceBatchJob is doBatchJob ..."));
         List<LicenceDto> licenceDtos = IaisCommonUtils.genNewArrayList();

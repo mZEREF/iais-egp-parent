@@ -499,4 +499,12 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<String> groupLicenceRunningNumber(String groupLicence) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

@@ -221,4 +221,7 @@ public interface HcsaLicenceClient {
 
     @PostMapping(value = "/hcsa-licence/save-licence-app-correlation",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicAppCorrelationDto> saveLicenceAppCorrelation(@RequestBody LicAppCorrelationDto licAppCorrelationDto);
+
+    @GetMapping(value = "/hcsa-licence/group-licence-running-number")
+    FeignResponseEntity<String> groupLicenceRunningNumber(@RequestParam("groupLicence")String groupLicence);
 }
