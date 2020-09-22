@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.assessmentGuide.GuideConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -1449,8 +1448,8 @@ public class HalpAssessmentGuideDelegator {
     public void amendLic3_2(BaseProcessClass bpc) {
         log.info("****start ******");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
-        if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
+        FeUserDto feUserDto=orgUserManageService.getUserAccount(loginContext.getUserId());
+        if(feUserDto.getUserId().contains("_")){
             ParamUtil.setRequestAttr(bpc.request, "login_action_type","company");
         }else{
             ParamUtil.setRequestAttr(bpc.request, "login_action_type","solo");
