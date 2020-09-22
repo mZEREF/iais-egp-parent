@@ -87,7 +87,7 @@ public class FeEicGatewayClient {
     public FeignResponseEntity<AppPremisesRecommendationDto> getBeAppPremisesRecommendationByIdAndType(Map<String, Object> params) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        return IaisEGPHelper.callEicGatewayWithParam(gateWayUrl + "/v1/app-recom/", HttpMethod.GET, params,
+        return IaisEGPHelper.callEicGatewayWithParam(gateWayUrl + "/v1/app-recom", HttpMethod.GET, params,
                 MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization(), AppPremisesRecommendationDto.class);
     }
