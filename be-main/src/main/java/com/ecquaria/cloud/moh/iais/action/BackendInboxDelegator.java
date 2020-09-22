@@ -892,6 +892,25 @@ public class BackendInboxDelegator {
         applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
 
+    private List<ApplicationDto> getStatusAppList(List<ApplicationDto> applicationDtos, String status){
+        if(IaisCommonUtils.isEmpty(applicationDtos) || StringUtil.isEmpty(status)){
+            return null;
+        }
+        List<ApplicationDto> applicationDtoList = null;
+        for(ApplicationDto applicationDto : applicationDtos){
+            if(status.equals(applicationDto.getStatus())){
+                if(applicationDtoList == null){
+                    applicationDtoList = IaisCommonUtils.genNewArrayList();
+                    applicationDtoList.add(applicationDto);
+                }else{
+                    applicationDtoList.add(applicationDto);
+                }
+            }
+        }
+
+        return applicationDtoList;
+    }
+
     private void saveRejectReturnFee(List<ApplicationDto> applicationDtos,BroadcastApplicationDto broadcastApplicationDto){
         List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
         //save return fee

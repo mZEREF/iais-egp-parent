@@ -15,6 +15,7 @@ import java.util.List;
 public interface ApplicationViewMainService {
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId);
     public boolean isOtherApplicaitonSubmit(List<ApplicationDto> applicationDtoList,List<String> appNo,String status);
+    public boolean isOtherApplicaitonSubmit(List<ApplicationDto> applicationDtoList,List<String> appNo,String status1, String status2);
 
     ApplicationViewDto searchByCorrelationIdo(String correlationId);
 

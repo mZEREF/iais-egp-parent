@@ -2018,7 +2018,7 @@ public class HcsaApplicationDelegator {
         log.info(StringUtil.changeForLog("The routingTask end ..."));
     }
 
-    public List<ApplicationDto> getStatusAppList(List<ApplicationDto> applicationDtos, String status){
+    private List<ApplicationDto> getStatusAppList(List<ApplicationDto> applicationDtos, String status){
         if(IaisCommonUtils.isEmpty(applicationDtos) || StringUtil.isEmpty(status)){
             return null;
         }
