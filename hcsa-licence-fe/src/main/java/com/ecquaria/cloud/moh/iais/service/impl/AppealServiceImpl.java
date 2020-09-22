@@ -679,7 +679,7 @@ public class AppealServiceImpl implements AppealService {
             } else if (ApplicationConsts.APPEAL_REASON_OTHER.equals(appealReason)) {
                 String otherReason = request.getParameter("othersReason");
                 if (StringUtil.isEmpty(otherReason)) {
-                    map.put("otherReason", "UC_CHKLMD001_ERR001");
+                    map.put("otherReason", MessageUtil.replaceMessage("GENERAL_ERR0006","Others reason","field"));
                 }
             }
         }

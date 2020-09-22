@@ -60,7 +60,7 @@
 
 
           <div class="col-xs-12 col-md-10" id="othersReason" style="display: none" >
-            <label style="font-size: 20px;margin-top: 1%">Others reason</label>
+            <label style="font-size: 20px;margin-top: 1%">Others reason<span class="mandatory"> *</span></label>
             <input type="text" maxlength="100"   name="othersReason" value="${appPremiseMiscDto.otherReason}" >
             <span class="error-msg" name="iaisErrorMsg" id="error_otherReason"></span>
           </div>
