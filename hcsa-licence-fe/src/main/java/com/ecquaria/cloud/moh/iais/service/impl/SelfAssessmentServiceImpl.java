@@ -257,7 +257,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             if (Optional.ofNullable(applicationDto).isPresent()){
                     String appNo = applicationDto.getApplicationNo();
                     String originAppType = applicationDto.getApplicationType();
-                    String appType = MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
+                    String appType = MasterCodeUtil.getCodeDesc(originAppType);
                     emailGroupId_003 = applicationDto.getAppGrpId();
                     tlGroupNumber = appNo.substring(0, appNo.length() - 3);
                     List<AppGrpPremisesDto> appGrpPremisesList = appSubmissionService.getAppGrpPremisesDto(appNo);
