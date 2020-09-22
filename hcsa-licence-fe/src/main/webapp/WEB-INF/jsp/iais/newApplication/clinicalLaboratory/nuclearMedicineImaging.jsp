@@ -21,7 +21,7 @@
                   <c:when test="${'BLB' ==currentSvcCode}">
                     <h4>The blood donation centre and/or mobile donation drive is/are under the supervision of</h4>
                   </c:when>
-                  <c:when test="${'TCB' ==currentSvcCode}">
+                  <c:when test="${'TSB' ==currentSvcCode}">
                     <h4>There is an appointed Laboratory Director who has the appropriate qualifications</h4>
                   </c:when>
                   <c:when test="${'NMI' ==currentSvcCode}">
@@ -407,7 +407,7 @@
       <c:when test="${'BLB' ==currentSvcCode}">
       absencePsnSel('Blood Banking');
       </c:when>
-      <c:when test="${'TCB'== currentSvcCode}">
+      <c:when test="${'TSB'== currentSvcCode}">
       absencePsnSel('Tissue Banking p1');
       </c:when>
       </c:choose>

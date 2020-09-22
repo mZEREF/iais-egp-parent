@@ -49,7 +49,7 @@
                     </td>
                   </tr>
                 </c:when>
-                <c:when test="${currentPreviewSvcInfo.serviceCode=='TCB'}">
+                <c:when test="${currentPreviewSvcInfo.serviceCode=='TSB'}">
                   <tr>
                     <td class="col-xs-8">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
