@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfAssessmentSyncDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
@@ -16,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
@@ -26,10 +24,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubT
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
@@ -256,6 +252,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             ApplicationDto applicationDto = applicationClient.getApplicationByCorrId(s).getEntity();
             if (Optional.ofNullable(applicationDto).isPresent()){
                     String appNo = applicationDto.getApplicationNo();
+                    String originAppType = applicationDto.getApplicationType();
                     String appType = MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
                     emailGroupId_003 = applicationDto.getAppGrpId();
                     tlGroupNumber = appNo.substring(0, appNo.length() - 3);
@@ -300,7 +297,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                             templateContent.put("inspectionDate", Formatter.formatDate(inspectionDate));
                         }
 
-                        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(originAppType)){
                             String originLicId = applicationDto.getOriginLicenceId();
                             LicenceDto licenceDto = licenceClient.getLicBylicId(originLicId).getEntity();
 
@@ -393,7 +390,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Override
     public void saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList) {
-       //TODO if from inbox , should not create task
+     /*  //TODO if from inbox , should not create task
         if (!IaisCommonUtils.isEmpty(selfAssessmentList)){
             //set audit trail
             selfAssessmentList.get(0).setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -429,7 +426,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 log.error(StringUtil.changeForLog("encounter failure when sync self assessment to be"), e);
             }
         }
-
+*/
         try {
             List<String> correlationIds = selfAssessmentList.stream().map(SelfAssessment::getCorrId).collect(Collectors.toList());
             sendEmailToInspector(correlationIds);
