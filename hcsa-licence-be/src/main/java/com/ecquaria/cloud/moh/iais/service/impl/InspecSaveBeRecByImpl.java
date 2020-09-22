@@ -299,6 +299,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 FileRepoEventDto eventDto = new FileRepoEventDto();
                 eventDto.setFileRepoList(list);
                 eventDto.setEventRefNo(eventRefNo);
+                eventDto.setAuditTrailDto(intranet);
                 SubmitResp submitResp = eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
                         EventBusConsts.OPERATION_BE_REC_DATA_COPY, eventDto.getEventRefNo(), null);
 
