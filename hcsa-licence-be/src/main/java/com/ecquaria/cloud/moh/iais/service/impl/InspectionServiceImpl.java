@@ -152,15 +152,21 @@ public class InspectionServiceImpl implements InspectionService {
         //create history, update application, update/create inspection status
         String saveFlag = assignTaskForInspectors(inspectionTaskPoolListDto, commPools, internalRemarks, applicationDto, taskDto, applicationViewDto);
         if(!StringUtil.isEmpty(inspectionTaskPoolListDto.getInspManHours()) && AppConsts.SUCCESS.equals(saveFlag)){
-            //create inspManHours recommendation
-            AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
-            appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
-            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            appPremisesRecommendationDto.setVersion(1);
-            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR);
-            appPremisesRecommendationDto.setRecomDecision(inspectionTaskPoolListDto.getInspManHours());
-            appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
+            //create inspManHours recommendation or update
+            AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR).getEntity();
+            if(appPremisesRecommendationDto != null){
+                appPremisesRecommendationDto.setRecomDecision(inspectionTaskPoolListDto.getInspManHours());
+                appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            } else {
+                appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+                appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
+                appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                appPremisesRecommendationDto.setVersion(1);
+                appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR);
+                appPremisesRecommendationDto.setRecomDecision(inspectionTaskPoolListDto.getInspManHours());
+                appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
+            }
         }
         return saveFlag;
     }
