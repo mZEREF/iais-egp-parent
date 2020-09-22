@@ -839,6 +839,15 @@ public class HcsaApplicationDelegator {
         }else if(HcsaConsts.ROUTING_STAGE_AO3.equals(satageId)){
             rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO3,routeBackStatus,RoleConsts.USER_ROLE_AO3,wrkGpId,userId);
         }
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
+        //send internal route back email
+        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
+        try{
+            sendRfcClarificationEmail( licenseeId, applicationViewDto, internalRemarks);
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
         log.debug(StringUtil.changeForLog("the do routeBack end ...."));
     }
 
@@ -1862,10 +1871,22 @@ public class HcsaApplicationDelegator {
                 List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
                 applicationDtoList = removeFastTrackingAndTransfer(applicationDtoList);
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
-                        appStatus);
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
                 if(isAllSubmit){
+                    //update current application status in db search result
+                    updateCurrentApplicationStatus(applicationDtoList,applicationDto.getId(),appStatus,licenseeId);
+                    List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+                    List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+                    List<ApplicationDto> creatTaskApplicationList = ao2AppList;
+                    //routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO2,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,RoleConsts.USER_ROLE_AO2);
+                    if(IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)){
+                        creatTaskApplicationList = ao3AppList;
+                    }else{
+                        stageId = HcsaConsts.ROUTING_STAGE_AO2;
+                        roleId = RoleConsts.USER_ROLE_AO2;
+                    }
                     // send the task to Ao2  or Ao3
-                    TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtoList,
+                    TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
                             stageId,roleId,IaisEGPHelper.getCurrentAuditTrailDto());
                     List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                     List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
@@ -1993,6 +2014,25 @@ public class HcsaApplicationDelegator {
             }
 
         log.info(StringUtil.changeForLog("The routingTask end ..."));
+    }
+
+    public List<ApplicationDto> getStatusAppList(List<ApplicationDto> applicationDtos, String status){
+        if(IaisCommonUtils.isEmpty(applicationDtos) || StringUtil.isEmpty(status)){
+            return null;
+        }
+        List<ApplicationDto> applicationDtoList = null;
+        for(ApplicationDto applicationDto : applicationDtos){
+            if(status.equals(applicationDto.getStatus())){
+                if(applicationDtoList == null){
+                    applicationDtoList = IaisCommonUtils.genNewArrayList();
+                    applicationDtoList.add(applicationDto);
+                }else{
+                    applicationDtoList.add(applicationDto);
+                }
+            }
+        }
+
+        return applicationDtoList;
     }
 
     private void setInspLeadsInRecommendation(TaskDto taskDto, String workGroupId, AuditTrailDto auditTrailDto) {
@@ -2177,16 +2217,6 @@ public class HcsaApplicationDelegator {
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
-        //send internal route back email
-        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
-        try{
-            if(!ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(appStatus)){
-//                sendRouteBackEmail(licenseeId,applicationViewDto);
-                sendRfcClarificationEmail( licenseeId, applicationViewDto, internalRemarks);
-            }
-        }catch (Exception e){
-            log.error(StringUtil.changeForLog("send internal route back email error"));
-        }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
@@ -2225,6 +2255,7 @@ public class HcsaApplicationDelegator {
         //update application status
         broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
         applicationDto.setStatus(appStatus);
+        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setApplicationDto(applicationDto);
         String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
         String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;

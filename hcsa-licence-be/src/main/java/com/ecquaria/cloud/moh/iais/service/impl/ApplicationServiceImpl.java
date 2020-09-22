@@ -167,6 +167,28 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    public boolean isOtherApplicaitonSubmit(List<ApplicationDto> applicationDtoList,String appNo,String status1, String status2) {
+        if(IaisCommonUtils.isEmpty(applicationDtoList)|| StringUtil.isEmpty(appNo) || StringUtil.isEmpty(status1) || StringUtil.isEmpty(status2)){
+            return  false;
+        }
+        boolean result = true;
+        Map<String,List<ApplicationDto>> applicationMap = tidyApplicationDto(applicationDtoList);
+        if(applicationMap!=null && applicationMap.size()>0){
+            for (Map.Entry<String,List<ApplicationDto>> entry : applicationMap.entrySet()){
+                String key = entry.getKey();
+                List<ApplicationDto> value = entry.getValue();
+                if(appNo.equals(key)){
+                    continue;
+                }else if(!(containStatus(value,status1) || containStatus(value,status2))){
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
     public List<AppPremisesCorrelationDto> getAppPremisesCorrelationByAppGroupId(String appGroupId) {
         return appPremisesCorrClient.getGroupAppsByNo(appGroupId).getEntity();
     }
