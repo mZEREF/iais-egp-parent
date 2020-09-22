@@ -469,7 +469,7 @@ public class RoundRobinCommPoolBatchJob {
                 serviceCodes.add(serviceCode);
             }
         }
-        String dateStr = Formatter.formatDateTime(inspDate, "yyyy/MM/dd");
+        String dateStr = Formatter.formatDateTime(inspDate, "dd/MM/yyyy");
         String dateTime = Formatter.formatDateTime(inspDate, "HH:mm:ss");
         String appNo = applicationDto.getApplicationNo();
         String licenseeId = applicationGroupDto.getLicenseeId();
