@@ -27,7 +27,7 @@ public interface InspectionMainService {
      * @return: List<SelectOption>
      * @Descripation: get App Type
      */
-    List<SelectOption> getAppTypeOption(String role);
+    List<SelectOption> getAppTypeOption();
 
     /**
      * @author: shicheng
