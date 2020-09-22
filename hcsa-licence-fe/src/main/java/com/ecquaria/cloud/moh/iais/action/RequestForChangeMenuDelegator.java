@@ -293,7 +293,7 @@ public class RequestForChangeMenuDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         appEditSelectDto.setPremisesEdit(true);
-        if(appEditSelectDto != null){
+        if(appSubmissionDto != null){
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         }
         PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
