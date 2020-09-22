@@ -130,8 +130,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
                 }
 
                 email.setReceipts(allemail);
-                email.setReqRefNum(item.getId());
-                email.setClientQueryCode(item.getMessageId());
+                email.setReqRefNum(item.getMessageId());
                 JobLogger.log(StringUtil.changeForLog("ClientQueryCode is " + item.getMessageId()));
                 try{
                     if(item.getAttachmentDtos() != null){
@@ -145,10 +144,52 @@ public class SendMassEmailJobHandler extends IJobHandler {
                         blastManagementListService.sendEmail(email,null);
                     }
 
+                    //send inbox msg
+                    InterMessageDto interMessageDto = new InterMessageDto();
+                    JobLogger.log(StringUtil.changeForLog("send inbox msg"));
+                    if(!StringUtil.isEmpty(item.getDistributionId())){
+                        JobLogger.log(StringUtil.changeForLog("DistributionId:" +  item.getDistributionId()));
+                        DistributionListWebDto dis = distributionListService.getDistributionListById(item.getDistributionId());
+                        List<HcsaServiceDto> hcsaServiceDtoList = distributionListService.getServicesInActive();
+                        String serviceName = "";
+                        HcsaServiceDto svcDto = null;
+                        for (HcsaServiceDto serviceDto:hcsaServiceDtoList) {
+                            if(serviceDto.getSvcCode().equals(dis.getService())){
+                                svcDto = serviceDto;
+                                serviceName = serviceDto.getSvcName();
+                                break;
+                            }
+                        }
+                        JobLogger.log(StringUtil.changeForLog("serviceName:" +  serviceName));
+                        if( svcDto == null){
+                            svcDto = new HcsaServiceDto();
+                        }
+                        List<LicenceDto> licenceList = hcsaLicenceClient.getLicenceDtosBySvcName(serviceName).getEntity();
+                        //send message to FE user.
+                        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+                        interMessageDto.setSubject(item.getSubject());
+                        JobLogger.log(StringUtil.changeForLog("interMessage subject is " + item.getSubject()));
+                        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ANNONUCEMENT);
+
+                        interMessageDto.setService_id(svcDto.getSvcCode()+'@');
+                        JobLogger.log(StringUtil.changeForLog("interMessage ServiceId is " + svcDto.getSvcCode()+'@'));
+                        interMessageDto.setMsgContent(item.getMsgContent());
+                        interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
+                        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                        for (LicenceDto licencedto:licenceList
+                        ) {
+                            String refNo = sysInboxMsgService.getMessageNo();
+                            interMessageDto.setRefNo(refNo);
+                            JobLogger.log(StringUtil.changeForLog("licenceList:" + licencedto.getLicenceNo()));
+                            interMessageDto.setUserId(licencedto.getLicenseeId());
+                            sysInboxMsgService.saveInterMessage(interMessageDto);
+                        }
+                    }
                 }catch (Exception e){
                     JobLogger.log(StringUtil.changeForLog("email sent failed" ));
                     JobLogger.log(e.getMessage(),e);
                 }
+
             }else if(item.getRecipientsRole() != null){
                 List<String> mobile = blastManagementListService.getMobileByRole(item.getRecipientsRole());
                 sendSMS(item.getMessageId(), mobile,item.getMsgContent());
@@ -156,47 +197,6 @@ public class SendMassEmailJobHandler extends IJobHandler {
             if(item.getId() != null){
                 //update mass email actual time
                 blastManagementListService.setActual(item.getId());
-            }
-            //send inbox msg
-            InterMessageDto interMessageDto = new InterMessageDto();
-            JobLogger.log(StringUtil.changeForLog("send inbox msg"));
-            if(!StringUtil.isEmpty(item.getDistributionId())){
-                JobLogger.log(StringUtil.changeForLog("DistributionId:" +  item.getDistributionId()));
-                DistributionListWebDto dis = distributionListService.getDistributionListById(item.getDistributionId());
-                List<HcsaServiceDto> hcsaServiceDtoList = distributionListService.getServicesInActive();
-                String serviceName = "";
-                HcsaServiceDto svcDto = null;
-                for (HcsaServiceDto serviceDto:hcsaServiceDtoList) {
-                    if(serviceDto.getSvcCode().equals(dis.getService())){
-                        svcDto = serviceDto;
-                        serviceName = serviceDto.getSvcName();
-                        break;
-                    }
-                }
-                JobLogger.log(StringUtil.changeForLog("serviceName:" +  serviceName));
-                if( svcDto == null){
-                    svcDto = new HcsaServiceDto();
-                }
-                List<LicenceDto> licenceList = hcsaLicenceClient.getLicenceDtosBySvcName(serviceName).getEntity();
-                //send message to FE user.
-                interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-                interMessageDto.setSubject(item.getSubject());
-                JobLogger.log(StringUtil.changeForLog("interMessage subject is " + item.getSubject()));
-                interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
-
-                interMessageDto.setService_id(svcDto.getSvcCode()+'@');
-                JobLogger.log(StringUtil.changeForLog("interMessage ServiceId is " + svcDto.getSvcCode()+'@'));
-                interMessageDto.setMsgContent(item.getMsgContent());
-                interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-                interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                for (LicenceDto licencedto:licenceList
-                     ) {
-                    String refNo = sysInboxMsgService.getMessageNo();
-                    interMessageDto.setRefNo(refNo);
-                    JobLogger.log(StringUtil.changeForLog("licenceList:" + licencedto.getLicenceNo()));
-                    interMessageDto.setUserId(licencedto.getLicenseeId());
-                    sysInboxMsgService.saveInterMessage(interMessageDto);
-                }
             }
 
         }
