@@ -25,7 +25,13 @@ public class FeignRequestInterceptor implements RequestInterceptor {
     public void apply(RequestTemplate requestTemplate) {
         log.info("<===== Start inspect Feign =====>");
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes == null) {
+            return;
+        }
         HttpServletRequest request = attributes.getRequest();
+        if (request == null) {
+            return;
+        }
         AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
         if (dto != null) {
             requestTemplate.header("currentAuditTrail", JsonUtil.parseToJson(dto));
