@@ -62,7 +62,7 @@
                         <div class="col-md-6">
                           <span style="font-size: 16px"><fmt:formatDate value='${inspNonAvailabilityDto.blockOutEnd}' pattern='dd/MM/yyyy' /></span>
                           <c:if test="${'true' eq containDate}">
-                            <br><span class="error-msg"><iais:message key="ACK027" escape="false"></iais:message></span>
+                            <br><span class="error-msg"><iais:message key="OAPPT_ACK009" escape="false"></iais:message></span>
                           </c:if>
                         </div>
                       </div>

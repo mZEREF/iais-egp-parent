@@ -63,7 +63,7 @@
                   <br>
                   <iais:action>
                     <button class="btn btn-primary" style="float:right" data-toggle= "modal" data-target= "#rejectDate" type="button">Reject All</button>
-                    <iais:confirm yesBtnCls="btn btn-primary" msg="APPT_ERROR0003" callBack="apptConfirmReSchDateRej()" popupOrder="rejectDate" title="Message from webpage" needCancel="false"></iais:confirm>
+                    <iais:confirm yesBtnCls="btn btn-primary" msg="OAPPT_ACK008" callBack="apptConfirmReSchDateRej()" popupOrder="rejectDate" title="Message from webpage" needCancel="false"></iais:confirm>
                     <span style="float:right">&nbsp;</span>
                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptConfirmReSchDateCon()">Accept</button>
                   </iais:action>
