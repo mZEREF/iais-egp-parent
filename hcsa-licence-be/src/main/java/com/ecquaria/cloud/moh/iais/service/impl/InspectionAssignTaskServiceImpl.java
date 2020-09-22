@@ -1080,7 +1080,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             td.setSlaDateCompleted(new Date());
             td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
             td.setAuditTrailDto(auditTrailDto);
-            TaskDto updateTask = taskService.updateTask(td);
+            TaskDto updateTask = organizationClient.updateTaskForAssign(td).getEntity();
             if(updateTask != null) {
                 List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
                 for (Map.Entry<String, String> map : stageRoleMap.entrySet()) {
