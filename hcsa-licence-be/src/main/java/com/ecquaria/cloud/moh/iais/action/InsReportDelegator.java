@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
@@ -163,7 +164,8 @@ public class InsReportDelegator {
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
             String recommendationRfc = ParamUtil.getRequestString(bpc.request, "recommendationRfc");
             if(StringUtil.isEmpty(recommendationRfc)){
-                errorMap.put("recommendationRfc", "ERR0009");
+                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Recommendation", "field");
+                errorMap.put("recommendationRfc", errMsg);
             }
         }
         if (validationResult.isHasErrors()) {

@@ -5,18 +5,19 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditCombinationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
@@ -64,21 +65,33 @@ public class PostInspectionBatchJob {
     private String secSecretKey;
 
     public void start(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("The CessationEffectiveDateBatchjob is start ..."));
+        log.debug(StringUtil.changeForLog("The postInspection is start ..."));
     }
 
     public void doBatchJob(BaseProcessClass bpc) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         Map<String, List<String>> map = hcsaLicenceClient.getPostInspectionMap().getEntity();
+        List<String> licIds1 = IaisCommonUtils.genNewArrayList();
+        licIds1.add("8F3AD665-DAF3-EA11-8B79-000C293F0C99");
+        map.put("8A8F8861-03ED-EA11-8B79-000C293F0C99",licIds1);
+        //insGrpId  licIds
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         String appType = ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION;
         String appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING;
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+        List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
         map.forEach((insGrpId, licIds) -> {
-            String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT,signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
-            Double amount = 0.0;
+            String grpNo = beEicGatewayClient.getAppNo(appType, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
             List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity();
             for(AppSubmissionDto entity : appSubmissionDtoList){
+                entity.setAppGrpNo(grpNo);
+                entity.setAppType(appType);
+                entity.setAmount(0.0);
+                entity.setAuditTrailDto(auditTrailDto);
+                entity.setPreInspection(true);
+                entity.setRequirement(true);
+                entity.setStatus(appStatus);
+                entity.setEventRefNo(grpNo);
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = entity.getAppSvcRelatedInfoDtoList();
                 String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
@@ -86,28 +99,63 @@ public class PostInspectionBatchJob {
                 String svcCode = hcsaServiceDto.getSvcCode();
                 appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
                 appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
-                entity.setAppGrpNo(grpNo);
-                entity.setAppType(appType);
-                entity.setAmount(amount);
-                entity.setAuditTrailDto(intranet);
-                entity.setPreInspection(true);
-                entity.setRequirement(true);
-                entity.setStatus(appStatus);
                 setRiskToDto(entity);
+                appSubmissionDtos.add(entity);
             }
             List<LicPremisesDto> licPremisesDtos = hcsaLicenceClient.getPremisesByLicIds(licIds).getEntity();
             for(LicPremisesDto licPremisesDto :licPremisesDtos){
+                licPremisesDto.setIsPostInspNeeded(0);
             }
-            log.info("========================>>>>> creat application!!!!");
-            try {
-                String submissionId = generateIdClient.getSeqId().getEntity();
-                eventBusHelper.submitAsyncRequest(appSubmissionDtoList,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts.OPERATION_POST_INSPECTION_TASK,grpNo,null);
-                eventBusHelper.submitAsyncRequest(licPremisesDtos,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts.OPERATION_POST_INSPECTION_TASK,grpNo,null);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
+
         });
+//        List<AppSubmissionDto> entity = applicationClient.savePostSubmision(appSubmissionDtos).getEntity();
+        PostAppSubmissionDto postAppSubmissionDto = new PostAppSubmissionDto();
+        postAppSubmissionDto.setAppSubmissionDtos(appSubmissionDtos);
+//        postAppSubmissionDto.setLicPremInspGrpCorrelationDtos();
+        Long auto = System.currentTimeMillis();
+        String submissionId = generateIdClient.getSeqId().getEntity();
+        eventBusHelper.submitAsyncRequest(postAppSubmissionDto, submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                EventBusConsts.OPERATION_POST_INSPECTION_APP_LIC, auto.toString(), bpc.process);
     }
+
+
+
+    private String createPostTaskApp(List<String> licIds, String submissionId, AuditCombinationDto auditCombinationDto) {
+        List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity();
+        String grpNo = auditCombinationDto.getEventRefNo();
+        for(AppSubmissionDto entity : appSubmissionDtoList){
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = entity.getAppSvcRelatedInfoDtoList();
+            String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+            String svcId = hcsaServiceDto.getId();
+            String svcCode = hcsaServiceDto.getSvcCode();
+            appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
+            appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
+            appSvcRelatedInfoDtoList.get(0).setHciCode(auditCombinationDto.getAuditTaskDataFillterDto().getHclCode());
+            entity.setAppGrpNo(grpNo);
+            entity.setAppType(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION);
+            entity.setAmount(0.0);
+            entity.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            entity.setPreInspection(true);
+            entity.setRequirement(true);
+            entity.setStatus(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION);
+            entity.setEventRefNo(grpNo);
+            entity.setLicenceId(auditCombinationDto.getAuditTaskDataFillterDto().getLicId());
+            entity.setLicenseeId(auditCombinationDto.getAuditTaskDataFillterDto().getLicenseeId());
+            setRiskToDto(entity);
+        }
+        auditCombinationDto.setAppSubmissionDtoList(appSubmissionDtoList);
+        log.info("========================>>>>> creat application!!!!");
+        try {
+            eventBusHelper.submitAsyncRequest(auditCombinationDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,auditCombinationDto.getEventRefNo(),null);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+
+
 
 
 

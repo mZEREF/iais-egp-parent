@@ -939,8 +939,8 @@ public class InsRepServiceImpl implements InsRepService {
         log.info("call back ===================>>>>>");
         List<ApplicationDto> postApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
         //appGrp --------app -------task    submissionId   operation yiyang    update licPremise
-        List<TaskDto> taskDtos = new ArrayList<>();
-        List<String> appGrpIds = new ArrayList<>();
+        List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+        List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
         if (!postApps.isEmpty()) {
             for (ApplicationDto applicationDto : postApps) {
                 String licenceId = applicationDto.getOriginLicenceId();
@@ -958,19 +958,14 @@ public class InsRepServiceImpl implements InsRepService {
             }
         }
         try {
-            eventBusHelper.submitAsyncRequest(taskDtos, submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_POST_INSPECTION_TASK, eventRefNum, null);
-
+            eventBusHelper.submitAsyncRequest(taskDtos, submissionId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK, EventBusConsts.OPERATION_POST_INSPECTION_TASK, eventRefNum, null);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-        log.info(StringUtil.changeForLog("taskDtos ===================>>>>>" + taskDtos.size()));
-        taskService.createTasks(taskDtos);
         log.info(StringUtil.changeForLog("taskDtos ===================>>>>>Success" + taskDtos.size()));
         String data = applicationClient.getBeData(appGrpIds).getEntity();
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(data, ApplicationListFileDto.class);
         log.info(StringUtil.changeForLog("applicationGroupId ===================>>>>>Success" + applicationListDto.getApplicationGroup().get(0).getId()));
-        //eic save fe data
-        //applicationClient.saveFeData(applicationListDto);
     }
 
     @Override

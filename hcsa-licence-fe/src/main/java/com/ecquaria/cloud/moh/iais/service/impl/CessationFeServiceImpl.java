@@ -281,6 +281,7 @@ public class CessationFeServiceImpl implements CessationFeService {
         List<AppCessatonConfirmDto> appCessationDtosConfirms = IaisCommonUtils.genNewArrayList();
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+        AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         for (int i = 0; i < appCessationDtos.size(); i++) {
             AppCessationDto appCessationDto = appCessationDtos.get(i);
             String premiseId = appCessationDto.getPremiseId();
@@ -291,6 +292,7 @@ public class CessationFeServiceImpl implements CessationFeService {
             licIds.add(licId);
             String appId = appIdPremisesMap.get(premiseId);
             ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
+            applicationDto.setAuditTrailDto(currentAuditTrailDto);
             applicationDtos.add(applicationDto);
             String applicationNo = applicationDto.getApplicationNo();
             List<AppCessLicDto> appCessDtosByLicIds = getAppCessDtosByLicIds(licIds);
@@ -570,7 +572,9 @@ public class CessationFeServiceImpl implements CessationFeService {
             String hciCode = entity1.getHciCode();
             hciCodes.add(hciCode);
         }
+        AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         for (ApplicationDto applicationDto : applicationDtos) {
+            applicationDto.setAuditTrailDto(currentAuditTrailDto);
             String id = applicationDto.getId();
             AppGrpPremisesDto dto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
             String hciCode = dto.getHciCode();

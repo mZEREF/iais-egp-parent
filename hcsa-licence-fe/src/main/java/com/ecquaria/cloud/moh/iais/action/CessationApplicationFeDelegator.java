@@ -54,7 +54,7 @@ public class CessationApplicationFeDelegator {
     private static final String PATHCINAME = "patHciName";
     private static final String PATREGNO = "patRegNo";
     private static final String PATOTHERS = "patOthers";
-    private static final String ERROR = "ERR0009";
+    private static final String ERROR = "GENERAL_ERR0006";
 
 
     public void start(BaseProcessClass bpc) {
@@ -99,8 +99,8 @@ public class CessationApplicationFeDelegator {
             if (specLicInfo.size() > 0) {
                 ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) specLicInfo);
                 ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag", "exist");
-                ParamUtil.setSessionAttr(bpc.request, "isGrpLic",isGrpLicence);
             }
+            ParamUtil.setSessionAttr(bpc.request, "isGrpLic",isGrpLicence);
         }
 
         int size = appCessDtosByLicIds.size();
@@ -176,7 +176,7 @@ public class CessationApplicationFeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtosSave", (Serializable) appCessationDtos);
     }
 
-    public void action(BaseProcessClass bpc) throws IOException {
+    public void action(BaseProcessClass bpc) {
         String action_type = ParamUtil.getRequestString(bpc.request, "crud_action_type");
         if ("submit".equals(action_type)) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);

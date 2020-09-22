@@ -55,7 +55,7 @@
 
                                             <iais:section title="" id="potentialAuditableHCIs">
                                                 <iais:row>
-                                                    <iais:field value="Effective Date"/>
+                                                    <iais:field value="Effective Date" mandatory="true"/>
                                                     <iais:value width="7">
                                                         <iais:datePicker id="effectiveDate"
                                                                          name="${num.count}effectiveDate${uid.count}"
@@ -68,7 +68,7 @@
                                                     </iais:value>
                                                 </iais:row>
                                                 <iais:row>
-                                                    <iais:field value="Cessation Reasons"/>
+                                                    <iais:field value="Cessation Reasons" mandatory="true"/>
                                                     <iais:value width="7">
                                                         <iais:select name="${num.count}reason${uid.count}"
                                                                      id="${num.count}reasonId${uid.count}"
@@ -88,7 +88,7 @@
                                                     </iais:row>
                                                 </div>
                                                 <iais:row>
-                                                    <iais:field value="Patients' Record will be transferred"/>
+                                                    <iais:field value="Patients' Record will be transferred" mandatory="true"/>
                                                     <iais:value>
                                                         <div class="col-xs-12 col-sm-4 col-md-3">
                                                             <div class="form-check-gp">
@@ -134,7 +134,7 @@
                                                 <div id="${num.count}patYes${uid.count}" hidden>
                                                     <iais:row>
                                                         <iais:field width="7"
-                                                                    value="Who will take over your patients' case records?"/>
+                                                                    value="Who will take over your patients' case records?" mandatory="true"/>
                                                         <iais:value width="7">
                                                             <iais:select
                                                                     name="${num.count}patientSelect${uid.count}"
@@ -148,7 +148,7 @@
                                                 </div>
                                                 <div id="${num.count}patHciName${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value="HCI Name"/>
+                                                        <iais:field value="HCI Name" mandatory="true"/>
                                                         <iais:value width="7">
                                                             <iais:input type="text" value="${appCessHci.patHciName}"
                                                                         maxLength="100"
@@ -158,7 +158,7 @@
                                                 </div>
                                                 <div id="${num.count}patRegNo${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value="Professional Regn No."/>
+                                                        <iais:field value="Professional Regn No." mandatory="true"/>
                                                         <iais:value width="7">
                                                             <iais:input type="text" maxLength="20"
                                                                         name="${num.count}patRegNo${uid.count}"
@@ -168,7 +168,7 @@
                                                 </div>
                                                 <div id="${num.count}patOthers${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value="Others"/>
+                                                        <iais:field value="Others" mandatory="true"/>
                                                         <iais:value width="7">
                                                             <iais:input type="text" value="${appCessHci.patOthers}"
                                                                         maxLength="100"
@@ -178,7 +178,7 @@
                                                 </div>
                                                 <div id="${num.count}patNo${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value="Reason for no patients' records transfer"/>
+                                                        <iais:field value="Reason for no patients' records transfer" mandatory="true"/>
                                                         <iais:value width="7">
                                                             <iais:input type="text" value="${appCessHci.patNoRemarks}"
                                                                         maxLength="200"

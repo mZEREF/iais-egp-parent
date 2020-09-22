@@ -486,7 +486,7 @@ public class RequestForChangeMenuDelegator {
         }
         /*  List<String> selectLicence = getSelectLicence(bpc.request);
         if (selectLicence.isEmpty()) {
-            errorMap.put("selectLicence", "UC_CHKLMD001_ERR001");
+            errorMap.put("selectLicence", "GENERAL_ERR0006");
         } else {
             //todo application is not padding
         }
@@ -855,33 +855,37 @@ public class RequestForChangeMenuDelegator {
             newPerson.setOfficeTelNo(officeTelNo1);
             newPerson.setLicPsnTypeDtoMaps(licPsnTypeDtoMaps);
             if (StringUtil.isEmpty(email1)) {
-                errMap.put("emailAddr1", "UC_CHKLMD001_ERR001");
+                errMap.put("emailAddr1", MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
             } else if (!StringUtil.isEmpty(email1)) {
                 if (!email1.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
                     errMap.put("emailAddr1", "GENERAL_ERR0014");
                 }
             }
             if (StringUtil.isEmpty(mobile1)) {
-                errMap.put("mobileNo1", "UC_CHKLMD001_ERR001");
+                errMap.put("mobileNo1", MessageUtil.replaceMessage("GENERAL_ERR0006", "Mobile No.", "field"));
             } else if (!StringUtil.isEmpty(mobile1)) {
                 if (!mobile1.matches("^[8|9][0-9]{7}$")) {
                     errMap.put("mobileNo1", "GENERAL_ERR0007");
                 }
             }
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(salutation1)) {
-                errMap.put("salutation1", "UC_CHKLMD001_ERR001");
+                errMap.put("salutation1", MessageUtil.replaceMessage("GENERAL_ERR0006", "Salutation", "field"));
             }
             if (psnTypes.contains("PO") && StringUtil.isEmpty(salutation1)) {
-                errMap.put("salutation1", "UC_CHKLMD001_ERR001");
+                errMap.put("salutation1", "GENERAL_ERR0006");
+                errMap.put("salutation1", MessageUtil.replaceMessage("GENERAL_ERR0006", "Salutation", "field"));
             }
             if (StringUtil.isEmpty(psnName1)) {
-                errMap.put("psnName1", "UC_CHKLMD001_ERR001");
+                errMap.put("psnName1", "GENERAL_ERR0006");
+                errMap.put("psnName1", MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
             }
             if (StringUtil.isEmpty(idType1)) {
-                errMap.put("idType1", "UC_CHKLMD001_ERR001");
+                errMap.put("idType1", "GENERAL_ERR0006");
+                errMap.put("idType1", MessageUtil.replaceMessage("GENERAL_ERR0006", "ID Type", "field"));
             }
             if (StringUtil.isEmpty(idNo1)) {
-                errMap.put("idNo1", "UC_CHKLMD001_ERR001");
+                errMap.put("idNo1", "GENERAL_ERR0006");
+                errMap.put("idNo1", MessageUtil.replaceMessage("GENERAL_ERR0006", "ID No.", "field"));
             } else {
                 if ("FIN".equals(idType1)) {
                     boolean b = SgNoValidator.validateFin(idNo1);
@@ -897,16 +901,16 @@ public class RequestForChangeMenuDelegator {
                 }
             }
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(designation1)) {
-                errMap.put("designation1", "UC_CHKLMD001_ERR001");
+                errMap.put("designation1", MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation ", "field"));
             }
             if (psnTypes.contains("PO") && StringUtil.isEmpty(designation1)) {
-                errMap.put("designation1", "UC_CHKLMD001_ERR001");
+                errMap.put("designation1", MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation ", "field"));
             }
             if (StringUtil.isEmpty(editSelect)) {
-                errMap.put("editSelect1", "UC_CHKLMD001_ERR001");
+                errMap.put("editSelect1", "GENERAL_ERR0006");
             }
             if (psnTypes.contains("PO") && StringUtil.isEmpty(officeTelNo1)) {
-                errMap.put("officeTelNo1", "UC_CHKLMD001_ERR001");
+                errMap.put("officeTelNo1", MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
             }
             if (psnTypes.contains("PO") && !StringUtil.isEmpty(officeTelNo1) && !officeTelNo1.matches("^[6][0-9]{7}$")) {
                 errMap.put("officeTelNo1", "GENERAL_ERR0015");
@@ -914,36 +918,36 @@ public class RequestForChangeMenuDelegator {
         }
         if ("update".equals(editSelect)) {
             if (StringUtil.isEmpty(salutation)) {
-                errMap.put("salutation", "UC_CHKLMD001_ERR001");
+                errMap.put("salutation", MessageUtil.replaceMessage("GENERAL_ERR0006", "Salutation", "field"));
             }
             if (StringUtil.isEmpty(psnName)) {
-                errMap.put("psnName", "UC_CHKLMD001_ERR001");
+                errMap.put("psnName", MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
             }
             if (StringUtil.isEmpty(email)) {
-                errMap.put("emailAddr", "UC_CHKLMD001_ERR001");
+                errMap.put("emailAddr", MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
             } else if (!StringUtil.isEmpty(email)) {
                 if (!ValidationUtils.isEmail(email)) {
                     errMap.put("emailAddr", "GENERAL_ERR0014");
                 }
             }
             if (StringUtil.isEmpty(mobile)) {
-                errMap.put("mobileNo", "UC_CHKLMD001_ERR001");
+                errMap.put("mobileNo", MessageUtil.replaceMessage("GENERAL_ERR0006", "Mobile No.", "field"));
             } else if (!StringUtil.isEmpty(mobile)) {
                 if (!mobile.matches("^[8|9][0-9]{7}$")) {
                     errMap.put("mobileNo", "GENERAL_ERR0007");
                 }
             }
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(designation)) {
-                errMap.put("designation", "UC_CHKLMD001_ERR001");
+                errMap.put("designation", MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation ", "field"));
             }
             if (psnTypes.contains("PO") && StringUtil.isEmpty(designation)) {
-                errMap.put("designation", "UC_CHKLMD001_ERR001");
+                errMap.put("designation", MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation ", "field"));
             }
             if (StringUtil.isEmpty(editSelect)) {
-                errMap.put("editSelect", "UC_CHKLMD001_ERR001");
+                errMap.put("editSelect", MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
             }
             if (psnTypes.contains("PO") && StringUtil.isEmpty(officeTelNo)) {
-                errMap.put("officeTelNo", "UC_CHKLMD001_ERR001");
+                errMap.put("officeTelNo", MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No.", "field"));
             }
             if (psnTypes.contains("PO") && !StringUtil.isEmpty(officeTelNo) && !officeTelNo.matches("^[6][0-9]{7}$")) {
                 errMap.put("officeTelNo", "GENERAL_ERR0015");
@@ -951,7 +955,7 @@ public class RequestForChangeMenuDelegator {
         }
         if ("replace".equals(editSelect) && !"new".equals(replaceName)) {
             if (StringUtil.isEmpty(replaceName)) {
-                errMap.put("replaceName", "UC_CHKLMD001_ERR001");
+                errMap.put("replaceName", MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
             } else {
                 String[] split = replaceName.split(",");
                 String idType = split[0];
@@ -971,53 +975,53 @@ public class RequestForChangeMenuDelegator {
                 newPerson.setLicPsnTypeDtoMaps(licPsnTypeDtoMaps);
 
                 if (StringUtil.isEmpty(newPerson.getEmailAddr())) {
-                    errMap.put("emailAddr2", "UC_CHKLMD001_ERR001");
+                    errMap.put("emailAddr2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
                 } else if (!StringUtil.isEmpty(newPerson.getEmailAddr())) {
                     if (!newPerson.getEmailAddr().matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
                         errMap.put("emailAddr2", "GENERAL_ERR0014");
                     }
                 }
                 if (StringUtil.isEmpty(newPerson.getMobileNo())) {
-                    errMap.put("mobileNo2", "UC_CHKLMD001_ERR001");
+                    errMap.put("mobileNo2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Mobile No.", "field"));
                 } else if (!StringUtil.isEmpty(newPerson.getMobileNo())) {
                     if (!newPerson.getMobileNo().matches("^[8|9][0-9]{7}$")) {
                         errMap.put("mobileNo2", "GENERAL_ERR0007");
                     }
                 }
                 if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getSalutation())) {
-                    errMap.put("salutation2", "UC_CHKLMD001_ERR001");
+                    errMap.put("salutation2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Salutation", "field"));
                 }
                 if (psnTypes.contains("PO") && StringUtil.isEmpty(newPerson.getSalutation())) {
-                    errMap.put("salutation2", "UC_CHKLMD001_ERR001");
+                    errMap.put("salutation2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Salutation", "field"));
                 }
                 if (StringUtil.isEmpty(newPerson.getPsnName())) {
-                    errMap.put("psnName2", "UC_CHKLMD001_ERR001");
+                    errMap.put("psnName2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
                 }
                 if (StringUtil.isEmpty(newPerson.getIdType())) {
-                    errMap.put("idType2", "UC_CHKLMD001_ERR001");
+                    errMap.put("idType2", MessageUtil.replaceMessage("GENERAL_ERR0006", "ID Type", "field"));
                 }
                 if (StringUtil.isEmpty(newPerson.getIdNo())) {
-                    errMap.put("idNo2", "UC_CHKLMD001_ERR001");
+                    errMap.put("idNo2", MessageUtil.replaceMessage("GENERAL_ERR0006", "ID No.", "field"));
                 }
                 if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getDesignation())) {
-                    errMap.put("designation2", "UC_CHKLMD001_ERR001");
+                    errMap.put("designation2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation ", "field"));
                 }
                 if (psnTypes.contains("PO") && StringUtil.isEmpty(newPerson.getDesignation())) {
-                    errMap.put("designation2", "UC_CHKLMD001_ERR001");
+                    errMap.put("designation2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
                 }
                 if (StringUtil.isEmpty(editSelect)) {
-                    errMap.put("editSelect2", "UC_CHKLMD001_ERR001");
+                    errMap.put("editSelect2", "GENERAL_ERR0006");
                 }
                 if (psnTypes.contains("PO") && StringUtil.isEmpty(newPerson.getOfficeTelNo())) {
-                    errMap.put("officeTelNo2", "UC_CHKLMD001_ERR001");
+                    errMap.put("officeTelNo2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No", "field"));
                 }
                 if (psnTypes.contains("PO") && !StringUtil.isEmpty(newPerson.getOfficeTelNo()) && !newPerson.getOfficeTelNo().matches("^[6][0-9]{7}$")) {
-                    errMap.put("officeTelNo", "GENERAL_ERR0015");
+                    errMap.put("officeTelNo", MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No", "field"));
                 }
             }
         }
         if (StringUtil.isEmpty(editSelect)) {
-            errMap.put("editSelect", "UC_CHKLMD001_ERR001");
+            errMap.put("editSelect", "GENERAL_ERR0006");
         }
         //rfc valiant
 

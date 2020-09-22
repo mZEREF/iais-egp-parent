@@ -746,4 +746,9 @@ public class ApplicationClientFallback implements ApplicationClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<AppSubmissionDto>> savePostSubmision(List<AppSubmissionDto> appSubmissionDtos) {
+        return null;
+    }
 }

@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.submission.client.App;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,9 +37,11 @@ public class InsRepRecValidate implements CustomizeValidator {
         String applicationType = applicationDto.getApplicationType();
         if (!InspectionReportConstants.REJECTED.equals(recommendation)&&OTHERS.equals(periods)&&!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)&&!ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)) {
             if (StringUtil.isEmpty(chrono)) {
-                errorMap.put("chronoUnit", "ERR0009");
+                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Other Period", "field");
+                errorMap.put("chronoUnit", errMsg);
             } else if (StringUtil.isEmpty(number)) {
-                errorMap.put("recomInNumber", "ERR0009");
+                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Other Period", "field");
+                errorMap.put("recomInNumber",errMsg);
             } else {
                 try {
                     Integer.parseInt(number);
@@ -48,12 +51,14 @@ public class InsRepRecValidate implements CustomizeValidator {
             }
         }
         if(!StringUtil.isEmpty(enforcement)&&StringUtil.isEmpty(enforcementRemarks)){
-            errorMap.put("enforcementRemarks", "ERR0009");
+            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Enforcement Remarks", "field");
+            errorMap.put("enforcementRemarks", errMsg);
         }
         if(!StringUtil.isEmpty(recommendation)){
             if(InspectionReportConstants.APPROVED.equals(recommendation)||InspectionReportConstants.APPROVEDLTC.equals(recommendation)){
                 if(StringUtil.isEmpty(periods)){
-                    errorMap.put("periods", "ERR0009");
+                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Period", "field");
+                    errorMap.put("periods", errMsg);
                 }
             }
         }
