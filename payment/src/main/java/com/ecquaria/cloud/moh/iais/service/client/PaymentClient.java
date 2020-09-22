@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.SrcSystemConfDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -26,6 +27,8 @@ public interface PaymentClient {
     @PostMapping(value = "/iais-payment/duringThePayment" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PaymentRequestDto> saveHcsaPaymentResquset(@RequestBody PaymentRequestDto paymentReqDto);
 
+    @PostMapping(value = "/iais-payment/duringTheSrcSystemConfDto" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<SrcSystemConfDto> accessApplicationSrcSystemConfDto(@RequestBody SrcSystemConfDto srcSystemConfDto);
 
     @PostMapping(value = "/iais-payment/update-payment-resquset" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PaymentRequestDto> updatePaymentResquset(@RequestBody PaymentRequestDto paymentReqDto);

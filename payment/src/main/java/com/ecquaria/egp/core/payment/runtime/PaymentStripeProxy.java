@@ -122,18 +122,17 @@ public class PaymentStripeProxy extends PaymentProxy {
 		}
 		if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(payMethod)&&!StringUtil.isEmpty(reqNo)) {
 			PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
-
+			srcSystemConfDto.setReturnUrl(returnUrl);
+			srcSystemConfDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+			SrcSystemConfDto srcSystemConfDto1 =PaymentBaiduriProxyUtil.getPaymentClient().accessApplicationSrcSystemConfDto(srcSystemConfDto).getEntity();
 			double amount = Double.parseDouble(amo)/100;
 			paymentRequestDto.setAmount(amount);
 			paymentRequestDto.setPayMethod(payMethod);
 			paymentRequestDto.setReqDt(new Date());
 			paymentRequestDto.setReqRefNo(reqNo);
-			srcSystemConfDto.setReturnUrl(returnUrl);
-			srcSystemConfDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-			paymentRequestDto.setSrcSystemConfDto(srcSystemConfDto);
+			paymentRequestDto.setSrcSystemConfDto(srcSystemConfDto1);
 			paymentRequestDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 			PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
-
 		}
 
 		try {
