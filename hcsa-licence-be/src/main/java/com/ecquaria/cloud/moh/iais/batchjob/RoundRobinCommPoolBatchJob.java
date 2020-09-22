@@ -179,6 +179,7 @@ public class RoundRobinCommPoolBatchJob {
                       //completed the old task
                       TaskDto oldTaskDto = (TaskDto) CopyUtil.copyMutableObject(taskDto);
                       oldTaskDto.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
+                      oldTaskDto.setAuditTrailDto(auditTrailDto);
                       oldTaskDto = taskService.updateTask(oldTaskDto);
                       log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob update old task status"));
 
@@ -200,7 +201,9 @@ public class RoundRobinCommPoolBatchJob {
                       taskDto.setUserId(userId);
                       taskDto.setDateAssigned(new Date());
                       taskDto.setAuditTrailDto(auditTrailDto);
-                      taskDto = taskService.updateTask(taskDto);
+                      List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+                      taskDtos.add(taskDto);
+                      taskDtos = taskService.createTasks(taskDtos);
                       //update the application.
                       String taskType = taskDto.getTaskType();
                       String appNo = taskDto.getApplicationNo();
@@ -214,6 +217,7 @@ public class RoundRobinCommPoolBatchJob {
                                   log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob update this applicaiton status to -- >:"
                                           + ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING));
                                   applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
+                                  applicationDto.setAuditTrailDto(auditTrailDto);
                                   applicationDto = applicationService.updateBEApplicaiton(applicationDto);
                                   log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob BE update success ..."));
                                   applicationDto = applicationService.updateFEApplicaiton(applicationDto);
