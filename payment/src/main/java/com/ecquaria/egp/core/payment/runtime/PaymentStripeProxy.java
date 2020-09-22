@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.SrcSystemConfDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.api.EGPCaseHelper;
@@ -60,7 +61,8 @@ public class PaymentStripeProxy extends PaymentProxy {
 
 	@Override
 	public void pay(BaseProcessClass bpc) throws PaymentException {
-
+		//AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_PAYMENT, "");
+		AuditTrailHelper.auditFunction("Payment", "pay");
 		String continueToken = getContinueToken();
 		bpc.request.getSession().setAttribute(IMPL_CONTINUE_TOKEN_PREFIX + getTinyKey(), continueToken);
 
@@ -159,6 +161,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 
 	@Override
 	public void callBack(BaseProcessClass bpc) throws PaymentException {
+		AuditTrailHelper.auditFunction("Payment", "pay");
 		String continueToken = (String)bpc.request.getSession().getAttribute(IMPL_CONTINUE_TOKEN_PREFIX + getTinyKey());
 		if(StringHelper.isEmpty(continueToken)){
 			throw new PaymentException("Continue token is null.");

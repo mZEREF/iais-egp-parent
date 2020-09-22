@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -132,7 +133,7 @@ public class InspecEmailDelegator {
             }
 
         }
-        AuditTrailHelper.auditFunction("NcEmail Management", "Post Inspection Task");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "Post Inspection Task");
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
         if( taskDto == null) {
             return;

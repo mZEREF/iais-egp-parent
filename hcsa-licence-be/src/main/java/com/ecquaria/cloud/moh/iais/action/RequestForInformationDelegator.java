@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
@@ -96,7 +97,7 @@ public class RequestForInformationDelegator {
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        AuditTrailHelper.auditFunction("RequestForInformation Management", "RequestForInformation Config");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_INFORMATION, "Request For Information Config");
 
         List<String> licenceIds = (List<String>) ParamUtil.getSessionAttr(request, "licRfiIds");
         if(licenceIds.size()==0){

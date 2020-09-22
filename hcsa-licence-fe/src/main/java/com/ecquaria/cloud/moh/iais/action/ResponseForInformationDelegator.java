@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
@@ -16,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
@@ -82,6 +84,7 @@ public class ResponseForInformationDelegator {
         ParamUtil.setSessionAttr(request,"msg_action_type",messageDto.getMessageType());
         ParamUtil.setSessionAttr(request,"IAIS_MSG_CONTENT",messageDto.getMsgContent());
         ParamUtil.setSessionAttr(request,"licenseeId",licenseeId);
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_INFORMATION, "Request For Information Config");
         // 		Start->OnStepProcess
     }
 
