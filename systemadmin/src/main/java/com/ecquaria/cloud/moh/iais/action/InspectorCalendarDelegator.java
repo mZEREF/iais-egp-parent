@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 /**
  * @author: yichen
  * @date time:2/4/2020 11:06 AM
- * @description:
+ * @description:   relate to {@link InspSupAddAvailabilityDelegator}
  */
 
 @Delegator(value = "inspectorCalendarDelegator")

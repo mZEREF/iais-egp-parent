@@ -28,13 +28,13 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class FrontendMsgRefreshJobHandler extends IJobHandler {
     @Autowired
-    private IaisSystemClient systemBeLicClient;
+    private IaisSystemClient iaisSystemClient;
 
     @Override
     public ReturnT<String> execute(String s) {
         try{
             logInfo("<====== Start to refresh error msg ======>");
-            List<MessageDto> list = systemBeLicClient.getMessagesToRefresh().getEntity();
+            List<MessageDto> list = iaisSystemClient.getMessagesToRefresh().getEntity();
             Map<String, String> map = IaisCommonUtils.genNewHashMap();
             if (!IaisCommonUtils.isEmpty(list)) {
                 list.get(0).setAuditTrailDto(AuditTrailHelper.getBatchJobDto(AppConsts.USER_DOMAIN_INTERNET));
@@ -43,7 +43,7 @@ public class FrontendMsgRefreshJobHandler extends IJobHandler {
                     mc.setNeedFlush(false);
                 }
                 MessageUtil.loadMessages(map);
-                systemBeLicClient.saveMessages(list);
+                iaisSystemClient.saveMessages(list);
             }
             logInfo("<====== End to refresh error msg ======>");
         }catch (Exception e){
