@@ -519,6 +519,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 if(status.equals(applicationDto.getStatus())
                         || ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(applicationDto.getStatus())
                         || ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationDto.getStatus())
+                        || ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(applicationDto.getStatus())
                         || ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus())){
                     result = true;
                     break;
