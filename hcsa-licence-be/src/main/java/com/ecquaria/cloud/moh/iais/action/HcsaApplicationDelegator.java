@@ -1851,7 +1851,9 @@ public class HcsaApplicationDelegator {
                     WorkingGroupDto workingGroupDto = broadcastOrganizationDto1.getWorkingGroupDto();
                     broadcastOrganizationDto.setRollBackworkingGroupDto((WorkingGroupDto) CopyUtil.copyMutableObject(workingGroupDto));
                     workingGroupDto = changeStatusWrokGroup(workingGroupDto,AppConsts.COMMON_STATUS_DELETED);
-                    workingGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    if(workingGroupDto != null){
+                        workingGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    }
                     broadcastOrganizationDto.setWorkingGroupDto(workingGroupDto);
                     List<UserGroupCorrelationDto> userGroupCorrelationDtos = broadcastOrganizationDto1.getUserGroupCorrelationDtoList();
                     List<UserGroupCorrelationDto> cloneUserGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
@@ -2489,7 +2491,7 @@ public class HcsaApplicationDelegator {
     }
 
 
-    private  void  sendAppealReject(String licenseeId, ApplicationDto applicationDto) throws IOException, TemplateException {
+    private  void  sendAppealReject(String licenseeId, ApplicationDto applicationDto){
         log.info("start send email sms and msg");
         log.info(StringUtil.changeForLog("appNo: " + applicationDto.getApplicationNo()));
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
