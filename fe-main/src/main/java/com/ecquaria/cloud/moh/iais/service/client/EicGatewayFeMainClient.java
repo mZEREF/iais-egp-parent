@@ -104,7 +104,7 @@ public class EicGatewayFeMainClient {
         HttpHeaders httpHeaders = IaisEGPHelper.getHttpHeadersForEic( new MediaType("application","jose"), signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
         httpHeaders.add("authorization-Myinfo",authorizationMyInfo);
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuffer = new  StringBuilder();
         stringBuffer.append(gateWayUrl).append("/v1/myinfo-server/").append(myInfoPath).append("/v2/person-basic/{uinfin}/");
         return  IaisCommonUtils.callEicGatewayWithHeaderParam(stringBuffer.toString(),HttpMethod.GET,params,httpHeaders,String.class);
     }

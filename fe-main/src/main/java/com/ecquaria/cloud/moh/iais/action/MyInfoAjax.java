@@ -28,6 +28,7 @@ import java.util.Random;
 public class MyInfoAjax {
 	@Autowired
 	private EicGatewayFeMainClient eicGatewayFeMainClient;
+	private static  String[] ss = {"name","email", "mobileno","regadd"};
     public MyInfoDto getMyInfo(String NircNum){
 
 		String flag = Config.get("moh.halp.myinfo.enable");
@@ -91,20 +92,21 @@ public class MyInfoAjax {
 				dto.setStreetName(street);
 
 		}
-		
-		if (!jsonObject.getJSONObject("mobileno").isNullObject()) {
-			String mobileno = jsonObject.getJSONObject("mobileno").getString("nbr");
+		JSONObject jsonObjectMobileno = jsonObject.getJSONObject("mobileno");
+		if (!jsonObjectMobileno.isNullObject()) {
+			String mobileno = jsonObjectMobileno.getString("nbr");
 			if (!StringUtil.isEmpty(mobileno) && !"null".equalsIgnoreCase(mobileno))
 				dto.setMobileNo(mobileno);
 		}
-		
-		if (!jsonObject.getJSONObject("email").isNullObject()) {
-			String email = jsonObject.getJSONObject("email").getString("value");
+		JSONObject jsonObjectEmail = jsonObject.getJSONObject("email");
+		if (!jsonObjectEmail.isNullObject()) {
+			String email = jsonObjectEmail.getString("value");
 			if (!StringUtil.isEmpty(email) && !"null".equalsIgnoreCase(email))
 				dto.setEmail(email);
 		}
-		if (!jsonObject.getJSONObject("name").isNullObject()) {
-			String name = jsonObject.getJSONObject("name").getString("value");
+		JSONObject jsonObjectName = jsonObject.getJSONObject("name");
+		if (!jsonObjectName.isNullObject()) {
+			String name = jsonObjectName.getString("value");
 			if (!StringUtil.isEmpty(name) && !"null".equalsIgnoreCase(name))
 				dto.setUserName(name);
 		}
@@ -166,7 +168,6 @@ public class MyInfoAjax {
 		return MyinfoUtil.decodeEncipheredData(encipheredData);
 	}
 	private List<String> getAttrList() {
-		String[] ss = {"name","email", "mobileno","regadd"};
 		List<String> list = Arrays.asList(ss);
 		return list;
 	}

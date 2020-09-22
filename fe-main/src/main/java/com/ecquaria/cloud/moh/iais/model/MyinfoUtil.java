@@ -64,8 +64,8 @@ public class MyinfoUtil {
 		}
 		JsonWebEncryption jwe = new JsonWebEncryption();
 		jwe.setCompactSerialization(encipheredData);
-		log.info("JWE Algorithm ================> " + jwe.getAlgorithmHeaderValue());
-		log.info("JWE Enc ===============> " + jwe.getEncryptionMethodHeaderParameter());
+		log.info(StringUtil.changeForLog("JWE Algorithm ================> " + jwe.getAlgorithmHeaderValue()));
+		log.info(StringUtil.changeForLog("JWE Enc ===============> " + jwe.getEncryptionMethodHeaderParameter()));
 		jwe.setAlgorithmConstraints(
 				new AlgorithmConstraints(
 						AlgorithmConstraints.ConstraintType.WHITELIST,
@@ -81,7 +81,7 @@ public class MyinfoUtil {
 		jwe.setKey(getPrivateKey(keyStore));
 
 		encipheredData = jwe.getPlaintextString();
-		log.info("Get the payload from the JWE =======>" + encipheredData);
+		log.info(StringUtil.changeForLog("Get the payload from the JWE =======>" + encipheredData));
 
 		String  jwskeyStore = Config.get("myinfo.jws.pubclientkey");
 		PublicKey pubKey = getPublicKey(jwskeyStore);
@@ -126,33 +126,34 @@ public class MyinfoUtil {
 	public static String getBaseString( String idNum, List<String> attrs, String clientId, String singpassEserviceId, String txnNo){
 		StringBuilder sb = new StringBuilder();
 			String ipAddress = Config.get("myinfo.ip.address.basestring.gateway");
-			sb.append("GET&" + ipAddress);
-			sb.append("/" + idNum + "/");
+			sb.append("GET&").append(ipAddress);
+			String idnum = "/" + idNum + "/";
+			sb.append(idnum);
 		   sb.append("?attributes=");
 		   if (attrs.size() > 0) {
 			for (int i = 0; i < attrs.size(); i++) {
 				if (i == (attrs.size() - 1)) {
 					sb.append(attrs.get(i));
 				} else {
-					sb.append(attrs.get(i) + ",");
+					sb.append(attrs.get(i)).append(',');
 				}
 			}
 		   }
-		    sb.append("&client_id=" + clientId);
-		   sb.append("&singpassEserviceId=" + singpassEserviceId);
-			sb.append("&txnNo=" + txnNo);
+		    sb.append("&client_id=").append(clientId);
+		   sb.append("&singpassEserviceId=").append(singpassEserviceId);
+			sb.append("&txnNo=").append(txnNo);
 		return sb.toString();
 	}
 
 	public static String getAuthorization(String realm, String signature, String appId, long nonce, long timestamp) {
 		StringBuilder sb = new StringBuilder();
-			sb.append("Apex_l2_Eg realm=\"http://" + realm +"\"");
-			sb.append(",apex_l2_eg_app_id=\"" + appId +"\"");
-			sb.append(",apex_l2_eg_nonce=\"" + nonce + "\"");
-			sb.append(",apex_l2_eg_signature_method=\"SHA256withRSA\"");
-			sb.append(",apex_l2_eg_signature=\"" + signature + "\"");
-			sb.append(",apex_l2_eg_timestamp=\"" + timestamp + "\"");
-			sb.append(",apex_l2_eg_version=\"1.0\"");
+			sb.append("Apex_l2_Eg realm=\"http://").append(realm );
+			sb.append("\",apex_l2_eg_app_id=\"").append(appId);
+			sb.append("\",apex_l2_eg_nonce=\"").append(nonce);
+			sb.append("\",apex_l2_eg_signature_method=\"SHA256withRSA\"");
+			sb.append(",apex_l2_eg_signature=\"").append(signature);
+			sb.append("\",apex_l2_eg_timestamp=\"").append(timestamp);
+			sb.append("\",apex_l2_eg_version=\"1.0\"");
 		return sb.toString();
 	}
 
