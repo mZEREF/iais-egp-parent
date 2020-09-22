@@ -654,7 +654,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     ApplicationDto appDto = inspectionTaskClient.getApplicationByCorreId(premCorrId).getEntity();
                     applicationDtoLists.add(appDto);
                 }
-                TaskDto updateTask = taskService.updateTask(td);
+                TaskDto updateTask = organizationClient.updateTaskForAssign(td).getEntity();
                 if(updateTask != null) {
                     saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, apptUserIdSvrIdMap, premCorrIds, auditTrailDto, appHistoryId, inspManHours);
                     //update App
@@ -670,7 +670,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     return AppConsts.FAIL;
                 }
             } else {
-                TaskDto updateTask = taskService.updateTask(td);
+                TaskDto updateTask = organizationClient.updateTaskForAssign(td).getEntity();
                 if(updateTask != null) {
                     //update App
                     ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
@@ -689,7 +689,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             premCorrIds.add(appPremCorrId);
             //get all users
             Map<String, String> apptUserIdSvrIdMap = getSchedulingUsersByAppList(applicationDtos, taskUserIds, applicationDto);
-            TaskDto updateTask = taskService.updateTask(td);
+            TaskDto updateTask = organizationClient.updateTaskForAssign(td).getEntity();
             if(updateTask != null) {
                 saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, apptUserIdSvrIdMap, premCorrIds, auditTrailDto, appHistoryId, inspManHours);
                 //update App
@@ -719,7 +719,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 serviceCodes.add(serviceCode);
             }
         }
-        String dateStr = Formatter.formatDateTime(inspDate, "yyyy/MM/dd");
+        String dateStr = Formatter.formatDateTime(inspDate, "dd/MM/yyyy");
         String dateTime = Formatter.formatDateTime(inspDate, "HH:mm:ss");
         String appNo = applicationDto.getApplicationNo();
         String licenseeId = applicationGroupDto.getLicenseeId();
