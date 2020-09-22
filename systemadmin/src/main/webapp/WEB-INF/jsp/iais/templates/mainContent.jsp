@@ -33,7 +33,7 @@
                             <c:when test="${empty MsgTemplateSearchResult.rows}">
                                 <tr>
                                     <td colspan="12">
-                                        <iais:message key="ACK018" escape="true"/>
+                                        <iais:message key="GENERAL_ACK018" escape="true"/>
                                     </td>
                                 </tr>
                             </c:when>

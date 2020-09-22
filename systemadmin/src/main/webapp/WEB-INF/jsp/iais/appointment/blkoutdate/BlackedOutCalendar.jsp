@@ -110,7 +110,7 @@
                     <c:choose>
                       <c:when test="${empty blackedOutDateResultAttr.rows}">
                           <td colspan="6">
-                            <iais:message key="ACK018" escape="true"></iais:message>
+                            <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                           </td>
                       </c:when>
                       <c:otherwise>

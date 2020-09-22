@@ -124,7 +124,7 @@
                         <c:when test="${empty licResult.rows}">
                             <tr>
                                 <td colspan="6">
-                                    <iais:message key="ACK018" escape="true"/>
+                                    <iais:message key="GENERAL_ACK018" escape="true"/>
                                 </td>
                             </tr>
                         </c:when>

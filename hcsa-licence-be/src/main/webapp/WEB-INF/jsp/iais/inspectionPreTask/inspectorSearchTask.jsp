@@ -113,7 +113,7 @@
                       <c:when test="${empty supTaskSearchResult.rows}">
                         <tr>
                           <td colspan="12">
-                            <iais:message key="ACK018" escape="true"></iais:message>
+                            <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                             <!--No Record!!-->
                           </td>
                         </tr>

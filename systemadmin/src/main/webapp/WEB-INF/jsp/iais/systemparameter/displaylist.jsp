@@ -104,7 +104,7 @@
                                             <c:when test="${empty systemParamSearchResult.rows}">
                                                 <tr>
                                                     <td colspan="6">
-                                                        <iais:message key="ACK018" escape="true"></iais:message>
+                                                        <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                                                     </td>
                                                 </tr>
                                             </c:when>

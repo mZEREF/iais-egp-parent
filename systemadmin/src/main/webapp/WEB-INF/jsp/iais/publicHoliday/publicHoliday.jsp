@@ -83,7 +83,7 @@
                                         <c:when test="${empty HolidaySearchResult.rows}">
                                             <tr>
                                                 <td colspan="7">
-                                                    <iais:message key="ACK018" escape="true"></iais:message>
+                                                    <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                                                 </td>
                                             </tr>
                                         </c:when>

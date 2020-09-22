@@ -16,7 +16,7 @@
             <c:when test="${empty withdrawAppResult.rows}">
                 <tr>
                     <td colspan="15">
-                        <iais:message key="ACK018" escape="true"/>
+                        <iais:message key="GENERAL_ACK018" escape="true"/>
                     </td>
                 </tr>
             </c:when>

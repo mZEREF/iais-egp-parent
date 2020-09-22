@@ -115,7 +115,7 @@
                     <c:when test="${empty appResult.rows}">
                         <tr>
                             <td colspan="6">
-                                <iais:message key="ACK018" escape="true"/>
+                                <iais:message key="GENERAL_ACK018" escape="true"/>
                             </td>
                         </tr>
                     </c:when>

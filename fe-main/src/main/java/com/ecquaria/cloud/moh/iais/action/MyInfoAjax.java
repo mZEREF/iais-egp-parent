@@ -5,7 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
-import com.ecquaria.sz.commons.util.StringUtil;
+
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.lowagie.text.pdf.codec.Base64;
 import ecq.commons.config.Config;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.Signature;
 import java.util.Arrays;
@@ -61,29 +63,30 @@ public class MyInfoAjax {
 			return dto;
 		
 		JSONObject jsonObject = JSONObject.fromObject(response);
+		JSONObject jsonObjectRegadd = jsonObject.getJSONObject("regadd");
+		if (!jsonObjectRegadd.isNullObject()) {
 		
-		if (!jsonObject.getJSONObject("regadd").isNullObject()) {
-		    String floor = jsonObject.getJSONObject("regadd").getString("floor");
+		    String floor = jsonObjectRegadd.getString("floor");
 		    if (!StringUtil.isEmpty(floor) && !"null".equalsIgnoreCase(floor))
 				dto.setFloor(floor);
 
-		    String postal = jsonObject.getJSONObject("regadd").getString("postal");
+		    String postal = jsonObjectRegadd.getString("postal");
             if (!StringUtil.isEmpty(postal) && !"null".equalsIgnoreCase(postal))
 				dto.setPostalCode(postal);
 
-            String unit = jsonObject.getJSONObject("regadd").getString("unit");
+            String unit = jsonObjectRegadd.getString("unit");
             if (!StringUtil.isEmpty(unit) && !"null".equalsIgnoreCase(unit))
 				dto.setUnitNo(unit);
 
-            String block = jsonObject.getJSONObject("regadd").getString("block");
+            String block = jsonObjectRegadd.getString("block");
             if (!StringUtil.isEmpty(block) && !"null".equalsIgnoreCase(block))
                dto.setBlockNo(block);
 
-            String building = jsonObject.getJSONObject("regadd").getString("building");
+            String building = jsonObjectRegadd.getString("building");
             if (!StringUtil.isEmpty(building) && !"null".equalsIgnoreCase(building))
 				dto.setBuildingName(building);
 
-            String street = jsonObject.getJSONObject("regadd").getString("street");
+            String street = jsonObjectRegadd.getString("street");
             if (!StringUtil.isEmpty(street) && !"null".equalsIgnoreCase(street))
 				dto.setStreetName(street);
 
@@ -128,16 +131,16 @@ public class MyInfoAjax {
 			// get timestamp
 			long timestamp = System.currentTimeMillis();
             baseStr = MyinfoUtil.getBaseString(idNum, list, clientId, singPassEServiceId, txnNo);
-            log.info("baseString =====> " + baseStr);
-            sig.update(baseStr.getBytes("UTF-8")); 
+            log.info(StringUtil.changeForLog("baseString =====> " + baseStr));
+            sig.update(baseStr.getBytes(StandardCharsets.UTF_8));
             byte[] signedData= sig.sign(); 
             String finalStr= Base64.encodeBytes(signedData);
-            log.info("Base64 signedData =====> " + finalStr);
+            log.info(StringUtil.changeForLog("Base64 signedData =====> " + finalStr));
             authorization = MyinfoUtil.getAuthorization(realm, finalStr.replace("\n",""), appId, nonce, timestamp);
-            log.info("Authorization ========>" + authorization);
+            log.info(StringUtil.changeForLog("Authorization ========>" + authorization));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new RuntimeException("A response from MyInfo has not been received. Please try again later.");
+            throw new RuntimeException("A response from MyInfo has not been received. Please try again later.",e);
         }
          String myInfoPath                     = Config.get("myinfo.path.prdfix");
         if(StringUtil.isEmpty(myInfoPath)){

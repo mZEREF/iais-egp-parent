@@ -96,7 +96,7 @@
                                     <c:when test="${empty distributionSearchResult.rows}">
                                         <tr>
                                             <td colspan="9">
-                                                <iais:message key="ACK018" escape="true"></iais:message>
+                                                <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                                             </td>
                                         </tr>
                                     </c:when>

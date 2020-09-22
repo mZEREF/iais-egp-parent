@@ -172,7 +172,7 @@
                                                 <c:if test="${empty applicationViewDto.appSupDocDtoList}">
                                                     <tr>
                                                         <td colspan="5">
-                                                            <iais:message key="ACK018"
+                                                            <iais:message key="GENERAL_ACK018"
                                                                           escape="true"/>
                                                         </td>
                                                     </tr>
@@ -221,7 +221,7 @@
                                                 <tbody>
                                                 <tr>
                                                     <td colspan="5">
-                                                        <iais:message key="ACK018"
+                                                        <iais:message key="GENERAL_ACK018"
                                                                       escape="true"/>
                                                     </td>
                                                 </tr>

@@ -169,7 +169,7 @@ public class HcsaApplicationAjaxController{
             InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
             map.put("fileSn", (serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? -1 : appIntranetDocDtos.size());
             if(appIntranetDocDtos.size() == 0){
-                map.put("noFilesMessage", MessageUtil.getMessageDesc("ACK018"));
+                map.put("noFilesMessage", MessageUtil.getMessageDesc("GENERAL_ACK018"));
             }
         }
         return map;

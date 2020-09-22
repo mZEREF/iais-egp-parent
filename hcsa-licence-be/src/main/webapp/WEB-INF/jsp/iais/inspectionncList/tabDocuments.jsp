@@ -23,7 +23,7 @@
                 <c:if test="${applicationViewDto.applicationDto.applicationType =='APTY008'}">
                     <tr>
                         <td colspan="5" align="center">
-                            <iais:message key="ACK018"
+                            <iais:message key="GENERAL_ACK018"
                                           escape="true"/>
                         </td>
                     </tr>
@@ -33,7 +33,7 @@
                     <c:if test="${empty applicationViewDto.appSupDocDtoList}">
                         <tr>
                             <td colspan="5" align="center">
-                                <iais:message key="ACK018"
+                                <iais:message key="GENERAL_ACK018"
                                               escape="true"/>
                             </td>
                         </tr>
@@ -88,7 +88,7 @@
                 <c:if test="${applicationViewDto.applicationDto.applicationType =='APTY008'}">
                     <tr>
                         <td colspan="5" align="center">
-                            <iais:message key="ACK018"
+                            <iais:message key="GENERAL_ACK018"
                                           escape="true"/>
                         </td>
                     </tr>
@@ -98,7 +98,7 @@
                         <c:when test="${empty applicationViewDto.appIntranetDocDtoList}">
                             <tr>
                                 <td colspan="6" align="center">
-                                    <iais:message key="ACK018"
+                                    <iais:message key="GENERAL_ACK018"
                                                   escape="true"/>
                                 </td>
                             </tr>

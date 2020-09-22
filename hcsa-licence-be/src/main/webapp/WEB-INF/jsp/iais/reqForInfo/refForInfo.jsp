@@ -53,7 +53,7 @@
                                 <c:when test="${empty licPreReqForInfoDtoList}">
                                     <tr>
                                         <td colspan="7">
-                                            <iais:message key="ACK018" escape="true"></iais:message>
+                                            <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                                         </td>
                                     </tr>
                                 </c:when>

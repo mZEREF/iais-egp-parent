@@ -43,7 +43,7 @@
                                 <c:if test="${empty auditTaskDataDtos}">
                                     <tr>
                                         <td colspan="10" align="center">
-                                            <iais:message key="ACK018" escape="true"/>
+                                            <iais:message key="GENERAL_ACK018" escape="true"/>
                                         </td>
                                     </tr>
                                 </c:if>
