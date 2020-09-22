@@ -231,6 +231,7 @@ public class AppealServiceImpl implements AppealService {
                 entity.setLicenceId(appealPageDto.getAppealFor());
                 if(errorMsg==null){
                     req.setAttribute("saveDraftSuccess", "success");
+                    entity.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     applicationClient.saveDraft(entity).getEntity();
                 }
 
@@ -268,6 +269,7 @@ public class AppealServiceImpl implements AppealService {
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         appSubmissionDto.setServiceName(serviceName);
         appSubmissionDto.setLicenceId(appealPageDto.getAppealFor());
+        appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         Object errorMsg = req.getAttribute("errorMsg");
         if(errorMsg==null){
             req.setAttribute("saveDraftSuccess", "success");
@@ -567,6 +569,10 @@ public class AppealServiceImpl implements AppealService {
 
 
         AppealPageDto appealPageDto = reAppealPage(request);
+       /* List<AppPremiseMiscDto> appPremiseMiscDtoList = applicationClient.getAppPremiseMiscDtoRelateId(appealPageDto.getAppealFor()).getEntity();
+        if(!appPremiseMiscDtoList.isEmpty()){
+
+        }*/
         String remarks = appealPageDto.getRemarks();
         if (StringUtil.isEmpty(remarks)) {
             map.put("remarks", MessageUtil.replaceMessage("GENERAL_ERR0006","Any supporting remarks","field"));
@@ -1079,7 +1085,7 @@ public class AppealServiceImpl implements AppealService {
                 appealDto.setNewLicYears(Integer.valueOf(licenceYear));
             }
         }
-
+        appealDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return appealDto;
     }
 

@@ -146,7 +146,7 @@ public class AppealApproveBatchjob {
                                           appealApproveDto);
                                   break;
                               case ApplicationConsts.APPEAL_TYPE_LICENCE :
-                                  appealLicence(applicationDto,appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto());
+                                  appealLicence(applicationDto,appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealType);
                                   break;
 //                        case ApplicationConsts.APPEAL_TYPE_OTHER :
 //                            appealOther(appealApplicaiton,rollBackApplication,applicationDto);
@@ -435,8 +435,11 @@ public class AppealApproveBatchjob {
     }
     private void appealLicence(ApplicationDto applicationDto,List<LicenceDto> appealLicence,
                                List<LicenceDto> rollBackLicence,
-                               LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto) throws Exception {
+                               LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto,String apealType) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence is start ..."));
+        if(ApplicationConsts.APPEAL_REASON_OTHER.equals(apealType)){
+            return;
+        }
         if(appPremisesRecommendationDto==null){
             return;
         }

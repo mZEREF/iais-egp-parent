@@ -312,4 +312,6 @@ public interface ApplicationClient  {
 
     @PostMapping(path = "/iais-submission/requestInformation-cessation", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> saveRfcCessationSubmision(@RequestBody AppSubmissionRequestInformationDto appSubmissionRequestInformationDto);
+    @GetMapping(value = "/appeal/app-premise-misc-dto-relate-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscDtoRelateId(@RequestParam("relateId") String relateId);
 }

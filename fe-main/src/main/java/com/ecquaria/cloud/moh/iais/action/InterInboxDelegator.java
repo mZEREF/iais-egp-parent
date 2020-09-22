@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -443,6 +444,12 @@ public class InterInboxDelegator {
         String licMaskId = ParamUtil.getString(bpc.request, "licenceNo");
         String licId = ParamUtil.getMaskedString(bpc.request,licMaskId);
         LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licId).getEntity();
+        List<AppPremiseMiscDto> entity = appInboxClient.getAppPremiseMiscDtoRelateId(licId).getEntity();
+        if(!entity.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"An appeal was already made for this licence");
+            ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
+            return;
+        }
         boolean isActive = licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus());
         if(!isActive){
             ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("INBOX_ACK011"));
@@ -896,6 +903,12 @@ public class InterInboxDelegator {
             appId=bpc.request.getParameter("action_id_value");
         }else {
             appId= ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
+        }
+        List<AppPremiseMiscDto> entity = appInboxClient.getAppPremiseMiscDtoRelateId(appId).getEntity();
+        if(!entity.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,"An appeal was already made for this application");
+            ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",Boolean.FALSE);
+            return;
         }
         List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(appId);
         if(!draftByLicAppId.isEmpty()){

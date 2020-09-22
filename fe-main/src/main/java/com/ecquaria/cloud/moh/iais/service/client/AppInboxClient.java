@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -97,4 +98,6 @@ public interface AppInboxClient {
     FeignResponseEntity<List<AppGrpPremisesEntityDto>> getPendAppPremises(@RequestParam("licenseeId") String licenseeId, @RequestParam("svcIdStr") String svcIdStr);
     @DeleteMapping(value = "/iais-submission/draft-by-numbers",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> deleteDraftNUmber(@RequestBody List<String> draftNumbers);
+    @GetMapping(value = "/appeal/app-premise-misc-dto-relate-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscDtoRelateId(@RequestParam("relateId") String relateId);
 }

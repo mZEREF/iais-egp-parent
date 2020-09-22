@@ -501,6 +501,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
         log.info(StringUtil.changeForLog(file.getPath()+"file path*************"));
         List<FileRepoDto> fileRepoDtos = IaisCommonUtils.genNewArrayList();
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
         if(file.isDirectory()){
             File[] files = file.listFiles();
             log.info(StringUtil.changeForLog(files.length+"files.length------"));
@@ -515,7 +516,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             fileName.append(split[i]);
                         }
 
-                        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
                         FileRepoDto fileRepoDto = new FileRepoDto();
 
                         fileRepoDto.setId(split[0]);
@@ -537,6 +537,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }
             if(flag){
                 eventDto.setEventRefNo(groupPath);
+                eventDto.setAuditTrailDto(intranet);
                 eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
                         EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION, l.toString(), null);
             }
@@ -649,6 +650,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                   log.info(StringUtil.changeForLog("listNewApplicationDto size"+listNewApplicationDto.size()));
                   log.info(StringUtil.changeForLog("requestForInfList size"+requestForInfList.size()));
                   log.info("update requeste Application status");
+                  for(ApplicationDto applicationDto : requestForInfList){
+                      applicationDto.setAuditTrailDto(intranet);
+                  }
                   requestForInfList= applicationClient.updateApplicationOfRfi(requestForInfList).getEntity();
                   log.info(StringUtil.changeForLog(JsonUtil.parseToJson(requestForInfList)));
                   updateTaskList = applicationNewAndRequstDto.getUpdateTaskList();
@@ -888,6 +892,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         if(updateTaskList==null){
             return;
         }
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(updateTaskList)+"updateTaskList"));
         for(ApplicationDto applicationDto : updateTaskList){
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity();
@@ -898,6 +903,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
                     taskDto.setRefNo(appPremisesCorrelationDto.getId());
                 }
+                taskDto.setAuditTrailDto(intranet);
             }
             taskService.createTasks(taskbyApplicationNo);
         }
