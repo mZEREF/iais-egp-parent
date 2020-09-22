@@ -814,11 +814,26 @@ public class BackendInboxDelegator {
                 List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
                 applicationDtoList = removeFastTracking(applicationDtoList);
                 boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
-                        appStatus);
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
                 log.debug(StringUtil.changeForLog("isAllSubmit is " + isAllSubmit));
                 if(isAllSubmit){
+                    List<ApplicationDto> saveApplicationDtoList = IaisCommonUtils.genNewArrayList();
+                    CopyUtil.copyMutableObjectList(applicationDtoList,saveApplicationDtoList);
+                    //update current application status in db search result
+                    updateCurrentApplicationStatus(bpc,saveApplicationDtoList,licenseeId);
+                    List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+                    List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+                    List<ApplicationDto> creatTaskApplicationList = ao2AppList;
+                    //routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO2,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,RoleConsts.USER_ROLE_AO2);
+                    if(IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)){
+                        creatTaskApplicationList = ao3AppList;
+                    }else{
+                        stageId = HcsaConsts.ROUTING_STAGE_AO2;
+                        roleId = RoleConsts.USER_ROLE_AO2;
+                    }
+
                     // send the task to Ao3 or ao2
-                    TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtoList,
+                    TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
                             stageId,roleId,IaisEGPHelper.getCurrentAuditTrailDto());
                     List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                     List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
@@ -828,6 +843,7 @@ public class BackendInboxDelegator {
             }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(appStatus)){
                 AppInspectionStatusDto appInspectionStatusDto = new AppInspectionStatusDto();
                 appInspectionStatusDto.setAppPremCorreId(taskDto.getRefNo());
+                appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
                 broadcastApplicationDto.setAppInspectionStatusDto(appInspectionStatusDto);
                 TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,newCorrelationId);
@@ -885,6 +901,9 @@ public class BackendInboxDelegator {
         broadcastOrganizationDto.setEventRefNo(evenRefNum);
         broadcastApplicationDto.setEventRefNo(evenRefNum);
         String submissionId = generateIdClient.getSeqId().getEntity();
+        //save the broadcast
+        broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         log.info(StringUtil.changeForLog(submissionId));
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,submissionId);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
@@ -1365,6 +1384,9 @@ public class BackendInboxDelegator {
         broadcastOrganizationDto.setEventRefNo(evenRefNum);
         broadcastApplicationDto.setEventRefNo(evenRefNum);
         String submissionId = generateIdClient.getSeqId().getEntity();
+        //save the broadcast
+        broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         log.info(StringUtil.changeForLog(submissionId));
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,submissionId);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
