@@ -195,6 +195,8 @@ public class RoundRobinCommPoolBatchJob {
                           List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
                           if(!IaisCommonUtils.isEmpty(orgUserDtos)){
                               userId = orgUserDtos.get(0).getId();
+                              log.info(StringUtil.changeForLog("The RoundRobinCommPoolBatchJob sendNoteToAdm "));
+                              taskService.sendNoteToAdm(taskDto.getApplicationNo(),taskDto.getRefNo(),orgUserDtos.get(0));
                           }
                       }
                       log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob userId -- >:" +userId));

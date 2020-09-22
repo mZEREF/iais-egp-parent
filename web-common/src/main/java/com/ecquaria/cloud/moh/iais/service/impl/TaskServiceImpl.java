@@ -147,6 +147,8 @@ public class TaskServiceImpl implements TaskService {
                         List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
                         if(!IaisCommonUtils.isEmpty(orgUserDtos)){
                             userId = orgUserDtos.get(0).getId();
+                            log.info(StringUtil.changeForLog("The getRoutingTask sendNoteToAdm "));
+                            sendNoteToAdm(applicationDto.getApplicationNo(),correlationId,orgUserDtos.get(0));
                         }
                     }
                     break;
@@ -214,6 +216,7 @@ public class TaskServiceImpl implements TaskService {
                 }
                 Date  assignDate = new Date();
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison userId is -->:"+userId));
+                OrgUserDto orgUserDto = null;
                 switch (scheme){
                     case TaskConsts.TASK_SCHEME_TYPE_COMMON :
                         userId = null;
@@ -229,7 +232,8 @@ public class TaskServiceImpl implements TaskService {
                             //0066643
                             List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
                             if(!IaisCommonUtils.isEmpty(orgUserDtos)){
-                                userId = orgUserDtos.get(0).getId();
+                                orgUserDto = orgUserDtos.get(0);
+                                userId = orgUserDto.getId();
                             }
                         }
                         break;
@@ -253,6 +257,10 @@ public class TaskServiceImpl implements TaskService {
                                     userId, assignDate,score,TaskUrl,roleId,
                                     auditTrailDto);
                             taskDtos.add(taskDto);
+                            if(orgUserDto!=null){
+                                log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison sendNoteToAdm "));
+                                sendNoteToAdm(applicationDto.getApplicationNo(),appPremisesCorrelationDto.getId(),orgUserDto);
+                            }
                             //create history
                             log.debug(StringUtil.changeForLog("the appPremisesCorrelationId is -->;"+appPremisesCorrelationDto.getId()));
                             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
