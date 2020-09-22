@@ -148,9 +148,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 HashMap<String,String> map=IaisCommonUtils.genNewHashMap();
                 map.put("fileName",name);
                 map.put("filePath",relPath);
-
                 ProcessFileTrackDto processFileTrackDto = applicationClient.isFileExistence(map).getEntity();
                 if(processFileTrackDto!=null){
+                    AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
+                    processFileTrackDto.setAuditTrailDto(intranet);
                     processFileTrackDto.setStatus("PFT002");
                     try {
                         applicationClient.updateProcessFileTrack(processFileTrackDto);

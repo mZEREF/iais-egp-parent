@@ -773,10 +773,8 @@ public class AppealServiceImpl implements AppealService {
                 request.getSession().setAttribute("rfiApplication", entity1);
                 applicationClient.updateApplication(entity1);
             }
-            List<String> svcNames = IaisCommonUtils.genNewArrayList();
-            svcNames.add(licenceDto.getSvcName());
-            List<HcsaServiceDto> hcsaServiceDtos = appConfigClient.getHcsaServiceByNames(svcNames).getEntity();
-            applicationDto.setServiceId(hcsaServiceDtos.get(0).getId());
+            HcsaServiceDto hcsaServiceDto = appConfigClient.getActiveHcsaServiceDtoByName(licenceDto.getSvcName()).getEntity();
+            applicationDto.setServiceId(hcsaServiceDto.getId());
             applicationDto.setApplicationNo(s);
             applicationDto.setOriginLicenceId(licenceDto.getOriginLicenceId());
 
@@ -911,7 +909,8 @@ public class AppealServiceImpl implements AppealService {
         //info
 
         applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
-        applicationDto1.setServiceId(applicationDto.getServiceId());
+        HcsaServiceDto hcsaServiceDto = appConfigClient.getActiveHcsaServiceDtoById(applicationDto.getServiceId()).getEntity();
+        applicationDto1.setServiceId(hcsaServiceDto.getId());
         applicationDto1.setVersion(1);
         List<ApplicationDto> list = IaisCommonUtils.genNewArrayList();
         list.add(applicationDto1);
@@ -972,8 +971,6 @@ public class AppealServiceImpl implements AppealService {
         request.setAttribute("newApplicationNo", s);
         try {
             LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(entity.getLicenseeId()).getEntity();
-            String serviceId = applicationDto.getServiceId();
-            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
             sendAllNotification(appNo,"appeal", null, licenseeDto,hcsaServiceDto);
         } catch (Exception e) {
             log.error(e.getMessage(), e);

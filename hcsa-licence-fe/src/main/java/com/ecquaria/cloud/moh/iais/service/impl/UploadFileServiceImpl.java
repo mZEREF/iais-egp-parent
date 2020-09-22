@@ -309,6 +309,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                 entity.setFirstActionAt(now);
                 entity.setLastActionAt(now);
                 entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                entity.setAuditTrailDto(intenet);
                 eicRequestTrackingHelper.getAppEicClient().saveEicTrack(entity);
                 return string;
             }
@@ -325,6 +326,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
         AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
         processFileTrackDto.setAuditTrailDto(intenet);
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(processFileTrackDto)+"processFileTrackDto"));
         String s="FAIL";
         try {
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -333,9 +335,9 @@ public class UploadFileServiceImpl implements UploadFileService {
                     signature2.date(), signature2.authorization()).getEntity();
         }catch (Exception e){
             log.error(e.getMessage(),e);
+            log.info(StringUtil.changeForLog("have error-------" +s));
             return s;
         }
-
         return s;
     }
 

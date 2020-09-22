@@ -2,10 +2,12 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
 import java.util.List;
 
@@ -54,6 +56,8 @@ public class UploadDelegator {
             log.info("------------------- compressFile  end --------------");
             try {
                 if(rename){
+                    AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
+                    applicationListFileDto.setAuditTrailDto(intenet);
                     uploadFileService.changeStatus(applicationListFileDto);
                 }
             }catch (Exception e){
