@@ -44,30 +44,31 @@ public class PaymentCheckNotResultFromBankJobHandler extends IJobHandler {
             ) {
                 try {
                     PaymentRequestDto paymentRequestDto=paymentClient.getPaymentRequestDtoByReqRefNo(payReq.getReqRefNo()).getEntity();
+                    if("Credit".equals(paymentRequestDto.getPayMethod())){
+                        Session session=stripeService.retrieveSession(paymentRequestDto.getSrcSystemConfDto().getClientKey());
+                        PaymentIntent paymentIntent=stripeService.retrievePaymentIntent(session.getPaymentIntent());
 
-                    Session session=stripeService.retrieveSession(paymentRequestDto.getSrcSystemConfDto().getClientKey());
-                    PaymentIntent paymentIntent=stripeService.retrievePaymentIntent(session.getPaymentIntent());
-
-                    PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();
-                    ApplicationGroupDto applicationGroupDto=paymentAppGrpClient.paymentUpDateByGrpNo(paymentRequestDto.getReqRefNo()).getEntity();
-                    if(paymentDto!=null){
-                        if(paymentIntent!=null && "succeeded".equals(paymentIntent.getStatus())){
-                            paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
-                            paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
-                            applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();
+                        ApplicationGroupDto applicationGroupDto=paymentAppGrpClient.paymentUpDateByGrpNo(paymentRequestDto.getReqRefNo()).getEntity();
+                        if(paymentDto!=null){
+                            if(paymentIntent!=null && "succeeded".equals(paymentIntent.getStatus())){
+                                paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
+                                paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
+                                applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                            }else {
+                                paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                                paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                                applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                            }
+                            paymentClient.saveHcsaPayment(paymentDto);
+                            paymentClient.updatePaymentResquset(paymentRequestDto);
+                        }else if(paymentIntent!=null && "succeeded".equals(paymentIntent.getStatus())){
+                            applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
                         }else {
-                            paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
-                            paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
                             applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
                         }
-                        paymentClient.saveHcsaPayment(paymentDto);
-                        paymentClient.updatePaymentResquset(paymentRequestDto);
-                    }else if(paymentIntent!=null && "succeeded".equals(paymentIntent.getStatus())){
-                        applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
-                    }else {
-                        applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                        paymentAppGrpClient.doUpDate(applicationGroupDto);
                     }
-                    paymentAppGrpClient.doUpDate(applicationGroupDto);
                 }catch (Exception e){
                     log.info(e.getMessage(),e);
                 }
