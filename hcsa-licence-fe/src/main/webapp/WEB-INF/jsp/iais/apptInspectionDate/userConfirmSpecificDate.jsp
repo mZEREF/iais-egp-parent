@@ -39,7 +39,6 @@
                   </iais:row>
                   <iais:action >
                     <p class="print">
-                      <span style="font-size: 16px;"><a style="text-decoration: none;" href="" id="print-ack"> <em class="fa fa-print"></em>Print</a></span>
                       <a class="btn btn-primary" style="float:right" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to Dashboard</a>
                     </p>
                   </iais:action>
@@ -77,7 +76,7 @@
                   </iais:row>
                   <iais:action >
                     <button class="btn btn-primary" style="float:right" type="button" data-toggle= "modal" data-target= "#rejectDate">Reject</button>
-                    <iais:confirm yesBtnCls="btn btn-primary" msg="ACKAPPT_001" callBack="userConfirmSpecificDateReject()" popupOrder="rejectDate" title="Message from webpage" needCancel="false"></iais:confirm>
+                    <iais:confirm yesBtnCls="btn btn-primary" msg="OAPPT_ACK007" callBack="userConfirmSpecificDateReject()" popupOrder="rejectDate" title="Message from webpage" needCancel="false"></iais:confirm>
                     <span style="float:right">&nbsp;</span>
                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:userConfirmSpecificDateAccept()">Accept</button>
                   </iais:action>
