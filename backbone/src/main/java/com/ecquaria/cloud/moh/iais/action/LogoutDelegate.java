@@ -30,7 +30,7 @@ import java.util.List;
 @Slf4j
 @Delegator("iaisLogoutDelegate")
 public class LogoutDelegate {
-    private static final long nh = 1000 * 60;
+    private static final long nh = 60000L;
     @Autowired
     private SubmissionClient client;
 

@@ -17,7 +17,6 @@ import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
-import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ncs.secureconnect.sim.common.LoginInfo;
 import com.ncs.secureconnect.sim.lite.SIMUtil4Corpass;
 import lombok.extern.slf4j.Slf4j;
@@ -40,9 +39,6 @@ public class FECorppassLandingDelegator {
 
     @Autowired
     private OrgUserManageService orgUserManageService;
-
-    @Autowired
-    private SubmissionClient submissionClient;
 
     /**
      * StartStep: startStep
