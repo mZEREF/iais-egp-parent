@@ -56,7 +56,7 @@ public class SoloRegisterCorpPassJobHandler extends IJobHandler {
                 uenSendNotification(item,SOLO_REGISTER_MSG3,SOLO_REGISTER_SMS3);
             }
         }catch (Exception e){
-
+            log.error(e.getMessage(), e);
             return ReturnT.FAIL;
         }
 
@@ -66,59 +66,55 @@ public class SoloRegisterCorpPassJobHandler extends IJobHandler {
     private void uenSendNotification(LicenseeDto licenseeDto,String emailTemp,String smsTemp){
         log.info(StringUtil.changeForLog("send renewal application notification start"));
         //send email
-            if(licenseeDto != null){
-                String address = IaisEGPHelper.getAddress(licenseeDto.getBlkNo(), licenseeDto.getStreetName(), licenseeDto.getBuildingName(),
-                        licenseeDto.getFloorNo(), licenseeDto.getUnitNo(), licenseeDto.getPostalCode());
-                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-                map.put("HCI_Name", licenseeDto.getName());
-                map.put("HCI_Address", address);
-                map.put("UEN_No", "");
-                map.put("Applicant", licenseeDto.getName());
-                map.put("ServiceName", "serviceName");
-                map.put("LicenceNo", "LicenceNo");
-                map.put("HALP", AppConsts.MOH_AGENCY_NAME);
-                map.put("emailAddress", licenseeDto.getEmilAddr());
-                map.put("telNo", licenseeDto.getOfficeTelNo());
-                //third no need
-                map.put("GraceDate", "GraceDate");
-                try {
-                    String subject = "MOH HALP - Reminder of CorpPass Login";
-                    EmailParam emailParam = new EmailParam();
-                    emailParam.setTemplateId(emailTemp);
-                    emailParam.setTemplateContent(map);
-                    emailParam.setQueryCode(licenseeDto.getId());
-                    emailParam.setReqRefNum(licenseeDto.getId());
-                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
-                    emailParam.setRefId(licenseeDto.getId());
-                    emailParam.setSubject(subject);
-                    //send email
-                    log.info(StringUtil.changeForLog("send uen email"));
-                    notificationHelper.sendNotification(emailParam);
-                    //send sms
-                    EmailParam smsParam = new EmailParam();
-                    smsParam.setTemplateId(smsTemp);
-                    smsParam.setSubject(subject);
-                    smsParam.setQueryCode(licenseeDto.getId());
-                    smsParam.setReqRefNum(licenseeDto.getId());
-                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
-                    smsParam.setRefId(licenseeDto.getId());
-                    log.info(StringUtil.changeForLog("send uen sms"));
-                    notificationHelper.sendNotification(smsParam);
-                    //send message
-                    EmailParam messageParam = new EmailParam();
-                    messageParam.setTemplateId(emailTemp);
-                    messageParam.setTemplateContent(map);
-                    messageParam.setQueryCode(licenseeDto.getId());
-                    messageParam.setReqRefNum(licenseeDto.getId());
-                    messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                    messageParam.setRefId(licenseeDto.getId());
-                    messageParam.setSubject(subject);
-                    log.info(StringUtil.changeForLog("send uen message"));
-                    notificationHelper.sendNotification(messageParam);
-                    log.info(StringUtil.changeForLog("send uen end"));
-                }catch (Exception e){
-                    log.error(e.getMessage(), e);
-                }
+        if(licenseeDto != null){
+            String address = IaisEGPHelper.getAddress(licenseeDto.getBlkNo(), licenseeDto.getStreetName(), licenseeDto.getBuildingName(),
+                    licenseeDto.getFloorNo(), licenseeDto.getUnitNo(), licenseeDto.getPostalCode());
+            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+            map.put("HCI_Name", licenseeDto.getName());
+            map.put("HCI_Address", address);
+            map.put("UEN_No", "");
+            map.put("Applicant", licenseeDto.getName());
+            map.put("ServiceName", "serviceName");
+            map.put("LicenceNo", "LicenceNo");
+            map.put("HALP", AppConsts.MOH_AGENCY_NAME);
+            map.put("emailAddress", licenseeDto.getEmilAddr());
+            map.put("telNo", licenseeDto.getOfficeTelNo());
+            //third no need
+            map.put("GraceDate", "GraceDate");
+            String subject = "MOH HALP - Reminder of CorpPass Login";
+            EmailParam emailParam = new EmailParam();
+            emailParam.setTemplateId(emailTemp);
+            emailParam.setTemplateContent(map);
+            emailParam.setQueryCode(licenseeDto.getId());
+            emailParam.setReqRefNum(licenseeDto.getId());
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+            emailParam.setRefId(licenseeDto.getId());
+            emailParam.setSubject(subject);
+            //send email
+            log.info(StringUtil.changeForLog("send uen email"));
+            notificationHelper.sendNotification(emailParam);
+            //send sms
+            EmailParam smsParam = new EmailParam();
+            smsParam.setTemplateId(smsTemp);
+            smsParam.setSubject(subject);
+            smsParam.setQueryCode(licenseeDto.getId());
+            smsParam.setReqRefNum(licenseeDto.getId());
+            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+            smsParam.setRefId(licenseeDto.getId());
+            log.info(StringUtil.changeForLog("send uen sms"));
+            notificationHelper.sendNotification(smsParam);
+            //send message
+            EmailParam messageParam = new EmailParam();
+            messageParam.setTemplateId(emailTemp);
+            messageParam.setTemplateContent(map);
+            messageParam.setQueryCode(licenseeDto.getId());
+            messageParam.setReqRefNum(licenseeDto.getId());
+            messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            messageParam.setRefId(licenseeDto.getId());
+            messageParam.setSubject(subject);
+            log.info(StringUtil.changeForLog("send uen message"));
+            notificationHelper.sendNotification(messageParam);
+            log.info(StringUtil.changeForLog("send uen end"));
         }
     }
 }
