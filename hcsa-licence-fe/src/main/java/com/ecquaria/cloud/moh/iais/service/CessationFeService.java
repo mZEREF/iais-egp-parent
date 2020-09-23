@@ -1,20 +1,12 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import freemarker.template.TemplateException;
-import org.apache.kafka.common.protocol.types.Field;
-
-import java.io.IOException;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
