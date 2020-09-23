@@ -128,6 +128,9 @@ public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
 
     private void sendEmailAndSmsByTask(Map<String, Object> templateMap, TaskDto taskDto) {
         MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_REMIND_INSPECTOR_PRE_INSP_READY).getEntity();
+        if(msgTemplateDto == null){
+            return;
+        }
         if(AppConsts.COMMON_STATUS_IACTIVE.equals(msgTemplateDto.getStatus())){
             log.info("msgTemplateDto is INACTIVE.......");
             JobLogger.log(StringUtil.changeForLog("msgTemplateDto is INACTIVE......."));
