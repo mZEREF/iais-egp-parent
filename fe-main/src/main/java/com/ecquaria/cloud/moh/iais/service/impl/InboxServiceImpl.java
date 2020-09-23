@@ -306,15 +306,14 @@ public class InboxServiceImpl implements InboxService {
     public Map<String,String> checkRenewalStatus(String licenceId) {
         LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licenceId).getEntity();
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+        String errorMsgEleven = MessageUtil.getMessageDesc("INBOX_ACK011");
         if(licenceDto != null){
             String licenceStatus = licenceDto.getStatus();
             if(!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)){
-                String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK011");
-                errorMap.put("errorMessage2",errorMsg);
+                errorMap.put("errorMessage2",errorMsgEleven);
             }
         }else{
-            String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK011");
-            errorMap.put("errorMessage2",errorMsg);
+            errorMap.put("errorMessage2",errorMsgEleven);
             return errorMap;
         }
         List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();

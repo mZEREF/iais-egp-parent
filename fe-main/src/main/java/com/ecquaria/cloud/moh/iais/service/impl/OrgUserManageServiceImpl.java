@@ -185,9 +185,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
         if (postCreate != null && !StringUtil.isEmpty(postCreate.getUenNo())){
             eicGatewayFeMainClient.getUen(postCreate.getUenNo());
+            return syncAccountInformationToBackend(postCreate);
         }
-
-        return syncAccountInformationToBackend(postCreate);
+        return null;
     }
 
     @Override
