@@ -5,6 +5,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c_rt"%>
 <%@page import="ecq.commons.util.EgpcloudPortFactory"%>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%
 	SessionManager sessionManager = SessionManager.getInstance(request);
 	User currentUser = sessionManager.getCurrentUser();
@@ -42,7 +43,8 @@
 			</div>
 	<div class="sidebar-profile-details">
 		<span style="text-align: center"><small>Welcome</small><br>
-		<%=currentUser==null?"":currentUser.getDisplayName() %></span>
+		<a href="/system-admin-web/eservice/INTRANET/PersonelProfile">
+			<%=currentUser==null ? "-" : StringUtil.viewHtml(currentUser.getDisplayName())%></a></span>
 	</div>
 		</a>
 		<a href="${pageContext.request.contextPath}/eservice/INTRANET/IntraLogout">
