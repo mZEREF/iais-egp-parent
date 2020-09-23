@@ -105,8 +105,6 @@ public class HalpAssessmentGuideDelegator {
     private static final String BASEANDSPCSVCMAP = "baseAndSpcSvcMap";
     private static final String RETAIN_LIC_PREMISES_LIST =  "retainLicPremisesList";
     private static final String NO_EXIST_BASE_LIC = "noExistBaseLic";
-    //    private static final String BASE_SERVICE_SORT = "baseServiceSort";
-//    private static final String SPECIFIED_SERVICE_SORT = "specifiedServiceSort";
     public static final String APP_SVC_RELATED_INFO_LIST = "appSvcRelatedInfoList";
     private static final String RELOAD_BASE_SVC_SELECTED = "reloadBaseSvcSelected";
     private static final String BASE_LIC_PREMISES_MAP = "baseLicPremisesMap";
@@ -131,6 +129,7 @@ public class HalpAssessmentGuideDelegator {
     AssessmentGuideService assessmentGuideService;
 
     private String licenseeId;
+
     private String orgId;
 
     public void start(BaseProcessClass bpc) {
@@ -140,7 +139,6 @@ public class HalpAssessmentGuideDelegator {
         log.info("****end ******");
         ParamUtil.setSessionAttr(bpc.request, "personnelOptions", null);
     }
-
 
     public void perDate(BaseProcessClass bpc) {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -1189,7 +1187,6 @@ public class HalpAssessmentGuideDelegator {
         HalpSearchResultHelper.doSort(bpc.request,searchParam);
     }
 
-
     public void renewLicUpdate(BaseProcessClass bpc) {
         SearchParam renewLicUpdateSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.RENEW_LICENCE_UPDATE_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
         renewLicUpdateSearchParam.addFilter("licenseeId", licenseeId, true);
@@ -1329,7 +1326,6 @@ public class HalpAssessmentGuideDelegator {
         }
     }
 
-
     public void showLicensee(BaseProcessClass bpc) {
         String type = ParamUtil.getRequestString(bpc.request,"crud_action_additional");
         try {
@@ -1364,6 +1360,7 @@ public class HalpAssessmentGuideDelegator {
         getDraft(bpc);
         log.info(StringUtil.changeForLog("back choose svc end ..."));
     }
+
     public void doPage(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("doPage start ..."));
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(bpc.request,LIC_ALIGN_SEARCH_PARAM);
@@ -1490,7 +1487,7 @@ public class HalpAssessmentGuideDelegator {
                 }
             }
         }
-        SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM,PersonnlAssessQueryDto.class.getName(),"ID_NO",SearchParam.DESCENDING,false);
+        SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM,PersonnlAssessQueryDto.class.getName(),"T3.ID",SearchParam.DESCENDING,false);
         amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("interInboxQuery", "appPersonnelQuery", amendDetailsSearchParam);
         ParamUtil.setSessionAttr(bpc.request, "personnelOptions", (Serializable) selectOptions);
@@ -1504,7 +1501,7 @@ public class HalpAssessmentGuideDelegator {
             String id = idNo.split(",")[1];
             idNos.add(id);
             if (idNos.size() >0){
-                SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM,PersonnlAssessQueryDto.class.getName(),"ID_NO",SearchParam.DESCENDING,false);
+                SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM,PersonnlAssessQueryDto.class.getName(),"T3.ID",SearchParam.DESCENDING,false);
                 amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
                 amendDetailsSearchParam.addFilter("idNo",idNos,true);
                 QueryHelp.setMainSql("interInboxQuery", "appPersonnelQuery", amendDetailsSearchParam);
@@ -1755,7 +1752,6 @@ public class HalpAssessmentGuideDelegator {
         HalpSearchResultHelper.doSort(bpc.request,searchParam);
     }
 
-
     public void doAmenfLicStep(BaseProcessClass bpc) throws IOException {
         String action = ParamUtil.getString(bpc.request, "guide_action_type");
         String licId = ParamUtil.getString(bpc.request, "amendLicenseId");
@@ -1764,7 +1760,6 @@ public class HalpAssessmentGuideDelegator {
         String hiddenIndex = ParamUtil.getMaskedString(bpc.request, licId+"hiddenIndex");
         String premiseIdValue = ParamUtil.getMaskedString(bpc.request, licId+"premiseId");
         ParamUtil.setSessionAttr(bpc.request,"licence_err_list",licIdValue);
-        Map<String, String> errorMap = inboxService.checkRfcStatus(licIdValue);
         boolean flag = false;
         if (idNoPersonnal != null){
             String id = idNoPersonnal.split(",")[1];
@@ -1784,6 +1779,7 @@ public class HalpAssessmentGuideDelegator {
             }
         }
         if(licIdValue != null){
+            Map<String, String> errorMap = inboxService.checkRfcStatus(licIdValue);
             List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue);
             String isNeedDelete = bpc.request.getParameter("isNeedDelete");
                 StringBuilder stringBuilder=new StringBuilder();
@@ -1917,6 +1913,7 @@ public class HalpAssessmentGuideDelegator {
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEES_SEARCH_PARAM);
         HalpSearchResultHelper.doPage(bpc.request,searchParam);
     }
+
     public void updateLicenceesSort(BaseProcessClass bpc) {
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEES_SEARCH_PARAM);
         HalpSearchResultHelper.doSort(bpc.request,searchParam);
@@ -1938,6 +1935,7 @@ public class HalpAssessmentGuideDelegator {
 
         log.info(StringUtil.changeForLog("jumpInstructionPage end..."));
     }
+
     public void prepareJump(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("prepareJump start..."));
         String action = (String) ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
@@ -1947,7 +1945,6 @@ public class HalpAssessmentGuideDelegator {
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,action);
         log.info(StringUtil.changeForLog("prepareJump end..."));
     }
-
 
     private static List<String> getAppAlignLicQueryHci(Map<String,List<AppAlignLicQueryDto>> baseSvcPremMap,String svcName){
         List<String> premHcis = IaisCommonUtils.genNewArrayList();
@@ -2007,7 +2004,6 @@ public class HalpAssessmentGuideDelegator {
         }
         return newAppSvcDto;
     }
-
 
     private PaginationHandler<MenuLicenceDto> initPaginationHandler(List<MenuLicenceDto> newAppLicDtos){
         PaginationHandler<MenuLicenceDto> paginationHandler = new PaginationHandler<>("licPagDiv","licBodyDiv");

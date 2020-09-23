@@ -204,11 +204,11 @@
     </sql>
     <sql key = "appPersonnelQuery" remarks = "Query Application Data by condition">
         <![CDATA[
-            SELECT DISTINCT T1.ID,T1.ID_NO,T1.ID_TYPE,T3.SVC_NAME
+            SELECT DISTINCT T3.ID
                 FROM hcsal.dbo.key_personnel T1
-                join hcsal.dbo.lic_key_personnel T2 on T1.ID  = T2.PERSON_ID
+                join hcsal.dbo.lic_key_personnel T2 on T1.ID = T2.PERSON_ID
                 join hcsal.dbo.licence T3 on t2.LICENCE_ID = t3.ID
-                WHERE T1.ID in (select max(T1.ID) from hcsal.dbo.key_personnel as T1 group by T1.ID_NO)
+                AND t3.STATUS = 'LICEST001'
 			    <#if licenseeId??>AND t3.LICENSEE_ID =:licenseeId</#if>
 			    <#if idNo??> AND T1.ID_NO =:idNo</#if>
         ]]>

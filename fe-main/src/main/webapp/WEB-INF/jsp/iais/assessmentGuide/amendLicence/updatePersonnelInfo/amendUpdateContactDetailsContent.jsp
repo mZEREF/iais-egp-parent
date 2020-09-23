@@ -32,14 +32,13 @@
                 </c:when>
                 <c:otherwise>
                     <c:forEach var="pool" items="${amendUpdateContactSearchResult.rows}" varStatus="status">
-                        <c:forEach var="assessMap" items="${pool.licPsnTypeDtoMaps}" varStatus="status">
                             <tr>
                                 <td>${pool.svcName}</td>
-                                <td>${assessMap.key}</td>
+                                <td>${pool.licenceNo}</td>
                                 <td>
-                                    <c:forEach var="assessList" items="${assessMap.value.psnTypes}" varStatus="assessStatus">
+                                    <c:forEach var="assessList" items="${pool.roles}" varStatus="assessStatus">
                                         <c:choose>
-                                            <c:when test="${assessMap.value.psnTypes.size() == 1}">
+                                            <c:when test="${pool.roles.size() == 1}">
                                                 <c:choose>
                                                     <c:when test="${assessList == 'CGO'}">
                                                         Clinical Governance Officer
@@ -105,7 +104,6 @@
                                 </td>
                             </tr>
                         </c:forEach>
-                    </c:forEach>
                 </c:otherwise>
             </c:choose>
             </tbody>
