@@ -6,6 +6,7 @@ import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import lombok.extern.slf4j.Slf4j;
@@ -33,9 +34,9 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                 applicationDtoList.forEach(h -> {
                     applicationService.updateFEApplicaiton(h);
                 });
-                log.error("**** The withdraw Application List size"+applicationDtoList.size());
+                JobLogger.log(StringUtil.changeForLog("The withdraw Application List" + applicationDtoList.size()));
             }else{
-                log.error("**** The withdraw Application List is null *****");
+                JobLogger.log(StringUtil.changeForLog("The withdraw Application List is null *****"));
             }
         }catch (Exception e){
             log.error(e.getMessage(), e);
