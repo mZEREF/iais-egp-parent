@@ -72,7 +72,10 @@ public class LicenceExpiredBatchJob {
         log.debug(StringUtil.changeForLog("The licenceExpiredBatchJob is start ..."));
     }
 
-    public void doBatchJob(BaseProcessClass bpc) throws Exception {
+    public void doBatchJob(BaseProcessClass bpc){
+        jobExecute();
+    }
+    public void jobExecute(){
         //licence
         log.debug(StringUtil.changeForLog("The CessationLicenceBatchJob is doBatchJob ..."));
         Date date = new Date();
