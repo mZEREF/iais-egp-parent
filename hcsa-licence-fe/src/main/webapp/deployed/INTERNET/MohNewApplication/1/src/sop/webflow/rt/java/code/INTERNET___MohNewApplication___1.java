@@ -11,7 +11,6 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
-
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohNewApplication___1 extends BaseProcessClass {
@@ -111,6 +110,10 @@ public class INTERNET___MohNewApplication___1 extends BaseProcessClass {
 	public void inboxToPreview_OnStepProcess_0() throws Exception {
 	// 		InboxToPreview->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "inboxToPreview", this);
+	}
+	public void reSubmit_OnStepProcess_0() throws Exception {
+	// 		reSubmit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "reSubmit", this);
 	}
 	
 
