@@ -266,7 +266,7 @@ public class AppealApproveBatchjob {
                 listRiskAcceptiionDto.add(riskAcceptiionDto);
                 List<RiskResultDto> listRiskResult = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();
                 if(!IaisCommonUtils.isEmpty(listRiskResult)){
-                    RiskResultDto riskResultDto = listRiskResult.get(0);
+                    RiskResultDto riskResultDto = listRiskResult.get(listRiskResult.size()-1);
                     String dateType = riskResultDto.getDateType();
                     Integer timeCount = riskResultDto.getTimeCount();
                     if(!StringUtil.isEmpty(dateType)){
