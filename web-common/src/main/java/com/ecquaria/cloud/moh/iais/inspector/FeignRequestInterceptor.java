@@ -23,15 +23,15 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class FeignRequestInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate requestTemplate) {
+        AuditTrailDto dto = null;
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (attributes == null) {
-            return;
+        if (attributes != null) {
+            HttpServletRequest request = attributes.getRequest();
+            if (request != null) {
+                dto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+            }
         }
-        HttpServletRequest request = attributes.getRequest();
-        if (request == null) {
-            return;
-        }
-        AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+
         if (dto == null) {
             dto = AuditTrailDto.getThreadDto();
         }
