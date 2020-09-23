@@ -18,7 +18,7 @@ import java.util.List;
  * @author Wenkang
  * @date 2020/7/21 10:10
  */
-@JobHandler(value = "UploadDelegatorJob")
+@JobHandler(value = "uploadDelegatorJob")
 @Component
 @Slf4j
 public class UploadDelegatorJob extends IJobHandler {
