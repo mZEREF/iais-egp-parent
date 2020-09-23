@@ -191,8 +191,10 @@ public class RoundRobinCommPoolBatchJob {
                         log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskId -- >:" +taskDto.getId()));
                         log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob workGroupId -- >:" +workGroupId));
                         TaskDto taskScoreDto = taskService.getUserIdForWorkGroup(workGroupId);
-                        taskDto.setId(null);
-                        String userId = taskScoreDto.getUserId();
+                        String userId = null;
+                        if(taskScoreDto!= null){
+                            userId = taskScoreDto.getUserId();
+                        }
                         log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob userId -- >:" +userId));
                         if(StringUtil.isEmpty(userId)){
                             //0066643
@@ -208,6 +210,7 @@ public class RoundRobinCommPoolBatchJob {
                         taskDto.setDateAssigned(new Date());
                         taskDto.setAuditTrailDto(auditTrailDto);
                         List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+                        taskDto.setId(null);
                         taskDtos.add(taskDto);
                         taskDtos = taskService.createTasks(taskDtos);
                         //update the application.
@@ -248,6 +251,7 @@ public class RoundRobinCommPoolBatchJob {
                         }
                     }catch (Exception e ){
                         log.error(StringUtil.changeForLog("This  Task can not assign id-->:"+taskDto.getId()));
+                        log.error(e.getMessage(),e);
                     }
                 }else{
                     log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob broadcast taskId -- >:" +taskDto.getId()));
