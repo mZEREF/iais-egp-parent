@@ -11,13 +11,11 @@ import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
-import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * SoloRegisterCorpPassJobHandler
@@ -36,9 +34,6 @@ public class SoloRegisterCorpPassJobHandler extends IJobHandler {
     public static final String SOLO_REGISTER_SMS1 = "AFBAC5CE-A7E6-EA11-BE86-000C29F371DC";
     public static final String SOLO_REGISTER_SMS2 = "18EF1C85-2CEB-EA11-8B79-000C293F0C99";
     public static final String SOLO_REGISTER_SMS3 = "5367961D-2DEB-EA11-8B79-000C293F0C99";
-    @Autowired
-    private IaisSystemClient systemBeLicClient;
-
     @Autowired
     private NotificationHelper notificationHelper;
     @Autowired
