@@ -1307,7 +1307,6 @@ public class HcsaApplicationDelegator {
                     sendAppealMessage(appealingFor,licenseeId,maskParams,serviceId,appealType,applicationDto.getApplicationNo());
                 }
             }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
-                String licenceId = applicationDto.getOriginLicenceId();
                 HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                 String appGrpPremId = "";
                 if(appPremisesCorrelationDto != null){
@@ -1316,6 +1315,10 @@ public class HcsaApplicationDelegator {
                 }
                 maskParams.put("appId",appId);
                 sendCessationMessage(appId,appGrpPremId,applicationNo,licenseeId,maskParams,serviceId);
+            }else if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
+                HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+                maskParams.put("rfiWithdrawAppNo",applicationNo);
+                sendWithdrawalMessage(applicationNo,maskParams,serviceId,licenseeId);
             }
             applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId, licenseeDto, loginContext, externalRemarks);
         }catch (Exception e){
@@ -1437,6 +1440,18 @@ public class HcsaApplicationDelegator {
             return;
         }
         String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ InboxConst.URL_LICENCE_WEB_MODULE+"MohCessationApplication?appId=" + appId + "&premiseId=" + appGrpPremId;
+        String subject = MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION + appNo;
+        String mesContext = "Please click the link <a href='" + url + "'>here</a> for submission.";
+        sendMessage(subject,licenseeId,mesContext,maskParams,serviceId,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
+    }
+
+    private void sendWithdrawalMessage(String appNo,HashMap<String, String> maskParams,String serviceId,String licenseeId){
+        if(StringUtil.isEmpty(licenseeId)
+                || StringUtil.isEmpty(serviceId)
+                || StringUtil.isEmpty(appNo)){
+            return;
+        }
+        String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ InboxConst.URL_LICENCE_WEB_MODULE+"MohWithdrawalApplication?rfiWithdrawAppNo=" + appNo;
         String subject = MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION + appNo;
         String mesContext = "Please click the link <a href='" + url + "'>here</a> for submission.";
         sendMessage(subject,licenseeId,mesContext,maskParams,serviceId,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
@@ -1928,9 +1943,9 @@ public class HcsaApplicationDelegator {
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
                         ApplicationConsts.APPLICATION_STATUS_APPROVED);
                 if(isAllSubmit || applicationDto.isFastTracking()){
-                    if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
-                        doWithdrawal(applicationDto.getId(),broadcastOrganizationDto,broadcastApplicationDto);
-                    }
+//                    if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
+//                        doWithdrawal(applicationDto.getId(),broadcastOrganizationDto,broadcastApplicationDto);
+//                    }
                     //update application Group status
                     ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                     broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
