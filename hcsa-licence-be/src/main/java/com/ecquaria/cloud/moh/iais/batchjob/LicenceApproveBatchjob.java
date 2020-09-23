@@ -1664,7 +1664,8 @@ public class LicenceApproveBatchjob {
                                 if (expiryDate.after(relExpiryDate)) {
                                     expiryDate = relExpiryDate;
                                 }
-                                licenceDto.setRelLicenceId(relLicenceDto.getRelLicenceId());
+                                log.debug(StringUtil.changeForLog("The getLicenceDto new relLicenceDto.getId() is -->:" + relLicenceDto.getId()));
+                                licenceDto.setRelLicenceId(relLicenceDto.getId());
                             }else{
                                 log.error(StringUtil.changeForLog("This relLicenceNo can not get the relLicenceDto -->:"+relLicenceNo));
                             }
