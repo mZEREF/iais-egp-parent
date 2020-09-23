@@ -66,6 +66,20 @@
           </div>
         </div>
 
+        <div class="form-group" id="selectCategoryId" >
+          <div class="col-xs-12 col-md-9" style="margin-bottom: 20px;">
+            <label class="col-xs-12 col-md-7 control-label">Service Category&nbsp;<span class="mandatory">*</span></label>
+            <div class="col-xs-12 col-md-4">
+              <select name="selectCategoryId" disabled>
+                <option value="">Please Select</option>
+                <c:forEach items="${categoryDtos}" var="categoryDto">
+                  <option value="${categoryDto.id}" <c:if test="${hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
+                </c:forEach>
+              </select>
+            </div>
+          </div>
+        </div>
+
         <div class="col-xs-12 col-md-10">
           <label class="col-xs-12 col-md-10 control-label" style="margin-bottom: 20px;">Premises Type&nbsp;<span class="mandatory">*</span></label>
         </div>
@@ -604,15 +618,20 @@
 
     $(document).ready(function(){
         let val = $("select[name='ServiceType']").val();
-        if("SVTP002"==val){
-            $('#Subsumption').attr("style","display:style");
+        if("SVTP001"==val){
+            $('#selectCategoryId').attr("style","display:block");
+        } else if("SVTP002"==val){
+            $('#Subsumption').attr("style","display:block");
             $('#Pre-requisite').attr("style","display:none");
-        }else if("SVTP003"==val){
+            $('#selectCategoryId').attr("style","display:none");
+        }else  if("SVTP003"==val){
+            $('#Pre-requisite').attr("style","display:block");
             $('#Subsumption').attr("style","display:none");
-            $('#Pre-requisite').attr("style","display:style")
+            $('#selectCategoryId').attr("style","display:block");
         }else {
             $('#Subsumption').attr("style","display:none");
             $('#Pre-requisite').attr("style","display:none");
+            $('#selectCategoryId').attr("style","display:none");
         }
     });
 

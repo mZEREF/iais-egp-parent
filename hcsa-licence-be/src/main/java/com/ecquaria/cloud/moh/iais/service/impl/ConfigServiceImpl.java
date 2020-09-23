@@ -233,6 +233,8 @@ public class ConfigServiceImpl implements ConfigService {
             selectOption.setText(hcsaServiceDto.getSvcName());
             selectOptionList.add(selectOption);
         }
+        List<HcsaServiceCategoryDto> categoryDtos = getHcsaServiceCategoryDto();
+        request.getSession().setAttribute("categoryDtos",categoryDtos);
         request.getSession().setAttribute("selsectBaseHcsaServiceDto",selectOptionList);
     }
 
@@ -489,6 +491,15 @@ public class ConfigServiceImpl implements ConfigService {
             List<HcsaServiceSubTypeDto> serviceSubTypeDtos = hcsaServiceDto.getServiceSubTypeDtos();
             if(serviceSubTypeDtos.isEmpty()){
                 errorMap.put("Prerequisite",MessageUtil.replaceMessage("GENERAL_ERR0006","Pre-requisite Base Service","field"));
+            }
+            String categoryId = hcsaServiceDto.getCategoryId();
+            if(StringUtil.isEmpty(categoryId)){
+                errorMap.put("serviceCategory",MessageUtil.replaceMessage("GENERAL_ERR0006","Service Category","field"));
+            }
+        }else if("SVTP001".equals(svcType)){
+            String categoryId = hcsaServiceDto.getCategoryId();
+            if(StringUtil.isEmpty(categoryId)){
+                errorMap.put("serviceCategory",MessageUtil.replaceMessage("GENERAL_ERR0006","Service Category","field"));
             }
         }
         List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = hcsaServiceConfigDto.getHcsaSvcSpePremisesTypeDtos();
@@ -835,6 +846,8 @@ public class ConfigServiceImpl implements ConfigService {
 
     private void view(HttpServletRequest request, String crud_action_value) {
         HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(crud_action_value).getEntity();
+        List<HcsaServiceCategoryDto> categoryDtos = getHcsaServiceCategoryDto();
+        request.getSession().setAttribute("categoryDtos",categoryDtos);
         Boolean flag = hcsaConfigClient.serviceIdIsUsed(crud_action_value).getEntity();
         List<LicenceDto> entity = hcsaLicenceClient.getLicenceDtosBySvcName(hcsaServiceDto.getSvcName()).getEntity();
         if(flag || !entity.isEmpty()){

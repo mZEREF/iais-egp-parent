@@ -175,6 +175,7 @@ public class ConfigServiceDelegator {
         request.setAttribute("selectSubsumption",selectSubsumption);
         request.setAttribute("selectPreRequisite",selectPreRequisite);
         String serviceId = request.getParameter("serviceId");
+        String selectCategoryId = request.getParameter("selectCategoryId");
         String serviceName = request.getParameter("serviceName");
         String description = request.getParameter("description");
         String displayDescription = request.getParameter("displayDescription");
@@ -647,6 +648,7 @@ public class ConfigServiceDelegator {
         if (!StringUtil.isEmpty(serviceId)) {
                  hcsaServiceDto.setId(serviceId);
         }
+        hcsaServiceDto.setCategoryId(selectCategoryId);
         hcsaServiceDto.setSvcName(serviceName);
         hcsaServiceDto.setSvcCode(serviceCode);
 

@@ -59,16 +59,28 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" for="ServiceType">Service Type&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-4">
-            <select id="ServiceType" name="ServiceType"  disabled>
+      <div class="col-xs-12 col-md-9">
+        <label class="col-xs-12 col-md-7 control-label" for="ServiceType">Service Type&nbsp;<span class="mandatory">*</span></label>
+        <div class="col-xs-12 col-md-4" style="margin-bottom: 15px;">
+          <select  id="ServiceType" disabled name="ServiceType">
+            <option value="">Select one</option>
+            <option value="SVTP001" <c:if test="${hcsaServiceDto.svcType=='SVTP001'}">selected="selected"</c:if>>Base</option>
+            <option value="SVTP002" <c:if test="${hcsaServiceDto.svcType=='SVTP002'}">selected="selected"</c:if>>Subsumed</option>
+            <option value="SVTP003" <c:if test="${hcsaServiceDto.svcType=='SVTP003'}">selected="selected"</c:if> >Specified</option>
+          </select>
+        </div>
+      </div>
 
-              <option>Select one</option>
-              <option selected="selected" value="SVTP001">Base</option>
-              <option value="SVTP002">Subsumed</option>
-              <option value="SVTP003">Specified</option>
+
+      <div class="form-group" id="selectCategoryId" >
+        <div class="col-xs-12 col-md-9" style="margin-bottom: 20px;">
+          <label class="col-xs-12 col-md-7 control-label">Service Category&nbsp;<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-4">
+            <select name="selectCategoryId" >
+              <option value="">Please Select</option>
+              <c:forEach items="${categoryDtos}" var="categoryDto">
+                <option value="${categoryDto.id}" <c:if test="${hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
+              </c:forEach>
             </select>
           </div>
         </div>
@@ -598,6 +610,22 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
+        let val = $("select[name='ServiceType']").val();
+        if("SVTP001"==val){
+            $('#selectCategoryId').attr("style","display:block");
+        } else if("SVTP002"==val){
+            $('#Subsumption').attr("style","display:block");
+            $('#Pre-requisite').attr("style","display:none");
+            $('#selectCategoryId').attr("style","display:none");
+        }else  if("SVTP003"==val){
+            $('#Pre-requisite').attr("style","display:block");
+            $('#Subsumption').attr("style","display:none");
+            $('#selectCategoryId').attr("style","display:block");
+        }else {
+            $('#Subsumption').attr("style","display:none");
+            $('#Pre-requisite').attr("style","display:none");
+            $('#selectCategoryId').attr("style","display:none");
+        }
         a();
     });
 
