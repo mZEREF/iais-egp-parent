@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -74,4 +75,5 @@ public interface AppSubmissionService {
     InterMessageDto getInterMessageBySubjectLike(String subject,String status);
     AppGrpPremisesEntityDto getPremisesByAppNo(String appNo);
     void sendEmailAndSMSAndMessage(AppSubmissionDto appSubmissionDto,String applicantName);
+    AppGrpPrimaryDocDto getMaxVersionPrimaryDoc(String appGrpId,String configDocId);
 }
