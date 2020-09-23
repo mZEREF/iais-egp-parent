@@ -27,7 +27,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
     private ApplicationService applicationService;
 
     @Override
-    public ReturnT<String> execute(String s) throws Exception {
+    public ReturnT<String> execute(String s) {
         try {
             List<ApplicationDto> applicationDtoList = applicationClient.saveWithdrawn().getEntity();
             if (applicationDtoList != null){
