@@ -971,7 +971,7 @@ public class InsRepServiceImpl implements InsRepService {
         if (!postApps.isEmpty()) {
             TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(postApps, HcsaConsts.ROUTING_STAGE_INS, RoleConsts.USER_ROLE_INSPECTIOR, auditTrailDto);
             taskDtos = taskHistoryDto.getTaskDtoList();
-            log.info("==================taskDtos ===================>>>>>"+taskDtos.size());
+            log.info(StringUtil.changeForLog("==================taskDtos ===================>>>>>"+taskDtos.size()));
             for(TaskDto taskDto : taskDtos){
                 taskDto.setEventRefNo(eventRefNum);
             }
