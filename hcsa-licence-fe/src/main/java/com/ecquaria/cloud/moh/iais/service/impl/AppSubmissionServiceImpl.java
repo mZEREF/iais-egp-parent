@@ -186,7 +186,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 //                licenceFeeDto.setOnlyNewSpecified(onlySpecifiedSvc);
                 if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo())){
                     licenceFeeDto.setOnlyNewSpecified(true);
-                }else{
+                }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
                     licenceFeeDto.setIncludeBase(true);
                 }
                 licenceFeeDto.setCharity(isCharity);
