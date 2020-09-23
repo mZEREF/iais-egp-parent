@@ -8,5 +8,5 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface AutoRenwalService {
 
-    void startRenwal(HttpServletRequest request);
+    void startRenwal();
 }

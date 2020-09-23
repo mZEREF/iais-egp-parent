@@ -92,7 +92,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     private static final String EMAIL_SUBJECT="MOH IAIS – REMINDER TO RENEW LICENCE";
     private static final String EMAIL_TO_OFFICER_SUBJECT="MOH IAIS – Licence is due to expiry";
     @Override
-    public void startRenwal(HttpServletRequest request) {
+    public void startRenwal() {
         List<Integer> dayList= IaisCommonUtils.genNewArrayList();
         dayList.add(-1);
         dayList.add(systemParamConfig.getSeventhLicenceReminder());
@@ -130,7 +130,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 }
                 if ("-1".equals(k)){
                     try {
-                        sendEmailToOffice(v.get(i),request);
+                        sendEmailToOffice(v.get(i));
                     } catch (IOException e) {
                         log.error(e.getMessage(), e);
                     } catch (TemplateException e) {
@@ -139,7 +139,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 }
                 if ("30".equals(k)){
                     try {
-                        sendEmailToOffice(v.get(i),request);
+                        sendEmailToOffice(v.get(i));
                     } catch (IOException e) {
                         log.error(e.getMessage(), e);
                     } catch (TemplateException e) {
@@ -473,7 +473,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     }
 
 
-    private void sendEmailToOffice(LicenceDto licenceDto ,HttpServletRequest request )throws IOException, TemplateException{
+    private void sendEmailToOffice(LicenceDto licenceDto  )throws IOException, TemplateException{
         List<String> ASOEmailAddrs = IaisCommonUtils.genNewArrayList();
         organizationClient.retrieveUserRoleByRoleId(RoleConsts.USER_ROLE_ASO).getEntity().stream().forEach(v ->{
             ASOEmailAddrs.add(v.getEmail());
