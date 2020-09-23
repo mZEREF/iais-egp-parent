@@ -651,7 +651,7 @@ public class HcsaApplicationDelegator {
 
         //request for information
         if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage)){
-            successInfo = MessageUtil.dateIntoMessage("ACKRFI001");
+            successInfo = MessageUtil.dateIntoMessage("RFI_ACK001");
             ParamUtil.setRequestAttr(bpc.request,"rfiSuccessInfo","Y");
         }
         ParamUtil.setRequestAttr(bpc.request,"successInfo",successInfo);

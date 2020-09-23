@@ -156,7 +156,7 @@ public class InspectReviseNcEmailDelegator {
             }
 
         }
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "Post Inspection Task");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, " Inspection Task");
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
         if( taskDto == null) {
             return;

@@ -209,34 +209,28 @@ public class ResponseForInformationDelegator {
             for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
                 CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+doc.getId());
                 String errDocument=MessageUtil.replaceMessage("GENERAL_ERR0006","Supporting Documents","field");
-                if(!(file != null &&file.getSize()==0&&doc.isPassDocValidate())){
-                    if(!(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename()))){
+                String commDelFlag = ParamUtil.getString(mulReq, "commDelFlag"+doc.getId());
+                if(licPremisesReqForInfoDto.isNeedDocument()&&("N".equals(commDelFlag)||doc.getDocSize()==null)){
+
+                    if(file == null || file.getSize() == 0){
                         errMap.put("UploadFile"+doc.getId(),errDocument);
-                    }
-                    if(licPremisesReqForInfoDto.isNeedDocument()){
-                        if(doc.getDocSize()==null){
-                            errMap.put("UploadFile"+doc.getId(),errDocument);
-                        }else{
-                            List<String> fileTypes = Arrays.asList(systemParamConfig.getUploadFileType().split(","));
-                            Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file,fileTypes,(systemParamConfig.getUploadFileLimit() * 1024 *1024l));
-                            //Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file);
-                            Boolean fileSize = booleanMap.get("fileSize");
-                            Boolean fileType = booleanMap.get("fileType");
-                            //size
-                            if(!fileSize){
-                                errMap.put("UploadFile"+doc.getId(), MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(systemParamConfig.getUploadFileLimit()),"sizeMax"));
-                            }
-                            //type
-                            if(!fileType){
-                                errMap.put("UploadFile"+doc.getId(),MessageUtil.replaceMessage("GENERAL_ERR0018", systemParamConfig.getUploadFileType(),"fileType"));
-                            }
+                    }else{
+                        List<String> fileTypes = Arrays.asList(systemParamConfig.getUploadFileType().split(","));
+                        Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file,fileTypes,(systemParamConfig.getUploadFileLimit() * 1024 *1024l));
+                        //Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file);
+                        Boolean fileSize = booleanMap.get("fileSize");
+                        Boolean fileType = booleanMap.get("fileType");
+                        //size
+                        if(!fileSize){
+                            errMap.put("UploadFile"+doc.getId(), MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(systemParamConfig.getUploadFileLimit()),"sizeMax"));
+                        }
+                        //type
+                        if(!fileType){
+                            errMap.put("UploadFile"+doc.getId(),MessageUtil.replaceMessage("GENERAL_ERR0018", systemParamConfig.getUploadFileType(),"fileType"));
                         }
                     }
-                    if(errMap.get("UploadFile"+doc.getId())==null){
-                        doc.setPassDocValidate(true);
-                        ParamUtil.setSessionAttr(httpServletRequest,"licPreReqForInfoDto",licPremisesReqForInfoDto);
-                    }
                 }
+
 
             }
         }

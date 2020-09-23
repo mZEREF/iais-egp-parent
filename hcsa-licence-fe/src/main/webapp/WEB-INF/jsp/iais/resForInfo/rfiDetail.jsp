@@ -96,6 +96,7 @@
                                                 <iais:row>
                                                     <iais:value width="18">
                                                         <div class="file-upload-gp">
+                                                            <input class="hidden delFlag" type="hidden" name="commDelFlag${rfiDoc.id}" value="Y"/>
                                                             <span><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${rfiDoc.fileRepoId}"/>&fileRepoName=${rfiDoc.docName}">${rfiDoc.docName}</a></span>
                                                             <c:choose>
                                                                 <c:when test="${rfiDoc.docName == '' || rfiDoc.docName == null }">
@@ -167,6 +168,7 @@
         $(this).parent().children('span:eq(0)').html(getFileName(file));
         $(this).parent().children('span:eq(0)').next().html('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>');
         $(this).parent().children('span:eq(0)').next().removeClass("hidden");
+        $(this).parent().children('input delFlag').val('N');
     });
 
     $('.delBtn').click(function () {
@@ -174,6 +176,7 @@
         $(this).parent().children('span:eq(0)').next().html();
         $(this).parent().children('span:eq(0)').next().addClass("hidden");
         $(this).parent().children('input.selectedFile').val('');
+        $(this).parent().children('input.delFlag').val('Y');
 
     });
 

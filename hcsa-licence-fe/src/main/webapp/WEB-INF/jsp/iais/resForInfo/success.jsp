@@ -22,7 +22,7 @@
                     <br><br><br><br>
                     <div class="bg-title">
                         <h2>
-                            <span><iais:message key="ACKRFI002" escape="true"></iais:message></span>
+                            <span><iais:message key="RFI_ACK002" escape="true"></iais:message></span>
                         </h2>
                     </div>
                     <div class="panel panel-default">

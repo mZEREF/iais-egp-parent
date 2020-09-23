@@ -365,7 +365,7 @@ public class InspectionPreDelegator {
             ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
             fillupChklistService.sendModifiedChecklistEmailToAOStage(applicationViewDto);
         }
-        String successInfo = MessageUtil.dateIntoMessage("ACKRFI001");
+        String successInfo = MessageUtil.dateIntoMessage("RFI_ACK001");
         ParamUtil.setRequestAttr(bpc.request, "successPage", "requestForInfo");
         ParamUtil.setRequestAttr(bpc.request, "successInfo", successInfo);
         inspectionPreTaskService.routingBack(taskDto, inspectionPreTaskDto, loginContext, premCheckItems);
