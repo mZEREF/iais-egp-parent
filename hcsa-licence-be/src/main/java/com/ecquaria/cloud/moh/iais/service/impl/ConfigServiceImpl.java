@@ -200,6 +200,7 @@ public class ConfigServiceImpl implements ConfigService {
         Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(effectiveDate);
         String format = new SimpleDateFormat("yyyy-MM-dd").format(parse);
         hcsaServiceDto.setEffectiveDate(format);
+        hcsaServiceDto.setId(null);
         hcsaServiceConfigDto = hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto).getEntity();
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -300,6 +301,7 @@ public class ConfigServiceImpl implements ConfigService {
                  Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(effectiveDate);
                  String format = new SimpleDateFormat("yyyy-MM-dd").format(parse);
                  hcsaServiceDto.setEffectiveDate(format);
+                 hcsaServiceDto.setId(null);
                  hcsaServiceConfigDto= hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto).getEntity();
                  HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
                  HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);

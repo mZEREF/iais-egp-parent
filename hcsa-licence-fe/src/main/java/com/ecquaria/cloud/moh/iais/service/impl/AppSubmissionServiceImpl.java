@@ -609,7 +609,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
             String serviceName = appSvcRelatedInfoDto.getServiceName();
-            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+            HcsaServiceDto hcsaServiceDto =appConfigClient.getActiveHcsaServiceDtoByName(serviceName).getEntity();
             String svcId = hcsaServiceDto.getId();
             String svcCode = hcsaServiceDto.getSvcCode();
             appSvcRelatedInfoDto.setServiceId(svcId);

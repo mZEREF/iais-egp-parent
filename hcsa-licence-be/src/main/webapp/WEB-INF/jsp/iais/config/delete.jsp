@@ -454,7 +454,7 @@
           <label class="col-xs-12 col-md-7 control-label" >Page Name</label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <input type="text" disabled maxlength="100" value="${pageName}">
+              <input type="text" disabled maxlength="100" value="${pageName}" name="pageName">
             </div>
           </div>
         </div>

@@ -449,46 +449,25 @@
           <label class="col-xs-12 col-md-7 control-label" >Page Name</label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <input type="text" disabled maxlength="100" value="${pageName}">
+              <input type="text" disabled maxlength="100" value="${pageName}" name="pageName">
             </div>
           </div>
         </div>
         <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
-          <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed">
-            <div class="view">
-              <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
-                <input class="add" type="text"  style="margin-left:0px" maxlength="100" readonly name="subType" value="${hcsaSvcSubtypeOrSubsumed.name}">
-              </div>
-              <div class="value">
-                <input type="text" value="0" name="level" style="display: none" >
-              </div>
-              <div  class="col-xs-12 col-md-2" >
-                <a class="btn  btn-secondary  view">indent</a>
-              </div>
-              <div  class="col-xs-12 col-md-2">
-                <a class="btn  btn-secondary view">outdent</a>
-              </div>
-              <div class="col-xs-12 col-md-2 up">
-                <a class="btn  btn-secondary up view" onclick="up(this)">UP</a>
-                <a class="btn  btn-secondary down view" onclick="down(this)">DOWN</a>
-              </div>
-              <div class="col-xs-12 col-md-2">
-                <a class="btn  btn-secondary view"  onclick="removeThis(this)">-</a>
-              </div>
-            </div>
-            <c:forEach items="${hcsaSvcSubtypeOrSubsumed.list}" var="hcsaSvcSubtypeOrSubsumed2">
-              <div class="view">
+          <div class="col-xs-12 col-md-12">
+            <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed">
+              <div class="view col-xs-12 col-md-12">
                 <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
-                  <input class="add" type="text"  style="margin-left:60px" maxlength="100" readonly name="subType" value="${hcsaSvcSubtypeOrSubsumed2.name}">
+                  <input class="add" type="text"  style="margin-left:0px" maxlength="100" name="subType" value="${hcsaSvcSubtypeOrSubsumed.name}">
                 </div>
                 <div class="value">
-                  <input type="text" value="1" name="level" style="display: none" >
+                  <input type="text" value="0" name="level" style="display: none" >
                 </div>
-                <div  class="col-xs-12 col-md-3" >
-                  <a class="btn  btn-secondary  view"    >indent</a>
+                <div  class="col-xs-12 col-md-2" >
+                  <a class="btn  btn-secondary  view" onclick="indents(this)"   >indent</a>
                 </div>
                 <div  class="col-xs-12 col-md-2">
-                  <a class="btn  btn-secondary view"  >outdent</a>
+                  <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
                 </div>
                 <div class="col-xs-12 col-md-2 up">
                   <a class="btn  btn-secondary up view" onclick="up(this)">UP</a>
@@ -498,33 +477,55 @@
                   <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
                 </div>
               </div>
-              <c:forEach items="${hcsaSvcSubtypeOrSubsumed2.list}" var="hcsaSvcSubtypeOrSubsumed3">
-                <div class="view">
+              <c:forEach items="${hcsaSvcSubtypeOrSubsumed.list}" var="hcsaSvcSubtypeOrSubsumed2">
+                <div class="view col-xs-12 col-md-12">
                   <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
-                    <input class="add" type="text"  style="margin-left:120px" maxlength="100" readonly name="subType" value="${hcsaSvcSubtypeOrSubsumed3.name}">
+                    <input class="add" type="text"  style="margin-left:60px" maxlength="100" name="subType" value="${hcsaSvcSubtypeOrSubsumed2.name}">
                   </div>
                   <div class="value">
-                    <input type="text" value="2" name="level" style="display: none" >
+                    <input type="text" value="1" name="level" style="display: none" >
                   </div>
-                  <div class="col-xs-12 col-md-3" >
-                    <a class="btn  btn-secondary  view">indent</a>
+                  <div  class="col-xs-12 col-md-2" >
+                    <a class="btn  btn-secondary  view" onclick="indents(this)"  >indent</a>
                   </div>
-                  <div class="col-xs-12 col-md-2">
-                    <a class="btn  btn-secondary view">outdent</a>
+                  <div  class="col-xs-12 col-md-2">
+                    <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
                   </div>
                   <div class="col-xs-12 col-md-2 up">
                     <a class="btn  btn-secondary up view" onclick="up(this)">UP</a>
                     <a class="btn  btn-secondary down view" onclick="down(this)">DOWN</a>
                   </div>
                   <div class="col-xs-12 col-md-2">
-                    <a class="btn  btn-secondary view"  onclick="removeThis(this)">-</a>
+                    <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
                   </div>
                 </div>
+                <c:forEach items="${hcsaSvcSubtypeOrSubsumed2.list}" var="hcsaSvcSubtypeOrSubsumed3">
+                  <div class="view col-xs-12 col-md-12">
+                    <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
+                      <input class="add" type="text" maxlength="100"  style="margin-left:120px" name="subType" value="${hcsaSvcSubtypeOrSubsumed3.name}">
+                    </div>
+                    <div class="value">
+                      <input type="text" value="2" name="level" style="display: none" >
+                    </div>
+                    <div  class="col-xs-12 col-md-2" >
+                      <a class="btn  btn-secondary  view" onclick="indents(this)"   >indent</a>
+                    </div>
+                    <div  class="col-xs-12 col-md-2">
+                      <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
+                    </div>
+                    <div class="col-xs-12 col-md-2 up">
+                      <a class="btn  btn-secondary up view" onclick="up(this)">UP</a>
+                      <a class="btn  btn-secondary down view" onclick="down(this)">DOWN</a>
+                    </div>
+                    <div class="col-xs-12 col-md-2">
+                      <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
+                    </div>
+                  </div>
+                </c:forEach>
               </c:forEach>
             </c:forEach>
-          </c:forEach>
-
-          <div class="col-xs-12 col-md-6">
+          </div>
+          <div class="col-xs-12 col-md-12">
             <a class="btn  btn-secondary " style="margin-right: 10px" id="addAsItem"> + </a><label for="addAsItem"> Add Item</label>
           </div>
         </div>

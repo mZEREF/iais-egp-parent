@@ -644,7 +644,7 @@ public class ConfigServiceDelegator {
 
         //todo delete
         if (!StringUtil.isEmpty(serviceId)) {
-            /*     hcsaServiceDto.setId(serviceId);*/
+                 hcsaServiceDto.setId(serviceId);
         }
         hcsaServiceDto.setSvcName(serviceName);
         hcsaServiceDto.setSvcCode(serviceCode);
