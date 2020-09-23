@@ -69,7 +69,7 @@
                                       </div>
                                     </c:if>
                                     <div class="hidden">
-                                      <iais:select disabled="disabled" cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
+                                      <iais:select cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
                                     </div>
                                   </div>
                                   <div class="col-sm-10">
@@ -111,7 +111,7 @@
                                 </div>
                                 <div class="col-sm-5 col-md-7" id="assignSelect${suffix}">
                                   <div >
-                                    <iais:select disabled="disabled" cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
+                                    <iais:select cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_assignSelect${status.index}"></span>
                                   </div>
                                 </div>
@@ -135,12 +135,12 @@
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-3" id="salutation${suffix}">
-                                      <iais:select disabled="disabled" cssClass="salutationSel"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${currentCgo.salutation}" firstOption="Please Select"></iais:select>
+                                      <iais:select cssClass="salutationSel"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${currentCgo.salutation}" firstOption="Please Select"></iais:select>
                                       <span class="error-msg" name="iaisErrorMsg" id="error_salutation${status.index}"></span>
                                     </div>
                                     <div class="col-sm-3 col-md-4" id="name${suffix}">
                                       <div class="">
-                                        <input disabled maxLength="66" type="text" name="name" value="${currentCgo.name}">
+                                        <iais:input maxLength="66" type="text" name="name" value="${currentCgo.name}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
                                       </div>
                                     </div>
@@ -161,13 +161,13 @@
                                     </div>
                                     <div class="col-sm-5 col-md-3" id="idType${suffix}">
                                       <div class="">
-                                        <iais:select disabled="disabled" cssClass="idTypeSel"  name="idType" value="${currentCgo.idType}" options="IdTypeSelect"></iais:select>
+                                        <iais:select cssClass="idTypeSel"  name="idType" value="${currentCgo.idType}" options="IdTypeSelect"></iais:select>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_idTyp${status.index}"></span>
                                       </div>
                                     </div>
                                     <div class="col-sm-5 col-md-4">
                                       <div class="">
-                                        <input disabled maxLength="9" type="text" name="idNo" value="${currentCgo.idNo}">
+                                        <iais:input maxLength="9" type="text" name="idNo" value="${currentCgo.idNo}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMSg" id="error_idNo${status.index}"></span>
                                         <span class="error-msg" name="iaisErrorMSg" id="error_idNo"></span>
                                       </div>
@@ -200,7 +200,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-7" id="designation${suffix}">
                                       <div class="">
-                                        <iais:select disabled="disabled" cssClass="designationSel" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${currentCgo.designation}" firstOption="Please Select"></iais:select>
+                                        <iais:select cssClass="designationSel" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${currentCgo.designation}" firstOption="Please Select"></iais:select>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_designation${status.index}"></span>
                                       </div>
                                     </div>
@@ -219,7 +219,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-7" id="professionType${suffix}">
                                       <div class="professionRegoType">
-                                        <iais:select disabled="disabled" cssClass="professionTypeSel" name="professionType" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${currentCgo.professionType}" firstOption="Please Select"></iais:select>
+                                        <iais:select cssClass="professionTypeSel" name="professionType" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${currentCgo.professionType}" firstOption="Please Select"></iais:select>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_professionType${status.index}"></span>
                                       </div>
                                     </div>
@@ -240,7 +240,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-7">
                                       <div class="">
-                                        <input maxLength="20" type="text" name="professionRegoNo" value="${currentCgo.profRegNo}">
+                                        <iais:input maxLength="20" type="text" name="professionRegoNo" value="${currentCgo.profRegNo}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_professionRegoNo${status.index}"></span>
                                       </div>
                                     </div>
@@ -265,7 +265,7 @@
                                               <span class="error-msg" name="iaisErrorMsg" id="error_speciality${status.index}"></span>
                                             </c:when>
                                             <c:otherwise>
-                                              <iais:select disabled="disabled" cssClass="specialty" name="specialty" options="SpecialtySelectList" value="${currentCgo.speciality}" ></iais:select>
+                                              <iais:select cssClass="specialty" name="specialty" options="SpecialtySelectList" value="${currentCgo.speciality}" ></iais:select>
                                               <span class="error-msg" name="iaisErrorMsg" id="error_speciality${status.index}"></span>
                                             </c:otherwise>
                                           </c:choose>
@@ -298,7 +298,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-7">
                                       <div class="">
-                                        <input disabled maxLength="100" type="text" name="qualification" value="${currentCgo.subSpeciality}">
+                                        <iais:input maxLength="100" type="text" name="qualification" value="${currentCgo.subSpeciality}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_qualification${status.index}"><c:out value="${errorMap.qualification}"></c:out></span>
                                       </div>
                                     </div>
@@ -316,7 +316,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-7">
                                       <div class="">
-                                        <input disabled maxLength="8" type="text" name="mobileNo" value="${currentCgo.mobileNo}">
+                                        <iais:input maxLength="8" type="text" name="mobileNo" value="${currentCgo.mobileNo}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_mobileNo${status.index}"></span>
                                       </div>
                                     </div>
@@ -335,7 +335,7 @@
                                     </div>
                                     <div class="col-sm-4 col-md-7">
                                       <div class="">
-                                        <input disabled maxLength="66" type="text" name="emailAddress" value="${currentCgo.emailAddr}"/>
+                                        <iais:input maxLength="66" type="text" name="emailAddress" value="${currentCgo.emailAddr}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr${status.index}"></span>
                                       </div>
                                     </div>
@@ -373,130 +373,130 @@
 </div>
 
 <script>
-  $(document).ready(function () {
-    $('.hideen-div').addClass('hidden');
-    //coverage  cpl_custom_form_script init css
-    $('.new-officer-form > table> tbody> tr:first-child > td >div.control > div.form-group > div:nth-child(2)').removeClass('col-sm-2');
-    $('.new-officer-form > table> tbody> tr:first-child > td >div.control > div.form-group > div:nth-child(2)').addClass('col-sm-3');
+    $(document).ready(function () {
+        $('.hideen-div').addClass('hidden');
+        //coverage  cpl_custom_form_script init css
+        $('.new-officer-form > table> tbody> tr:first-child > td >div.control > div.form-group > div:nth-child(2)').removeClass('col-sm-2');
+        $('.new-officer-form > table> tbody> tr:first-child > td >div.control > div.form-group > div:nth-child(2)').addClass('col-sm-3');
 
-    $('.new-officer-form > table> tbody> tr:nth-child(3) > td >div.control > div.form-group > div:nth-child(2)').removeClass('col-sm-2');
-    $('.new-officer-form > table> tbody> tr:nth-child(3) > td >div.control > div.form-group > div:nth-child(2)').addClass('col-sm-3');
+        $('.new-officer-form > table> tbody> tr:nth-child(3) > td >div.control > div.form-group > div:nth-child(2)').removeClass('col-sm-2');
+        $('.new-officer-form > table> tbody> tr:nth-child(3) > td >div.control > div.form-group > div:nth-child(2)').addClass('col-sm-3');
 
-    $('.new-officer-form > table> tbody> tr:nth-child(5) > td >div.control > div.form-group > div:nth-child(2)').removeClass('col-sm-3');
-    $('.new-officer-form > table> tbody> tr:nth-child(5) > td >div.control > div.form-group > div:nth-child(2)').addClass('col-sm-4');
-    //get from cpl_custom_form_script
-    $('select.assignSel').change(function () {
-      $parentEle = $(this).closest('td.first');
-      if ($(this).val() == "newOfficer") {
-        $parentEle.find('> .new-officer-form').removeClass('hidden');
-        $parentEle.find('> .profile-info-gp').addClass('hidden');
-      } else {
-        $parentEle.find('> .profile-info-gp').removeClass('hidden');
-        $parentEle.find('> .new-officer-form').addClass('hidden');
-      }
-    });
+        $('.new-officer-form > table> tbody> tr:nth-child(5) > td >div.control > div.form-group > div:nth-child(2)').removeClass('col-sm-3');
+        $('.new-officer-form > table> tbody> tr:nth-child(5) > td >div.control > div.form-group > div:nth-child(2)').addClass('col-sm-4');
+        //get from cpl_custom_form_script
+        $('select.assignSel').change(function () {
+            $parentEle = $(this).closest('td.first');
+            if ($(this).val() == "newOfficer") {
+                $parentEle.find('> .new-officer-form').removeClass('hidden');
+                $parentEle.find('> .profile-info-gp').addClass('hidden');
+            } else {
+                $parentEle.find('> .profile-info-gp').removeClass('hidden');
+                $parentEle.find('> .new-officer-form').addClass('hidden');
+            }
+        });
 
-    reLoadChange();
+        reLoadChange();
 
-    showSpecialty();
-
-    doEdit();
-
-    $('#control--runtime--0').children().remove("hr")
-
-    $('.assignSel ').trigger('change');
-
-    $("input").attr("disabled",true);
-    $('input[type="text"]').css('border-color','#ededed');
-    $('input[type="text"]').css('color','#999');
-    $(".assignContent div.nice-select").addClass('disabled');
-  });
-
-  var disabledAll = function () {
-    $('input[type="text"]').prop('disabled',true);
-  }
-
-  var showSpecialty = function () {
-    $('.specialty').change(function () {
-      $specialtyEle = $(this).closest('.specialtyContent');
-      var val = $(this).val();
-
-      if('other' == val){
-        $specialtyEle.find('input[name="specialtyOther"]').removeClass('hidden');
-      }else{
-        $specialtyEle.find('input[name="specialtyOther"]').addClass('hidden');
-      }
-    });
-  }
-
-  var reLoadChange = function () {
-    var i=0;
-    $('select.assignSel').each(function (k,v) {
-      if("newOfficer" ==$(this).val()){
-        var removeClass = '.cgo-'+i+'--new';
-        console.log("removeClass"+removeClass);
-        $(removeClass).removeClass('hidden');
-        i++;
-      }
-    });
-  }
-
-  $('.addListBtn').click(function () {
-    /*var assignContent = $('.assignContent:last').html();
-    var appendHtml = '<hr/> <table class="testTable">'+ assignContent+'</table>';
-    $('.assignContent:last').after(appendHtml);*/
-    $('.hideen-div').addClass('hidden');
-    $('.addListBtn').addClass('hidden');
-    $.ajax({
-      'url':'${pageContext.request.contextPath}/governance-officer',
-      'dataType':'text',
-      'type':'GET',
-      'success':function (data) {
-        console.log("suc");
-        var length = $('.assignContent').length;
-        if(length>0){
-          data = "<hr/>" + data;
-        }
-        $('.assignContent:last').after(data);
         showSpecialty();
 
-        $('select.assignSel').change(function () {
-          $parentEle = $(this).closest('td.first');
-          if ($(this).val() == "newOfficer") {
-            $parentEle.find('> .new-officer-form').removeClass('hidden');
-            $parentEle.find('> .profile-info-gp').addClass('hidden');
-          } else {
-            $parentEle.find('> .profile-info-gp').removeClass('hidden');
-            $parentEle.find('> .new-officer-form').addClass('hidden');
-          }
+        doEdit();
+
+        $('#control--runtime--0').children().remove("hr")
+
+        $('.assignSel ').trigger('change');
+
+        $("input").attr("disabled",true);
+        $('input[type="text"]').css('border-color','#ededed');
+        $('input[type="text"]').css('color','#999');
+        $(".assignContent div.nice-select").addClass('disabled');
+    });
+
+    var disabledAll = function () {
+        $('input[type="text"]').prop('disabled',true);
+    }
+
+    var showSpecialty = function () {
+        $('.specialty').change(function () {
+            $specialtyEle = $(this).closest('.specialtyContent');
+            var val = $(this).val();
+
+            if('other' == val){
+                $specialtyEle.find('input[name="specialtyOther"]').removeClass('hidden');
+            }else{
+                $specialtyEle.find('input[name="specialtyOther"]').addClass('hidden');
+            }
         });
-        <!--change psn item -->
-        changePsnItem();
-      },
-      'error':function (data) {
-        console.log("err");
-      }
-    });
-  });
+    }
 
-  var doEdit = function () {
-    $('#edit').click(function () {
-      /*$assignContentEle = $(this).closest('div.assignContent');
-      $assignContentEle.find('input[type="text"]').prop('disabled',false);
-      $assignContentEle.find('div.nice-select').removeClass('disabled');*/
-      $('input[type="text"]').prop('disabled',false);
-      $('div.nice-select').removeClass('disabled');
-      $('#isEditHiddenVal').val('1');
-      $('#edit-content').addClass('hidden');
-    });
-  }
+    var reLoadChange = function () {
+        var i=0;
+        $('select.assignSel').each(function (k,v) {
+            if("newOfficer" ==$(this).val()){
+                var removeClass = '.cgo-'+i+'--new';
+                console.log("removeClass"+removeClass);
+                $(removeClass).removeClass('hidden');
+                i++;
+            }
+        });
+    }
 
-  var changePsnItem = function () {
-    $('.assign-psn-item').each(function (k,v) {
-      $(this).html(k+1);
+    $('.addListBtn').click(function () {
+        /*var assignContent = $('.assignContent:last').html();
+        var appendHtml = '<hr/> <table class="testTable">'+ assignContent+'</table>';
+        $('.assignContent:last').after(appendHtml);*/
+        $('.hideen-div').addClass('hidden');
+        $('.addListBtn').addClass('hidden');
+        $.ajax({
+            'url':'${pageContext.request.contextPath}/governance-officer',
+            'dataType':'text',
+            'type':'GET',
+            'success':function (data) {
+                console.log("suc");
+                var length = $('.assignContent').length;
+                if(length>0){
+                    data = "<hr/>" + data;
+                }
+                $('.assignContent:last').after(data);
+                showSpecialty();
+
+                $('select.assignSel').change(function () {
+                    $parentEle = $(this).closest('td.first');
+                    if ($(this).val() == "newOfficer") {
+                        $parentEle.find('> .new-officer-form').removeClass('hidden');
+                        $parentEle.find('> .profile-info-gp').addClass('hidden');
+                    } else {
+                        $parentEle.find('> .profile-info-gp').removeClass('hidden');
+                        $parentEle.find('> .new-officer-form').addClass('hidden');
+                    }
+                });
+                <!--change psn item -->
+                changePsnItem();
+            },
+            'error':function (data) {
+                console.log("err");
+            }
+        });
     });
 
-  }
+    var doEdit = function () {
+        $('#edit').click(function () {
+            /*$assignContentEle = $(this).closest('div.assignContent');
+            $assignContentEle.find('input[type="text"]').prop('disabled',false);
+            $assignContentEle.find('div.nice-select').removeClass('disabled');*/
+            $('input[type="text"]').prop('disabled',false);
+            $('div.nice-select').removeClass('disabled');
+            $('#isEditHiddenVal').val('1');
+            $('#edit-content').addClass('hidden');
+        });
+    }
+
+    var changePsnItem = function () {
+        $('.assign-psn-item').each(function (k,v) {
+            $(this).html(k+1);
+        });
+
+    }
 
 
 
