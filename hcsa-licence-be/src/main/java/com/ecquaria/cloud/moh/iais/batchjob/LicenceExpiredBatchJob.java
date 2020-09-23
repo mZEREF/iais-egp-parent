@@ -67,7 +67,6 @@ public class LicenceExpiredBatchJob {
     private NotificationHelper notificationHelper;
     @Autowired
     HcsaConfigClient hcsaConfigClient;
-    private final String LICENCEENDDATE = "52AD8B3B-E652-EA11-BE7F-000C29F371DC";
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("The licenceExpiredBatchJob is start ..."));
