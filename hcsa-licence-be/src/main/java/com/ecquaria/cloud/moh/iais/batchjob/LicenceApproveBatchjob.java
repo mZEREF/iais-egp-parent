@@ -1599,8 +1599,9 @@ public class LicenceApproveBatchjob {
             if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equalsIgnoreCase(applicationDto.getApplicationType())){
                 try {
                     String licenceNo = originLicenceDto.getLicenceNo();
+                    int premiseSize = originLicenceDto.getPremiseSize();
                     String s = hcsaLicenceClient.groupLicenceRunningNumber(licenceNo).getEntity();
-                    String ceasedLicNo = systemBeLicClient.groupLicenceByGroupLicenceNo(licenceNo, s).getEntity();
+                    String ceasedLicNo = systemBeLicClient.groupLicenceByGroupLicenceNo(licenceNo, s,premiseSize).getEntity();
                     licenceDto.setCesedLicNo(ceasedLicNo);
                 }catch (Exception e){
                     log.error(e.getMessage(),e);

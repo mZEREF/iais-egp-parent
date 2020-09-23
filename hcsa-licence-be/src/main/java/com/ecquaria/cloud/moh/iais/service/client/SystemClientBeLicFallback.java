@@ -7,6 +7,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -122,4 +123,12 @@ public class SystemClientBeLicFallback {
         entity.setHeaders(headers);
         return entity;
     }
+
+    FeignResponseEntity<String> groupLicenceByGroupLicenceNo(@RequestParam("groupLicencNo") String groupLicencNo,@RequestParam("runningNumber") String runningNumber,@RequestParam("premisesNumber") Integer premisesNumber){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 }

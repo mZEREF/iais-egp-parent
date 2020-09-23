@@ -77,5 +77,5 @@ public interface SystemBeLicClient {
     FeignResponseEntity<JobRemindMsgTrackingDto> getJobRemindMsgTrackingDtoByMsgAAndCreatedAt( @PathVariable(name = "refNo") String refNo,@PathVariable(name = "msgKey") String msgKey);
 
     @GetMapping(value = "/group-licence-change-no")
-    FeignResponseEntity<String> groupLicenceByGroupLicenceNo(@RequestParam("groupLicencNo") String groupLicencNo, @RequestParam("runningNumber") String runningNumber);
+    FeignResponseEntity<String> groupLicenceByGroupLicenceNo(@RequestParam("groupLicencNo") String groupLicencNo,@RequestParam("runningNumber") String runningNumber,@RequestParam("premisesNumber") Integer premisesNumber);
 }
