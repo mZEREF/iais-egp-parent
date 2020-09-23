@@ -34,6 +34,9 @@ public class NotificationApplicationUpdateBatchjob {
     private LicenceService licenceService;
 
     public void doBatchJob(BaseProcessClass bpc) {
+        jobExecute();
+    }
+    public void jobExecute(){
         log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob start ..."));
         List<NotificateApplicationDto> notificateApplicationDtoList = appGroupMiscService.getNotificateApplicationDtos();
         if(!IaisCommonUtils.isEmpty(notificateApplicationDtoList)){
@@ -45,40 +48,40 @@ public class NotificationApplicationUpdateBatchjob {
                 licAppCorrelationDtoList =  licenceService.getLicAppCorrelationDtosByApplicationIds(applicationIds);
             }
             //update every application group
-          for(NotificateApplicationDto notificateApplicationDto : notificateApplicationDtoList){
-              List<ApplicationDto> notificateApplicationDtos = notificateApplicationDto.getNotificateApplicationDtos();
-              List<ApplicationDto> amendApplicationDtos = notificateApplicationDto.getAmendApplicationDtos();
-              //newNotificateApplicationDto
-              NotificateApplicationDto newNotificateApplicationDto = new NotificateApplicationDto();
-              //AppGroupMiscDto
-              AppGroupMiscDto appGroupMiscDto = notificateApplicationDto.getAppGroupMiscDto();
-              appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-              newNotificateApplicationDto.setAppGroupMiscDto(appGroupMiscDto);
-              //newAmendApplicationDtos
-              if(!IaisCommonUtils.isEmpty(notificateApplicationDtos)){
-                  log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob notificateApplicationDtos.size() -->:"+ notificateApplicationDtos.size()));
-                  List<ApplicationDto> newAmendApplicationDtos = IaisCommonUtils.genNewArrayList();
-                 for(ApplicationDto applicationDto : notificateApplicationDtos){
-                     String orignLicenceId = applicationDto.getOriginLicenceId();
-                     log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob orignLicenceId -->:"+ orignLicenceId));
-                     String appId = applicationDto.getId();
-                     log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob appId -->:"+ appId));
-                     LicAppCorrelationDto licAppCorrelationDto = getLicAppCorrelationDtoByAppId(licAppCorrelationDtoList,appId);
-                     List<ApplicationDto> sameOrignApplications = getSameOrignLicenceidApplication(amendApplicationDtos,orignLicenceId);
-                     if(!IaisCommonUtils.isEmpty(sameOrignApplications) && licAppCorrelationDto!= null){
-                         for (ApplicationDto applicationDto1 : sameOrignApplications){
-                             applicationDto1.setOriginLicenceId(licAppCorrelationDto.getLicenceId());
-                             newAmendApplicationDtos.add(applicationDto1);
-                         }
-                     }
+            for(NotificateApplicationDto notificateApplicationDto : notificateApplicationDtoList){
+                List<ApplicationDto> notificateApplicationDtos = notificateApplicationDto.getNotificateApplicationDtos();
+                List<ApplicationDto> amendApplicationDtos = notificateApplicationDto.getAmendApplicationDtos();
+                //newNotificateApplicationDto
+                NotificateApplicationDto newNotificateApplicationDto = new NotificateApplicationDto();
+                //AppGroupMiscDto
+                AppGroupMiscDto appGroupMiscDto = notificateApplicationDto.getAppGroupMiscDto();
+                appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                newNotificateApplicationDto.setAppGroupMiscDto(appGroupMiscDto);
+                //newAmendApplicationDtos
+                if(!IaisCommonUtils.isEmpty(notificateApplicationDtos)){
+                    log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob notificateApplicationDtos.size() -->:"+ notificateApplicationDtos.size()));
+                    List<ApplicationDto> newAmendApplicationDtos = IaisCommonUtils.genNewArrayList();
+                    for(ApplicationDto applicationDto : notificateApplicationDtos){
+                        String orignLicenceId = applicationDto.getOriginLicenceId();
+                        log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob orignLicenceId -->:"+ orignLicenceId));
+                        String appId = applicationDto.getId();
+                        log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob appId -->:"+ appId));
+                        LicAppCorrelationDto licAppCorrelationDto = getLicAppCorrelationDtoByAppId(licAppCorrelationDtoList,appId);
+                        List<ApplicationDto> sameOrignApplications = getSameOrignLicenceidApplication(amendApplicationDtos,orignLicenceId);
+                        if(!IaisCommonUtils.isEmpty(sameOrignApplications) && licAppCorrelationDto!= null){
+                            for (ApplicationDto applicationDto1 : sameOrignApplications){
+                                applicationDto1.setOriginLicenceId(licAppCorrelationDto.getLicenceId());
+                                newAmendApplicationDtos.add(applicationDto1);
+                            }
+                        }
 
-                 }
-                  newNotificateApplicationDto.setAmendApplicationDtos(newAmendApplicationDtos);
-              }
-              AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
-              newNotificateApplicationDto.setAuditTrailDto(auditTrailDto);
-              appGroupMiscService.saveNotificateApplicationDto(newNotificateApplicationDto);
-          }
+                    }
+                    newNotificateApplicationDto.setAmendApplicationDtos(newAmendApplicationDtos);
+                }
+                AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+                newNotificateApplicationDto.setAuditTrailDto(auditTrailDto);
+                appGroupMiscService.saveNotificateApplicationDto(newNotificateApplicationDto);
+            }
         }else{
             log.info(StringUtil.changeForLog("do not have need update Nofificate application"));
         }
@@ -86,7 +89,6 @@ public class NotificationApplicationUpdateBatchjob {
         log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob end ..."));
 
     }
-
     private LicAppCorrelationDto getLicAppCorrelationDtoByAppId(List<LicAppCorrelationDto> licAppCorrelationDtoList,String appId){
         log.info(StringUtil.changeForLog("The getLicAppCorrelationDtoByAppId start ..."));
         LicAppCorrelationDto result = null;

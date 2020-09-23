@@ -143,6 +143,10 @@ public class LicenceApproveBatchjob {
     private Map<String, Integer> keyPersonnelVersion = IaisCommonUtils.genNewHashMap();
 
     public void doBatchJob(BaseProcessClass bpc) {
+        jobExecute();
+    }
+
+    public void jobExecute() {
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is start ..."));
         AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         int day = systemParamConfig.getLicGenDay();

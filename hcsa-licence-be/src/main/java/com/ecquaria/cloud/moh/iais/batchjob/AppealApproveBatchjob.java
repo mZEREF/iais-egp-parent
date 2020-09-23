@@ -108,6 +108,9 @@ public class AppealApproveBatchjob {
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
     public void doBatchJob(BaseProcessClass bpc) throws Exception {
+        jobExecute();
+    }
+    public void jobExecute() throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob is start ..."));
         List<AppealApproveGroupDto> appealApproveGroupDtos = appealService.getAppealApproveDtos();
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealApproveGroupDtos length is -->:"+appealApproveGroupDtos.size()));
@@ -203,6 +206,7 @@ public class AppealApproveBatchjob {
         }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob is end ..."));
     }
+
     private void appealApplicaiton( List<ApplicationDto> appealApplicaiton,
                                    List<ApplicationDto> rollBackApplication,
                                    List<AppSvcKeyPersonnelDto> appealPersonnel,
