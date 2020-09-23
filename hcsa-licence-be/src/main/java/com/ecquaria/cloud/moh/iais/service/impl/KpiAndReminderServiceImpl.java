@@ -57,7 +57,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
                 response.sendRedirect(tokenUrl);
                 return;
             } catch (IOException e) {
-               log.info(e.getMessage(),e);
+                log.info(e.getMessage(),e);
                 throw new IaisRuntimeException("tokenUrl Error!!!", e);
             }
 
@@ -73,15 +73,18 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
             }
 
 
-        HcsaSvcKpiDto parameter = null;
+        HcsaSvcKpiDto parameter;
         try {
             parameter = getParameter(request);
         } catch (ParseException e) {
           log.error(e.getMessage(),e);
+            throw new IaisRuntimeException("parameter is error", e);
         }
-        AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-        parameter.setAuditTrailDto(currentAuditTrailDto);
-        hcsaConfigClient.saveKpiAndReminder(parameter);
+        if(parameter != null) {
+            AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+            parameter.setAuditTrailDto(currentAuditTrailDto);
+            hcsaConfigClient.saveKpiAndReminder(parameter);
+        }
         request.setAttribute("message","You have successfully created required KPI");
         request.setAttribute("crud_action_type","submit");
     }
