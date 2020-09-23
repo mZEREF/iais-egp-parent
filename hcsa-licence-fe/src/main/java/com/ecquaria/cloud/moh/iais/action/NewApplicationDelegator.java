@@ -761,6 +761,27 @@ public class NewApplicationDelegator {
                         }
                         appSvcRelatedInfoDto.setAppSvcDisciplineAllocationDtoList(newDisciplineAllocations);
                     }
+                    //clear svc spec doc
+                    List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                    if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
+                        List<AppSvcDocDto> newAppSvcDocDtos = IaisCommonUtils.genNewArrayList();
+                        for(AppSvcDocDto appSvcDocDto:appSvcDocDtos){
+                            String docPremType = appSvcDocDto.getPremisesType();
+                            String docPremVal = appSvcDocDto.getPremisesVal();
+                            if(StringUtil.isEmpty(docPremType) && StringUtil.isEmpty(docPremVal)){
+                                newAppSvcDocDtos.add(appSvcDocDto);
+                            }else if(!StringUtil.isEmpty(docPremType) && !StringUtil.isEmpty(docPremVal)){
+                                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                                    String premIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+                                    String premType = appGrpPremisesDto.getPremisesType();
+                                    if (docPremVal.equals(premIndexNo) && docPremType.equals(premType)) {
+                                        newAppSvcDocDtos.add(appSvcDocDto);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                 }
                 appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
             }
