@@ -11,6 +11,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditCombinationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.PostInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -72,14 +74,13 @@ public class PostInspectionBatchJob {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         Map<String, List<String>> map = hcsaLicenceClient.getPostInspectionMap().getEntity();
-        List<String> licIds1 = IaisCommonUtils.genNewArrayList();
-        licIds1.add("8F3AD665-DAF3-EA11-8B79-000C293F0C99");
-        map.put("8A8F8861-03ED-EA11-8B79-000C293F0C99",licIds1);
+        log.debug(StringUtil.changeForLog("=============map size================"+map.size()));
         //insGrpId  licIds
         AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         String appType = ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION;
         String appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING;
         List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
+        List<String> insGrpIds = IaisCommonUtils.genNewArrayList();
         map.forEach((insGrpId, licIds) -> {
             String grpNo = beEicGatewayClient.getAppNo(appType, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
             List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity();
@@ -102,20 +103,30 @@ public class PostInspectionBatchJob {
                 setRiskToDto(entity);
                 appSubmissionDtos.add(entity);
             }
-            List<LicPremisesDto> licPremisesDtos = hcsaLicenceClient.getPremisesByLicIds(licIds).getEntity();
-            for(LicPremisesDto licPremisesDto :licPremisesDtos){
-                licPremisesDto.setIsPostInspNeeded(0);
+            insGrpIds.clear();
+            insGrpIds.add(insGrpId);
+            log.debug(StringUtil.changeForLog("=============insGrpIds size================"+insGrpIds.size()));
+            List<LicPremInspGrpCorrelationDto> licInsGrpDtos = hcsaLicenceClient.getLicInsGrpByIds(insGrpIds).getEntity();
+            if(!IaisCommonUtils.isEmpty(licInsGrpDtos)){
+                for(LicPremInspGrpCorrelationDto dto : licInsGrpDtos){
+                    dto.setAuditTrailDto(auditTrailDto);
+                }
             }
-
-        });
 //        List<AppSubmissionDto> entity = applicationClient.savePostSubmision(appSubmissionDtos).getEntity();
-        PostAppSubmissionDto postAppSubmissionDto = new PostAppSubmissionDto();
-        postAppSubmissionDto.setAppSubmissionDtos(appSubmissionDtos);
-//        postAppSubmissionDto.setLicPremInspGrpCorrelationDtos();
-        Long auto = System.currentTimeMillis();
-        String submissionId = generateIdClient.getSeqId().getEntity();
-        eventBusHelper.submitAsyncRequest(postAppSubmissionDto, submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                EventBusConsts.OPERATION_POST_INSPECTION_APP_LIC, auto.toString(), bpc.process);
+            PostInspectionDto postInspectionDto = new PostInspectionDto();
+            Long auto = System.currentTimeMillis();
+            String submissionId = generateIdClient.getSeqId().getEntity();
+            postInspectionDto.setSubmissionDtos(appSubmissionDtos);
+            postInspectionDto.setLicPremInspGrpCorrelationDtos(licInsGrpDtos);
+            postInspectionDto.setEventRefNo(grpNo);
+            log.debug(StringUtil.changeForLog("=============event bus start ================"));
+            //app
+            eventBusHelper.submitAsyncRequest(postInspectionDto, submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                    EventBusConsts.OPERATION_POST_INSPECTION_APP_LIC, grpNo, bpc.process);
+            //licence
+            eventBusHelper.submitAsyncRequest(postInspectionDto, submissionId, EventBusConsts.SERVICE_NAME_LICENCESAVE,
+                    EventBusConsts.OPERATION_POST_INSPECTION_APP_LIC, grpNo, bpc.process);
+        });
     }
 
 

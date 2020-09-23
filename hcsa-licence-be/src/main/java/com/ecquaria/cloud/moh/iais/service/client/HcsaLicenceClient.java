@@ -224,4 +224,7 @@ public interface HcsaLicenceClient {
 
     @GetMapping(value = "/hcsa-licence/group-licence-running-number")
     FeignResponseEntity<String> groupLicenceRunningNumber(@RequestParam("groupLicence")String groupLicence);
+
+    @PostMapping(value = "/hcsa-licence/list-lic-ins-grp-ids",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicPremInspGrpCorrelationDto>> getLicInsGrpByIds(@RequestBody List<String> ids);
 }

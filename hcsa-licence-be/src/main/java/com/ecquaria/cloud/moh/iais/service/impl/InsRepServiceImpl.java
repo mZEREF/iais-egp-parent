@@ -39,10 +39,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
-import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
@@ -936,36 +933,30 @@ public class InsRepServiceImpl implements InsRepService {
 
     @Override
     public void sendPostInsTaskFeData(String submissionId, String eventRefNum) throws FeignException {
-        log.info("call back ===================>>>>>");
+        log.info("post inspection call back start ===================>>>>>");
         List<ApplicationDto> postApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         //appGrp --------app -------task    submissionId   operation yiyang    update licPremise
         List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
         List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
         if (!postApps.isEmpty()) {
-            for (ApplicationDto applicationDto : postApps) {
-                String licenceId = applicationDto.getOriginLicenceId();
-                List<String> licIds = IaisCommonUtils.genNewArrayList();
-                licIds.clear();
-                licIds.add(licenceId);
-                List<ApplicationDto> applicationDtos = applicationClient.getApplicationDtosByIds(licIds).getEntity();
-                String applicationType = applicationDtos.get(0).getApplicationType();
-                applicationDto.setApplicationType(applicationType);
-                String corrId = applicationClient.getCorrIdByAppId(applicationDto.getId()).getEntity();
-                TaskDto taskDto = taskService.getRoutingTask(applicationDto, HcsaConsts.ROUTING_STAGE_INS, RoleConsts.USER_ROLE_INSPECTIOR, corrId);
-                taskDtos.add(taskDto);
-                String appGrpId = applicationDto.getAppGrpId();
-                appGrpIds.add(appGrpId);
+            TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(postApps, HcsaConsts.ROUTING_STAGE_INS, RoleConsts.USER_ROLE_INSPECTIOR, auditTrailDto);
+            taskDtos = taskHistoryDto.getTaskDtoList();
+            log.info("==================taskDtos ===================>>>>>"+taskDtos.size());
+            for(TaskDto taskDto : taskDtos){
+                taskDto.setEventRefNo(eventRefNum);
             }
         }
         try {
+            log.info("==================eventBus Start  ===================>>>>>");
             eventBusHelper.submitAsyncRequest(taskDtos, submissionId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK, EventBusConsts.OPERATION_POST_INSPECTION_TASK, eventRefNum, null);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-        log.info(StringUtil.changeForLog("taskDtos ===================>>>>>Success" + taskDtos.size()));
-        String data = applicationClient.getBeData(appGrpIds).getEntity();
-        ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(data, ApplicationListFileDto.class);
-        log.info(StringUtil.changeForLog("applicationGroupId ===================>>>>>Success" + applicationListDto.getApplicationGroup().get(0).getId()));
+        log.info(StringUtil.changeForLog("=======================taskDtos ===================>>>>>Success"));
+//        String data = applicationClient.getBeData(appGrpIds).getEntity();
+//        ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(data, ApplicationListFileDto.class);
+//        log.info(StringUtil.changeForLog("applicationGroupId ===================>>>>>Success" + applicationListDto.getApplicationGroup().get(0).getId()));
     }
 
     @Override

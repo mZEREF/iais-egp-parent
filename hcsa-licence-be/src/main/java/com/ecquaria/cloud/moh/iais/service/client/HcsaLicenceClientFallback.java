@@ -507,4 +507,9 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<LicPremInspGrpCorrelationDto>> getLicInsGrpByIds(List<String> ids) {
+        return null;
+    }
 }
