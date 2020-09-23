@@ -32,7 +32,7 @@
 			<%}%>
 
 		</c:url>
-		<a href="#">
+		<a href="/system-admin-web/eservice/INTRANET/PersonelProfile">
 			<div class="sidebar-profile-image">
 			<c:if test="${existImg eq 'true'}">
 				<img class="img-circle img-responsive"  alt="Profile Picture" src="<c:out value="${pictureLink}" />">
@@ -43,8 +43,7 @@
 			</div>
 	<div class="sidebar-profile-details">
 		<span style="text-align: center"><small>Welcome</small><br>
-		<a href="/system-admin-web/eservice/INTRANET/PersonelProfile">
-			<%=currentUser==null ? "-" : StringUtil.viewHtml(currentUser.getDisplayName())%></a></span>
+			<%=currentUser==null ? "-" : StringUtil.viewHtml(currentUser.getDisplayName())%></span>
 	</div>
 		</a>
 		<a href="${pageContext.request.contextPath}/eservice/INTRANET/IntraLogout">
