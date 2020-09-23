@@ -65,6 +65,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Value("${iais.current.domain}")
     private String currentDomain;
 
+    @Value("${moh.halp.acra.enable}")
+    private String enableAcra;
+
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
 
@@ -183,10 +186,12 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         FeignResponseEntity<OrganizationDto> result = feUserClient.createCorpPassUser(organizationDto);
         OrganizationDto postCreate = result.getEntity();
 
-        if (postCreate != null && !StringUtil.isEmpty(postCreate.getUenNo())){
+        //if enable acra, licensee info create by this method
+        if (postCreate != null && !StringUtil.isEmpty(postCreate.getUenNo()) && "Y".equals(enableAcra)){
             eicGatewayFeMainClient.getUen(postCreate.getUenNo());
             return syncAccountInformationToBackend(postCreate);
         }
+
         return null;
     }
 
