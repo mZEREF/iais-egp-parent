@@ -18,7 +18,7 @@
             <div class="col-lg-12 col-xs-12">
                 <div class="internet-content">
                     <div class="center-content">
-                        <h2>You are withdrawing for</h2>
+                        <h2>You are withdrawing for </h2>
                         <div class="row">
                             <div class="col-lg-8 col-xs-12">
                                 <div class="withdraw-content-box">
@@ -32,12 +32,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-xs-12">
-                                <div class="withdraw-addmore gradient-light-grey">
-                                    <a href="#newappModal" data-toggle="modal" data-target="#newappModal"><h4><em
-                                            class="fa fa-plus-circle"></em> Add more applications</h4></a> <%--NOSONAR--%>
                                 </div>
                             </div>
                         </div>
@@ -72,14 +66,14 @@
                                 <iais:select name="withdrawalReason" id="withdrawalReason"
                                              options="withdrawalReasonList"
                                              onchange="withdrawalReasons(this.value);"
-                                             value="${applicationNo.withdrawnReason}"/>
+                                             value="${rfiWithdrawDto.withdrawnReason}"/>
                                 <span id="error_withdrawnReason" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                     </div>
 
                     <div id="reason"
-                         <c:if test="${applicationNo.withdrawnReason != 'WDR005' || applicationNo.withdrawnReason== null}">hidden</c:if>>
+                         <c:if test="${rfiWithdrawDto.withdrawnReason != 'WDR005' || rfiWithdrawDto.withdrawnReason== null}">hidden</c:if>>
                         <div class="row">
                             <div class="center-content">
                                 <label class="col-md-4" style="font-size:2rem">Remarks<span style="color: red"> *</span></label>
@@ -91,7 +85,7 @@
                                     <div class="file-upload-gp">
                                             <textarea name="withdrawnRemarks" cols="90" rows="15" id="withdrawnRemarks"
                                                       title="content"
-                                                      maxlength="500">${applicationNo.withdrawnRemarks}</textarea>
+                                                      maxlength="500">${rfiWithdrawDto.withdrawnRemarks}</textarea>
                                     </div>
                                     <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>

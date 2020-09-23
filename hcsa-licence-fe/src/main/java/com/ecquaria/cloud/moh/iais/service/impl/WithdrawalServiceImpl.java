@@ -2,7 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -11,9 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -144,6 +141,42 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 }
             });
         }
+    }
+
+    @Override
+    public void saveRfiWithdrawn(List<WithdrawnDto> withdrawnDtoList) {
+        withdrawnDtoList.forEach(h -> {
+            String appId = h.getNewApplicationId();
+            ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
+            String originLicenceId = applicationDto.getOriginLicenceId();
+            List<String> licIds = IaisCommonUtils.genNewArrayList();
+            licIds.add(originLicenceId);
+            AppSubmissionDto appSubmissionDto = applicationClient.getAppSubmissionDtoByAppNo(applicationDto.getApplicationNo()).getEntity();
+            transformRfi(appSubmissionDto, h.getLicenseeId(), applicationDto);
+        });
+        List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
+    }
+
+    private void transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) {
+        AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
+        appSubmissionRequestInformationDto.setOldAppSubmissionDto(appSubmissionDto);
+        Double amount = 0.0;
+        AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
+        appSubmissionDto.setAppGrpId(applicationDto.getAppGrpId());
+        ApplicationGroupDto entity1 = applicationClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
+        appSubmissionDto.setFromBe(false);
+        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
+        appSubmissionDto.setAppGrpNo(entity1.getGroupNo());
+        appSubmissionDto.setAmount(amount);
+        appSubmissionDto.setAuditTrailDto(internet);
+        appSubmissionDto.setPreInspection(true);
+        appSubmissionDto.setRequirement(true);
+        appSubmissionDto.setLicenseeId(licenseeId);
+        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+        setRiskToDto(appSubmissionDto);
+        appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
+        applicationClient.saveRfcWithdrawSubmission(appSubmissionRequestInformationDto).getEntity();
     }
 
     @Override

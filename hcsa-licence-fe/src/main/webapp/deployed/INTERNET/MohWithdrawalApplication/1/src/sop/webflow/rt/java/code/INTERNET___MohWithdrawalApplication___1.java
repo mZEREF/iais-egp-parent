@@ -38,4 +38,8 @@ public class INTERNET___MohWithdrawalApplication___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "withdrawDoRfi", this);
 	}
 
+	public void prepareRfiDate_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "prepareRfiDate", this);
+	}
+
 }

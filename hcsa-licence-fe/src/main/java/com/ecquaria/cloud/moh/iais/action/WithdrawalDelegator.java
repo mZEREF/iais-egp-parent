@@ -30,6 +30,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -72,15 +73,16 @@ public class WithdrawalDelegator {
         }
         AuditTrailHelper.auditFunction("Withdrawal Application", "Withdrawal Application");
 
-        String rfiWithdrawAppNo = ParamUtil.getMaskedString(bpc.request,"rfiWithdrawAppNo");
+        String rfiWithdrawAppNo = ParamUtil.getString(bpc.request,"rfiWithdrawAppNo");
 
         if (!StringUtil.isEmpty(rfiWithdrawAppNo)){
             WithdrawnDto withdrawnDto = withdrawalService.getWithdrawAppInfo(rfiWithdrawAppNo);
             ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", withdrawnDto);
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "doRfi");
+        }else{
+            ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", null);
+            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "");
         }
-        ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", null);
-        ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "");
     }
 
     public void prepareDate(BaseProcessClass bpc){
@@ -149,12 +151,42 @@ public class WithdrawalDelegator {
     }
 
     public void withdrawalStep(BaseProcessClass bpc) throws Exception {
-        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String isValid = IaisEGPConstant.YES;
+        List<WithdrawnDto> withdrawnDtoList = getWithdrawAppList(bpc,isValid);
+        if (withdrawnDtoList != null && withdrawnDtoList.size() > 0){
+            withdrawalService.saveWithdrawn(withdrawnDtoList);
+        }
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,isValid);
+    }
 
+    public void withdrawDoRfi(BaseProcessClass bpc) throws IOException {
+        log.debug(StringUtil.changeForLog("****The withdrawDoRfi Step****"));
+        String isValid = IaisEGPConstant.YES;
+        List<WithdrawnDto> withdrawnDtoList = getWithdrawAppList(bpc,isValid);
+        if (withdrawnDtoList != null && withdrawnDtoList.size() > 0){
+//            withdrawalService.saveWithdrawn(withdrawnDtoList);
+            withdrawalService.saveRfiWithdrawn(withdrawnDtoList);
+        }
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,isValid);
+    }
+
+    public void prepareRfiDate(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("****The saveDateStep Step****"));
+        prepareDate(bpc);
+        WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
+        withdrawnDto.setLicenseeId(loginContext.getLicenseeId());
+        ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", withdrawnDto);
+    }
+
+    public void saveDateStep(BaseProcessClass bpc) throws IOException {
+        log.debug(StringUtil.changeForLog("****The saveDateStep Step****"));
+    }
+
+    private List<WithdrawnDto> getWithdrawAppList(BaseProcessClass bpc,String isValid) throws IOException {
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String withdrawnReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
         String paramAppNos = ParamUtil.getString(mulReq, "withdraw_app_list");
         List<WithdrawnDto> withdrawnDtoList = IaisCommonUtils.genNewArrayList();
-        String isValid = IaisEGPConstant.YES;
         if (!StringUtil.isEmpty(paramAppNos)){
             String[] withdrawAppNos = paramAppNos.split("#");
             for (int i =0;i<withdrawAppNos.length;i++){
@@ -204,20 +236,7 @@ public class WithdrawalDelegator {
                     withdrawnDtoList.add(withdrawnDto);
                 }
             }
-            withdrawalService.saveWithdrawn(withdrawnDtoList);
         }
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,isValid);
-    }
-
-    public void withdrawDoRfi(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("****The withdrawDoRfi Step****"));
-        prepareDate(bpc);
-        WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
-        withdrawnDto.setLicenseeId(loginContext.getLicenseeId());
-        ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", withdrawnDto);
-    }
-
-    public void saveDateStep(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("****The saveDateStep Step****"));
+        return withdrawnDtoList;
     }
 }

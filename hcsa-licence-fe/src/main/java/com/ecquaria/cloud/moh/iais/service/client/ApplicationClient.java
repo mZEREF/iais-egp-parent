@@ -318,4 +318,7 @@ public interface ApplicationClient  {
 
     @GetMapping(value = "/iais-application/rfi-withdrawal-info",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<WithdrawnDto> getWithdrawAppInfo(@RequestParam("appNo") String appNo);
+
+    @PostMapping(path = "/iais-submission/requestForInformation-withdrawal", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppSubmissionDto> saveRfcWithdrawSubmission(@RequestBody AppSubmissionRequestInformationDto appSubmissionRequestInformationDto);
 }
