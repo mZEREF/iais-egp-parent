@@ -75,7 +75,7 @@
                                                                      id="${num.count}reasonId${uid.count}"
                                                                      options="reasonOption" firstOption="Please Select"
                                                                      onchange="javascirpt:changeReason(this.value);"
-                                                                     value="${appCessHci.reason}"/>
+                                                                     value="${appCessHci.reason}" cssClass="nice-select cessationReasons"/>
                                                     </iais:value>
                                                 </iais:row>
                                                 <div id="${num.count}reason${uid.count}" hidden>
@@ -106,7 +106,7 @@
                                                                                    aria-invalid="false">
                                                                             <label class="form-check-label"
                                                                                    for=${num.count}radioYes${uid.count}"><span
-                                                                                    class="check-circle"></span>Yes</label>
+                                                                                    class="check-square"></span>Yes</label>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-xs-12 col-md-3">
@@ -121,7 +121,7 @@
                                                                                    aria-invalid="false">
                                                                             <label class="form-check-label"
                                                                                    for="${num.count}radioNo${uid.count}"><span
-                                                                                    class="check-circle"></span>No</label>
+                                                                                    class="check-square"></span>No</label>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -141,7 +141,7 @@
                                                                     firstOption="Please Select"
                                                                     id="${num.count}patientSelectId${uid.count}"
                                                                     onchange="javascirpt:changePatient(this.value);"
-                                                                    value="${appCessHci.patientSelect}"/>
+                                                                    value="${appCessHci.patientSelect}" cssClass="nice-select cessationTransfer"/>
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>

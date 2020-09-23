@@ -53,7 +53,7 @@ public class CessationApplicationBeDelegator {
     private static final String PATHCINAME = "patHciName";
     private static final String PATREGNO = "patRegNo";
     private static final String PATOTHERS = "patOthers";
-    private static final String ERROR = "ERR0009";
+    private static final String ERROR = "GENERAL_ERR0006";
 
 
     public void start(BaseProcessClass bpc) {
