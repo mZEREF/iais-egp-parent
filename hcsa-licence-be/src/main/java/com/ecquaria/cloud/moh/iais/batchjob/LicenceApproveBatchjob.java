@@ -1600,6 +1600,7 @@ public class LicenceApproveBatchjob {
                 try {
                     String licenceNo = originLicenceDto.getLicenceNo();
                     int premiseSize = originLicenceDto.getPremiseSize();
+                    log.info(StringUtil.changeForLog("============premiseSize=================="+premiseSize));
                     String s = hcsaLicenceClient.groupLicenceRunningNumber(licenceNo).getEntity();
                     String ceasedLicNo = systemBeLicClient.groupLicenceByGroupLicenceNo(licenceNo, s,premiseSize).getEntity();
                     licenceDto.setCesedLicNo(ceasedLicNo);
