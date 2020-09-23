@@ -1236,6 +1236,8 @@ public class NewApplicationDelegator {
                 } catch (Exception e) {
                     log.error(StringUtil.changeForLog("send email error ...."));
                 }
+            }else{
+                switch2 = "payFailed";
             }
         }
 
@@ -2142,6 +2144,19 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
 
+    public void reSubmit(BaseProcessClass bpc) throws Exception {
+        log.info(StringUtil.changeForLog("do reSubmit start ..."));
+        String draftNo = ParamUtil.getMaskedString(bpc.request,"draftNo");
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(bpc.request.getServerName())
+                .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication?DraftNumber=")
+                .append(MaskUtil.maskValue("DraftNumber",draftNo));
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+        bpc.response.sendRedirect(tokenUrl);
+
+        log.info(StringUtil.changeForLog("do reSubmit end ..."));
+    }
+
     private List<AppGrpPremisesDto> groupLicecePresmiseChange(List<AppGrpPremisesDto> appGrpPremisesDtos,List<AppGrpPremisesDto> oldAppGrpPremisesDtos){
         if(appGrpPremisesDtos==null || oldAppGrpPremisesDtos==null){
             return new ArrayList<>();
@@ -2831,7 +2846,7 @@ public class NewApplicationDelegator {
                 crudActionValue = "saveDraft";
             }
         }
-        if ("saveDraft".equals(crudActionValue) || "ack".equals(crudActionValue)) {
+        if ("saveDraft".equals(crudActionValue) || "ack".equals(crudActionValue) || "payFailed".equals(crudActionValue)) {
             switch2 = crudActionValue;
         } else if ("doSubmit".equals(crudActionValue)) {
             if (requestInformationConfig == null) {
