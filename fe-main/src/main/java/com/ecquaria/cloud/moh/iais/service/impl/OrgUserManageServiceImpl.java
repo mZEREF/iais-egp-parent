@@ -185,14 +185,17 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     public FeUserDto createCorpPassUser(OrganizationDto organizationDto) {
         FeignResponseEntity<OrganizationDto> result = feUserClient.createCorpPassUser(organizationDto);
         OrganizationDto postCreate = result.getEntity();
-
-        //if enable acra, licensee info create by this method
-        if (postCreate != null && !StringUtil.isEmpty(postCreate.getUenNo()) && "Y".equals(enableAcra)){
-            eicGatewayFeMainClient.getUen(postCreate.getUenNo());
-            return syncAccountInformationToBackend(postCreate);
+        if (postCreate == null){
+            // sonar check
+            return null;
         }
 
-        return null;
+        //if enable acra, licensee info create by this method
+        if (!StringUtil.isEmpty(postCreate.getUenNo()) && "Y".equals(enableAcra)){
+            eicGatewayFeMainClient.getUen(postCreate.getUenNo());
+        }
+
+        return syncAccountInformationToBackend(postCreate);
     }
 
     @Override
