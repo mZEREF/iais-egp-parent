@@ -71,6 +71,7 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
             List<EicRequestTrackingDto> sysList = eicClient.getPendingRecords(moduleName).getEntity();
             List<EicRequestTrackingDto> apptList = onlineApptEicClient.getPendingRecords(moduleName).getEntity();
             AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(currentDomain);
+            AuditTrailDto.setThreadDto(auditTrailDto);
             if (!IaisCommonUtils.isEmpty(atList)) {
                 atList.forEach(ert -> {
                     reTrigger(ert, auditTrailDto);
