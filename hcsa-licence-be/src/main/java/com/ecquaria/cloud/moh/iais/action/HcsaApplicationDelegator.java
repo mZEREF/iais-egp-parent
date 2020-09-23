@@ -106,7 +106,6 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationProcessUploadFileValidate;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
 import com.ecquaria.cloudfeign.FeignException;
-import com.ecquaria.csrfguard.action.IAction;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -2035,13 +2034,17 @@ public class HcsaApplicationDelegator {
                 if(IaisCommonUtils.isEmpty(applicationDtoList) || applicationDtoList.size() == 1){
                     return;
                 }else{
-                    if(!(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(currentOldApplicationStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(currentOldApplicationStatus))){
+                    boolean isAllSubmitAO3 = applicationService.isOtherApplicaitonSubmit(applicationDtoList,currentOldApplicationNo,
+                            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+                    if(!(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(currentOldApplicationStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(currentOldApplicationStatus))
+                            || (isAllSubmitAO3 && (ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(currentOldApplicationStatus)))){
                         //!(ao2 || ao3)
                         boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,currentOldApplicationNo,
                                 ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
                         if(isAllSubmit){
                             String stageId = HcsaConsts.ROUTING_STAGE_AO3;
                             String roleId = RoleConsts.USER_ROLE_AO3;
+                            updateCurrentApplicationStatus(applicationDtoList,oldAppId,ApplicationConsts.APPLICATION_STATUS_WITHDRAWN);
                             List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
                             List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
                             List<ApplicationDto> creatTaskApplicationList = ao2AppList;
@@ -2244,6 +2247,16 @@ public class HcsaApplicationDelegator {
                     applicationDto.setIsCharity(isCharity);
                     applicationDto.setStatus(status);
                     applicationDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
+                }
+            }
+        }
+    }
+
+    private void updateCurrentApplicationStatus(List<ApplicationDto> applicationDtos,String applicationId,String status){
+        if(!IaisCommonUtils.isEmpty(applicationDtos) && !StringUtil.isEmpty(applicationId)){
+            for (ApplicationDto applicationDto : applicationDtos){
+                if(applicationId.equals(applicationDto.getId())){
+                    applicationDto.setStatus(status);
                 }
             }
         }
