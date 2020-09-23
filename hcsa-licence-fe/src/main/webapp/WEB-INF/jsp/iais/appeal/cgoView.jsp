@@ -249,7 +249,7 @@
                                               <span class="error-msg" name="iaisErrorMsg" id="error_speciality${status.index}"></span>
                                             </c:when>
                                             <c:otherwise>
-                                              <iais:select disabled="true" cssClass="specialty" name="specialty" options="SpecialtySelectList" value="other" ></iais:select>
+                                              <iais:select disabled="true" cssClass="specialty" name="specialty" options="SpecialtySelectList" value="${currentCgo.speciality}" ></iais:select>
                                               <span class="error-msg" name="iaisErrorMsg" id="error_speciality${status.index}"></span>
                                             </c:otherwise>
                                           </c:choose>
