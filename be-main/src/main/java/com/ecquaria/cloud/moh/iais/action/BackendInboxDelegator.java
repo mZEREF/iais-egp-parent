@@ -813,16 +813,23 @@ public class BackendInboxDelegator {
                 }
                 List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
                 applicationDtoList = removeFastTracking(applicationDtoList);
-                boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+                boolean isAllSubmit = false;
+                if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)){
+                    isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
+                            appStatus);
+                }else{
+                    isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
+                            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+                }
+
                 log.debug(StringUtil.changeForLog("isAllSubmit is " + isAllSubmit));
                 if(isAllSubmit){
                     List<ApplicationDto> saveApplicationDtoList = IaisCommonUtils.genNewArrayList();
                     CopyUtil.copyMutableObjectList(applicationDtoList,saveApplicationDtoList);
                     //update current application status in db search result
                     updateCurrentApplicationStatus(bpc,saveApplicationDtoList,licenseeId);
-                    List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
-                    List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+                    List<ApplicationDto> ao2AppList = getStatusAppList(saveApplicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+                    List<ApplicationDto> ao3AppList = getStatusAppList(saveApplicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
                     List<ApplicationDto> creatTaskApplicationList = ao2AppList;
                     //routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO2,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,RoleConsts.USER_ROLE_AO2);
                     if(IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)){
@@ -981,6 +988,8 @@ public class BackendInboxDelegator {
         }
         return  result;
     }
+
+
 
     private void updateCurrentApplicationStatus(BaseProcessClass bpc,List<ApplicationDto> applicationDtos,String licenseeId) {
         Map<String, String> returnFee = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request, "BackendInboxReturnFee");
