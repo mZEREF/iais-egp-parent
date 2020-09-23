@@ -109,8 +109,8 @@
     <div class="form-group">
       <div >
         <div>
-          <div class="col-xs-12 col-md-10" >
-            <label style="font-size: 25px;margin-top: 25px;margin-left: 1%" >File Upload For Appeal Reasons</label>
+          <div class="col-xs-12 col-md-10" style="margin-left: 2%">
+            <label style="font-size: 25px;margin-top: 25px;" >File Upload For Appeal Reasons</label>
           </div>
 
           <div class="col-xs-12" style="margin-bottom: 20px;">

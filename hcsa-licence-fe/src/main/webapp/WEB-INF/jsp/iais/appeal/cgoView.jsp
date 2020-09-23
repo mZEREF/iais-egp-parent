@@ -67,7 +67,7 @@
                                       </div>
                                     </c:if>
                                     <div class="hidden">
-                                      <iais:select disabled="disabled" cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
+                                      <iais:select disabled="true" cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
                                     </div>
                                   </div>
                                   <div class="col-sm-10">
@@ -101,24 +101,10 @@
                                 </div>
                               </div>
                             </div>
-                            <div id="control--runtime--2" class="control control-caption-horizontal">
-                              <div class=" form-group form-horizontal formgap">
-                                <div class="col-sm-5 control-label formtext ">
-                                  <label id="control--runtime--2--label" class="control-label control-set-font control-font-label" >Add/Assign a Clinical Governance Officer</label>
-                                  <span class="upload_controls"></span>
-                                </div>
-                                <div class="col-sm-5 col-md-7" id="assignSelect${suffix}">
-                                  <div >
-                                    <iais:select disabled="disabled" cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
-                                    <span class="error-msg" name="iaisErrorMsg" id="error_assignSelect${status.index}"></span>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
                           </c:otherwise>
                         </c:choose>
                         <div class="profile-info-gp hidden"></div>
-                        <div id="newOfficer" class="new-officer-form hidden">
+                        <div id="newOfficer" class="new-officer-form" style="margin-top: 50px;">
                           <table class="control-grid" >
                             <tbody>
                             <tr height="1">
@@ -133,7 +119,7 @@
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-3" id="salutation${suffix}">
-                                      <iais:select disabled="disabled" cssClass="salutationSel"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${currentCgo.salutation}" firstOption="Please Select"></iais:select>
+                                      <iais:select disabled="true" cssClass="salutationSel"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${currentCgo.salutation}" firstOption="Please Select"></iais:select>
                                       <span class="error-msg" name="iaisErrorMsg" id="error_salutation${status.index}"></span>
                                     </div>
                                     <div class="col-sm-3 col-md-4" id="name${suffix}">
@@ -159,7 +145,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-3" id="idType${suffix}">
                                       <div class="">
-                                        <iais:select disabled="disabled" cssClass="idTypeSel"  name="idType" value="${currentCgo.idType}" options="IdTypeSelect"></iais:select>
+                                        <iais:select disabled="true" cssClass="idTypeSel"  name="idType" value="${currentCgo.idType}" options="IdTypeSelect"></iais:select>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_idTyp${status.index}"></span>
                                       </div>
                                     </div>
@@ -198,7 +184,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-7" id="designation${suffix}">
                                       <div class="">
-                                        <iais:select disabled="disabled" cssClass="designationSel" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${currentCgo.designation}" firstOption="Please Select"></iais:select>
+                                        <iais:select disabled="true" cssClass="designationSel" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${currentCgo.designation}" firstOption="Please Select"></iais:select>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_designation${status.index}"></span>
                                       </div>
                                     </div>
@@ -217,7 +203,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-7" id="professionType${suffix}">
                                       <div class="professionRegoType">
-                                        <iais:select disabled="disabled" cssClass="professionTypeSel" name="professionType" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${currentCgo.professionType}" firstOption="Please Select"></iais:select>
+                                        <iais:select disabled="true" cssClass="professionTypeSel" name="professionType" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${currentCgo.professionType}" firstOption="Please Select"></iais:select>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_professionType${status.index}"></span>
                                       </div>
                                     </div>
@@ -263,7 +249,7 @@
                                               <span class="error-msg" name="iaisErrorMsg" id="error_speciality${status.index}"></span>
                                             </c:when>
                                             <c:otherwise>
-                                              <iais:select disabled="disabled" cssClass="specialty" name="specialty" options="SpecialtySelectList" value="${currentCgo.speciality}" ></iais:select>
+                                              <iais:select disabled="true" cssClass="specialty" name="specialty" options="SpecialtySelectList" value="other" ></iais:select>
                                               <span class="error-msg" name="iaisErrorMsg" id="error_speciality${status.index}"></span>
                                             </c:otherwise>
                                           </c:choose>
@@ -357,12 +343,6 @@
           </td>
         </tr>
         <hr/>
-          <tr id="addInfo" <c:if test="${CgoMandatoryCount >0}">hidden </c:if>>
-            <td>
-              <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Clinical Governance Officer</span>
-              <div> <span class="error-msg" id="error_addCgo" name="iaisErrorMsg"></span></div>
-            </td>
-          </tr>
         </tbody>
       </table>
     </div>
