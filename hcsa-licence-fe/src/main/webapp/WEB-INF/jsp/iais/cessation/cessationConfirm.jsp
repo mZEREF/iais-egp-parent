@@ -95,14 +95,13 @@
                                                             <div class="form-check-gp">
                                                                 <div class="row">
                                                                     <div class="col-xs-12 col-md-3">
-                                                                        <div class="form-check">
+                                                                        <div class="form-check disabled">
                                                                             <input class="form-check-input"
                                                                                    type="radio"
                                                                                    name="${num.count}patRadio${uid.count}"
                                                                                    value="yes"
                                                                                    id="${num.count}radioYes${uid.count}"
                                                                                    <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if>
-                                                                                   aria-invalid="false"
                                                                                    disabled>
                                                                             <label class="form-check-label"
                                                                                    for=${num.count}radioYes${uid.count}"><span
@@ -110,13 +109,12 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-xs-12 col-md-3">
-                                                                        <div class="form-check">
+                                                                        <div class="form-check disabled">
                                                                             <input class="form-check-input" type="radio"
                                                                                    name="${num.count}patRadio${uid.count}"
                                                                                    value="no"
                                                                                    id="${num.count}radioNo${uid.count}"
                                                                                    <c:if test="${appCessHci.patNeedTrans == false}">checked</c:if>
-                                                                                   aria-invalid="false"
                                                                                    disabled>
                                                                             <label class="form-check-label"
                                                                                    for="${num.count}radioNo${uid.count}"><span
@@ -192,7 +190,7 @@
                                                                 <div class="form-check-gp">
                                                                     <div class="row">
                                                                         <div class="col-xs-12 col-md-2">
-                                                                            <div class="form-check">
+                                                                            <div class="form-check disabled">
                                                                                 <input class="form-check-input"
                                                                                        id="icon5checkboxSample"
                                                                                        type="checkbox"
@@ -270,7 +268,7 @@
                             clinic or other healthcare institution to which such patient is to be transferred.</p>
                     </li>
                 </ul>
-                <div class="form-check">
+                <div class="form-check disabled">
                     <input class="form-check-input" id="confirmInfo" disabled type="radio"
                            name="${num.count}whichTodo${uid.count}" checked aria-invalid="false">
                     <label class="form-check-label" for="confirmInfo"><span class="check-square"></span>I have read and
