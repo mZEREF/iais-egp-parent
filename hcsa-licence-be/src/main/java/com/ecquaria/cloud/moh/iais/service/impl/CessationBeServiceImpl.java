@@ -532,16 +532,15 @@ public class CessationBeServiceImpl implements CessationBeService {
     }
 
     private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList, String serviceCode) {
-        RiskResultDto result = null;
         if (riskResultDtoList == null || StringUtil.isEmpty(serviceCode)) {
             return null;
         }
         for (RiskResultDto riskResultDto : riskResultDtoList) {
             if (serviceCode.equals(riskResultDto.getSvcCode())) {
-                result = riskResultDto;
+                return riskResultDto;
             }
         }
-        return result;
+        return null;
     }
 
     private List<LicenceDto> updateLicenceStatus(List<LicenceDto> licenceDtos, Date date) {
