@@ -1,8 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
@@ -21,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
@@ -30,15 +34,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorr
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -57,6 +60,7 @@ import sop.webflow.rt.api.Process;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * AppSubmisionServiceImpl
@@ -99,7 +103,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private FeMessageClient feMessageClient;
     @Autowired
     private AppSubmissionService appSubmissionService;
-
+    @Autowired
+    private SystemParamConfig systemParamConfig;
+    @Autowired
+    private NotificationHelper notificationHelper;
 
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
@@ -108,6 +115,69 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         //asynchronous save the other data.
         eventBus(appSubmissionDto, process);
         return appSubmissionDto;
+    }
+    @Override
+    public void sendEmailAndSMSAndMessage(AppSubmissionDto appSubmissionDto,String applicantName){
+        try{
+            ApplicationDto applicationDto =  appSubmissionDto.getApplicationDtos().get(0);
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("MOH IAIS - Your ").append( MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType())).append(',').append(applicationDto.getAlignLicenceNo()).append(" has been submitted");
+            String subject = stringBuilder.toString();
+            Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
+            templateContent.put("ApplicantName", applicantName);
+            templateContent.put("ApplicationType",  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+            templateContent.put("ApplicationNo", applicationDto.getApplicationNo());
+            templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+            templateContent.put("systemLink", loginUrl);
+            String paymentMethodName = "onlinePayment";
+            if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(appSubmissionDto.getPaymentMethod())) {
+                paymentMethodName = "GIRO";
+                //need change giro
+            }
+            templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
+            templateContent.put("paymentMethod", paymentMethodName);
+            templateContent.put("paymentAmount", appSubmissionDto.getAmountStr());
+            String syName = "<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"<br/>"+AppConsts.MOH_AGENCY_NAME+"</b>";
+            templateContent.put("MOH_AGENCY_NAME",syName);
+            EmailParam emailParam = new EmailParam();
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL );
+            emailParam.setTemplateContent(templateContent);
+            emailParam.setSubject(subject);
+            emailParam.setQueryCode(applicationDto.getApplicationNo());
+            emailParam.setReqRefNum(applicationDto.getApplicationNo());
+            emailParam.setRefId(applicationDto.getApplicationNo());
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+            notificationHelper.sendNotification(emailParam);
+
+            EmailParam smsParam = new EmailParam();
+            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_SMS);
+            smsParam.setSubject(subject);
+            smsParam.setQueryCode(applicationDto.getApplicationNo());
+            smsParam.setReqRefNum(applicationDto.getApplicationNo());
+            smsParam.setRefId(applicationDto.getApplicationNo());
+            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+            notificationHelper.sendNotification(smsParam);
+
+            EmailParam msgParam = new EmailParam();
+            msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_MSG);
+            msgParam.setTemplateContent(templateContent);
+            msgParam.setSubject(subject);
+            msgParam.setQueryCode(applicationDto.getApplicationNo());
+            msgParam.setReqRefNum(applicationDto.getApplicationNo());
+            msgParam.setRefId(applicationDto.getApplicationNo());
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+            svcCodeList.add(appSvcRelatedInfoDtoList.get(0).getServiceCode());
+            msgParam.setSvcCodeList(svcCodeList);
+            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            notificationHelper.sendNotification(msgParam);
+            log.info("end send email sms and msg");
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            log.info("send app sumbit email fail");
+        }
+
     }
 
     @Override

@@ -73,4 +73,5 @@ public interface AppSubmissionService {
     Boolean isNewLicensee(String licenseeId);
     InterMessageDto getInterMessageBySubjectLike(String subject,String status);
     AppGrpPremisesEntityDto getPremisesByAppNo(String appNo);
+    void sendEmailAndSMSAndMessage(AppSubmissionDto appSubmissionDto,String applicantName);
 }
