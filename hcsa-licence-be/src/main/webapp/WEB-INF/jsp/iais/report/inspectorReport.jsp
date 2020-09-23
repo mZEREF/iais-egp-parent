@@ -389,7 +389,7 @@
             <div class="col-xs-12">
                 <div class="table-gp">
                     <table class="table">
-                        <c:if test="${appType!='APTY005'}">
+                        <c:if test="${appType!='APTY005' && appType!='APTY006' && appType!='APTY008' && appType!='APTY001'}">
                             <tr>
                                 <td class="col-xs-4">
                                     <p>Recommendation <strong style="color:#ff0000;"> *</strong></p>
@@ -437,7 +437,7 @@
                                 </tr>
                             </c:if>
                         </c:if>
-                        <c:if test="${appType=='APTY005'}">
+                        <c:if test="${appType=='APTY005' || appType=='APTY006' || appType=='APTY008' || appType=='APTY001'}">
                             <tr>
                                 <td class="col-xs-4">
                                     <p>Recommendation <strong style="color:#ff0000;"> *</strong></p>
