@@ -32,6 +32,9 @@ public class FeignRequestInterceptor implements RequestInterceptor {
             return;
         }
         AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+        if (dto == null) {
+            dto = AuditTrailDto.getThreadDto();
+        }
         if (dto != null) {
             requestTemplate.header("currentAuditTrail", JsonUtil.parseToJson(dto));
         }
