@@ -108,8 +108,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = newAppSubmissionDto.getAppSvcRelatedInfoDtoList();
                 if (appSvcRelatedInfoDtoList != null && appSvcRelatedInfoDtoList.size() >0){
                     String serviceId = appSvcRelatedInfoDtoList.get(0).getServiceId();
-                    HcsaServiceDto hcsaServiceDto = appConfigClient.getActiveHcsaServiceDtoById(serviceId).getEntity();
-                    String appStatus = getAppStatus(hcsaServiceDto.getId(),ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
+                    String appStatus = getAppStatus(serviceId,ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
                     if (!StringUtil.isEmpty(appStatus)){
                         applicationDto.setStatus(appStatus);
                     }
@@ -252,8 +251,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         String serviceId = appSvcRelatedInfoDtoList.get(0).getServiceId();
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
         String svcId = hcsaServiceDto.getId();
+        HcsaServiceDto hcsaServiceDto1 = appConfigClient.getActiveHcsaServiceDtoById(svcId).getEntity();
         String svcCode = hcsaServiceDto.getSvcCode();
-        appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
+        appSvcRelatedInfoDtoList.get(0).setServiceId(hcsaServiceDto1.getId());
         appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
         appSubmissionDto.setAppGrpId(null);
         appSubmissionDto.setFromBe(false);
