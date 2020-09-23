@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -57,7 +58,7 @@ public class ConfigServiceDelegator {
     public void start(BaseProcessClass bpc){
         log.info("*********start***********");
         removeSession(bpc);
-        AuditTrailHelper.auditFunction("ConfigServiceDelegator", "Assign Report");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SERVICE_CONFIGURATOR, "Assign Report");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
         OrgUserDto entity = organizationClient.retrieveOrgUserAccountById(userId).getEntity();

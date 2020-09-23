@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -52,8 +53,7 @@ public class FeAdminManageDelegate {
      */
     public void doStart(BaseProcessClass bpc){
         log.debug("****doStart Process ****");
-
-        AuditTrailHelper.auditFunction("Front End Admin", "User Management");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, AuditTrailConsts.MODULE_USER_MANAGEMENT);
     }
 
     /**

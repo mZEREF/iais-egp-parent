@@ -128,7 +128,7 @@ public class AuditManualListDelegator {
         }else {
             ParamUtil.setRequestAttr(request,SUBMIT_MESSAGE_SUCCESS,MessageUtil.getMessageDesc("AUDIT_ACK002"));
             ParamUtil.setRequestAttr(request,MAIN_URL,"MohAuditManualList");
-            AuditTrailHelper.auditFunction("MohAuditManualList", "cancel tasks");
+            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT, "Audit Manual List");
             // save cancel task
             auditSystemListService.doCancel(auditTaskDataDtos);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);

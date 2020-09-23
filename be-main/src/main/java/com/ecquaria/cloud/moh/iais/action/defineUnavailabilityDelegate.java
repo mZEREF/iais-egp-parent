@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -26,7 +27,7 @@ public class defineUnavailabilityDelegate {
     @Autowired
     UserRoleService userRoleService;
     public void doStart(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction("defineUnavailabilityDelegate", "defineUnavailabilityDelegate");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_APPOINTMENT, "Define unavailability");
     }
 
     /**

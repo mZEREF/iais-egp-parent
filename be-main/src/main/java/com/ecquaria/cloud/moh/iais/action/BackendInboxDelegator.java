@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -139,7 +140,7 @@ public class BackendInboxDelegator {
         ParamUtil.setSessionAttr(bpc.request, "taskMap",null);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", null);
         ParamUtil.setSessionAttr(bpc.request, "roleIds", (Serializable) selectOptionArrayList);
-        AuditTrailHelper.auditFunction("Backend Inbox", "Backend Inbox");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INBOX, AuditTrailConsts.MODULE_INBOX);
 
     }
 
@@ -160,7 +161,7 @@ public class BackendInboxDelegator {
     public void prepareData(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchPre start ...."));
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        AuditTrailHelper.auditFunction("BE-inbox", "Backend Inbox");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INBOX, AuditTrailConsts.MODULE_INBOX);
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
         List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext.getCurRoleId());

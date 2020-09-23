@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
@@ -55,7 +56,7 @@ public class LicenseeCompanyDelegate {
         String name = ParamUtil.getString(bpc.request,"name");
         String id = ParamUtil.getMaskedString(bpc.request,name);
         ParamUtil.setSessionAttr(bpc.request,"licenseeId",id);
-        AuditTrailHelper.auditFunction("LicenseeCompanyDelegate", "LicenseeCompanyDelegate");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INBOX, "licensee company");
         log.debug("****preparePage Process ****");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());

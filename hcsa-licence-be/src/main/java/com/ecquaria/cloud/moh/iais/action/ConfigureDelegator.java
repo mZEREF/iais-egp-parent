@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
@@ -46,7 +47,7 @@ public class ConfigureDelegator {
      * @throws
      */
     public void start(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction("hcsa inspection", "ConfigureDelegator");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SERVICE_CONFIGURATOR, "Assign Report");
 
         HttpServletRequest request = bpc.request;
         stageNames = configureService.listStage();
