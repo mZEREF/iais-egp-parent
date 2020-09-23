@@ -233,8 +233,8 @@ public class WithdrawalDelegator {
                         withdrawnDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
                         withdrawnDto.setFileRepoId(fileRepoId);
                     }
-                    withdrawnDtoList.add(withdrawnDto);
                 }
+                withdrawnDtoList.add(withdrawnDto);
             }
         }
         return withdrawnDtoList;
