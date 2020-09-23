@@ -1929,6 +1929,9 @@ public class HcsaApplicationDelegator {
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
                         ApplicationConsts.APPLICATION_STATUS_APPROVED);
                 if(isAllSubmit || applicationDto.isFastTracking()){
+                    if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
+                        doWithdrawal(applicationDto.getId(),broadcastOrganizationDto,broadcastApplicationDto);
+                    }
                     //update application Group status
                     ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                     broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
@@ -2016,6 +2019,50 @@ public class HcsaApplicationDelegator {
             }
 
         log.info(StringUtil.changeForLog("The routingTask end ..."));
+    }
+
+    private void doWithdrawal(String appId, BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto) throws FeignException {
+        AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
+        if(premiseMiscDto != null){
+            String oldAppId = premiseMiscDto.getRelateRecId();
+            log.info(StringUtil.changeForLog("withdrawal old application id : " + oldAppId));
+            ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
+            if(oldApplication != null){
+                String oldAppGrpId = oldApplication.getAppGrpId();
+                String currentOldApplicationNo = oldApplication.getApplicationNo();
+                String currentOldApplicationStatus = oldApplication.getStatus();
+                List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(oldAppGrpId);
+                if(IaisCommonUtils.isEmpty(applicationDtoList) || applicationDtoList.size() == 1){
+                    return;
+                }else{
+                    if(!(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(currentOldApplicationStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(currentOldApplicationStatus))){
+                        //!(ao2 || ao3)
+                        boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,currentOldApplicationNo,
+                                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+                        if(isAllSubmit){
+                            String stageId = HcsaConsts.ROUTING_STAGE_AO3;
+                            String roleId = RoleConsts.USER_ROLE_AO3;
+                            List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+                            List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+                            List<ApplicationDto> creatTaskApplicationList = ao2AppList;
+                            if(IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)){
+                                creatTaskApplicationList = ao3AppList;
+                            }else{
+                                stageId = HcsaConsts.ROUTING_STAGE_AO2;
+                                roleId = RoleConsts.USER_ROLE_AO2;
+                            }
+                            // send the task to Ao2  or Ao3
+                            TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
+                                    stageId,roleId,IaisEGPHelper.getCurrentAuditTrailDto());
+                            List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
+                            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+                            broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
+                            broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private List<ApplicationDto> getStatusAppList(List<ApplicationDto> applicationDtos, String status){
@@ -2196,6 +2243,7 @@ public class HcsaApplicationDelegator {
                 if(applicationId.equals(applicationDto.getId())){
                     applicationDto.setIsCharity(isCharity);
                     applicationDto.setStatus(status);
+                    applicationDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
                 }
             }
         }
