@@ -47,6 +47,14 @@ public class LicenceFileDownloadDelegator {
         licenceFileDownloadService.decompression();
 
     }
+
+    public void jobStart() throws Exception {
+        licenceFileDownloadService.initPath();
+
+        licenceFileDownloadService.decompression();
+
+    }
+
 /*******************************/
     private void logAbout(String name){
         log.debug(StringUtil.changeForLog("****The***** " +name +" ******Start ****"));
