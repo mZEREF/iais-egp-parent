@@ -60,11 +60,11 @@ public final class LoginHelper {
         throw new IllegalStateException("Utility class");
     }
 
-    public static void insertLoginFailreAuditTrail(String identityNo){
-        insertLoginFailreAuditTrail(null, identityNo);
+    public static void insertLoginFailureAuditTrail(String identityNo){
+        insertLoginFailureAuditTrail(null, identityNo);
     }
 
-    public static void insertLoginFailreAuditTrail(String uen, String identityNo){
+    public static void insertLoginFailureAuditTrail(String uen, String identityNo){
         AuditTrailDto auditTrailDto = new AuditTrailDto();
         auditTrailDto.setMohUserId(identityNo);
         auditTrailDto.setNricNumber(identityNo);

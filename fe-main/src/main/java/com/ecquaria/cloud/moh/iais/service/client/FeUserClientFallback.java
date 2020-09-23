@@ -128,6 +128,14 @@ public class FeUserClientFallback implements FeUserClient{
     }
 
     @Override
+    public FeignResponseEntity<Boolean> validatePwd(FeUserDto feUserDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<IaisApiResult<Void>> checkIssueUen(String idNo, String idType) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

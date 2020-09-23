@@ -7,11 +7,13 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -29,6 +31,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
+import java.util.Optional;
 
 @Delegator(value = "corpassLandingDelegator")
 @Slf4j
@@ -71,11 +74,18 @@ public class FECorppassLandingDelegator {
         HttpServletResponse response = bpc.response;
         log.info("corppassCallBack===========>>>Start");
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
+
+        AuditTrailHelper.auditFunction("FE Landing CorpPass", "login");
+
         String uen;
         String identityNo;
-        if (LoginHelper.isTestMode(request)){
+        String scp = null;
+
+        boolean isTestMode = LoginHelper.isTestMode(request);
+        if (isTestMode){
             uen = ParamUtil.getRequestString(request, UserConstants.ENTITY_ID);
             identityNo =  ParamUtil.getRequestString(request, UserConstants.CORPPASS_ID);
+            scp =  ParamUtil.getRequestString(request, UserConstants.LOGIN_PWD);
         }else {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
             LoginInfo oLoginInfo = SIMUtil4Corpass.doCorpPassArtifactResolution(request, samlArt);
@@ -98,32 +108,50 @@ public class FECorppassLandingDelegator {
 
         if (StringUtil.isEmpty(identityNo)){
             log.info(StringUtil.changeForLog("identityNo ====>>>>>>>>>" + identityNo));
-            LoginHelper.insertLoginFailreAuditTrail(uen, identityNo);
+            LoginHelper.insertLoginFailureAuditTrail(uen, identityNo);
             return;
         }
 
         String idType = IaisEGPHelper.checkIdentityNoType(identityNo);
-
         FeUserDto userDto = new FeUserDto();
         userDto.setUenNo(uen);
         userDto.setIdentityNo(identityNo);
         userDto.setIdType(idType);
+        userDto.setScp(scp);
 
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_CAN_EDIT_USERINFO, "N");
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userDto);
-        ParamUtil.setSessionAttr(request, UserConstants.ENTITY_ID, uen);
-        ParamUtil.setSessionAttr(request, UserConstants.CORPPASS_ID, identityNo);
-
-        OrganizationDto organizationDto = orgUserManageService.findOrganizationByUen(uen);
-        if (organizationDto != null){
-            ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXIST, "N");
+        Optional<OrganizationDto> optional = Optional.ofNullable(orgUserManageService.findOrganizationByUen(uen));
+        if (optional.isPresent()) {
+            ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "Y");
         }else {
-            ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXIST, "Y");
+            ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
         }
-
         log.info("corppassCallBack===========>>>End");
     }
 
+    public void validatePwd(BaseProcessClass bpc){
+        FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO);
+        log.info(StringUtil.changeForLog("======>> fe user json" + JsonUtil.parseToJson(feUserDto)));
+        boolean isTestMode = LoginHelper.isTestMode(bpc.request);
+        if (isTestMode) {
+            boolean scpCorrect = orgUserManageService.validatePwd(feUserDto);
+            if (!scpCorrect) {
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "The account or password is incorrect");
+                ParamUtil.setRequestAttr(bpc.request, UserConstants.PWD_ERROR, "Y");
+                LoginHelper.insertLoginFailureAuditTrail(feUserDto.getUenNo(), feUserDto.getIdentityNo());
+                return;
+            }
+        }
+
+        User user = new User();
+        user.setDisplayName(feUserDto.getDisplayName());
+        user.setUserDomain(feUserDto.getUserDomain());
+        user.setId(feUserDto.getUserId());
+        user.setIdentityNo(feUserDto.getIdentityNo());
+        LoginHelper.initUserInfo(bpc.request, bpc.response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
+        ParamUtil.setRequestAttr(bpc.request, UserConstants.PWD_ERROR, "N");
+    }
 
 
     /**
@@ -156,28 +184,27 @@ public class FECorppassLandingDelegator {
      * @throws
      */
     public void loginUser(BaseProcessClass bpc){
-        String uen = ParamUtil.getRequestString(bpc.request, UserConstants.ENTITY_ID);
-        String identityNo =  ParamUtil.getRequestString(bpc.request, UserConstants.CORPPASS_ID);
+        FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO);
+        String uen = feUserDto.getUenNo();
+        String identityNo =  feUserDto.getIdentityNo();
+        String scp = feUserDto.getScp();
 
         log.info("corppassCallBack=====loginUser======>>>Start");
 
-        FeUserDto feUserDto =  orgUserManageService.getUserByNricAndUen(uen, identityNo);
+        feUserDto =  orgUserManageService.getUserByNricAndUen(uen, identityNo);
         if (feUserDto != null){
-            User user = new User();
-            user.setDisplayName(feUserDto.getDisplayName());
-            user.setUserDomain(feUserDto.getUserDomain());
-            user.setId(feUserDto.getUserId());
-            user.setIdentityNo(identityNo);
-            LoginHelper.initUserInfo(bpc.request, bpc.response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
+            feUserDto.setScp(scp);
+            feUserDto.setUenNo(uen);
+            ParamUtil.setSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO, feUserDto);
             ParamUtil.setRequestAttr(bpc.request, "isAdminRole", "Y");
         }else {
             // Add Audit Trail -- Start
-            LoginHelper.insertLoginFailreAuditTrail(uen, identityNo);
+            LoginHelper.insertLoginFailureAuditTrail(uen, identityNo);
             // End Audit Trail -- End
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", MessageUtil.getMessageDesc("GENERAL_ERR0012"));
             ParamUtil.setRequestAttr(bpc.request, UserConstants.IS_ADMIN, "N");
         }
-
+        log.info(StringUtil.changeForLog("======>> fe user json" + JsonUtil.parseToJson(feUserDto)));
         log.info("corppassCallBack=====loginUser======>>>End");
     }
 
@@ -240,8 +267,8 @@ public class FECorppassLandingDelegator {
             }
         }
 
+        log.info(StringUtil.changeForLog("======>> fe user json" + JsonUtil.parseToJson(feUserDto)));
         log.info("initCorppassUserInfo===========>>>End");
-
     }
 
     /**

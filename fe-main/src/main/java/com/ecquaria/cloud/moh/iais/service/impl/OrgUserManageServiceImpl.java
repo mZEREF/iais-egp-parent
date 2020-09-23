@@ -366,4 +366,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     public List<LicenseeDto> getLicenseeNoUen(){
         return feUserClient.getLicenseeNoUen().getEntity();
     }
+
+    @Override
+    public Boolean validatePwd(FeUserDto feUserDto) {
+        return feUserClient.validatePwd(feUserDto).getEntity();
+    }
 }

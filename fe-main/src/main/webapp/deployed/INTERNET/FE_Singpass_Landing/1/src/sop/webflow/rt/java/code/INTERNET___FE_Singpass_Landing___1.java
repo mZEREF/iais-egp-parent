@@ -45,4 +45,12 @@ public class INTERNET___FE_Singpass_Landing___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "initLoginInfo", this);
 	}
 
+	public void validatePwd_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "validatePwd", this);
+	}
+
+	public void hasMohIssueUen_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "hasMohIssueUen", this);
+	}
+
 }

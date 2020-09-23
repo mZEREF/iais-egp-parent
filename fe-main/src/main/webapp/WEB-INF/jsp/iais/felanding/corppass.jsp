@@ -57,6 +57,12 @@
                   </div>
 
                   <div class="form-group">
+                    <label class="sr-only" for="corpPassId">Password</label>
+                    <input id="corppassPwdId" name="loginPassword" onkeypress="doKeyPress(event, 'login')" placeholder="PASSWORD" class="form-control" required="required" type="corppassPwdId" value="" autocomplete="off">
+                    <a class="topposition tooltipclick" title="" data-placement="left" data-toggle="tooltip" data-trigger="click" tabindex="-1" href="#" data-original-title="CorpPass ID registered to your account."><span class="icon-info-login-main login-info-padding"></span></a>
+                  </div>
+
+                  <div class="form-group">
                     <button type="button" id="login" class="btn btn-primary btn-block" onclick="submitCorpPass()" onkeypress="doKeyPress(event, 'login')">Login  <i class="fa fa-caret-right" aria-hidden="true"></i></button>
                   </div>
                   <div class="checkbox">

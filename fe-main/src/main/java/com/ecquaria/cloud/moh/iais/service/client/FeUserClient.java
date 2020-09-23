@@ -72,4 +72,6 @@ public interface FeUserClient {
     @GetMapping(path = "/iais-licensee/getLicenseeNoUen",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenseeDto>> getLicenseeNoUen();
 
+    @PostMapping(path = "/iais-internet-user/validate-pwd", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Boolean> validatePwd(@RequestBody  FeUserDto feUserDto);
 }

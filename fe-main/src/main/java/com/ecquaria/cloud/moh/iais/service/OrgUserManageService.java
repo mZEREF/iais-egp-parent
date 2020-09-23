@@ -53,4 +53,6 @@ public interface OrgUserManageService {
     IaisApiResult<Void> checkIssueUen(String idNo, String idType);
 
     List<LicenseeDto> getLicenseeNoUen();
+
+    Boolean validatePwd(FeUserDto feUserDto);
 }
