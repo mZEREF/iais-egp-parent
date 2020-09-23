@@ -404,7 +404,7 @@
                                 </td>
                                 <td class="col-xs-4"></td>
                             </tr>
-                            <c:if test="${appType!='APTY005'}">
+                            <c:if test="${appType!='APTY005' && appType!='APTY006' && appType!='APTY008' && appType!='APTY001'}">
                                 <tr id="period" hidden>
                                     <td class="col-xs-4">
                                         <p>Period <strong style="color:#ff0000;"> *</strong></p>

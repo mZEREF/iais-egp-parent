@@ -23,25 +23,18 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloudfeign.FeignException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import com.ecquaria.sz.commons.util.Calculator;
-import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.validation.constraints.Null;
 
 /**
  * @author weilu
@@ -400,7 +393,10 @@ public class InsReportDelegator {
 
     private List<SelectOption> getRecommendationOption(String appType) {
         List<SelectOption> recommendationResult = IaisCommonUtils.genNewArrayList();
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) ||
+            ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(appType) ||
+            ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(appType) ||
+            ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)) {
             SelectOption so1 = new SelectOption(InspectionReportConstants.RFC_APPROVED, "Approve");
             SelectOption so3 = new SelectOption(InspectionReportConstants.RFC_REJECTED, "Reject");
             recommendationResult.add(so1);
