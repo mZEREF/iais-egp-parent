@@ -403,7 +403,7 @@ public class InspectionServiceImpl implements InspectionService {
         if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)) {
             for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos) {
                 String refNo = taskDto.getRefNo();
-                log.error("==============="+refNo);
+                log.error(StringUtil.changeForLog("==============="+refNo));
                 if (appPremisesCorrelationDto.getId().equals(taskDto.getRefNo())) {
                     List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
                     List<String> leadName = getWorkGroupLeadsByGroupId(taskDto.getWkGrpId(), orgUserDtos);
