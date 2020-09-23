@@ -1351,7 +1351,7 @@ public class LicenceViewServiceDelegator {
         appSvcDisciplineAllocationDtos.addAll(list);
     }
     private void creatAppSvcDisciplineAllocation(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList ,List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList,String premiseVal,String oldPremiseVal) throws Exception{
-        if(appSvcDisciplineAllocationDtoList==null && oldAppSvcDisciplineAllocationDtoList==null){
+        if(appSvcDisciplineAllocationDtoList==null || oldAppSvcDisciplineAllocationDtoList==null){
             return;
         }
         if(appSvcDisciplineAllocationDtoList.size() == oldAppSvcDisciplineAllocationDtoList.size()){
@@ -1393,13 +1393,13 @@ public class LicenceViewServiceDelegator {
             if(!flag){
                 copyAppSvcDisciplineAllocationDtoList.add(appSvcDisciplineAllocationDto);
                 AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto1=(AppSvcDisciplineAllocationDto)CopyUtil.copyMutableObject(appSvcDisciplineAllocationDto);
-                appSvcDisciplineAllocationDto1.setCheck(Boolean.FALSE);
+                appSvcDisciplineAllocationDto1.setCheck(false);
                 appSvcDisciplineAllocationDto1.setPremiseVal(premiseVal);
                 copyOldAppSvcDisciplineAllocationDtoList.add(appSvcDisciplineAllocationDto1);
             }
         }
-        appSvcDisciplineAllocationDtoList.removeAll(copyAppSvcDisciplineAllocationDtoList);
-        oldAppSvcDisciplineAllocationDtoList.removeAll(copyOldAppSvcDisciplineAllocationDtoList);
+        appSvcDisciplineAllocationDtoList.removeAll(copyAppSvcDisciplineAllocationDtoList);//NOSONAR
+        oldAppSvcDisciplineAllocationDtoList.removeAll(copyOldAppSvcDisciplineAllocationDtoList);//NOSONAR
 
     }
     private void creatAppsvcLaboratory(List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList , List<AppSvcLaboratoryDisciplinesDto> oldAppSvcLaboratoryDisciplinesDtoList) throws Exception{
@@ -1415,7 +1415,7 @@ public class LicenceViewServiceDelegator {
        }
     }
     private void creatAppsvcChckList(List<AppSvcChckListDto> appSvcChckListDtoList, List<AppSvcChckListDto> oldAppSvcChckListDtoList) throws  Exception{
-        if(appSvcChckListDtoList == null && oldAppSvcChckListDtoList == null){
+        if(appSvcChckListDtoList == null || oldAppSvcChckListDtoList == null){
             return;
         }
         if(appSvcChckListDtoList.size()==oldAppSvcChckListDtoList.size()){
