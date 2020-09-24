@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -76,7 +77,7 @@ public class SystemSearchAssignPoolDelegator {
      */
     public void systemPoolAssignStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the systemPoolAssignStart start ...."));
-        AuditTrailHelper.auditFunction("System Task Pool", "System Task Assign Pool");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SERVICE_CONFIGURATOR,  "System Task Assign Pool");
     }
 
     /**

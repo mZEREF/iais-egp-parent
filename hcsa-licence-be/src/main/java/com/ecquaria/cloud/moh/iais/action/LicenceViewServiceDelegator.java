@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewHciNameDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.HfsmsDto;
@@ -131,7 +132,7 @@ public class LicenceViewServiceDelegator {
      */
     public void doStart(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator cleanSession start ...."));
-        AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence View Service");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_LICENCE_MAIN_FLOW,  "View Service");
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
         bpc.request.getSession().removeAttribute("AuthorisedPerson");
         bpc.request.getSession().removeAttribute("BoardMember");

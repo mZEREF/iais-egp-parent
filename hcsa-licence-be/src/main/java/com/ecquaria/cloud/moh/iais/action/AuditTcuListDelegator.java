@@ -127,7 +127,7 @@ public class AuditTcuListDelegator {
         } else {
             ParamUtil.setRequestAttr(request, SUBMIT_MESSAGE_SUCCESS, MessageUtil.getMessageDesc("AUDIT_ACK002"));
             ParamUtil.setRequestAttr(request, MAIN_URL, "MohAduitTcuList");
-            AuditTrailHelper.auditFunction("MohAduitTcuList", "cancel tasks");
+            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "cancel tasks");
             // save cancel task
              auditSystemListService.doCancel(auditTaskDataDtos);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);

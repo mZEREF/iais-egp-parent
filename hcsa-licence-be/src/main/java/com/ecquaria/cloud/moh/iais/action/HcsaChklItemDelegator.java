@@ -9,6 +9,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.IaisApiStatusCode;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
@@ -89,7 +90,7 @@ public class HcsaChklItemDelegator {
      * @throws IllegalAccessException
      */
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction("Checklist Management", "Checklist Item");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CHECKLIST_MANAGEMENT, "Checklist Item");
         HttpServletRequest request = bpc.request;
 
 

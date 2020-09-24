@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -48,7 +49,8 @@ public class EmailResendDelegator {
 
     public void start(BaseProcessClass bpc){
         ParamUtil.setSessionAttr(bpc.request,"resendSearchParam",null);
-        AuditTrailHelper.auditFunction("EmailResendDelegator", "EmailResendDelegator");
+
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_EMAIL_SMS_BLAST, "Email Resend ");
     }
     /**
      * doPrepare

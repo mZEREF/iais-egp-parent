@@ -9,6 +9,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -67,7 +68,8 @@ public class InspSupAddAvailabilityDelegator {
             ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = inspSupAddAvailabilityService.getApptNonAvailabilityDateDtoById(nonAvaId);
             ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", apptNonAvailabilityDateDto);
         }
-        AuditTrailHelper.auditFunction("Inspection Sup Add Availability", "Inspection Sup Add Availability");
+
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_ADMIN, "Inspection Sup Add Availability");
     }
 
     /**

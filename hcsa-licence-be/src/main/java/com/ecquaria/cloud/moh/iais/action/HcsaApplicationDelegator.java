@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
@@ -2631,7 +2632,8 @@ public class HcsaApplicationDelegator {
             log.error(e.getMessage(),e);
             bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
         }
-        AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence");
+
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_APPLICATION_MAIN_FLOW, "licence");
         TaskDto taskDto = taskService.getTaskById(taskId);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
         String roleId = "";

@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
@@ -90,7 +91,7 @@ public class InspecUserRecUploadDelegator {
         inspSetMaskValueDto.setSqlFileSize(sysFileSize);
         inspSetMaskValueDto.setSqlFileType(sysFileTypes);
         ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", inspSetMaskValueDto);
-        AuditTrailHelper.auditFunction("User Rectification Upload", "Upload Doc Rectification");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_RECTIFICATION, "Upload Doc Rectification");
         ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, messageId);
     }
 

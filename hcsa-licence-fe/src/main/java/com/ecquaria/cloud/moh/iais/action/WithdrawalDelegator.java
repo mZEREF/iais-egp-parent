@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -71,8 +72,8 @@ public class WithdrawalDelegator {
         if (!StringUtil.isEmpty(withdrawAppNo)){
             ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", withdrawAppNo);
         }
-        AuditTrailHelper.auditFunction("Withdrawal Application", "Withdrawal Application");
 
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW, "Withdrawal Application");
         String rfiWithdrawAppNo = ParamUtil.getString(bpc.request,"rfiWithdrawAppNo");
 
         if (!StringUtil.isEmpty(rfiWithdrawAppNo)){

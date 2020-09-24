@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -75,7 +76,7 @@ public class MassEmailDelegator {
         searchParam.setPageNo(1);
         searchParam.setSort("CREATED_DT", SearchParam.DESCENDING);
         searchParam.addFilter("status", AppConsts.COMMON_STATUS_ACTIVE,true);
-        AuditTrailHelper.auditFunction("MassEmail", "MassEmailDelegator");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_EMAIL_SMS_BLAST, "Mass Email");
         setSearchparam(bpc,searchParam);
     }
     /**

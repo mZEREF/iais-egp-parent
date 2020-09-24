@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.PaymentBaiduriProxyUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.SMCStringHelperUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.SrcSystemConfDto;
@@ -62,7 +63,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 	@Override
 	public void pay(BaseProcessClass bpc) throws PaymentException {
 		//AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_PAYMENT, "");
-		AuditTrailHelper.auditFunction("Payment", "pay");
+		AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_PAYMENT, "pay");
 		String continueToken = getContinueToken();
 		bpc.request.getSession().setAttribute(IMPL_CONTINUE_TOKEN_PREFIX + getTinyKey(), continueToken);
 
@@ -161,7 +162,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 
 	@Override
 	public void callBack(BaseProcessClass bpc) throws PaymentException {
-		AuditTrailHelper.auditFunction("Payment", "pay");
+		AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_PAYMENT, "pay");
 		String continueToken = (String)bpc.request.getSession().getAttribute(IMPL_CONTINUE_TOKEN_PREFIX + getTinyKey());
 		if(StringHelper.isEmpty(continueToken)){
 			throw new PaymentException("Continue token is null.");

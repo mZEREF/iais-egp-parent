@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.api.services.GatewayStripeAPI;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -237,7 +238,7 @@ public class NewApplicationDelegator {
         String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
         //for rfi loading
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
-        AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW, "application");
         //clear Session
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
         //Primary Documents

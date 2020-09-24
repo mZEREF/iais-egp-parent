@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
@@ -80,7 +81,7 @@ public class InspectorCalendarDelegator {
 		ParamUtil.setSessionAttr(request, AppointmentConstants.IS_NEW_VIEW_DATA, AppConsts.TRUE);
 		ParamUtil.setSessionAttr(request, AppointmentConstants.SHORT_NAME_ATTR, null);
 		ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_DROP_YEAR_OPT, null);
-		AuditTrailHelper.auditFunction("InspectorCalendar", "View function");
+		AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_ADMIN, "Inspector Calendar View");
 	}
 
 

@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -82,7 +83,7 @@ public class BlastManagementDelegator {
 
     public void start(BaseProcessClass bpc){
 
-        AuditTrailHelper.auditFunction("blastManagement", "BlastManagementDelegator");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_EMAIL_SMS_BLAST, "Blast Management ");
 
         SearchParam searchParam = getSearchParam(bpc.request,true);
         ParamUtil.setSessionAttr(bpc.request, "blastmanagementSearchParam", searchParam);

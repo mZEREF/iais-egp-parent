@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -100,7 +101,7 @@ public class ProfessionalInformationDelegator {
 	public void startStep(BaseProcessClass bpc){
 		HttpServletRequest request = bpc.request;
 		log.debug(StringUtil.changeForLog("Search by professional information start ...."));
-		AuditTrailHelper.auditFunction("hcsa-licence-be", "Search by professional information");
+		AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_ADMIN,  "Search by professional information");
 
 		ParamUtil.setSessionAttr(request, "name", null);
 		ParamUtil.setSessionAttr(request, "profRegNo", null);

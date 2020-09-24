@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -40,7 +41,7 @@ public class SubmitInspectionDateDelegator {
      */
     public void startStep(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>SubmitInspectionDateDelegator");
-        AuditTrailHelper.auditFunction("Submit Inspection Date", "Submit Inspection Date");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW, "Submit Inspection Date");
     }
 
 

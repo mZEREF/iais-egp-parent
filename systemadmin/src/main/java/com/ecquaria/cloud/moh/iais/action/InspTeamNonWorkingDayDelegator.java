@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -74,8 +75,8 @@ public class InspTeamNonWorkingDayDelegator {
 	public void startStep(BaseProcessClass bpc) {
 		HttpServletRequest request = bpc.request;
 
-		AuditTrailHelper.auditFunction("Appointment",
-				"Non working day");
+		AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_APPOINTMENT, "Non working day");
+
 		ParamUtil.setSessionAttr(request, NON_WKR_DAY_LIST_ATTR, null);
 //		ParamUtil.setSessionAttr(request, CURRENT_SHORT_NAME, null);
 		ParamUtil.setSessionAttr(request, CURRENT_SHORT_ID, null);

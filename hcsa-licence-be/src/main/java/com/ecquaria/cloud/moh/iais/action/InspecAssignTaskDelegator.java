@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -77,7 +78,7 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorStart start ...."));
         log.info(StringUtil.changeForLog("Step 1 ==============>" + bpc.request.getSession().getId()));
-        AuditTrailHelper.auditFunction("Inspection Assign", "Assign Task");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "Assign Task");
     }
 
     /**

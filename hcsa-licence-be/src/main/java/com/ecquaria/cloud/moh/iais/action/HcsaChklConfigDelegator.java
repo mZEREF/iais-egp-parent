@@ -8,6 +8,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -106,7 +107,7 @@ public class HcsaChklConfigDelegator {
      * @throws IllegalAccessException
      */
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CHECKLIST_MANAGEMENT, "Checklist Config");
         HttpServletRequest request = bpc.request;
 
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, null);

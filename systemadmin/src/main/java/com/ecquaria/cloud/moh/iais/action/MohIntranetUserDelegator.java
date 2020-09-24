@@ -87,7 +87,7 @@ public class MohIntranetUserDelegator {
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>user");
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction("System Configuration", "User Management");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, "User Management");
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.SEARCH_RESULT, null);
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, null);

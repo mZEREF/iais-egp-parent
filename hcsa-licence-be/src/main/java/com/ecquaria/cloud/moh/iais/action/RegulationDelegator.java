@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.IaisApiStatusCode;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaRegulationConstants;
@@ -75,7 +76,7 @@ public class RegulationDelegator {
      * @author: yichen
      */
     public void startStep(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction("Checklist Regulation", "Regulation");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CHECKLIST_MANAGEMENT,  "Checklist Regulation");
         ParamUtil.setSessionAttr(bpc.request, "isUpdate", null);
 
         ParamUtil.setSessionAttr(bpc.request, HcsaRegulationConstants.PARAM_SEARCH, null);

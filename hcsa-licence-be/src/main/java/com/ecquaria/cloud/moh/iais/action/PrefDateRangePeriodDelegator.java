@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -69,7 +70,7 @@ public class PrefDateRangePeriodDelegator {
     public void preLoad(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         log.debug(StringUtil.changeForLog("Define Preferred Date Range Period START ...."));
-        AuditTrailHelper.auditFunction("hcsa-licence-be", "Define Preferred Date Range Period");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_APPOINTMENT,  "Define Preferred Date Range Period");
         preSelectOption(bpc.request);
 
 
@@ -291,7 +292,7 @@ public class PrefDateRangePeriodDelegator {
     public void startStep(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         log.debug(StringUtil.changeForLog("Pref Date Range Period start ...."));
-        AuditTrailHelper.auditFunction("hcsa-licence-be", "Pref Date Range Period");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_APPOINTMENT,  "Preferred Date Range Period");
 
         ParamUtil.setSessionAttr(request, PREF_PERIOD_SEARCH , null);
         ParamUtil.setSessionAttr(request, PREF_PERIOD_RESULT , null);

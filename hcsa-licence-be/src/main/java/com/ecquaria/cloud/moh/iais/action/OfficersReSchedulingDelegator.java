@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -71,7 +72,7 @@ public class OfficersReSchedulingDelegator {
      */
     public void mohOfficerReSchedulingStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingStart start ...."));
-        AuditTrailHelper.auditFunction("Moh Officer Rescheduling", "Moh Officer Rescheduling");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  "Moh Officer Rescheduling");
     }
 
     /**

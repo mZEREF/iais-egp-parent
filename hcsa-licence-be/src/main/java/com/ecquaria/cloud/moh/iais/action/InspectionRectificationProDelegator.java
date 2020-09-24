@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -120,7 +121,7 @@ public class InspectionRectificationProDelegator {
             }
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
-        AuditTrailHelper.auditFunction("Inspection Rectification Process", "Inspector Processing Rectification");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  "Inspector Processing Rectification");
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
     }
 

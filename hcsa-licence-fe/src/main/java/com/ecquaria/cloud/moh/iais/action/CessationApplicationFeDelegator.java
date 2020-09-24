@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.*;
@@ -73,7 +74,8 @@ public class CessationApplicationFeDelegator {
                 return;
             }
         }
-        AuditTrailHelper.auditFunction("Cessation Application", "Cessation Application");
+
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CESSATION, "Cessation Application");
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, null);
         ParamUtil.setSessionAttr(bpc.request, "specLicInfo", null);
         ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag", null);

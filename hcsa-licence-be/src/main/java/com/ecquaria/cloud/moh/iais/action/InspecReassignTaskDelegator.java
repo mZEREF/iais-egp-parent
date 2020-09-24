@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -83,7 +84,7 @@ public class InspecReassignTaskDelegator {
      */
     public void inspectionSupSearchStart(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchStart start ...."));
-        AuditTrailHelper.auditFunction("Reassign Task", "Reassign Task");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "Reassign Task");
     }
 
     /**

@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -69,10 +70,7 @@ public class SystemParameterDelegator {
      * @param bpc
      */
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction("System Parameter",
-                "This module provides a form of search and update " +
-                        "functions for System Administrator to maintain the set " +
-                        "of system parameters use by entire system");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_PARAMETER_MANAGEMENT, "System Parameter");
         HttpServletRequest request = bpc.request;
 
         ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_DOMAIN_TYPE, null);

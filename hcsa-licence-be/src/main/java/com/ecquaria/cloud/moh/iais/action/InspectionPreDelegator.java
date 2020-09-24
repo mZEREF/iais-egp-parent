@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.AdhocChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -110,7 +111,7 @@ public class InspectionPreDelegator {
             }
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
-        AuditTrailHelper.auditFunction("Inspector Pre Task", "Pre Inspection Task");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  "Pre Inspection Task");
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", null);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", null);

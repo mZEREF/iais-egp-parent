@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MasterCodeConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
@@ -88,8 +89,7 @@ public class MasterCodeDelegator {
     public void doStart(BaseProcessClass bpc) {
         logAboutStart("doStart");
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction("MasterCode",
-                "MasterCode Function");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_ADMIN, "MasterCode Function");
         ParamUtil.setSessionAttr(request, MasterCodeConstants.SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(request, MasterCodeConstants.SEARCH_RESULT, null);
         ParamUtil.setSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, null);
