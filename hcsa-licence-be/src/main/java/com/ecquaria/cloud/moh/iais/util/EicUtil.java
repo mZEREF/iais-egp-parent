@@ -15,15 +15,21 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class EicUtil {
     public static <T> T getObjectApp(AppEicRequestTrackingDto appEicRequestTrackingDto, Class<T> cls){
+        log.info(StringUtil.changeForLog("The getObjectApp start ..."));
         T result = null;
         if(appEicRequestTrackingDto!=null){
+            log.info(StringUtil.changeForLog("The getObjectApp appEicRequestTrackingDto.getId() is -->:"
+                    +appEicRequestTrackingDto.getId()));
             ObjectMapper mapper = new ObjectMapper();
             try {
-                result = mapper.readValue(appEicRequestTrackingDto.getDtoObj(), cls);
+                String content = appEicRequestTrackingDto.getDtoObj();
+                log.info(StringUtil.changeForLog("The getObjectApp content is -->:"+content));
+                result = mapper.readValue(content, cls);
             } catch (IOException e) {
                 log.error(StringUtil.changeForLog(e.getMessage()),e);
             }
         }
+        log.info(StringUtil.changeForLog("The getObjectApp end ..."));
         return  result;
     }
 }
