@@ -1362,134 +1362,135 @@ public class NewApplicationDelegator {
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
         if (!StringUtil.isEmpty(appNo)) {
             ApplicationDto applicationDto = applicationClient.getApplicationDtoByAppNo(appNo).getEntity();
-            if (ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(applicationDto.getStatus())) {
-                InterMessageDto interMessageBySubjectLike = appSubmissionService.getInterMessageBySubjectLike(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION + applicationDto.getApplicationNo(), MessageConstants.MESSAGE_STATUS_RESPONSE);
-                if(interMessageBySubjectLike.getId()!=null){
-                    List<AppEditSelectDto> entity = applicationClient.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFI).getEntity();
-                    String url = "";
-                    String s = MaskUtil.maskValue("appNo", applicationDto.getApplicationNo());
-                    if (!entity.isEmpty()) {
-                        boolean rfcFlag = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType());
-                        boolean premisesListEdit = entity.get(0).isPremisesListEdit();
-                        if (rfcFlag && premisesListEdit) {
-                            url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_PREMISES_LIST + s;
-                            sendURL(bpc.request, bpc.response, url);
-                            bpc.request.getSession().setAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, interMessageBySubjectLike.getId());
-                            return;
-                        }
-                    }
-
-                    url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION + s;
-                    sendURL(bpc.request, bpc.response, url);
-                    bpc.request.getSession().setAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, interMessageBySubjectLike.getId());
-                    return;
-                }
-            }
-            //cessation
-            if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
-                String originLicenceId = applicationDto.getOriginLicenceId();
-                List<String> licIds = IaisCommonUtils.genNewArrayList();
-                licIds.add(originLicenceId);
-                List<AppCessLicDto> appCessDtosByLicIds = cessationFeService.getAppCessDtosByLicIds(licIds);
-                AppCessMiscDto appCessMiscDto = cessationClient.getAppMiscDtoByAppId(applicationDto.getId()).getEntity();
-                if (!IaisCommonUtils.isEmpty(appCessDtosByLicIds)) {
-                    AppCessHciDto appCessHciDto = new AppCessHciDto();
-                    Date effectiveDate = appCessMiscDto.getEffectiveDate();
-                    String reason = appCessMiscDto.getReason();
-                    String otherReason = appCessMiscDto.getOtherReason();
-                    String patTransType = appCessMiscDto.getPatTransType();
-                    String patTransTo = appCessMiscDto.getPatTransTo();
-                    appCessHciDto.setPatientSelect(patTransType);
-                    appCessHciDto.setReason(reason);
-                    appCessHciDto.setOtherReason(otherReason);
-                    appCessHciDto.setEffectiveDate(effectiveDate);
-                    if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
-                        appCessHciDto.setPatHciName(patTransTo);
-                        appCessHciDto.setPatNeedTrans(Boolean.TRUE);
-                    } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
-                        appCessHciDto.setPatRegNo(patTransTo);
-                        appCessHciDto.setPatNeedTrans(Boolean.TRUE);
-                    } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
-                        appCessHciDto.setPatOthers(patTransTo);
-                        appCessHciDto.setPatNeedTrans(Boolean.TRUE);
-                    } else {
-                        String remarks = appCessMiscDto.getPatNoReason();
-                        appCessHciDto.setPatNoRemarks(remarks);
-                        appCessHciDto.setPatNeedTrans(Boolean.FALSE);
-                    }
-                    List<AppCessHciDto> appCessHciDtos = appCessDtosByLicIds.get(0).getAppCessHciDtos();
-                    appCessHciDtos.clear();
-                    appCessHciDtos.add(appCessHciDto);
-                }
-                List<SelectOption> reasonOption = getReasonOption();
-                List<SelectOption> patientsOption = getPatientsOption();
-                ParamUtil.setRequestAttr(bpc.request, "reasonOption", reasonOption);
-                ParamUtil.setRequestAttr(bpc.request, "patientsOption", patientsOption);
-                ParamUtil.setRequestAttr(bpc.request, "applicationDto", applicationDto);
-                ParamUtil.setRequestAttr(bpc.request, "confirmDtos", appCessDtosByLicIds);
-                return;
-            }
-            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDto(appNo);
-            if (appSubmissionDto != null && !IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList()) && applicationDto != null) {
-                if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())
-                        ||ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())
-                        ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
-                    AppGrpPremisesEntityDto rfiPremises = appSubmissionService.getPremisesByAppNo(appNo);
-                    String premHci = IaisCommonUtils.genPremisesKey(rfiPremises.getPostalCode(),rfiPremises.getBlkNo(),rfiPremises.getFloorNo(),rfiPremises.getUnitNo());
-                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(rfiPremises.getPremisesType())){
-                        premHci = rfiPremises.getHciName()+premHci;
-                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(rfiPremises.getPremisesType())){
-                        premHci = rfiPremises.getVehicleNo()+premHci;
-                    }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(rfiPremises.getPremisesType())){
-
-                    }
-                    List<AppGrpPremisesDto> newPremisesDtos = IaisCommonUtils.genNewArrayList();
-                    List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
-                    for(AppGrpPremisesDto appGrpPremisesDto:appSubmissionDto.getAppGrpPremisesDtoList()){
-                        if(premHci.equals(NewApplicationHelper.getPremHci(appGrpPremisesDto))){
-                            NewApplicationHelper.setWrkTime(appGrpPremisesDto);
-                            List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
-                            //set ph name
-                            NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos,publicHolidayList);
-                            newPremisesDtos.add(appGrpPremisesDto);
-                            break;
-                        }
-                    }
-                    appSubmissionDto.setAppGrpPremisesDtoList(newPremisesDtos);
-                    String svcId = applicationDto.getServiceId();
-                    List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-                    if(!StringUtil.isEmpty(svcId)){
-                        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-                        List<AppSvcRelatedInfoDto> newSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
-                        List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
-                        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                            if(svcId.equals(appSvcRelatedInfoDto.getServiceId())){
-                                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(svcId);
-                                appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
-                                appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
-                                appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
-                                List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                                List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
-                                NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, appSvcDocDtos, primaryDocConfig, svcDocConfig);
-                                appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
-                                newSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
-                                break;
+            if(applicationDto != null) {
+                if (ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(applicationDto.getStatus())) {
+                    InterMessageDto interMessageBySubjectLike = appSubmissionService.getInterMessageBySubjectLike(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION + applicationDto.getApplicationNo(), MessageConstants.MESSAGE_STATUS_RESPONSE);
+                    if (interMessageBySubjectLike.getId() != null) {
+                        List<AppEditSelectDto> entity = applicationClient.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFI).getEntity();
+                        String url = "";
+                        String s = MaskUtil.maskValue("appNo", applicationDto.getApplicationNo());
+                        if (!entity.isEmpty()) {
+                            boolean rfcFlag = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType());
+                            boolean premisesListEdit = entity.get(0).isPremisesListEdit();
+                            if (rfcFlag && premisesListEdit) {
+                                url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_PREMISES_LIST + s;
+                                sendURL(bpc.request, bpc.response, url);
+                                bpc.request.getSession().setAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, interMessageBySubjectLike.getId());
+                                return;
                             }
                         }
-                        List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = serviceConfigService.loadLaboratoryDisciplines(svcId);
-                        NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto,hcsaSvcSubtypeOrSubsumedDtos);
-                        appSubmissionDto.setAppSvcRelatedInfoDtoList(newSvcRelatedInfoDtos);
-                    }
-                    //set DisciplineAllocationMap
-                    Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap= NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto,svcId);
-                    ParamUtil.setRequestAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
-                }
 
-                for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
-                    NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                        url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION + s;
+                        sendURL(bpc.request, bpc.response, url);
+                        bpc.request.getSession().setAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, interMessageBySubjectLike.getId());
+                        return;
+                    }
                 }
-            }
-            if (appSubmissionDto != null) {
+                //cessation
+                if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
+                    String originLicenceId = applicationDto.getOriginLicenceId();
+                    List<String> licIds = IaisCommonUtils.genNewArrayList();
+                    licIds.add(originLicenceId);
+                    List<AppCessLicDto> appCessDtosByLicIds = cessationFeService.getAppCessDtosByLicIds(licIds);
+                    AppCessMiscDto appCessMiscDto = cessationClient.getAppMiscDtoByAppId(applicationDto.getId()).getEntity();
+                    if (!IaisCommonUtils.isEmpty(appCessDtosByLicIds)) {
+                        AppCessHciDto appCessHciDto = new AppCessHciDto();
+                        Date effectiveDate = appCessMiscDto.getEffectiveDate();
+                        String reason = appCessMiscDto.getReason();
+                        String otherReason = appCessMiscDto.getOtherReason();
+                        String patTransType = appCessMiscDto.getPatTransType();
+                        String patTransTo = appCessMiscDto.getPatTransTo();
+                        appCessHciDto.setPatientSelect(patTransType);
+                        appCessHciDto.setReason(reason);
+                        appCessHciDto.setOtherReason(otherReason);
+                        appCessHciDto.setEffectiveDate(effectiveDate);
+                        if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+                            appCessHciDto.setPatHciName(patTransTo);
+                            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+                        } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+                            appCessHciDto.setPatRegNo(patTransTo);
+                            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+                        } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+                            appCessHciDto.setPatOthers(patTransTo);
+                            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+                        } else {
+                            String remarks = appCessMiscDto.getPatNoReason();
+                            appCessHciDto.setPatNoRemarks(remarks);
+                            appCessHciDto.setPatNeedTrans(Boolean.FALSE);
+                        }
+                        List<AppCessHciDto> appCessHciDtos = appCessDtosByLicIds.get(0).getAppCessHciDtos();
+                        appCessHciDtos.clear();
+                        appCessHciDtos.add(appCessHciDto);
+                    }
+                    List<SelectOption> reasonOption = getReasonOption();
+                    List<SelectOption> patientsOption = getPatientsOption();
+                    ParamUtil.setRequestAttr(bpc.request, "reasonOption", reasonOption);
+                    ParamUtil.setRequestAttr(bpc.request, "patientsOption", patientsOption);
+                    ParamUtil.setRequestAttr(bpc.request, "applicationDto", applicationDto);
+                    ParamUtil.setRequestAttr(bpc.request, "confirmDtos", appCessDtosByLicIds);
+                    return;
+                }
+                AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDto(appNo);
+                if (appSubmissionDto != null) {
+                    if(!IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())) {
+                        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())
+                                || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())
+                                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())) {
+                            AppGrpPremisesEntityDto rfiPremises = appSubmissionService.getPremisesByAppNo(appNo);
+                            String premHci = IaisCommonUtils.genPremisesKey(rfiPremises.getPostalCode(), rfiPremises.getBlkNo(), rfiPremises.getFloorNo(), rfiPremises.getUnitNo());
+                            if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(rfiPremises.getPremisesType())) {
+                                premHci = rfiPremises.getHciName() + premHci;
+                            } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(rfiPremises.getPremisesType())) {
+                                premHci = rfiPremises.getVehicleNo() + premHci;
+                            } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(rfiPremises.getPremisesType())) {
+
+                            }
+                            List<AppGrpPremisesDto> newPremisesDtos = IaisCommonUtils.genNewArrayList();
+                            List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
+                            for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
+                                if (premHci.equals(NewApplicationHelper.getPremHci(appGrpPremisesDto))) {
+                                    NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                                    List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+                                    //set ph name
+                                    NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos, publicHolidayList);
+                                    newPremisesDtos.add(appGrpPremisesDto);
+                                    break;
+                                }
+                            }
+                            appSubmissionDto.setAppGrpPremisesDtoList(newPremisesDtos);
+                            String svcId = applicationDto.getServiceId();
+                            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+                            if (!StringUtil.isEmpty(svcId)) {
+                                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+                                List<AppSvcRelatedInfoDto> newSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
+                                List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
+                                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+                                    if (svcId.equals(appSvcRelatedInfoDto.getServiceId())) {
+                                        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(svcId);
+                                        appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
+                                        appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
+                                        appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
+                                        List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                                        List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
+                                        NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, appSvcDocDtos, primaryDocConfig, svcDocConfig);
+                                        appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
+                                        newSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
+                                        break;
+                                    }
+                                }
+                                List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = serviceConfigService.loadLaboratoryDisciplines(svcId);
+                                NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto, hcsaSvcSubtypeOrSubsumedDtos);
+                                appSubmissionDto.setAppSvcRelatedInfoDtoList(newSvcRelatedInfoDtos);
+                            }
+                            //set DisciplineAllocationMap
+                            Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
+                            ParamUtil.setRequestAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
+                        }
+                        for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
+                            NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                        }
+                    }
+                }
                 AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
                 List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(appSvcRelatedInfoDto.getServiceId());
                 appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
@@ -1518,8 +1519,8 @@ public class NewApplicationDelegator {
                 if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
                     requestForChangeService.svcDocToPresmise(appSubmissionDto);
                 }
+                ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             }
-            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
     }
 
