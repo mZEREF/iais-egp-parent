@@ -56,18 +56,19 @@
                                             </div>
 
                                             <iais:section title="" id="potentialAuditableHCIs">
-                                                <iais:row>
-                                                    <iais:field value="Effective Date"/>
-                                                    <iais:value width="7">
-                                                        <fmt:formatDate value="${appCessHci.effectiveDate}"
-                                                                        pattern="dd/MM/yyyy"/>
-                                                    </iais:value>
-                                                    <iais:value>
-                                                        <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
-                                                           data-html="true"
-                                                           data-original-title="<p>The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">i</a>
-                                                    </iais:value>
-                                                </iais:row>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <label style="font-size: 16px">Effective Date</label>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <span style="font-size: 16px"><fmt:formatDate value="${appCessHci.effectiveDate}" pattern="dd/MM/yyyy"/></span>
+                                                        <span style="font-size: 16px;float:right"><a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
+                                                                                         data-html="true"
+                                                                                         data-original-title="<p>The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">
+                                                                i</a></span>
+                                                    </div>
+                                                </div>
+                                                <p></p><br><br>
                                                 <iais:row>
                                                     <iais:field value="Cessation Reasons"/>
                                                     <iais:value width="7">
@@ -105,7 +106,7 @@
                                                                                    disabled>
                                                                             <label class="form-check-label"
                                                                                    for=${num.count}radioYes${uid.count}"><span
-                                                                                    class="check-square"></span>Yes</label>
+                                                                                    class="check-circle"></span>Yes</label>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-xs-12 col-md-3">
@@ -119,7 +120,7 @@
                                                                                    disabled>
                                                                             <label class="form-check-label"
                                                                                    for="${num.count}radioNo${uid.count}"><span
-                                                                                    class="check-square"></span>No</label>
+                                                                                    class="check-circle"></span>No</label>
                                                                         </div>
                                                                     </div>
                                                                 </div>

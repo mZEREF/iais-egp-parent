@@ -105,7 +105,7 @@
                                                                                    disabled>
                                                                             <label class="form-check-label"
                                                                                    for=${num.count}radioYes${uid.count}"><span
-                                                                                    class="check-square"></span>Yes</label>
+                                                                                    class="check-circle"></span>Yes</label>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-xs-12 col-md-3">
@@ -118,7 +118,7 @@
                                                                                    disabled>
                                                                             <label class="form-check-label"
                                                                                    for="${num.count}radioNo${uid.count}"><span
-                                                                                    class="check-square"></span>No</label>
+                                                                                    class="check-circle"></span>No</label>
                                                                         </div>
                                                                     </div>
                                                                 </div>
