@@ -9,7 +9,7 @@ package com.ecquaria.cloud.moh.iais.constant;
 public class UserConstants {
     public static final String ENTITY_ID   = "entityId";
     public static final String CORPPASS_ID   = "corpPassId";
-    public static final String LOGIN_PWD   = "loginPassword";
+    public static final String LOGIN_SCP   = "loginPassword";
     public static final String NAME   = "name";
     public static final String SALUTATION   = "salutation";
     public static final String ID_TYPE   = "idType";
@@ -19,7 +19,7 @@ public class UserConstants {
     public static final String OFFICE_NO   = "officeNo";
     public static final String EMAIL   = "email";
     public static final String ACCOUNT_EXISTS_VALIDATE_FLAG   = "accountExists";
-    public static final String PWD_ERROR   = "pwdError";
+    public static final String SCP_ERROR   = "pwdError";
 
     public static final String ORG_TYPE   = "Comp";
 
