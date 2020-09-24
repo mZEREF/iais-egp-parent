@@ -322,7 +322,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                         svcNameList.add(svcName);
                     });
 
-                    String randomStr = IaisEGPHelper.generateRandomString(26);
+                    String randomStr = IaisEGPHelper.generateRandomString(26);//NOSONAR
                     templateContent.put("MOH_GROUP_NAME", AppConsts.MOH_AGENCY_NAM_GROUP);
                     templateContent.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
 
@@ -340,7 +340,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         }
 
 
-        String emailRandomStr_003 = IaisEGPHelper.generateRandomString(26);
+        String emailRandomStr_003 = IaisEGPHelper.generateRandomString(26);//NOSONAR
         emailContent_003.put("applicationNo", tlGroupNumber);
         emailContent_003.put("applicationType", tlAppType);
         emailContent_003.put("applicationDate", Formatter.formatDate(tlDate));
