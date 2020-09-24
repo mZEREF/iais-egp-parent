@@ -729,6 +729,10 @@ public class InspectionNcCheckListDelegator {
         AdCheckListShowDto adchklDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,ADHOCLDTO);
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,TASKDTO);
         insepctionNcCheckListService.saveDraftChecklist(commonDto,adchklDto,serListDto,taskDto.getRefNo());
+        String nowTabIn = ParamUtil.getString(request,"nowTabIn");
+        ParamUtil.setRequestAttr(request, "nowTabIn",  nowTabIn);
+        String nowComTabIn = ParamUtil.getString(request,"nowComTabIn");
+        ParamUtil.setRequestAttr(request, "nowComTabIn",  nowComTabIn);
         log.info("----------saveDraftChecklist end--------");
     }
 
