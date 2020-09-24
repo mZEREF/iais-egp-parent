@@ -113,6 +113,7 @@ public class EventbusCallBackDelegate {
             log.info("***send task callback end *****");
         } else if(EventBusConsts.OPERATION_POST_INSPECTION_TASK.equals(operation)) {
             log.info("send post inspection task  *****");
+            log.info("send post inspection task eventRefNum *****"+eventRefNum);
             invokeMethod(submissionId,eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.InsRepServiceImpl",
                     "sendPostInsTaskFeData");

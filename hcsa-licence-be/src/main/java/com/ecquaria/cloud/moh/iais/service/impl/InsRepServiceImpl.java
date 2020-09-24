@@ -963,12 +963,13 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public void sendPostInsTaskFeData(String submissionId, String eventRefNum) throws FeignException {
         log.info("post inspection call back start ===================>>>>>");
+        log.info("post inspection start eventRefNum ===================>>>>>"+eventRefNum);
         List<ApplicationDto> postApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
         AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         //appGrp --------app -------task    submissionId   operation yiyang    update licPremise
         List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
         List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
-        if (!postApps.isEmpty()) {
+        if (!IaisCommonUtils.isEmpty(postApps)) {
             TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(postApps, HcsaConsts.ROUTING_STAGE_INS, RoleConsts.USER_ROLE_INSPECTIOR, auditTrailDto);
             taskDtos = taskHistoryDto.getTaskDtoList();
             log.info(StringUtil.changeForLog("==================taskDtos ===================>>>>>"+taskDtos.size()));
