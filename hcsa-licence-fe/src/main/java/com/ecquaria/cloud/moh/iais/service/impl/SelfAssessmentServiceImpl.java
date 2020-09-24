@@ -286,11 +286,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                     templateContent.put("officer_name", "");
 
                     // get inspection from eic
-                    HashMap<String, Object > reqParams = new HashMap<String, Object>(){{
-                        put("appPremId",  s);
-                        put("recomType", InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
-                    }};
-
+                    HashMap<String, Object > reqParams = IaisCommonUtils.genNewHashMap();
+                    reqParams.put("appPremId",  s);
+                    reqParams.put("recomType", InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
                     try {
                         AppPremisesRecommendationDto appPremisesRecommendation=
                                 gatewayClient.getBeAppPremisesRecommendationByIdAndType(reqParams).getEntity();
