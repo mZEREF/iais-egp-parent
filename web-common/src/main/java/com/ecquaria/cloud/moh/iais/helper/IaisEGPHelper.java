@@ -195,9 +195,6 @@ public final class IaisEGPHelper extends EGPHelper {
         }
 
         SubmissionClient client = context.getBean(SubmissionClient.class);
-        if (client == null){
-            return;
-        }
 
         log.info("insertAuditTrail.........fe");
         List<AuditTrailDto> adList = IaisCommonUtils.genNewArrayList(1);
