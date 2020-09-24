@@ -5252,7 +5252,7 @@ public class NewApplicationDelegator {
                     }
                     AppSvcPersonAndExtDto appSvcPersonAndExtDto = new AppSvcPersonAndExtDto();
                     AppSvcPersonDto appSvcPersonDto = new AppSvcPersonDto();
-                    appSvcPersonDto.setCurPersonelId("");
+//                    appSvcPersonDto.setCurPersonelId("");
                     appSvcPersonDto.setSalutation(feUserDto.getSalutation());
                     appSvcPersonDto.setName(feUserDto.getDisplayName());
                     appSvcPersonDto.setIdType(idType);
@@ -5261,6 +5261,7 @@ public class NewApplicationDelegator {
                     appSvcPersonDto.setMobileNo(feUserDto.getMobileNo());
                     appSvcPersonDto.setEmailAddr(feUserDto.getEmail());
                     appSvcPersonDto.setOfficeTelNo(feUserDto.getOfficeTelNo());
+                    appSvcPersonDto.setCurPersonelId(null);
                     appSvcPersonAndExtDto.setPersonDto(appSvcPersonDto);
                     appSvcPersonAndExtDto.setLicPerson(true);
                     appSvcPersonAndExtDto.setLoadingType(ApplicationConsts.PERSON_LOADING_TYPE_BLUR);
