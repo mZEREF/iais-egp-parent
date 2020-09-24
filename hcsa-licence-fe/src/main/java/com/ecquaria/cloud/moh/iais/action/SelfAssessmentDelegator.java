@@ -251,7 +251,7 @@ public class SelfAssessmentDelegator {
                 selfAssessmentService.saveAllSelfAssessment(selfAssessmentList);
 
                 responseMsg(bpc.request);
-                ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.getMessageDesc("ACK025"));
+                ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.getMessageDesc("GENERAL_ERR0038"));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }
         }

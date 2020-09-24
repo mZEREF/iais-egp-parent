@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
-import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -194,7 +193,7 @@ public class SystemParameterDelegator {
             parameterService.saveSystemParameter(editDto);
 
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-            ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage(MessageCodeKey.ACKSPM001));
+            ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("SYSPAM_ACK001"));
             ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO, editDto);
         }
     }
