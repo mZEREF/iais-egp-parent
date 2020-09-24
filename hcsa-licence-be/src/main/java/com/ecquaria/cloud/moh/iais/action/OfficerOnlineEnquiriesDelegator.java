@@ -467,6 +467,24 @@ public class OfficerOnlineEnquiriesDelegator {
             searchListDtoSearchResult.setRowCount(reqForInfoSearchListDtos.size());
         }
         ParamUtil.setSessionAttr(request,"SearchResult", searchListDtoSearchResult);
+        try{
+            boolean last=searchListDtoSearchResult.getRows().get(searchListDtoSearchResult.getRows().size()-1).getAddress().size()>1;
+            boolean last2=searchListDtoSearchResult.getRows().get(searchListDtoSearchResult.getRows().size()-2).getAddress().size()>1;
+            if(last||last2){
+                ParamUtil.setRequestAttr(request,"blank",Boolean.TRUE);
+            }
+        }catch (Exception e){
+            log.info(e.getMessage());
+            try {
+                boolean last3=searchListDtoSearchResult.getRows().get(searchListDtoSearchResult.getRows().size()-1).getAddress().size()>1;
+                if(last3){
+                    ParamUtil.setRequestAttr(request,"blank",Boolean.TRUE);
+                }
+            }catch (Exception e2){
+                log.info(e2.getMessage());
+            }
+        }
+
     }
 
     public void doBasicSearch(BaseProcessClass bpc) {

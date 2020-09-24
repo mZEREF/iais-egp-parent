@@ -199,7 +199,7 @@
                 </div>
             </div>
         </div>
-        <c:if test="${ SearchResult.rowCount<5}">
+        <c:if test="${blank}">
             <div class="row">&nbsp;</div>
             <div class="row">&nbsp;</div>
             <div class="row">&nbsp;</div>
