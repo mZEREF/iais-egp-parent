@@ -148,8 +148,6 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 errMap.put("nextStage", generalErrSix);
             } else {
                 if(isFinalStage){
-                    // final stage
-                }else{
                     if (VERIFIED.equals(nextStage)) {
                         String verified = ParamUtil.getRequestString(request, "verified");
                         ParamUtil.setRequestAttr(request, "selectVerified", verified);
@@ -170,15 +168,18 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         if (StringUtil.isEmpty(rollBack)) {
                             errMap.put("rollBack", generalErrSix);
                         }
-                    } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage) && !ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)  && !isWithdrawal && !isCessation){
-                        //rfiSelectValue
-                        String rfiSelectValue = ParamUtil.getRequestString(request, "rfiSelectValue");
-                        if(StringUtil.isEmpty(rfiSelectValue)){
-                            errMap.put("nextStage", "RFI_ERR001");
+                    } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage)){
+                        if(!isAppealType  && !isWithdrawal && !isCessation){
+                            //rfiSelectValue
+                            String rfiSelectValue = ParamUtil.getRequestString(request, "rfiSelectValue");
+                            if(StringUtil.isEmpty(rfiSelectValue)){
+                                errMap.put("nextStage", "RFI_ERR001");
+                            }
                         }
                     }
+                    // final stage
+                }else{
                 }
-
             }
         }
         return errMap;
