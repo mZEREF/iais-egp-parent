@@ -321,8 +321,9 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         taskDto.setApplicationNo(eventRefNum+"-01");
         List<ApplicationDto> postApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
         if(postApps != null && postApps.size() >0 ){
-            String appId = postApps.get(0).getId();
-            createAuditAppLic(temp.getLicId(),appId ,auditCombinationDto.getLicPremisesAuditDto().getAuditTrailDto(),auditCombinationDto.getEventRefNo(),submitId);
+            ApplicationDto applicationDtoC = postApps.get(0);
+            String appId = applicationDtoC.getId();
+            createAuditAppLic(temp.getLicId(),appId ,auditCombinationDto.getLicPremisesAuditDto().getAuditTrailDto(),auditCombinationDto.getEventRefNo(),submitId, applicationDtoC.getAppPremisesCorrelationId(),temp.getId());
             String corrId = applicationClient.getCorrIdByAppId(appId).getEntity();
             taskDto.setRefNo(corrId);
             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList(1);
@@ -351,7 +352,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }
     }
 
-    private void  createAuditAppLic(String licId, String appId , AuditTrailDto auditTrailDto,String eventRefNum,String submissionId){
+    private void  createAuditAppLic(String licId, String appId , AuditTrailDto auditTrailDto,String eventRefNum,String submissionId,String corrId,String licPremId){
         try {
             log.info(StringUtil.changeForLog("========================>>>>> create appLicCorrelation : appid ---"+ appId + " licId ----" +licId+" ---"+"===== !!!!"));
             LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
@@ -359,6 +360,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             licAppCorrelationDto.setApplicationId(appId);
             licAppCorrelationDto.setAuditTrailDto(auditTrailDto);
             licAppCorrelationDto.setEventRefNo(eventRefNum);
+            licAppCorrelationDto.setCorrId(corrId);
+            licAppCorrelationDto.setLicPremId(licPremId);
             eventBusHelper.submitAsyncRequest(licAppCorrelationDto,submissionId, EventBusConsts.SERVICE_NAME_LICENCESAVE,EventBusConsts.OPERATION_CREATE_AUDIT_TASK_CALL_BACK,eventRefNum,null);
         }catch (Exception e){
             log.info("========================>>>>> create appLicCorrelation failed!!!!");
