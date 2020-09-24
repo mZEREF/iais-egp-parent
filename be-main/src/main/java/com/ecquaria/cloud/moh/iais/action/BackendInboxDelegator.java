@@ -1017,6 +1017,7 @@ public class BackendInboxDelegator {
                         log.info(StringUtil.changeForLog("****application return fee***** " + entry.getKey() + " *****" + entry.getValue()));
                         applicationDto.setStatus(entry.getValue());
                         applicationDto.setIsCharity(isCharity);
+                        applicationDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
                     }
                 }
             }
