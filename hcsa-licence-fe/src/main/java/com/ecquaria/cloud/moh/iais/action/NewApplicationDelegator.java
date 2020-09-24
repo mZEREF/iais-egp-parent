@@ -1770,7 +1770,7 @@ public class NewApplicationDelegator {
         List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
         docIsChange = eqDocChange(dtoAppGrpPrimaryDocDtos, oldAppGrpPrimaryDocDtos);
         appEditSelectDto.setDocEdit(docIsChange);
-        grpPremiseIsChange = eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
+        grpPremiseIsChange = eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);//NOSONAR
         AppSubmissionDto n = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = n.getAppSvcRelatedInfoDtoList();
         AppSubmissionDto o = (AppSubmissionDto) CopyUtil.copyMutableObject(oldAppSubmissionDto);
@@ -1949,7 +1949,7 @@ public class NewApplicationDelegator {
         List<AppSubmissionDto> autoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> notAutoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
         if (grpPremiseIsChange || docIsChange) {
-            appSubmissionDto.setOneLicDoRenew(Boolean.TRUE);
+            appSubmissionDto.setOneLicDoRenew(true);
             if(appSubmissionDto.isGroupLic()){
                 List<AppGrpPremisesDto> appGrpPremisesDtos = groupLicecePresmiseChange(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
                 if(appGrpPremisesDtos.size()!=appSubmissionDto.getAppGrpPremisesDtoList().size()){
@@ -1996,7 +1996,7 @@ public class NewApplicationDelegator {
             List<AppSubmissionDto> personAppSubmissionList = personContact(bpc, appSubmissionDto, oldAppSubmissionDto);
             AppSubmissionDto personAppsubmit = getPersonAppsubmit(oldAppSubmissionDto, appSubmissionDto, bpc);
             personAppsubmit.setPartPremise(personAppsubmit.isGroupLic());
-            personAppsubmit.setOneLicDoRenew(Boolean.TRUE);
+            personAppsubmit.setOneLicDoRenew(true);
             // true is auto
             boolean autoRfc = personAppsubmit.isAutoRfc();
             if (!autoRfc) {
@@ -2010,7 +2010,7 @@ public class NewApplicationDelegator {
                 } else if(!autoSaveAppsubmission.isEmpty()){
                     AppSubmissionDto appSubmissionDto1 =autoSaveAppsubmission.get(autoSaveAppsubmission.size() - 1);
                     appSubmissionDto1.setAppSvcRelatedInfoDtoList(personAppsubmit.getAppSvcRelatedInfoDtoList());
-                    appSubmissionDto1.setAutoRfc(Boolean.FALSE);
+                    appSubmissionDto1.setAutoRfc(false);
                     AppEditSelectDto appEditSelectDto1 = appSubmissionDto1.getAppEditSelectDto();
                     appEditSelectDto1.setPremisesListEdit(grpPremiseIsChange);
                     appEditSelectDto1.setDocEdit(docIsChange);
