@@ -694,7 +694,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 broadcastApplicationDto.setRollBackApplicationDtos(requestTaskHistoryDto.getRollBackApplicationDtos());
             }
             try {
-                List<TaskDto> taskDtos = sendCessionOrWithdrawal(cessionOrwith);
+                List<TaskDto> taskDtos = sendCessionOrWithdrawal(cessionOrwith,intranet, appPremisesRoutingHistoryDtos);
                 log.info(StringUtil.changeForLog("cession task"+JsonUtil.parseToJson(taskDtos)));
                 TaskHistoryDto taskHistoryDtoCessionOrWithDrawal  = getRoutingTaskForRequestForInformation(cessionOrwith,intranet);
                 onSubmitTaskList.addAll(taskDtos);
@@ -913,9 +913,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
     }
 
-    private List<TaskDto> sendCessionOrWithdrawal(List<ApplicationDto> applicationDtos) throws Exception {
+    private List<TaskDto> sendCessionOrWithdrawal(List<ApplicationDto> applicationDtos,AuditTrailDto auditTrailDto, List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos) throws Exception {
         List<TaskDto> list=IaisCommonUtils.genNewArrayList();
         for(ApplicationDto applicationDto : applicationDtos){
+            List<ApplicationDto> applicationDtoList=new ArrayList<>(1);
             List<HcsaSvcRoutingStageDto> entity =
                     hcsaConfigClient.getHcsaSvcRoutingStageDtoByServiceAndType(applicationDto.getServiceId(), applicationDto.getApplicationType()).getEntity();
             if(entity.isEmpty()){
@@ -925,6 +926,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             if(appPremisesCorrelationDto!=null){
                 TaskDto taskDto= taskService.getRoutingTask(applicationDto,entity.get(0).getStageId(),entity.get(0).getStageCode(),appPremisesCorrelationDto.getId());
                 list.add(taskDto);
+            }
+            applicationDtoList.add(applicationDto);
+            TaskHistoryDto routingTaskOneUserForSubmisison = taskService.getRoutingTaskOneUserForSubmisison(applicationDtoList, entity.get(0).getStageId(), entity.get(0).getStageCode(), auditTrailDto);
+            log.info(StringUtil.changeForLog("----"+routingTaskOneUserForSubmisison));
+            if(routingTaskOneUserForSubmisison!=null&&routingTaskOneUserForSubmisison.getAppPremisesRoutingHistoryDtos()!=null){
+                log.info(StringUtil.changeForLog("----"+JsonUtil.parseToJson(routingTaskOneUserForSubmisison)));
+                appPremisesRoutingHistoryDtos.addAll(routingTaskOneUserForSubmisison.getAppPremisesRoutingHistoryDtos());
             }
         }
         return list;
