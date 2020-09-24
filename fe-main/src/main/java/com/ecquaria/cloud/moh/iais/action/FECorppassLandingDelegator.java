@@ -85,7 +85,7 @@ public class FECorppassLandingDelegator {
         if (isTestMode){
             uen = ParamUtil.getRequestString(request, UserConstants.ENTITY_ID);
             identityNo =  ParamUtil.getRequestString(request, UserConstants.CORPPASS_ID);
-            scp =  ParamUtil.getRequestString(request, UserConstants.LOGIN_PWD);
+            scp =  ParamUtil.getRequestString(request, UserConstants.LOGIN_SCP);
         }else {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
             LoginInfo oLoginInfo = SIMUtil4Corpass.doCorpPassArtifactResolution(request, samlArt);
@@ -138,7 +138,7 @@ public class FECorppassLandingDelegator {
             boolean scpCorrect = orgUserManageService.validatePwd(feUserDto);
             if (!scpCorrect) {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "The account or password is incorrect");
-                ParamUtil.setRequestAttr(bpc.request, UserConstants.PWD_ERROR, "Y");
+                ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "Y");
                 LoginHelper.insertLoginFailureAuditTrail(feUserDto.getUenNo(), feUserDto.getIdentityNo());
                 return;
             }
@@ -150,7 +150,7 @@ public class FECorppassLandingDelegator {
         user.setId(feUserDto.getUserId());
         user.setIdentityNo(feUserDto.getIdentityNo());
         LoginHelper.initUserInfo(bpc.request, bpc.response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
-        ParamUtil.setRequestAttr(bpc.request, UserConstants.PWD_ERROR, "N");
+        ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "N");
     }
 
 

@@ -72,7 +72,7 @@ public class FESingpassLandingDelegator {
         String scp = null;
         if (LoginHelper.isTestMode(request)){
             identityNo = ParamUtil.getString(request, UserConstants.ENTITY_ID);
-            scp = ParamUtil.getString(request, UserConstants.LOGIN_PWD);
+            scp = ParamUtil.getString(request, UserConstants.LOGIN_SCP);
         }else {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
             LoginInfo oLoginInfo = SIMUtil.doSingPassArtifactResolution(request, samlArt);
@@ -95,7 +95,7 @@ public class FESingpassLandingDelegator {
 
         ParamUtil.setRequestAttr(request, UserConstants.ENTITY_ID, identityNo);
         ParamUtil.setRequestAttr(request, UserConstants.ID_TYPE, idType);
-        ParamUtil.setRequestAttr(request, UserConstants.LOGIN_PWD, scp);
+        ParamUtil.setRequestAttr(request, UserConstants.LOGIN_SCP, scp);
         log.info("singpassCallBack===========>>>End");
     }
 
@@ -110,20 +110,20 @@ public class FESingpassLandingDelegator {
             boolean scpCorrect = orgUserManageService.validatePwd(feUserDto);
             if (!scpCorrect) {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "The account or password is incorrect");
-                ParamUtil.setRequestAttr(bpc.request, UserConstants.PWD_ERROR, IaisEGPConstant.YES);
+                ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
                 LoginHelper.insertLoginFailureAuditTrail(feUserDto.getIdentityNo());
                 return;
             }
         }
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, feUserDto);
-        ParamUtil.setRequestAttr(bpc.request, UserConstants.PWD_ERROR, IaisEGPConstant.NO);
+        ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, IaisEGPConstant.NO);
     }
 
     public void hasMohIssueUen(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String identityNo = ParamUtil.getRequestString(request, UserConstants.ENTITY_ID);
         String idType = ParamUtil.getRequestString(request, UserConstants.ID_TYPE);
-        String scp = ParamUtil.getRequestString(request, UserConstants.LOGIN_PWD);
+        String scp = ParamUtil.getRequestString(request, UserConstants.LOGIN_SCP);
         FeUserDto feUserDto = new FeUserDto();
         feUserDto.setScp(scp);
         feUserDto.setIdentityNo(identityNo);

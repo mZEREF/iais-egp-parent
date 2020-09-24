@@ -1360,6 +1360,7 @@ public class NewApplicationDelegator {
 
     public void inboxToPreview(BaseProcessClass bpc) throws Exception {
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
+        ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Cessation Form");
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
         if (!StringUtil.isEmpty(appNo)) {
             ApplicationDto applicationDto = applicationClient.getApplicationDtoByAppNo(appNo).getEntity();
