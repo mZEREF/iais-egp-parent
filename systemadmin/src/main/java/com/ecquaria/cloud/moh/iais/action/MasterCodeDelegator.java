@@ -597,7 +597,7 @@ public class MasterCodeDelegator {
             if (masterCodeDto.getEffectiveFrom().before(new Date())) {
                 String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
                 masterCodeDto.setCodeCategory(codeCategory);
-                masterCodeDto.setStatus("CMSTAT003");
+                masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                 masterCodeService.updateMasterCode(masterCodeDto);
             } else {
                 masterCodeService.deleteMasterCodeById(masterCodeId);
