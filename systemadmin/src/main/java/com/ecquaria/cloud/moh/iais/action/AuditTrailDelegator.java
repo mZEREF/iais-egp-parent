@@ -134,7 +134,7 @@ public class AuditTrailDelegator {
         String auditId = ParamUtil.getMaskedString(request, "auditId");
         AuditTrailDto auditTrail = auditTrailService.getAuditTrailById(auditId);
         ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_ACTION_DATA, auditTrail);
-        log.info("audit id........" + auditId);
+        log.info(StringUtil.changeForLog("audit id........" + auditId));
     }
 
     private void preSelectOption(HttpServletRequest request) {
