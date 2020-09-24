@@ -509,7 +509,12 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<List<LicPremInspGrpCorrelationDto>> getLicInsGrpByIds(List<String> ids) {
+    public FeignResponseEntity<List<LicInspectionGroupDto>> getLicInsGrpByIds(List<String> insGrpIds) {
+        return null;
+    }
+
+    @Override
+    public FeignResponseEntity<String> testLicence(List<LicInspectionGroupDto> licInspectionGroupDtos) {
         return null;
     }
 }

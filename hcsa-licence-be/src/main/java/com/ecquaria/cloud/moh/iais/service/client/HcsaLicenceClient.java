@@ -226,5 +226,7 @@ public interface HcsaLicenceClient {
     FeignResponseEntity<String> groupLicenceRunningNumber(@RequestParam("groupLicence")String groupLicence);
 
     @PostMapping(value = "/hcsa-licence/list-lic-ins-grp-ids",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<LicPremInspGrpCorrelationDto>> getLicInsGrpByIds(@RequestBody List<String> ids);
+    FeignResponseEntity<List<LicInspectionGroupDto>> getLicInsGrpByIds(@RequestBody List<String> insGrpIds);
+    @PostMapping(value = "/hcsa-licence/test-licId", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> testLicence(@RequestBody List<LicInspectionGroupDto> licInspectionGroupDtos);
 }
