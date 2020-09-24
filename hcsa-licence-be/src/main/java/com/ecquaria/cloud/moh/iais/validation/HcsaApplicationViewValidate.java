@@ -87,15 +87,14 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             checkRecommendationOtherDropdown(errMap,recommendationStr,request,applicationType,roleId,taskDto.getTaskKey());
         }
         //DMS recommendation
+        String generalErrSix = MessageUtil.replaceMessage("GENERAL_ERR0006","The field", "field");
         if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
             //verify upload file
             checkIsUploadDMS(applicationViewDto,errMap);
 
             String decisionValue = ParamUtil.getString(request,"decisionValues");
-
             if(StringUtil.isEmpty(decisionValue)){
-                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","The field", "field");
-                errMap.put("decisionValues",errMsg);
+                errMap.put("decisionValues",generalErrSix);
             }else{
                 if(!isRequestForChange){
                     if(DECISION_APPROVAL.equals(decisionValue)){
@@ -111,81 +110,77 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 ParamUtil.setRequestAttr(request,"selectDecisionValue",decisionValue);
             }
         }
-            //special status
-            if (isRouteBackStatus(status) || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
-                String nextStageReplys = ParamUtil.getRequestString(request, "nextStageReplys");
-                if (StringUtil.isEmpty(nextStageReplys)) {
-                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","The field", "field");
-                    errMap.put("nextStageReplys", errMsg);
-                } else {
-                    ParamUtil.setRequestAttr(request, "selectNextStageReply", nextStageReplys);
-                }
-                //AO route back to
-                //65189
-                if (isAoRouteBackStatus(status) && !isCessation && !isAudit && !isAppealType && !isWithdrawal) {
-                    if (StringUtil.isEmpty(recommendationStr)) {
-                        errMap.put("recommendation", "GENERAL_ERR0024");
-                    }
-                }
-                //appeal if route back to ASO or PSO
-                boolean rbStatusFlag = isRouteBackStatus(status);
-                //appeal broadcast
-                boolean appealBroadcastStatus = (isAppealType || isWithdrawal || isCessation) && ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status);
-                if(rbStatusFlag && (isAppealType || isWithdrawal || isCessation) || appealBroadcastStatus){
-                    appealTypeValidate(errMap,request,applicationType,roleId,taskDto.getTaskKey());
-                }
-                //ASO PSO broadcast
-                if (!(isAppealType || isWithdrawal || isCessation) && ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status) ) {
-                    checkBroadcast(roleId, errMap, status, recommendationStr, request);
-                }
+        //special status
+        if (isRouteBackStatus(status) || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
+            String nextStageReplys = ParamUtil.getRequestString(request, "nextStageReplys");
+            if (StringUtil.isEmpty(nextStageReplys)) {
+                errMap.put("nextStageReplys", generalErrSix);
             } else {
-                //normal flow
-                String nextStage = ParamUtil.getRequestString(request, "nextStage");
-                //verify appeal type
-                if(!ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage)){
-                    //appeal rfi recommendation is not required
-                    appealTypeValidate(errMap,request,applicationType,roleId,taskDto.getTaskKey());
-                }
-                if (StringUtil.isEmpty(nextStage)) {
-                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","The field", "field");
-                    errMap.put("nextStage", errMsg);
-                } else {
-                    if(isFinalStage){
-                        // final stage
-                    }else{
-                        if (VERIFIED.equals(nextStage)) {
-                            String verified = ParamUtil.getRequestString(request, "verified");
-                            ParamUtil.setRequestAttr(request, "selectVerified", verified);
-                            if (StringUtil.isEmpty(verified)) {
-                                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","The field", "field");
-                                errMap.put("verified", errMsg);
-                            }
-                            // if role is AOS or PSO ,check verified's value
-                            if (RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)) {
-                                if ((RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)) && !isAppealType) {
-                                    if (StringUtil.isEmpty(recommendationStr)) {
-                                        errMap.put("recommendation", "GENERAL_ERR0024");
-                                    }
-                                }
-                            }
-                        } else if (ROLLBACK.equals(nextStage)) {
-                            String rollBack = ParamUtil.getRequestString(request, "rollBack");
-                            ParamUtil.setRequestAttr(request, "selectRollBack", rollBack);
-                            if (StringUtil.isEmpty(rollBack)) {
-                                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","The field", "field");
-                                errMap.put("rollBack", errMsg);
-                            }
-                        } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage) && !ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)  && !isWithdrawal && !isCessation){
-                            //rfiSelectValue
-                            String rfiSelectValue = ParamUtil.getRequestString(request, "rfiSelectValue");
-                            if(StringUtil.isEmpty(rfiSelectValue)){
-                                errMap.put("nextStage", "RFI_ERR001");
-                            }
-                        }
-                    }
-
+                ParamUtil.setRequestAttr(request, "selectNextStageReply", nextStageReplys);
+            }
+            //AO route back to
+            //65189
+            if (isAoRouteBackStatus(status) && !isCessation && !isAudit && !isAppealType && !isWithdrawal) {
+                if (StringUtil.isEmpty(recommendationStr)) {
+                    errMap.put("recommendation", "GENERAL_ERR0024");
                 }
             }
+            //appeal if route back to ASO or PSO
+            boolean rbStatusFlag = isRouteBackStatus(status);
+            //appeal broadcast
+            boolean appealBroadcastStatus = (isAppealType || isWithdrawal || isCessation) && ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status);
+            if(rbStatusFlag && (isAppealType || isWithdrawal || isCessation) || appealBroadcastStatus){
+                appealTypeValidate(errMap,request,applicationType,roleId,taskDto.getTaskKey());
+            }
+            //ASO PSO broadcast
+            if (!(isAppealType || isWithdrawal || isCessation) && ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status) ) {
+                checkBroadcast(roleId, errMap, status, recommendationStr, request);
+            }
+        } else {
+            //normal flow
+            String nextStage = ParamUtil.getRequestString(request, "nextStage");
+            //verify appeal type
+            if(!ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage)){
+                //appeal rfi recommendation is not required
+                appealTypeValidate(errMap,request,applicationType,roleId,taskDto.getTaskKey());
+            }
+            if (StringUtil.isEmpty(nextStage)) {
+                errMap.put("nextStage", generalErrSix);
+            } else {
+                if(isFinalStage){
+                    // final stage
+                }else{
+                    if (VERIFIED.equals(nextStage)) {
+                        String verified = ParamUtil.getRequestString(request, "verified");
+                        ParamUtil.setRequestAttr(request, "selectVerified", verified);
+                        if (StringUtil.isEmpty(verified)) {
+                            errMap.put("verified", generalErrSix);
+                        }
+                        // if role is AOS or PSO ,check verified's value
+                        if (RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)) {
+                            if ((RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)) && !isAppealType) {
+                                if (StringUtil.isEmpty(recommendationStr)) {
+                                    errMap.put("recommendation", "GENERAL_ERR0024");
+                                }
+                            }
+                        }
+                    } else if (ROLLBACK.equals(nextStage)) {
+                        String rollBack = ParamUtil.getRequestString(request, "rollBack");
+                        ParamUtil.setRequestAttr(request, "selectRollBack", rollBack);
+                        if (StringUtil.isEmpty(rollBack)) {
+                            errMap.put("rollBack", generalErrSix);
+                        }
+                    } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage) && !ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)  && !isWithdrawal && !isCessation){
+                        //rfiSelectValue
+                        String rfiSelectValue = ParamUtil.getRequestString(request, "rfiSelectValue");
+                        if(StringUtil.isEmpty(rfiSelectValue)){
+                            errMap.put("nextStage", "RFI_ERR001");
+                        }
+                    }
+                }
+
+            }
+        }
         return errMap;
     }
 
