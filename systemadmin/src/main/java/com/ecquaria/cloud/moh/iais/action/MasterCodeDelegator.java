@@ -207,7 +207,7 @@ public class MasterCodeDelegator {
                 validationResult.setHasErrors(true);
             }
         }
-        if (cartOptional.isPresent()) {
+        if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
             validationResult.setHasErrors(true);
         }
         if (validationResult != null && validationResult.isHasErrors()) {

@@ -13,14 +13,15 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.submission.client.model.ServiceStatus;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.kafka.GlobalConstants;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * EventbusCallBackDelegate
@@ -113,7 +114,7 @@ public class EventbusCallBackDelegate {
             log.info("***send task callback end *****");
         } else if(EventBusConsts.OPERATION_POST_INSPECTION_TASK.equals(operation)) {
             log.info("send post inspection task  *****");
-            log.info("send post inspection task eventRefNum *****"+eventRefNum);
+            log.info(StringUtil.changeForLog("send post inspection task eventRefNum *****"+eventRefNum));
             invokeMethod(submissionId,eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.InsRepServiceImpl",
                     "sendPostInsTaskFeData");
