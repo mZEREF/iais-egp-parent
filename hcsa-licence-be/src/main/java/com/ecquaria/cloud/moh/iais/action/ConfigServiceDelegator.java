@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcCateWrkgrpCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
@@ -34,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -162,7 +164,7 @@ public class ConfigServiceDelegator {
 
     }
 
-    private HcsaServiceConfigDto getDateOfHcsaService(HttpServletRequest request) throws  Exception {
+    private HcsaServiceConfigDto getDateOfHcsaService(HttpServletRequest request)  {
         HcsaServiceConfigDto hcsaServiceConfigDto = new HcsaServiceConfigDto();
         HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = configService.getHcsaSvcRoutingStageDtos();
@@ -256,7 +258,7 @@ public class ConfigServiceDelegator {
             for (String str : premisesTypes) {
                 HcsaSvcSpePremisesTypeDto hcsaSvcSpePremisesTypeDto = new HcsaSvcSpePremisesTypeDto();
                 hcsaSvcSpePremisesTypeDto.setPremisesType(str);
-                hcsaSvcSpePremisesTypeDto.setStatus("CMSTAT001");
+                hcsaSvcSpePremisesTypeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 hcsaSvcSpePremisesTypeDtos.add(hcsaSvcSpePremisesTypeDto);
             }
         }
@@ -289,7 +291,7 @@ public class ConfigServiceDelegator {
             poDto.setServiceId(poId);
         }
 
-        poDto.setStatus("CMSTAT001");
+        poDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         hcsaSvcPersonnelDtos.add(poDto);
         String dpoId = request.getParameter("dpoId");
         String mandeputyPrincipalOfficer = request.getParameter("man-DeputyPrincipalOfficer");
@@ -318,7 +320,7 @@ public class ConfigServiceDelegator {
 
 
 
-        dpoDto.setStatus("CMSTAT001");
+        dpoDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         hcsaSvcPersonnelDtos.add(dpoDto);
         String cgoId = request.getParameter("cgoId");
         String manclinicalGovernanceOfficer = request.getParameter("man-ClinicalGovernanceOfficer");
@@ -347,7 +349,7 @@ public class ConfigServiceDelegator {
 
         //todo is mandatory ,cannot
         int count=1;
-        cgoDto.setStatus("CMSTAT001");
+        cgoDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         hcsaSvcPersonnelDtos.add(cgoDto);
         String svcpsnId = request.getParameter("svcpsnId");
         String manservicePersonnel = request.getParameter("man-ServicePersonnel");
@@ -375,7 +377,7 @@ public class ConfigServiceDelegator {
             svcPersonnelDto.setPageMaximumCount(mixservicePersonnel);
         }
 
-        svcPersonnelDto.setStatus("CMSTAT001");
+        svcPersonnelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         hcsaSvcPersonnelDtos.add(svcPersonnelDto);
         String manMedalertPerson = request.getParameter("man-MedalertPerson");
         String mixMedalertPerson = request.getParameter("mix-MedalertPerson");
@@ -400,7 +402,7 @@ public class ConfigServiceDelegator {
         String pageName = request.getParameter("pageName");
         if(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
+            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             hcsaServiceStepSchemeDto.setStepCode("SVST001");
             hcsaServiceStepSchemeDto.setSeqNum(count);
             hcsaServiceStepSchemeDto.setStepName(pageName);
@@ -410,7 +412,7 @@ public class ConfigServiceDelegator {
         request.setAttribute("pageName",pageName);
         if(cgoDto.getMandatoryCount()>0&&cgoDto.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
+            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             hcsaServiceStepSchemeDto.setStepCode("SVST002");
             hcsaServiceStepSchemeDto.setSeqNum(count);
             hcsaServiceStepSchemeDto.setStepName(CLINICAL_GOVERNANCE_OFFICER);
@@ -419,7 +421,7 @@ public class ConfigServiceDelegator {
         }
         if(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()&&cgoDto.getMandatoryCount()>0&&cgoDto.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
+            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             hcsaServiceStepSchemeDto.setStepCode("SVST003");
             hcsaServiceStepSchemeDto.setSeqNum(count);
             hcsaServiceStepSchemeDto.setStepName(pageName+" Allocation");
@@ -428,7 +430,7 @@ public class ConfigServiceDelegator {
         }
         if(svcPersonnelDto.getMandatoryCount()>0&&svcPersonnelDto.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
+            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             hcsaServiceStepSchemeDto.setStepCode("SVST006");
             hcsaServiceStepSchemeDto.setSeqNum(count);
             hcsaServiceStepSchemeDto.setStepName(SERVICE_PERSONNEL);
@@ -437,7 +439,7 @@ public class ConfigServiceDelegator {
         }
         if(poDto.getMandatoryCount()>0&&poDto.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
+            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             hcsaServiceStepSchemeDto.setStepCode("SVST004");
             hcsaServiceStepSchemeDto.setSeqNum(count);
             hcsaServiceStepSchemeDto.setStepName(PRINCIPAL_OFFICERS);
@@ -449,7 +451,7 @@ public class ConfigServiceDelegator {
         hcsaSvcPersonnelDtos.add(mapPersonnelDto);
         if(mapPersonnelDto.getMandatoryCount()>0&&mapPersonnelDto.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
+            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             hcsaServiceStepSchemeDto.setStepCode("SVST007");
             hcsaServiceStepSchemeDto.setSeqNum(count);
             hcsaServiceStepSchemeDto.setStepName(MEDALERT_PERSON);
@@ -522,6 +524,11 @@ public class ConfigServiceDelegator {
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
         List<HcsaConfigPageDto> hcsaConfigPageDtos = IaisCommonUtils.genNewArrayList();
         List<String> type = configService.getType();
+        List<HcsaSvcCateWrkgrpCorrelationDto> hcsaSvcCateWrkgrpCorrelationDto = configService.getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(selectCategoryId);
+        Map<String ,HcsaSvcCateWrkgrpCorrelationDto> hashMap=new HashMap<>(hcsaSvcCateWrkgrpCorrelationDto.size());
+        for(HcsaSvcCateWrkgrpCorrelationDto svcCateWrkgrpCorrelationDto : hcsaSvcCateWrkgrpCorrelationDto){
+            hashMap.put(svcCateWrkgrpCorrelationDto.getStageId(),svcCateWrkgrpCorrelationDto);
+        }
         Map<String,List<HcsaSvcSpecificStageWorkloadDto>> hcsaSvcSpecificStageWorkloadDtoMap=IaisCommonUtils.genNewHashMap();
         Map<String,List<HcsaSvcStageWorkingGroupDto>> hcsaSvcStageWorkingGroupDtoMap=IaisCommonUtils.genNewHashMap();
         Map<String, List<HcsaSvcSpeRoutingSchemeDto>> hcsaSvcSpeRoutingSchemeDtoMap=IaisCommonUtils.genNewHashMap();
@@ -560,18 +567,20 @@ public class ConfigServiceDelegator {
                     hcsaConfigPageDto.setRoutingSchemeId(stageId);
                 }
                 hcsaSvcSpeRoutingSchemeDto.setStageId(id);
-                if (!StringUtil.isEmpty(workingGroupId)) {
-                    hcsaSvcStageWorkingGroupDto.setOrder(1);
-                    hcsaSvcStageWorkingGroupDto.setStageWorkGroupId(workingGroupId);
-                    hcsaSvcStageWorkingGroupDto.setStageId(id);
-                    hcsaConfigPageDto.setWorkingGroupId(workingGroupId);
+                hcsaSvcStageWorkingGroupDto.setOrder(1);
+                HcsaSvcCateWrkgrpCorrelationDto svcCateWrkgrpCorrelationDto = hashMap.get(id);
+                if(svcCateWrkgrpCorrelationDto!=null){
+                    hcsaSvcStageWorkingGroupDto.setStageWorkGroupId(svcCateWrkgrpCorrelationDto.getWrkGrpId());
+                    hcsaConfigPageDto.setWorkingGroupId(svcCateWrkgrpCorrelationDto.getWrkGrpId());
                 }
+                hcsaSvcStageWorkingGroupDto.setStageId(id);
+
                 if(!StringUtil.isEmpty(workstageId)){
                     /*hcsaSvcStageWorkingGroupDto.setId(workstageId);*/
                     //todo delete
                     /*  hcsaSvcSpecificStageWorkloadDto.setId(workloadId);*/
                 }
-                if ("optional".equals(isMandatory)) {
+                if ("optional".equals(isMandatory)||"SVTP002".equals(serviceType)) {
                     hcsaConfigPageDto.setIsMandatory("false");
                     hcsaSvcSpecificStageWorkloadDto.setIsMandatory("false");
                     hcsaSvcStageWorkingGroupDto.setIsMandatory("false");
@@ -657,9 +666,9 @@ public class ConfigServiceDelegator {
             String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(parse);
             hcsaServiceDto.setEffectiveDate(format);
             if(parse.after(new Date())){
-                hcsaServiceDto.setStatus("CMSTAT003");
+                hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             }else {
-                hcsaServiceDto.setStatus("CMSTAT001");
+                hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             }
         } catch (Exception e) {
           /*  Date parse = new SimpleDateFormat("yyyy-MM-dd").parse(startDate);

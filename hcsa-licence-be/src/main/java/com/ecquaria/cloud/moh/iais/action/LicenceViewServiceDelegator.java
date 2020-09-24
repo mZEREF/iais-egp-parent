@@ -1107,8 +1107,8 @@ public class LicenceViewServiceDelegator {
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
         List<AppSvcDocDto> oldAppSvcDocDtoLit = oldAppSvcRelatedInfoDto.getAppSvcDocDtoLit();
-      /*  copyServiceDoc(appSvcDocDtoLit,oldAppSvcDocDtoLit);*/
-        sortServiceDoc(appSvcDocDtoLit,oldAppSvcDocDtoLit);
+        copyServiceDoc(appSvcDocDtoLit,oldAppSvcDocDtoLit);
+       /* sortServiceDoc(appSvcDocDtoLit,oldAppSvcDocDtoLit);
         if (IaisCommonUtils.isEmpty(appSvcDocDtoLit) && oldAppSvcDocDtoLit != null) {
             appSvcDocDtoLit = new ArrayList<>(oldAppSvcDocDtoLit.size());
             for (int i = 0; i < oldAppSvcDocDtoLit.size(); i++) {
@@ -1141,7 +1141,7 @@ public class LicenceViewServiceDelegator {
                     oldAppSvcDocDtoLit.add(appSvcDocDto);
                 }
             }
-        }
+        }*/
         Map<String,String> docMapService = IaisCommonUtils.genNewHashMap();
         docMapService.put("common", "0");
         docMapService.put("svc",appSvcRelatedInfoDto.getServiceId());

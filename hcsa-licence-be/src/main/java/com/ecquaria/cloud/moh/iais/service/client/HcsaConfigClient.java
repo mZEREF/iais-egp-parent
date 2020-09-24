@@ -41,6 +41,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePref
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcCateWrkgrpCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcQueryDto;
@@ -389,4 +390,6 @@ public interface HcsaConfigClient {
     FeignResponseEntity<List<String>> getWorkGroupIdsByStageId(@PathVariable(name="stageId") String stageId);
     @GetMapping(value = "/hcsa-routing/list-routing-stage-service-type",produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcRoutingStageDto>> getHcsaSvcRoutingStageDtoByServiceAndType(@RequestParam("service") String service,@RequestParam("type") String type);
+    @GetMapping(value = "/hcsa-config/hcsa-svc-cate-wrkgrp-correlation-svc-cate-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaSvcCateWrkgrpCorrelationDto>> getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(@RequestParam("svcCateId")String svcCateId);
 }

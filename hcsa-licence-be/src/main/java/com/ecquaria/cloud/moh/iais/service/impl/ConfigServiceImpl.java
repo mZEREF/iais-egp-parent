@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcCateWrkgrpCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
@@ -942,6 +943,16 @@ public class ConfigServiceImpl implements ConfigService {
         list.add(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         list.add(ApplicationConsts.APPLICATION_TYPE_APPEAL);
         return list;
+    }
+
+    @Override
+    public List<HcsaSvcCateWrkgrpCorrelationDto> getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(String svcCateId) {
+        if(StringUtil.isEmpty(svcCateId)){
+            return new ArrayList<>();
+        }
+        List<HcsaSvcCateWrkgrpCorrelationDto> entity =
+                hcsaConfigClient.getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(svcCateId).getEntity();
+        return entity;
     }
 
     private void setValueOfhcsaConfigPageDtos( List<HcsaConfigPageDto> hcsaConfigPageDtos1  ,List<HcsaConfigPageDto> hcsaConfigPageDtos){
