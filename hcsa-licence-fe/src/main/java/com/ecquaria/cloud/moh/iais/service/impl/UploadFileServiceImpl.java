@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -34,8 +35,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -48,7 +47,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -295,12 +299,8 @@ public class UploadFileServiceImpl implements UploadFileService {
                 "saveFileName", currentApp + "-" + currentDomain,
                 ProcessFileTrackDto.class.getName(), JsonUtil.parseToJson(processFileTrackDto));
         FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getAppEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
-        if(fetchResult!=null){
-           log.info(StringUtil.changeForLog("------"+JsonUtil.parseToJson(fetchResult)));
-        }else {
-            log.info(StringUtil.changeForLog("------ null----"));
-        }
-        if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
+        if (fetchResult != null && HttpStatus.SC_OK == fetchResult.getStatusCode()) {
+            log.info(StringUtil.changeForLog("------"+JsonUtil.parseToJson(fetchResult)));
             EicRequestTrackingDto entity = fetchResult.getEntity();
             if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
                 String string = saveFileName(fileName, filePath, groupId);
@@ -313,6 +313,8 @@ public class UploadFileServiceImpl implements UploadFileService {
                 eicRequestTrackingHelper.getAppEicClient().saveEicTrack(entity);
                 return string;
             }
+        } else {
+            log.info(StringUtil.changeForLog("------ null----"));
         }
         return "FAIL";
     }
