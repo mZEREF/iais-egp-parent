@@ -5,32 +5,28 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditCombinationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.PostInspectionDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.service.InsRepService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
-import com.ecquaria.csrfguard.action.IAction;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -45,19 +41,13 @@ public class PostInspectionBatchJob {
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
-    private ApplicationClient applicationClient;
-    @Autowired
     private BeEicGatewayClient beEicGatewayClient;
-    @Autowired
-    private TaskService taskService;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private EventBusHelper eventBusHelper;
     @Autowired
     private GenerateIdClient generateIdClient;
-    @Autowired
-    private InsRepService insRepService;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -162,15 +152,14 @@ public class PostInspectionBatchJob {
 
 
     private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList,String serviceCode){
-        RiskResultDto result = null;
         if(riskResultDtoList == null || StringUtil.isEmpty(serviceCode)){
             return null;
         }
         for(RiskResultDto riskResultDto : riskResultDtoList){
             if(serviceCode.equals(riskResultDto.getSvcCode())){
-                result = riskResultDto ;
+                return riskResultDto ;
             }
         }
-        return result;
+        return null;
     }
 }

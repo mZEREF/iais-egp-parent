@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -152,7 +151,7 @@ public final class ExcelReader {
                     int index = excelProperty.cellIndex();
                     String format = excelProperty.format();
                     Object value = getFieldValue(field, rowData.get(index), format);
-                    field.setAccessible(true);
+                    //field.setAccessible(true);yichen
                     field.set(obj, value);
                 }
             }

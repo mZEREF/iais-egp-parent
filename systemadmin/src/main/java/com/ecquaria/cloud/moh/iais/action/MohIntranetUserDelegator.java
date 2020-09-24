@@ -749,10 +749,10 @@ public class MohIntranetUserDelegator {
                 String userId = orgUserDto.getUserId();
                 OrgUserDto oldOrgUserDto = intranetUserService.findIntranetUserByUserId(userId);
                 orgUserDto.setAuditTrailDto(auditTrailDto);
-                oldOrgUserDto.setAuditTrailDto(auditTrailDto);
                 if (oldOrgUserDto != null) {
                     String id = oldOrgUserDto.getId();
                     orgUserDto.setId(id);
+                    oldOrgUserDto.setAuditTrailDto(auditTrailDto);
                     orgUserDtosOld.add(oldOrgUserDto);
                 } else {
                     orgUserDtosNew.add(orgUserDto);

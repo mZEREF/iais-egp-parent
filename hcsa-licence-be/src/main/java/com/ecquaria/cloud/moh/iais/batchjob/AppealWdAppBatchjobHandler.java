@@ -11,9 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -59,7 +56,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                 applicationDtoList.forEach(h -> {
                     applicationService.updateFEApplicaiton(h);
                 });
-                log.error("**** The withdraw Application List size"+applicationDtoList.size());
+                log.error(StringUtil.changeForLog("**** The withdraw Application List size"+applicationDtoList.size()));
                 List<String> oldAppGroupExcuted = IaisCommonUtils.genNewArrayList();
                 for(ApplicationDto applicationDto : applicationDtoList){
                     doWithdrawal(applicationDto.getId(),oldAppGroupExcuted);

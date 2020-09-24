@@ -35,10 +35,6 @@ public class SystemParameterServiceImpl implements SystemParameterService {
     @Autowired
     private SystemClient systemClient;
 
-
-    @Autowired
-    private SystemParamConfig config;
-
     @Autowired
     private IntranetUserClient userClient;
 

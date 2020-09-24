@@ -163,9 +163,9 @@ public class AccessUtil {
                 String browserName = browser.getName();
                 Version version = browser.getVersion(request.getHeader("User-Agent"));
                 if(version != null){
-                    uaStr.append(browserName).append("/").append(version.getVersion());
+                    uaStr.append(browserName).append('/').append(version.getVersion());
                 }else {
-                    uaStr.append(browserName).append("/").append("unbeknown");
+                    uaStr.append(browserName).append('/').append("unbeknown");
                 }
             }
         }

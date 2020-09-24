@@ -27,16 +27,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.CommonEmailClient;
+import com.ecquaria.cloud.moh.iais.service.client.CommonMsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +41,13 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * TaskServiceImpl
@@ -451,7 +455,7 @@ public class TaskServiceImpl implements TaskService {
             Map<String, Object> templateMap = IaisCommonUtils.genNewHashMap();
             List<String> receiptEmail = IaisCommonUtils.genNewArrayList();
             receiptEmail.add(orgUserDto.getEmail());
-            templateMap.put("appNo",appNo);
+            templateMap.put("appNo",appNo);//NOSONAR
             String mesContext;
             if (templateMap != null && !templateMap.isEmpty()) {
                 try {

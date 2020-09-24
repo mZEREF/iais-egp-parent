@@ -1433,7 +1433,7 @@ public class NewApplicationDelegator {
                 }
                 AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDto(appNo);
                 if (appSubmissionDto != null) {
-                    if(!IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())) {
+                    if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())) {
                         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())
                                 || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())
                                 || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())) {
@@ -1492,13 +1492,15 @@ public class NewApplicationDelegator {
                         }
                     }
                 }
-                AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
-                List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(appSvcRelatedInfoDto.getServiceId());
-                appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
-                String svcId = appSvcRelatedInfoDto.getServiceId();
-                HcsaServiceDto hcsaServiceDto = serviceConfigService.getHcsaServiceDtoById(svcId);
-                ParamUtil.setRequestAttr(bpc.request, HCSASERVICEDTO, hcsaServiceDto);
-                ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
+                if(appSubmissionDto != null && !IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){//NOSONAR
+                    AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+                    List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(appSvcRelatedInfoDto.getServiceId());
+                    appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
+                    String svcId = appSvcRelatedInfoDto.getServiceId();
+                    HcsaServiceDto hcsaServiceDto = serviceConfigService.getHcsaServiceDtoById(svcId);
+                    ParamUtil.setRequestAttr(bpc.request, HCSASERVICEDTO, hcsaServiceDto);
+                    ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
+                }
                 List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
                 List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
                 if(appGrpPremisesDtoList!=null){

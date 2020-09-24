@@ -169,7 +169,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                             errMap.put("rollBack", generalErrSix);
                         }
                     } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage)){
-                        if(!isAppealType  && !isWithdrawal && !isCessation){
+                        boolean flowFlag = !isAppealType && !isWithdrawal && !isCessation;
+                        if(flowFlag){
                             //rfiSelectValue
                             String rfiSelectValue = ParamUtil.getRequestString(request, "rfiSelectValue");
                             if(StringUtil.isEmpty(rfiSelectValue)){
