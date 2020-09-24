@@ -247,7 +247,9 @@ public class RoundRobinCommPoolBatchJob {
                             List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
                             applicationDtos.add(applicationDto);
                             ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
-                            assignReschedulingTask(taskDto,taskScoreDto.getUserId(), applicationDtos, auditTrailDto, applicationGroupDto);
+                            if(taskScoreDto != null && !StringUtil.isEmpty(taskScoreDto.getUserId())) {
+                                assignReschedulingTask(taskDto, taskScoreDto.getUserId(), applicationDtos, auditTrailDto, applicationGroupDto);
+                            }
                         }
                     }catch (Exception e ){
                         log.error(StringUtil.changeForLog("This  Task can not assign id-->:"+taskDto.getId()));
