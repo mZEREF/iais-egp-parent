@@ -54,21 +54,21 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
             List<ApplicationDto> applicationDtoList = applicationClient.saveWithdrawn().getEntity();
             log.error("**** The withdraw Application List size : "+applicationDtoList.size());
             //get old application
-            List<ApplicationDto> oldApplicationDtoList = null;
-            if(!IaisCommonUtils.isEmpty(applicationDtoList)){
-                oldApplicationDtoList = getOldApplicationDtoList(applicationDtoList);
-            }
+//            List<ApplicationDto> oldApplicationDtoList = null;
+//            if(!IaisCommonUtils.isEmpty(applicationDtoList)){
+//                oldApplicationDtoList = getOldApplicationDtoList(applicationDtoList);
+//            }
             if (applicationDtoList != null){
                 applicationDtoList.forEach(h -> {
                     applicationService.updateFEApplicaiton(h);
                 });
                 log.error(StringUtil.changeForLog("**** The withdraw Application List size"+applicationDtoList.size()));
-                List<String> oldAppGroupExcuted = IaisCommonUtils.genNewArrayList();
-                if(!IaisCommonUtils.isEmpty(oldApplicationDtoList)){
-                    for(ApplicationDto oldApplicationDto : oldApplicationDtoList){
-                        doWithdrawal(oldApplicationDto,oldAppGroupExcuted);
-                    }
-                }
+//                List<String> oldAppGroupExcuted = IaisCommonUtils.genNewArrayList();
+////                if(!IaisCommonUtils.isEmpty(oldApplicationDtoList)){
+////                    for(ApplicationDto oldApplicationDto : oldApplicationDtoList){
+////                        doWithdrawal(oldApplicationDto,oldAppGroupExcuted);
+////                    }
+////                }
                 JobLogger.log(StringUtil.changeForLog("The withdraw Application List" + applicationDtoList.size()));
             }else{
                 JobLogger.log(StringUtil.changeForLog("The withdraw Application List is null *****"));
