@@ -36,11 +36,11 @@ public class InsRepRecValidate implements CustomizeValidator {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String applicationType = applicationDto.getApplicationType();
         if (!InspectionReportConstants.REJECTED.equals(recommendation)&&OTHERS.equals(periods)&&!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)&&!ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)) {
+            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Other Period", "field");
             if (StringUtil.isEmpty(chrono)) {
-                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Other Period", "field");
+
                 errorMap.put("chronoUnit", errMsg);
             } else if (StringUtil.isEmpty(number)) {
-                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Other Period", "field");
                 errorMap.put("recomInNumber",errMsg);
             } else {
                 try {
