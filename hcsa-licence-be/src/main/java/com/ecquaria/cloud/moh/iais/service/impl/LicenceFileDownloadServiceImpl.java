@@ -809,7 +809,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     if (autoRfc) {
                         application.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                     }else {
-                        cessionOrwith.add(application);
+                        if(!ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())&&
+                                !ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())&&
+                                !ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
+                            cessionOrwith.add(application);
+                        }
                     }
                 }
             } else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
