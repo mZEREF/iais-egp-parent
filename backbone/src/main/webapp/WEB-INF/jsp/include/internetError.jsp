@@ -28,10 +28,10 @@
 <webui:setLayout name="iais-internet"/>
 
     <br><br><br><br>
-<div class="center col-xs-12 col-sm-12" style="text-align: center;height: 30%">
+<div class="center col-xs-12 col-sm-12" style="text-align: center;height: 10%">
 
 </div>
-    <div class="center col-xs-12 col-sm-12" style="text-align: center;height:45%">
+    <div class="center col-xs-12 col-sm-12" style="text-align: center;height:60%">
         <span class="center_text">
             <strong style="font-size: 30px"> <c:out value="${errorMsg}"></c:out></strong>
         </span>
