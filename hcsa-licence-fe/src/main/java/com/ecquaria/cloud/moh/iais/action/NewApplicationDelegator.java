@@ -1621,10 +1621,11 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doRenewSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(appSubmissionDto.getLicenceId());
+        String rfcErrOne = MessageUtil.getMessageDesc("RFC_ERR001");
         if (!IaisCommonUtils.isEmpty(applicationDtos)) {
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "error");
-            ParamUtil.setRequestAttr(bpc.request, "content", MessageUtil.getMessageDesc("RFC_ERR001"));
+            ParamUtil.setRequestAttr(bpc.request, "content", rfcErrOne);
             return;
         }
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
@@ -1644,7 +1645,7 @@ public class NewApplicationDelegator {
                         if (!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNew)) {
                             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
                             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "error");
-                            ParamUtil.setRequestAttr(bpc.request, "content", MessageUtil.getMessageDesc("RFC_ERR001"));
+                            ParamUtil.setRequestAttr(bpc.request, "content", rfcErrOne);
                             return;
                         }
                     }
