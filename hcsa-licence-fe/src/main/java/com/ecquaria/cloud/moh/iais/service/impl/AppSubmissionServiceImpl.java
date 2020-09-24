@@ -126,13 +126,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public void sendEmailAndSMSAndMessage(AppSubmissionDto appSubmissionDto,String applicantName){
         try{
             ApplicationDto applicationDto =  appSubmissionDto.getApplicationDtos().get(0);
+            String applicationType =  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("MOH IAIS - Your ").append( MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType())).append(',').append(applicationDto.getAlignLicenceNo()).append(" has been submitted");
+            stringBuilder.append("MOH IAIS - Your ").append(applicationType).append(',').append(appSubmissionDto.getAppGrpNo()).append(" has been submitted");
             String subject = stringBuilder.toString();
             Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
             templateContent.put("ApplicantName", applicantName);
-            templateContent.put("ApplicationType",  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
-            templateContent.put("ApplicationNo", applicationDto.getApplicationNo());
+            templateContent.put("ApplicationType",  applicationType);
+            templateContent.put("ApplicationNo", appSubmissionDto.getAppGrpNo());
             templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
             templateContent.put("systemLink", loginUrl);
@@ -174,7 +175,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             msgParam.setRefId(applicationDto.getApplicationNo());
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-            svcCodeList.add(appSvcRelatedInfoDtoList.get(0).getServiceCode());
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
+                if( !svcCodeList.contains(appSvcRelatedInfoDto.getServiceCode())){
+                    svcCodeList.add(appSvcRelatedInfoDto.getServiceCode());
+                }
+            }
             msgParam.setSvcCodeList(svcCodeList);
             msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
             notificationHelper.sendNotification(msgParam);
