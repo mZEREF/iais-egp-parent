@@ -486,11 +486,11 @@ public class WithOutRenewalDelegator {
             List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList = newAppSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
             List<AppGrpPremisesDto> newAppGrpPremisesDtoList = newAppSubmissionDtos.get(0).getAppGrpPremisesDtoList();
             boolean replacePerson = outRenewalService.isReplace(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
-            log.error("replacePerson"+replacePerson);
+            log.error(StringUtil.changeForLog("replacePerson"+replacePerson));
             boolean updatePerson = outRenewalService.isUpdate(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
-            log.error("updatePerson"+updatePerson);
+            log.error(StringUtil.changeForLog("updatePerson"+updatePerson));
             boolean editDoc = outRenewalService.isEditDoc(newAppSubmissionDtos.get(0), oldSubmissionDtos.get(0));
-            log.error("editDoc"+editDoc);
+            log.error(StringUtil.changeForLog("editDoc"+editDoc));
             List<AppSvcPrincipalOfficersDto> poAndDpo = newAppSvcRelatedInfoDtoList.get(0).getAppSvcPrincipalOfficersDtoList();
             if(!IaisCommonUtils.isEmpty(poAndDpo)){
                 poAndDpo.sort((h1,h2)->h2.getPsnType().compareTo(h1.getPsnType()));
@@ -548,7 +548,12 @@ public class WithOutRenewalDelegator {
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setChangeSelectDto(appEditSelectDto);
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            boolean eqGrpPremisesResult = eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
+            boolean eqGrpPremisesResult;
+            if(appGrpPremisesDtoList != null){
+                eqGrpPremisesResult = eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
+            } else {
+                eqGrpPremisesResult = false;
+            }
             if (eqGrpPremisesResult && appSubmissionDtos.size() == 1) {
                 if (appGrpPremisesDtoList != null) {
                     for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
@@ -970,8 +975,8 @@ public class WithOutRenewalDelegator {
         return laterFeeDetailsMap;
     }
 
-    private boolean eqGrpPremises(List<AppGrpPremisesDto> appGrpPremisesDtoList, List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) throws Exception {
-        List<AppGrpPremisesDto> appGrpPremisesDtos = copyAppGrpPremises(appGrpPremisesDtoList);
+    private boolean eqGrpPremises(List<AppGrpPremisesDto> appGrpPremisesDtoList, List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
+        List<AppGrpPremisesDto> appGrpPremisesDtos = copyAppGrpPremises(appGrpPremisesDtoList);//NOSONAR
         List<AppGrpPremisesDto> oldAppGrpPremisesDtos = copyAppGrpPremises(oldAppGrpPremisesDtoList);
         if (!appGrpPremisesDtos.equals(oldAppGrpPremisesDtos)) {
             return true;
@@ -1538,11 +1543,11 @@ public class WithOutRenewalDelegator {
 
     private String getAppNo(String groupNo,int index){
         StringBuilder appNo = new StringBuilder(groupNo);
-        appNo.append("-");
+        appNo.append('-');
         if(index > 9){
             appNo.append(index);
         }else{
-            appNo.append("0").append(index);
+            appNo.append('0').append(index);
         }
         return appNo.toString();
     }

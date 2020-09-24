@@ -217,7 +217,7 @@ public class WithdrawalDelegator {
                 if(validationResult != null && validationResult.isHasErrors()){
                     Map<String, String> errorMap = validationResult.retrieveAll();
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    isValid = IaisEGPConstant.NO;
+                    //isValid = IaisEGPConstant.NO;
                     if (commonsMultipartFile !=null && commonsMultipartFile.getSize() > 0){
                         ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",commonsMultipartFile.getFileItem().getName());
                     }
