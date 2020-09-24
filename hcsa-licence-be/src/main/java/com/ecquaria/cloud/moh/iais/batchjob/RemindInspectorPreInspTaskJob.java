@@ -218,7 +218,7 @@ public class RemindInspectorPreInspTaskJob {
             if(!StringUtil.isEmpty(emailAddress)) {
                 receiptEmail.add(emailAddress);
             }
-            templateMap.put("officer_name", orgUserDto.getDisplayName());
+            templateMap.put("officer_name", orgUserDto.getDisplayName());//NOSONAR
             String emailTemplate = msgTemplateDto.getMessageContent();
             //replace num
             emailTemplate = MessageTemplateUtil.replaceNum(emailTemplate);
