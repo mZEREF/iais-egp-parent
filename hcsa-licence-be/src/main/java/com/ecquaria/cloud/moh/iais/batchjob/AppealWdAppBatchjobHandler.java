@@ -52,14 +52,22 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) {
         try {
             List<ApplicationDto> applicationDtoList = applicationClient.saveWithdrawn().getEntity();
+            log.error("**** The withdraw Application List size : "+applicationDtoList.size());
+            //get old application
+            List<ApplicationDto> oldApplicationDtoList = null;
+            if(!IaisCommonUtils.isEmpty(applicationDtoList)){
+                oldApplicationDtoList = getOldApplicationDtoList(applicationDtoList);
+            }
             if (applicationDtoList != null){
                 applicationDtoList.forEach(h -> {
                     applicationService.updateFEApplicaiton(h);
                 });
                 log.error(StringUtil.changeForLog("**** The withdraw Application List size"+applicationDtoList.size()));
                 List<String> oldAppGroupExcuted = IaisCommonUtils.genNewArrayList();
-                for(ApplicationDto applicationDto : applicationDtoList){
-                    doWithdrawal(applicationDto.getId(),oldAppGroupExcuted);
+                if(!IaisCommonUtils.isEmpty(oldApplicationDtoList)){
+                    for(ApplicationDto oldApplicationDto : oldApplicationDtoList){
+                        doWithdrawal(oldApplicationDto,oldAppGroupExcuted);
+                    }
                 }
                 JobLogger.log(StringUtil.changeForLog("The withdraw Application List" + applicationDtoList.size()));
             }else{
@@ -73,16 +81,13 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
         return ReturnT.SUCCESS;
     }
 
-    private void doWithdrawal(String appId, List<String> oldAppGroupExcuted) throws FeignException {
-        AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
-        if(premiseMiscDto != null){
-            String oldAppId = premiseMiscDto.getRelateRecId();
-            log.info(StringUtil.changeForLog("withdrawal old application id : " + oldAppId));
-            ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
-            if(oldApplication != null){
-                String oldAppGrpId = oldApplication.getAppGrpId();
-                String currentOldApplicationNo = oldApplication.getApplicationNo();
-                String currentOldApplicationStatus = oldApplication.getStatus();
+    private void doWithdrawal(ApplicationDto oldApplicationDto, List<String> oldAppGroupExcuted) throws FeignException {
+            log.info(StringUtil.changeForLog("withdrawal old application id : " + oldApplicationDto.getId()));
+            if(oldApplicationDto != null){
+                String oldAppId = oldApplicationDto.getId();
+                String oldAppGrpId = oldApplicationDto.getAppGrpId();
+                String currentOldApplicationNo = oldApplicationDto.getApplicationNo();
+                String currentOldApplicationStatus = oldApplicationDto.getStatus();
                 List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(oldAppGrpId);
                 if(IaisCommonUtils.isEmpty(applicationDtoList) || applicationDtoList.size() == 1){
                     return;
@@ -118,7 +123,25 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                     }
                 }
             }
+    }
+
+    private List<ApplicationDto> getOldApplicationDtoList(List<ApplicationDto> withdrawalApplicationDtoList){
+        if(IaisCommonUtils.isEmpty(withdrawalApplicationDtoList)){
+            return null;
         }
+        List<ApplicationDto> oldApplicationList = IaisCommonUtils.genNewArrayList();
+        for(ApplicationDto withdrawalApplicationDto : withdrawalApplicationDtoList){
+            AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(withdrawalApplicationDto.getId()).getEntity();
+            if(premiseMiscDto != null) {
+                String oldAppId = premiseMiscDto.getRelateRecId();
+                log.info(StringUtil.changeForLog("withdrawal old application id : " + oldAppId));
+                ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
+                if(oldApplication != null){
+                    oldApplicationList.add(oldApplication);
+                }
+            }
+        }
+        return oldApplicationList;
     }
 
     private void updateCurrentApplicationStatus(List<ApplicationDto> applicationDtos,String applicationId,String status){
