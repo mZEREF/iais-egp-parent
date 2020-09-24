@@ -552,10 +552,24 @@ public class ConfigServiceImpl implements ConfigService {
         hcsaSvcSpeRoutingSchemeDtoMap.forEach((k,v)->{
             for(int i=0;i<v.size();i++){
                 String isMandatory = v.get(i).getIsMandatory();
+                String schemeType = v.get(i).getSchemeType();
+                String stageId = v.get(i).getStageId();
+                if("12848A70-820B-EA11-BE7D-000C29F371DC".equals(stageId)||"17848A70-820B-EA11-BE7D-000C29F371DC".equals(stageId)){
+                    if("SVTP001".equals(svcType)||"SVTP003".equals(svcType)){
+                        if(!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(k)&&
+                                !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(k)){
+                            if (StringUtil.isEmpty(schemeType)) {
+                                errorMap.put("schemeType"+k+ i, MessageUtil.replaceMessage("GENERAL_ERR0006","Service Routing Scheme","field"));
+                            }
+                        }
+                    }
+                    continue;
+                }
+
                 if("false".equals(isMandatory)){
                     continue;
                 }
-                String schemeType = v.get(i).getSchemeType();
+
                 if (StringUtil.isEmpty(schemeType)) {
                     errorMap.put("schemeType"+k+ i, MessageUtil.replaceMessage("GENERAL_ERR0006","Service Routing Scheme","field"));
                 }
@@ -565,12 +579,24 @@ public class ConfigServiceImpl implements ConfigService {
         map.forEach((k,v)->{
             for(int i=0;i<v.size();i++){
                 String isMandatory = v.get(i).getIsMandatory();
+                String stringManhourCount = v.get(i).getStringManhourCount();
+                String stageId = v.get(i).getStageId();
+                if("12848A70-820B-EA11-BE7D-000C29F371DC".equals(stageId)||"17848A70-820B-EA11-BE7D-000C29F371DC".equals(stageId)){
+                    if("SVTP001".equals(svcType)||"SVTP003".equals(svcType)){
+                        if(!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(k)&&
+                                !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(k)){
+                            if (StringUtil.isEmpty(stringManhourCount)) {
+                                errorMap.put("manhourCount"+k+ i, MessageUtil.replaceMessage("GENERAL_ERR0006","Service Routing Scheme","field"));
+                            }
+                        }
+                    }
+                    continue;
+                }
                 if("false".equals(isMandatory)){
                     continue;
                 }else if("".equals(isMandatory)){
                     errorMap.put("isMandatory"+k+i,MessageUtil.replaceMessage("GENERAL_ERR0006","This","field"));
                 }
-                String stringManhourCount = v.get(i).getStringManhourCount();
                 if(StringUtil.isEmpty(stringManhourCount)){
                     errorMap.put("manhourCount"+k+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Service Workload Manhours","field"));
                 }else if(!stringManhourCount.matches("^[0-9]+$")){

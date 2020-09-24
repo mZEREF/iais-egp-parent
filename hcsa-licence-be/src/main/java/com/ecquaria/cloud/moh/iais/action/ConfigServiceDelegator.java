@@ -527,7 +527,7 @@ public class ConfigServiceDelegator {
         List<HcsaSvcCateWrkgrpCorrelationDto> hcsaSvcCateWrkgrpCorrelationDto = configService.getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(selectCategoryId);
         Map<String ,HcsaSvcCateWrkgrpCorrelationDto> hashMap=new HashMap<>(hcsaSvcCateWrkgrpCorrelationDto.size());
         for(HcsaSvcCateWrkgrpCorrelationDto svcCateWrkgrpCorrelationDto : hcsaSvcCateWrkgrpCorrelationDto){
-            hashMap.put(svcCateWrkgrpCorrelationDto.getStageId(),svcCateWrkgrpCorrelationDto);
+            hashMap.put(svcCateWrkgrpCorrelationDto.getStageId()+svcCateWrkgrpCorrelationDto.getSubOrder(),svcCateWrkgrpCorrelationDto);
         }
         Map<String,List<HcsaSvcSpecificStageWorkloadDto>> hcsaSvcSpecificStageWorkloadDtoMap=IaisCommonUtils.genNewHashMap();
         Map<String,List<HcsaSvcStageWorkingGroupDto>> hcsaSvcStageWorkingGroupDtoMap=IaisCommonUtils.genNewHashMap();
@@ -568,7 +568,7 @@ public class ConfigServiceDelegator {
                 }
                 hcsaSvcSpeRoutingSchemeDto.setStageId(id);
                 hcsaSvcStageWorkingGroupDto.setOrder(1);
-                HcsaSvcCateWrkgrpCorrelationDto svcCateWrkgrpCorrelationDto = hashMap.get(id);
+                HcsaSvcCateWrkgrpCorrelationDto svcCateWrkgrpCorrelationDto = hashMap.get(id+1);
                 if(svcCateWrkgrpCorrelationDto!=null){
                     hcsaSvcStageWorkingGroupDto.setStageWorkGroupId(svcCateWrkgrpCorrelationDto.getWrkGrpId());
                     hcsaConfigPageDto.setWorkingGroupId(svcCateWrkgrpCorrelationDto.getWrkGrpId());
@@ -586,7 +586,11 @@ public class ConfigServiceDelegator {
                     hcsaSvcStageWorkingGroupDto.setIsMandatory("false");
                     hcsaSvcSpeRoutingSchemeDto.setIsMandatory("false");
                     workingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
+                    hcsaSvcSpeRoutingSchemeDto.setStageId(id);
+                    hcsaSvcSpeRoutingSchemeDto.setSchemeType(routingScheme);
                     hcsaSvcSpeRoutingSchemeDtos.add(hcsaSvcSpeRoutingSchemeDto);
+                    hcsaSvcSpecificStageWorkloadDto.setStringManhourCount(workloadManhours);
+                    hcsaSvcSpecificStageWorkloadDto.setStageId(id);
                     workloadDtos.add(hcsaSvcSpecificStageWorkloadDto);
 
                 }else if("mandatory".equals(isMandatory)){
@@ -609,11 +613,11 @@ public class ConfigServiceDelegator {
                         HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto1=new HcsaSvcSpeRoutingSchemeDto();
                         HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto2=new HcsaSvcSpeRoutingSchemeDto();
                         hcsaSvcSpeRoutingSchemeDto1.setStageId(id);
-                        hcsaSvcSpeRoutingSchemeDto1.setSchemeType(TaskConsts.TASK_SCHEME_TYPE_ROUND);
+                        hcsaSvcSpeRoutingSchemeDto1.setSchemeType(routingScheme);
                         hcsaSvcSpeRoutingSchemeDto1.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                         hcsaSvcSpeRoutingSchemeDto1.setAppType(every);
                         hcsaSvcSpeRoutingSchemeDto2.setStageId(id);
-                        hcsaSvcSpeRoutingSchemeDto2.setSchemeType(TaskConsts.TASK_SCHEME_TYPE_ROUND);
+                        hcsaSvcSpeRoutingSchemeDto2.setSchemeType(routingScheme);
                         hcsaSvcSpeRoutingSchemeDto2.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                         hcsaSvcSpeRoutingSchemeDto2.setAppType(every);
                         HcsaSvcStageWorkingGroupDto order3=new HcsaSvcStageWorkingGroupDto();
@@ -621,8 +625,15 @@ public class ConfigServiceDelegator {
                         order2.setOrder(2);
                         order2.setStageId(id);
                         //toto change
-                        order2.setStageWorkGroupId("5BA84189-FA0C-EA11-BE7D-000C29F371DC");
-                        order3.setStageWorkGroupId(workingGroupId);
+                        HcsaSvcCateWrkgrpCorrelationDto svcCateWrkgrpCorrelationDto1 = hashMap.get(id + 2);
+                        if(svcCateWrkgrpCorrelationDto1!=null){
+                            order2.setStageWorkGroupId(svcCateWrkgrpCorrelationDto1.getWrkGrpId());
+                        }else {
+                            order2.setStageWorkGroupId("DD2B0DB9-FA0C-EA11-BE7D-000C29F371DC");
+                        }
+                        if(svcCateWrkgrpCorrelationDto!=null){
+                            order3.setStageWorkGroupId(svcCateWrkgrpCorrelationDto.getWrkGrpId());
+                        }
                         order3.setOrder(3);
                         order3.setStageId(id);
                         hcsaSvcStageWorkingGroupDtos.add(order2);

@@ -518,7 +518,7 @@
         </td>
         <td>
           <div class="col-xs-12 col-md-12" style="text-align:left">
-            <select name="workingGroup${routingStage.stageCode}${routingStages.key}">
+            <select name="workingGroup${routingStage.stageCode}${routingStages.key}" disabled>
               <option value="">Please Select</option><c:forEach items="${routingStage.workingGroup}" var="workingGroup">
               <option <c:if test="${routingStage.workingGroupId==workingGroup.id}">selected="selected"</c:if>value="${workingGroup.id}">${workingGroup.groupName}</option>
             </c:forEach>

@@ -396,7 +396,6 @@
                 <th  style="width: 20% ;height: 40px;text-align: center">Service Workflow Routing Stages&nbsp;<span class="mandatory" >*</span></th>
                 <th  style="width: 30% ;height: 40px;text-align: center">Service Routing Scheme&nbsp;<span class="mandatory">*</span></th>
                 <th  style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours&nbsp;<span class="mandatory">*</span></th>
-                <th  style="width: 25% ;height: 40px;text-align: center">Working Group&nbsp;<span class="mandatory">*</span></th>
               </tr>
               <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
                 <tr>
@@ -437,17 +436,7 @@
                     </div>
 
                   </td>
-                  <td>
-                    <div class="col-xs-12 col-md-12">
-                      <input name="workstageId${routingStage.stageCode}${routingStages.key}" type="text" style="display: none" value="${routingStage.workStageId}">
-                      <select disabled="disabled" name="workingGroup${routingStage.stageCode}${routingStages.key}">
-                        <option value="">Please Select</option>
-                        <c:forEach items="${routingStage.workingGroup}" var="workingGroup">
-                          <option <c:if test="${routingStage.workingGroupId==workingGroup.id}">selected="selected"</c:if> value="${workingGroup.id}">${workingGroup.groupName}</option>
-                        </c:forEach>
-                      </select>
-                    </div>
-                  </td>
+
                 </tr>
               </c:forEach>
 
