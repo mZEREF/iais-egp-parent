@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppPremCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicFeeGroupDto;
@@ -1214,6 +1215,11 @@ public class LicenceApproveBatchjob {
                 licPremisesDto.setTcuDate(appPremisesRecommendationDto.getRecomInDate());
             }
             premisesGroupDto.setLicPremisesDto(licPremisesDto);
+            //set LicAppPremCorrelationDto
+            LicAppPremCorrelationDto licAppPremCorrelationDto = new LicAppPremCorrelationDto();
+            licAppPremCorrelationDto.setAppCorrId(appPremCorrecId);
+            premisesGroupDto.setLicAppPremCorrelationDto(licAppPremCorrelationDto);
+
             if (1 == isPostInspNeeded) {
                 //create the LicInspectionGroupDto
                 LicInspectionGroupDto licInspectionGroupDto = new LicInspectionGroupDto();
