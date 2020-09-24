@@ -2814,8 +2814,6 @@ public class NewApplicationDelegator {
         String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");
         strList.add(serviceConfig);
         appSubmissionDto.setStepColor(strList);
-        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto, bpc.process);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
@@ -2950,6 +2948,8 @@ public class NewApplicationDelegator {
             bpc.response.sendRedirect(tokenUrl);
             return;
         }
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());
         log.info(StringUtil.changeForLog("the do jumpBank end ...."));
     }
 
