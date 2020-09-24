@@ -207,7 +207,7 @@ public class MasterCodeDelegator {
                 validationResult.setHasErrors(true);
             }
         }
-        if (cartOptional != null && cartOptional.isPresent()) {
+        if (cartOptional.isPresent()) {
             validationResult.setHasErrors(true);
         }
         if (validationResult != null && validationResult.isHasErrors()) {
@@ -219,7 +219,7 @@ public class MasterCodeDelegator {
                     errorMap.put("effectiveTo", errMsg);
                 }
             }
-            if (cartOptional != null && cartOptional.isPresent()) {
+            if (cartOptional.isPresent()) {
                 validationResult.setHasErrors(true);
                 String errMsg = MessageUtil.replaceMessage("SYSPAM_ERROR0005","Code Value","Record Name");
                 errorMap.put("codeValue", errMsg);
@@ -518,7 +518,7 @@ public class MasterCodeDelegator {
                     }
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getVersion())){
-                    if (cartOptional != null && cartOptional.isPresent()) {
+                    if (cartOptional.isPresent()) {
                         MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
                         String version = masterCodeToExcelDto1.getVersion();
                         String uploadVersion = masterCodeToExcelDto.getVersion();
@@ -648,7 +648,7 @@ public class MasterCodeDelegator {
                 validationResult.setHasErrors(true);
             }
         }
-        if (cartOptional != null && cartOptional.isPresent()) {
+        if (cartOptional.isPresent()) {
             validationResult.setHasErrors(true);
         }
         if (validationResult != null && validationResult.isHasErrors()) {
@@ -659,7 +659,7 @@ public class MasterCodeDelegator {
                     errorMap.put("effectiveTo", errMsg);
                 }
             }
-            if (cartOptional != null && cartOptional.isPresent()) {
+            if (cartOptional.isPresent()) {
                 validationResult.setHasErrors(true);
                 String errMsg = MessageUtil.replaceMessage("SYSPAM_ERROR0005","Code Value","Record Name");
                 errorMap.put("codeValue", errMsg);
