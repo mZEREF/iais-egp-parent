@@ -159,7 +159,7 @@ public class FESingpassLandingDelegator {
         if (optional.isPresent()){
             feUserDto = optional.get();
             feUserDto.setScp(scp);
-            ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXIST, IaisEGPConstant.NO);
+            ParamUtil.setRequestAttr(request, UserConstants.IS_FIRST_LOGIN, IaisEGPConstant.NO);
         }else {
             Optional<MyInfoDto> infoOpt = Optional.ofNullable(myInfoAjax.getMyInfo(identityNo));
             if (infoOpt.isPresent()){
@@ -169,9 +169,9 @@ public class FESingpassLandingDelegator {
             }else {
                 feUserDto.setIdentityNo(identityNo);
                 feUserDto.setIdType(idType);
-                ParamUtil.setSessionAttr(request, UserConstants.SESSION_CAN_EDIT_USERINFO, IaisEGPConstant.NO);
-                ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXIST, IaisEGPConstant.YES);
             }
+            ParamUtil.setSessionAttr(request, UserConstants.SESSION_CAN_EDIT_USERINFO, IaisEGPConstant.NO);
+            ParamUtil.setRequestAttr(request, UserConstants.IS_FIRST_LOGIN, IaisEGPConstant.YES);
         }
 
         log.info(StringUtil.changeForLog("======>> fe user json" + JsonUtil.parseToJson(feUserDto)));
