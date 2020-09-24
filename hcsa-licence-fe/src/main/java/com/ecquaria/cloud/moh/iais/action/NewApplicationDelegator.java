@@ -2180,7 +2180,7 @@ public class NewApplicationDelegator {
         list.addAll(set);
         return list;
     }
-    private boolean eqDocChange(List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos, List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos) throws Exception{
+    private boolean eqDocChange(List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos, List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos){
         if (dtoAppGrpPrimaryDocDtos != null && oldAppGrpPrimaryDocDtos == null || dtoAppGrpPrimaryDocDtos == null && oldAppGrpPrimaryDocDtos != null) {
             return true;
         } else if (dtoAppGrpPrimaryDocDtos != null && oldAppGrpPrimaryDocDtos != null) {
@@ -2390,7 +2390,7 @@ public class NewApplicationDelegator {
         }
         return list;
     }
-    private List<String> changeCgo(List<AppSvcCgoDto> appSvcCgoDtoList, List<AppSvcCgoDto> oldAppSvcCgoDtoList) throws Exception {
+    private List<String> changeCgo(List<AppSvcCgoDto> appSvcCgoDtoList, List<AppSvcCgoDto> oldAppSvcCgoDtoList) {
         List<String> ids=IaisCommonUtils.genNewArrayList();
         if (appSvcCgoDtoList != null && oldAppSvcCgoDtoList != null) {
             List<AppSvcCgoDto> n = copyAppSvcCgo(appSvcCgoDtoList);
@@ -2412,7 +2412,7 @@ public class NewApplicationDelegator {
         }
         return ids;
     }
-    private List<String> changePo(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList, List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList)  throws Exception{
+    private List<String> changePo(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList, List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList) {
         List<String> ids=IaisCommonUtils.genNewArrayList();
         if (appSvcPrincipalOfficersDtoList != null && oldAppSvcPrincipalOfficersDtoList != null) {
             List<AppSvcPrincipalOfficersDto> n = copyAppSvcPo(appSvcPrincipalOfficersDtoList);
