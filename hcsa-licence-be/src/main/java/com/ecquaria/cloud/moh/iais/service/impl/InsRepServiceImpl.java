@@ -9,28 +9,19 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.*;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
@@ -44,10 +35,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -961,32 +949,59 @@ public class InsRepServiceImpl implements InsRepService {
 
 
     @Override
-    public void sendPostInsTaskFeData(String submissionId, String eventRefNum) throws FeignException {
+    public void sendPostInsTaskFeData(String eventRefNum,String submissionId) throws FeignException {
         log.info("post inspection call back start ===================>>>>>");
         log.info("post inspection start eventRefNum ===================>>>>>"+eventRefNum);
-        List<ApplicationDto> postApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
+        List<ApplicationDto> postInspectionApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
         AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         //appGrp --------app -------task    submissionId   operation yiyang    update licPremise
         List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
-        List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
-        if (!IaisCommonUtils.isEmpty(postApps)) {
-            TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(postApps, HcsaConsts.ROUTING_STAGE_INS, RoleConsts.USER_ROLE_INSPECTIOR, auditTrailDto);
-            taskDtos = taskHistoryDto.getTaskDtoList();
-            log.info(StringUtil.changeForLog("==================taskDtos ===================>>>>>"+taskDtos.size()));
-            for(TaskDto taskDto : taskDtos){
-                taskDto.setEventRefNo(eventRefNum);
+        if (!IaisCommonUtils.isEmpty(postInspectionApps)) {
+            for(ApplicationDto applicationDto : postInspectionApps){
+                String corrId = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity().getId();
+                String serviceId = applicationDto.getServiceId();
+                String wrkGrpId = null ;
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+                String categoryId = hcsaServiceDto.getCategoryId();
+                List<HcsaSvcCateWrkgrpCorrelationDto> entity = hcsaConfigClient.getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(categoryId).getEntity();
+                for(HcsaSvcCateWrkgrpCorrelationDto dto : entity){
+                    String stageId = dto.getStageId();
+                    if(HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
+                        wrkGrpId = dto.getWrkGrpId();
+                    }
+                }
+                TaskDto taskDto = new TaskDto();
+                taskDto.setApplicationNo(applicationDto.getApplicationNo());
+                taskDto.setRefNo(corrId);
+                taskDto.setPriority(0);
+                taskDto.setWkGrpId(wrkGrpId);
+                taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
+                taskDto.setDateAssigned(new Date());
+                taskDto.setSlaDateCompleted(null);
+                taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+                taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
+                taskDto.setProcessUrl("/hcsa-licence-web/eservice/INTRANET/MohInspectionPreInspector");
+                taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
+                taskDto.setSlaAlertInDays(0);
+                taskDto.setSlaInDays(0);
+                taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                taskDto.setEventRefNo(corrId);
+                taskDtos.add(taskDto);
             }
+            log.info(StringUtil.changeForLog("================== taskDtos ===================>>>>>"+taskDtos.size()));
         }
-        try {
-            log.info("==================eventBus Start  ===================>>>>>");
+        taskService.createTasks(taskDtos);
+        log.info(StringUtil.changeForLog("==================  eventBus Start  ===================>>>>>"));
             eventBusHelper.submitAsyncRequest(taskDtos, submissionId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK, EventBusConsts.OPERATION_POST_INSPECTION_TASK, eventRefNum, null);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-        log.info(StringUtil.changeForLog("=======================taskDtos ===================>>>>>Success"));
-//        String data = applicationClient.getBeData(appGrpIds).getEntity();
-//        ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(data, ApplicationListFileDto.class);
-//        log.info(StringUtil.changeForLog("applicationGroupId ===================>>>>>Success" + applicationListDto.getApplicationGroup().get(0).getId()));
+
+            log.info(StringUtil.changeForLog("=======================taskDtos ===================>>>>>Success"));
+
+        AppSubmissionForAuditDto appSubmissionForAuditDto = applicationClient.getAppSubmissionForAuditDto(eventRefNum).getEntity();
+        appSubmissionForAuditDto.setIsCancel(true);
+        log.info(StringUtil.changeForLog("==================  eventBus End  ===================>>>>>"));
+//        EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.LICENCE_CLIENT, AuditSystemListServiceImpl.class.getName(),
+//                "saveAppForAuditToFeAndCreateTrack", currentApp + "-" + currentDomain,
+//                AppSubmissionForAuditDto.class.getName(), JsonUtil.parseToJson(appSubmissionForAuditDto));
     }
 
     @Override
