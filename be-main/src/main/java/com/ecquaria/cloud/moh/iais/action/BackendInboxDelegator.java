@@ -465,6 +465,9 @@ public class BackendInboxDelegator {
             log.info(StringUtil.changeForLog("send new application notification groupLicenseeId : " + groupLicenseeId));
             LicenseeDto licenseeDto = organizationMainClient.getLicenseeDtoById(groupLicenseeId).getEntity();
             if (licenseeDto != null) {
+                HcsaServiceDto svcDto = hcsaConfigMainClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+                List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+                svcCodeList.add(svcDto.getSvcCode());
                 String applicantName = licenseeDto.getName();
                 log.info(StringUtil.changeForLog("send new application notification applicantName : " + applicantName));
                 Map<String, Object> map = IaisCommonUtils.genNewHashMap();
@@ -506,6 +509,7 @@ public class BackendInboxDelegator {
                     messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     messageParam.setRefId(applicationNo);
                     messageParam.setSubject(subject);
+                    messageParam.setSvcCodeList(svcCodeList);
                     log.info(StringUtil.changeForLog("send new application message"));
                     notificationHelper.sendNotification(messageParam);
                     log.info(StringUtil.changeForLog("send new application notification end"));
