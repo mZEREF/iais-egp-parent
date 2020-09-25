@@ -949,7 +949,7 @@ public class InsRepServiceImpl implements InsRepService {
 
 
     @Override
-    public void sendPostInsTaskFeData(String eventRefNum,String submissionId) throws FeignException {
+    public void sendPostInsTaskFeData(String eventRefNum,String submissionId)  {
         log.info("post inspection call back start ===================>>>>>");
         log.info("post inspection start eventRefNum ===================>>>>>"+eventRefNum);
         List<ApplicationDto> postInspectionApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
@@ -968,6 +968,7 @@ public class InsRepServiceImpl implements InsRepService {
                     String stageId = dto.getStageId();
                     if(HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
                         wrkGrpId = dto.getWrkGrpId();
+                        break;
                     }
                 }
                 TaskDto taskDto = new TaskDto();
