@@ -168,9 +168,9 @@
                             <iais:sortableHeader needSort="true" field="operation_desc"
                                                  value="Data Activities"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="moh_user_id"
-                                                 value="Created by"></iais:sortableHeader>
+                                                 value="Created By"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="action_time"
-                                                 value="Created date"></iais:sortableHeader>
+                                                 value="Created Date"></iais:sortableHeader>
                         </tr>
                         </thead>
                         <tbody>
