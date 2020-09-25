@@ -260,6 +260,9 @@ public class OfficerOnlineEnquiriesDelegator {
                         if(!StringUtil.isEmpty(rfiApplicationQueryDto.getId())){
                             filter.put("app_id", rfiApplicationQueryDto.getId());
                         }
+                        if(!StringUtil.isEmpty(rfiApplicationQueryDto.getAppCorrId())){
+                            filter.put("appCorrId", rfiApplicationQueryDto.getAppCorrId());
+                        }
                         licenceParameter.setFilters(filter);
                         SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
                         licParam.setPageNo(0);
@@ -360,6 +363,9 @@ public class OfficerOnlineEnquiriesDelegator {
 
                     if(lic.getAppId()!=null){
                         filter.put("id", lic.getAppId());
+                        if(lic.getAppCorrId()!=null){
+                            filter.put("appCorrId", lic.getAppCorrId());
+                        }
                         filter.remove("svc_names");
                         applicationParameter.setFilters(filter);
 
@@ -882,6 +888,9 @@ public class OfficerOnlineEnquiriesDelegator {
                         if(!StringUtil.isEmpty(rfiApplicationQueryDto.getId())){
                             filters.put("app_id", rfiApplicationQueryDto.getId());
                         }
+                        if(!StringUtil.isEmpty(rfiApplicationQueryDto.getAppCorrId())){
+                            filters.put("appCorrId", rfiApplicationQueryDto.getAppCorrId());
+                        }
                         licenceParameter.setFilters(filters);
                         SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
                         licParam.setPageNo(0);
@@ -978,6 +987,9 @@ public class OfficerOnlineEnquiriesDelegator {
 
                     if(lic.getAppId()!=null){
                         filters.put("id", lic.getAppId());
+                        if(lic.getAppCorrId()!=null){
+                            filters.put("appCorrId", lic.getAppCorrId());
+                        }
                         filters.remove("svc_names");
                         applicationParameter.setFilters(filters);
 
@@ -1143,68 +1155,6 @@ public class OfficerOnlineEnquiriesDelegator {
         addressList.add(MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),rfiApplicationQueryDto.getPostalCode()));
         reqForInfoSearchListDto.setAddress(addressList);
 
-        //add listReportNcRectifiedDto and add ncItemId
-//        if(licenceId!=null){
-//
-//            AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(rfiApplicationQueryDto.getAppCorrId()).getEntity();
-//            if (appPremPreInspectionNcDto != null) {
-//                String ncId = appPremPreInspectionNcDto.getId();
-//                List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
-//                if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
-//                    reqForInfoSearchListDto.setLastComplianceHistory("Partial");
-//                }
-//            } else {
-//                reqForInfoSearchListDto.setLastComplianceHistory("Full");
-//            }
-//            if(applicationDto!=null&&applicationDto.getOriginLicenceId()!=null){
-//                List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(applicationDto.getOriginLicenceId()).getEntity();
-//                AppPremisesCorrelationDto appPremisesCorrelationDto1=null;
-//                for(LicAppCorrelationDto licAppCorrelationDto :licAppCorrelationDtos){
-//                    if(!licAppCorrelationDto.getApplicationId().equals(rfiApplicationQueryDto.getId())){
-//                        appPremisesCorrelationDto1 = applicationClient.getAppPremisesCorrelationDtosByAppId(licAppCorrelationDto.getApplicationId()).getEntity();
-//                    }
-//                }
-//                reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
-//                if(appPremisesCorrelationDto1!=null){
-//                    AppPremPreInspectionNcDto appPremPreInspectionNcDto1 = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationDto1.getId()).getEntity();
-//                    if (appPremPreInspectionNcDto1 != null) {
-//                        String ncId = appPremPreInspectionNcDto1.getId();
-//                        List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
-//                        if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
-//                            reqForInfoSearchListDto.setTwoLastComplianceHistory("Partial");
-//                        }
-//                    }
-//                }else {
-//                    reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
-//                }
-//
-//            }else {
-//                try {
-//                    List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
-//                    AppPremisesCorrelationDto appPremisesCorrelationDto1=null;
-//                    for(LicAppCorrelationDto licAppCorrelationDto :licAppCorrelationDtos){
-//                        if(!licAppCorrelationDto.getApplicationId().equals(rfiApplicationQueryDto.getId())){
-//                            appPremisesCorrelationDto1 = applicationClient.getAppPremisesCorrelationDtosByAppId(licAppCorrelationDto.getApplicationId()).getEntity();
-//                        }
-//                    }
-//                    reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
-//                    if(appPremisesCorrelationDto1!=null){
-//                        AppPremPreInspectionNcDto appPremPreInspectionNcDto1 = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationDto1.getId()).getEntity();
-//                        if (appPremPreInspectionNcDto1 != null) {
-//                            String ncId = appPremPreInspectionNcDto1.getId();
-//                            List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
-//                            if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
-//                                reqForInfoSearchListDto.setTwoLastComplianceHistory("Partial");
-//                            }
-//                        }
-//                    }else {
-//                        reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
-//                    }
-//                }catch (Exception e){
-//                    reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
-//                }
-//            }
-//        }else
             {
             AppPremisesRecommendationDto appPreRecommentdationDtoDateRoot=null;
             try{
@@ -1578,6 +1528,9 @@ public class OfficerOnlineEnquiriesDelegator {
                         if(!StringUtil.isEmpty(rfiApplicationQueryDto.getId())){
                             filters.put("app_id", rfiApplicationQueryDto.getId());
                         }
+                        if(!StringUtil.isEmpty(rfiApplicationQueryDto.getAppCorrId())){
+                            filters.put("appCorrId", rfiApplicationQueryDto.getAppCorrId());
+                        }
                         licenceParameter.setFilters(filters);
                         SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
                         licParam.setPageNo(0);
@@ -1670,6 +1623,9 @@ public class OfficerOnlineEnquiriesDelegator {
 
                     if(lic.getAppId()!=null){
                         filters.put("id", lic.getAppId());
+                        if(lic.getAppCorrId()!=null){
+                            filters.put("appCorrId", lic.getAppCorrId());
+                        }
                         filters.remove("svc_names");
                         applicationParameter.setFilters(filters);
 

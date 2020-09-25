@@ -39,6 +39,7 @@
             <#if personnelRole??> AND  appKeyPsn.PSN_TYPE = :personnelRole</#if>
             <#if svc_id??> AND app.SERVICE_ID = :svc_id</#if>
             <#if licHciCode??> AND  ${licHciCode}</#if>
+            <#if appCorrId??>AND  T2.ID = :appCorrId</#if>
 
             <#if licence_status??>AND :licence_status = :licence_status</#if>
             <#if start_date??>AND :start_date = :start_date</#if>
@@ -71,14 +72,15 @@
                 lic.start_date as start_date,
                 lic.expiry_date as expiry_date,
                 lic.licensee_id,
-                licApp.APPLICATION_ID as APPLICATION_ID
+                licApp.APPLICATION_ID as APPLICATION_ID,
+                licPremAppCorr.APP_CORR_ID as APP_CORR_ID
             FROM LICENCE AS lic
             LEFT JOIN LIC_APP_CORRELATION licApp ON licApp.LICENCE_ID = lic.ID
             LEFT JOIN LIC_PREMISES licPrem ON licPrem.LICENCE_ID = lic.ID
             LEFT JOIN PREMISES Prem ON Prem.ID = licPrem.PREMISES_ID
             LEFT JOIN LIC_KEY_PERSONNEL licKeyPsn ON licKeyPsn.LICENCE_ID = lic.ID
             LEFT JOIN KEY_PERSONNEL_EXT keyPsnExt ON keyPsnExt.ID = licKeyPsn.PSN_EXT_ID
-
+            LEFT JOIN lic_prem_app_prem_correlation licPremAppCorr on licPrem.ID = licPremAppCorr.LIC_PREM_ID
             WHERE 1=1
             <#if licence_status??> AND lic.STATUS = :licence_status</#if>
             <#if start_date??> AND lic.start_date >= convert(date,:start_date)</#if>
@@ -95,7 +97,8 @@
             <#if svc_names??> AND lic.SVC_NAME in( :svc_names)</#if>
             <#if svc_name??> AND lic.SVC_NAME = :svc_name</#if>
             <#if licenseeRegnNo??> AND charindex( :licenseeRegnNo,keyPsnExt.PROF_REG_NO )>0</#if>
-            <#if licenseeId??>AND ${licenseeId}</#if>
+            <#if licenseeId??> AND ${licenseeId}</#if>
+            <#if appCorrId??> AND licPremAppCorr.APP_CORR_ID = :appCorrId</#if>
 
             <#if licenseeIdNo??>AND :licenseeIdNo = :licenseeIdNo</#if>
             <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
