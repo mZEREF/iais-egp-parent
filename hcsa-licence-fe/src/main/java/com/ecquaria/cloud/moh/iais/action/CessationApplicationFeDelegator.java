@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
+import com.ecquaria.csrfguard.action.IAction;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
@@ -97,9 +98,26 @@ public class CessationApplicationFeDelegator {
         if(!IaisCommonUtils.isEmpty(licIds)){
             boolean isGrpLicence = cessationFeService.isGrpLicence(licIds);
             appCessDtosByLicIds = cessationFeService.getAppCessDtosByLicIds(licIds);
+            //specLid in licIds
+            List<String> specLicIds = cessationFeService.filtrateSpecLicIds(licIds);
             List<AppSpecifiedLicDto> specLicInfo = cessationFeService.getSpecLicInfo(licIds);
             if (specLicInfo.size() > 0) {
-                ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) specLicInfo);
+                Map<String,List<AppSpecifiedLicDto>> map = IaisCommonUtils.genNewHashMap();
+                for(AppSpecifiedLicDto appSpecifiedLicDto : specLicInfo){
+                    String specLicId = appSpecifiedLicDto.getSpecLicId();
+                    String baseLicNo = appSpecifiedLicDto.getBaseLicNo();
+                    if(!specLicIds.contains(specLicId)){
+                        List<AppSpecifiedLicDto> specLicInfoConfirmExist = map.get(baseLicNo);
+                        if(!IaisCommonUtils.isEmpty(specLicInfoConfirmExist)){
+                            specLicInfoConfirmExist.add(appSpecifiedLicDto);
+                        }else {
+                            List<AppSpecifiedLicDto> specLicInfoConfirm = IaisCommonUtils.genNewArrayList();
+                            specLicInfoConfirm.add(appSpecifiedLicDto);
+                            map.put(baseLicNo,specLicInfoConfirm);
+                        }
+                    }
+                }
+                ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) map);
                 ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag", "exist");
             }
             ParamUtil.setSessionAttr(bpc.request, "isGrpLic",isGrpLicence);

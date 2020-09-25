@@ -49,7 +49,8 @@
                                                     <h4><c:out value="${appCessHci.hciCode}"/></h4>
                                                 </c:if>
                                                 <c:if test="${appCessHci.hciName!=null}">
-                                                    <h4><c:out value="${appCessHci.hciName}"/> - <c:out value="${appCessHci.hciCode}"/></h4>
+                                                    <h4><c:out value="${appCessHci.hciName}"/> - <c:out
+                                                            value="${appCessHci.hciCode}"/></h4>
                                                 </c:if>
                                                 <p><c:out value="${appCessHci.hciAddress}"/></p>
                                             </div>
@@ -75,7 +76,8 @@
                                                                      id="${num.count}reasonId${uid.count}"
                                                                      options="reasonOption" firstOption="Please Select"
                                                                      onchange="javascirpt:changeReason(this.value);"
-                                                                     value="${appCessHci.reason}" cssClass="nice-select cessationReasons"/>
+                                                                     value="${appCessHci.reason}"
+                                                                     cssClass="nice-select cessationReasons"/>
                                                     </iais:value>
                                                 </iais:row>
                                                 <div id="${num.count}reason${uid.count}" hidden>
@@ -125,7 +127,9 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div> <span id="error_${num.count}patRadio${uid.count}" name="iaisErrorMsg" class="error-msg"></span></div>
+                                                                <div><span id="error_${num.count}patRadio${uid.count}"
+                                                                           name="iaisErrorMsg" class="error-msg"></span>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </iais:value>
@@ -141,7 +145,8 @@
                                                                     firstOption="Please Select"
                                                                     id="${num.count}patientSelectId${uid.count}"
                                                                     onchange="javascirpt:changePatient(this.value);"
-                                                                    value="${appCessHci.patientSelect}" cssClass="nice-select cessationTransfer"/>
+                                                                    value="${appCessHci.patientSelect}"
+                                                                    cssClass="nice-select cessationTransfer"/>
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>
@@ -186,34 +191,38 @@
                                                     </iais:row>
                                                 </div>
                                                 <c:if test="${isGrpLic}">
-                                                        <iais:row>
-                                                            <iais:field value="To Cease"/>
-                                                            <iais:value width="7">
-                                                                <div class="form-check-gp">
-                                                                    <div class="row">
-                                                                        <div class="col-xs-12 col-md-2">
-                                                                            <div class="form-check">
-                                                                                <input class="form-check-input"
-                                                                                       id="icon5checkboxSample" type="checkbox"
-                                                                                       name="${num.count}whichTodo${uid.count}"
-                                                                                       value="${appCessHci.premiseId}"
-                                                                                       <c:if test="${appCessHci.premiseIdChecked != null}">checked</c:if>
-                                                                                       aria-invalid="false">
-                                                                                <label class="form-check-label"
-                                                                                       for="icon5checkboxSample"><span
-                                                                                        class="check-square"></span></label>
-                                                                                <span id="error_whichTodo" name="iaisErrorMsg"
-                                                                                      class="error-msg"></span>
-                                                                            </div>
+                                                    <iais:row>
+                                                        <iais:field value="To Cease"/>
+                                                        <iais:value width="7">
+                                                            <div class="form-check-gp">
+                                                                <div class="row">
+                                                                    <div class="col-xs-12 col-md-2">
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input"
+                                                                                   id="icon5checkboxSample"
+                                                                                   type="checkbox"
+                                                                                   name="${num.count}whichTodo${uid.count}"
+                                                                                   value="${appCessHci.premiseId}"
+                                                                                   <c:if test="${appCessHci.premiseIdChecked != null}">checked</c:if>
+                                                                                   aria-invalid="false">
+                                                                            <label class="form-check-label"
+                                                                                   for="icon5checkboxSample"><span
+                                                                                    class="check-square"></span></label>
+                                                                            <span id="error_whichTodo"
+                                                                                  name="iaisErrorMsg"
+                                                                                  class="error-msg"></span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </iais:value>
-                                                        </iais:row>
-                                                        </c:if>
+                                                            </div>
+                                                        </iais:value>
+                                                    </iais:row>
+                                                </c:if>
                                                 <c:if test="${!isGrpLic}">
                                                     <div hidden>
-                                                        <input class="form-check-input" type="text" name="${num.count}whichTodo${uid.count}" value="${appCessHci.premiseId}">
+                                                        <input class="form-check-input" type="text"
+                                                               name="${num.count}whichTodo${uid.count}"
+                                                               value="${appCessHci.premiseId}">
                                                     </div>
                                                 </c:if>
                                             </iais:section>
@@ -222,35 +231,43 @@
                                 </c:forEach>
                             </div>
                             <c:if test="${specLicInfo !=null}">
-                                <div><h4>The following specified healthcare services will also be ceased as their underlying licensable healthcare service(s) is/are listed above.</h4></div>
-                                <table class="table-gp tablebox">
-                                <tr style="text-align:center">
-                                    <th style="text-align:center;width: 0%">S/N</th>
-                                    <th style="text-align:center;width: 25%">Specified Service Licence No.</th>
-                                    <th style="text-align:center;width: 25%">Specified Service Name</th>
-                                    <th style="text-align:center;width: 25%">Base Service Licence No.</th>
-                                    <th style="text-align:center;width: 25%">Base Service Name</th>
-                                </tr>
-                                    <c:forEach items="${specLicInfo}" var="spec" varStatus="index">
-                                <tr style="text-align:center">
-                                    <td>
-                                        <p><c:out value="${index.count}"/></p>
-                                    </td>
-                                    <td>
-                                        <p><c:out value="${spec.specLicNo}"/></p>
-                                    </td>
-                                    <td>
-                                        <p><c:out value="${spec.specSvcName}"/></p>
-                                    </td>
-                                    <td>
-                                        <p><c:out value="${spec.baseLicNo}"/></p>
-                                    </td>
-                                    <td>
-                                        <p><c:out value="${spec.baseSvcName}"/></p>
-                                    </td>
-                                </tr>
+                                <c:forEach items="${specLicInfo}" var="map">
+                                    <c:set var="licNo" value="${map.key}"></c:set>
+                                    <c:if test="${appCess.licenceNo==licNo}">
+                                        <div><h4>The following specified healthcare services will also be ceased as
+                                            their underlying licensable healthcare service(s) is/are listed above.</h4>
+                                        </div>
+                                        <table class="table-gp tablebox">
+                                            <tr style="text-align:center">
+                                                <th style="text-align:center;width: 0%">S/N</th>
+                                                <th style="text-align:center;width: 25%">Specified Service Licence No.
+                                                </th>
+                                                <th style="text-align:center;width: 25%">Specified Service Name</th>
+                                                <th style="text-align:center;width: 25%">Base Service Licence No.</th>
+                                                <th style="text-align:center;width: 25%">Base Service Name</th>
+                                            </tr>
+                                            <c:forEach items="${map.value}" var="spec" varStatus="index">
+                                                <tr style="text-align:center">
+                                                    <td>
+                                                        <p><c:out value="${index.count}"/></p>
+                                                    </td>
+                                                    <td>
+                                                        <p><c:out value="${spec.specLicNo}"/></p>
+                                                    </td>
+                                                    <td>
+                                                        <p><c:out value="${spec.specSvcName}"/></p>
+                                                    </td>
+                                                    <td>
+                                                        <p><c:out value="${spec.baseLicNo}"/></p>
+                                                    </td>
+                                                    <td>
+                                                        <p><c:out value="${spec.baseSvcName}"/></p>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </table>
+                                    </c:if>
                                 </c:forEach>
-                            </table>
                             </c:if>
                         </div>
                     </c:forEach>
@@ -265,8 +282,10 @@
                         </li>
                         <li>
                             <p> Any ASO of a licensed healthcare institution (For e.g a medical clinic) who intends to
-                                cease operating the medical clinic shall take all measures as are reasonable and necessary
-                                to ensure that the medical records of every patient are properly transferred to the medical
+                                cease operating the medical clinic shall take all measures as are reasonable and
+                                necessary
+                                to ensure that the medical records of every patient are properly transferred to the
+                                medical
                                 clinic or other healthcare institution to which such patient is to be transferred.</p>
                         </li>
                     </ul>
@@ -280,7 +299,8 @@
                 <div class="application-tab-footer">
                     <div class="row">
                         <div class="col-xs-12 col-sm-6">
-                            <a href="/hcsa-licence-web/eservice/INTRANET/MohLicenceManagement"><em class="fa fa-angle-left"></em> Back</a>
+                            <a href="/hcsa-licence-web/eservice/INTRANET/MohLicenceManagement"><em
+                                    class="fa fa-angle-left"></em> Back</a>
                         </div>
                         <div class="col-xs-12 col-sm-6">
                             <div class="button-group"><a class="btn btn-primary next" onclick="submitSure('submit')">Next</a>

@@ -223,11 +223,13 @@ public class CessationBeServiceImpl implements CessationBeService {
                         LicenceDto specLicenceDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
                         if (specLicenceDto != null) {
                             String specLicenceNo = specLicenceDto.getLicenceNo();
+                            String licenceDtoId = specLicenceDto.getId();
                             String specSvcName = specLicenceDto.getSvcName();
                             appSpecifiedLicDto.setBaseLicNo(licenceNo);
                             appSpecifiedLicDto.setBaseSvcName(svcName);
                             appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
                             appSpecifiedLicDto.setSpecSvcName(specSvcName);
+                            appSpecifiedLicDto.setSpecLicId(licenceDtoId);
                             appSpecifiedLicDtos.add(appSpecifiedLicDto);
                         }
                     }
@@ -235,6 +237,43 @@ public class CessationBeServiceImpl implements CessationBeService {
             }
         }
         return appSpecifiedLicDtos;
+    }
+
+
+    @Override
+    public List<String> filtrateSpecLicIds(List<String> licIds) {
+        List<String> specLicIds = IaisCommonUtils.genNewArrayList();
+        List<String> specLicIdsE = IaisCommonUtils.genNewArrayList();
+        if (IaisCommonUtils.isEmpty(licIds)) {
+            return specLicIds;
+        }
+        for (String licId : licIds) {
+            LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
+            String svcName = licenceDto.getSvcName();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
+            String svcType = hcsaServiceDto.getSvcType();
+            if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
+                List<String> specIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
+                if (!IaisCommonUtils.isEmpty(specIds)) {
+                    for (String specLicId : specIds) {
+                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
+                        if (specLicenceDto != null) {
+                            String licenceDtoId = specLicenceDto.getId();
+                            specLicIds.add(licenceDtoId);
+                        }
+                    }
+                }
+            }
+        }
+        if (!IaisCommonUtils.isEmpty(specLicIds)) {
+            for (String specId : specLicIds) {
+                if (licIds.contains(specId)) {
+                    specLicIdsE.add(specId);
+                }
+            }
+        }
+        specLicIds.contains(licIds);
+        return specLicIdsE;
     }
 
     @Override

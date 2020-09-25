@@ -28,10 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -43,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.csrfguard.action.IAction;
 import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -107,9 +105,6 @@ public class CessationFeServiceImpl implements CessationFeService {
     private Environment env;
 
 
-    private final static String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
-    private final static String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
-
     @Override
     public List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds) {
         List<AppCessLicDto> appCessLicDtos = IaisCommonUtils.genNewArrayList();
@@ -151,6 +146,42 @@ public class CessationFeServiceImpl implements CessationFeService {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public List<String> filtrateSpecLicIds(List<String> licIds) {
+        List<String> specLicIds = IaisCommonUtils.genNewArrayList();
+        List<String> specLicIdsE = IaisCommonUtils.genNewArrayList();
+        if (IaisCommonUtils.isEmpty(licIds)) {
+            return specLicIds;
+        }
+        for (String licId : licIds) {
+            LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
+            String svcName = licenceDto.getSvcName();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
+            String svcType = hcsaServiceDto.getSvcType();
+            if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
+                List<String> specIds = licenceClient.getSpecIdsByBaseId(licId).getEntity();
+                if (!IaisCommonUtils.isEmpty(specIds)) {
+                    for (String specLicId : specIds) {
+                        LicenceDto specLicenceDto = licenceClient.getLicBylicId(specLicId).getEntity();
+                        if (specLicenceDto != null) {
+                            String licenceDtoId = specLicenceDto.getId();
+                            specLicIds.add(licenceDtoId);
+                        }
+                    }
+                }
+            }
+        }
+        if (!IaisCommonUtils.isEmpty(specLicIds)) {
+            for (String specId : specLicIds) {
+                if (licIds.contains(specId)) {
+                    specLicIdsE.add(specId);
+                }
+            }
+        }
+        specLicIds.contains(licIds);
+        return specLicIdsE;
     }
 
     @Override
@@ -221,7 +252,7 @@ public class CessationFeServiceImpl implements CessationFeService {
     }
 
     @Override
-    public void saveRfiCessations(List<AppCessationDto> appCessationDtos, LoginContext loginContext, String rfiAppId) {
+    public void saveRfiCessations(List<AppCessationDto> appCessationDtos, LoginContext loginContext, String rfiAppId) throws Exception {
         String licenseeId = loginContext.getLicenseeId();
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         ApplicationDto applicationDto = applicationClient.getApplicationById(rfiAppId).getEntity();
@@ -263,10 +294,12 @@ public class CessationFeServiceImpl implements CessationFeService {
                         if (specLicenceDto != null) {
                             String specLicenceNo = specLicenceDto.getLicenceNo();
                             String specSvcName = specLicenceDto.getSvcName();
+                            String licenceDtoId = specLicenceDto.getId();
                             appSpecifiedLicDto.setBaseLicNo(licenceNo);
                             appSpecifiedLicDto.setBaseSvcName(svcName);
                             appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
                             appSpecifiedLicDto.setSpecSvcName(specSvcName);
+                            appSpecifiedLicDto.setSpecLicId(licenceDtoId);
                             appSpecifiedLicDtos.add(appSpecifiedLicDto);
                         }
                     }
@@ -607,33 +640,23 @@ public class CessationFeServiceImpl implements CessationFeService {
         return map;
     }
 
-    private String transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) {
+    private String transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) throws Exception {
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
-        appSubmissionRequestInformationDto.setOldAppSubmissionDto(appSubmissionDto);
-        AppSubmissionDto newAppSubmissionDto = appSubmissionDto;
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
+        appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
         Double amount = 0.0;
         AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
-//        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = newAppSubmissionDto.getAppSvcRelatedInfoDtoList();
-//        String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
-//        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
-//        String svcId = hcsaServiceDto.getId();
-//        String svcCode = hcsaServiceDto.getSvcCode();
-//        appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
-//        appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
-        newAppSubmissionDto.setAppGrpId(applicationDto.getAppGrpId());
+        appSubmissionDto.setAppGrpId(applicationDto.getAppGrpId());
         ApplicationGroupDto entity1 = applicationClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
-        newAppSubmissionDto.setFromBe(false);
-        newAppSubmissionDto.setAppGrpNo(entity1.getGroupNo());
-        newAppSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
-        newAppSubmissionDto.setAmount(amount);
-        newAppSubmissionDto.setAuditTrailDto(internet);
-        newAppSubmissionDto.setPreInspection(true);
-        newAppSubmissionDto.setRequirement(true);
-        newAppSubmissionDto.setLicenseeId(licenseeId);
-        newAppSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-        newAppSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
-        setRiskToDto(newAppSubmissionDto);
-        appSubmissionRequestInformationDto.setAppSubmissionDto(newAppSubmissionDto);
+        appSubmissionDto.setFromBe(false);
+        appSubmissionDto.setAppGrpNo(entity1.getGroupNo());
+        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
+        appSubmissionDto.setAmount(amount);
+        appSubmissionDto.setAuditTrailDto(internet);
+        appSubmissionDto.setPreInspection(true);
+        appSubmissionDto.setRequirement(true);
+        appSubmissionDto.setLicenseeId(licenseeId);
+        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         //status
         List<AppPremisesRoutingHistoryDto> hisList;
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -644,20 +667,23 @@ public class CessationFeServiceImpl implements CessationFeService {
         hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
                 MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
-        if(hisList!=null){
-            for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : hisList){
-                if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())
-                        || InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())){
-                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+        if (hisList != null) {
+            for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : hisList) {
+                if (ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())
+                        || InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())) {
+                    if (ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())) {
                         applicationDto.setStatus(ApplicationConsts.PENDING_ASO_REPLY);
-                    }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                    } else if (ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())) {
                         applicationDto.setStatus(ApplicationConsts.PENDING_PSO_REPLY);
-                    }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                    } else if (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS.equals(appPremisesRoutingHistoryDto.getAppStatus())) {
                         applicationDto.setStatus(ApplicationConsts.PENDING_INP_REPLY);
                     }
                 }
             }
         }
+        setRiskToDto(appSubmissionDto);
+        appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
+        appSubmissionRequestInformationDto.setRfiStatus(applicationDto.getStatus());
         AppSubmissionDto appSubmissionDto1 = applicationClient.saveRfcCessationSubmision(appSubmissionRequestInformationDto).getEntity();
         String appId = appSubmissionDto1.getApplicationDtos().get(0).getId();
         return appId;

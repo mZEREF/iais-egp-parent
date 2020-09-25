@@ -18,11 +18,13 @@ public interface CessationFeService {
 
     List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds);
 
+    List<String> filtrateSpecLicIds(List<String> licIds);
+
     void updateLicenceFe(List<String> licNos);
 
     Map<String, String> saveCessations(List<AppCessationDto> appCessationDtos,LoginContext loginContext);
 
-    void saveRfiCessations(List<AppCessationDto> appCessationDtos,LoginContext loginContext,String rfiAppId);
+    void saveRfiCessations(List<AppCessationDto> appCessationDtos,LoginContext loginContext,String rfiAppId) throws Exception;
 
     List<String> listHciName();
 

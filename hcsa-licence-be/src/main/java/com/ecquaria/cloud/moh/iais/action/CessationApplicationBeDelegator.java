@@ -69,9 +69,25 @@ public class CessationApplicationBeDelegator {
         List<String> licIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licIds");
         boolean isGrpLicence = cessationBeService.isGrpLicence(licIds);
         List<AppCessLicDto> appCessDtosByLicIds = cessationBeService.getAppCessDtosByLicIds(licIds);
+        List<String> specLicIds = cessationBeService.filtrateSpecLicIds(licIds);
         List<AppSpecifiedLicDto> specLicInfo = cessationBeService.getSpecLicInfo(licIds);
         if(specLicInfo.size()>0) {
-            ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) specLicInfo);
+            Map<String,List<AppSpecifiedLicDto>> map = IaisCommonUtils.genNewHashMap();
+            for(AppSpecifiedLicDto appSpecifiedLicDto : specLicInfo){
+                String specLicId = appSpecifiedLicDto.getSpecLicId();
+                String baseLicNo = appSpecifiedLicDto.getBaseLicNo();
+                if(!specLicIds.contains(specLicId)){
+                    List<AppSpecifiedLicDto> specLicInfoConfirmExist = map.get(baseLicNo);
+                    if(!IaisCommonUtils.isEmpty(specLicInfoConfirmExist)){
+                        specLicInfoConfirmExist.add(appSpecifiedLicDto);
+                    }else {
+                        List<AppSpecifiedLicDto> specLicInfoConfirm = IaisCommonUtils.genNewArrayList();
+                        specLicInfoConfirm.add(appSpecifiedLicDto);
+                        map.put(baseLicNo,specLicInfoConfirm);
+                    }
+                }
+            }
+            ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) map);
             ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag","exist");
         }
         int size = appCessDtosByLicIds.size();

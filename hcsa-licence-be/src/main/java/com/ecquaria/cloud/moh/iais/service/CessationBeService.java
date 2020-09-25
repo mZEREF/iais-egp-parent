@@ -30,6 +30,8 @@ public interface CessationBeService {
 
     List<AppSpecifiedLicDto> getSpecLicInfo(List<String> licIds);
 
+    List<String> filtrateSpecLicIds(List<String> licIds);
+
     List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, Map<String, String> appIdPremisesMap , LoginContext loginContext) throws Exception;
 
     boolean isGrpLicence(List<String> licIds);
