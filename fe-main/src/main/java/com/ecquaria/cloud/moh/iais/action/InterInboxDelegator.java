@@ -216,6 +216,9 @@ public class InterInboxDelegator {
             msgContent= (String) ParamUtil.getSessionAttr(request,InboxConst.MESSAGE_CONTENT);
             msgContent = StringEscapeUtils.unescapeHtml4(msgContent.replaceAll("<.span*?>", ""));
         }
+        if(MsgPage==null){
+            MsgPage="msg_view";
+        }
         ParamUtil.setRequestAttr(request,InboxConst.MESSAGE_CONTENT, msgContent);
         ParamUtil.setSessionAttr(request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID,msgId);
         ParamUtil.setRequestAttr(request,"msg_page_view", MsgPage);
