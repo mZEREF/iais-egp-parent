@@ -20,7 +20,7 @@ import java.util.List;
  * @author Shicheng
  * @date 2020/9/25 9:45
  **/
-@JobHandler(value="syncServiceByEndJobHandler")
+@JobHandler(value="syncFeServiceByEndJobHandler")
 @Component
 @Slf4j
 public class SyncFeServiceByEndJobHandler extends MohJobHandler {
