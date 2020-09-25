@@ -278,7 +278,7 @@
                                         <c:when test="${app.applicationType == 'APTY006'}">
                                             <c:if test="${app.status == 'APST007' || app.status == 'APST005' || app.status == 'APST006'
                                             || app.status == 'APST050' || app.status == 'APST002'|| app.status == 'APST011' || app.status == 'APST012'
-                                            || app.status == 'APST090' || app.status == 'APST092' || app.status == 'APST092'}">
+                                            || app.status == 'APST090' || app.status == 'APST092' || app.status == 'APST092' || app.status == 'APST024'}">
                                                 <select disabled>
                                                     <option>N/A</option>
                                                 </select>
