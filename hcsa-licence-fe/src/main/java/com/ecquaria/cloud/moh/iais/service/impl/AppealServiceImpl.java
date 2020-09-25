@@ -979,14 +979,14 @@ public class AppealServiceImpl implements AppealService {
         request.setAttribute("groupId", groupId);
         request.setAttribute("draftStatus", AppConsts.COMMON_STATUS_IACTIVE);
         saveData(request);
-        request.setAttribute("newApplicationNo", s);
+        request.setAttribute("newApplicationNo", appNo);
         try {
             LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(entity.getLicenseeId()).getEntity();
             sendAllNotification(appNo,"appeal", null, licenseeDto,hcsaServiceDto);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-        return s;
+        return appNo;
     }
 
     private void requetForInformationGetMessage(HttpServletRequest request, AppPremiseMiscDto appPremiseMiscDto) {
