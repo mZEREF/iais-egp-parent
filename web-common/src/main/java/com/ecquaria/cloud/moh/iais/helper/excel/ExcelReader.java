@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.helper.excel;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -171,7 +172,7 @@ public final class ExcelReader {
             switch (cell.getCellType()) {
                 case NUMERIC:
                     if (DateUtil.isCellDateFormatted(cell)) {
-                        cellValue = IaisEGPHelper.parseToString(cell.getDateCellValue(), pattern);
+                        cellValue = Formatter.formatDateTime(cell.getDateCellValue());
                     } else {
                         cell.setCellType(STRING);
                         cellValue = cell.getStringCellValue();
