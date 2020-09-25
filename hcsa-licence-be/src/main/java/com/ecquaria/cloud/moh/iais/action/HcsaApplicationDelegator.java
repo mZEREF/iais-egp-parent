@@ -2585,6 +2585,12 @@ public class HcsaApplicationDelegator {
         AppPremiseMiscDto premiseMiscDto = applicationClient.getAppPremisesMisc(appPremisesCorrelationDto.getId()).getEntity();
 
         String reason = premiseMiscDto.getReason();
+        List<String> code = MasterCodeUtil.getCodeKeyByCodeValue(reason);
+        if(code != null && code.size() > 0){
+            templateContent.put("content", code.get(0));
+        }else{
+            templateContent.put("content", "");
+        }
 
         templateContent.put("content", MasterCodeUtil.getCodeKeyByCodeValue(reason));
         templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
