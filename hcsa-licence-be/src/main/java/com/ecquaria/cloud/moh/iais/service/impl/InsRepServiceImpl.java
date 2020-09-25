@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -967,6 +968,7 @@ public class InsRepServiceImpl implements InsRepService {
             for(ApplicationDto applicationDto : postInspectionApps){
                 String corrId = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity().getId();
                 String serviceId = applicationDto.getServiceId();
+                String applicationNo = applicationDto.getApplicationNo();
                 String wrkGrpId = null ;
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
                 String categoryId = hcsaServiceDto.getCategoryId();
@@ -979,7 +981,7 @@ public class InsRepServiceImpl implements InsRepService {
                     }
                 }
                 TaskDto taskDto = new TaskDto();
-                taskDto.setApplicationNo(applicationDto.getApplicationNo());
+                taskDto.setApplicationNo(applicationNo);
                 taskDto.setRefNo(corrId);
                 taskDto.setPriority(0);
                 taskDto.setWkGrpId(wrkGrpId);
@@ -992,9 +994,13 @@ public class InsRepServiceImpl implements InsRepService {
                 taskDto.setProcessUrl("/hcsa-licence-web/eservice/INTRANET/MohInspectionPreInspector");
                 taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
                 taskDto.setSlaAlertInDays(0);
+                taskDto.setScore(0);
                 taskDto.setSlaInDays(0);
                 taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 taskDto.setEventRefNo(corrId);
+                //history
+                createAppPremisesRoutingHistory(applicationNo,applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, InspectionConstants.INSPECTION_STATUS_PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN,null , null);
+                createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, null, RoleConsts.USER_ROLE_INSPECTIOR, wrkGrpId, null);
                 taskDtos.add(taskDto);
             }
             log.info(StringUtil.changeForLog("================== taskDtos ===================>>>>>"+taskDtos.size()));
@@ -1228,17 +1234,5 @@ public class InsRepServiceImpl implements InsRepService {
         HcsaSvcStageWorkingGroupDto dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
         return dto;
     }
-
-    private String getTaskType(String serviceId, Integer order, String stageId, String appType) {
-        HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-        hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
-        hcsaSvcStageWorkingGroupDto.setStageId(stageId);
-        hcsaSvcStageWorkingGroupDto.setOrder(order);
-        hcsaSvcStageWorkingGroupDto.setType(appType);
-        HcsaSvcStageWorkingGroupDto dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
-        String schemeType = dto.getSchemeType();
-        return schemeType;
-    }
-
 
 }
