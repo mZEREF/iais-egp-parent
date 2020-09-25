@@ -210,7 +210,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 }
             }
         }
-        appSubmissionDto.setStatus(applicationDto.getStatus());
+        appSubmissionRequestInformationDto.setRfiStatus(applicationDto.getStatus());
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         applicationClient.saveRfcWithdrawSubmission(appSubmissionRequestInformationDto).getEntity();
     }
