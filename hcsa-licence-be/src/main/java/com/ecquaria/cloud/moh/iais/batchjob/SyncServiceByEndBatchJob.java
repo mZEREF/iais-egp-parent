@@ -1,9 +1,18 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.job.executor.log.JobLogger;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.List;
 
 /**
  * @author Shicheng
@@ -12,6 +21,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator("syncServiceByEndBatchJob")
 @Slf4j
 public class SyncServiceByEndBatchJob {
+
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
 
     /**
      * StartStep: syncServiceByEndStart
@@ -30,7 +42,29 @@ public class SyncServiceByEndBatchJob {
      * @throws
      */
     public void syncServiceByEndDo(BaseProcessClass bpc){
-
+        logAbout("syncServiceByEndBatchJob");
+        //get expire Service By End Date
+        List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getNeedInActiveServices(AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+        if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){//NOSONAR
+            List<HcsaServiceDto> updateServiceList = IaisCommonUtils.genNewArrayList();
+            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
+                if(hcsaServiceDto != null){
+                    log.info(StringUtil.changeForLog("hcsaServiceDto Id = " + hcsaServiceDto.getId()));
+                    try {
+                        hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                        updateServiceList.add(hcsaServiceDto);
+                    } catch (Exception e) {
+                        log.error(e.getMessage(), e);
+                        JobLogger.log(e);
+                        continue;
+                    }
+                }
+            }
+            hcsaConfigClient.saveServiceList(updateServiceList);
+            HcsaServiceCacheHelper.receiveServiceMapping();
+        } else {
+            log.info(StringUtil.changeForLog("hcsaServiceDtos is Null"));
+        }
     }
 
     private void logAbout(String methodName){
