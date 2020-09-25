@@ -121,6 +121,10 @@ public class PublicHolidayDelegate {
         String holidayId = ParamUtil.getMaskedString(bpc.request,"holidayId");
         PublicHolidayDto publicHolidayDto = publicHolidayService.getHolidayById(holidayId);
         ParamUtil.setRequestAttr(bpc.request,"holiday",publicHolidayDto);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(publicHolidayDto.getFromDate());
+        int year = cal.get(Calendar.YEAR);
+        ParamUtil.setRequestAttr(bpc.request,"year",String.valueOf(year));
         statusOption(bpc);
         yearOption(bpc,true);
     }

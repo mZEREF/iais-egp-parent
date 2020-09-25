@@ -37,7 +37,7 @@ public class HolidayValidate implements CustomizeValidator {
         }
         String from = Formatter.formatDateTime(publicHolidayDto.getFromDate(), "ddMMyyyy");
         if(from == null || from.isEmpty()){
-            errMap.put("sub_date", MessageUtil.getMessageDesc("USER_ERR001"));
+            errMap.put("sub_date", MessageUtil.replaceMessage("GENERAL_ERR0006","Non-working Date","field"));
         }else{
             String res = publicHolidayService.getPublicHolidayInCalender(from);
             if(AppConsts.TRUE.equals(res)) {
@@ -51,7 +51,9 @@ public class HolidayValidate implements CustomizeValidator {
             }
 
         }
-
+        if(StringUtil.isEmpty(publicHolidayDto.getDescription())){
+            errMap.put("description",  MessageUtil.replaceMessage("GENERAL_ERR0006","Holiday Description","field"));
+        }
         if(!StringUtil.isEmpty(publicHolidayDto.getDescription()) && !(origal != null && publicHolidayDto.getDescription().equals(origal.getDescription()))   ){
             Calendar c = Calendar.getInstance();
             c.setTime(publicHolidayDto.getFromDate());
@@ -61,7 +63,9 @@ public class HolidayValidate implements CustomizeValidator {
                 errMap.put("description", MessageUtil.getMessageDesc("OAPPT_ACK010"));
             }
         }
-
+        if(StringUtil.isEmpty(publicHolidayDto.getStatus())){
+            errMap.put("status",  MessageUtil.replaceMessage("GENERAL_ERR0006","Status","field"));
+        }
         return errMap;
     }
 }

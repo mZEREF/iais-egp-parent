@@ -24,7 +24,7 @@
                             <label class="col-xs-12 col-md-4 control-label" >Year</label>
                             <div class="col-md-4">
                                 <iais:select id="year" name="year" options="yearOption" cssClass="yearOption"
-                                             value="${param.year}"></iais:select>
+                                             value="${year}"></iais:select>
                             </div>
                         </div>
 
