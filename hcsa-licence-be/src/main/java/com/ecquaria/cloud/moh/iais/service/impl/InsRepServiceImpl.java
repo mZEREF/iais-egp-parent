@@ -983,6 +983,7 @@ public class InsRepServiceImpl implements InsRepService {
                 taskDto.setRefNo(corrId);
                 taskDto.setPriority(0);
                 taskDto.setWkGrpId(wrkGrpId);
+                taskDto.setAuditTrailDto(auditTrailDto);
                 taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
                 taskDto.setDateAssigned(new Date());
                 taskDto.setSlaDateCompleted(null);
