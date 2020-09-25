@@ -60,7 +60,7 @@
     $(function () {
         $("#amendLicence").attr('checked', 'true');
         $("#amendLicence3").attr('checked', 'true');
-        $("#amendLicence3_3").attr('checked', 'true');
+        $("#amendLicence3_2").attr('checked', 'true');
     });
 
     function jumpToPagechangePage() {
