@@ -1080,7 +1080,9 @@ public class HcsaApplicationDelegator {
         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
         HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-        svcCodeList.add(svcDto.getSvcCode());
+        if(svcDto != null){
+            svcCodeList.add(svcDto.getSvcCode());
+        }
         if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
             newAppSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){

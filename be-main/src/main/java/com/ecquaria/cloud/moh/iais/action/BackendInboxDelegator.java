@@ -449,14 +449,19 @@ public class BackendInboxDelegator {
         String applicationType = applicationDto.getApplicationType();
         String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
         String emailAddress = "ecquaria@ecquaria.com";
+        HcsaServiceDto svcDto = hcsaConfigMainClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+        if(svcDto != null){
+            svcCodeList.add(svcDto.getSvcCode());
+        }
         if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-            renewalSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto);
+            renewalSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
         }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
-            newAppSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto);
+            newAppSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
         }
     }
 
-    private void newAppSendNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto){
+    private void newAppSendNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto,List<String> svcCodeList){
         log.info(StringUtil.changeForLog("send new application notification start"));
         //send email
         ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
@@ -465,9 +470,6 @@ public class BackendInboxDelegator {
             log.info(StringUtil.changeForLog("send new application notification groupLicenseeId : " + groupLicenseeId));
             LicenseeDto licenseeDto = organizationMainClient.getLicenseeDtoById(groupLicenseeId).getEntity();
             if (licenseeDto != null) {
-                HcsaServiceDto svcDto = hcsaConfigMainClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
-                List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-                svcCodeList.add(svcDto.getSvcCode());
                 String applicantName = licenseeDto.getName();
                 log.info(StringUtil.changeForLog("send new application notification applicantName : " + applicantName));
                 Map<String, Object> map = IaisCommonUtils.genNewHashMap();
@@ -520,7 +522,7 @@ public class BackendInboxDelegator {
         }
     }
 
-    private void renewalSendNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto){
+    private void renewalSendNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto,List<String> svcCodeList){
         log.info(StringUtil.changeForLog("send renewal application notification start"));
         //send email
         ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
@@ -570,6 +572,7 @@ public class BackendInboxDelegator {
                     messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     messageParam.setRefId(applicationNo);
                     messageParam.setSubject(subject);
+                    messageParam.setSvcCodeList(svcCodeList);
                     log.info(StringUtil.changeForLog("send renewal application message"));
                     notificationHelper.sendNotification(messageParam);
                     log.info(StringUtil.changeForLog("send renewal application notification end"));
