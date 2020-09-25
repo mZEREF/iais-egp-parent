@@ -1,7 +1,7 @@
-
 <div class="col-lg-12 col-xs-12">
     <div class="internet-content">
         <div class="center-content">
+            <h1 style="border-bottom: none;margin-top:60px;">Withdrawal Form</h1>
             <h2>You are withdrawing for</h2>
             <div class="row">
                 <div class="col-lg-8 col-xs-12">
@@ -28,7 +28,7 @@
             </div>
         </div>
 
-        <div id="reason">
+        <div id="reason" <c:if test="${withdrawDto.withdrawnReason != 'WDR005'}">hidden</c:if>>
             <div class="row">
                 <div class="center-content">
                     <h3>Remarks</h3>
@@ -53,14 +53,13 @@
                                 <c:if test="${not empty appealSpecialDocDto}">
                                     <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo&fileRo=<iais:mask name="fileRo"  value="${appealSpecialDocDto.fileRepoId}"/>&fileRepoName=${appealSpecialDocDto.docName}"
                                        title="Download" class="downloadFile"><c:out
-                                            value="${appealSpecialDocDto.docName}"></c:out></a>
+                                            value="${appealSpecialDocDto.docName}"/></a>
                                 </c:if>
                             </div>
                         </div>
                         <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

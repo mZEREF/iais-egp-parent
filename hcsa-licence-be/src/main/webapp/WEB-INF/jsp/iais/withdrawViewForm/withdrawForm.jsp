@@ -33,25 +33,7 @@
                                 </c:if>
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                                            <div class="panel panel-default">
-                                                <div class="panel-heading" id="withdrawFormOne" role="tab">
-                                                    <h4 class="panel-title"><a class="collapsed" role="button"
-                                                                               data-toggle="collapse"
-                                                                               href="#withdrawOne"
-                                                                               aria-expanded="true"
-                                                                               aria-controls="withdrawOne">Withdraw
-                                                        Form</a>
-                                                    </h4>
-                                                </div>
-                                                <div class="panel-collapse collapse" id="withdrawOne" role="tabpanel"
-                                                     aria-labelledby="withdrawFormOne">
-                                                    <div class="panel-body">
-                                                        <%@include file="withdrawContentForm.jsp" %>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <%@include file="withdrawContentForm.jsp" %>
                                     </div>
                                 </div>
                             </div>
@@ -85,4 +67,8 @@
         }
 
     });
+
+    $(function () {
+        var
+    })
 </script>
