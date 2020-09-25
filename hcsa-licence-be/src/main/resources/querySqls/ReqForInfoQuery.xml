@@ -53,6 +53,8 @@
             <#if licenseeRegnNo??>AND :licenseeRegnNo = :licenseeRegnNo</#if>
             <#if serviceSubTypeName??>AND :serviceSubTypeName = :serviceSubTypeName</#if>
             <#if svc_name??> AND :svc_name = :svc_name</#if>
+            <#if hciCode??>AND :hciCode = :hciCode</#if>
+
         ]]>
     </sql>
 
@@ -110,6 +112,7 @@
             <#if personnelRegnNo??> AND :personnelRegnNo = :personnelRegnNo</#if>
             <#if personnelRole??> AND  :personnelRole = :personnelRole</#if>
             <#if svc_id??> AND :svc_id = :svc_id</#if>
+            <#if hciCode??>AND :hciCode = :hciCode</#if>
 
         ]]>
     </sql>

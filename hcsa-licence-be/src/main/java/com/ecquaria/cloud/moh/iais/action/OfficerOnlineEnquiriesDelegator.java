@@ -91,8 +91,8 @@ import java.util.Set;
 @Delegator(value = "onlineEnquiriesDelegator")
 @Slf4j
 public class OfficerOnlineEnquiriesDelegator {
-    private static final Set<String> COUNTS = ImmutableSet.of( "2", "5");
-    private static final Set<String> COUNTS1 = ImmutableSet.of("1","3", "4");
+    private static final Set<String> COUNTS = ImmutableSet.of( "1","2", "5");
+    private static final Set<String> COUNTS1 = ImmutableSet.of("3", "4");
     @Autowired
     RequestForInformationService requestForInformationService;
     @Autowired
@@ -794,7 +794,9 @@ public class OfficerOnlineEnquiriesDelegator {
                 ParamUtil.setSessionAttr(request,"count",count);
                 break;
             case "1":
-
+                if(!StringUtil.isEmpty(hciCode)){
+                    filters.put("hciCode", hciCode);count="3";
+                }
                 if(!StringUtil.isEmpty(hciName)){
                     filters.put("hciName", hciName);
                 }
@@ -933,7 +935,9 @@ public class OfficerOnlineEnquiriesDelegator {
             setSearchParamDate(request, uenNo, appSubDate, appSubToDate, licStaDate, licStaToDate, licExpDate, licExpToDate, appParam);
         }
         else {
-
+            if(!StringUtil.isEmpty(hciCode)){
+                ParamUtil.setSessionAttr(request,"count","1");
+            }
             if(svcNames.size()!=0){
                 filters.put("svc_names", svcNames);
             }
@@ -950,7 +954,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 licParam.addParam("licenseeId",typeStr);
             }
             if(!StringUtil.isEmpty(hciCode)){
-                licParam.addParam("licHciCode", "(Prem.HCI_CODE = '"+hciCode+"')");
+                licParam.addParam("licHciCode", "charindex('"+hciCode+"', Prem.HCI_CODE )>0");
             }
             CrudHelper.doPaging(licParam,bpc.request);
             QueryHelp.setMainSql(RFI_QUERY,"licenceQuery",licParam);
@@ -982,7 +986,7 @@ public class OfficerOnlineEnquiriesDelegator {
                             appParam.addParam("appStatus_APPROVED", "(app.status = 'APST005' OR app.status = 'APST050')");
                         }
                         if(!StringUtil.isEmpty(hciCode)){
-                            licParam.addParam("licHciCode", "(T3.HCI_CODE IS NULL OR T3.HCI_CODE = '"+hciCode+"')");
+                            licParam.addParam("licHciCode", "(T3.HCI_CODE IS NULL OR charindex('"+hciCode+"', T3.HCI_CODE )>0 )");
                         }
                         appParam.setPageNo(0);
                         QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
