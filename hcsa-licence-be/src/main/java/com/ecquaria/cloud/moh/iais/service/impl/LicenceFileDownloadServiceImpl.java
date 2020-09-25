@@ -469,6 +469,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         String requestForInfListString = requestForInfList.toString();
         log.info(StringUtil.changeForLog(requestForInfListString +"requestForInfList size" +requestForInfList .size()));
         log.info(StringUtil.changeForLog(requestForInfListString +"updateTaskList size" +updateTaskList .size()));
+        log.info(StringUtil.changeForLog(requestForInfListString +"cessionOrwith size" +cessionOrwith .size()));
         ApplicationNewAndRequstDto applicationNewAndRequstDto=new ApplicationNewAndRequstDto();
         applicationNewAndRequstDto.setListNewApplicationDto(listApplicationDto);
         applicationNewAndRequstDto.setRequestForInfList(requestForInfList);
@@ -799,21 +800,37 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             int j=0;
             int requestForChange=0;
             int reNew=0;
+            int  cession=0;
             Boolean autoRfc = k.isAutoApprove();
             String appType = k.getAppType();
             if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)){
                 if(autoRfc){
                     k.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
                 }
+                List<ApplicationDto> applicationDtoList=IaisCommonUtils.genNewArrayList();
                 for(ApplicationDto application :v){
                     if (autoRfc) {
                         application.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                     }else {
-                        if(!ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())&&
-                                !ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())&&
-                                !ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
-                            cessionOrwith.add(application);
-                        }
+
+                    }
+                    int i=v.size();
+                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(application.getStatus())||
+                            ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(application.getStatus())||
+                            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION.equals(application.getStatus())||
+                            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(application.getStatus())||
+                            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(application.getStatus())||
+                            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(application.getStatus())){
+                        cession++;
+                        applicationDtoList.add(application);
+                    }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
+                        cession++;
+                    }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
+                            ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
+                        cession--;
+                    }
+                    if(cession==i){
+                        cessionOrwith.addAll(applicationDtoList);
                     }
                 }
             } else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){

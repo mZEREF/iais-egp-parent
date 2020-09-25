@@ -644,7 +644,7 @@
         $('#APTY004').attr("style","display: none");
         $('#APTY005').attr("style","display: none");
         $('#APTY006').attr("style","display: none");
-        $('#APTY007').attr("style","display: none");
+        $('#APTY010').attr("style","display: none");
         $('#APTY008').attr("style","display: none");
         if(jQuery=='display: block'){
             $('#APTY002').attr("style","display: none");
@@ -658,7 +658,7 @@
         $('#APTY001').attr("style","display: none");
         $('#APTY005').attr("style","display: none");
         $('#APTY006').attr("style","display: none");
-        $('#APTY007').attr("style","display: none");
+        $('#APTY010').attr("style","display: none");
         $('#APTY002').attr("style","display: none");
         $('#APTY008').attr("style","display: none");
         if(jQuery=='display: block'){
@@ -673,7 +673,7 @@
         $('#APTY002').attr("style","display: none");
         $('#APTY004').attr("style","display: none");
         $('#APTY006').attr("style","display: none");
-        $('#APTY007').attr("style","display: none");
+        $('#APTY010').attr("style","display: none");
         $('#APTY008').attr("style","display: none");
         $('#APTY005').attr("style","display: none");
         if(jQuery=='display: block'){
@@ -689,7 +689,7 @@
         $('#APTY002').attr("style","display: none");
         $('#APTY004').attr("style","display: none");
         $('#APTY006').attr("style","display: none");
-        $('#APTY007').attr("style","display: none");
+        $('#APTY010').attr("style","display: none");
         $('#APTY008').attr("style","display: none");
         $('#APTY001').attr("style","display: none");
         if(jQuery=='display: block'){
@@ -705,7 +705,7 @@
         $('#APTY002').attr("style","display: none");
         $('#APTY004').attr("style","display: none");
         $('#APTY006').attr("style","display: none");
-        $('#APTY007').attr("style","display: none");
+        $('#APTY010').attr("style","display: none");
         $('#APTY005').attr("style","display: none");
         $('#APTY001').attr("style","display: none");
         if(jQuery=='display: block'){
@@ -716,7 +716,7 @@
     }
 
     function showSUSPENSION(){
-        let jQuery = $('#APTY007').attr("style");
+        let jQuery = $('#APTY010').attr("style");
         $('#APTY002').attr("style","display: none");
         $('#APTY004').attr("style","display: none");
         $('#APTY006').attr("style","display: none");
@@ -724,9 +724,9 @@
         $('#APTY005').attr("style","display: none");
         $('#APTY001').attr("style","display: none");
         if(jQuery=='display: block'){
-            $('#APTY007').attr("style","display: none");
+            $('#APTY010').attr("style","display: none");
         }else if(jQuery=='display: none'){
-            $('#APTY007').attr("style","display: block");
+            $('#APTY010').attr("style","display: block");
         }
     }
 
@@ -734,7 +734,7 @@
         let jQuery = $('#APTY006').attr("style");
         $('#APTY002').attr("style","display: none");
         $('#APTY004').attr("style","display: none");
-        $('#APTY007').attr("style","display: none");
+        $('#APTY010').attr("style","display: none");
         $('#APTY008').attr("style","display: none");
         $('#APTY005').attr("style","display: none");
         $('#APTY001').attr("style","display: none");

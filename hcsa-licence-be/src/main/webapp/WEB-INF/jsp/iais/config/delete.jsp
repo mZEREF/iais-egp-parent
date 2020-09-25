@@ -76,7 +76,7 @@
         <div class="col-xs-12 col-md-9" style="margin-bottom: 20px;">
           <label class="col-xs-12 col-md-7 control-label">Service Category&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <select name="selectCategoryId" >
+            <select name="selectCategoryId" disabled >
               <option value="">Please Select</option>
               <c:forEach items="${categoryDtos}" var="categoryDto">
                 <option value="${categoryDto.id}" <c:if test="${hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
@@ -265,10 +265,10 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label">Will the doc be duplicated for individual premises?</label>
           <div class="col-xs-12 col-md-2">
-            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" checked value="0">&nbsp;&nbsp;<span style="font-size: 16px">No</span>
+            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" checked value="0" disabled>&nbsp;&nbsp;<span style="font-size: 16px">No</span>
           </div>
           <div class="col-xs-12 col-md-2">
-            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises"  value="1">&nbsp;&nbsp;<span style="font-size: 16px">Yes</span>
+            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises"  value="1" disabled>&nbsp;&nbsp;<span style="font-size: 16px">Yes</span>
           </div>
         </div>
       </div>
@@ -671,7 +671,7 @@
         $('#APTY004').attr("style","display: none");
         $('#APTY005').attr("style","display: none");
         $('#APTY006').attr("style","display: none");
-        $('#APTY007').attr("style","display: none");
+        $('#APTY010').attr("style","display: none");
         $('#APTY008').attr("style","display: none");
         if(jQuery=='display: block'){
             $('#APTY002').attr("style","display: none");
@@ -685,7 +685,7 @@
         $('#APTY001').attr("style","display: none");
         $('#APTY005').attr("style","display: none");
         $('#APTY006').attr("style","display: none");
-        $('#APTY007').attr("style","display: none");
+        $('#APTY010').attr("style","display: none");
         $('#APTY002').attr("style","display: none");
         $('#APTY008').attr("style","display: none");
         if(jQuery=='display: block'){
@@ -700,7 +700,7 @@
         $('#APTY002').attr("style","display: none");
         $('#APTY004').attr("style","display: none");
         $('#APTY006').attr("style","display: none");
-        $('#APTY007').attr("style","display: none");
+        $('#APTY010').attr("style","display: none");
         $('#APTY008').attr("style","display: none");
         $('#APTY005').attr("style","display: none");
         if(jQuery=='display: block'){
@@ -715,7 +715,7 @@
         $('#APTY002').attr("style","display: none");
         $('#APTY004').attr("style","display: none");
         $('#APTY006').attr("style","display: none");
-        $('#APTY007').attr("style","display: none");
+        $('#APTY010').attr("style","display: none");
         $('#APTY008').attr("style","display: none");
         $('#APTY001').attr("style","display: none");
         if(jQuery=='display: block'){
@@ -731,7 +731,7 @@
         $('#APTY002').attr("style","display: none");
         $('#APTY004').attr("style","display: none");
         $('#APTY006').attr("style","display: none");
-        $('#APTY007').attr("style","display: none");
+        $('#APTY010').attr("style","display: none");
         $('#APTY005').attr("style","display: none");
         $('#APTY001').attr("style","display: none");
         if(jQuery=='display: block'){
@@ -742,7 +742,7 @@
     }
 
     /*function showSUSPENSION(){
-        let jQuery = $('#APTY007').attr("style");
+        let jQuery = $('#APTY010').attr("style");
         $('#APTY002').attr("style","display: none");
         $('#APTY004').attr("style","display: none");
         $('#APTY006').attr("style","display: none");
@@ -750,9 +750,9 @@
         $('#APTY005').attr("style","display: none");
         $('#APTY001').attr("style","display: none");
         if(jQuery=='display: block'){
-            $('#APTY007').attr("style","display: none");
+            $('#APTY010').attr("style","display: none");
         }else if(jQuery=='display: none'){
-            $('#APTY007').attr("style","display: block");
+            $('#APTY010').attr("style","display: block");
         }
     }
 */
@@ -760,7 +760,7 @@
         let jQuery = $('#APTY006').attr("style");
         $('#APTY002').attr("style","display: none");
         $('#APTY004').attr("style","display: none");
-        $('#APTY007').attr("style","display: none");
+        $('#APTY010').attr("style","display: none");
         $('#APTY008').attr("style","display: none");
         $('#APTY005').attr("style","display: none");
         $('#APTY001').attr("style","display: none");

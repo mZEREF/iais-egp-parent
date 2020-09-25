@@ -1360,7 +1360,6 @@ public class NewApplicationDelegator {
 
     public void inboxToPreview(BaseProcessClass bpc) throws Exception {
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
-        ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Cessation Form");
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
         if (!StringUtil.isEmpty(appNo)) {
             ApplicationDto applicationDto = applicationClient.getApplicationDtoByAppNo(appNo).getEntity();
@@ -3017,6 +3016,13 @@ public class NewApplicationDelegator {
                     AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
                     appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
                     applicationClient.saveDraft(appSubmissionDto1);
+                }else {
+                    if(AppConsts.COMMON_STATUS_ACTIVE.equals(applicationSubDraftDto.getStatus())){
+                        String draftJson = applicationSubDraftDto.getDraftJson();
+                        AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
+                        appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                        applicationClient.saveDraft(appSubmissionDto1);
+                    }
                 }
             }
         }

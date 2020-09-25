@@ -467,7 +467,7 @@
               <th  style="width: 20% ;height: 40px;text-align: center"> Service Workflow Routing Stages&nbsp;<span class="mandatory" >*</span></th>
               <th  style="width: 30% ;height: 40px;text-align: center">Service Routing Scheme&nbsp;<span class="mandatory">*</span></th>
               <th  style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours&nbsp;<span class="mandatory">*</span></th>
-              <th  style="width: 25% ;height: 40px;text-align: center">Working Group&nbsp;<span class="mandatory">*</span></th>
+            <%--  <th  style="width: 25% ;height: 40px;text-align: center">Working Group&nbsp;<span class="mandatory">*</span></th>--%>
             </tr>
             <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
               <tr >
@@ -507,7 +507,7 @@
                     <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${routingStages.key}${status.index}"></span>
                   </div>
                 </td>
-                <td>
+              <%--  <td>
                   <div class="col-xs-12 col-md-12" style="text-align:left">
                     <input name="workstageId${routingStage.stageCode}${routingStages.key}" type="text" style="display: none" value="${routingStage.workStageId}">
                     <select name="workingGroup${routingStage.stageCode}${routingStages.key}" disabled>
@@ -518,7 +518,7 @@
                     </select>
                     <span name="iaisErrorMsg" class="error-msg" id="error_stageWorkGroupId${routingStages.key}${status.index}"></span>
                   </div>
-                </td>
+                </td>--%>
               </tr>
             </c:forEach>
           </table>
@@ -540,7 +540,7 @@
           </div>
         </div>
         <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
-          <div class="col-xs-12 col-md-12">
+          <div class="col-xs-12 col-md-12"> </div>
             <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed">
               <div class="view col-xs-12 col-md-12">
                 <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
@@ -610,7 +610,7 @@
                 </c:forEach>
               </c:forEach>
             </c:forEach>
-          </div>
+
           <div class="col-xs-12 col-md-12">
             <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" onclick="addAsItem(this)"> + </a><label for="addAsItem"> Add Item</label>
           </div>
@@ -738,7 +738,7 @@
         $('#APTY004').attr("style","display: none");
         $('#APTY005').attr("style","display: none");
         $('#APTY006').attr("style","display: none");
-        $('#APTY007').attr("style","display: none");
+        $('#APTY010').attr("style","display: none");
         $('#APTY008').attr("style","display: none");
         if(jQuery=='display: block'){
             $('#APTY002').attr("style","display: none");
@@ -752,7 +752,7 @@
         $('#APTY001').attr("style","display: none");
         $('#APTY005').attr("style","display: none");
         $('#APTY006').attr("style","display: none");
-        $('#APTY007').attr("style","display: none");
+        $('#APTY010').attr("style","display: none");
         $('#APTY002').attr("style","display: none");
         $('#APTY008').attr("style","display: none");
         if(jQuery=='display: block'){
@@ -767,7 +767,7 @@
         $('#APTY002').attr("style","display: none");
         $('#APTY004').attr("style","display: none");
         $('#APTY006').attr("style","display: none");
-        $('#APTY007').attr("style","display: none");
+        $('#APTY010').attr("style","display: none");
         $('#APTY008').attr("style","display: none");
         $('#APTY005').attr("style","display: none");
         if(jQuery=='display: block'){
@@ -784,7 +784,7 @@
         $('#APTY002').attr("style","display: none");
         $('#APTY004').attr("style","display: none");
         $('#APTY006').attr("style","display: none");
-        $('#APTY007').attr("style","display: none");
+        $('#APTY010').attr("style","display: none");
         $('#APTY008').attr("style","display: none");
         $('#APTY001').attr("style","display: none");
         if(jQuery=='display: block'){
@@ -800,7 +800,7 @@
         $('#APTY002').attr("style","display: none");
         $('#APTY004').attr("style","display: none");
         $('#APTY006').attr("style","display: none");
-        $('#APTY007').attr("style","display: none");
+        $('#APTY010').attr("style","display: none");
         $('#APTY005').attr("style","display: none");
         $('#APTY001').attr("style","display: none");
         if(jQuery=='display: block'){
@@ -811,7 +811,7 @@
     }
 
  /*   function showSUSPENSION(){
-        let jQuery = $('#APTY007').attr("style");
+        let jQuery = $('#APTY010').attr("style");
         $('#APTY002').attr("style","display: none");
         $('#APTY004').attr("style","display: none");
         $('#APTY006').attr("style","display: none");
@@ -819,9 +819,9 @@
         $('#APTY005').attr("style","display: none");
         $('#APTY001').attr("style","display: none");
         if(jQuery=='display: block'){
-            $('#APTY007').attr("style","display: none");
+            $('#APTY010').attr("style","display: none");
         }else if(jQuery=='display: none'){
-            $('#APTY007').attr("style","display: block");
+            $('#APTY010').attr("style","display: block");
         }
     }*/
 
@@ -829,7 +829,7 @@
         let jQuery = $('#APTY006').attr("style");
         $('#APTY002').attr("style","display: none");
         $('#APTY004').attr("style","display: none");
-        $('#APTY007').attr("style","display: none");
+        $('#APTY010').attr("style","display: none");
         $('#APTY008').attr("style","display: none");
         $('#APTY005').attr("style","display: none");
         $('#APTY001').attr("style","display: none");
@@ -871,11 +871,29 @@
     }
 
     function up(obj) {
-
+        let val = $(obj).closest("div").closest("div.view").children('div.col-xs-12.col-md-4').children("input");
+        let val1 = $(obj).closest("div").closest("div.view").prev("div.view").children('div.col-xs-12.col-md-4').children("input");
+        if("undefined" !=typeof val1.val()){
+            let upValue=val.val();
+            let upValue1=val1.val();
+            val.val(upValue1);
+            val1.val(upValue);
+            val.html(upValue1);
+            val1.html(upValue);
+        }
     }
 
     function down(obj) {
-
+        let val = $(obj).closest("div").closest("div.view").children('div.col-xs-12.col-md-4').children("input");
+        let val1 = $(obj).closest("div").closest("div.view").next("div.view").children('div.col-xs-12.col-md-4').children("input");
+        if("undefined" !=typeof val1.val()){
+            let upValue=val.val();
+            let upValue1=val1.val();
+            val.val(upValue1);
+            val1.val(upValue);
+            val.html(upValue1);
+            val1.html(upValue);
+        }
     }
     function addAsItem(obj) {
         $(obj).closest("div").prev("div").after(" <div class=\"view col-xs-12 col-md-12\">\n" +

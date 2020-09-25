@@ -561,9 +561,9 @@ public class ConfigServiceImpl implements ConfigService {
                             if (StringUtil.isEmpty(schemeType)) {
                                 errorMap.put("schemeType"+k+ i, MessageUtil.replaceMessage("GENERAL_ERR0006","Service Routing Scheme","field"));
                             }
+                            continue;
                         }
                     }
-                    continue;
                 }
 
                 if("false".equals(isMandatory)){
@@ -588,9 +588,15 @@ public class ConfigServiceImpl implements ConfigService {
                             if (StringUtil.isEmpty(stringManhourCount)) {
                                 errorMap.put("manhourCount"+k+ i, MessageUtil.replaceMessage("GENERAL_ERR0006","Service Routing Scheme","field"));
                             }
+                            if(StringUtil.isEmpty(isMandatory)){
+                                errorMap.put("isMandatory"+k+i,MessageUtil.replaceMessage("GENERAL_ERR0006","This","field"));
+                            }else if("false".equals(isMandatory)){
+                                errorMap.put("isMandatory"+k+i,"This option must be mandatory");
+                            }
+                            continue;
                         }
                     }
-                    continue;
+
                 }
                 if("false".equals(isMandatory)){
                     continue;
@@ -965,7 +971,7 @@ public class ConfigServiceImpl implements ConfigService {
         list.add(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
         list.add(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL) ;
         list.add(ApplicationConsts.APPLICATION_TYPE_CESSATION) ;
-     /*   list.add("APTY007") ;*/
+       /* list.add(ApplicationConsts.APPLICATION_TYPE_SUSPENSION) ;*/
         list.add(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         list.add(ApplicationConsts.APPLICATION_TYPE_APPEAL);
         return list;
@@ -1030,7 +1036,7 @@ public class ConfigServiceImpl implements ConfigService {
                 appeal=  getWorkGrop(type,"Renew");
             }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(type)){
                 appeal= getWorkGrop(type,"Cessation");
-            }else  if("APTY007".equals(type)){
+            }else  if(ApplicationConsts.APPLICATION_TYPE_SUSPENSION.equals(type)){
                 appeal= getWorkGrop(type,"Suspension");
             }else if(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT.equals(type)){
                 appeal= getWorkGrop(type,"Revocation");
@@ -1190,7 +1196,7 @@ public class ConfigServiceImpl implements ConfigService {
             hcsaConfigPageDto.setAppTypeName("Renew");
         }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(type)){
             hcsaConfigPageDto.setAppTypeName("Cessation");
-        }else  if("APTY007".equals(type)){
+        }else  if(ApplicationConsts.APPLICATION_TYPE_SUSPENSION.equals(type)){
             hcsaConfigPageDto.setAppTypeName("Suspension");
         }else if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(type)){
             hcsaConfigPageDto.setAppTypeName("Withdrawal");
