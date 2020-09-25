@@ -74,7 +74,7 @@ public class MessageUtil {
     }
 
     public static String dateIntoMessage(String codeKey){
-        return dateIntoMessage(codeKey, AppConsts.DEFAULT_DATE_TIME_FORMAT);
+        return dateIntoMessage(codeKey, AppConsts.DEFAULT_DATE_TIME_FORMAT_SEC);
     }
 
     private static String dateIntoMessage(String codeKey, String pattern){
@@ -86,7 +86,7 @@ public class MessageUtil {
         String dateStr = "";
         String timeStr = "";
         try {
-            String dateTimeStr = Formatter.formatDateTime(new Date());
+            String dateTimeStr = Formatter.formatDateTime(new Date(), pattern);
             String[] arr = dateTimeStr.split(" ");
             dateStr = arr[0];
             timeStr = arr[1];

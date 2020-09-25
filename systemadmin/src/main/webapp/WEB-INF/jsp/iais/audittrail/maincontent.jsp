@@ -128,7 +128,7 @@
                             <iais:sortableHeader needSort="true" field="domain"
                                                  value="Operation Type"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="entity_id"
-                                                 value="Batch Job Id"></iais:sortableHeader>
+                                                 value="Batch Job ID"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="moh_user_id"
                                                  value="Active directory ID"></iais:sortableHeader>
 
