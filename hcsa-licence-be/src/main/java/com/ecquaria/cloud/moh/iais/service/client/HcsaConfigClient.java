@@ -392,4 +392,7 @@ public interface HcsaConfigClient {
     FeignResponseEntity<List<HcsaSvcRoutingStageDto>> getHcsaSvcRoutingStageDtoByServiceAndType(@RequestParam("service") String service,@RequestParam("type") String type);
     @GetMapping(value = "/hcsa-config/hcsa-svc-cate-wrkgrp-correlation-svc-cate-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcCateWrkgrpCorrelationDto>> getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(@RequestParam("svcCateId")String svcCateId);
+
+    @GetMapping(value = "/iais-hcsa-service/service-inac-ustaus/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaServiceDto>> getNeedInActiveServices(@PathVariable(name="status") String status);
 }
