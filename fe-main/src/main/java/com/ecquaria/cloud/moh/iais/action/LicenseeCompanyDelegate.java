@@ -56,7 +56,15 @@ public class LicenseeCompanyDelegate {
         String name = ParamUtil.getString(bpc.request,"name");
         String id = ParamUtil.getMaskedString(bpc.request,name);
         ParamUtil.setSessionAttr(bpc.request,"licenseeId",id);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INBOX, "licensee company");
+        String flag = ParamUtil.getString(bpc.request,"licenseeCompanyflag");
+        if(StringUtil.isEmpty(flag)){
+            flag = "common";
+        }
+        //if pop html,cant add audit
+        if(!"pop".equals(flag)){
+            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INBOX, "licensee company");
+        }
+
         log.debug("****preparePage Process ****");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
