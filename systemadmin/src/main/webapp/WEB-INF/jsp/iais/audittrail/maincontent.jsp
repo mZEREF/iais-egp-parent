@@ -303,7 +303,27 @@
 
                                         </td>
 
-                                        <td>${empty resultRow.nricNumber ? "-" : resultRow.nricNumber}</td>
+                                        <c:choose>
+                                            <%--batchjob--%>
+                                            <c:when test="${resultRow.domain == 20001}">
+                                                <td><c:out value="${resultRow.entityId}"></c:out></td>
+                                            </c:when>
+
+                                            <%--internet--%>
+                                            <c:when test="${resultRow.domain == 20003}">
+                                                <td><c:out value="${resultRow.nricNumber}"></c:out></td>
+                                            </c:when>
+
+                                            <%--intranet--%>
+                                            <c:when test="${resultRow.domain == 20002}">
+                                                <td><c:out value="${resultRow.mohUserId}"></c:out></td>
+                                            </c:when>
+
+                                            <c:otherwise>
+                                                <td>-</td>
+                                            </c:otherwise>
+                                        </c:choose>
+
                                         <td><fmt:formatDate value='${resultRow.actionTime}' pattern='dd/MM/yyyy'/></td>
                                     </tr>
                                 </c:forEach>
