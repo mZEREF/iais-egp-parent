@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
@@ -41,6 +42,9 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -79,6 +83,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
+
+    @Autowired
+    private Environment env;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -175,6 +182,29 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
         setRiskToDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
+        List<AppPremisesRoutingHistoryDto> hisList;
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+        Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
+        params.put("appNo", applicationDto.getApplicationNo());
+        hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
+        if(hisList!=null){
+            for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : hisList){
+                if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())
+                        || InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())){
+                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                        applicationDto.setStatus(ApplicationConsts.PENDING_ASO_REPLY);
+                    }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                        applicationDto.setStatus(ApplicationConsts.PENDING_PSO_REPLY);
+                    }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                        applicationDto.setStatus(ApplicationConsts.PENDING_INP_REPLY);
+                    }
+                }
+            }
+        }
         applicationClient.saveRfcWithdrawSubmission(appSubmissionRequestInformationDto).getEntity();
     }
 
