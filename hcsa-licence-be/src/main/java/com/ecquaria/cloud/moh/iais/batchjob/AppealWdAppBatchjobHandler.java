@@ -89,7 +89,6 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
     private void doWithdrawal(ApplicationDto oldApplicationDto, List<String> oldAppGroupExcuted) throws FeignException {
             log.info(StringUtil.changeForLog("withdrawal old application id : " + oldApplicationDto.getId()));
             if(oldApplicationDto != null){
-                String oldAppId = oldApplicationDto.getId();
                 String oldAppGrpId = oldApplicationDto.getAppGrpId();
                 String currentOldApplicationNo = oldApplicationDto.getApplicationNo();
                 List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(oldAppGrpId);
@@ -97,8 +96,6 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                     return;
                 }else{
                      if (!oldAppGroupExcuted.contains(oldAppGrpId)) {
-                             String stageId = HcsaConsts.ROUTING_STAGE_AO3;
-                             String roleId = RoleConsts.USER_ROLE_AO3;
                              List<ApplicationDto> ao1AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,RoleConsts.USER_ROLE_AO1,currentOldApplicationNo);
                              List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,RoleConsts.USER_ROLE_AO2,currentOldApplicationNo);
                              List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,RoleConsts.USER_ROLE_AO3,currentOldApplicationNo);
