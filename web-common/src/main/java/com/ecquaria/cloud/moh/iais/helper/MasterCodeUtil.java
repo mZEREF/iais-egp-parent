@@ -103,10 +103,8 @@ public final class MasterCodeUtil {
      * @return: void
      */
     public static void refreshCache() {
-
         MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);
-        SearchResult<MasterCodeView> sr = client.retrieveMasterCodes(param).getEntity();
-
+        client.refreshCache();
     }
 
     /**
