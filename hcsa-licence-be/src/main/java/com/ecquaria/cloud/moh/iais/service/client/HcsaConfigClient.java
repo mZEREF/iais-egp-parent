@@ -395,4 +395,7 @@ public interface HcsaConfigClient {
 
     @GetMapping(value = "/iais-hcsa-service/service-inac-ustaus/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceDto>> getNeedInActiveServices(@PathVariable(name="status") String status);
+
+    @PostMapping(value = "/iais-hcsa-service/service-list-u",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaServiceDto>> saveServiceList(@RequestBody List<HcsaServiceDto> hcsaServiceDtos);
 }
