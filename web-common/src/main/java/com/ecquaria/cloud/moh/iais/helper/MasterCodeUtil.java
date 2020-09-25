@@ -103,50 +103,10 @@ public final class MasterCodeUtil {
      * @return: void
      */
     public static void refreshCache() {
-        SearchParam param = new SearchParam(MasterCodeView.class.getName());
-        param.setSort(SEQUENCE, SearchParam.ASCENDING);
-        QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
+
         MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);
         SearchResult<MasterCodeView> sr = client.retrieveMasterCodes(param).getEntity();
-        if (sr == null || sr.getRowCount() <= 0) {
-            return;
-        }
-        List<MasterCodeView> list = IaisCommonUtils.genNewArrayList();
-        sr.getRows().forEach(obj -> {
-            list.add((MasterCodeView) obj);
-        });
-        Map<String, List<MasterCodeView>> cateMap = new LinkedHashMap<>();
-        Map<String, List<MasterCodeView>> filterMap = IaisCommonUtils.genNewHashMap();
-        list.forEach(mc ->
-            SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
-                    .set(MasterCodeHelper.CACHE_NAME_CODE, mc.getCode(), mc.getCodeValue(),
-                            RedisCacheHelper.NOT_EXPIRE)
-        );
-        list.forEach(mc -> {
-            String cateStr = String.valueOf(mc.getCategory());
-            if (cateMap.get(cateStr) == null) {
-                List<MasterCodeView> codes = IaisCommonUtils.genNewArrayList();
-                codes.add(mc);
-                cateMap.put(cateStr, codes);
-            } else {
-                List<MasterCodeView> codes = cateMap.get(cateStr);
-                codes.add(mc);
-            }
-        });
-        saveInCache(MasterCodeHelper.CACHE_NAME_CATE_MAP, cateMap);
-        list.forEach(mc -> {
-            if (StringUtil.isEmpty(mc.getFilterValue())) {
-                //Do nothing
-            } else if (filterMap.get(mc.getFilterValue()) == null) {
-                List<MasterCodeView> codes = IaisCommonUtils.genNewArrayList();
-                codes.add(mc);
-                filterMap.put(mc.getFilterValue(), codes);
-            } else {
-                List<MasterCodeView> codes = filterMap.get(mc.getFilterValue());
-                codes.add(mc);
-            }
-        });
-        saveInCache(CACHE_NAME_FILTER, filterMap);
+
     }
 
     /**
