@@ -49,12 +49,9 @@
                                                     <c:when test="${assessList == 'DPO'}">
                                                         Deputy Principal Officer
                                                     </c:when>
-                                                    <c:when test="${assessList == 'MP'}">
-                                                        MedAlert Person
+                                                    <c:when test="${assessList == 'MAP'}">
+                                                        MedAlert
                                                     </c:when>
-                                                    <c:otherwise>
-                                                        Service Personnel
-                                                    </c:otherwise>
                                                 </c:choose>
                                             </c:when>
                                             <c:otherwise>
@@ -70,12 +67,9 @@
                                                             <c:when test="${assessList == 'DPO'}">
                                                                 Deputy Principal Officer
                                                             </c:when>
-                                                            <c:when test="${assessList == 'MP'}">
-                                                                MedAlert Person
+                                                            <c:when test="${assessList == 'MAP'}">
+                                                                MedAlert
                                                             </c:when>
-                                                            <c:otherwise>
-                                                                Service Personnel
-                                                            </c:otherwise>
                                                         </c:choose>
                                                     </c:when>
                                                     <c:otherwise>
@@ -89,12 +83,9 @@
                                                             <c:when test="${assessList == 'DPO'}">
                                                                 Deputy Principal Officer,
                                                             </c:when>
-                                                            <c:when test="${assessList == 'MP'}">
-                                                                MedAlert Person,
+                                                            <c:when test="${assessList == 'MAP'}">
+                                                                MedAlert,
                                                             </c:when>
-                                                            <c:otherwise>
-                                                                Service Personnel,
-                                                            </c:otherwise>
                                                         </c:choose>
                                                     </c:otherwise>
                                                 </c:choose>
