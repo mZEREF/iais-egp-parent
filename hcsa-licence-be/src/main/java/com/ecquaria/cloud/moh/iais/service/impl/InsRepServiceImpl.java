@@ -993,7 +993,6 @@ public class InsRepServiceImpl implements InsRepService {
         taskService.createTasks(taskDtos);
         log.info(StringUtil.changeForLog("==================  eventBus Start  ===================>>>>>"));
             eventBusHelper.submitAsyncRequest(taskDtos, submissionId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK, EventBusConsts.OPERATION_POST_INSPECTION_TASK, eventRefNum, null);
-
             log.info(StringUtil.changeForLog("=======================taskDtos ===================>>>>>Success"));
 
         AppSubmissionForAuditDto appSubmissionForAuditDto = applicationClient.getAppSubmissionForAuditDto(eventRefNum).getEntity();
