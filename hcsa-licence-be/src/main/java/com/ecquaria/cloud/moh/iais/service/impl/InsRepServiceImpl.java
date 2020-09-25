@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.*;
@@ -126,6 +127,12 @@ public class InsRepServiceImpl implements InsRepService {
     private String mailSender;
     @Autowired
     private EmailClient emailClient;
+    @Autowired
+    private EicRequestTrackingHelper eicRequestTrackingHelper;
+    @Value("${spring.application.name}")
+    private String currentApp;
+    @Value("${iais.current.domain}")
+    private String currentDomain;
 
     private final String APPROVAL = "Approval";
     private final String REJECT = "Reject";
@@ -999,9 +1006,10 @@ public class InsRepServiceImpl implements InsRepService {
         AppSubmissionForAuditDto appSubmissionForAuditDto = applicationClient.getAppSubmissionForAuditDto(eventRefNum).getEntity();
         appSubmissionForAuditDto.setIsCancel(true);
         log.info(StringUtil.changeForLog("==================  eventBus End  ===================>>>>>"));
-//        EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.LICENCE_CLIENT, AuditSystemListServiceImpl.class.getName(),
-//                "saveAppForAuditToFeAndCreateTrack", currentApp + "-" + currentDomain,
-//                AppSubmissionForAuditDto.class.getName(), JsonUtil.parseToJson(appSubmissionForAuditDto));
+        EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.LICENCE_CLIENT, AuditSystemListServiceImpl.class.getName(),
+                "saveAppForAuditToFeAndCreateTrack", currentApp + "-" + currentDomain,
+                AppSubmissionForAuditDto.class.getName(), JsonUtil.parseToJson(appSubmissionForAuditDto));
+        log.info(StringUtil.changeForLog("==================  eic End  ===================>>>>>"));
     }
 
     @Override
