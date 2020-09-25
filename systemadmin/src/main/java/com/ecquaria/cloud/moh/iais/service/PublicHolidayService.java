@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayQueryDto;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,6 +20,8 @@ public interface PublicHolidayService {
     PublicHolidayDto updateHoliday(PublicHolidayDto publicHolidayDto);
     void deleteHoliday(List<String> id);
     String getPublicHolidayInCalender(String form);
+    PublicHolidayDto publicHoliday(Date date);
+    PublicHolidayDto publicHolidayByDis(String discription,int year);
     List<String> getScheduleInCalender(String groupName);
     List<String> getAllYearList();
 }

@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -66,7 +65,9 @@ public class PublicHolidayDelegate {
      * @param bpc
      */
     public void doStart(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_ADMIN, "public holiday");
+
+        AuditTrailHelper.auditFunction("public holiday", "public holiday");
+        getSearchParam(bpc.request,true);
         }
 
     private SearchParam getSearchParam(HttpServletRequest request, boolean neednew){
@@ -76,7 +77,9 @@ public class PublicHolidayDelegate {
             holidaySearchParam.setPageSize(SysParamUtil.getDefaultPageSize());
             holidaySearchParam.setPageNo(1);
             holidaySearchParam.setSort("FROM_DATE", SearchParam.DESCENDING);
+            ParamUtil.setSessionAttr(request,"holidaySearchParam",holidaySearchParam);
         }
+
         return holidaySearchParam;
 
     }
@@ -92,7 +95,7 @@ public class PublicHolidayDelegate {
         SearchResult<PublicHolidayQueryDto> HolidaySearchResult = publicHolidayService.getHoliday(holidaySearchParam);
 
         ParamUtil.setRequestAttr(bpc.request,"HolidaySearchResult",HolidaySearchResult);
-        ParamUtil.setSessionAttr(bpc.request,"holidaySearchParam",holidaySearchParam);
+
         statusOption(bpc);
         yearOption(bpc,false);
 

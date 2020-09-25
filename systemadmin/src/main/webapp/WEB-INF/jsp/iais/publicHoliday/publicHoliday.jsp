@@ -26,23 +26,23 @@
                         <div class="row">
                             <div class="form-horizontal">
                                 <div class="form-group">
-                                    <label class="col-md-2 control-label">Description</label>
-                                    <div class="col-md-4">
-                                        <input id="description" name="description" type="text" maxlength="255"
-                                               value="${description}">
-                                    </div>
                                     <label class="col-md-2 control-label">Year</label>
                                     <div class="col-md-4 searchdiv">
                                         <iais:select id="year" name="year" options="yearOption" cssClass="yearOption" firstOption="Please Select"
                                                      value="${year}"></iais:select>
                                     </div>
+                                    <label class="col-md-2 control-label">Non-working Date</label>
+                                    <div class="col-md-4">
+                                        <iais:datePicker id="nonWorking" name="nonWorking" value="${nonWorking}"/>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-horizontal" >
                                 <div class="form-group">
-                                    <label class="col-md-2 control-label">Non-working Date</label>
+                                    <label class="col-md-2 control-label">Description</label>
                                     <div class="col-md-4">
-                                        <iais:datePicker id="nonWorking" name="nonWorking" value="${nonWorking}"/>
+                                        <input id="description" name="description" type="text" maxlength="255"
+                                               value="${description}">
                                     </div>
                                     <label class="col-md-2 control-label">Status</label>
                                     <div class="col-md-4 searchdiv">
@@ -122,6 +122,8 @@
                 </div>
             </div>
         <input id="holidayId" name="holidayId" hidden value="">
+        <iais:confirm msg="Please select record for deletion."  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
+        <iais:confirm msg="Are you sure you want to delete this item?" yesBtnCls="okBtn btn btn-primary"   needCancel="true" callBack="deleteDis()" popupOrder="deleteSupport" ></iais:confirm>
     </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
@@ -130,6 +132,13 @@
     $('#createholiday').click(function () {
         SOP.Crud.cfxSubmit("mainForm", "create");
     });
+
+    function deleteDis() {
+        SOP.Crud.cfxSubmit("mainForm", "delete");
+    }
+    function cancel() {
+        $('#support').modal('hide');
+    }
 
     $('.editHoliday').click(function () {
         console.log("1111")
@@ -140,8 +149,11 @@
     });
 
     $('#delete').click(function () {
-        if(confirm('Are you sure you want to delete this item?')){
-            SOP.Crud.cfxSubmit("mainForm", "delete");
+        if ($("input:checkbox:checked").length > 0) {
+            $('#deleteSupport').modal('show');
+        } else {
+            $('#support').find("span").eq(1).html("Please select record for deletion.");
+            $('#support').modal('show');
         }
     })
 

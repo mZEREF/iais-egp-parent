@@ -5,12 +5,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayQueryDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.service.PublicHolidayService;
 import com.ecquaria.cloud.moh.iais.service.client.PublicHolidayClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -58,6 +60,15 @@ public class PublicHolidayServiceImpl implements PublicHolidayService {
     @Override
     public String getPublicHolidayInCalender(String from){
         return publicHolidayClient.getPublicHolidayInCalender(from).getEntity();
+    }
+
+    @Override
+    public PublicHolidayDto publicHoliday(Date date){
+        return publicHolidayClient.getPublicHolidayBydate(Formatter.formatDateTime(date)).getEntity();
+    }
+    @Override
+    public PublicHolidayDto publicHolidayByDis(String discription, int year){
+        return publicHolidayClient.getPublicHolidayByDis(discription,year).getEntity();
     }
 
     @Override

@@ -59,6 +59,23 @@ public class PublicHolidayClientFallback implements PublicHolidayClient{
     }
 
     @Override
+    public FeignResponseEntity<PublicHolidayDto> getPublicHolidayBydate(String date) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<PublicHolidayDto> getPublicHolidayByDis(String dis, int year) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+
+    @Override
     public FeignResponseEntity<Void> doDelete(List<String> id) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
