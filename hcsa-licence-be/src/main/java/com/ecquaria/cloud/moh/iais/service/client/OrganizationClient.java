@@ -181,4 +181,7 @@ public interface OrganizationClient {
 
     @PutMapping(value = "/iais-task/u-a-task", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<TaskDto> updateTaskForAssign(@RequestBody TaskDto taskDto);
+
+    @GetMapping(value = "/iais-task/get-task-by-application-and-role-id-and-status",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<TaskDto>> getTaskByApplicationNoAndRoleIdAndStatus(@RequestParam("applicationNo") String applicationNo,@RequestParam("roleId") String roleId,@RequestParam("status") String status);
 }

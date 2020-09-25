@@ -8,6 +8,7 @@ import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -21,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,27 +50,30 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
     @Autowired
     private ApplicationService applicationService;
 
+    @Autowired
+    private OrganizationClient organizationClient;
+
     @Override
     public ReturnT<String> execute(String s) {
         try {
             List<ApplicationDto> applicationDtoList = applicationClient.saveWithdrawn().getEntity();
             log.error("**** The withdraw Application List size : "+applicationDtoList.size());
             //get old application
-//            List<ApplicationDto> oldApplicationDtoList = null;
-//            if(!IaisCommonUtils.isEmpty(applicationDtoList)){
-//                oldApplicationDtoList = getOldApplicationDtoList(applicationDtoList);
-//            }
+            List<ApplicationDto> oldApplicationDtoList = null;
+            if(!IaisCommonUtils.isEmpty(applicationDtoList)){
+                oldApplicationDtoList = getOldApplicationDtoList(applicationDtoList);
+            }
             if (applicationDtoList != null){
                 applicationDtoList.forEach(h -> {
                     applicationService.updateFEApplicaiton(h);
                 });
                 log.error(StringUtil.changeForLog("**** The withdraw Application List size"+applicationDtoList.size()));
-//                List<String> oldAppGroupExcuted = IaisCommonUtils.genNewArrayList();
-////                if(!IaisCommonUtils.isEmpty(oldApplicationDtoList)){
-////                    for(ApplicationDto oldApplicationDto : oldApplicationDtoList){
-////                        doWithdrawal(oldApplicationDto,oldAppGroupExcuted);
-////                    }
-////                }
+                List<String> oldAppGroupExcuted = IaisCommonUtils.genNewArrayList();
+                if(!IaisCommonUtils.isEmpty(oldApplicationDtoList)){
+                    for(ApplicationDto oldApplicationDto : oldApplicationDtoList){
+                        doWithdrawal(oldApplicationDto,oldAppGroupExcuted);
+                    }
+                }
                 JobLogger.log(StringUtil.changeForLog("The withdraw Application List" + applicationDtoList.size()));
             }else{
                 JobLogger.log(StringUtil.changeForLog("The withdraw Application List is null *****"));
@@ -87,42 +92,47 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                 String oldAppId = oldApplicationDto.getId();
                 String oldAppGrpId = oldApplicationDto.getAppGrpId();
                 String currentOldApplicationNo = oldApplicationDto.getApplicationNo();
-                String currentOldApplicationStatus = oldApplicationDto.getStatus();
                 List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(oldAppGrpId);
                 if(IaisCommonUtils.isEmpty(applicationDtoList) || applicationDtoList.size() == 1){
                     return;
                 }else{
-                    boolean isAllSubmitAO3 = applicationService.isOtherApplicaitonSubmit(applicationDtoList,currentOldApplicationNo,
-                            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
-                    if(!(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(currentOldApplicationStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(currentOldApplicationStatus))
-                            || (isAllSubmitAO3 && (ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(currentOldApplicationStatus)))) {
-                        boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList, currentOldApplicationNo,
-                                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
-                        if (isAllSubmit && !oldAppGroupExcuted.contains(oldAppGrpId)) {
-                            String stageId = HcsaConsts.ROUTING_STAGE_AO3;
-                            String roleId = RoleConsts.USER_ROLE_AO3;
-                            List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
-                            List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
-                            List<ApplicationDto> creatTaskApplicationList = ao2AppList;
-                            if (IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)) {
-                                creatTaskApplicationList = ao3AppList;
-                            } else {
-                                stageId = HcsaConsts.ROUTING_STAGE_AO2;
-                                roleId = RoleConsts.USER_ROLE_AO2;
-                            }
-                            updateCurrentApplicationStatus(applicationDtoList, oldAppId, ApplicationConsts.APPLICATION_STATUS_WITHDRAWN);
-                            // send the task to Ao2  or Ao3
-                            TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                                    stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto());
-                            List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
-                            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
-                            taskService.createTasks(taskDtos);
-                            appPremisesRoutingHistoryService.createHistorys(appPremisesRoutingHistoryDtos);
-                            oldAppGroupExcuted.add(oldAppGrpId);
-                        }
-                    }
+                     if (!oldAppGroupExcuted.contains(oldAppGrpId)) {
+                             String stageId = HcsaConsts.ROUTING_STAGE_AO3;
+                             String roleId = RoleConsts.USER_ROLE_AO3;
+                             List<ApplicationDto> ao1AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,RoleConsts.USER_ROLE_AO1,currentOldApplicationNo);
+                             List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,RoleConsts.USER_ROLE_AO2,currentOldApplicationNo);
+                             List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,RoleConsts.USER_ROLE_AO3,currentOldApplicationNo);
+                             if(!IaisCommonUtils.isEmpty(ao1AppList)){
+                                 return;
+                             }else{
+                                 //ao1 == null
+                                 if(!IaisCommonUtils.isEmpty(ao2AppList)){
+                                     //create task
+                                     createTaskAndHistory(ao2AppList,HcsaConsts.ROUTING_STAGE_AO2,RoleConsts.USER_ROLE_AO2,oldAppGroupExcuted,oldAppGrpId);
+                                 }else{
+                                     if(!IaisCommonUtils.isEmpty(ao3AppList)) {
+                                         //create task
+                                         createTaskAndHistory(ao2AppList,HcsaConsts.ROUTING_STAGE_AO3,RoleConsts.USER_ROLE_AO3,oldAppGroupExcuted,oldAppGrpId);
+                                     }else{
+                                         return;
+                                     }
+                                 }
+                             }
+                     }
                 }
             }
+    }
+
+    private void createTaskAndHistory( List<ApplicationDto> creatTaskApplicationList, String stageId, String roleId, List<String> oldAppGroupExcuted, String oldAppGrpId) throws FeignException {
+        TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
+                stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto());
+        if(taskHistoryDto != null){
+            List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
+            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+            taskService.createTasks(taskDtos);
+            appPremisesRoutingHistoryService.createHistorys(appPremisesRoutingHistoryDtos);
+            oldAppGroupExcuted.add(oldAppGrpId);
+        }
     }
 
     private List<ApplicationDto> getOldApplicationDtoList(List<ApplicationDto> withdrawalApplicationDtoList){
@@ -144,32 +154,33 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
         return oldApplicationList;
     }
 
-    private void updateCurrentApplicationStatus(List<ApplicationDto> applicationDtos,String applicationId,String status){
-        if(!IaisCommonUtils.isEmpty(applicationDtos) && !StringUtil.isEmpty(applicationId)){
-            for (ApplicationDto applicationDto : applicationDtos){
-                if(applicationId.equals(applicationDto.getId())){
-                    applicationDto.setStatus(status);
-                }
-            }
-        }
-    }
-
-    private List<ApplicationDto> getStatusAppList(List<ApplicationDto> applicationDtos, String status){
-        if(IaisCommonUtils.isEmpty(applicationDtos) || StringUtil.isEmpty(status)){
+    private List<ApplicationDto> getStatusAppList(List<ApplicationDto> applicationDtos, String status, String roleId, String currentAppNo){
+        if(IaisCommonUtils.isEmpty(applicationDtos) || StringUtil.isEmpty(status) || StringUtil.isEmpty(roleId) || StringUtil.isEmpty(currentAppNo)){
             return null;
         }
         List<ApplicationDto> applicationDtoList = null;
         for(ApplicationDto applicationDto : applicationDtos){
-            if(status.equals(applicationDto.getStatus())){
-                if(applicationDtoList == null){
-                    applicationDtoList = IaisCommonUtils.genNewArrayList();
-                    applicationDtoList.add(applicationDto);
-                }else{
-                    applicationDtoList.add(applicationDto);
+            if(currentAppNo.equals(applicationDto.getApplicationNo())){
+                continue;
+            }
+            //have uncompleted task
+            boolean hasNoTask = false;
+            List<TaskDto> pendingTaskDtos = organizationClient.getTaskByApplicationNoAndRoleIdAndStatus(applicationDto.getApplicationNo(), roleId, TaskConsts.TASK_STATUS_PENDING).getEntity();
+            List<TaskDto> readTaskDtos = organizationClient.getTaskByApplicationNoAndRoleIdAndStatus(applicationDto.getApplicationNo(), roleId, TaskConsts.TASK_STATUS_READ).getEntity();
+            if(IaisCommonUtils.isEmpty(pendingTaskDtos) && IaisCommonUtils.isEmpty(readTaskDtos)){
+                hasNoTask = true;
+            }
+            if(hasNoTask){
+                if(status.equals(applicationDto.getStatus())) {
+                    if (applicationDtoList == null) {
+                        applicationDtoList = IaisCommonUtils.genNewArrayList();
+                        applicationDtoList.add(applicationDto);
+                    } else {
+                        applicationDtoList.add(applicationDto);
+                    }
                 }
             }
         }
-
         return applicationDtoList;
     }
 }
