@@ -1944,9 +1944,9 @@ public class HcsaApplicationDelegator {
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
                         ApplicationConsts.APPLICATION_STATUS_APPROVED);
                 if(isAllSubmit || applicationDto.isFastTracking()){
-                    if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
-                        doWithdrawal(applicationDto.getId(),broadcastOrganizationDto,broadcastApplicationDto);
-                    }
+//                    if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
+//                        doWithdrawal(applicationDto.getId(),broadcastOrganizationDto,broadcastApplicationDto);
+//                    }
                     //update application Group status
                     ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                     broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));

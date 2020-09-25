@@ -59,18 +59,14 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
             List<ApplicationDto> applicationDtoList = applicationClient.saveWithdrawn().getEntity();
             log.error("**** The withdraw Application List size : "+applicationDtoList.size());
             //get old application
-            List<ApplicationDto> oldApplicationDtoList = null;
-            if(!IaisCommonUtils.isEmpty(applicationDtoList)){
-                oldApplicationDtoList = getOldApplicationDtoList(applicationDtoList);
-            }
             if (applicationDtoList != null){
                 applicationDtoList.forEach(h -> {
                     applicationService.updateFEApplicaiton(h);
                 });
                 log.error(StringUtil.changeForLog("**** The withdraw Application List size"+applicationDtoList.size()));
                 List<String> oldAppGroupExcuted = IaisCommonUtils.genNewArrayList();
-                if(!IaisCommonUtils.isEmpty(oldApplicationDtoList)){
-                    for(ApplicationDto oldApplicationDto : oldApplicationDtoList){
+                if(!IaisCommonUtils.isEmpty(applicationDtoList)){
+                    for(ApplicationDto oldApplicationDto : applicationDtoList){
                         doWithdrawal(oldApplicationDto,oldAppGroupExcuted);
                     }
                 }
@@ -87,37 +83,37 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
     }
 
     private void doWithdrawal(ApplicationDto oldApplicationDto, List<String> oldAppGroupExcuted) throws FeignException {
-            log.info(StringUtil.changeForLog("withdrawal old application id : " + oldApplicationDto.getId()));
-            if(oldApplicationDto != null){
-                String oldAppGrpId = oldApplicationDto.getAppGrpId();
-                String currentOldApplicationNo = oldApplicationDto.getApplicationNo();
-                List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(oldAppGrpId);
-                if(IaisCommonUtils.isEmpty(applicationDtoList) || applicationDtoList.size() == 1){
-                    return;
-                }else{
-                     if (!oldAppGroupExcuted.contains(oldAppGrpId)) {
-                             List<ApplicationDto> ao1AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,RoleConsts.USER_ROLE_AO1,currentOldApplicationNo);
-                             List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,RoleConsts.USER_ROLE_AO2,currentOldApplicationNo);
-                             List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,RoleConsts.USER_ROLE_AO3,currentOldApplicationNo);
-                             if(!IaisCommonUtils.isEmpty(ao1AppList)){
-                                 return;
-                             }else{
-                                 //ao1 == null
-                                 if(!IaisCommonUtils.isEmpty(ao2AppList)){
-                                     //create task
-                                     createTaskAndHistory(ao2AppList,HcsaConsts.ROUTING_STAGE_AO2,RoleConsts.USER_ROLE_AO2,oldAppGroupExcuted,oldAppGrpId);
-                                 }else{
-                                     if(!IaisCommonUtils.isEmpty(ao3AppList)) {
-                                         //create task
-                                         createTaskAndHistory(ao2AppList,HcsaConsts.ROUTING_STAGE_AO3,RoleConsts.USER_ROLE_AO3,oldAppGroupExcuted,oldAppGrpId);
-                                     }else{
-                                         return;
-                                     }
-                                 }
-                             }
-                     }
+        log.info(StringUtil.changeForLog("withdrawal old application id : " + oldApplicationDto.getId()));
+        if(oldApplicationDto != null){
+            String oldAppGrpId = oldApplicationDto.getAppGrpId();
+            String currentOldApplicationNo = oldApplicationDto.getApplicationNo();
+            List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(oldAppGrpId);
+            if(IaisCommonUtils.isEmpty(applicationDtoList) || applicationDtoList.size() == 1){
+                return;
+            }else{
+                if (!oldAppGroupExcuted.contains(oldAppGrpId)) {
+                    List<ApplicationDto> ao1AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01, RoleConsts.USER_ROLE_AO1,currentOldApplicationNo);
+                    List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,RoleConsts.USER_ROLE_AO2,currentOldApplicationNo);
+                    List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,RoleConsts.USER_ROLE_AO3,currentOldApplicationNo);
+                    if(!IaisCommonUtils.isEmpty(ao1AppList)){
+                        return;
+                    }else{
+                        //ao1 == null
+                        if(!IaisCommonUtils.isEmpty(ao2AppList) && ao2AppList.size()>0){
+                            //create task
+                            createTaskAndHistory(ao2AppList, HcsaConsts.ROUTING_STAGE_AO2,RoleConsts.USER_ROLE_AO2,oldAppGroupExcuted,oldAppGrpId);
+                        }else{
+                            if(!IaisCommonUtils.isEmpty(ao3AppList) && ao3AppList.size()>0) {
+                                //create task
+                                createTaskAndHistory(ao3AppList,HcsaConsts.ROUTING_STAGE_AO3,RoleConsts.USER_ROLE_AO3,oldAppGroupExcuted,oldAppGrpId);
+                            }else{
+                                return;
+                            }
+                        }
+                    }
                 }
             }
+        }
     }
 
     private void createTaskAndHistory( List<ApplicationDto> creatTaskApplicationList, String stageId, String roleId, List<String> oldAppGroupExcuted, String oldAppGrpId) throws FeignException {
