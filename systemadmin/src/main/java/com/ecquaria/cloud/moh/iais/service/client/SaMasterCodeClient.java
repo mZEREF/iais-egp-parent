@@ -76,4 +76,7 @@ public interface SaMasterCodeClient {
 
     @GetMapping(path = "/iais-mastercode/max-version")
     FeignResponseEntity<MasterCodeDto> getMaxVersionMsDto(@RequestParam(value = "masterCodeKey") String masterCodeKey);
+
+    @PutMapping(path = "/iais-mastercode/inactive-master-code")
+    FeignResponseEntity<MasterCodeDto> inactiveMasterCodeByKey(@RequestParam(value = "masterCodeKey") String masterCodeKey);
 }

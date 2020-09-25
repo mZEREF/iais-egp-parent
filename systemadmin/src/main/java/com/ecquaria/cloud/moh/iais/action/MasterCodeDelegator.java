@@ -768,15 +768,10 @@ public class MasterCodeDelegator {
         }else{
             oldCodeExpired = true;
         }
-        MasterCodeDto maxMsDto = masterCodeService.getMaxVersionMsDto(oldMasterCodeDto.getMasterCodeKey());
         if(oldCodeExpired || newCodeActive){
             oldMasterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-            //judge curr is the max version
-            Float oldVersion =  oldMasterCodeDto.getVersion();
-            if(!StringUtil.isEmpty(oldVersion) && !oldVersion.equals(maxMsDto.getVersion())){
-                maxMsDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                masterCodeService.updateMasterCode(maxMsDto);
-            }
+            //inactive all
+            masterCodeService.inactiveMsterCode(masterCodeDto.getMasterCodeKey());
         }
         masterCodeService.updateMasterCode(oldMasterCodeDto);
         //create new
@@ -786,10 +781,10 @@ public class MasterCodeDelegator {
             masterCodeDto.setVersion(1f);
         }else{
             //get max version ms
-            //MasterCodeDto maxMsDto = masterCodeService.getMaxVersionMsDto(oldMasterCodeDto.getMasterCodeKey());
+            MasterCodeDto maxMsDto = masterCodeService.getMaxVersionMsDto(oldMasterCodeDto.getMasterCodeKey());
             masterCodeDto.setVersion(maxMsDto.getVersion() + 1);
         }
-        if(nowDate.isBefore(newFromDate)){
+        if(nowDate.isBefore(newFromDate) || nowDate.isAfter(newToDate)){
             masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
         }
         masterCodeService.updateMasterCode(masterCodeDto);

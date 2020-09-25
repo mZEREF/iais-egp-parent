@@ -146,4 +146,12 @@ public class SaMasterCodeClientFallback implements SaMasterCodeClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<MasterCodeDto> inactiveMasterCodeByKey(String masterCodeKey) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

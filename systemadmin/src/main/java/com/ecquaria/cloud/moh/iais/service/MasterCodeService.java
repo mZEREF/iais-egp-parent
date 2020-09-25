@@ -25,4 +25,5 @@ public interface MasterCodeService {
     Boolean saveMasterCodeList(List<MasterCodeToExcelDto> masterCodeToExcelDtoList);
     void inactiveMasterCode(AuditTrailDto auditTrailDto);
     MasterCodeDto getMaxVersionMsDto(String masterCodeKey);
+    void inactiveMsterCode(String masterCodeKey);
 }
