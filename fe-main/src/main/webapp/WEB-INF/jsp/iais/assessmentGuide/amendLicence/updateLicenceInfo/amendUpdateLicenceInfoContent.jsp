@@ -1,3 +1,4 @@
+<%@ taglib prefix="C" uri="http://java.sun.com/jsp/jstl/core" %>
 <div class="form-check-gp">
 
     <p class="form-check-title">You select one licence to change at a time:</p>
@@ -44,7 +45,14 @@
                                     <input type="hidden" name="amendLicenseId${status.index}" value="<iais:mask name= "amendLicenseId${status.index}" value="${pool.licenceId}"/>"/>
                                 </div>
                             </td>
-                            <td><iais:code code="${pool.hciName}"/></td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${empty pool.hciName}">N/A</c:when>
+                                    <c:otherwise>
+                                        <iais:code code="${pool.hciName}"/>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
                             <td>${pool.svcId}</td>
                             <td>${pool.licenceNo}</td>
                             <td>
