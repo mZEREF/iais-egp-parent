@@ -73,9 +73,8 @@ public class WithdrawalDelegator {
             ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", withdrawAppNo);
         }
 
+        String rfiWithdrawAppNo = ParamUtil.getMaskedString(bpc.request,"rfiWithdrawAppNo");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW, "Withdrawal Application");
-        String rfiWithdrawAppNo = ParamUtil.getString(bpc.request,"rfiWithdrawAppNo");
-
         if (!StringUtil.isEmpty(rfiWithdrawAppNo)){
             WithdrawnDto withdrawnDto = withdrawalService.getWithdrawAppInfo(rfiWithdrawAppNo);
             ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", withdrawnDto);
@@ -191,7 +190,7 @@ public class WithdrawalDelegator {
         if (!StringUtil.isEmpty(paramAppNos)){
             String[] withdrawAppNos = paramAppNos.split("#");
             for (int i =0;i<withdrawAppNos.length;i++){
-                WithdrawnDto withdrawnDto = new WithdrawnDto();
+                WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
                 String appNo = withdrawAppNos[i];
                 ApplicationDto applicationDto = applicationClient.getApplicationDtoByAppNo(appNo).getEntity();
                 String appId = applicationDto.getId();

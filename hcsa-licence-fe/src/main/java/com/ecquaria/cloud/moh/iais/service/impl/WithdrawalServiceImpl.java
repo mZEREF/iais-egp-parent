@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -158,14 +159,19 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             List<String> licIds = IaisCommonUtils.genNewArrayList();
             licIds.add(originLicenceId);
             AppSubmissionDto appSubmissionDto = applicationClient.getAppSubmissionDtoByAppNo(applicationDto.getApplicationNo()).getEntity();
-            transformRfi(appSubmissionDto, h.getLicenseeId(), applicationDto);
+            try {
+                transformRfi(appSubmissionDto, h.getLicenseeId(), applicationDto);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
         List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
     }
 
-    private void transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) {
+    private void transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) throws Exception {
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
-        appSubmissionRequestInformationDto.setOldAppSubmissionDto(appSubmissionDto);
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
+        appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
         Double amount = 0.0;
         AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
         appSubmissionDto.setAppGrpId(applicationDto.getAppGrpId());
@@ -181,7 +187,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
         setRiskToDto(appSubmissionDto);
-        appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         List<AppPremisesRoutingHistoryDto> hisList;
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -205,6 +210,8 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 }
             }
         }
+        appSubmissionDto.setStatus(applicationDto.getStatus());
+        appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         applicationClient.saveRfcWithdrawSubmission(appSubmissionRequestInformationDto).getEntity();
     }
 
