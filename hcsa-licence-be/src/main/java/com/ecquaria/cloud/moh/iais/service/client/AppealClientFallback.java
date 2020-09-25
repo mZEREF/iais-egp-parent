@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEicRequestTrackingDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
@@ -20,13 +20,13 @@ public class AppealClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
-    FeignResponseEntity<AppEicRequestTrackingDto> getAppEicRequestTrackingDto(String eventRefNo){
+    FeignResponseEntity<EicRequestTrackingDto> getAppEicRequestTrackingDto(String eventRefNo){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
-    FeignResponseEntity<AppEicRequestTrackingDto> updateAppEicRequestTracking(AppEicRequestTrackingDto appEicRequestTrackingDto){
+    FeignResponseEntity<EicRequestTrackingDto> updateAppEicRequestTracking(EicRequestTrackingDto appEicRequestTrackingDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

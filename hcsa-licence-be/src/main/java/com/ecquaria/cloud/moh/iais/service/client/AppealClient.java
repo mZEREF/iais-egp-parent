@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEicRequestTrackingDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
@@ -25,9 +25,9 @@ public interface AppealClient {
     FeignResponseEntity<List<AppealApproveGroupDto>> getApproveAppeal();
 
     @RequestMapping(path = "/app-eic-request-tracking/{eventRefNo}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppEicRequestTrackingDto> getAppEicRequestTrackingDto(@PathVariable(name = "eventRefNo") String eventRefNo);
+    FeignResponseEntity<EicRequestTrackingDto> getAppEicRequestTrackingDto(@PathVariable(name = "eventRefNo") String eventRefNo);
 
     @RequestMapping(path = "/app-eic-request-tracking/app-eic-request-tracking",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppEicRequestTrackingDto> updateAppEicRequestTracking(@RequestBody AppEicRequestTrackingDto appEicRequestTrackingDto);
+    FeignResponseEntity<EicRequestTrackingDto> updateAppEicRequestTracking(@RequestBody EicRequestTrackingDto appEicRequestTrackingDto);
 
 }

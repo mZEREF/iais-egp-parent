@@ -1,6 +1,6 @@
 package com.ecquaria.cloud.moh.iais.util;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public final class EicUtil {
-    public static <T> T getObjectApp(AppEicRequestTrackingDto appEicRequestTrackingDto, Class<T> cls){
+    public static <T> T getObjectApp(EicRequestTrackingDto appEicRequestTrackingDto, Class<T> cls){
         log.info(StringUtil.changeForLog("The getObjectApp start ..."));
         T result = null;
         if(appEicRequestTrackingDto!=null){
@@ -22,7 +22,7 @@ public final class EicUtil {
                     +appEicRequestTrackingDto.getId()));
             ObjectMapper mapper = new ObjectMapper();
             try {
-                String content = appEicRequestTrackingDto.getDtoObj();
+                String content = appEicRequestTrackingDto.getDtoObject();
                 log.info(StringUtil.changeForLog("The getObjectApp content is -->:"+content));
                 result = mapper.readValue(content, cls);
             } catch (IOException e) {

@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.AppealApplicaionService;
@@ -41,7 +41,7 @@ public class AppealApplicaionServiceImpl implements AppealApplicaionService {
     public AppealApplicationDto updateFEAppealApplicationDto(String eventRefNum,String submissionId) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        AppEicRequestTrackingDto appEicRequestTrackingDto = getAppEicRequestTrackingDtoByRefNo(eventRefNum);
+        EicRequestTrackingDto appEicRequestTrackingDto = getAppEicRequestTrackingDtoByRefNo(eventRefNum);
         AppealApplicationDto appealApplicationDto = EicUtil.getObjectApp(appEicRequestTrackingDto,AppealApplicationDto.class);
         if(appealApplicationDto!=null){
             appealApplicationDto = beEicGatewayClient.updateAppealApplication(appealApplicationDto, signature.date(), signature.authorization(),
@@ -53,7 +53,7 @@ public class AppealApplicaionServiceImpl implements AppealApplicaionService {
     }
 
     @Override
-    public AppEicRequestTrackingDto getAppEicRequestTrackingDtoByRefNo(String refNo) {
+    public EicRequestTrackingDto getAppEicRequestTrackingDtoByRefNo(String refNo) {
         return appealClient.getAppEicRequestTrackingDto(refNo).getEntity();
     }
 

@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEicRequestTrackingDto;
 
 /**
  * AppealApplicaionService
@@ -11,7 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEicRequestTrac
  */
 
 public interface AppealApplicaionService {
-    public AppealApplicationDto updateFEAppealApplicationDto(String eventRefNum,String submissionId);
+    AppealApplicationDto updateFEAppealApplicationDto(String eventRefNum,String submissionId);
 
-    public AppEicRequestTrackingDto getAppEicRequestTrackingDtoByRefNo(String refNo);
+    EicRequestTrackingDto getAppEicRequestTrackingDtoByRefNo(String refNo);
 }
