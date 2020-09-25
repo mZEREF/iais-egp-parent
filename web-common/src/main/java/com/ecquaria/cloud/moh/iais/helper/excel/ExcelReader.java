@@ -151,7 +151,7 @@ public final class ExcelReader {
                     int index = excelProperty.cellIndex();
                     String format = excelProperty.format();
                     Object value = getFieldValue(field, rowData.get(index), format);
-                    //field.setAccessible(true);yichen
+                    field.setAccessible(true);//NOSONAR
                     field.set(obj, value);
                 }
             }
