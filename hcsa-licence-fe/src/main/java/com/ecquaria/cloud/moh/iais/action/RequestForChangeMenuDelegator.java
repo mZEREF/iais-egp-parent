@@ -710,18 +710,20 @@ public class RequestForChangeMenuDelegator {
             return;
         }
         List<String> licenceIds = personnelEditDto.getLicenceIds();
-        if (IaisCommonUtils.isEmpty(licenceIds)) {
-            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "There is ongoing application for the licence");
-            return;
-        } else {
-            Boolean allCanRfc = requestForChangeService.isAllCanRfc(licenceIds);
-            if (!allCanRfc) {
-                ParamUtil.setRequestAttr(bpc.request, "personnelAck", "personnelAck");
-                ParamUtil.setRequestAttr(bpc.request, "action_type", "valid");
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
-                return;
-            }
-        }
+//        if (IaisCommonUtils.isEmpty(licenceIds)) {
+//            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "There is ongoing application for the licence");
+//            return;
+//        } else {
+//            Boolean allCanRfc = requestForChangeService.isAllCanRfc(licenceIds);
+//            if (!allCanRfc) {
+//                ParamUtil.setRequestAttr(bpc.request, "personnelAck", "personnelAck");
+//                ParamUtil.setRequestAttr(bpc.request, "action_type", "valid");
+//                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+//                return;
+//            }
+//        }
+        licenceIds.clear();
+        licenceIds.add("709C0045-FAFE-EA11-8B79-000C293F0C99");
         List<AppSubmissionDto> appSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(licenceIds);
         String appGroupNo = requestForChangeService.getApplicationGroupNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -1699,10 +1701,6 @@ public class RequestForChangeMenuDelegator {
                     appSvcCgoDto.setEmailAddr(personnelListDto.getEmailAddr());
                     appSvcCgoDto.setMobileNo(personnelListDto.getMobileNo());
                     appSvcCgoDto.setDesignation(personnelListDto.getDesignation());
-                    appSvcCgoDto.setProfRegNo(personnelListDto.getProfessionRegnNo());
-                    appSvcCgoDto.setProfessionType(personnelListDto.getProfessionType());
-                    appSvcCgoDto.setSpeciality(personnelListDto.getSpeciality());
-                    appSvcCgoDto.setSubSpeciality(personnelListDto.getSubSpeciality());
                     appSvcCgoDto.setOfficeTelNo(personnelListDto.getOfficeTelNo());
                 }
             }
