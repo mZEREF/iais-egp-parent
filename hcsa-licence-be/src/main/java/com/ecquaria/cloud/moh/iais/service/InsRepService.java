@@ -41,7 +41,7 @@ public interface InsRepService {
     void routTaskToRoutBackAo3(BaseProcessClass bpc,TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks) throws Exception;
     InspectionReportDto getInspectorUser(TaskDto taskDto,LoginContext loginContext);
     InspectionReportDto getInspectorAo(TaskDto taskDto,ApplicationViewDto applicationViewDto);
-    void sendPostInsTaskFeData(String submissionId,String eventRefNum) throws FeignException;
+    void sendPostInsTaskFeData(String eventRefNum,String submissionId) ;
     AppPremisesRoutingHistoryDto getAppPremisesRoutingHistorySubStage(String corrId, String stageId);
 
 

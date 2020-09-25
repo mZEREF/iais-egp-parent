@@ -1730,7 +1730,7 @@ public class RequestForChangeMenuDelegator {
                     appSvcMedAlertPerson.setSalutation(personnelListDto.getSalutation());
                     appSvcMedAlertPerson.setMobileNo(personnelListDto.getMobileNo());
                     appSvcMedAlertPerson.setEmailAddr(personnelListDto.getEmailAddr());
-                    appSvcMedAlertPerson.setOfficeTelNo(personnelListDto.getEmailAddr());
+                    appSvcMedAlertPerson.setOfficeTelNo(personnelListDto.getOfficeTelNo());
                 }
             }
 

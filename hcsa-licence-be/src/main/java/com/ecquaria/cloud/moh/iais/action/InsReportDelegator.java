@@ -77,7 +77,6 @@ public class InsReportDelegator {
             log.error(e.getMessage(),e);
             bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
         }
-
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  "Inspection Report");
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();

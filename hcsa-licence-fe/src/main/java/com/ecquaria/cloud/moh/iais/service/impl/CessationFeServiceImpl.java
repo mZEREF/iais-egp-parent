@@ -635,29 +635,29 @@ public class CessationFeServiceImpl implements CessationFeService {
         setRiskToDto(newAppSubmissionDto);
         appSubmissionRequestInformationDto.setAppSubmissionDto(newAppSubmissionDto);
         //status
-//        List<AppPremisesRoutingHistoryDto> hisList;
-//        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-//        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-//        String gatewayUrl = env.getProperty("iais.inter.gateway.url");
-//        Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
-//        params.put("appNo", applicationDto.getApplicationNo());
-//        hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
-//                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-//                signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
-//        if(hisList!=null){
-//            for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : hisList){
-//                if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())
-//                        || InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())){
-//                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
-//                        applicationDto.setStatus(ApplicationConsts.PENDING_ASO_REPLY);
-//                    }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
-//                        applicationDto.setStatus(ApplicationConsts.PENDING_PSO_REPLY);
-//                    }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS.equals(appPremisesRoutingHistoryDto.getAppStatus())){
-//                        applicationDto.setStatus(ApplicationConsts.PENDING_INP_REPLY);
-//                    }
-//                }
-//            }
-//        }
+        List<AppPremisesRoutingHistoryDto> hisList;
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+        Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
+        params.put("appNo", applicationDto.getApplicationNo());
+        hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
+        if(hisList!=null){
+            for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : hisList){
+                if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())
+                        || InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())){
+                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                        applicationDto.setStatus(ApplicationConsts.PENDING_ASO_REPLY);
+                    }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                        applicationDto.setStatus(ApplicationConsts.PENDING_PSO_REPLY);
+                    }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                        applicationDto.setStatus(ApplicationConsts.PENDING_INP_REPLY);
+                    }
+                }
+            }
+        }
         AppSubmissionDto appSubmissionDto1 = applicationClient.saveRfcCessationSubmision(appSubmissionRequestInformationDto).getEntity();
         String appId = appSubmissionDto1.getApplicationDtos().get(0).getId();
         return appId;

@@ -125,6 +125,7 @@ public class PostInspectionBatchJob {
 //            //licence
             eventBusHelper.submitAsyncRequest(postInspectionDto, submissionId, EventBusConsts.SERVICE_NAME_LICENCESAVE,
                     EventBusConsts.OPERATION_POST_INSPECTION_APP_LIC, grpNo, bpc.process);
+            log.debug(StringUtil.changeForLog("=============  event bus end ================"));
         });
     }
 
