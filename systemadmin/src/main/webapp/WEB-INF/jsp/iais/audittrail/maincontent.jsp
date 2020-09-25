@@ -153,7 +153,7 @@
                             <iais:sortableHeader needSort="true" field="moh_user_id"
                                                  value="MOH user's account ID"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="session_id"
-                                                 value="Session Id"></iais:sortableHeader>
+                                                 value="Session ID"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="TOTAL_SESSION_DURATION"
                                                  value="Total Session Duration"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="application_number"

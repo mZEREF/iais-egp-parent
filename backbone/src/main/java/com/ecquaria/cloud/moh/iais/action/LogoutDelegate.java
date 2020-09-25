@@ -55,7 +55,7 @@ public class LogoutDelegate {
             }
 
             auditTrailDto.setModule("logout");
-            auditTrailDto.setProgrameName(SOPAuditLogConstants.KEY_LOGOUT);
+            auditTrailDto.setProgrameName(AppConsts.MOH_SYSTEM_NAME);
             List<AuditTrailDto> dtoList = IaisCommonUtils.genNewArrayList();
             dtoList.add(auditTrailDto);
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGOUT);
