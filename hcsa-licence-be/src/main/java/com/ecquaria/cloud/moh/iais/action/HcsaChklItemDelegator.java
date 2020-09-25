@@ -283,9 +283,9 @@ public class HcsaChklItemDelegator {
         }else {
             boolean isCreate = StringUtil.isEmpty(itemDto.getItemId()) ? true : false;
             if (isCreate){
-                ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ACK002", AppConsts.DEFAULT_DATE_FORMAT));
+                ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ACK002"));
             }else {
-                ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ACK005", AppConsts.DEFAULT_DATE_FORMAT));
+                ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ACK005"));
             }
 
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);

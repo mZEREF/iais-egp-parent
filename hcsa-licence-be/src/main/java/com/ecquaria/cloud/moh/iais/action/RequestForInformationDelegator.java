@@ -433,7 +433,7 @@ public class RequestForInformationDelegator {
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
-        ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("RFI_ACK001", AppConsts.DEFAULT_DATE_FORMAT));
+        ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("RFI_ACK001"));
 
 
 

@@ -3,13 +3,15 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.MapFormat;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import java.util.Date;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Date;
+import java.util.Map;
 
 /**
  * MessageUtil
@@ -72,18 +74,28 @@ public class MessageUtil {
     }
 
     public static String dateIntoMessage(String codeKey){
-        return dateIntoMessage(codeKey, AppConsts.DEFAULT_DATE_FORMAT);
+        return dateIntoMessage(codeKey, AppConsts.DEFAULT_DATE_TIME_FORMAT);
     }
 
-    public static String dateIntoMessage(String codeKey, String pattern){
+    private static String dateIntoMessage(String codeKey, String pattern){
         if (StringUtils.isEmpty(codeKey) || StringUtils.isEmpty(pattern)){
             return null;
         }
 
         String msg = MessageUtil.getMessageDesc(codeKey);
-        return msg.replace("<Date>", IaisEGPHelper.parseToString(new Date(),
-                pattern)).replace("<Time>", IaisEGPHelper.parseToString(new Date(),
-                "HH:mm"));
+        String dateStr = "";
+        String timeStr = "";
+        try {
+            String dateTimeStr = Formatter.formatDateTime(new Date());
+            String[] arr = dateTimeStr.split(" ");
+            dateStr = arr[0];
+            timeStr = arr[1];
+        }catch (NullPointerException | IndexOutOfBoundsException e){
+            log.error(e.getMessage(), e);
+        }
+
+        return msg.replace("{Date}", dateStr).replace("{Time}", timeStr);
+
     }
 
     //only replace first or only one curly brace

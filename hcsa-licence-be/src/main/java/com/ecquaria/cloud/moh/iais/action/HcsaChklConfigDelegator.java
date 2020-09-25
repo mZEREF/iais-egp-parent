@@ -577,7 +577,7 @@ public class HcsaChklConfigDelegator {
             configDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             ChecklistConfigDto checklistConfigDto = hcsaChklService.submitConfig(configDto);
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, checklistConfigDto);
-            ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ACK004", AppConsts.DEFAULT_DATE_FORMAT));
+            ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ACK004"));
         }
     }
 
@@ -1049,14 +1049,14 @@ public class HcsaChklConfigDelegator {
             if(configDto != null){
                 String operationType = (String) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.ACTION_OPERATIONTYPE);
                 if (HcsaChecklistConstants.ACTION_CLONE.equals(operationType)){
-                    ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ACK004", AppConsts.DEFAULT_DATE_FORMAT));
+                    ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ACK004"));
                     configDto.setWebAction(HcsaChecklistConstants.CLONE);
                 }else if (HcsaChecklistConstants.ACTION_EDIT.equals(operationType)){
-                    ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ERR021", AppConsts.DEFAULT_DATE_FORMAT));
+                    ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ERR021"));
                     configDto.setWebAction(HcsaChecklistConstants.UPDATE);
                 }else if (HcsaChecklistConstants.ACTION_CREATE.equals(operationType)){
                     configDto.setWebAction(HcsaChecklistConstants.CREATE);
-                    ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ACK004", AppConsts.DEFAULT_DATE_FORMAT));
+                    ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ACK004"));
                 }
 
                 configDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
