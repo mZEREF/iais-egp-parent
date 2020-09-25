@@ -145,17 +145,17 @@
                                                  value="Singpass ID"></iais:sortableHeader>
 
                             <iais:sortableHeader needSort="true" field="action_time"
-                                                 value="Operation Date"></iais:sortableHeader>
-                            <iais:sortableHeader needSort="true" field="action_time"
-                                                 value="Operation Time"></iais:sortableHeader>
+                                                 value="Operation Date and Time"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="client_ip"
                                                  value="Source Client IP"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="user_agent"
                                                  value="User Agent"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true" field="moh_user_id"
+                                                 value="MOH user's account ID"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="session_id"
                                                  value="Session Id"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="TOTAL_SESSION_DURATION"
-                                                 value="Total Session Duration (min)"></iais:sortableHeader>
+                                                 value="Total Session Duration"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="application_number"
                                                  value="Application ID"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="license_number"
@@ -260,11 +260,22 @@
 
 
 
-                                        <td><fmt:formatDate value='${resultRow.actionTime}' pattern='dd/MM/yyyy'/></td>
-                                        <td><fmt:formatDate value='${resultRow.actionTime}' pattern='HH:mm:ss'/></td>
+                                        <td><fmt:formatDate value='${resultRow.actionTime}' pattern='dd/MM/yyyy HH:mm:ss'/></td>
                                         <td>${empty resultRow.clientIp ? "-" : resultRow.clientIp}</td>
                                         <td>${empty resultRow.userAgent ? "-" : resultRow.userAgent}</td>
+
+                                            <%-- intranet --%>
+                                        <c:choose>
+                                            <c:when test="${resultRow.domain == 20002}">
+                                                <td>${empty resultRow.mohUserId ? "-" : resultRow.mohUserId}</td>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <td>-</td>
+                                            </c:otherwise>
+                                        </c:choose>
+
                                         <td>${empty resultRow.sessionId ? "-" : resultRow.sessionId}</td>
+
                                         <td>${empty resultRow.totalSessionDuration ? "-" : resultRow.totalSessionDuration}</td>
                                         <td>${empty resultRow.appNum ? "-" : resultRow.appNum}</td>
                                         <td>${empty resultRow.licenseNum ? "-" : resultRow.licenseNum}</td>
@@ -292,7 +303,7 @@
 
                                         </td>
 
-                                        <td><c:out value="${resultRow.nricNumber}"></c:out></td>
+                                        <td>${empty resultRow.nricNumber ? "-" : resultRow.nricNumber}</td>
                                         <td><fmt:formatDate value='${resultRow.actionTime}' pattern='dd/MM/yyyy'/></td>
                                     </tr>
                                 </c:forEach>
