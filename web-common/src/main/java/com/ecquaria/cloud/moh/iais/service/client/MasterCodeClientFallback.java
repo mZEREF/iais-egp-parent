@@ -15,7 +15,7 @@ import org.springframework.http.HttpHeaders;
 public class MasterCodeClientFallback implements MasterCodeClient{
 
     @Override
-    public FeignResponseEntity<SearchResult<MasterCodeView>> retrieveMasterCodes(SearchParam param) {
+    public FeignResponseEntity<Void> refreshCache() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -24,6 +24,14 @@ public class MasterCodeClientFallback implements MasterCodeClient{
 
     @Override
     public FeignResponseEntity<String> messageID() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<SearchResult<MasterCodeView>> retrieveMasterCodes(SearchParam param) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
