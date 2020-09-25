@@ -4612,6 +4612,10 @@ public class NewApplicationDelegator {
         if (draftNumber != null) {
 
             ParamUtil.setSessionAttr(bpc.request, DRAFTCONFIG, null);
+            String entryType = ParamUtil.getString(bpc.request,"entryType");
+            if(!StringUtil.isEmpty(entryType) && entryType.equals("assessment")){
+                ParamUtil.setSessionAttr(bpc.request,ASSESSMENTCONFIG,"test");
+            }
         }
         log.info(StringUtil.changeForLog("the do loadingDraft end ...."));
     }
