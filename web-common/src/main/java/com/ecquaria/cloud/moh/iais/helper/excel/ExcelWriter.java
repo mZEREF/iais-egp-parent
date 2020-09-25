@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
 
@@ -244,8 +245,6 @@ public final class ExcelWriter {
         return obj == null ? "" : obj.toString();
     }
 
-
-
     private static void unlockCellByMap(Sheet sheet, Map<Integer, List<Integer>> unlockCellMap){
         for (Map.Entry<Integer, List<Integer>> ent : unlockCellMap.entrySet()){
             Integer rowIndex = ent.getKey();
@@ -256,6 +255,8 @@ public final class ExcelWriter {
                     Cell cell = row.getCell(i);
                     if (cell != null){
                         cell.setCellStyle(CellStyleHelper.getUnlockStyle());
+                        XSSFDataFormat format = workbook.createDataFormat();
+                        cell.getCellStyle().setDataFormat(format.getFormat("@"));
                     }
                 }
             }

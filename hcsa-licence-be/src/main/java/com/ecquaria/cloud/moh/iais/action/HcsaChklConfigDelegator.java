@@ -39,8 +39,8 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.helper.excel.EspecialExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
+import com.ecquaria.cloud.moh.iais.helper.excel.IrregularExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -57,7 +57,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -893,8 +892,6 @@ public class HcsaChklConfigDelegator {
             errorMsgContentList = errorMsgContentList.stream().filter(i -> !i.getErrorMsgList().isEmpty()).collect(Collectors.toList());
             ChecklistHelper.replaceErrorMsgContentMasterCode(errorMsgContentList);
             ParamUtil.setRequestAttr(request, "messageContent", errorMsgContentList);
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
-
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         } catch (Exception e) {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
@@ -926,7 +923,7 @@ public class HcsaChklConfigDelegator {
 
                 log.info(StringUtil.changeForLog("before export config template" + inputFile.getPath()));
 
-                File configInfoTemplate = EspecialExcelWriterUtil.writerToExcelByIndex(inputFile, 1, val, excelConfigValueIndex);
+                File configInfoTemplate = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 1, val, excelConfigValueIndex);
 
                 log.info(StringUtil.changeForLog("export temp config template " + configInfoTemplate.getPath()));
 
@@ -935,7 +932,7 @@ public class HcsaChklConfigDelegator {
                 String currentVersion = config.getVersion().toString();
                 String[] hiddenVal = {prevConfigId, nextConfigId, currentVersion};
 
-                File versionFile = EspecialExcelWriterUtil.writerToExcelByIndex(configInfoTemplate, 1, hiddenVal, excelHiddenValueIndex, true);
+                File versionFile = IrregularExcelWriterUtil.writerToExcelByIndex(configInfoTemplate, 1, hiddenVal, excelHiddenValueIndex, true);
 
                 log.info(StringUtil.changeForLog("after export config template" + versionFile.getPath()));
 

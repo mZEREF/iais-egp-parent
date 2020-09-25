@@ -26,8 +26,8 @@ import static com.ecquaria.cloud.moh.iais.helper.FileUtils.EXCEL_TYPE_XSSF;
  * @Date:2020/6/15
  **/
 @Slf4j
-public class EspecialExcelWriterUtil {
-    private EspecialExcelWriterUtil(){}
+public class IrregularExcelWriterUtil {
+    private IrregularExcelWriterUtil(){}
 
     public static File writerToExcelByIndex(final File file, int sheetAt, String[] val,  Map<Integer, List<Integer>> excelConfigIndex) throws Exception {
         return writerToExcelByIndex(file, sheetAt, val, excelConfigIndex, false);
