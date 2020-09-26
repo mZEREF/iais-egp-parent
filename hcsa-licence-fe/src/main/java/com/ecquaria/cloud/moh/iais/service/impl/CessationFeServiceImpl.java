@@ -180,7 +180,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                 }
             }
         }
-        specLicIds.contains(licIds);
+//        specLicIds.contains(licIds);
         return specLicIdsE;
     }
 
