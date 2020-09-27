@@ -56,7 +56,7 @@
                                             </c:when>
                                             <c:otherwise>
                                                 <c:choose>
-                                                    <c:when test="${assessMap.value.psnTypes.size() == assessStatus.index + 1}">
+                                                    <c:when test="${pool.roles.size() == assessStatus.index + 1}">
                                                         <c:choose>
                                                             <c:when test="${assessList == 'CGO'}">
                                                                 Clinical Governance Officer
