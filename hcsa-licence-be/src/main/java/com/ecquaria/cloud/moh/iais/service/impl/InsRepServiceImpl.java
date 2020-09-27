@@ -450,13 +450,14 @@ public class InsRepServiceImpl implements InsRepService {
         AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
         AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         if (oldAppPremisesRecommendationDto != null) {
+            int newVersion = oldAppPremisesRecommendationDto.getVersion() + 1;
             oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             oldAppPremisesRecommendationDto.setAuditTrailDto(currentAuditTrailDto);
             insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
             if (APPROVAL.equals(recommendation)) {
                 oldAppPremisesRecommendationDto.setId(null);
                 oldAppPremisesRecommendationDto.setRecomDecision(appPremisesRecommendationDto.getRecomDecision());
-                oldAppPremisesRecommendationDto.setVersion(oldAppPremisesRecommendationDto.getVersion() + 1);
+                oldAppPremisesRecommendationDto.setVersion(newVersion);
                 oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
                 return;
@@ -468,7 +469,7 @@ public class InsRepServiceImpl implements InsRepService {
                 return;
             } else {
                 oldAppPremisesRecommendationDto.setRemarks(appPremisesRecommendationDto.getRemarks());
-                oldAppPremisesRecommendationDto.setVersion(appPremisesRecommendationDto.getVersion() + 1);
+                oldAppPremisesRecommendationDto.setVersion(newVersion);
                 oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
                 return;
