@@ -68,7 +68,7 @@
             <p>This form will take approximately 30 minutes to complete. You may save your progress at any time and resume your application later. </p>
           </li>
           <li>
-            <p>Payment may be made using a credit card, debit card or via GIRO.</p>
+            <p>Payment may be made using a credit card, debit card , via GIRO or eNets.</p>
           </li>
         </ul>
         <div class="application-tab-footer">
