@@ -138,7 +138,7 @@ public class LicenseeCompanyDelegate {
             for (FeUserDto item:feUserDtos
                  ) {
                 if(item.getId().equals(id)){
-                    String nric = "XXXX"+((FeUserDto) item).getIdentityNo().substring(3) + "(NRIC)";
+                    String nric =  ((FeUserDto) item).getIdentityNo() + " (NRIC)";
                     item.setDesignation(MasterCodeUtil.getCodeDesc(item.getDesignation()));
                     ParamUtil.setRequestAttr(bpc.request,"nric",nric);
                     ParamUtil.setRequestAttr(bpc.request,"feuser",item);

@@ -22,27 +22,21 @@
     <div class="instruction-content center-content">
         <div class="h3-with-desc">
             <strong>Authorised User</strong>
-            <p>The Authorised Person is responsible for liaising with MOH on all licensing matters and for the administration and management of the healthcare organisation. </p>
+            <p style="margin-top: 30px;margin-bottom: 20px">The Authorised Person is responsible for liaising with MOH on all licensing matters and for the administration and management of the healthcare organisation. </p>
 
-            <strong>${feuser.displayName},${nric}</strong>
+            <strong>${feuser.displayName}, ${nric}</strong>
 
-            <div class="form-horizontal">
+            <div class="form-horizontal" style="margin-top: 20px">
                 <iais:row>
                     <iais:field value="Name" width="11"/>
                     <label class="col-xs-11 col-md-4 control-label">
-                        <iais:code code="${feuser.displayName}"/>
+                        <iais:code code="${feuser.salutation}"/> <iais:code code="${feuser.displayName}"/>
                     </label>
                 </iais:row>
                 <iais:row>
                     <iais:field value="ID No." width="11"/>
                     <label class="col-xs-11 col-md-4 control-label">
-                        <iais:code code="${feuser.identityNo}"/>
-                    </label>
-                </iais:row>
-                <iais:row>
-                    <iais:field value="Office Telephone No." width="11"/>
-                    <label class="col-xs-11 col-md-4 control-label">
-                        <iais:code code="${feuser.officeTelNo}"/>
+                        <iais:code code="${feuser.identityNo}"/> (<iais:code code="${feuser.idType}"/>)
                     </label>
                 </iais:row>
                 <iais:row>
@@ -56,6 +50,12 @@
                     <iais:field value="Mobile No." width="11"/>
                     <label class="col-xs-11 col-md-4 control-label">
                         <iais:code code="${feuser.mobileNo}"/>
+                    </label>
+                </iais:row>
+                <iais:row>
+                    <iais:field value="Office Telephone No." width="11"/>
+                    <label class="col-xs-11 col-md-4 control-label">
+                        <iais:code code="${feuser.officeTelNo}"/>
                     </label>
                 </iais:row>
                 <iais:row>
