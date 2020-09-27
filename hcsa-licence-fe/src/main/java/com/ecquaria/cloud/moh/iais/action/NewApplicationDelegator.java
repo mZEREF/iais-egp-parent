@@ -1481,7 +1481,7 @@ public class NewApplicationDelegator {
                                 }
                                 List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = serviceConfigService.loadLaboratoryDisciplines(svcId);
                                 NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto, hcsaSvcSubtypeOrSubsumedDtos);
-                                appSubmissionDto.setAppSvcRelatedInfoDtoList(newSvcRelatedInfoDtos);
+                                appSubmissionDto.setAppSvcRelatedInfoDtoList(newSvcRelatedInfoDtos.subList(0,1));
                             }
                             //set DisciplineAllocationMap
                             Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
