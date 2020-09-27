@@ -64,7 +64,7 @@
                                                 <thead>
                                                 <tr>
                                                     <%--<th>Application No.</th>--%>
-                                                    <c:if test="${'Credit' == renewDto.appSubmissionDtos.get(0).paymentMethod}">
+                                                    <c:if test="${'Credit' == renewDto.appSubmissionDtos.get(0).paymentMethod or 'NETS'==renewDto.appSubmissionDtos.get(0).paymentMethod}">
                                                         <th>Transactional No.</th>
                                                     </c:if>
                                                     <th>Date & Time</th>
@@ -77,7 +77,7 @@
                                                         <c:set var="AppSubmissionDto" value="${renewDto.appSubmissionDtos.get(0)}" scope="request"/>
                                                         <tr>
                                                             <%--<td><c:out value="${AppSubmissionDto.appGrpNo}"/></td>--%>
-                                                            <c:if test="${'Credit'==AppSubmissionDto.paymentMethod}">
+                                                            <c:if test="${'Credit'== renewDto.appSubmissionDtos.get(0).paymentMethod or 'NETS'== renewDto.appSubmissionDtos.get(0).paymentMethod}">
                                                                 <td><c:out value="${txnRefNo}"/></td>
                                                             </c:if>
                                                             <td><c:out value="${txnDt}"/></td>

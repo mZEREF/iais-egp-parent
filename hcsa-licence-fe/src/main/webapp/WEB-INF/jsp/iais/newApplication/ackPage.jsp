@@ -54,7 +54,7 @@
                                     <thead>
                                     <tr>
                                         <th>Application No.</th>
-                                        <c:if test="${'Credit'==AppSubmissionDto.paymentMethod}">
+                                        <c:if test="${'Credit'==AppSubmissionDto.paymentMethod or 'NETS'==AppSubmissionDto.paymentMethod}">
                                             <th>Transactional No.</th>
                                         </c:if>
                                         <th>Date & Time</th>
@@ -68,7 +68,7 @@
                                             <c:forEach var="ackPageAppSubmission" items="${ackPageAppSubmissionDto}">
                                                 <tr>
                                                     <td><c:out value="${ackPageAppSubmission.appGrpNo}"/></td>
-                                                    <c:if test="${'Credit'==AppSubmissionDto.paymentMethod}">
+                                                    <c:if test="${'Credit'==AppSubmissionDto.paymentMethod or 'NETS'==AppSubmissionDto.paymentMethod}">
                                                         <td><c:out value="${txnRefNo}"/></td>
                                                     </c:if>
                                                     <td><c:out value="${txnDt}"/></td>
@@ -96,7 +96,7 @@
                                         <c:otherwise>
                                             <tr>
                                                 <td><c:out value="${AppSubmissionDto.appGrpNo}"/></td>
-                                                <c:if test="${'Credit'==AppSubmissionDto.paymentMethod}">
+                                                <c:if test="${'Credit'==AppSubmissionDto.paymentMethod or 'NETS'==AppSubmissionDto.paymentMethod}">
                                                     <td><c:out value="${txnRefNo}"/></td>
                                                 </c:if>
                                                 <td><c:out value="${txnDt}"/></td>

@@ -43,7 +43,7 @@
                                 <thead>
                                 <tr>
                                     <th>Application No.</th>
-                                    <c:if test="${'Credit'== payMethod}">
+                                    <c:if test="${'Credit'== payMethod or 'NETS'== payMethod}">
                                         <th>Transactional No.</th>
                                     </c:if>
                                     <th>Date & Time</th>
@@ -54,13 +54,8 @@
                                 <tbody>
                                 <tr>
                                     <td>${appSubmissionDtos.get(0).appGrpNo}</td>
-                                    <c:if test="${'Credit'== payMethod}">
-                                        <td>
-                                            <c:choose>
-                                                <c:when test="${empty pmtRefNo}">N/A</c:when>
-                                                <c:otherwise> ${pmtRefNo}</c:otherwise>
-                                            </c:choose>
-                                        </td>
+                                    <c:if test="${'Credit'== payMethod or 'NETS'== payMethod}">
+                                        <td><c:out value="${pmtRefNo}"/></td>
                                     </c:if>
                                     <td><fmt:formatDate value="${createDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                     <td>${dAmount}</td>
