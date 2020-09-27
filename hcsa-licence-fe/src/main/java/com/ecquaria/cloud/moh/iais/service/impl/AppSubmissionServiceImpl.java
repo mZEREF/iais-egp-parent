@@ -128,13 +128,28 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             ApplicationDto applicationDto =  appSubmissionDto.getApplicationDtos().get(0);
             String applicationType =  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("MOH IAIS - Your ").append(applicationType).append(',').append(appSubmissionDto.getAppGrpNo()).append(" has been submitted");
+            stringBuilder.append("MOH IAIS - Your ").append(applicationType).append(',');
+            int index = 0;
+            StringBuilder stringBuilderAPPNum = new StringBuilder();
+            for(ApplicationDto applicationDtoApp : appSubmissionDto.getApplicationDtos()){
+                if(index == 0){
+                    stringBuilderAPPNum.append(applicationDtoApp.getApplicationNo());
+                }else {
+                    stringBuilderAPPNum.append(" and ");
+                    stringBuilderAPPNum.append(applicationDtoApp.getApplicationNo());
+                }
+                index++;
+            }
+            String applicationNumber = stringBuilderAPPNum.toString();
+            stringBuilder.append(applicationNumber);
+            stringBuilder.append(" has been submitted");
             String subject = stringBuilder.toString();
             Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
             templateContent.put("ApplicantName", applicantName);
             templateContent.put("ApplicationType",  applicationType);
-            templateContent.put("ApplicationNo", appSubmissionDto.getAppGrpNo());
+            templateContent.put("ApplicationNumber", applicationNumber);
             templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+            templateContent.put("isSelfAssessment","No");
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
             templateContent.put("systemLink", loginUrl);
             String paymentMethodName = "onlinePayment";

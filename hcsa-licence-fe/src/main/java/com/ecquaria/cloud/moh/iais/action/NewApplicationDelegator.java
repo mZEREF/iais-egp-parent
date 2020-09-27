@@ -1237,6 +1237,8 @@ public class NewApplicationDelegator {
                 try {
 //                    sendNewApplicationPaymentOnlineSuccesedEmail(appSubmissionDto, pmtMethod, pmtRefNo);
                     //requestForChangeService.sendEmail(appSubmissionDto.getAppGrpId(),null,appSubmissionDto.getApplicationDtos().get(0).getApplicationNo(),null,null,appSubmissionDto.getAmount(),null,null,appSubmissionDto.getLicenseeId(),"RfcAndOnPay",null);
+                    LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+                    appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());
                 } catch (Exception e) {
                     log.error(StringUtil.changeForLog("send email error ...."));
                 }
@@ -1257,7 +1259,6 @@ public class NewApplicationDelegator {
             }
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "payment success !!!");
         }
-
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, switch2);
         log.info(StringUtil.changeForLog("the do doPayment end ...."));
     }
@@ -2936,6 +2937,8 @@ public class NewApplicationDelegator {
             //send email
             try {
                 //sendNewApplicationPaymentGIROEmail(appSubmissionDto, bpc);
+                LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+                appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("send email error ...."));
             }
@@ -2954,8 +2957,6 @@ public class NewApplicationDelegator {
             bpc.response.sendRedirect(tokenUrl);
             return;
         }
-        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());
         log.info(StringUtil.changeForLog("the do jumpBank end ...."));
     }
 
