@@ -697,12 +697,9 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         String subStage = HcsaConsts.ROUTING_STAGE_POT;
         if(StringUtil.isEmpty(workGrp))  workGrp = taskDto.getWkGrpId();
         createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.PROCESS_DECI_PENDING_MYSELF_FOR_CHECKLIST_VERIFY, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
-        taskDto.setSlaDateCompleted(new Date());
-        taskDto.setSlaRemainInDays(taskService.remainDays(taskDto));
-        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
-        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         //create
-        TaskDto updatedtaskDto = taskService.updateTask(taskDto);
+        TaskDto updatedtaskDto = completedTask(taskDto);
+        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         taskDto.setApplicationNo(applicationDto.getApplicationNo());
         updatedtaskDto.setId(null);
         updatedtaskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_NCEMAIL);
@@ -729,7 +726,6 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         removeOtherTask(dtos,taskDto.getId());
         ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT );
         updateInspectionStatus(applicationDto,InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
-        completedTask(taskDto);
         //create createAppPremisesRoutingHistory
         String svcId = applicationDto.getServiceId();
         String stgId = taskDto.getTaskKey();
@@ -745,7 +741,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         if(StringUtil.isEmpty(workGrp))  workGrp = taskDto.getWkGrpId();
         createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
         //create task
-        TaskDto updatedtaskDto = taskService.updateTask(taskDto);
+        TaskDto updatedtaskDto = completedTask(taskDto);
         updatedtaskDto.setId(null);
         updatedtaskDto.setApplicationNo(applicationDto.getApplicationNo());
         updatedtaskDto.setUserId(loginContext.getUserId());
@@ -753,6 +749,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         updatedtaskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         updatedtaskDto.setSlaDateCompleted(null);
         updatedtaskDto.setRoleId( RoleConsts.USER_ROLE_INSPECTIOR);
+        updatedtaskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         applicationDtos.add(applicationDto);
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
