@@ -1157,6 +1157,7 @@ public class AppealServiceImpl implements AppealService {
 
     private void sendAllNotification(String appNo,String appType,LicenceDto licenceDto, LicenseeDto licenseeDto,HcsaServiceDto hcsaServiceDto){
         log.info("start send email sms and msg");
+        appNo = appNo + "-01";
         log.info(StringUtil.changeForLog("appNo: " + appNo));
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
