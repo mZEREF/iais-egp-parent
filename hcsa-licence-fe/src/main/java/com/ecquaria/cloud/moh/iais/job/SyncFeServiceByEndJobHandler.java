@@ -37,9 +37,9 @@ public class SyncFeServiceByEndJobHandler extends MohJobHandler {
             if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){//NOSONAR
                 List<HcsaServiceDto> updateServiceList = IaisCommonUtils.genNewArrayList();
                 for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
-                    log.info(StringUtil.changeForLog("hcsaServiceDto Id = " + hcsaServiceDto.getId()));
-                    JobLogger.log(StringUtil.changeForLog("hcsaServiceDto Id = " + hcsaServiceDto.getId()));
                     if(hcsaServiceDto != null){
+                        log.info(StringUtil.changeForLog("hcsaServiceDto Id = " + hcsaServiceDto.getId()));
+                        JobLogger.log(StringUtil.changeForLog("hcsaServiceDto Id = " + hcsaServiceDto.getId()));
                         try {
                             hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                             updateServiceList.add(hcsaServiceDto);
