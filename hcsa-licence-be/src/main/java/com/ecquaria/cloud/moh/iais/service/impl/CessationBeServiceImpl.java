@@ -7,12 +7,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
@@ -25,13 +22,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -44,13 +39,7 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -70,8 +59,7 @@ import java.util.Map;
 @Service
 @Slf4j
 public class CessationBeServiceImpl implements CessationBeService {
-    private final static String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
-    private final static String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
+    private final static String workGroupId = "4C43D448-F90C-EA11-BE7D-000C29F371DC";
 
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
@@ -88,11 +76,15 @@ public class CessationBeServiceImpl implements CessationBeService {
     @Autowired
     private MsgTemplateClient msgTemplateClient;
     @Autowired
+    private HcsaAppClient hcsaAppClient;
+    @Autowired
     private EmailClient emailClient;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
     private String secKeyId;
+    @Autowired
+    private TaskApplicationClient taskApplicationClient;
 
     @Value("${iais.hmac.secretKey}")
     private String secretKey;
@@ -439,17 +431,17 @@ public class CessationBeServiceImpl implements CessationBeService {
             appPremisesRoutingHistoryDto.setActionby(loginContext.getUserId());
             appPremisesRoutingHistoryDto.setAppStatus(applicationDto.getStatus());
             appPremisesRoutingHistoryDto.setAuditTrailDto(AuditTrailDto.getThreadDto());
-            appPremisesRoutingHistoryDto.setWrkGrpId("4C43D448-F90C-EA11-BE7D-000C29F371DC");
+            appPremisesRoutingHistoryDto.setWrkGrpId(workGroupId);
             List<AppPremisesRoutingHistoryDto> asoHistory = IaisCommonUtils.genNewArrayList();
             asoHistory.add(appPremisesRoutingHistoryDto);
             taskService.createHistorys(asoHistory);
         }
-            TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtos, HcsaConsts.ROUTING_STAGE_AO3, RoleConsts.USER_ROLE_AO3, IaisEGPHelper.getCurrentAuditTrailDto());
+            TaskHistoryDto taskHistoryDto = prepareTask(applicationDtos);
             List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
             taskService.createTasks(taskDtos);
             List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
             appPremisesRoutingHistoryDtos.get(0).setActionby(loginContext.getUserId());
-            appPremisesRoutingHistoryDtos.get(0).setWrkGrpId("4C43D448-F90C-EA11-BE7D-000C29F371DC");
+            appPremisesRoutingHistoryDtos.get(0).setWrkGrpId(workGroupId);
             taskService.createHistorys(appPremisesRoutingHistoryDtos);
         }
 
@@ -582,13 +574,96 @@ public class CessationBeServiceImpl implements CessationBeService {
         return null;
     }
 
-    private List<LicenceDto> updateLicenceStatus(List<LicenceDto> licenceDtos, Date date) {
-        List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
-        for (LicenceDto licenceDto : licenceDtos) {
-            licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
-            licenceDto.setEndDate(date);
-            updateLicenceDtos.add(licenceDto);
+    private TaskHistoryDto prepareTask(List<ApplicationDto> applicationDtos) throws FeignException {
+        TaskHistoryDto taskHistoryDto = new TaskHistoryDto();
+        List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = IaisCommonUtils.genNewArrayList();
+        Date  assignDate = new Date();
+        String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
+        TaskDto userIdForWorkGroup = taskService.getUserIdForWorkGroup(workGroupId);
+        String userId = userIdForWorkGroup.getUserId();
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,HcsaConsts.ROUTING_STAGE_AO3);
+        hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+
+        for(ApplicationDto applicationDto : applicationDtos){
+            int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
+                    HcsaConsts.ROUTING_STAGE_AO3,applicationDto.getApplicationType());
+            List<AppPremisesCorrelationDto> appPremisesCorrelations = getAppPremisesCorrelationId(applicationDto.getId());
+            if(!IaisCommonUtils.isEmpty(appPremisesCorrelations)){
+                for (AppPremisesCorrelationDto appPremisesCorrelationDto :appPremisesCorrelations ){
+                    TaskDto taskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),HcsaConsts.ROUTING_STAGE_AO3, TaskConsts.TASK_TYPE_MAIN_FLOW,
+                            appPremisesCorrelationDto.getId(),workGroupId,
+                            userId, assignDate,score,TaskUrl,RoleConsts.USER_ROLE_AO3,
+                            IaisEGPHelper.getCurrentAuditTrailDto());
+                    taskDtos.add(taskDto);
+                    //create history
+                    log.debug(StringUtil.changeForLog("the appPremisesCorrelationId is -->;"+appPremisesCorrelationDto.getId()));
+                    AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
+                            createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),
+                                    HcsaConsts.ROUTING_STAGE_AO3,null,RoleConsts.USER_ROLE_AO3,IaisEGPHelper.getCurrentAuditTrailDto());
+                    appPremisesRoutingHistoryDto.setWrkGrpId(workGroupId);
+                    appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
+                }
+            }
         }
-        return updateLicenceDtos;
+        taskHistoryDto.setTaskDtoList(taskDtos);
+        taskHistoryDto.setAppPremisesRoutingHistoryDtos(appPremisesRoutingHistoryDtos);
+        return taskHistoryDto;
+    }
+
+
+    private int getConfigScoreForService(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos,String serviceId,
+                                         String stageId,String appType){
+        int result = 0;
+        if(StringUtil.isEmpty(serviceId) || StringUtil.isEmpty(stageId) || StringUtil.isEmpty(appType)){
+            return result;
+        }
+        for (HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto :hcsaSvcStageWorkingGroupDtos){
+            if(serviceId.equals(hcsaSvcStageWorkingGroupDto.getServiceId())
+                    && stageId.equals(hcsaSvcStageWorkingGroupDto.getStageId())
+                    && appType.equals(hcsaSvcStageWorkingGroupDto.getType())){
+                result = hcsaSvcStageWorkingGroupDto.getCount() == null ? 0 :hcsaSvcStageWorkingGroupDto.getCount();
+            }
+        }
+        return result;
+    }
+
+    private List<AppPremisesCorrelationDto> getAppPremisesCorrelationId(String appId){
+        return  taskApplicationClient.getAppPremisesCorrelationsByAppId(appId).getEntity();
+    }
+
+    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
+        log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos start ...."));
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
+        log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos stageId -->:"+stageId));
+        for(ApplicationDto applicationDto : applicationDtos){
+            AppGrpPremisesEntityDto appGrpPremisesEntityDto = hcsaAppClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+            hcsaSvcStageWorkingGroupDto.setStageId(stageId);
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+            hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
+            if(appGrpPremisesEntityDto != null){
+                hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
+            }else{
+                log.error(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos this APP do not have the premise :"+applicationDto.getApplicationNo()));
+            }
+            hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
+        }
+        log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos end ...."));
+        return hcsaSvcStageWorkingGroupDtos;
+    }
+
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus,
+                                                                         String stageId, String internalRemarks,String roleId,
+                                                                         AuditTrailDto auditTrailDto){
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+        appPremisesRoutingHistoryDto.setApplicationNo(appNo);
+        appPremisesRoutingHistoryDto.setStageId(stageId);
+        appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
+        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
+        appPremisesRoutingHistoryDto.setActionby(auditTrailDto.getMohUserGuid());
+        appPremisesRoutingHistoryDto.setRoleId(roleId);
+        appPremisesRoutingHistoryDto.setAuditTrailDto(auditTrailDto);
+        return appPremisesRoutingHistoryDto;
     }
 }
