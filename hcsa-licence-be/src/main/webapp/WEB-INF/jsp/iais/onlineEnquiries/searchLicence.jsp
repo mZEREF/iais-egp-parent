@@ -8,16 +8,16 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
-<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
-    <iais:body >
-        <div class="container">
-            <div class="col-xs-14">
+<div class="main-content">
+    <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input type="hidden" name="crud_action_type" value=""/>
+        <input type="hidden" name="crud_action_value" value=""/>
+        <input type="hidden" name="crud_action_additional" value=""/>
+        <div class="row">
+            <div class="col-xs-12">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <br><br><br><br><br><br>
+                    <br>
                     <h3>
                         <span>Advanced Search Criteria</span>
                     </h3>
@@ -301,11 +301,8 @@
                 </div>
             </div>
         </div>
-    </iais:body>
-    <div hidden>
-        <iais:pagination param="SearchParam" result="SearchResult" />
-    </div>
-</form>
+    </form>
+</div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script type="text/javascript">
