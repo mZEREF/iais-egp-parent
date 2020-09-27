@@ -178,10 +178,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         for(Map.Entry<String, List<ApptUserCalendarDto>> apptInspDateMap : apptFeConfirmDateDto.getApptInspDateMap().entrySet()){
             String apptRefNo = apptInspDateMap.getKey();
             List<ApptUserCalendarDto> apptUserCalendarDtoList = apptInspDateMap.getValue();
-            ApptUserCalendarDto apptUserCalendarDto = getMaxDto(apptUserCalendarDtoList);//NOSONAR
-            int timeSize = apptUserCalendarDto.getEndSlot().size();//NOSONAR
-            Date startDate = apptUserCalendarDto.getStartSlot().get(0);
-            Date endDate = apptUserCalendarDto.getEndSlot().get(timeSize - 1);
+            Date startDate = getEarliestDate(apptUserCalendarDtoList);//NOSONAR
+            Date endDate = getLatestDate(apptUserCalendarDtoList);//NOSONAR
             String inspStartDate = apptDateToStringShow(startDate);
             String inspEndDate = apptDateToStringShow(endDate);
             String dateStr = inspStartDate + " - " + inspEndDate;
@@ -199,25 +197,74 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         apptFeConfirmDateDto.setInspectionDateMap(inspectionDateMap);
     }
 
-    private ApptUserCalendarDto getMaxDto(List<ApptUserCalendarDto> apptUserCalendarDtoList) {
-        ApptUserCalendarDto apptUserCalendarDto = null;//NOSONAR
-        int maxSize = 0;
+    private Date getLatestDate(List<ApptUserCalendarDto> apptUserCalendarDtoList) {
+        Date endDate = null;
         for(int i = 0; i < apptUserCalendarDtoList.size(); i++){
-            if(apptUserCalendarDto == null){
-                apptUserCalendarDto = apptUserCalendarDtoList.get(i);
-                List<Date> startSlot = apptUserCalendarDto.getStartSlot();
-                maxSize = startSlot.size();
+            ApptUserCalendarDto apptUserCalendarDto = apptUserCalendarDtoList.get(i);
+            Date lastEndDate = getLastEndDate(apptUserCalendarDto);
+            if(endDate == null){
+                endDate = lastEndDate;
             } else {
-                ApptUserCalendarDto aucDto = apptUserCalendarDtoList.get(i);
-                List<Date> startSlot = aucDto.getStartSlot();
-                int curSize = startSlot.size();
-                if(curSize > maxSize){
-                    maxSize = curSize;
-                    apptUserCalendarDto = aucDto;
+                if(lastEndDate.after(endDate)){
+                    endDate = lastEndDate;
                 }
             }
         }
-        return apptUserCalendarDto;
+        return endDate;
+    }
+
+    private Date getLastEndDate(ApptUserCalendarDto apptUserCalendarDto) {
+        Date lastEndDate = null;
+        if(apptUserCalendarDto != null) {
+            List<Date> endDateList = apptUserCalendarDto.getEndSlot();
+            if(!IaisCommonUtils.isEmpty(endDateList)){//NOSONAR
+                for(Date endDate : endDateList){
+                    if(lastEndDate == null){
+                        lastEndDate = endDate;
+                    } else {
+                        if(endDate.after(lastEndDate)){
+                            lastEndDate = endDate;
+                        }
+                    }
+                }
+            }
+        }
+        return lastEndDate;
+    }
+
+    private Date getEarliestDate(List<ApptUserCalendarDto> apptUserCalendarDtoList) {
+        Date inspStartDate = null;
+        for(int i = 0; i < apptUserCalendarDtoList.size(); i++){
+            ApptUserCalendarDto apptUserCalendarDto = apptUserCalendarDtoList.get(i);
+            Date earliestStartDate = getEarliestStartDate(apptUserCalendarDto);
+            if(inspStartDate == null){
+                inspStartDate = earliestStartDate;
+            } else {
+                if(earliestStartDate.before(inspStartDate)){
+                    inspStartDate = earliestStartDate;
+                }
+            }
+        }
+        return inspStartDate;
+    }
+
+    private Date getEarliestStartDate(ApptUserCalendarDto apptUserCalendarDto) {
+        Date earliestStartDate = null;
+        if(apptUserCalendarDto != null) {
+            List<Date> startDateList = apptUserCalendarDto.getStartSlot();
+            if(!IaisCommonUtils.isEmpty(startDateList)){//NOSONAR
+                for(Date startDate : startDateList){
+                    if(earliestStartDate == null){
+                        earliestStartDate = startDate;
+                    } else {
+                        if(startDate.before(earliestStartDate)){
+                            earliestStartDate = startDate;
+                        }
+                    }
+                }
+            }
+        }
+        return earliestStartDate;
     }
 
     @Override
