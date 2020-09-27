@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -459,11 +460,23 @@ public class AppealApproveBatchjob {
             }catch (Exception e){
                 expiryDate=new Date();
             }
+            //todo save recom date
+            List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licenceDto.getId()).getEntity();
+            if(!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
+                log.error(StringUtil.changeForLog("licAppCorrelationDtos is Not null=======> Licence Id = " + licenceDto.getId()));
+                for (LicAppCorrelationDto licAppCorrelationDto : licAppCorrelationDtos) {
+                    String appId = licAppCorrelationDto.getApplicationId();
+                    AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
+                    String appPremCorreId = appPremisesCorrelationDto.getId();
 
+                }
+            } else {
+                log.error(StringUtil.changeForLog(""));
+            }
             appealLicenceDto.setExpiryDate(expiryDate);
             appealLicence.add(appealLicenceDto);
         }else{
-            log.error(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence licenceDto is null or newLicYears <0"));
+            log.error(StringUtil.changeForLog("licAppCorrelationDtos is null=======> Licence Id = " + licenceDto.getId()));
         }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence is end ..."));
     }
