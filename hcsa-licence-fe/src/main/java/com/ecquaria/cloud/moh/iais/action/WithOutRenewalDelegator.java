@@ -862,8 +862,9 @@ public class WithOutRenewalDelegator {
         for(AppSubmissionDto appSubmissionDto : noAutoAppSubmissionDtos){
             appSubmissionDto.setAppGrpNo(appGrpNo);
         }
-//        appFeeDetailsDto.setApplicationNo(appGrpNo + "-01");
-//        appSubmissionService.saveAppFeeDetails(appFeeDetailsDto);
+        appFeeDetailsDto.setApplicationNo(appGrpNo + "-01");
+        appSubmissionService.saveAppFeeDetails(appFeeDetailsDto);
+
         appSubmissionDtos1.addAll(noAutoAppSubmissionDtos);
         AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         if (!autoAppSubmissionDtos.isEmpty()) {
@@ -943,8 +944,13 @@ public class WithOutRenewalDelegator {
             appSubmissionDto.setLateFeeStr(Formatter.formatterMoney(lateFeeAmount));
             appSubmissionDto.setAmount(amount);
             appSubmissionDto.setAmountStr(Formatter.formatterMoney(amount));
-            appFeeDetailsDto.setBaseFee(lateFeeAmount);
-            appFeeDetailsDto.setLaterFee(amount);
+            appFeeDetailsDto.setBaseFee(amount);
+            if(StringUtil.isEmpty(lateFeeAmount)){
+                appFeeDetailsDto.setLaterFee(0.0);
+            }else {
+                appFeeDetailsDto.setLaterFee(lateFeeAmount);
+            }
+            appFeeDetailsDto.setAdmentFee(total);
             index ++;
         }
     }

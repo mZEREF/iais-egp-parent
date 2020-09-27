@@ -76,4 +76,8 @@ public interface LicenceInboxClient {
 
     @GetMapping(value = "/hcsa-licence/lic-premises",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getPremisesByLicseeIdAndSvcName(@RequestParam("licenseeId") String licenseeId, @RequestParam("svcNameStr") String svcNameStr);
+    @GetMapping(value = "/hcsa-licence/appeal-new-application",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity <List<LicenceDto>> isNewApplication(@RequestParam("application") String application);
+    @GetMapping(value = "/hcsa-licence/appeal-new-licence",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenceDto>> isNewLicence(@RequestParam("licenceId") String licenceId);
 }

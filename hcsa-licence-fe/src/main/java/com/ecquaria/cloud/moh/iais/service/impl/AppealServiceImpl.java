@@ -733,11 +733,12 @@ public class AppealServiceImpl implements AppealService {
         applicationGroupDto.setLicenseeId(licenseeId);
         StringBuilder stringBuilder = new StringBuilder(appNo);
         String s = stringBuilder.append("-01").toString();
-        List<AppGrpPremisesDto> premisesDtos = IaisCommonUtils.genNewArrayList();
+        List<AppGrpPremisesDto> premisesDtos = new ArrayList<>(1);
         for (PremisesDto every : premisess) {
             AppGrpPremisesDto appGrpPremisesDto = MiscUtil.transferEntityDto(every, AppGrpPremisesDto.class);
             appGrpPremisesDto.setOffTelNo(every.getHciContactNo());
             premisesDtos.add(appGrpPremisesDto);
+            break;
         }
         List<AppSvcCgoDto> list = IaisCommonUtils.genNewArrayList();
         for (AppGrpPremisesDto every : premisesDtos) {

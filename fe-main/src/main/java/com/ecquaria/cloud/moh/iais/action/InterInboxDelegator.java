@@ -446,6 +446,12 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         String licMaskId = ParamUtil.getString(bpc.request, "licenceNo");
         String licId = ParamUtil.getMaskedString(bpc.request,licMaskId);
+        List<LicenceDto> licenceDtos = licenceInboxClient.isNewLicence(licId).getEntity();
+        if(!licenceDtos.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"This is not the latest data");
+            ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
+            return;
+        }
         LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licId).getEntity();
         List<AppPremiseMiscDto> entity = appInboxClient.getAppPremiseMiscDtoRelateId(licId).getEntity();
         if(!entity.isEmpty()){
@@ -906,6 +912,13 @@ public class InterInboxDelegator {
             appId=bpc.request.getParameter("action_id_value");
         }else {
             appId= ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
+        }
+         List<LicenceDto> licenceDtos = licenceInboxClient.isNewApplication(appId).getEntity();
+        if(!licenceDtos.isEmpty()){
+            //change APPEAL_ACK002
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,"This is not the latest data");
+            ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",Boolean.FALSE);
+            return;
         }
         List<AppPremiseMiscDto> entity = appInboxClient.getAppPremiseMiscDtoRelateId(appId).getEntity();
         if(!entity.isEmpty()){

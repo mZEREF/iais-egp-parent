@@ -695,8 +695,11 @@ public class NewApplicationDelegator {
         if (isGetDataFromPage) {
             List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
-            for(int i=0 ;i < oldAppGrpPremisesDtoList.size();i++){
-                appGrpPremisesDtoList.get(i).setOldPremisesCode(oldAppGrpPremisesDtoList.get(i).getOldPremisesCode());
+            if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
+                    ||ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+                for(int i=0 ;i < oldAppGrpPremisesDtoList.size();i++){
+                    appGrpPremisesDtoList.get(i).setOldPremisesCode(oldAppGrpPremisesDtoList.get(i).getOldPremisesCode());
+                }
             }
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
             if (appSubmissionDto.isNeedEditController()) {
@@ -1625,7 +1628,7 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(appSubmissionDto.getLicenceId());
         String rfcErrOne = MessageUtil.getMessageDesc("RFC_ERR001");
-        if (!IaisCommonUtils.isEmpty(applicationDtos)) {
+        if (true) {
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "error");
             ParamUtil.setRequestAttr(bpc.request, "content", rfcErrOne);
