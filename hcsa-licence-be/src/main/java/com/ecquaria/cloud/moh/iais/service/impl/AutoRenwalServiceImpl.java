@@ -128,24 +128,24 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                     }
 
                 }
-                if ("-1".equals(k)){
-                    try {
-                        sendEmailToOffice(v.get(i));
-                    } catch (IOException e) {
-                        log.error(e.getMessage(), e);
-                    } catch (TemplateException e) {
-                        log.error(e.getMessage(), e);
-                    }
-                }
-                if ("30".equals(k)){
-                    try {
-                        sendEmailToOffice(v.get(i));
-                    } catch (IOException e) {
-                        log.error(e.getMessage(), e);
-                    } catch (TemplateException e) {
-                        log.error(e.getMessage(), e);
-                    }
-                }
+//                if ("-1".equals(k)){
+//                    try {
+//                        sendEmailToOffice(v.get(i));
+//                    } catch (IOException e) {
+//                        log.error(e.getMessage(), e);
+//                    } catch (TemplateException e) {
+//                        log.error(e.getMessage(), e);
+//                    }
+//                }
+//                if ("30".equals(k)){
+//                    try {
+//                        sendEmailToOffice(v.get(i));
+//                    } catch (IOException e) {
+//                        log.error(e.getMessage(), e);
+//                    } catch (TemplateException e) {
+//                        log.error(e.getMessage(), e);
+//                    }
+//                }
             }
         });
 
