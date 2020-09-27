@@ -58,9 +58,8 @@ public class ApproveWdAppBatchJob {
     public void approveWithdrawalStep(BaseProcessClass bpc) {
         try {
             List<ApplicationDto> applicationDtoList = applicationClient.saveWithdrawn().getEntity();
-            log.error("**** The withdraw Application List size : "+applicationDtoList.size());
             //get old application
-            if (applicationDtoList != null){
+            if (!IaisCommonUtils.isEmpty(applicationDtoList)){
                 applicationDtoList.forEach(h -> {
                     applicationService.updateFEApplicaiton(h);
                 });
@@ -81,8 +80,8 @@ public class ApproveWdAppBatchJob {
         }
     }
     private void doWithdrawal(ApplicationDto oldApplicationDto, List<String> oldAppGroupExcuted) throws FeignException {
-        log.info(StringUtil.changeForLog("withdrawal old application id : " + oldApplicationDto.getId()));
         if(oldApplicationDto != null){
+            log.info(StringUtil.changeForLog("withdrawal old application id : " + oldApplicationDto.getId()));
             String oldAppGrpId = oldApplicationDto.getAppGrpId();
             String currentOldApplicationNo = oldApplicationDto.getApplicationNo();
             List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(oldAppGrpId);
@@ -97,11 +96,11 @@ public class ApproveWdAppBatchJob {
                         return;
                     }else{
                         //ao1 == null
-                        if(!IaisCommonUtils.isEmpty(ao2AppList) && ao2AppList.size()>0){
+                        if(!IaisCommonUtils.isEmpty(ao2AppList)){
                             //create task
                             createTaskAndHistory(ao2AppList, HcsaConsts.ROUTING_STAGE_AO2,RoleConsts.USER_ROLE_AO2,oldAppGroupExcuted,oldAppGrpId);
                         }else{
-                            if(!IaisCommonUtils.isEmpty(ao3AppList) && ao3AppList.size()>0) {
+                            if(!IaisCommonUtils.isEmpty(ao3AppList)) {
                                 //create task
                                 createTaskAndHistory(ao3AppList,HcsaConsts.ROUTING_STAGE_AO3,RoleConsts.USER_ROLE_AO3,oldAppGroupExcuted,oldAppGrpId);
                             }else{
