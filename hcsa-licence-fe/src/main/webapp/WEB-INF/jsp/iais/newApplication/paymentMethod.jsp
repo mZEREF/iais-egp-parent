@@ -10,10 +10,6 @@
         <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="NETS">
         <label class="form-check-label" ><span class="check-circle"></span>NETS</label>
     </div>
-    <div class="col-xs-2">
-        <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="PayNow">
-        <label class="form-check-label" ><span class="check-circle"></span>PayNow</label>
-    </div>
     <div class="col-xs-3">
         <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="GIRO">
         <label class="form-check-label" ><span class="check-circle"></span>GIRO</label>
@@ -28,9 +24,6 @@
     </div>
     <div class="col-xs-2">
         <img src="<%=webroot1%>img/paymentNets.png" width="66" height="30" alt="NETS">
-    </div>
-    <div class="col-xs-2">
-        <img src="https://abs.org.sg/images/default-album/paynow.png" width="66" height="35" alt="GIRO">
     </div>
     <divc class="col-xs-3">
         <%--<img src="/hcsa-licence-web/img/PereOceanGIRO.png" width="66" height="25" alt="GIRO">--%>
