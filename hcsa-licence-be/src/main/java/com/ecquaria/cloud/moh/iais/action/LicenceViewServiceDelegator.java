@@ -409,6 +409,7 @@ public class LicenceViewServiceDelegator {
         List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
         Set<String> redNo=new HashSet<>();
         Set<String> idNoSet=new HashSet<>();
         List<String> list = new ArrayList<>();
@@ -419,6 +420,13 @@ public class LicenceViewServiceDelegator {
                 String profRegNo = appSvcCgoDto.getProfRegNo();
                 idNoSet.add(idNo);
                 redNo.add(profRegNo);
+            }
+        }
+        if(appSvcPersonnelDtoList!=null){
+            for(AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtoList){
+                if(!StringUtil.isEmpty(appSvcPersonnelDto.getProfRegNo())){
+                    redNo.add(appSvcPersonnelDto.getProfRegNo());
+                }
             }
         }
         if(appSvcPrincipalOfficersDtoList!=null){
@@ -467,6 +475,14 @@ public class LicenceViewServiceDelegator {
             if(oldAppSvcMedAlertPersonList!=null){
                 for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : oldAppSvcMedAlertPersonList){
                     idNoSet.add(appSvcPrincipalOfficersDto.getIdNo());
+                }
+            }
+            List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = oldAppSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+            if(oldAppSvcPersonnelDtoList!=null){
+                for(AppSvcPersonnelDto appSvcPersonnelDto : oldAppSvcPersonnelDtoList){
+                    if(!StringUtil.isEmpty(appSvcPersonnelDto.getProfRegNo())){
+                        redNo.add(appSvcPersonnelDto.getProfRegNo());
+                    }
                 }
             }
         }

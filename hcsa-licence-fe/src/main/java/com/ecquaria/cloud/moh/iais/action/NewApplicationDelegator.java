@@ -702,6 +702,7 @@ public class NewApplicationDelegator {
                     appGrpPremisesDtoList.get(i).setOldPremisesCode(oldAppGrpPremisesDtoList.get(i).getOldPremisesCode());
                 }
             }
+
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
             if (appSubmissionDto.isNeedEditController()) {
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
@@ -1240,7 +1241,7 @@ public class NewApplicationDelegator {
                 serviceConfigService.updatePaymentStatus(appGrp);
                 //send email
                 try {
-//                    sendNewApplicationPaymentOnlineSuccesedEmail(appSubmissionDto, pmtMethod, pmtRefNo);
+                    sendNewApplicationPaymentOnlineSuccesedEmail(appSubmissionDto, pmtMethod, pmtRefNo);
                     //requestForChangeService.sendEmail(appSubmissionDto.getAppGrpId(),null,appSubmissionDto.getApplicationDtos().get(0).getApplicationNo(),null,null,appSubmissionDto.getAmount(),null,null,appSubmissionDto.getLicenseeId(),"RfcAndOnPay",null);
                     LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
                     appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());
@@ -1490,7 +1491,7 @@ public class NewApplicationDelegator {
                                 }
                                 List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = serviceConfigService.loadLaboratoryDisciplines(svcId);
                                 NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto, hcsaSvcSubtypeOrSubsumedDtos);
-                                appSubmissionDto.setAppSvcRelatedInfoDtoList(newSvcRelatedInfoDtos.subList(0,1));
+                                appSubmissionDto.setAppSvcRelatedInfoDtoList(newSvcRelatedInfoDtos);
                             }
                             //set DisciplineAllocationMap
                             Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
@@ -1543,7 +1544,7 @@ public class NewApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void doRequestInformationSubmit(BaseProcessClass bpc) {
+    public void doRequestInformationSubmit(BaseProcessClass bpc) throws Exception {
         log.info(StringUtil.changeForLog("the do doRequestInformationSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
@@ -2288,11 +2289,27 @@ public class NewApplicationDelegator {
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = n.get(0).getAppSvcMedAlertPersonList();
         List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = o.get(0).getAppSvcMedAlertPersonList();
         boolean eqMeadrter = eqMeadrter(appSvcMedAlertPersonList, oldAppSvcMedAlertPersonList);
-
+        List<AppSvcDocDto> appSvcDocDtoLit = n.get(0).getAppSvcDocDtoLit();
+        List<AppSvcDocDto> oldAppSvcDocDtoLit = o.get(0).getAppSvcDocDtoLit();
+        boolean eqSvcDoc = eqSvcDoc(appSvcDocDtoLit, oldAppSvcDocDtoLit);
         if (!flag || !flag1 || eqSvcPrincipalOfficers || eqCgo || eqMeadrter || eqServicePseronnel) {
             return true;
 
         }
+        return false;
+    }
+
+    private boolean eqSvcDoc( List<AppSvcDocDto> appSvcDocDtoLit, List<AppSvcDocDto> oldAppSvcDocDtoLit){
+        if(appSvcDocDtoLit==null){
+            appSvcDocDtoLit=new ArrayList<>();
+        }
+        if(oldAppSvcDocDtoLit==null){
+            oldAppSvcDocDtoLit=new ArrayList<>();
+        }
+        if(!appSvcDocDtoLit.equals(oldAppSvcDocDtoLit)){
+            return true;
+        }
+
         return false;
     }
     private List<AppSubmissionDto> personContact(BaseProcessClass bpc, AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) throws Exception {
@@ -3330,20 +3347,20 @@ public class NewApplicationDelegator {
         }
     }
 
-    private Map<String, String> doComChange(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
-        StringBuilder sB = new StringBuilder(10);
+    private Map<String, String> doComChange(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) throws Exception {
         Map<String, String> result = IaisCommonUtils.genNewHashMap();
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
+
         if (appEditSelectDto != null) {
             if (!appEditSelectDto.isPremisesEdit()) {
                 List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
                 for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
                     appGrpPremisesDto.setLicenceDtos(null);
                 }
-                if (!appSubmissionDto.getAppGrpPremisesDtoList().equals(oldAppSubmissionDto.getAppGrpPremisesDtoList())) {
+                boolean eqGrpPremises = eqGrpPremises(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
+                if (eqGrpPremises) {
                     log.info(StringUtil.changeForLog("appGrpPremisesDto" + JsonUtil.parseToJson(appSubmissionDto.getAppGrpPremisesDtoList())));
                     log.info(StringUtil.changeForLog("oldappGrpPremisesDto" + JsonUtil.parseToJson(oldAppSubmissionDto.getAppGrpPremisesDtoList())));
-//                    result.put("premiss", "UC_CHKLMD001_ERR001");
                     result.put("premiss",MessageUtil.replaceMessage("GENERAL_ERR0006","premiss","field"));
                 }
             }
@@ -3360,23 +3377,24 @@ public class NewApplicationDelegator {
                 }
             }
             if (!appEditSelectDto.isDocEdit()) {
-                if (!appSubmissionDto.getAppGrpPrimaryDocDtos().equals(oldAppSubmissionDto.getAppGrpPrimaryDocDtos())) {
+                boolean b = eqDocChange(appSubmissionDto.getAppGrpPrimaryDocDtos(), oldAppSubmissionDto.getAppGrpPrimaryDocDtos());
+                if (b) {
                     log.info(StringUtil.changeForLog("appGrpPrimaryDocDto" + JsonUtil.parseToJson(appSubmissionDto.getAppGrpPrimaryDocDtos())));
                     log.info(StringUtil.changeForLog("oldAppGrpPrimaryDocDto" + JsonUtil.parseToJson(oldAppSubmissionDto.getAppGrpPrimaryDocDtos())));
-//                    result.put("document", "UC_CHKLMD001_ERR001");
                     result.put("document",MessageUtil.replaceMessage("GENERAL_ERR0006","document","field"));
                 }
             }
 
             if (!appEditSelectDto.isServiceEdit()) {
-                if (!appSubmissionDto.getAppSvcRelatedInfoDtoList().equals(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList())) {
+                boolean b = eqServiceChange(appSubmissionDto.getAppSvcRelatedInfoDtoList(), oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
+                if (b) {
                     log.info(StringUtil.changeForLog("AppSvcRelatedInfoDtoList" + JsonUtil.parseToJson(appSubmissionDto.getAppSvcRelatedInfoDtoList())));
                     log.info(StringUtil.changeForLog("oldAppSvcRelatedInfoDtoList" + JsonUtil.parseToJson(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList())));
-//                    result.put("serviceId", "UC_CHKLMD001_ERR001");
                     result.put("serviceId",MessageUtil.replaceMessage("GENERAL_ERR0006","serviceId","field"));
                 }
             }
         }
+        result.put("error","error");
         return result;
     }
 
@@ -5058,7 +5076,10 @@ public class NewApplicationDelegator {
                 }
             }
             if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) || rfi != null) {
-                //set oldAppSubmission when rfi,rfc,renew
+                //set oldAppSubmission when rfi,rfc,rene
+                if(rfi!=null){
+                    groupLicencePremiseRelationDis(appSubmissionDto);
+                }
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
             } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
@@ -5085,7 +5106,27 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, SERVICEALLPSNCONFIGMAP, (Serializable) svcConfigInfo);
 
     }
-
+    private void groupLicencePremiseRelationDis(AppSubmissionDto appSubmissionDto){
+        if(appSubmissionDto==null){
+            return;
+        }
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDisciplineAllocationDtoList();
+        if(appSvcDisciplineAllocationDtoList==null){
+            return;
+        }
+        List<String> list=new ArrayList<>(appGrpPremisesDtoList.size());
+        for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+            list.add(appGrpPremisesDto.getPremisesIndexNo());
+        }
+        List<AppSvcDisciplineAllocationDto> svcLaboratoryDisciplinesDtos=new ArrayList<>(appSvcDisciplineAllocationDtoList.size());
+        for(AppSvcDisciplineAllocationDto svcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
+            if(!list.contains(svcDisciplineAllocationDto.getPremiseVal())){
+                svcLaboratoryDisciplinesDtos.add(svcDisciplineAllocationDto);
+            }
+        }
+        appSvcDisciplineAllocationDtoList.removeAll(svcLaboratoryDisciplinesDtos);
+    }
     private void initOldSession(BaseProcessClass bpc) throws CloneNotSupportedException {
         AppSubmissionDto test1 = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "oldSubmitAppSubmissionDto");

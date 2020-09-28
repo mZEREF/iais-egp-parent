@@ -550,7 +550,7 @@ public class ConfigServiceDelegator {
                 String stageId = request.getParameter("stageId" + stageCode+every);
                 String workstageId = request.getParameter("workstageId" + stageCode+every);
                 String isMandatory=  request.getParameter("isMandatory"+ stageCode+every);
-
+                //todo can approve ao1 ao2
 
                 if (!StringUtil.isEmpty(workloadManhours)) {
                     hcsaSvcSpecificStageWorkloadDto.setStringManhourCount(workloadManhours);
