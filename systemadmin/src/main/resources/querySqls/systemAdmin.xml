@@ -480,7 +480,7 @@
 				FOR XML PATH('')
 			) D (RECIPIENT_VALUE_ALL)
             WHERE  1 = 1
-            <#if client_query_code??> AND T1.client_query_code =:client_query_code</#if>
+            <#if REQUEST_REF_NO??> and (T1.client_query_code =:REQUEST_REF_NO or T1.REQUEST_REF_NO =:REQUEST_REF_NO)</#if>
         ]]>
     </sql>
 
