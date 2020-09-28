@@ -88,79 +88,85 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
         if(taskEmailDtoList != null) {
             for (TaskEmailDto item : taskEmailDtoList
             ) {
-                log.info(StringUtil.changeForLog("getApplicationBytaskId:" +item.getRefNo()));
-                //get application
-                ApplicationDto applicationDto = applicationService.getApplicationBytaskId(item.getRefNo());
-                String stage;
-                if(HcsaConsts.ROUTING_STAGE_INS.equals(item.getTaskKey())){
-                    AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
-                            insRepService.getAppPremisesRoutingHistorySubStage(item.getRefNo(), item.getTaskKey());
-                    stage = appPremisesRoutingHistoryDto.getSubStage();
-                } else {
-                    stage = item.getTaskKey();
-                }
-                log.info(StringUtil.changeForLog("applicationDto:" +applicationDto.getApplicationNo()));
-                HcsaSvcKpiDto hcsaSvcKpiDto = kpiAndReminderService.searchKpi(HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId()).getSvcCode(), applicationDto.getApplicationType());
-                if(hcsaSvcKpiDto != null) {
-                    //get current stage worked days
-                    int days = 0;
-                    if(!StringUtil.isEmpty(stage)) {
-                        AppStageSlaTrackingDto appStageSlaTrackingDto = inspectionAssignTaskService.searchSlaTrackById(applicationDto.getApplicationNo(), stage);
-                        if (appStageSlaTrackingDto != null) {
-                            days = appStageSlaTrackingDto.getKpiSlaDays();
+                try{
+                    log.info(StringUtil.changeForLog("getApplicationBytaskId:" +item.getRefNo()));
+                    //get application
+                    ApplicationDto applicationDto = applicationService.getApplicationBytaskId(item.getRefNo());
+                    String stage;
+                    if(HcsaConsts.ROUTING_STAGE_INS.equals(item.getTaskKey())){
+                        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
+                                insRepService.getAppPremisesRoutingHistorySubStage(item.getRefNo(), item.getTaskKey());
+                        stage = appPremisesRoutingHistoryDto.getSubStage();
+                    } else {
+                        stage = item.getTaskKey();
+                    }
+                    log.info(StringUtil.changeForLog("applicationDto:" +applicationDto.getApplicationNo()));
+                    HcsaSvcKpiDto hcsaSvcKpiDto = kpiAndReminderService.searchKpi(HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId()).getSvcCode(), applicationDto.getApplicationType());
+                    if(hcsaSvcKpiDto != null) {
+                        log.info(StringUtil.changeForLog("hcsaSvcKpiDto:" +hcsaSvcKpiDto.getRemThreshold()));
+                        //get current stage worked days
+                        int days = 0;
+                        if(!StringUtil.isEmpty(stage)) {
+                            AppStageSlaTrackingDto appStageSlaTrackingDto = inspectionAssignTaskService.searchSlaTrackById(applicationDto.getApplicationNo(), stage);
+                            if (appStageSlaTrackingDto != null) {
+                                days = appStageSlaTrackingDto.getKpiSlaDays();
+                            }
                         }
-                    }
-                    //get warning value
-                    Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
-                    int kpi = 0;
-                    if(!StringUtil.isEmpty(stage)) {
-                        if (kpiMap != null && kpiMap.get(stage) != null) {
-                            kpi = kpiMap.get(stage);
+                        //get warning value
+                        Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
+                        int kpi = 0;
+                        if(!StringUtil.isEmpty(stage)) {
+                            if (kpiMap != null && kpiMap.get(stage) != null) {
+                                kpi = kpiMap.get(stage);
+                            }
                         }
-                    }
-                    //get threshold value
-                    int remThreshold = 0;
-                    if (hcsaSvcKpiDto.getRemThreshold() != null) {
-                        remThreshold = hcsaSvcKpiDto.getRemThreshold();
-                    }
+                        //get threshold value
+                        int remThreshold = 0;
+                        if (hcsaSvcKpiDto.getRemThreshold() != null) {
+                            remThreshold = hcsaSvcKpiDto.getRemThreshold();
+                        }
 
-                    if(days > remThreshold){
-                        //judge is email sent
-                        JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(item.getId(),"unprocess leader").getEntity();
-                        if(jobRemindMsgTrackingDto == null){
-                            //send email to leader and admin
-                            List<String> email = IaisCommonUtils.genNewArrayList();
-                            email.add(item.getLeaderEmailAddr());
-                            sendEmail(item,applicationDto,email);
-                            //record email sent
-                            JobRemindMsgTrackingDto createjob = new JobRemindMsgTrackingDto();
-                            List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
-                            createjob.setMsgKey("unprocess leader");
-                            createjob.setRefNo(item.getId());
-                            createjob.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                            list.add(createjob);
-                            systemBeLicClient.createJobRemindMsgTrackingDtos(list);
+                        if(days > remThreshold){
+                            //judge is email sent
+                            JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(item.getId(),"unprocess leader").getEntity();
+                            if(jobRemindMsgTrackingDto == null){
+                                //send email to leader and admin
+                                List<String> email = IaisCommonUtils.genNewArrayList();
+                                email.add(item.getLeaderEmailAddr());
+                                sendEmail(item,applicationDto,email);
+                                //record email sent
+                                JobRemindMsgTrackingDto createjob = new JobRemindMsgTrackingDto();
+                                List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
+                                createjob.setMsgKey("unprocess leader");
+                                createjob.setRefNo(item.getId());
+                                createjob.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                                list.add(createjob);
+                                systemBeLicClient.createJobRemindMsgTrackingDtos(list);
+                            }
+                        }else if(days > kpi){
+                            //judge is email sent
+                            JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(item.getId(),"unprocess officer").getEntity();
+                            if(jobRemindMsgTrackingDto == null){
+                                //send email to officer
+                                List<String> email = IaisCommonUtils.genNewArrayList();
+                                email.add(item.getUserEmail());
+                                sendEmail(item,applicationDto,email);
+                                //record email sent
+                                JobRemindMsgTrackingDto createjob = new JobRemindMsgTrackingDto();
+                                List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
+                                createjob.setMsgKey("unprocess officer");
+                                createjob.setRefNo(item.getId());
+                                createjob.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                                list.add(createjob);
+                                systemBeLicClient.createJobRemindMsgTrackingDtos(list);
+                            }
                         }
-                    }else if(days > kpi){
-                        //judge is email sent
-                        JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(item.getId(),"unprocess officer").getEntity();
-                        if(jobRemindMsgTrackingDto == null){
-                            //send email to officer
-                            List<String> email = IaisCommonUtils.genNewArrayList();
-                            email.add(item.getUserEmail());
-                            sendEmail(item,applicationDto,email);
-                            //record email sent
-                            JobRemindMsgTrackingDto createjob = new JobRemindMsgTrackingDto();
-                            List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
-                            createjob.setMsgKey("unprocess officer");
-                            createjob.setRefNo(item.getId());
-                            createjob.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                            list.add(createjob);
-                            systemBeLicClient.createJobRemindMsgTrackingDtos(list);
-                        }
+
                     }
+                }catch (Exception e){
 
                 }
+
             }
         }
 
