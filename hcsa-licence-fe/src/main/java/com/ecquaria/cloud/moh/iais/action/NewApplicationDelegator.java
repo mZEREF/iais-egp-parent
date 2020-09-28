@@ -3394,7 +3394,6 @@ public class NewApplicationDelegator {
                 }
             }
         }
-        result.put("error","error");
         return result;
     }
 
