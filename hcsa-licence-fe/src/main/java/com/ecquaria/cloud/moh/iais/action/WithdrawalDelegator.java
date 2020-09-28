@@ -191,6 +191,9 @@ public class WithdrawalDelegator {
             String[] withdrawAppNos = paramAppNos.split("#");
             for (int i =0;i<withdrawAppNos.length;i++){
                 WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
+                if (withdrawnDto == null){
+                    withdrawnDto = new WithdrawnDto();
+                }
                 String appNo = withdrawAppNos[i];
                 ApplicationDto applicationDto = applicationClient.getApplicationDtoByAppNo(appNo).getEntity();
                 String appId = applicationDto.getId();
