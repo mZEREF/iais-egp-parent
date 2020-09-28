@@ -2259,7 +2259,7 @@ span.error-msg {
   border: 1px solid #6c6c6c;
   border-radius: 14px;
   font-size: 1.6rem;
-  padding: 14px 15px;
+  padding: 14px 40px 14px 15px;
   height: auto;
   line-height: 22px;
   width: 100%;
