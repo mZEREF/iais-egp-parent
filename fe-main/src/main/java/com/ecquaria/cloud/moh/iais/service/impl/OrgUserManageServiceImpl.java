@@ -165,7 +165,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             }
 
         }catch (Exception e){
-            log.error(StringUtil.changeForLog("encounter failure when sync user account to be" + e.getMessage()));
+            log.error(StringUtil.changeForLog("encounter failure when sync user account to be"), e);
         }
 
         //create egp user
