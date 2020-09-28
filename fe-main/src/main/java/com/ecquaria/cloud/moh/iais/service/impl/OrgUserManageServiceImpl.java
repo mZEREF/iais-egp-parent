@@ -237,7 +237,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             return;
         }
         //TODO : simple create
-        FeignResponseEntity<ClientUser> result = userClient.findUser(AppConsts.USER_DOMAIN_INTERNET, userDto.getUserId());
+        FeignResponseEntity<ClientUser> result = userClient.findUser(AppConsts.HALP_EGP_DOMAIN, userDto.getUserId());
         int status = result.getStatusCode();
 
         if (status != HttpStatus.SC_OK){
