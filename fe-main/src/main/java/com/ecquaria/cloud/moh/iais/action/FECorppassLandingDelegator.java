@@ -143,13 +143,6 @@ public class FECorppassLandingDelegator {
                 return;
             }
         }
-
-        User user = new User();
-        user.setDisplayName(feUserDto.getDisplayName());
-        user.setUserDomain(feUserDto.getUserDomain());
-        user.setId(feUserDto.getUserId());
-        user.setIdentityNo(feUserDto.getIdentityNo());
-        LoginHelper.initUserInfo(bpc.request, bpc.response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
         ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "N");
     }
 
@@ -197,6 +190,12 @@ public class FECorppassLandingDelegator {
             feUserDto.setUenNo(uen);
             ParamUtil.setSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO, feUserDto);
             ParamUtil.setRequestAttr(bpc.request, "isAdminRole", "Y");
+            User user = new User();
+            user.setDisplayName(feUserDto.getDisplayName());
+            user.setUserDomain(feUserDto.getUserDomain());
+            user.setId(feUserDto.getUserId());
+            user.setIdentityNo(feUserDto.getIdentityNo());
+            LoginHelper.initUserInfo(bpc.request, bpc.response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
         }else {
             // Add Audit Trail -- Start
             LoginHelper.insertLoginFailureAuditTrail(uen, identityNo);
