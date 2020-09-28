@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -47,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
@@ -97,6 +99,8 @@ public class AppealApproveBatchjob {
     private BeEicGatewayClient beEicGatewayClient;
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     private AppEicClient appEicClient;
     @Value("${iais.hmac.keyId}")
@@ -456,11 +460,11 @@ public class AppealApproveBatchjob {
             Date startDate = appealLicenceDto.getStartDate();
             Date expiryDate;
             try {
-                expiryDate= LicenceUtil.getExpiryDate(startDate,appPremisesRecommendationDto);
+                expiryDate = LicenceUtil.getExpiryDate(startDate,appPremisesRecommendationDto);
             }catch (Exception e){
-                expiryDate=new Date();
+                expiryDate = new Date();
             }
-            //todo save recom date
+            //get old recommendation
             List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licenceDto.getId()).getEntity();
             if(!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
                 log.error(StringUtil.changeForLog("licAppCorrelationDtos is Not null=======> Licence Id = " + licenceDto.getId()));
@@ -468,7 +472,22 @@ public class AppealApproveBatchjob {
                     String appId = licAppCorrelationDto.getApplicationId();
                     AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
                     String appPremCorreId = appPremisesCorrelationDto.getId();
-
+                    AppPremisesRecommendationDto oldAppPremRecommDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+                    oldAppPremRecommDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                    fillUpCheckListGetAppClient.updateAppRecom(oldAppPremRecommDto);
+                    AppPremisesRecommendationDto newAppPremRecomDto = new AppPremisesRecommendationDto();
+                    int newVersion = oldAppPremRecommDto.getVersion() + 1;
+                    newAppPremRecomDto.setId(null);
+                    newAppPremRecomDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    newAppPremRecomDto.setRemarks(appPremisesRecommendationDto.getRemarks());
+                    newAppPremRecomDto.setRecomInDate(appPremisesRecommendationDto.getRecomInDate());
+                    newAppPremRecomDto.setRecomDecision(appPremisesRecommendationDto.getRecomDecision());
+                    newAppPremRecomDto.setAppPremCorreId(appPremCorreId);
+                    newAppPremRecomDto.setRecomType(appPremisesRecommendationDto.getRecomType());
+                    newAppPremRecomDto.setRecomInNumber(appPremisesRecommendationDto.getRecomInNumber());
+                    newAppPremRecomDto.setChronoUnit(appPremisesRecommendationDto.getChronoUnit());
+                    newAppPremRecomDto.setVersion(newVersion);
+                    fillUpCheckListGetAppClient.saveAppRecom(newAppPremRecomDto);
                 }
             } else {
                 log.error(StringUtil.changeForLog(""));
