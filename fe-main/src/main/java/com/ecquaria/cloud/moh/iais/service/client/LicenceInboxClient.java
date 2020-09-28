@@ -71,6 +71,9 @@ public interface LicenceInboxClient {
     @GetMapping(path = "/hcsa-licence/licenceView/{licenceId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceViewDto>  getLicenceViewByLicenceId(@PathVariable("licenceId") String licenceId);
 
+    @GetMapping(path = "/hcsa-licence/allStatusLicenceView/{licenceId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicenceViewDto>  getAllStatusLicenceByLicenceId(@PathVariable("licenceId") String licenceId);
+
     @GetMapping(path = "/hcsa-licence/assessment-personnel",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PersonnelListDto>>  getPersonnelListAssessment(@RequestParam("idNos") List<String> idNos,@RequestParam("orgId") String orgId);
 

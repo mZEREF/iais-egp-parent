@@ -486,7 +486,7 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public LicenceViewDto getLicenceViewDtoByLicenceId(String licenceId) {
-        LicenceViewDto licenceViewDto =  licenceInboxClient.getLicenceViewByLicenceId(licenceId).getEntity();
+        LicenceViewDto licenceViewDto =  licenceInboxClient.getAllStatusLicenceByLicenceId(licenceId).getEntity();
         if(licenceViewDto!=null){
             LicenceDto licenceDto = licenceViewDto.getLicenceDto();
             String licenseeId = licenceDto.getLicenseeId();

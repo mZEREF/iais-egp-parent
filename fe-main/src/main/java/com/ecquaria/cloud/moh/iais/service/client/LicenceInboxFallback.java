@@ -155,6 +155,14 @@ public class LicenceInboxFallback implements LicenceInboxClient {
     }
 
     @Override
+    public FeignResponseEntity<LicenceViewDto> getAllStatusLicenceByLicenceId(String licenceId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<PersonnelListDto>> getPersonnelListAssessment(List<String> idNos,String orgId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

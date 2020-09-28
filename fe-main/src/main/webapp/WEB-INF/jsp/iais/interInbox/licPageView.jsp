@@ -84,7 +84,6 @@
                     $("#lic-cease").addClass('disabled');
                 }
                 console.log(statusDuo);
-                $("#lic-print").addClass('disabled');
                 $("#lic-amend").addClass('disabled');
                 $("#lic-appeal").addClass('disabled');
             }

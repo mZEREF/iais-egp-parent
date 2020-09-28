@@ -13,13 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ResourceUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * @Author weilu
@@ -32,13 +32,18 @@ public class LicencePrint {
     @Autowired
     private InboxService inboxService;
 
+
+
     public void action(BaseProcessClass bpc) throws IOException {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>download");
         List<String> ids = (List<String>) ParamUtil.getSessionAttr(bpc.request, "lic-print-Ids");
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>download");
+        File pdfZipFile = new File("LICENCE.zip");
+        byte[] buf = new byte[1024];
+        List<File> pdfFileList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(ids)){
+            int fileNum = 1;
             for (String licId:ids) {
-                byte[] bytes;
                 LicenceViewDto licenceViewDto = inboxService.getLicenceViewDtoByLicenceId(licId);
                 StringBuilder sb = new StringBuilder();
                 sb.append("<div class=\"container\">\n" +
@@ -88,9 +93,9 @@ public class LicencePrint {
                                 "  </div>");
                 File templateDir = ResourceUtils.getFile("classpath:pdfTemplate");
                 PDFGenerator pdfGenerator = new PDFGenerator(templateDir);
-                File pdfFile = new File("LICENCE.pdf");
+                String fileName = "LICENCE" + fileNum ;
+                File pdfFile = new File(fileName+".pdf");
                 Map<String, String> map = IaisCommonUtils.genNewHashMap();
-
                 map.put("licence",sb.toString());
                 OutputStream outputStream = Files.newOutputStream(Paths.get(pdfFile.getPath()));
                 try {
@@ -98,10 +103,35 @@ public class LicencePrint {
                 }catch (Exception e){
                     log.error(e.getMessage(),e);
                 }
-                bytes = FileUtils.readFileToByteArray(pdfFile);
-                bpc.request.setAttribute("pdf", bytes);
+                pdfFileList.add(pdfFile);
+                fileNum++;
             }
-
+            // 获取输出流
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            try {
+                // ZipOutputStream类：完成文件或文件夹的压缩
+                ZipOutputStream out = new ZipOutputStream(bos);
+                for (int i = 0; i < pdfFileList.size(); i++) {
+                    // 此处可用任意其他输入流将FileInputStream取代,outputStream为其他步骤的输出流
+                    // ByteArrayInputStream in = new ByteArrayInputStream(outputStream.toByteArray());
+                    FileInputStream in = new FileInputStream(pdfFileList.get(i));
+                    // 给列表中的文件单独命名
+                    out.putNextEntry(new ZipEntry(pdfFileList.get(i).getName()));
+                    int len;
+                    while ((len = in.read(buf)) > 0) {
+                        out.write(buf, 0, len);
+                    }
+                    out.closeEntry();
+                    in.close();
+                }
+                out.close();
+                bos.close();
+//                bytes = FileUtils.readFileToByteArray(pdfFile);
+                bpc.request.setAttribute("pdf", bos.toByteArray());
+                System.out.println("压缩完成.");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

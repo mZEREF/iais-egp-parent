@@ -780,7 +780,8 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(bpc.request,"delDraftConfMsg",delDraftConfMsg);
 
     }
-   public  String getRepalceService(){
+
+    public  String getRepalceService(){
        List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.allHcsaService().getEntity();
        if(IaisCommonUtils.isEmpty(hcsaServiceDtos)){
            return null;
@@ -793,6 +794,7 @@ public class InterInboxDelegator {
        stringBuilder.append("ELSE  'N/A' END )");
        return  stringBuilder.toString();
    }
+
     public void appSwitch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("Step ---> appSwitch"));
 //        ParamUtil.setRequestAttr(bpc.request,"appCannotRecall", false);
