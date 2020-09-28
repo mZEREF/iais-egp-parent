@@ -34,6 +34,8 @@ public interface OrgUserManageService {
 
     void refreshLicensee(String uen);
 
+    void refreshLicensee(LicenseeDto licenseeDto);
+
     List<FeUserDto> getAccountByOrgId(String orgId);
 
     FeUserDto getUserByNricAndUen(String uen, String nric);
