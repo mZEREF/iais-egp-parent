@@ -95,6 +95,12 @@
                         <iais:field value="${item.getDesignation()}" width="11"/>
                     </iais:row>
                     <iais:row>
+                        <iais:field value="Designation Appointment Date" width="11"/>
+                        <label class="col-xs-11 col-md-4 control-label">
+                            <fmt:formatDate value="${item.getApptDt()}" pattern="dd/MM/yyyy"/>
+                        </label>
+                    </iais:row>
+                    <iais:row>
                         <iais:field value="Designation Cessation Date" width="11"/>
                         <label class="col-xs-11 col-md-4 control-label">
                             <fmt:formatDate value="${item.getCessationDt()}" pattern="dd/MM/yyyy"/>
