@@ -194,6 +194,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             // sonar check
             return null;
         }
+        postCreate.getFeUserDto().setUserRole(RoleConsts.USER_ROLE_ORG_ADMIN);
         FeUserDto dto = syncAccountInformationToBackend(postCreate);
         //if enable acra, licensee info create by this method
         if (!StringUtil.isEmpty(postCreate.getUenNo()) && "Y".equals(enableAcra)){
