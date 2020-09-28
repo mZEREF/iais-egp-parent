@@ -70,10 +70,9 @@ public class FESingpassLandingDelegator {
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
         String identityNo;
         String scp = null;
-        if (LoginHelper.isTestMode(request)){
-            identityNo = ParamUtil.getString(request, UserConstants.ENTITY_ID);
-            scp = ParamUtil.getString(request, UserConstants.LOGIN_SCP);
-        }else {
+
+        String testMode = LoginHelper.getTestMode(request);
+        if (FELandingDelegator.LOGIN_MODE_REAL.equals(testMode)) {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
             LoginInfo oLoginInfo = SIMUtil.doSingPassArtifactResolution(request, samlArt);
             log.info(StringUtil.changeForLog("oLoginInfo" + oLoginInfo));
@@ -82,6 +81,9 @@ public class FESingpassLandingDelegator {
             }
 
             identityNo = oLoginInfo.getLoginID();
+        } else {
+            identityNo = ParamUtil.getString(request, UserConstants.ENTITY_ID);
+            scp = ParamUtil.getString(request, UserConstants.LOGIN_SCP);
         }
 
         if (StringUtil.isEmpty(identityNo)){
@@ -105,8 +107,8 @@ public class FESingpassLandingDelegator {
 
         log.info(StringUtil.changeForLog("======>> fe user json" + JsonUtil.parseToJson(feUserDto)));
 
-        boolean isTestMode = LoginHelper.isTestMode(bpc.request);
-        if (isTestMode){
+        String testMode = LoginHelper.getTestMode(bpc.request);
+        if (FELandingDelegator.LOGIN_MODE_DUMMY_WITHPASS.equals(testMode)){
             boolean scpCorrect = orgUserManageService.validatePwd(feUserDto);
             if (!scpCorrect) {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "The account or password is incorrect");

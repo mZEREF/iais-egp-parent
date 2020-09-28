@@ -81,12 +81,8 @@ public class FECorppassLandingDelegator {
         String identityNo;
         String scp = null;
 
-        boolean isTestMode = LoginHelper.isTestMode(request);
-        if (isTestMode){
-            uen = ParamUtil.getRequestString(request, UserConstants.ENTITY_ID);
-            identityNo =  ParamUtil.getRequestString(request, UserConstants.CORPPASS_ID);
-            scp =  ParamUtil.getRequestString(request, UserConstants.LOGIN_SCP);
-        }else {
+        String testMode = LoginHelper.getTestMode(request);
+        if (FELandingDelegator.LOGIN_MODE_REAL.equals(testMode)) {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
             LoginInfo oLoginInfo = SIMUtil4Corpass.doCorpPassArtifactResolution(request, samlArt);
 
@@ -104,6 +100,10 @@ public class FECorppassLandingDelegator {
 
             uen = userInfoToken.getEntityId();
             identityNo  = userInfoToken.getUserIdentity();
+        } else {
+            uen = ParamUtil.getRequestString(request, UserConstants.ENTITY_ID);
+            identityNo =  ParamUtil.getRequestString(request, UserConstants.CORPPASS_ID);
+            scp =  ParamUtil.getRequestString(request, UserConstants.LOGIN_SCP);
         }
 
         if (StringUtil.isEmpty(identityNo)){
@@ -133,8 +133,8 @@ public class FECorppassLandingDelegator {
     public void validatePwd(BaseProcessClass bpc){
         FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO);
         log.info(StringUtil.changeForLog("======>> fe user json" + JsonUtil.parseToJson(feUserDto)));
-        boolean isTestMode = LoginHelper.isTestMode(bpc.request);
-        if (isTestMode) {
+        String testMode = LoginHelper.getTestMode(bpc.request);
+        if (FELandingDelegator.LOGIN_MODE_DUMMY_WITHPASS.equals(testMode)) {
             boolean scpCorrect = orgUserManageService.validatePwd(feUserDto);
             if (!scpCorrect) {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "The account or password is incorrect");

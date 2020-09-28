@@ -56,12 +56,12 @@
                     <a class="topposition tooltipclick" title="" data-placement="left" data-toggle="tooltip" data-trigger="click" tabindex="-1" href="#" data-original-title="CorpPass ID registered to your account."><span class="icon-info-login-main login-info-padding"></span></a>
                   </div>
 
-
+               <c:if test="${openTestMode eq 'Dummy.WithPass'}">
                   <div style="display:none;">
                     <input type="password" id="pass" name="password"
                            minlength="8" required>
                   </div>
-
+               </c:if>
                   <div class="form-group">
                     <label class="sr-only" for="corpPassId">Password</label>
                     <input id="corppassPwdId" maxlength="15" type="password" name="loginPassword" onkeypress="doKeyPress(event, 'login')" placeholder="PASSWORD" class="form-control" required="required" type="corppassPwdId" value="" autocomplete="off">

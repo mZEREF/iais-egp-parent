@@ -25,6 +25,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator(value = "feLandingDelegator")
 @Slf4j
 public class FELandingDelegator {
+	public static final String LOGIN_MODE_REAL 					= "Prod";
+	public static final String LOGIN_MODE_DUMMY_NOPASS 			= "Dummy.NoPass";
+	public static final String LOGIN_MODE_DUMMY_WITHPASS 	    = "Dummy.WithPass";
 
 	@Value("${moh.halp.login.test.mode}")
 	private String openTestMode;

@@ -36,11 +36,12 @@
                     <input id="entityId" maxlength="15" name="entityId" onkeypress="doKeyPress(event, 'login')" placeholder="NRIC/ENTITY ID" class="custom-tag-to-uppercase form-control" required="required" type="uenEnittyID" value="" autocomplete="off">
                     <a class="topposition tooltipclick" title="" data-placement="left" data-toggle="tooltip" data-trigger="click" tabindex="-1" href="#" data-original-title="Unique Entity Number (UEN) or system generated Entity ID registered to your CorpPass account."><span class="icon-info-login-main login-info-padding"></span></a>
                   </div>
-
+              <c:if test="${openTestMode eq 'Dummy.WithPass'}">
                   <div style="display:none;">
                     <input type="password" id="pass" name="password"
                            minlength="8" required>
                   </div>
+              </c:if>
 
                   <div class="form-group">
                     <label class="sr-only" for="singpassPwdId">Password</label>

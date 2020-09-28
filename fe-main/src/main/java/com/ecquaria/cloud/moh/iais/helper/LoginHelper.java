@@ -51,9 +51,9 @@ public final class LoginHelper {
 
     }
 
-    public static boolean isTestMode(HttpServletRequest request){
+    public static String getTestMode(HttpServletRequest request){
         String openTestMode = (String) ParamUtil.getSessionAttr(request, "openTestMode");
-        return !StringUtil.isEmpty(openTestMode) && "Y".equals(openTestMode) ? true : false;
+        return openTestMode;
     }
 
     private LoginHelper() {
