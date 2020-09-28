@@ -391,8 +391,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }else{
             entity = appConfigClient.newFee(linenceFeeQuaryDtos).getEntity();
         }
-        //Double amount = entity.getTotal();
-        //log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl amount is -->:"+amount));
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount end ...."));
         return  entity;
     }
@@ -405,9 +403,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             List<String> premisessTypes =  IaisCommonUtils.genNewArrayList();
-
-            for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
-                premisessTypes.add(appGrpPremisesDto.getPremisesType());
+            if(isCharity){
+                List<AppGrpPremisesDto> result = removeDuplicates(appGrpPremisesDtos);
+                for(AppGrpPremisesDto appGrpPremisesDto:result){
+                    premisessTypes.add(appGrpPremisesDto.getPremisesType());
+                }
+            }else{
+                for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                    premisessTypes.add(appGrpPremisesDto.getPremisesType());
+                }
             }
             List<String> baseServiceIds = IaisCommonUtils.genNewArrayList();
             List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtos = appConfigClient.serviceCorrelation().getEntity();
@@ -492,6 +496,30 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         entity = appConfigClient.renewFee(linenceFeeQuaryDtos).getEntity();
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount end ...."));
         return  entity;
+    }
+
+    private List<AppGrpPremisesDto> removeDuplicates(List<AppGrpPremisesDto> appGrpPremisesDtoList){
+        if(IaisCommonUtils.isEmpty(appGrpPremisesDtoList)){
+            return null;
+        }
+        List<AppGrpPremisesDto> result = IaisCommonUtils.genNewArrayList();
+        if(result.size() == 0){
+            result.add(appGrpPremisesDtoList.get(0));
+        }else{
+            for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+                boolean flag = true;
+                for(AppGrpPremisesDto temp : result){
+                    if(temp.getHciCode().equals(appGrpPremisesDto.getHciCode())){
+                        flag = false;
+                        break;
+                    }
+                }
+                if(flag){
+                    result.add(appGrpPremisesDto);
+                }
+            }
+        }
+        return result;
     }
 
     @Override
