@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 
 <c:choose>
-  <c:when test="${'Y' eq openTestMode}">
+  <c:when test="${'Dummy.NoPass' eq openTestMode || 'Dummy.WithPass' eq openTestMode}">
     <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
     <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
     <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>

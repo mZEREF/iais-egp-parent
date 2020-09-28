@@ -11,7 +11,7 @@
 
 
 <c:choose>
-  <c:when test="${'Y' eq openTestMode}">
+  <c:when test="${'Dummy.NoPass' eq openTestMode || 'Dummy.WithPass' eq openTestMode}">
 
     <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
     <%@ taglib uri="http://www.ecquaria.com/menu" prefix="menu" %>
