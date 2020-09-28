@@ -1604,8 +1604,17 @@ public class LicenceApproveBatchjob {
             //ceased    weilu
             if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equalsIgnoreCase(applicationDto.getApplicationType())){
                 try {
+                    int premiseSize = 0 ;
+                    List<ApplicationDto> listApplicationDtos = applicationClient.getAppDtosByAppGrpId(applicationDto.getAppGrpId()).getEntity();
+                    if(!IaisCommonUtils.isEmpty(listApplicationDtos)){
+                        for(ApplicationDto applicationDto1 :listApplicationDtos){
+                            String status = applicationDto1.getStatus();
+                            if(!ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE.equals(status)){
+                                premiseSize++;
+                            }
+                        }
+                    }
                     String licenceNo = originLicenceDto.getLicenceNo();
-                    int premiseSize = originLicenceDto.getPremiseSize();
                     log.info(StringUtil.changeForLog("============premiseSize=================="+premiseSize));
                     String s = hcsaLicenceClient.groupLicenceRunningNumber(licenceNo).getEntity();
                     String ceasedLicNo = systemBeLicClient.groupLicenceByGroupLicenceNo(licenceNo, s,premiseSize).getEntity();

@@ -32,21 +32,27 @@ public class PrepareCessation {
         log.debug(StringUtil.changeForLog("The prepareCeaastion is start ..."));
     }
 
-    public void doBatchJob(BaseProcessClass bpc)  {
+    public void doBatchJob(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("The prepareCeaastion is do ..."));
         List<ApplicationDto> applicationDtos = cessationClient.prepareCessation().getEntity();
-        if(!IaisCommonUtils.isEmpty(applicationDtos)){
-           for(ApplicationDto applicationDto : applicationDtos){
-               String originLicenceId = applicationDto.getOriginLicenceId();
-               if(!StringUtil.isEmpty(originLicenceId)){
-                   String licenceId = hcsaLicenceClient.findNewestLicId(originLicenceId).getEntity();
-                   log.error(StringUtil.changeForLog("=============="+licenceId+"==============="));
-                   if(!StringUtil.isEmpty(licenceId)){
-                       applicationDto.setOriginLicenceId(licenceId);
-                   }
-               }
-           }
-           applicationClient.updateCessationApplications(applicationDtos).getEntity();
+        if (!IaisCommonUtils.isEmpty(applicationDtos)) {
+            for (ApplicationDto applicationDto : applicationDtos) {
+                try {
+                    String originLicenceId = applicationDto.getOriginLicenceId();
+                    if (!StringUtil.isEmpty(originLicenceId)) {
+                        String licenceId = hcsaLicenceClient.findNewestLicId(originLicenceId).getEntity();
+                        log.error(StringUtil.changeForLog("==============" + licenceId + "==============="));
+                        if (!StringUtil.isEmpty(licenceId)) {
+                            applicationDto.setOriginLicenceId(licenceId);
+                        }
+                    }
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    continue;
+                }
+
+            }
+            applicationClient.updateCessationApplications(applicationDtos).getEntity();
         }
     }
 }
