@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -315,5 +317,28 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
         return   hcsaConfigClient.getStageName(serviceId,stageId,type).getEntity();
 
 
+    }
+
+    @Override
+    public void clearApprovedHclCodeByExistRejectApp(List<ApplicationDto> saveApplicationDtoList, String appGroupType) {
+        log.info("-----------clearApprovedHclCodeByExistRejectApp start------");
+        if(saveApplicationDtoList.size() > 1 && ( ApplicationConsts.APPLICATION_TYPE_RENEWAL.equalsIgnoreCase(appGroupType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(appGroupType))){
+            int size = saveApplicationDtoList.size();
+            List<ApplicationDto> appovedNum = new ArrayList<>(size);
+            List<ApplicationDto> rejectNum = new ArrayList<>(size);
+            for(ApplicationDto applicationDto : saveApplicationDtoList){
+                if(ApplicationConsts.APPLICATION_STATUS_APPROVED .equalsIgnoreCase(applicationDto.getStatus())){
+                    appovedNum.add(applicationDto);
+                }else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equalsIgnoreCase(applicationDto.getStatus())){
+                    rejectNum.add(applicationDto);
+                }
+            }
+            if(appovedNum.size() > 0 && rejectNum.size() >0){
+                //clear approve hclcode
+                appovedNum.get(0).setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                applicationClient.clearHclcodeByAppIds(appovedNum);
+            }
+        }
+        log.info("-----------clearApprovedHclCodeByExistRejectApp end------");
     }
 }

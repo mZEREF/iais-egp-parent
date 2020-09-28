@@ -39,4 +39,6 @@ public interface ApplicationViewService {
     HcsaSvcRoutingStageDto getStageById(String id);
 
     ApplicationViewDto getApplicationViewDtoByCorrId(String appCorId);
+
+    void clearApprovedHclCodeByExistRejectApp( List<ApplicationDto> saveApplicationDtoList,String appGroupType);
 }

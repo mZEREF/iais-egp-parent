@@ -1963,6 +1963,8 @@ public class HcsaApplicationDelegator {
                         saveApplicationDtoList = hcsaConfigClient.returnFee(saveApplicationDtoList).getEntity();
                         //save return fee
                         saveRejectReturnFee(saveApplicationDtoList,broadcastApplicationDto);
+                        //clearApprovedHclCodeByExistRejectApp
+                        applicationViewService.clearApprovedHclCodeByExistRejectApp(saveApplicationDtoList,applicationGroupDto.getAppType());
                     }
                 }
             }else{

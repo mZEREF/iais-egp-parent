@@ -42,4 +42,6 @@ public interface ApplicationViewMainService {
     AppReturnFeeDto saveAppReturnFee(AppReturnFeeDto appReturnFeeDto);
 
     List<HcsaSvcRoutingStageDto> getStage(String serviceId, String stageId, String appType);
+
+    void clearApprovedHclCodeByExistRejectApp( List<ApplicationDto> saveApplicationDtoList,String appGroupType);
 }
