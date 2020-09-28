@@ -665,6 +665,7 @@ public class NewApplicationDelegator {
         }
         String flag = bpc.request.getParameter("flag");
         bpc.request.setAttribute("transfer",flag);
+        ParamUtil.setRequestAttr(bpc.request,"IsCharity",NewApplicationHelper.isCharity(bpc.request));
         log.info(StringUtil.changeForLog("the do preparePayment end ...."));
     }
 

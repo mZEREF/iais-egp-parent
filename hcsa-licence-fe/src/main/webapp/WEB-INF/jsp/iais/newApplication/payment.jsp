@@ -80,9 +80,31 @@
                                                         </p>
                                                     </td>
                                                     <td>
-                                                        <p><c:out value="${AppSubmissionDto.amountStr}"></c:out></p>
+                                                        <p><c:out value="${baseSvcFeeExt.totalAmoumtStr}"></c:out></p>
                                                     </td>
                                                 </tr>
+                                                <!--complexSpecifiedFeeExt -->
+                                                <c:if test="${complexSpecifiedFeeExt.svcNames.size()>0 }">
+                                                    <tr>
+                                                        <td class="breakdown">
+                                                            <p>&nbsp;&nbsp;<em>Complex Specified Services <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()})</c:if></em></p>
+                                                            <c:forEach var="svcName" items="${complexSpecifiedFeeExt.svcNames}">
+                                                                <p>&nbsp;&nbsp;- <c:out value="${svcName}"></c:out></p>
+                                                            </c:forEach>
+                                                        </td>
+                                                        <td>
+                                                            <p></p>
+                                                        </td>
+                                                        <td>
+                                                            <p> </p>
+                                                        </td>
+                                                        <td>
+                                                            <p >
+                                                                <c:out value="${complexSpecifiedFeeExt.totalAmoumtStr}"></c:out>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                </c:if>
                                             </c:forEach>
                                         </c:when>
 
@@ -166,7 +188,7 @@
                                                 </c:otherwise>
                                             </c:choose>
                                             <c:forEach items="${AppSubmissionDto.appGrpPremisesDtoList}" var="premises" varStatus="stat">
-                                                <c:forEach items="${AppSubmissionDto.feeInfoDtos}" var="feeInfoDto">
+                                                <c:forEach items="${AppSubmissionDto.feeInfoDtos}" var="feeInfoDto" varStatus="feeInfoStat">
                                                     <c:set var="baseSvcFeeExt" value="${feeInfoDto.baseSvcFeeExt}"/>
                                                     <c:set var="complexSpecifiedFeeExt" value="${feeInfoDto.complexSpecifiedFeeExt}"/>
                                                     <c:set var="simpleSpecifiedFeeExt" value="${feeInfoDto.simpleSpecifiedFeeExt}"/>
@@ -197,6 +219,9 @@
                                                         <td>
                                                             <p>
                                                                 <c:choose>
+                                                                    <c:when test="${IsCharity && feeInfoStat.index>0}">
+                                                                        <c:out value="$0"></c:out>
+                                                                    </c:when>
                                                                     <c:when test="${'OFFSITE' == premises.premisesType && !onlyOffsite}">
                                                                         <c:out value="$0"></c:out>
                                                                     </c:when>
