@@ -544,7 +544,7 @@ public class BlastManagementDelegator {
         String mode =  ParamUtil.getString(request, "mode");
         SearchParam auditSearchParam = new SearchParam(EmailAuditTrailDto.class.getName());
         auditSearchParam.setSort("sent_time", SearchParam.ASCENDING);
-        auditSearchParam.addFilter("client_query_code", msgid,true);
+        auditSearchParam.addFilter("REQUEST_REF_NO", msgid,true);
         CrudHelper.doPaging(auditSearchParam,request);
         QueryHelp.setMainSql("systemAdmin", "audit",auditSearchParam);
         SearchResult<EmailAuditTrailDto> searchResult = blastManagementListService.auditList(auditSearchParam);
