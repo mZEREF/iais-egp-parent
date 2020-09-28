@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="" dtdVersion="6.0" executable="true" majorVersion="4" minorVersion="0" name="FE_Singpass_Landing" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="" dtdVersion="6.0" executable="true" majorVersion="5" minorVersion="0" name="FE_Singpass_Landing" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step2" x="70" y="-140">
@@ -48,14 +48,14 @@
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
-  <AutomaticStep defClass="" executor="" icon="" name="hasMohIssueUen" x="290" y="0">
+  <AutomaticStep defClass="" executor="" icon="" name="hasMohIssueUen" x="290" y="50">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="hasMohIssueUen_OnStepProcess_0" name="hasMohIssueUen_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="validatePwd" x="430" y="470">
+  <AutomaticStep defClass="" executor="" icon="" name="validatePwd" x="310" y="-60">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -76,13 +76,13 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="80" y="140">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="80" y="200">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="loginError" stageIndicator="" x="140" y="600">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="loginError" stageIndicator="" x="700" y="-60">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -110,10 +110,10 @@
    <position>{(840,610)(678,621)(660,360)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(340,160)(100,160)}</position>
+   <position>{(340,220)(100,220)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/receiveUserInfo" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(340,160)(300,360)}</position>
+   <position>{(340,220)(300,360)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/isFirstLogin" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/receiveUserInfo" style="oblique">
    <position>{(300,360)(480,360)}</position>
@@ -127,36 +127,36 @@
   <SynchronousLink destinationName="/Steps/InvokeStep/inbox" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/initLoginInfo" style="oblique">
    <position>{(560,740)(970,740)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/hasMohIssueUen" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/singpassCallBack" style="rectanular">
-   <position>{(310,-120)(310,20)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/validatePwd" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/singpassCallBack" style="oblique">
+   <position>{(310,-120)(330,-40)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/hasMohIssueUen" style="oblique">
-   <position>{(310,20)(340,160)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/validatePwd" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/isFirstLogin" style="rectanular">
-   <position>{(480,360)(450,490)}</position>
+   <position>{(310,70)(340,220)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond3" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/validatePwd" style="rectanular">
-   <position>{(450,490)(470,640)}</position>
+   <position>{(330,-40)(510,-40)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/loginError" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
-   <position>{(470,640)(160,620)}</position>
+   <position>{(510,-40)(720,-40)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/initLoginInfo" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
-   <position>{(470,640)(560,740)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/initLoginInfo" linkstyle="Direct" name="" sourceName="/Conditions/Condition/isFirstLogin" style="oblique">
+   <position>{(480,360)(560,740)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/hasMohIssueUen" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
+   <position>{(510,-40)(497,68)(310,70)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Pages/WebPage/fillParticulars" componentIfTrue="/Steps/InvokeStep/inbox" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="820" y="590">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Steps/AutomaticStep/receiveUserInfo" componentIfTrue="/Pages/WebPage/Page1" defClass="" executor="" icon="" leftOperand="hasMohIssueUen" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="320" y="140">
+  <Condition componentIfFalse="/Steps/AutomaticStep/receiveUserInfo" componentIfTrue="/Pages/WebPage/Page1" defClass="" executor="" icon="" leftOperand="hasMohIssueUen" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="320" y="200">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Steps/AutomaticStep/validatePwd" componentIfTrue="/Pages/WebPage/fillParticulars" defClass="" executor="" icon="" leftOperand="isFirstLogin" name="isFirstLogin" operator="=" rightOperand="&quot;Y&quot;" x="460" y="340">
+  <Condition componentIfFalse="/Steps/AutomaticStep/initLoginInfo" componentIfTrue="/Pages/WebPage/fillParticulars" defClass="" executor="" icon="" leftOperand="isFirstLogin" name="isFirstLogin" operator="=" rightOperand="&quot;Y&quot;" x="460" y="340">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Steps/AutomaticStep/initLoginInfo" componentIfTrue="/Pages/WebPage/loginError" defClass="" executor="" icon="" leftOperand="pwdError" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="450" y="620">
+  <Condition componentIfFalse="/Steps/AutomaticStep/hasMohIssueUen" componentIfTrue="/Pages/WebPage/loginError" defClass="" executor="" icon="" leftOperand="pwdError" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="490" y="-60">
    <Description/>
   </Condition>
  </Conditions>
