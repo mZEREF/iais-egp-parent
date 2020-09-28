@@ -3196,9 +3196,13 @@ public class HcsaApplicationDelegator {
         //get routing stage dropdown send to page.
         log.debug(StringUtil.changeForLog("the do prepareData get the hcsaSvcRoutingStageDtoList"));
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String serviceId = applicationDto.getServiceId();
         ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationDto.getServiceId(),
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(serviceId,
                 taskDto.getTaskKey(),applicationViewDto.getApplicationDto().getApplicationType(),applicationGroupDto.getIsPreInspection());
+        String appStatus = applicationDto.getStatus();
+        String applicationType = applicationDto.getApplicationType();
+
         List<SelectOption> routingStage = IaisCommonUtils.genNewArrayList();
         if(hcsaSvcRoutingStageDtoList!=null){
             if(hcsaSvcRoutingStageDtoList.size()>0){
@@ -3232,6 +3236,36 @@ public class HcsaApplicationDelegator {
     public void setRecommendationOtherDropdownValue(HttpServletRequest request){
         //set recommendation other dropdown
         ParamUtil.setSessionAttr(request, "recommendationOtherDropdown", (Serializable)getRecommendationOtherDropdown());
+    }
+
+    private HcsaSvcRoutingStageDto getCanApproveStageDto(String appType, String appStatus, String serviceId){
+        if(StringUtil.isEmpty(appType) || StringUtil.isEmpty(appStatus) || StringUtil.isEmpty(serviceId)){
+            return null;
+        }
+        String stageId = HcsaConsts.ROUTING_STAGE_AO1;
+        if(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01)){
+            stageId = HcsaConsts.ROUTING_STAGE_AO1;
+        }else if(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02)){
+            stageId = HcsaConsts.ROUTING_STAGE_AO2;
+        }
+        HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto = new HcsaSvcRoutingStageDto();
+        hcsaSvcRoutingStageDto.setStageId(stageId);
+        hcsaSvcRoutingStageDto.setServiceId(serviceId);
+        hcsaSvcRoutingStageDto.setAppType(appType);
+        HcsaSvcRoutingStageDto result = hcsaConfigClient.getHcsaSvcRoutingStageDto(hcsaSvcRoutingStageDto).getEntity();
+        return result;
+    }
+
+    private boolean checkCanApproveStage(HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto){
+        if(hcsaSvcRoutingStageDto == null){
+            return false;
+        }
+        boolean flag = false;
+        String canApprove = hcsaSvcRoutingStageDto.getCanApprove();
+        if("1".equals(canApprove)){
+            flag = true;
+        }
+        return flag;
     }
 
     //send email helper

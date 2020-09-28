@@ -398,4 +398,7 @@ public interface HcsaConfigClient {
 
     @PostMapping(value = "/iais-hcsa-service/service-list-u",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceDto>> saveServiceList(@RequestBody List<HcsaServiceDto> hcsaServiceDtos);
+
+    @PostMapping(value = "/hcsa-routing/stage-can-approve",produces = MediaType.APPLICATION_JSON_VALUE,consumes =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageDto(@RequestBody HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto);
 }
