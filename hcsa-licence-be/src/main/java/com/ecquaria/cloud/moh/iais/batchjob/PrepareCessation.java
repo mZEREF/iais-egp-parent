@@ -50,7 +50,6 @@ public class PrepareCessation {
                     log.error(e.getMessage(), e);
                     continue;
                 }
-
             }
             applicationClient.updateCessationApplications(applicationDtos).getEntity();
         }

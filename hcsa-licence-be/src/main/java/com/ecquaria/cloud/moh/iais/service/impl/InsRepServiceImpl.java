@@ -1012,7 +1012,7 @@ public class InsRepServiceImpl implements InsRepService {
             log.info(StringUtil.changeForLog("=======================taskDtos ===================>>>>>Success"));
 
         AppSubmissionForAuditDto appSubmissionForAuditDto = applicationClient.getAppSubmissionForAuditDto(eventRefNum).getEntity();
-        appSubmissionForAuditDto.setIsCancel(true);
+        appSubmissionForAuditDto.setIsCancel(false);
         log.info(StringUtil.changeForLog("==================  eventBus End  ===================>>>>>"));
         EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.LICENCE_CLIENT, AuditSystemListServiceImpl.class.getName(),
                 "saveAppForAuditToFeAndCreateTrack", currentApp + "-" + currentDomain,
