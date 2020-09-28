@@ -106,16 +106,13 @@ public class LicencePrint {
                 pdfFileList.add(pdfFile);
                 fileNum++;
             }
-            // 获取输出流
+
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             try {
-                // ZipOutputStream类：完成文件或文件夹的压缩
                 ZipOutputStream out = new ZipOutputStream(bos);
                 for (int i = 0; i < pdfFileList.size(); i++) {
-                    // 此处可用任意其他输入流将FileInputStream取代,outputStream为其他步骤的输出流
                     // ByteArrayInputStream in = new ByteArrayInputStream(outputStream.toByteArray());
                     FileInputStream in = new FileInputStream(pdfFileList.get(i));
-                    // 给列表中的文件单独命名
                     out.putNextEntry(new ZipEntry(pdfFileList.get(i).getName()));
                     int len;
                     while ((len = in.read(buf)) > 0) {
@@ -128,7 +125,6 @@ public class LicencePrint {
                 bos.close();
 //                bytes = FileUtils.readFileToByteArray(pdfFile);
                 bpc.request.setAttribute("pdf", bos.toByteArray());
-                System.out.println("压缩完成.");
             } catch (Exception e) {
                 e.printStackTrace();
             }
