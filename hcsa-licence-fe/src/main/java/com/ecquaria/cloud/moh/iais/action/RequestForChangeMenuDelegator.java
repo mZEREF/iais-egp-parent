@@ -731,12 +731,14 @@ public class RequestForChangeMenuDelegator {
                 appSubmissionDto.setLicenseeId(licenseeId);
                 appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-                String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
-                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
-                String svcId = hcsaServiceDto.getId();
-                String svcCode = hcsaServiceDto.getSvcCode();
-                appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
-                appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
+                if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
+                    String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
+                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+                    String svcId = hcsaServiceDto.getId();
+                    String svcCode = hcsaServiceDto.getSvcCode();
+                    appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
+                    appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
+                }
             }
         }
         List<AppSubmissionDto> appSubmissionDtos1 = IaisCommonUtils.genNewArrayList();
