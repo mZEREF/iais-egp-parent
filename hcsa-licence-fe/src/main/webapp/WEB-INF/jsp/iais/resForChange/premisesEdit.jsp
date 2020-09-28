@@ -116,6 +116,7 @@
         preperChange();
         retrieveAddr();
         otherLic();
+        doEdit();
         $("select[name='onSiteAddressType']").trigger('change');
         $("select[name='conveyanceAddrType']").trigger('change');
         $("select[name='offSiteAddrType']").trigger('change');
@@ -187,5 +188,14 @@
         doSubmitForm($('#continueStep').val(),'',$('#crudActionTypeContinue').val());
     }
 
+    function unDisabledPartPage($Ele){
+        $Ele.find('input[type="radio"]').prop('disabled',false);
+        $Ele.find('input[type="text"]').prop('disabled',false);
+        $Ele.find('input[type="file"]').prop('disabled',false);
+        $Ele.find('input[type="checkbox"]').prop('disabled',false);
+        $Ele.find('div.nice-select').removeClass('disabled');
+        $Ele.find('input[type="text"]').css('border-color','');
+        $Ele.find('input[type="text"]').css('color','');
+    }
 
 </script>
