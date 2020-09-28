@@ -189,13 +189,13 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             // sonar check
             return null;
         }
-
+        FeUserDto dto = syncAccountInformationToBackend(postCreate);
         //if enable acra, licensee info create by this method
         if (!StringUtil.isEmpty(postCreate.getUenNo()) && "Y".equals(enableAcra)){
             eicGatewayFeMainClient.getUen(postCreate.getUenNo());
         }
 
-        return syncAccountInformationToBackend(postCreate);
+        return dto;
     }
 
     @Override
