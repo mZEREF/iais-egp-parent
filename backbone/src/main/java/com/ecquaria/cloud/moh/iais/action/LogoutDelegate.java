@@ -46,6 +46,7 @@ public class LogoutDelegate {
 
             String userdomain = session_mgmt.getCurrentUserDomain();
             String userid=session_mgmt.getCurrentUserID();
+            String sessionId = bpc.request.getSession().getId();
 
             //Add audit trail
             AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
@@ -82,14 +83,14 @@ public class LogoutDelegate {
 
             try {
                 AuditLogUtil.callWithEventDriven(dtoList, client);
-                AuditTrailDto loginDto = bbAuditTrailClient.getLoginInfoBySessionId(bpc.request.getSession().getId()).getEntity();
+                AuditTrailDto loginDto = bbAuditTrailClient.getLoginInfoBySessionId(sessionId).getEntity();
                 Date now = new Date();
                 if (loginDto != null) {
                     Date before = Formatter.parseDateTime(loginDto.getActionTime());
                     long duration = now.getTime() - before.getTime();
                     int minutes = (int) Calculator.div(duration, 60000, 0);
                     auditTrailDto.setTotalSessionDuration(minutes);
-                    bbAuditTrailClient.updateSessionDuration(bpc.request.getSession().getId(), minutes);
+                    bbAuditTrailClient.updateSessionDuration(sessionId, minutes);
                 }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
