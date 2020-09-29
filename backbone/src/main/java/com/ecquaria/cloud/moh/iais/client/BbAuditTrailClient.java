@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "audit-trail", configuration = FeignConfiguration.class,
         fallback = BbAuditTrailClientFallback.class)
 public interface BbAuditTrailClient {
-    @GetMapping(path = "/login-inf/{sessionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/iais-audit-trail/login-inf/{sessionId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AuditTrailDto> getLoginInfoBySessionId(@PathVariable("sessionId") String sessionId);
-    @PutMapping(path = "/session-duration")
+    @PutMapping(path = "/iais-audit-trail/session-duration")
     FeignResponseEntity<Void> updateSessionDuration(@RequestParam("sessionId") String sessionId, @RequestParam("perioid") int period);
 }
