@@ -966,6 +966,7 @@ public class HalpAssessmentGuideDelegator {
         ParamUtil.setSessionAttr(bpc.request,RELOAD_BASE_SVC_SELECTED, null);
         appSelectSvcDto.setAlign(false);
         ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
+        ParamUtil.setRequestAttr(bpc.request,"firstVisitFor","Y");
         //test
         //ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
         log.info(StringUtil.changeForLog("do choose svc end ..."));
