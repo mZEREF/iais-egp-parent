@@ -1177,6 +1177,7 @@ public class NewApplicationDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         if (!errorMap.isEmpty()) {
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, "test");
@@ -2923,6 +2924,9 @@ public class NewApplicationDelegator {
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
         if (StringUtil.isEmpty(payMethod)) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, "payment");
+            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+            errorMap.put("payMethod","payMethod is empty");
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             return;
         }
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
