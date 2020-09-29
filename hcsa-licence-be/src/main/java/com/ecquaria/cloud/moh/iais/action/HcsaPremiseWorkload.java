@@ -71,7 +71,7 @@ public class HcsaPremiseWorkload {
         String type = ParamUtil.getRequestString(bpc.request,"stageSelect");
         if(StringUtil.isEmpty(type)){
             Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-            errMap.put("stageSelect", MessageUtil.replaceMessage("GENERAL_ERR0006","Types of Premise","field"));
+            errMap.put("stageSelect", MessageUtil.replaceMessage("GENERAL_ERR0006","Types of Premises","field"));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
         }else{
