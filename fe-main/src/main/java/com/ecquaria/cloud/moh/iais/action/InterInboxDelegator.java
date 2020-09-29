@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
@@ -388,7 +389,11 @@ public class InterInboxDelegator {
                 }
             }
             else{
-                ParamUtil.setRequestAttr(request,InboxConst.LIC_DATE_ERR_MSG, "Licence Start Date From cannot be later than Licence Start Date To");
+                String errStr = "Licence Start Date From cannot be later than Licence Start Date To";
+                ParamUtil.setRequestAttr(request,InboxConst.LIC_DATE_ERR_MSG, errStr);
+                Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                errorMap.put("INBOX_SEARCH_APP_ERR",errStr);
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             }
         }else{
             if(!StringUtil.isEmpty(fStartDate)){
@@ -880,7 +885,11 @@ public class InterInboxDelegator {
                     inboxParam.removeFilter("createDtEnd");
                 }
             }else{
-                ParamUtil.setRequestAttr(request,InboxConst.APP_DATE_ERR_MSG, "Date Submitted From cannot be later than Date Submitted To");
+                String errStr = "Date Submitted From cannot be later than Date Submitted To";
+                ParamUtil.setRequestAttr(request,InboxConst.APP_DATE_ERR_MSG, errStr);
+                Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                errorMap.put("INBOX_SEARCH_APP_ERR",errStr);
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             }
         }else{
             if(!StringUtil.isEmpty(createDtStart)){

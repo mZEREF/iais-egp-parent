@@ -296,6 +296,9 @@ public class MasterCodeDelegator {
                 }
             } else {
                 ParamUtil.setRequestAttr(request, "ERR_EED", MessageUtil.getMessageDesc("EMM_ERR004"));
+                Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                errorMap.put("MC_SEARCH_APP_ERR",MessageUtil.getMessageDesc("EMM_ERR004"));
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             }
         } else {
             if (!StringUtil.isEmpty(codeStartDate)) {
@@ -543,6 +546,7 @@ public class MasterCodeDelegator {
                 }
                 if (errItems.size()>0){
                     errMap.put(masterCodeToExcelDto.getCodeValue(),errItems);
+                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                     errResult.add(errMap);
                 }
             }
@@ -556,6 +560,7 @@ public class MasterCodeDelegator {
             log.error(e.getMessage(), e);
             String errMsg = MessageUtil.getMessageDesc("MCUPERR004");
             errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, errMsg);
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }
@@ -666,6 +671,7 @@ public class MasterCodeDelegator {
                 validationResult.setHasErrors(true);
                 String errMsg = MessageUtil.replaceMessage("SYSPAM_ERROR0005","Code Value","Record Name");
                 errorMap.put("codeValue", errMsg);
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             }
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
@@ -742,6 +748,7 @@ public class MasterCodeDelegator {
                     errorMap.put("effectiveTo", errMsg);
                 }
             }
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, masterCodeDto);
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
