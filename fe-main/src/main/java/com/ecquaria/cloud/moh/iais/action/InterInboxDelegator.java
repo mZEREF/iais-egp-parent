@@ -41,6 +41,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -569,6 +570,7 @@ public class InterInboxDelegator {
                 String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
                 bpc.response.sendRedirect(tokenUrl);
             }else{
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request,"licIsAmend",Boolean.TRUE);
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,errorMap.get("errorMessage"));
             }
