@@ -473,6 +473,9 @@ public class AppealApproveBatchjob {
                     AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
                     String appPremCorreId = appPremisesCorrelationDto.getId();
                     AppPremisesRecommendationDto oldAppPremRecommDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+                    if(oldAppPremRecommDto == null){
+                        continue;
+                    }
                     oldAppPremRecommDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                     fillUpCheckListGetAppClient.updateAppRecom(oldAppPremRecommDto);
                     AppPremisesRecommendationDto newAppPremRecomDto = new AppPremisesRecommendationDto();
