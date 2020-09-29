@@ -153,7 +153,7 @@
                                                     <td>
                                                         <p><em>Complex Specified Services <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()})</c:if></em></p>
                                                         <c:forEach var="svcName" items="${complexSpecifiedFeeExt.svcNames}">
-                                                            <p>&nbsp;&nbsp;<c:out value="${svcName}"></c:out></p>
+                                                            <p>- <c:out value="${svcName}"></c:out></p>
                                                         </c:forEach>
 
                                                     </td>
