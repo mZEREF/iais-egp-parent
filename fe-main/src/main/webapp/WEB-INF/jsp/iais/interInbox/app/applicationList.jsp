@@ -199,6 +199,7 @@
                                                           || app.status == 'APST027'
                                                           || app.status == 'APST004'
                                                           || app.status == 'APST031'
+                                                          || app.status == 'APST067'
                                                           || app.status == 'APST068'
                                                           || app.status == 'APST069'
                                                           || app.status == 'APST071'
