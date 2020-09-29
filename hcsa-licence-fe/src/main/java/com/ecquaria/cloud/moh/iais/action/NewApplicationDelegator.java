@@ -1003,7 +1003,7 @@ public class NewApplicationDelegator {
 
         String crud_action_values = ParamUtil.getRequestString(bpc.request, "crud_action_value");
         if ("next".equals(crud_action_values)) {
-            documentValid(bpc.request, errorMap);
+            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = documentValid(bpc.request, errorMap,true);
             doIsCommom(bpc.request, errorMap);
             //set audit
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
@@ -1013,8 +1013,49 @@ public class NewApplicationDelegator {
             } else {
                 coMap.put("document", "");
             }
+            if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtoList) && !IaisCommonUtils.isEmpty(commonsMultipartFileMap)){
+                for (AppGrpPrimaryDocDto primaryDoc : appGrpPrimaryDocDtoList) {
+                    String key = primaryDoc.getPremisessName() + primaryDoc.getSvcComDocId();
+                    CommonsMultipartFile commonsMultipartFile = commonsMultipartFileMap.get(key);
+                    if (primaryDoc.isPassValidate() && commonsMultipartFile != null && commonsMultipartFile.getSize() != 0) {
+                        String fileRepoGuid = serviceConfigService.saveFileToRepo(commonsMultipartFile);
+                        primaryDoc.setFileRepoId(fileRepoGuid);
+                    }
+                }
+            }
+            appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
+            ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
 
             bpc.request.getSession().setAttribute("coMap", coMap);
+            //set audit
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+        }else{
+            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = documentValid(bpc.request, errorMap,false);
+            doIsCommom(bpc.request, errorMap);
+            if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos) && !IaisCommonUtils.isEmpty(commonsMultipartFileMap)){
+                for(AppGrpPrimaryDocDto primaryDoc:appGrpPrimaryDocDtos){
+                    String errName = "";
+                    String premType = primaryDoc.getPremisessType();
+                    String premVal = primaryDoc.getPremisessName();
+                    if(StringUtil.isEmpty(premType) && StringUtil.isEmpty(premVal)){
+                        errName = "common" + primaryDoc.getSvcComDocId();
+                    }else if(!StringUtil.isEmpty(premType) && !StringUtil.isEmpty(premVal)){
+                        errName = "prem" + primaryDoc.getSvcComDocId() + premVal;
+                    }
+                    String errMsg = errorMap.get(errName);
+                    if(StringUtil.isEmpty(errMsg)){
+                        String key = primaryDoc.getPremisessName() + primaryDoc.getSvcComDocId();
+                        CommonsMultipartFile commonsMultipartFile = commonsMultipartFileMap.get(key);
+                        if(commonsMultipartFile != null && commonsMultipartFile.getSize() != 0){
+                            String fileRepoGuid = serviceConfigService.saveFileToRepo(commonsMultipartFile);
+                            primaryDoc.setFileRepoId(fileRepoGuid);
+                        }
+                    }
+                }
+                appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
+                ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
+            }
+            errorMap = IaisCommonUtils.genNewHashMap();
         }
         if (errorMap.size() > 0) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -1022,17 +1063,6 @@ public class NewApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "documents");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, "documents");
             return;
-        }
-
-        if (commonsMultipartFileMap != null && commonsMultipartFileMap.size() > 0) {
-            for (AppGrpPrimaryDocDto primaryDoc : appGrpPrimaryDocDtoList) {
-                String key = primaryDoc.getPremisessName() + primaryDoc.getSvcComDocId();
-                CommonsMultipartFile commonsMultipartFile = commonsMultipartFileMap.get(key);
-                if (commonsMultipartFile != null && commonsMultipartFile.getSize() != 0) {
-                    String fileRepoGuid = serviceConfigService.saveFileToRepo(commonsMultipartFile);
-                    primaryDoc.setFileRepoId(fileRepoGuid);
-                }
-            }
         }
 
         log.info(StringUtil.changeForLog("the do doDocument end ...."));
@@ -3971,7 +4001,7 @@ public class NewApplicationDelegator {
             }
         }
         Map<String, String> documentMap = IaisCommonUtils.genNewHashMap();
-        documentValid(bpc.request, documentMap);
+        documentValid(bpc.request, documentMap,true);
         doCommomDocument(bpc.request, documentMap);
         if (!documentMap.isEmpty()) {
             previewAndSubmitMap.put("document", MessageUtil.replaceMessage("GENERAL_ERR0006","document","field"));
@@ -5203,12 +5233,12 @@ public class NewApplicationDelegator {
 
     }
 
-    private void documentValid(HttpServletRequest request, Map<String, String> errorMap) {
+    private List<AppGrpPrimaryDocDto> documentValid(HttpServletRequest request, Map<String, String> errorMap,boolean setValidateVal) {
         log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
         if (appGrpPrimaryDocDtoList == null) {
-            return;
+            return null;
         }
         for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList) {
             String keyName = "";
@@ -5238,12 +5268,11 @@ public class NewApplicationDelegator {
                 errorMap.put(keyName, MessageUtil.replaceMessage("GENERAL_ERR0018", sysFileType, "fileType"));
             }
             String errMsg = errorMap.get(keyName);
-            if (StringUtil.isEmpty(errMsg)) {
+            if (StringUtil.isEmpty(errMsg) && setValidateVal) {
                 appGrpPrimaryDocDto.setPassValidate(true);
             }
         }
-        appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtoList);
-        ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
+        return appGrpPrimaryDocDtoList;
     }
 
     private Map<String, List<HcsaSvcPersonnelDto>> getAllSvcAllPsnConfig(HttpServletRequest request) {
