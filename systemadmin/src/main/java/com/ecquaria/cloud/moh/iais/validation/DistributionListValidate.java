@@ -3,11 +3,13 @@ package com.ecquaria.cloud.moh.iais.validation;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,6 +46,29 @@ public class DistributionListValidate implements CustomizeValidator {
             }
         }
 
+        if(distribution.getEmailAddress() != null && distribution.getEmailAddress().size()>0){
+            if(repeatList(distribution.getEmailAddress())){
+                errMap.put("addr", "There are repeated email address(es) provided");
+            }
+        }else{
+            errMap.put("addr", MessageUtil.replaceMessage("GENERAL_ERR0006","Email Addresses","field"));
+        }
+
+
         return errMap;
+    }
+
+    private boolean repeatList(List<String> list){
+        Map<String,String> repeatMap = IaisCommonUtils.genNewHashMap();
+        for (String item:list
+        ) {
+            if(StringUtil.isEmpty(repeatMap.get(item))){
+                repeatMap.put(item,item);
+                continue;
+            }else{
+                return true;
+            }
+        }
+        return false;
     }
 }
