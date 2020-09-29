@@ -1005,6 +1005,8 @@ public class NewApplicationDelegator {
         if ("next".equals(crud_action_values)) {
             documentValid(bpc.request, errorMap);
             doIsCommom(bpc.request, errorMap);
+            //set audit
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
             if (errorMap.isEmpty()) {
                 coMap.put("document", "document");
@@ -1014,8 +1016,6 @@ public class NewApplicationDelegator {
 
             bpc.request.getSession().setAttribute("coMap", coMap);
         }
-        //set audit
-        WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
         if (errorMap.size() > 0) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, (Serializable) errorMap);

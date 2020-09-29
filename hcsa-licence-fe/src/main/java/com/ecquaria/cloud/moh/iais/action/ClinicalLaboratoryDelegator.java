@@ -1177,6 +1177,7 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
             if ("next".equals(crud_action_values)) {
                 doValidateSvcDocument(bpc.request, errorMap);
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
 //                errorMap.put("test","test");
             }
             HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
@@ -1188,7 +1189,7 @@ public class ClinicalLaboratoryDelegator {
             }
             bpc.request.getSession().setAttribute("coMap", coMap);
             //set audit
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+//            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             if (!errorMap.isEmpty()) {
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, AppServicesConsts.NAVTABS_SERVICEFORMS);
