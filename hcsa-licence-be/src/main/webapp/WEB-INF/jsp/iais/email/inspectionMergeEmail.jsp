@@ -184,6 +184,7 @@
     function doSend() {
         if ($('#decision_merge_email option:selected').val() == "Select") {
             $("#selectDecisionMsg").show();
+            $("#selectDecisionMsgRevise").hide();
         } else {
             $("#selectDecisionMsg").hide();
             if ($('#decision_merge_email option:selected').val() == "REDECI005") {
