@@ -166,13 +166,23 @@ public class RequestForChangeDelegator {
         String UNID=ParamUtil.getString(bpc.request, "UNID");
         if(StringUtil.isEmpty(amendType)){
             flag = false;
-            ParamUtil.setRequestAttr(bpc.request, "ErrorMsg", "Please select a type of amendment");
+            String errMsg = "Please select a type of amendment";
+            ParamUtil.setRequestAttr(bpc.request, "ErrorMsg", errMsg);
+            //set audit
+            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+            errorMap.put("ErrorMsg",errMsg);
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
         }
         if(licenceDto != null && UNID==null) {
             String status = licenceDto.getStatus();
             if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)) {
-                ParamUtil.setRequestAttr(bpc.request, "ErrorMsg", "licence status is not active");
+                String errMsg = "licence status is not active";
+                ParamUtil.setRequestAttr(bpc.request, "ErrorMsg", errMsg);
                 flag = false;
+                //set audit
+                Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                errorMap.put("ErrorMsg",errMsg);
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             }
         }
         if(flag){
