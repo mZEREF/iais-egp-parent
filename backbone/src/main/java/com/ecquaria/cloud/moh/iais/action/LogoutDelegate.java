@@ -49,7 +49,6 @@ public class LogoutDelegate {
 
             //Add audit trail
             AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-            auditTrailDto.setModule("logout");
             List<AuditTrailDto> dtoList = IaisCommonUtils.genNewArrayList();
             dtoList.add(auditTrailDto);
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGOUT);
