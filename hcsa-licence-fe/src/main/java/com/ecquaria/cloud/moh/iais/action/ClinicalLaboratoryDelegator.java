@@ -663,8 +663,6 @@ public class ClinicalLaboratoryDelegator {
             String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
             if ("next".equals(crud_action_type)) {
                 errorMap = NewApplicationHelper.doValidateLaboratory(appGrpPremisesDtoList, appSvcLaboratoryDisciplinesDtoList, currentSvcId);
-                //set audit
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 if (appSubmissionDto.isNeedEditController()) {
                     Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_LABORATORY);
@@ -688,6 +686,8 @@ public class ClinicalLaboratoryDelegator {
             currentSvcDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcDto);
             if (!errorMap.isEmpty()) {
+                //set audit
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.LABORATORYDISCIPLINES);
                 return;
@@ -768,8 +768,6 @@ public class ClinicalLaboratoryDelegator {
                 List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST);
                 Map<String,AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.LICPERSONSELECTMAP);
                 errList = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoList, licPersonMap, svcCode);
-                //set audit
-                WebValidationHelper.saveAuditTrailForNoUseResult(errList);
                 if (appSubmissionDto.isNeedEditController()) {
                     /*Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_GOVERNANCE_OFFICERS);
@@ -789,6 +787,8 @@ public class ClinicalLaboratoryDelegator {
                     personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcCgoDtos,svcCode);
                     ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
                 } else {
+                    //set audit
+                    WebValidationHelper.saveAuditTrailForNoUseResult(errList);
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.GOVERNANCEOFFICERS);
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errList));
                     coMap.put("information", "");
@@ -889,8 +889,6 @@ public class ClinicalLaboratoryDelegator {
             if ("next".equals(crud_action_additional)) {
 
                 doValidateDisciplineAllocation(errorMap, daList, bpc.request);
-                //set audit
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 if (appSubmissionDto.isNeedEditController()) {
                     Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DISCIPLINE_ALLOCATION);
@@ -914,6 +912,8 @@ public class ClinicalLaboratoryDelegator {
             currentSvcRelatedDto.setAppSvcDisciplineAllocationDtoList(daList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
             if (!errorMap.isEmpty()) {
+                //set audit
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.DISCIPLINEALLOCATION);
                 return;
@@ -986,8 +986,6 @@ public class ClinicalLaboratoryDelegator {
                 List<AppSvcPrincipalOfficersDto> poDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto");
                 Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
                 map = NewApplicationHelper.doValidatePo(poDto, licPersonMap,svcCode);
-                //set audit
-                WebValidationHelper.saveAuditTrailForNoUseResult(map);
                 if (appSubmissionDto.isNeedEditController()) {
 //                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
 //                    if (isGetDataFromPagePo) {
@@ -1021,7 +1019,8 @@ public class ClinicalLaboratoryDelegator {
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
             }
             if (!map.isEmpty()) {
-                //ParamUtil.setSessionAttr(bpc.request, "", );
+                //set audit
+                WebValidationHelper.saveAuditTrailForNoUseResult(map);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.PRINCIPALOFFICERS);
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(map));
                 return;
@@ -1171,7 +1170,6 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
             if ("next".equals(crud_action_values)) {
                 appSvcDocDtoList = doValidateSvcDocument(appSvcDocDtoList, errorMap);
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 if(!IaisCommonUtils.isEmpty(appSvcDocDtoList) && !IaisCommonUtils.isEmpty(commonsMultipartFileMap)){
                     for (AppSvcDocDto appSvcDocDto1 : appSvcDocDtoList) {
                         String key = appSvcDocDto1.getPremisesVal()+ appSvcDocDto1.getSvcDocId();
@@ -1225,6 +1223,7 @@ public class ClinicalLaboratoryDelegator {
             }
             bpc.request.getSession().setAttribute("coMap", coMap);
             if (!errorMap.isEmpty()) {
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, AppServicesConsts.NAVTABS_SERVICEFORMS);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.DOCUMENTS);
@@ -1383,8 +1382,6 @@ public class ClinicalLaboratoryDelegator {
             String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
             if (!StringUtil.isEmpty(nextStep)) {
                 doValidatetionServicePerson(errorMap, appSvcPersonnelDtos, currentSvcCod);
-                //set audit
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 if (appSubmissionDto.isNeedEditController()) {
                     Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL);
@@ -1401,6 +1398,8 @@ public class ClinicalLaboratoryDelegator {
             }
             bpc.request.getSession().setAttribute("coMap", coMap);
             if (!errorMap.isEmpty()) {
+                //set audit
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.NUCLEARMEDICINEIMAGING);
                 return;
@@ -1485,8 +1484,6 @@ public class ClinicalLaboratoryDelegator {
                 }
                 Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
                 Map<String, String> errorMap = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap, svcCode);
-                //set audit
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                 Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
                 if (errorMap.isEmpty() && allChecked.isEmpty()) {
@@ -1496,6 +1493,8 @@ public class ClinicalLaboratoryDelegator {
                 }
                 bpc.request.getSession().setAttribute("coMap",coMap);
                 if (!errorMap.isEmpty()) {
+                    //set audit
+                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                     ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.MEDALERT_PERSON);
                     //todo change(medAlert page is the final svc page,will jump to preview page)
