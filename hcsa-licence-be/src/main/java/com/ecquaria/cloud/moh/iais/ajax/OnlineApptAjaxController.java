@@ -231,6 +231,7 @@ public class OnlineApptAjaxController {
 
     private List<AppointmentUserDto> filterRepetitiveUser(AppointmentUserDto appointmentUserDto, List<AppointmentUserDto> appointmentUserDtoList) {
         List<AppointmentUserDto> appointmentUserDtos = IaisCommonUtils.genNewArrayList();
+        boolean sameUserFlag = false;
         for(AppointmentUserDto appointmentUserDto1 : appointmentUserDtoList){
             String loginUserId = appointmentUserDto.getLoginUserId();
             String curLoginUserId = appointmentUserDto1.getLoginUserId();
@@ -239,9 +240,11 @@ public class OnlineApptAjaxController {
                 int curHours = appointmentUserDto1.getWorkHours();
                 int allHours = hours + curHours;
                 appointmentUserDto1.setWorkHours(allHours);
-            } else {
-                appointmentUserDtos.add(appointmentUserDto);
+                sameUserFlag = true;
             }
+        }
+        if(!sameUserFlag) {
+            appointmentUserDtos.add(appointmentUserDto);
         }
         if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
             for(AppointmentUserDto auDto : appointmentUserDtos){
