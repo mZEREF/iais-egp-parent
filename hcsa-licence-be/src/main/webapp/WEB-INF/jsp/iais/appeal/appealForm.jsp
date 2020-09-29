@@ -96,11 +96,8 @@
         <div class="document-upload-list">
           <div class="file-upload-gp">
             <div class="fileContent col-xs-2">
-              <c:if test="${not empty appealSpecialDocDto}">
-                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo&fileRo=<iais:mask name="fileRo"  value="${appealSpecialDocDto.fileRepoId}"/>&fileRepoName=${appealSpecialDocDto.docName}"
-                   title="Download" class="downloadFile"><c:out
-                        value="${appealSpecialDocDto.docName}"></c:out></a>
-              </c:if>
+                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo&fileRo=<iais:mask name="fileRo"  value="${feAppealSpecialDocDto.fileRepoId}"/>&fileRepoName=${feAppealSpecialDocDto.docName}"
+                   title="Download" class="downloadFile">${feAppealSpecialDocDto.getDocName()}</a>
             </div>
           </div>
         </div>

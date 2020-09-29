@@ -180,6 +180,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "nextStageReply", null);
         ParamUtil.setSessionAttr(bpc.request, "premiseMiscDto", null);
         ParamUtil.setSessionAttr(bpc.request, "oldApplicationNo", null);
+        ParamUtil.setSessionAttr(bpc.request, "feAppealSpecialDocDto",null);
         ParamUtil.setSessionAttr(bpc.request,"Ao1Ao2Approve","N");
         log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
 
@@ -2896,7 +2897,7 @@ public class HcsaApplicationDelegator {
                 //file
                 AppPremisesSpecialDocDto appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
                 if(appealSpecialDocDto != null){
-                    ParamUtil.setSessionAttr(request, "appealSpecialDocDto",appealSpecialDocDto);
+                    ParamUtil.setSessionAttr(request, "feAppealSpecialDocDto",appealSpecialDocDto);
                 }
                 String oldAppId = premiseMiscDto.getRelateRecId();
                 String type = "";
