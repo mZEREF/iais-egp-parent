@@ -1,16 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloudfeign.FeignException;
-import freemarker.template.TemplateException;
 
-import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +17,7 @@ public interface CessationBeService {
 
     List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds);
 
-    Map<String, String> saveCessations(List<AppCessationDto> appCessationDtos,String licenseeId);
+    Map<String, String> saveCessations(List<AppCessationDto> appCessationDtos);
 
     Map<String,Boolean> listResultCeased(List<String> licIds);
 
