@@ -1950,10 +1950,10 @@ public class HcsaApplicationDelegator {
 //                    if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
 //                        doWithdrawal(applicationDto.getId(),broadcastOrganizationDto,broadcastApplicationDto);
 //                    }
-                    String ao1Ao2Approve = (String)ParamUtil.getSessionAttr(bpc.request,"Ao1Ao2Approve");
-                    if("Y".equals(ao1Ao2Approve)){
-
-                    }
+//                    String ao1Ao2Approve = (String)ParamUtil.getSessionAttr(bpc.request,"Ao1Ao2Approve");
+//                    if("Y".equals(ao1Ao2Approve)){
+//
+//                    }
                     //update application Group status
                     ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                     broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
