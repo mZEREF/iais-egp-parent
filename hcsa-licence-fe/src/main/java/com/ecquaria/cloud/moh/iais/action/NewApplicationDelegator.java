@@ -828,9 +828,9 @@ public class NewApplicationDelegator {
             if (string != null) {
                 bpc.request.setAttribute("hciNameUsed", "hciNameUsed");
             }
-            //set audit
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             if (errorMap.size() > 0) {
+                //set audit
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 String hciNameUsed = errorMap.get("hciNameUsed");
                 if (!StringUtil.isEmpty(hciNameUsed)) {
                     ParamUtil.setRequestAttr(bpc.request, "newAppPopUpMsg", hciNameUsed);
@@ -1005,8 +1005,6 @@ public class NewApplicationDelegator {
         if ("next".equals(crud_action_values)) {
             List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = documentValid(bpc.request, errorMap);
             doIsCommom(bpc.request, errorMap);
-            //set audit
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
             if (errorMap.isEmpty()) {
                 coMap.put("document", "document");
@@ -1060,6 +1058,8 @@ public class NewApplicationDelegator {
             errorMap = IaisCommonUtils.genNewHashMap();
         }
         if (errorMap.size() > 0) {
+            //set audit
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, (Serializable) errorMap);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "documents");
@@ -1623,9 +1623,9 @@ public class NewApplicationDelegator {
         stringBuilder.append(oldAppSubmissionDto);
         log.info(StringUtil.changeForLog("oldAppSubmissionDto:" + stringBuilder.toString()));
         Map<String, String> doComChangeMap = doComChange(appSubmissionDto, oldAppSubmissionDto);
-        //set audit
-        WebValidationHelper.saveAuditTrailForNoUseResult(doComChangeMap);
         if (!doComChangeMap.isEmpty()) {
+            //set audit
+            WebValidationHelper.saveAuditTrailForNoUseResult(doComChangeMap);
             ParamUtil.setRequestAttr(bpc.request, "Msg", doComChangeMap);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
@@ -1633,9 +1633,9 @@ public class NewApplicationDelegator {
         }
         log.info("doComChange is ok ...");
         Map<String, String> map = doPreviewAndSumbit(bpc);
-        //set audit
-        WebValidationHelper.saveAuditTrailForNoUseResult(map);
         if (!map.isEmpty()) {
+            //set audit
+            WebValidationHelper.saveAuditTrailForNoUseResult(map);
             ParamUtil.setRequestAttr(bpc.request, "Msg", map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
@@ -1782,9 +1782,9 @@ public class NewApplicationDelegator {
         appEditSelectDto.setDocEdit(false);
         appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
         Map<String, String> map = doPreviewAndSumbit(bpc);
-        //set audit
-        WebValidationHelper.saveAuditTrailForNoUseResult(map);
         if (!map.isEmpty()) {
+            //set audit
+            WebValidationHelper.saveAuditTrailForNoUseResult(map);
             ParamUtil.setRequestAttr(bpc.request, "Msg", map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
@@ -1796,11 +1796,11 @@ public class NewApplicationDelegator {
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
 
         Boolean otherOperation = requestForChangeService.isOtherOperation(appSubmissionDto.getLicenceId());
-        //set audit
-        Map<String,String> appealOrCesed = IaisCommonUtils.genNewHashMap();
-        appealOrCesed.put("appealOrCesed",String.valueOf(otherOperation));
-        WebValidationHelper.saveAuditTrailForNoUseResult(appealOrCesed);
         if (!otherOperation) {
+            //set audit
+            Map<String,String> appealOrCesed = IaisCommonUtils.genNewHashMap();
+            appealOrCesed.put("appealOrCesed",String.valueOf(otherOperation));
+            WebValidationHelper.saveAuditTrailForNoUseResult(appealOrCesed);
             bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
@@ -1811,11 +1811,11 @@ public class NewApplicationDelegator {
         //is need to pay ?
         String appGroupNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         boolean licHadSubmit = !IaisCommonUtils.isEmpty(applicationDtos);
-        //set audit
-        Map<String,String> errMap2 = IaisCommonUtils.genNewHashMap();
-        errMap2.put("licenceHadSubmit",String.valueOf(licHadSubmit));
-        WebValidationHelper.saveAuditTrailForNoUseResult(errMap2);
         if (licHadSubmit) {
+            //set audit
+            Map<String,String> errMap2 = IaisCommonUtils.genNewHashMap();
+            errMap2.put("licenceHadSubmit",String.valueOf(licHadSubmit));
+            WebValidationHelper.saveAuditTrailForNoUseResult(errMap2);
             bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
@@ -2821,9 +2821,9 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doSubmit start ...."));
 
         Map<String, String> map = doPreviewAndSumbit(bpc);
-        //set audit
-        WebValidationHelper.saveAuditTrailForNoUseResult(map);
         if (!map.isEmpty()) {
+            //set audit
+            WebValidationHelper.saveAuditTrailForNoUseResult(map);
             ParamUtil.setRequestAttr(bpc.request, "Msg", map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
