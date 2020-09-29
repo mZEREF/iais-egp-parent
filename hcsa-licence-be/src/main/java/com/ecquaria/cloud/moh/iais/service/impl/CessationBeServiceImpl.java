@@ -143,7 +143,7 @@ public class CessationBeServiceImpl implements CessationBeService {
     }
 
     @Override
-    public Map<String, String> saveCessations(List<AppCessationDto> appCessationDtos, String licenseeId) {
+    public Map<String, String> saveCessations(List<AppCessationDto> appCessationDtos) {
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         List<String> appIds = IaisCommonUtils.genNewArrayList();
         Map<String, List<String>> licPremiseIdMap = IaisCommonUtils.genNewHashMap();
@@ -160,13 +160,12 @@ public class CessationBeServiceImpl implements CessationBeService {
             }
         }
         Map<String, String> appIdPremisesMap = IaisCommonUtils.genNewHashMap();
-        String finalLicenseeId = licenseeId;
         licPremiseIdMap.forEach((licId, premiseIds) -> {
             List<String> licIds = IaisCommonUtils.genNewArrayList();
             licIds.clear();
             licIds.add(licId);
             AppSubmissionDto appSubmissionDto = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity().get(0);
-            Map<String, String> transform = transform(appSubmissionDto, finalLicenseeId, premiseIds);
+            Map<String, String> transform = transform(appSubmissionDto, premiseIds);
             appIdPremisesMap.putAll(transform);
         });
 
@@ -445,9 +444,9 @@ public class CessationBeServiceImpl implements CessationBeService {
             taskService.createHistorys(appPremisesRoutingHistoryDtos);
         }
 
-    private Map<String, String> transform(AppSubmissionDto appSubmissionDto, String licenseeId, List<String> premiseIds) {
-
+    private Map<String, String> transform(AppSubmissionDto appSubmissionDto, List<String> premiseIds) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
+        String licenseeId = appSubmissionDto.getLicenseeId();
         Double amount = 0.0;
         AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
