@@ -229,6 +229,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "nextStageReply", null);
         ParamUtil.setSessionAttr(bpc.request, "premiseMiscDto", null);
         ParamUtil.setSessionAttr(bpc.request, "oldApplicationNo", null);
+        ParamUtil.setSessionAttr(bpc.request,"Ao1Ao2Approve","N");
         log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
 
         initData(bpc);
@@ -1944,11 +1945,15 @@ public class HcsaApplicationDelegator {
                 CopyUtil.copyMutableObjectList(applicationDtoList,saveApplicationDtoList);
                 applicationDtoList = removeFastTrackingAndTransfer(applicationDtoList);
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
-                        ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
                 if(isAllSubmit || applicationDto.isFastTracking()){
 //                    if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
 //                        doWithdrawal(applicationDto.getId(),broadcastOrganizationDto,broadcastApplicationDto);
 //                    }
+                    String ao1Ao2Approve = (String)ParamUtil.getSessionAttr(bpc.request,"Ao1Ao2Approve");
+                    if("Y".equals(ao1Ao2Approve)){
+
+                    }
                     //update application Group status
                     ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                     broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
@@ -2038,6 +2043,10 @@ public class HcsaApplicationDelegator {
             }
 
         log.info(StringUtil.changeForLog("The routingTask end ..."));
+    }
+
+    private void doAo1Ao2Approve(BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto){
+
     }
 
     private void doWithdrawal(String appId, BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto) throws FeignException {
@@ -3211,6 +3220,15 @@ public class HcsaApplicationDelegator {
                     if(hcsaSvcRoutingStage.isRecommend()){
                         ParamUtil.setRequestAttr(request,"selectVerified",hcsaSvcRoutingStage.getStageCode());
                         ParamUtil.setSessionAttr(request,"RecommendValue",hcsaSvcRoutingStage.getStageCode());
+                    }
+                }
+                if(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01) || appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02)){
+                    HcsaSvcRoutingStageDto canApproveStageDto = getCanApproveStageDto(applicationType, appStatus, serviceId);
+                    boolean canApprove = checkCanApproveStage(canApproveStageDto);
+                    if(canApprove){
+                        routingStage.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
+                                "Approve"));
+                        ParamUtil.setSessionAttr(request,"Ao1Ao2Approve","Y");
                     }
                 }
             }else{
