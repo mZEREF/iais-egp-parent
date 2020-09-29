@@ -12,10 +12,12 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author: yichen
@@ -41,4 +43,10 @@ public interface AuditTrailMainClient {
 
 	@GetMapping(path = "/iais-audit-trail/last-action/{sessionId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	FeignResponseEntity<AuditTrailDto> getLastAction(@PathVariable("sessionId") String sessionId);
+
+	@GetMapping(path = "/login-inf/{sessionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	FeignResponseEntity<AuditTrailDto> getLoginInfoBySessionId(@PathVariable("sessionId") String sessionId);
+
+	@PutMapping(path = "/session-duration")
+	FeignResponseEntity<Void> updateSessionDuration(@RequestParam("sessionId") String sessionId, @RequestParam("perioid") int period);
 }

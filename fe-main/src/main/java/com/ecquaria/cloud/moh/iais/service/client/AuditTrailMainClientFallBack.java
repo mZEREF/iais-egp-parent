@@ -55,4 +55,20 @@ public class AuditTrailMainClientFallBack implements AuditTrailMainClient {
 		entity.setHeaders(headers);
 		return entity;
 	}
+
+	@Override
+	public FeignResponseEntity<AuditTrailDto> getLoginInfoBySessionId(String sessionId) {
+		FeignResponseEntity entity = new FeignResponseEntity<>();
+		HttpHeaders headers = new HttpHeaders();
+		entity.setHeaders(headers);
+		return entity;
+	}
+
+	@Override
+	public FeignResponseEntity<Void> updateSessionDuration(String sessionId, int period) {
+		FeignResponseEntity entity = new FeignResponseEntity<>();
+		HttpHeaders headers = new HttpHeaders();
+		entity.setHeaders(headers);
+		return entity;
+	}
 }
