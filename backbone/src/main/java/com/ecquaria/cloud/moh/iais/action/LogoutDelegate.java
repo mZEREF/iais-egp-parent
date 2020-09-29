@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.client.BbAuditTrailClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -11,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import com.ecquaria.sz.commons.util.Calculator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.audit.SOPAuditLog;
@@ -30,9 +33,10 @@ import java.util.List;
 @Slf4j
 @Delegator("iaisLogoutDelegate")
 public class LogoutDelegate {
-    private static final long nh = 60000L;
     @Autowired
     private SubmissionClient client;
+    @Autowired
+    private BbAuditTrailClient bbAuditTrailClient;
 
     public void logout(BaseProcessClass bpc) {
         if (bpc.request != null) {
@@ -45,17 +49,8 @@ public class LogoutDelegate {
 
             //Add audit trail
             AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-
-            Date now = new Date();
-            Date before = auditTrailDto.getLoginTime();
-            if (before != null){
-                long duration = now.getTime() - before.getTime();
-                log.info(StringUtil.changeForLog("logout duration minute " + duration));
-                auditTrailDto.setTotalSessionDuration((int) (duration / nh));
-            }
-
             auditTrailDto.setModule("logout");
-            auditTrailDto.setProgrameName(AppConsts.MOH_SYSTEM_NAME);
+            auditTrailDto.setProgrameName(SOPAuditLogConstants.KEY_LOGOUT);
             List<AuditTrailDto> dtoList = IaisCommonUtils.genNewArrayList();
             dtoList.add(auditTrailDto);
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGOUT);
@@ -89,6 +84,15 @@ public class LogoutDelegate {
 
             try {
                 AuditLogUtil.callWithEventDriven(dtoList, client);
+                AuditTrailDto loginDto = bbAuditTrailClient.getLoginInfoBySessionId(bpc.request.getSession().getId()).getEntity();
+                Date now = new Date();
+                if (loginDto != null) {
+                    Date before = Formatter.parseDateTime(loginDto.getActionTime());
+                    long duration = now.getTime() - before.getTime();
+                    int minutes = (int) Calculator.div(duration, 60000, 0);
+                    auditTrailDto.setTotalSessionDuration(minutes);
+                    bbAuditTrailClient.updateSessionDuration(bpc.request.getSession().getId(), minutes);
+                }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
