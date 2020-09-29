@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -18,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.service.impl.ApplicationServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -51,6 +53,9 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         boolean isWithdrawal = ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType);
         boolean isCessation = ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType);
         boolean isFinalStage = (boolean)ParamUtil.getSessionAttr(request,"finalStage");
+        List<AppPremisesRoutingHistoryDto> rollBackHistroyList = applicationViewDto.getRollBackHistroyList();
+        boolean hasRollBackHistoryList = rollBackHistroyList != null && rollBackHistroyList.size() > 0;
+        boolean normalFlow = !isFinalStage || hasRollBackHistoryList;
         if(taskDto != null){
             roleId = taskDto.getRoleId();
         }
@@ -147,7 +152,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             if (StringUtil.isEmpty(nextStage)) {
                 errMap.put("nextStage", generalErrSix);
             } else {
-                if(isFinalStage){
+                if(normalFlow){
                     if (VERIFIED.equals(nextStage)) {
                         String verified = ParamUtil.getRequestString(request, "verified");
                         ParamUtil.setRequestAttr(request, "selectVerified", verified);
