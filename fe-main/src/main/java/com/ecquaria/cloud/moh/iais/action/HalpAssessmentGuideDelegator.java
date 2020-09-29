@@ -459,6 +459,19 @@ public class HalpAssessmentGuideDelegator {
 
             String switchStep = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
             if(NEXT.equals(switchStep)){
+                String crud_action_value=bpc.request.getParameter("crud_action_value");
+                String draftNo  =bpc.request.getParameter("draftNo");
+                getDraft(bpc);
+                String attribute =(String)bpc.request.getAttribute(SELECT_DRAFT_NO);
+                if("continue".equals(crud_action_value)){
+                    List<String> list=new ArrayList<>(1);
+                    list.add(draftNo);
+                    log.info(StringUtil.changeForLog("delete draft start ..."));
+                    appInboxClient.deleteDraftNUmber(list);
+                    bpc.request.getSession().setAttribute("DraftNumber", null);
+                }else if("resume".equals(crud_action_value)){
+                    bpc.request.getSession().setAttribute("DraftNumber", attribute);
+                }
                 appSelectSvcDto.setBasePage(true);
             }
         }else{
