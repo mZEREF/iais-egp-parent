@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -28,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
@@ -439,6 +441,10 @@ public class ServiceMenuDelegator {
                     nextstep = currentPage;
                     err = "There is no base service in specified services.";
                     ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                    //set audit
+                    Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                    errorMap.put(ERROR_ATTR,err);
+                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 }else{
                     //to step2
                     nextstep = CHOOSE_BASE_SVC;
@@ -448,6 +454,10 @@ public class ServiceMenuDelegator {
                 nextstep = currentPage;
                 err = "Please select at least one service.";
                 ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                //set audit
+                Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                errorMap.put(ERROR_ATTR,err);
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             }
         }else{
             log.info(StringUtil.changeForLog("basechks is not null ..."));
@@ -511,6 +521,10 @@ public class ServiceMenuDelegator {
                 }else{
                     nextstep = currentPage;
                     ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR_LIST, errMsgList);
+                    //set audit
+                    Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                    errorMap.put(ERROR_ATTR_LIST,JsonUtil.parseToJson(errMsgList));
+                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 }
             }else{
                 //new app
