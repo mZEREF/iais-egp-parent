@@ -249,7 +249,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 Double laterFee = appFeeDetailsDto.getLaterFee();
                 Double returnFee = Double.valueOf(returnFeeStr);
                 if(returnFee>laterFee){
-                    errMap.put("returnFee","GENERAL_ERR0034");
+                    errMap.put("returnFee","APPEAL_ERR004");
                 }
             }
         }
