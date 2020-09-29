@@ -1003,7 +1003,7 @@ public class NewApplicationDelegator {
 
         String crud_action_values = ParamUtil.getRequestString(bpc.request, "crud_action_value");
         if ("next".equals(crud_action_values)) {
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = documentValid(bpc.request, errorMap,true);
+            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = documentValid(bpc.request, errorMap);
             doIsCommom(bpc.request, errorMap);
             //set audit
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
@@ -1027,10 +1027,8 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
 
             bpc.request.getSession().setAttribute("coMap", coMap);
-            //set audit
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
         }else{
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = documentValid(bpc.request, errorMap,false);
+            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = documentValid(bpc.request, errorMap);
             doIsCommom(bpc.request, errorMap);
             if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos) && !IaisCommonUtils.isEmpty(commonsMultipartFileMap)){
                 for(AppGrpPrimaryDocDto primaryDoc:appGrpPrimaryDocDtos){
@@ -1051,6 +1049,10 @@ public class NewApplicationDelegator {
                             primaryDoc.setFileRepoId(fileRepoGuid);
                         }
                     }
+                }
+                //clear validete
+                for(AppGrpPrimaryDocDto primaryDocDto:appGrpPrimaryDocDtos){
+                    primaryDocDto.setPassValidate(false);
                 }
                 appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
                 ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
@@ -4001,7 +4003,7 @@ public class NewApplicationDelegator {
             }
         }
         Map<String, String> documentMap = IaisCommonUtils.genNewHashMap();
-        documentValid(bpc.request, documentMap,true);
+        documentValid(bpc.request, documentMap);
         doCommomDocument(bpc.request, documentMap);
         if (!documentMap.isEmpty()) {
             previewAndSubmitMap.put("document", MessageUtil.replaceMessage("GENERAL_ERR0006","document","field"));
@@ -5233,7 +5235,7 @@ public class NewApplicationDelegator {
 
     }
 
-    private List<AppGrpPrimaryDocDto> documentValid(HttpServletRequest request, Map<String, String> errorMap,boolean setValidateVal) {
+    private List<AppGrpPrimaryDocDto> documentValid(HttpServletRequest request, Map<String, String> errorMap) {
         log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
@@ -5268,7 +5270,7 @@ public class NewApplicationDelegator {
                 errorMap.put(keyName, MessageUtil.replaceMessage("GENERAL_ERR0018", sysFileType, "fileType"));
             }
             String errMsg = errorMap.get(keyName);
-            if (StringUtil.isEmpty(errMsg) && setValidateVal) {
+            if (StringUtil.isEmpty(errMsg)) {
                 appGrpPrimaryDocDto.setPassValidate(true);
             }
         }

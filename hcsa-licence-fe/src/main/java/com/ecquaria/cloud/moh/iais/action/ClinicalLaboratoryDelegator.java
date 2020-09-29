@@ -1167,19 +1167,54 @@ public class ClinicalLaboratoryDelegator {
             }
 
             String crud_action_values = mulReq.getParameter("nextStep");
-
-            String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
+            if ("next".equals(crud_action_values)) {
+                appSvcDocDtoList = doValidateSvcDocument(appSvcDocDtoList, errorMap);
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                if(!IaisCommonUtils.isEmpty(appSvcDocDtoList) && !IaisCommonUtils.isEmpty(commonsMultipartFileMap)){
+                    for (AppSvcDocDto appSvcDocDto1 : appSvcDocDtoList) {
+                        String key = appSvcDocDto1.getPremisesVal()+ appSvcDocDto1.getSvcDocId();
+                        CommonsMultipartFile commonsMultipartFile = commonsMultipartFileMap.get(key);
+                        if (appSvcDocDto1.isPassValidate() && commonsMultipartFile != null && commonsMultipartFile.getSize() != 0) {
+                            String fileRepoGuid = serviceConfigService.saveFileToRepo(commonsMultipartFile);
+                            appSvcDocDto1.setFileRepoId(fileRepoGuid);
+                        }
+                    }
+                }
+            }else{
+                appSvcDocDtoList = doValidateSvcDocument(appSvcDocDtoList, errorMap);
+                if(!IaisCommonUtils.isEmpty(appSvcDocDtoList) && !IaisCommonUtils.isEmpty(commonsMultipartFileMap)){
+                    for (AppSvcDocDto appSvcDocDto1 : appSvcDocDtoList) {
+                        String errName = "";
+                        String premType = appSvcDocDto1.getPremisesType();
+                        String premVal = appSvcDocDto1.getPremisesVal();
+                        String configId = appSvcDocDto1.getSvcDocId();
+                        if(StringUtil.isEmpty(premType) && StringUtil.isEmpty(premVal)){
+                            errName = configId;
+                        }else if(!StringUtil.isEmpty(premType) && !StringUtil.isEmpty(premVal)){
+                            errName = "prem" + configId + premVal;
+                        }
+                        String errMsg = errorMap.get(errName);
+                        if(StringUtil.isEmpty(errMsg)){
+                            String key =premVal + configId;
+                            CommonsMultipartFile commonsMultipartFile = commonsMultipartFileMap.get(key);
+                            if (appSvcDocDto1.isPassValidate() && commonsMultipartFile != null && commonsMultipartFile.getSize() != 0) {
+                                String fileRepoGuid = serviceConfigService.saveFileToRepo(commonsMultipartFile);
+                                appSvcDocDto1.setFileRepoId(fileRepoGuid);
+                            }
+                        }
+                    }
+                    //clear validete
+                    for(AppSvcDocDto appSvcDocDto1 : appSvcDocDtoList){
+                        appSvcDocDto1.setPassValidate(false);
+                    }
+                }
+                errorMap = IaisCommonUtils.genNewHashMap();
+            }
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
             appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
-            log.debug(StringUtil.changeForLog("the do doDocuments end ...."));
 
-            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
-            if ("next".equals(crud_action_values)) {
-                doValidateSvcDocument(bpc.request, errorMap);
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-//                errorMap.put("test","test");
-            }
             HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
             Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
             if (errorMap.isEmpty() && allChecked.isEmpty()) {
@@ -1188,8 +1223,6 @@ public class ClinicalLaboratoryDelegator {
                 coMap.put("information", "");
             }
             bpc.request.getSession().setAttribute("coMap", coMap);
-            //set audit
-//            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             if (!errorMap.isEmpty()) {
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, AppServicesConsts.NAVTABS_SERVICEFORMS);
@@ -1197,20 +1230,8 @@ public class ClinicalLaboratoryDelegator {
                 mulReq.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.DOCUMENTS);
                 return;
             }
-
-            if (commonsMultipartFileMap != null && commonsMultipartFileMap.size() > 0) {
-                for (AppSvcDocDto appSvcDocDto1 : appSvcDocDtoList) {
-                    String key = appSvcDocDto1.getPremisesVal()+ appSvcDocDto1.getSvcDocId();
-                    CommonsMultipartFile commonsMultipartFile = commonsMultipartFileMap.get(key);
-                    if (commonsMultipartFile != null && commonsMultipartFile.getSize() != 0) {
-                        String fileRepoGuid = serviceConfigService.saveFileToRepo(commonsMultipartFile);
-                        appSvcDocDto1.setFileRepoId(fileRepoGuid);
-                    }
-                }
-            }
-
         }
-
+        log.debug(StringUtil.changeForLog("the do doDocuments end ...."));
     }
 
 
@@ -2375,60 +2396,54 @@ public class ClinicalLaboratoryDelegator {
         }
     }
 
-    private void doValidateSvcDocument(HttpServletRequest request, Map<String, String> errorMap) {
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-        if (appSubmissionDto != null) {
-            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            if (appSvcRelatedInfoDtoList != null) {
-                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
-                    List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                    if (appSvcDocDtoLit != null) {
-                        for (int i = 0; i < appSvcDocDtoLit.size(); i++) {
-                            Integer docSize = appSvcDocDtoLit.get(i).getDocSize();
-                            String docName = appSvcDocDtoLit.get(i).getDocName();
-                            String id = appSvcDocDtoLit.get(i).getSvcDocId();
-                            int uploadFileLimit = systemParamConfig.getUploadFileLimit();
-                            String premVal = appSvcDocDtoLit.get(i).getPremisesVal();
-                            String premKey = "prem" + appSvcDocDtoLit.get(i).getSvcDocId()+premVal;
-                            if (docSize/1024 > uploadFileLimit) {
-                                String err19 =  MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(uploadFileLimit),"sizeMax");
-                                if(StringUtil.isEmpty(premVal)){
-                                    errorMap.put(id + "selectedFile", err19);
-                                }else{
-                                    errorMap.put(premKey, err19);
-                                }
-                            }
-                            Boolean flag = Boolean.FALSE;
-                            String substring = docName.substring(docName.lastIndexOf('.') + 1);
-                            String sysFileType = systemParamConfig.getUploadFileType();
-                            String[] sysFileTypeArr = FileUtils.fileTypeToArray(sysFileType);
-                            for (String f : sysFileTypeArr) {
-                                if (f.equalsIgnoreCase(substring)) {
-                                    flag = Boolean.TRUE;
-                                }
-                            }
-                            if (!flag) {
-                                String err18 = MessageUtil.replaceMessage("GENERAL_ERR0018", sysFileType,"fileType");
-                                if(StringUtil.isEmpty(premVal)){
-                                    errorMap.put(id + "selectedFile", err18);
-                                }else{
-                                    errorMap.put(premKey, err18);
-                                }
-                            }
-                            String errMsg = errorMap.get(id + "selectedFile");
-                            String errMsg2 = errorMap.get(premKey);
-                            if(StringUtil.isEmpty(errMsg) && StringUtil.isEmpty(errMsg2)){
-                                appSvcDocDtoLit.get(i).setPassValidate(true);
-                            }
-                        }
-                    }
-                    appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoLit);
+    private List<AppSvcDocDto> doValidateSvcDocument(List<AppSvcDocDto> appSvcDocDtoList, Map<String, String> errorMap) {
+        if (!IaisCommonUtils.isEmpty(appSvcDocDtoList)) {
+            for (AppSvcDocDto appSvcDocDto:appSvcDocDtoList) {
+                Integer docSize =appSvcDocDto.getDocSize();
+                String docName = appSvcDocDto.getDocName();
+                String id = appSvcDocDto.getSvcDocId();
+                int uploadFileLimit = systemParamConfig.getUploadFileLimit();
+                String premVal = appSvcDocDto.getPremisesVal();
+                String premType = appSvcDocDto.getPremisesVal();
+                String premKey = "";
+                if(StringUtil.isEmpty(premVal) && StringUtil.isEmpty(premType)){
+                    premKey =  appSvcDocDto.getSvcDocId();
+                }else if(!StringUtil.isEmpty(premVal) && !StringUtil.isEmpty(premType)){
+                    premKey =  "prem" + appSvcDocDto.getSvcDocId()+premVal;
                 }
-                appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
-                ParamUtil.setSessionAttr(request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
+                if (docSize/1024 > uploadFileLimit) {
+                    String err19 =  MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(uploadFileLimit),"sizeMax");
+                    if(StringUtil.isEmpty(premVal)){
+                        errorMap.put(id + "selectedFile", err19);
+                    }else{
+                        errorMap.put(premKey, err19);
+                    }
+                }
+                Boolean flag = Boolean.FALSE;
+                String substring = docName.substring(docName.lastIndexOf('.') + 1);
+                String sysFileType = systemParamConfig.getUploadFileType();
+                String[] sysFileTypeArr = FileUtils.fileTypeToArray(sysFileType);
+                for (String f : sysFileTypeArr) {
+                    if (f.equalsIgnoreCase(substring)) {
+                        flag = Boolean.TRUE;
+                    }
+                }
+                if (!flag) {
+                    String err18 = MessageUtil.replaceMessage("GENERAL_ERR0018", sysFileType,"fileType");
+                    if(StringUtil.isEmpty(premVal)){
+                        errorMap.put(id + "selectedFile", err18);
+                    }else{
+                        errorMap.put(premKey, err18);
+                    }
+                }
+                String errMsg = errorMap.get(id + "selectedFile");
+                String errMsg2 = errorMap.get(premKey);
+                if(StringUtil.isEmpty(errMsg) && StringUtil.isEmpty(errMsg2)){
+                    appSvcDocDto.setPassValidate(true);
+                }
             }
         }
-
+        return appSvcDocDtoList;
     }
 
     private void chose(HttpServletRequest request, String type) {
