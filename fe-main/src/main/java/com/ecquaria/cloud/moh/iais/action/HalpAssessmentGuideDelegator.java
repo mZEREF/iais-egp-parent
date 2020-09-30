@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnlAssessQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SelfPremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -52,11 +53,6 @@ import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -67,6 +63,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * HalpAssessmentGuideDelegator
@@ -134,7 +134,7 @@ public class HalpAssessmentGuideDelegator {
 
     public void start(BaseProcessClass bpc) {
         log.info("****start ******");
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW, "HALP Assessment Guide");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_ASEESSMENT_GUIDE);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         log.info("****end ******");
         ParamUtil.setSessionAttr(bpc.request, "personnelOptions", null);
@@ -1423,10 +1423,15 @@ public class HalpAssessmentGuideDelegator {
         SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_DETAILS_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
         amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsSearchParam);
-        SearchResult<SelfPremisesListQueryDto> amendDetailsSearchResult = requestForChangeService.searchPreInfo(amendDetailsSearchParam);
-        if (!StringUtil.isEmpty(amendDetailsSearchResult)) {
-            ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_DETAILS_SEARCH_PARAM, amendDetailsSearchParam);
-            ParamUtil.setRequestAttr(bpc.request, GuideConsts.AMEND_DETAILS_SEARCH_RESULT, amendDetailsSearchResult);
+        SearchResult<SelfPremisesListQueryDto> amendHCISearchResult = requestForChangeService.searchPreInfo(amendDetailsSearchParam);
+        if (amendHCISearchResult != null && amendHCISearchResult.getRowCount() > 0) {
+            ParamUtil.setSessionAttr(bpc.request, "amendHCISearchParam", amendDetailsSearchParam);
+            ParamUtil.setRequestAttr(bpc.request, "amendHCISearchResult", amendHCISearchResult);
+            ArrayList<PremisesListQueryDto> newList = IaisCommonUtils.genNewArrayList(amendHCISearchResult.getRowCount());
+            for (SelfPremisesListQueryDto se : amendHCISearchResult.getRows()) {
+                newList.add(MiscUtil.transferEntityDto(se, PremisesListQueryDto.class));
+            }
+            ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, newList);
         }
         log.info("****end ******");
     }
