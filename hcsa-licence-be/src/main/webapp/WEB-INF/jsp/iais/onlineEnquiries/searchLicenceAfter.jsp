@@ -465,16 +465,14 @@
                                             <c:if test="${cease==1}">
                                                 <td class="form-check"
                                                     onclick="javascript:controlCease('${isASO}')">
-                                                    <c:if test="${pool.licenceStatus=='Active'&&pool.licenceId!=null}">
-                                                        <input class="form-check-input licenceCheck"
-                                                               id="licence${status.index + 1}" type="checkbox"
-                                                               name="appIds"
-                                                               value="${pool.appId}|${pool.isCessation}|${pool.licenceId}|${pool.licenceStatus}">
-                                                        <label class="form-check-label"
-                                                               for="licence${status.index + 1}"><span
-                                                                class="check-square"></span>
-                                                        </label>
-                                                    </c:if>
+                                                    <input class="form-check-input licenceCheck"
+                                                           id="licence${status.index + 1}" type="checkbox"
+                                                           name="appIds"
+                                                           value="${pool.appId}|${pool.isCessation}|${pool.licenceId}|${pool.licenceStatus}">
+                                                    <label class="form-check-label"
+                                                           for="licence${status.index + 1}"><span
+                                                            class="check-square"></span>
+                                                    </label>
                                                 </td>
                                             </c:if>
                                             <td class="row_no">

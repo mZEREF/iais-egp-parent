@@ -113,13 +113,13 @@
                                                     </iais:row>
                                                     <iais:row id="selectDecisionMsg" style="display: none">
                                                         <label class="col-xs-0 col-md-2 control-label col-sm-2"></label>
-                                                        <iais:value style="color:#ff0000;">
+                                                        <div class="col-sm-9 "  style="color:#ff0000;">
                                                             Processing Decision is mandatory
-                                                        </iais:value>
+                                                        </div>
                                                     </iais:row>
                                                     <iais:row style="display: none" id="selectReviseNc">
-                                                        <label class="col-xs-0 col-md-2 control-label col-sm-2">Need Revise<span class="mandatory">*</span></label>
-                                                        <iais:value width="6" cssClass="control-label">
+                                                        <label class="col-xs-0 col-md-2  col-sm-2">Need Revise<span class="mandatory">*</span></label>
+                                                        <iais:value width="6" >
                                                             <c:forEach items="${svcNames}" var="revise"
                                                                        varStatus="index">&nbsp;
                                                                 <input type="checkbox" name="revise${index.index+1}"
@@ -129,14 +129,14 @@
                                                     </iais:row>
                                                     <iais:row id="selectDecisionMsgRevise" style="display: none">
                                                         <label class="col-xs-0 col-md-2 control-label col-sm-2"></label>
-                                                        <iais:value style="color:#ff0000;">
+                                                        <div class="col-sm-9 "  style="color:#ff0000;">
                                                             Need Revise is mandatory
-                                                        </iais:value>
+                                                        </div>
                                                     </iais:row>
                                                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">
                                                         <iais:row >
                                                             <label class="col-xs-0 col-md-2 control-label col-sm-2">Licence Start Date</label>
-                                                            <div class="col-sm-9 control-label">
+                                                            <div class="col-sm-9 " >
                                                                 <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
                                                                     <p><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></p>
                                                                 </c:if>
