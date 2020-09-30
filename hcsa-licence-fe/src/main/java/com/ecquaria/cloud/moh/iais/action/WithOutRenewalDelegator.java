@@ -677,7 +677,13 @@ public class WithOutRenewalDelegator {
 //            }
             requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
         }
-        FeeDto renewalAmount = appSubmissionService.getRenewalAmount(appSubmissionDtos, NewApplicationHelper.isCharity(bpc.request));
+        boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
+        FeeDto renewalAmount = new FeeDto();
+        if(isCharity){
+            renewalAmount = appSubmissionService.getCharityRenewalAmount(appSubmissionDtos,isCharity);
+        }else {
+            renewalAmount = appSubmissionService.getRenewalAmount(appSubmissionDtos,isCharity);
+        }
         setSubmissionAmount(appSubmissionDtos,renewalAmount,appFeeDetailsDto,bpc);
         HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = getLaterFeeDetailsMap(renewalAmount.getDetailFeeDto());
         ParamUtil.setRequestAttr(bpc.request, "laterFeeDetailsMap", laterFeeDetailsMap);

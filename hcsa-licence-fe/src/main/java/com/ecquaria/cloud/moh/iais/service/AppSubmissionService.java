@@ -42,6 +42,7 @@ public interface AppSubmissionService {
     public FeeDto getNewAppAmount(AppSubmissionDto appSubmissionDto,boolean isCharity);
     public FeeDto getGroupAmount(AppSubmissionDto appSubmissionDto,boolean isCharity);
     public FeeDto getRenewalAmount(List<AppSubmissionDto> appSubmissionDtoList,boolean isCharity);
+    public FeeDto getCharityRenewalAmount(List<AppSubmissionDto> appSubmissionDtoList,boolean isCharity);
     public PreOrPostInspectionResultDto judgeIsPreInspection(AppSubmissionDto appSubmissionDto);
     public void setRiskToDto(AppSubmissionDto appSubmissionDto);
     public AppSubmissionDto getAppSubmissionDtoByAppNo(String appNo);
