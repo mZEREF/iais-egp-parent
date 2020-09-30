@@ -91,47 +91,50 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                     map.put("fileName",name);
                     map.put("filePath",relPath);
                     log.info(relPath);
+                    try{
+                        ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
+                        if(processFileTrackDto!=null){
+                            try (InputStream is= Files.newInputStream(fil.toPath());
+                                 ByteArrayOutputStream by=new ByteArrayOutputStream();) {
+                                int count;
+                                byte [] size=new byte[1024];
+                                count=is.read(size);
+                                while(count!=-1){
+                                    by.write(size,0,count);
+                                    count= is.read(size);
+                                }
 
-                    ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
-                    if(processFileTrackDto!=null){
-                        try (InputStream is= Files.newInputStream(fil.toPath());
-                             ByteArrayOutputStream by=new ByteArrayOutputStream();) {
-                            int count;
-                            byte [] size=new byte[1024];
-                            count=is.read(size);
-                            while(count!=-1){
-                                by.write(size,0,count);
-                                count= is.read(size);
-                            }
-
-                            byte[] bytes = by.toByteArray();
-                            String s = FileUtil.genMd5FileChecksum(bytes);
-                            s = s + AppServicesConsts.ZIP_NAME;
-                            if( !s.equals(name)){
+                                byte[] bytes = by.toByteArray();
+                                String s = FileUtil.genMd5FileChecksum(bytes);
+                                s = s + AppServicesConsts.ZIP_NAME;
+                                if( !s.equals(name)){
+                                    continue;
+                                }
+                            }catch (Exception e){
+                                log.error(e.getMessage(),e);
                                 continue;
                             }
-                        }catch (Exception e){
-                            log.error(e.getMessage(),e);
-                            continue;
-                        }
-                        String refId = processFileTrackDto.getRefId();
-                        try (ZipFile zipFile=new ZipFile(path);)  {
-                            for(Enumeration<? extends ZipEntry> entries = zipFile.entries(); entries.hasMoreElements();){
-                                ZipEntry zipEntry = entries.nextElement();
-                                zipFile(zipEntry,zipFile,name);
+                            String refId = processFileTrackDto.getRefId();
+                            try (ZipFile zipFile=new ZipFile(path);)  {
+                                for(Enumeration<? extends ZipEntry> entries = zipFile.entries(); entries.hasMoreElements();){
+                                    ZipEntry zipEntry = entries.nextElement();
+                                    zipFile(zipEntry,zipFile,name);
+                                }
+
+                            } catch (IOException e) {
+                                log.error(e.getMessage(),e);
                             }
 
-                        } catch (IOException e) {
-                            log.error(e.getMessage(),e);
+                            try {
+                                String submissionId = generateIdClient.getSeqId().getEntity();
+                                this.download(processFileTrackDto,name,refId,submissionId);
+                                //save success
+                            }catch (Exception e){
+                                log.error(e.getMessage(),e);
+                            }
                         }
-
-                        try {
-                            String submissionId = generateIdClient.getSeqId().getEntity();
-                            this.download(processFileTrackDto,name,refId,submissionId);
-                            //save success
-                        }catch (Exception e){
-                            log.error(e.getMessage(),e);
-                        }
+                    }catch (Exception e){
+                        log.info(e.getMessage(),e);
                     }
                 }
             }
