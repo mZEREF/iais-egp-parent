@@ -448,7 +448,7 @@ public class OfficerOnlineEnquiriesDelegator {
         Map<String,Boolean> licIds= cessationBeService.listResultCeased(licenceIds);
 
         for(ReqForInfoSearchListDto rfi:reqForInfoSearchListDtos){
-            if("Active".equals(rfi.getLicenceStatus())){
+            if(!"Inactive".equals(rfi.getLicenceStatus())){
                 try {
                     rfi.setIsCessation(licIds.get(rfi.getLicenceId())?1:0);
                 }catch (NullPointerException e){
