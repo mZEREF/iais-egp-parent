@@ -36,13 +36,13 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
         //userId
         if(!StringUtil.isEmpty(userId)){
             if(!userId.matches("^[A-Za-z0-9]+$")){
-                errorMap.put("userId","USER_ERR002");
+                errorMap.put("userId","USER_ERR012");
             }else{
                 OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
                 if(intranetUserByUserId!=null){
                     String valiuserId = intranetUserByUserId.getUserId();
                     if(userId.equals(valiuserId)){
-                        errorMap.put("userId","USER_ERR003");
+                        errorMap.put("userId","USER_ERR012");
                     }
                 }
             }
@@ -68,13 +68,13 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
         }
         if(!StringUtil.isEmpty(mobileNo)){
             if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                errorMap.put("mobileNo", "Please key in a valid mobile number.");
+                errorMap.put("mobileNo", "GENERAL_ERR0007");
             }
         }
 
         if(!StringUtil.isEmpty(officeNo)) {
             if (!officeNo.matches("^[6][0-9]{7}$")) {
-                errorMap.put("officeNo", "Please key in a valid phone number.");
+                errorMap.put("officeNo", "MSGTYPE0002");
             }
         }
         return errorMap;
