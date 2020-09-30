@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @Author weilu
  * @Date 2020/9/30 13:24
  */
-@JobHandler(value="CessationEffectiveDateHandler")
+@JobHandler(value="PrepareCessation")
 @Component
 @Slf4j
 public class PrepareCessationJobHandler extends IJobHandler {
