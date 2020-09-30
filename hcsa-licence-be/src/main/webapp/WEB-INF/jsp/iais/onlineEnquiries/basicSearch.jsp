@@ -150,6 +150,32 @@
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
+                                    <style>
+                                        .nice-select {
+                                            /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#efefef+0,ffffff+100 */
+                                            background: #efefef;
+                                            /* Old browsers */
+                                            background: -moz-linear-gradient(left, #efefef 0%, white 100%);
+                                            /* FF3.6-15 */
+                                            background: -webkit-linear-gradient(left, #efefef 0%, white 100%);
+                                            /* Chrome10-25,Safari5.1-6 */
+                                            background: linear-gradient(to right, #efefef 0%, white 100%);
+                                            border: 1px solid #6c6c6c;
+                                            border-radius: 14px;
+                                            font-size: 1.6rem;
+                                            padding: 14px 40px 14px 15px;
+                                            height: auto;
+                                            line-height: 22px;
+                                            width: 100%;
+                                            -webkit-transition: all 0.1s ease;
+                                            -moz-transition: all 0.1s ease;
+                                            -ms-transition: all 0.1s ease;
+                                            -o-transition: all 0.1s ease;
+                                            transition: all 0.1s ease;
+                                            white-space: normal;
+                                            text-overflow: inherit;
+                                        }
+                                    </style>
                                     <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
                                         <tr>
                                             <c:if test="${cease==1}">
