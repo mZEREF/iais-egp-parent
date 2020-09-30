@@ -62,6 +62,7 @@ import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -445,7 +446,7 @@ public class RequestForChangeMenuDelegator {
      * @param bpc
      * @Decription doPremisesEdit
      */
-    public void doPremisesEdit(BaseProcessClass bpc) {
+    public void doPremisesEdit(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doPremisesEdit start ...."));
         String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
         if ("back".equals(action)) {
@@ -466,6 +467,16 @@ public class RequestForChangeMenuDelegator {
         Map<String, String> errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto, premisesHciList, keyWord, isRfi);
         String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
         String crud_action_type_form_value = bpc.request.getParameter("crud_action_type_form_value");
+        String crud_action_additional = bpc.request.getParameter("crud_action_additional");
+        if("exitSaveDraft".equals(crud_action_additional)){
+            if(appSubmissionDto.getDraftNo()==null){
+                String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
+                appSubmissionDto.setDraftNo(draftNo);
+            }
+          /*  appSubmissionService.doSaveDraft(appSubmissionDto);*/
+            jumpYeMian(bpc.request,bpc.response);
+            return;
+        }
         bpc.request.setAttribute("continueStep", crud_action_type_form_value);
         bpc.request.setAttribute("crudActionTypeContinue", crud_action_type_continue);
         if ("continue".equals(crud_action_type_continue)) {
@@ -1207,7 +1218,12 @@ public class RequestForChangeMenuDelegator {
 
     }
 
-
+    public void jumpYeMian(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        StringBuilder url = new StringBuilder(10);
+        url.append("https://").append(request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
+        response.sendRedirect(tokenUrl);
+    }
     /**/
 
     /**

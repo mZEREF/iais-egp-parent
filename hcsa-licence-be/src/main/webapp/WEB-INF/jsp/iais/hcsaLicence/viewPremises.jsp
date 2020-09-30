@@ -817,17 +817,17 @@
                                           <div class="col-md-6">
                                             <div class="col-md-6">
                                               <span class="newVal " attr="${Board.idNo}">${Board.idNo}
-                                                <c:if test="${empty hashMap[Board.idNo]}">
+                                          <%--      <c:if test="${empty hashMap[Board.idNo]}">--%>
                                                   <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                                                </c:if>
+                                            <%--    </c:if>
                                                 <c:if test="${not empty hashMap[Board.idNo]}">
                                                   <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNew(this)" width="25" height="25" alt="NETS">
-                                                </c:if>
+                                                </c:if>--%>
                                               </span>
                                             </div>
                                           </div>
                                         </div>
-                                      <c:if test="${not empty hashMap[Board.idNo]}">
+                                 <%--     <c:if test="${not empty hashMap[Board.idNo]}">
                                         <div class="row new-img-show" style="display: none">
                                           <div  style="position: absolute;z-index: 100;background-color: #F5F5F5;width: 140%">
                                             <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
@@ -863,7 +863,7 @@
                                             </table>
                                           </div>
                                         </div>
-                                      </c:if>
+                                      </c:if>--%>
                                         <div class="row">
                                           <div class="col-md-6">
                                             Designation
@@ -903,17 +903,17 @@
                                         <div class="col-md-6">
                                           <div  class="col-md-6">
                                             <span  class="newVal " attr="${Authorised.idNumber}">${Authorised.idNumber}
-                                              <c:if test="${empty hashMap[Authorised.idNumber]}">
+                                            <%--  <c:if test="${empty hashMap[Authorised.idNumber]}">--%>
                                                 <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                                              </c:if>
+                                             <%-- </c:if>
                                               <c:if test="${not empty hashMap[Authorised.idNumber]}">
                                                 <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNew(this)" width="25" height="25" alt="NETS">
-                                              </c:if>
+                                              </c:if>--%>
                                             </span>
                                           </div>
                                         </div>
                                       </div>
-                                      <c:if test="${not empty hashMap[Authorised.idNumber]}">
+                                     <%-- <c:if test="${not empty hashMap[Authorised.idNumber]}">
                                         <div class="row new-img-show" style="display:none;">
                                           <div style="position: absolute;z-index: 100;background-color: #F5F5F5;width: 140%">
                                             <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
@@ -949,7 +949,7 @@
                                             </table>
                                           </div>
                                         </div>
-                                      </c:if>
+                                      </c:if>--%>
 
 
                                       <div class="row">

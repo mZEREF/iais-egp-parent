@@ -149,12 +149,7 @@ public class AppealServiceImpl implements AppealService {
     @Override
     public String saveData(HttpServletRequest req) {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(req, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String licenseeId;
-        if (loginContext != null) {
-            licenseeId = loginContext.getLicenseeId();
-        } else {
-            licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
-        }
+        String  licenseeId = loginContext.getLicenseeId();
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String saveDraftId = (String) req.getSession().getAttribute("saveDraftNo");
         AppPremisesSpecialDocDto appPremisesSpecialDocDto = (AppPremisesSpecialDocDto) req.getSession().getAttribute("appPremisesSpecialDocDto");
@@ -360,7 +355,7 @@ public class AppealServiceImpl implements AppealService {
 
     private void typeApplicationOrLicence(HttpServletRequest request, String type, String appealingFor) {
         if (LICENCE.equals(type)) {
-            LicenceDto licenceDto = licenceClient.getLicBylicId(appealingFor).getEntity();
+            LicenceDto licenceDto = licenceClient.getLicDtoById(appealingFor).getEntity();
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
             List<PremisesListQueryDto> premisesListQueryDtos = licenceClient.getPremisesByLicneceId(appealingFor).getEntity();
@@ -731,6 +726,7 @@ public class AppealServiceImpl implements AppealService {
         String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo);
         applicationGroupDto.setLicenseeId(licenseeId);
+        applicationGroupDto.setSubmitBy(licenseeId);
         StringBuilder stringBuilder = new StringBuilder(appNo);
         String s = stringBuilder.append("-01").toString();
         List<AppGrpPremisesDto> premisesDtos = new ArrayList<>(1);
@@ -875,14 +871,12 @@ public class AppealServiceImpl implements AppealService {
         applicationGroupDto.setAmount(0.0);
         applicationGroupDto.setIsPreInspection(1);
         applicationGroupDto.setIsInspectionNeeded(1);
-        applicationGroupDto.setLicenseeId("36F8537B-FE17-EA11-BE78-000C29D29DB0");
         applicationGroupDto.setIsBundledFee(0);
         applicationGroupDto.setIsCharitable(0);
         applicationGroupDto.setIsByGiro(0);
         //applicationGroupDto.setGrpLic(false);
         applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         applicationGroupDto.setDeclStmt(N);
-        applicationGroupDto.setSubmitBy("C55C9E62-750B-EA11-BE7D-000C29F371DC");
         applicationGroupDto.setAppType(ApplicationConsts.APPLICATION_TYPE_APPEAL);
         return applicationGroupDto;
 
@@ -907,13 +901,14 @@ public class AppealServiceImpl implements AppealService {
         }
 
         AppliSpecialDocDto appliSpecialDocDto = new AppliSpecialDocDto();
-        appliSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        appliSpecialDocDto.setSubmitBy(loginContext.getLicenseeId());
 
         //group
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo);
         //info
         applicationGroupDto.setLicenseeId(entity.getLicenseeId());
-
+        applicationGroupDto.setSubmitBy(loginContext.getLicenseeId());
         ApplicationDto applicationDto1 = new ApplicationDto();
         applicationDto1.setApplicationType(ApplicationConsts.APPLICATION_TYPE_APPEAL);
         applicationDto1.setApplicationNo(s);
@@ -1004,6 +999,11 @@ public class AppealServiceImpl implements AppealService {
             if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)) {
                 String appGrpId = entity.getAppGrpId();
                 List<AppSvcCgoDto> appSvcCgoDtos = applicationClient.getAppGrpPersonnelByGrpId(appGrpId).getEntity();
+                if(appSvcCgoDtos!=null){
+                    for(AppSvcCgoDto appSvcCgoDto : appSvcCgoDtos){
+                        appSvcCgoDto.setAssignSelect("newOfficer");
+                    }
+                }
                 ParamUtil.setRequestAttr(request, "CgoMandatoryCount", appSvcCgoDtos.size());
                 List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();
                 SelectOption sp0 = new SelectOption("-1", "Select Personnel");

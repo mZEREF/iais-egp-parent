@@ -124,6 +124,8 @@ public class LicenceViewServiceDelegator {
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
+    @Value("${moh.halp.prs.enable}")
+    private String prsFlag;
     /**
      * StartStep: doStart
      *
@@ -396,8 +398,9 @@ public class LicenceViewServiceDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         prepareViewServiceForm(bpc);
-        disciplinaryRecord(appSubmissionDto,bpc.request);
-
+        if("Y".equals(prsFlag)){
+            disciplinaryRecord(appSubmissionDto,bpc.request);
+        }
     }
 
     private void disciplinaryRecord(AppSubmissionDto appSubmissionDto,HttpServletRequest request){
@@ -410,10 +413,21 @@ public class LicenceViewServiceDelegator {
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
         List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+
         Set<String> redNo=new HashSet<>();
         Set<String> idNoSet=new HashSet<>();
         List<String> list = new ArrayList<>();
         List<String> idList=new ArrayList<>();
+        Object newLicenceDto = request.getAttribute("newLicenceDto") ;
+        if(newLicenceDto!=null){
+            LicenseeDto newLic=(LicenseeDto)newLicenceDto;
+            idNoSet.add(newLic.getUenNo());
+        }
+        Object oldLicenceDto = request.getAttribute("oldLicenceDto");
+        if(oldLicenceDto!=null){
+            LicenseeDto oldL=(LicenseeDto)oldLicenceDto;
+            idNoSet.add(oldL.getUenNo());
+        }
         if(appSvcCgoDtoList!=null){
             for(AppSvcCgoDto appSvcCgoDto : appSvcCgoDtoList){
                 String idNo = appSvcCgoDto.getIdNo();
@@ -444,7 +458,7 @@ public class LicenceViewServiceDelegator {
 
         ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
 
-        List<OrgUserDto> authorisedPerson = appSubmissionDto.getAuthorisedPerson();
+      /*  List<OrgUserDto> authorisedPerson = appSubmissionDto.getAuthorisedPerson();
         List<LicenseeKeyApptPersonDto> boardMember = appSubmissionDto.getBoardMember();
         if(authorisedPerson!=null){
            for(OrgUserDto orgUserDto : authorisedPerson){
@@ -455,7 +469,7 @@ public class LicenceViewServiceDelegator {
             for(LicenseeKeyApptPersonDto apptPersonDto : boardMember){
                 idNoSet.add(apptPersonDto.getIdNo());
             }
-        }
+        }*/
         if(oldAppSubmissionDto!=null){
             AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
             List<AppSvcCgoDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();

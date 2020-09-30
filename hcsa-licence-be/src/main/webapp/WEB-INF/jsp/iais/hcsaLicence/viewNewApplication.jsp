@@ -793,7 +793,7 @@
                     <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT001'}">
                       <tr>
                         <td class="col-xs-6">
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>PersonnelType</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel</p>
                         </td>
                         <td>
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Radiology Professional</p>
@@ -864,7 +864,7 @@
                     <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT002'}">
                       <tr>
                         <td class="col-xs-6">
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>PersonnelType</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel</p>
                         </td>
                         <td>
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
@@ -926,7 +926,7 @@
                     <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT003'}">
                       <tr>
                         <td class="col-xs-6">
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>PersonnelType</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel</p>
                         </td>
                         <td>
                           <span class="col-xs-6 col-md-6"> Medical Physicist</span>
@@ -952,7 +952,7 @@
                     <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT004'}">
                       <tr>
                         <td class="col-xs-6">
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>PersonnelType</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel</p>
                         </td>
                         <td>
 
@@ -978,17 +978,109 @@
                       </tr>
                       <tr>
                         <td class="col-xs-6">
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Registration No</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn No.</p>
                         </td>
                         <td>
 
-                          <div class="col-xs-6">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.profRegNo}"><c:out value="${appSvcPersonnelDtoList.profRegNo}"/></span>
+                          <div class="col-xs-6 img-show">
+                            <span class="newVal " attr="${appSvcPersonnelDtoList.profRegNo}"><c:out value="${appSvcPersonnelDtoList.profRegNo}"/>
+                              <c:if test="${empty listHashMap[appSvcPersonnelDtoList.profRegNo]}">
+                                <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                              </c:if>
+                              <c:if test="${not empty listHashMap[appSvcPersonnelDtoList.profRegNo]}">
+                                <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
+                              </c:if>
+                            </span>
                           </div>
-                          <div class="col-xs-6">
-                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}</span>
+                          <div class="col-xs-6 img-show">
+                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}
+                              <c:if test="${empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}">
+                                <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                              </c:if>
+                              <c:if test="${not empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}">
+                                <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
+                              </c:if>
+                            </span>
 
                           </div>
+                          <c:if test="${not empty listHashMap[appSvcPersonnelDtoList.profRegNo]}">
+                            <div class="row new-img-show"  style="display: none">
+                              <div  style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%">
+                                <label style="font-weight: normal">The Professional has existing disciplinary records in PRS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                                <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                                  <tr>
+                                    <td>Professional Regn No.</td>
+                                    <td width="10%">Complaints</td>
+                                    <td>Final Outcome</td>
+                                    <td>Fine Amounts</td>
+                                    <td>Restrictive Practice Start Date</td>
+                                    <td>Restrictive Practice End Date</td>
+                                    <td>Suspension Start Date</td>
+                                    <td>Suspension End Date</td>
+                                    <td>Other disciplinary action Start Date</td>
+                                    <td>Other Disciplinary action End Date</td>
+                                  </tr>
+                                  <c:forEach items="${listHashMap[appSvcPersonnelDtoList.profRegNo]}" var="list">
+                                    <tr>
+                                      <td>${appSvcPersonnelDtoList.profRegNo}</td>
+                                      <td>
+                                        <p>${list.complaint1}</p>
+                                        <p>${list.complaint2}</p>
+                                        <p>${list.complaint3}</p>
+                                      </td>
+                                      <td>${list.finaloutcome}</td>
+                                      <td>${list.fineamount}</td>
+                                      <td>${list.restrictstartdate}</td>
+                                      <td>${list.restrictenddate}</td>
+                                      <td>${list.suspendstartdate}</td>
+                                      <td>${list.suspendenddate}</td>
+                                      <td>${list.otherstartdate}</td>
+                                      <td>${list.otherenddate}</td>
+                                    </tr>
+                                  </c:forEach>
+                                </table>
+                              </div>
+                            </div>
+                          </c:if>
+                          <c:if test="${not empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}">
+                            <div class="row old-img-show"  style="display: none">
+                              <div  style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%">
+                                <label style="font-weight: normal">The Professional has existing disciplinary records in PRS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                                <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                                  <tr>
+                                    <td>Professional Regn No.</td>
+                                    <td width="10%">Complaints</td>
+                                    <td>Final Outcome</td>
+                                    <td>Fine Amounts</td>
+                                    <td>Restrictive Practice Start Date</td>
+                                    <td>Restrictive Practice End Date</td>
+                                    <td>Suspension Start Date</td>
+                                    <td>Suspension End Date</td>
+                                    <td>Other disciplinary action Start Date</td>
+                                    <td>Other Disciplinary action End Date</td>
+                                  </tr>
+                                  <c:forEach items="${listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}" var="list">
+                                    <tr>
+                                      <td>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}</td>
+                                      <td>
+                                        <p>${list.complaint1}</p>
+                                        <p>${list.complaint2}</p>
+                                        <p>${list.complaint3}</p>
+                                      </td>
+                                      <td>${list.finaloutcome}</td>
+                                      <td>${list.fineamount}</td>
+                                      <td>${list.restrictstartdate}</td>
+                                      <td>${list.restrictenddate}</td>
+                                      <td>${list.suspendstartdate}</td>
+                                      <td>${list.suspendenddate}</td>
+                                      <td>${list.otherstartdate}</td>
+                                      <td>${list.otherenddate}</td>
+                                    </tr>
+                                  </c:forEach>
+                                </table>
+                              </div>
+                            </div>
+                          </c:if>
 
                         </td>
                       </tr>
@@ -1079,21 +1171,23 @@
                       <div class="col-xs-6 img-show">
                         <span class="newVal "  attr="${po.idNo}"><c:out value="${po.idNo}"/>
                           <c:if test="${empty hashMap[po.idNo]}">
-                             <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS"></span>
+                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS"/>
                           </c:if>
                           <c:if test="${not empty hashMap[po.idNo]}">
-                            <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS"></span>
+                            <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
                           </c:if>
+                          </span>
                       </div>
                       <div class="col-xs-6 img-show">
-                        <span class="oldVal " id="ponewVal${status.index}" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"  style="display: none">
+                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"  style="display: none">
                            <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"/>
                           <c:if test="${empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo]}">
-                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS"></span>
+                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS"/>
                           </c:if>
                           <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo]}">
-                            <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableOldService(this)" width="25" height="25" alt="NETS"></span>
+                            <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableOldService(this)" width="25" height="25" alt="NETS"/>
                           </c:if>
+                        </span>
                       </div>
                       <c:if test="${not empty hashMap[po.idNo]}">
                         <div class="row new-img-show" style="display: none">

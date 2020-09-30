@@ -2325,7 +2325,7 @@ public class NewApplicationDelegator {
         List<AppSvcDocDto> appSvcDocDtoLit = n.get(0).getAppSvcDocDtoLit();
         List<AppSvcDocDto> oldAppSvcDocDtoLit = o.get(0).getAppSvcDocDtoLit();
         boolean eqSvcDoc = eqSvcDoc(appSvcDocDtoLit, oldAppSvcDocDtoLit);
-        if (!flag || !flag1 || eqSvcPrincipalOfficers || eqCgo || eqMeadrter || eqServicePseronnel) {
+        if (!flag || !flag1 || eqSvcPrincipalOfficers || eqCgo || eqMeadrter || eqServicePseronnel || eqSvcDoc) {
             return true;
 
         }
@@ -2339,11 +2339,25 @@ public class NewApplicationDelegator {
         if(oldAppSvcDocDtoLit==null){
             oldAppSvcDocDtoLit=new ArrayList<>();
         }
-        if(!appSvcDocDtoLit.equals(oldAppSvcDocDtoLit)){
+        List<AppSvcDocDto> n = copySvcDoc(appSvcDocDtoLit);
+        List<AppSvcDocDto> o = copySvcDoc(oldAppSvcDocDtoLit);
+        if(!o.equals(n)){
             return true;
         }
 
         return false;
+    }
+    private List<AppSvcDocDto> copySvcDoc(List<AppSvcDocDto> appSvcDocDtoLit){
+        List<AppSvcDocDto> appSvcDocDtos=new ArrayList<>(appSvcDocDtoLit.size());
+        for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLit){
+            AppSvcDocDto svcDocDto=new AppSvcDocDto();
+            svcDocDto.setSvcDocId(appSvcDocDto.getSvcDocId());
+            svcDocDto.setDocName(appSvcDocDto.getDocName());
+            svcDocDto.setDocSize(appSvcDocDto.getDocSize());
+            svcDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
+            svcDocDto.setPremisesVal(appSvcDocDto.getPremisesVal());
+        }
+        return appSvcDocDtos;
     }
     private List<AppSubmissionDto> personContact(BaseProcessClass bpc, AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) throws Exception {
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();

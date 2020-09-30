@@ -34,7 +34,7 @@
     <div class="form-group">
       <div class="col-xs-12 col-md-10" style="margin-left: 1%">
         <div class="col-xs-12 col-md-6" style="margin-bottom: 20px">
-          <label style="font-size: 25px">Reason For Appeal<span class="mandatory"> *</span></label>
+          <label style="font-size: 25px">Reason For Appeal</label>
           <select id="reasonSelect" disabled name="reasonSelect" style="margin-left: 2%">
             <option value="">Please Select</option>
             <c:if test="${type=='application'}"><c:if test="${applicationAPPROVED=='APPROVED'}">
@@ -94,7 +94,7 @@
     </div>
     <div class="col-xs-12 col-md-10" style="margin-left: 2%">
 
-      <label style="font-size: 25px">Any supporting remarks<span class="mandatory"> *</span></label>
+      <label style="font-size: 25px">Any supporting remarks</label>
 
     </div >
     <div  class="col-xs-12 col-md-10" style="margin-left: 2%" >

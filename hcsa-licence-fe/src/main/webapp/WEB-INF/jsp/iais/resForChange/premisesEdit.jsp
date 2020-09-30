@@ -68,7 +68,7 @@
           </div>
         </div>
       </div>
-    <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
+    <input type="text" style="display: none" value="${rfcPendingApplication}" id="rfcPendingApplication" name="rfcPendingApplication">
     <div class="modal fade" id="ackMessageConfim" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -103,7 +103,7 @@
     var init;
     $(document).ready(function () {
         <!-- init start-->
-        if($('#ackMessage').val()=='ACKMESSAGE'){
+        if($('#rfcPendingApplication').val()=='errorRfcPendingApplication'){
             $('#ackMessageConfim').modal('show');
         }
         if($('#hciNameUsedInput').val()=='hciNameUsed'){
@@ -131,17 +131,17 @@
     });
 
     function cancel(){
-        $('#ackMessageConfim').modal('hide');
+        $('#rfcPendingApplication').modal('hide');
     }
     $('#previewAndSub').click(function () {
-        doSubmitForm('prePayment','', 'exitSaveDraft');
+        doSubmitForm('prePayment','', '');
     });
 
     $('#back').click(function () {
         doBack('prePremisesList');
     });
     function exitAndSave() {
-        doSubmitForm('prePayment','', '');
+        doSubmitForm('prePayment','', 'exitSaveDraft');
     }
     function readonlyPartPage($Ele) {
         $Ele.find('input[type="radio"]').prop('readonly',true);

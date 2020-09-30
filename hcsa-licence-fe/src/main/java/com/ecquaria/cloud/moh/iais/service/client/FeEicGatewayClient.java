@@ -20,6 +20,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -71,7 +73,11 @@ public class FeEicGatewayClient {
         return IaisEGPHelper.callEicGatewayWithParamForList(gateWayUrl + "/v1/hcsa-app-officer", HttpMethod.GET, param,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
     }
-
+    public FeignResponseEntity<List> getProfessionalDetail(ProfessionalParameterDto professionalParameterDto,
+                                                           String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/prs-server/prs-api/getProfessionalDetail", HttpMethod.POST, professionalParameterDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ProfessionalResponseDto.class);
+    }
     /**
     * @author: yichen
     * @description: route to BE db
