@@ -1154,7 +1154,10 @@ public class NewApplicationHelper {
                         }
                         String specialityVal = psnDto.getSpeciality();
                         if(!StringUtil.isEmpty(specialityVal)){
-                            specialityOpts.add(getSpecialtyByValue(specialityVal));
+                            SelectOption sp = getSpecialtyByValue(specialityVal);
+                            if(!specialityOpts.contains(sp)){
+                                specialityOpts.add(sp);
+                            }
                         }
                     }else{
                         log.info(StringUtil.changeForLog("person spcOpts is empty"));
@@ -1272,20 +1275,24 @@ public class NewApplicationHelper {
                     List<SelectOption> specialityOpts = genSpecialtySelectList(svcCode,false);
                     if(!IaisCommonUtils.isEmpty(spcOpts)){
                         for(SelectOption sp:spcOpts){
-                            if(!specialityOpts.contains(sp)){
+                            if(!specialityOpts.contains(sp) && !"other".equals(sp.getValue())){
                                 specialityOpts.add(sp);
                             }
                         }
                         String specialityVal = psnDto.getSpeciality();
                         if(!StringUtil.isEmpty(specialityVal)){
-                            specialityOpts.add(getSpecialtyByValue(specialityVal));
+                            SelectOption sp = getSpecialtyByValue(specialityVal);
+                            if(!specialityOpts.contains(sp)){
+                                specialityOpts.add(sp);
+                            }
                         }
-                        person.setSpcOptList(specialityOpts);
                     }else{
-                        SelectOption sp = new SelectOption("other", "Others");
-                        specialityOpts.add(sp);
-                        person.setSpcOptList(specialityOpts);
+                        log.info(StringUtil.changeForLog("person spcOpts is empty"));
                     }
+                    SelectOption otherSp = new SelectOption("other", "Others");
+                    specialityOpts.add(otherSp);
+                    person.setSpcOptList(specialityOpts);
+
                     boolean canMatch = false;
                     for(SelectOption sp:specialityOpts){
                         if(sp.getValue().equals(speciality)){
