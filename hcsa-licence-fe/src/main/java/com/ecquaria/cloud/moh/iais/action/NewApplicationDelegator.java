@@ -2055,6 +2055,10 @@ public class NewApplicationDelegator {
                 NewApplicationHelper.syncPsnData(appSubmissionDto1, personMap);
             }
             List<AppSubmissionDto> personAppSubmissionList = personContact(bpc, appSubmissionDto, oldAppSubmissionDto);
+            //sync other application
+            for(AppSubmissionDto personAppsubmit : personAppSubmissionList){
+                NewApplicationHelper.syncPsnData(personAppsubmit, personMap);
+            }
             AppSubmissionDto personAppsubmit = getPersonAppsubmit(oldAppSubmissionDto, appSubmissionDto, bpc);
             personAppsubmit.setPartPremise(personAppsubmit.isGroupLic());
             personAppsubmit.setOneLicDoRenew(true);
@@ -2607,7 +2611,7 @@ public class NewApplicationDelegator {
             List<AppSvcPrincipalOfficersDto> n = copyAppSvcPo(appSvcPrincipalOfficersDtoList);
             List<AppSvcPrincipalOfficersDto> o = copyAppSvcPo(oldAppSvcPrincipalOfficersDtoList);
             if (!n.equals(o)) {
-                return false;
+                return true;
             }
         } else if (appSvcPrincipalOfficersDtoList == null && oldAppSvcPrincipalOfficersDtoList != null || appSvcPrincipalOfficersDtoList != null && oldAppSvcPrincipalOfficersDtoList == null) {
             return true;

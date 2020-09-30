@@ -1327,12 +1327,18 @@ public class RequestForChangeMenuDelegator {
         }
         String appGroupNo = requestForChangeService.getApplicationGroupNumber(appType);
         appSubmissionDto.setAppGrpNo(appGroupNo);
+
         appSubmissionDto.setIsNeedNewLicNo(AppConsts.YES);
 
         //amount
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
         boolean isSame = compareLocation(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
+        if(!isSame){
+            for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1){
+                appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
+            }
+        }
         boolean b = compareHciName(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
         amendmentFeeDto.setChangeInHCIName(!b);
         amendmentFeeDto.setChangeInLocation(!isSame);
@@ -1346,13 +1352,20 @@ public class RequestForChangeMenuDelegator {
                 boolean grpLic = licenceDto.isGrpLic();
                 AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string.getId());
                 appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
-                if (isSame) {
+                if(0==total){
+                    appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                    appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                }else {
+                    appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
+                }
+                if (!isSame) {
                     List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
                     if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
                         for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                            appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+                            appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
                         }
                     }
+                    appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
                 }
                 appSubmissionDtoByLicenceId.setAmount(total);
                 List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
