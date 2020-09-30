@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Set;
 
 /**
  * OnlineEnquiriesService
@@ -30,8 +31,7 @@ public interface OnlineEnquiriesService {
     void setAppInfo(HttpServletRequest request);
     List<SelectOption> getServicePersonnelRoleOption();
     List<String> getLicIdsByappIds(List<String> appIds);
-    List<ComplianceHistoryDto> getComplianceHistoryDtosByLicId(String licenceId);
-
+    List<ComplianceHistoryDto> complianceHistoryDtosByLicId(List<ComplianceHistoryDto> complianceHistoryDtos, String licenceId, Set<String> appIds);
     PersonnelsDto getProfessionalInformationByKeyPersonnelId(String psnId);
 
 }

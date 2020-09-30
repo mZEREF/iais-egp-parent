@@ -227,8 +227,9 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 log.error(e.getMessage(), e);
             }
         }
-
-        List<ComplianceHistoryDto> complianceHistoryDtos= getComplianceHistoryDtosByLicId(licenceId);
+        List<ComplianceHistoryDto> complianceHistoryDtos= IaisCommonUtils.genNewArrayList();
+        Set<String> appIds=IaisCommonUtils.genNewHashSet();
+        complianceHistoryDtos= complianceHistoryDtosByLicId(complianceHistoryDtos,licenceId,appIds);
         ParamUtil.setSessionAttr(request,"registeredWithACRA","Not Registered");
         try {
             GenerateUENDto generateUENDto = acraUenBeClient.getUen(organizationLicDto.getUenNo()).getEntity();
@@ -240,19 +241,14 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         }catch (Exception e){
             log.info(e.getMessage(),e);
         }
+        complianceHistoryDtos.sort(Comparator.comparing(ComplianceHistoryDto::getSortDate));
         ParamUtil.setSessionAttr(request,"complianceHistoryDtos", (Serializable) complianceHistoryDtos);
         ParamUtil.setSessionAttr(request,"organizationLicDto",organizationLicDto);
         ParamUtil.setSessionAttr(request,"personnelsDto", (Serializable) personnelsDto);
     }
 
     @Override
-    public List<ComplianceHistoryDto> getComplianceHistoryDtosByLicId(String licenceId){
-        List<ComplianceHistoryDto> complianceHistoryDtos= IaisCommonUtils.genNewArrayList();
-        Set<String> appIds=IaisCommonUtils.genNewHashSet();
-        return complianceHistoryDtosByLicId(complianceHistoryDtos,licenceId,appIds);
-    }
-
-    private List<ComplianceHistoryDto> complianceHistoryDtosByLicId(List<ComplianceHistoryDto> complianceHistoryDtos,String licenceId,Set<String> appIds){
+    public List<ComplianceHistoryDto> complianceHistoryDtosByLicId(List<ComplianceHistoryDto> complianceHistoryDtos,String licenceId,Set<String> appIds){
         List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
         for(LicAppCorrelationDto appCorrelationDto:licAppCorrelationDtos){
             if(!appIds.contains(appCorrelationDto.getApplicationId())){
@@ -270,10 +266,10 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                     String ncId = appPremPreInspectionNcDto.getId();
                     List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
                     if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
-                        complianceHistoryDto.setComplianceTag("Partial Compliance");
+                        complianceHistoryDto.setComplianceTag("Partial ");
                     }
                 } else {
-                    complianceHistoryDto.setComplianceTag("Full Compliance");
+                    complianceHistoryDto.setComplianceTag("Full ");
                 }
                 if(applicationDto.getOriginLicenceId()!=null){
                     complianceHistoryDtosByLicId(complianceHistoryDtos,applicationDto.getOriginLicenceId(),appIds);
@@ -299,6 +295,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
                 try {
                     complianceHistoryDto.setInspectionDate(Formatter.formatDateTime(appPreRecommentdationDtoDate.getRecomInDate(), AppConsts.DEFAULT_DATE_FORMAT));
+                    complianceHistoryDto.setSortDate(Formatter.formatDateTime(appPreRecommentdationDtoDate.getRecomInDate(), "yyyy-MM-dd"));
                     AppPremisesRecommendationDto appPreRecommentdationDtoRep = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
                     if(appPreRecommentdationDtoRep!=null){
                         complianceHistoryDtos.add(complianceHistoryDto);

@@ -235,8 +235,8 @@
                                                     value="${pool.expiryDate}"
                                                     pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/></td>
                                             <td><c:out value="${pool.licenceStatus}"/></td>
-                                            <td><c:out value="${pool.twoLastComplianceHistory}"/></td>
-                                            <td><c:out value="${pool.lastComplianceHistory}"/></td>
+                                            <td><c:out value="${pool.getTwoLastComplianceHistory()}"/></td>
+                                            <td><c:out value="${pool.getLastComplianceHistory()}"/></td>
                                             <td><c:out value="${pool.currentRiskTagging}"/></td>
                                         </tr>
                                     </c:forEach>

@@ -14,15 +14,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComplianceHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
@@ -76,8 +75,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1155,76 +1153,39 @@ public class OfficerOnlineEnquiriesDelegator {
         addressList.add(MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),rfiApplicationQueryDto.getPostalCode()));
         reqForInfoSearchListDto.setAddress(addressList);
 
-            {
-            AppPremisesRecommendationDto appPreRecommentdationDtoDateRoot=null;
-            try{
-                appPreRecommentdationDtoDateRoot =
-                        fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-            }catch (Exception e){
-                log.info(e.getMessage());
-            }
+        AppPremisesRecommendationDto appPreRecommentdationDtoDateRoot=   fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+        AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+
+        List<ComplianceHistoryDto> complianceHistoryDtos= IaisCommonUtils.genNewArrayList();
+        Set<String> appIds=IaisCommonUtils.genNewHashSet();
+        if(appPreRecommentdationDtoDateRoot!=null&&appPreRecommentdationDtoDate!=null){
             AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(rfiApplicationQueryDto.getAppCorrId()).getEntity();
             if (appPremPreInspectionNcDto != null) {
                 String ncId = appPremPreInspectionNcDto.getId();
                 List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
                 if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
+                    ComplianceHistoryDto complianceHistoryDto=new ComplianceHistoryDto();
+                    complianceHistoryDto.setComplianceTag("Partial");
                     reqForInfoSearchListDto.setLastComplianceHistory("Partial");
+                    complianceHistoryDto.setSortDate(Formatter.formatDateTime(appPreRecommentdationDtoDate.getRecomInDate(), "yyyy-MM-dd"));
+                    complianceHistoryDtos.add(complianceHistoryDto);
+                    appIds.add(rfiApplicationQueryDto.getId());
                 }
             } else {
+                ComplianceHistoryDto complianceHistoryDto=new ComplianceHistoryDto();
                 reqForInfoSearchListDto.setLastComplianceHistory("Full");
-            }
-            if(applicationDto!=null&&applicationDto.getOriginLicenceId()!=null){
-                List<LicAppCorrelationDto> licAppCorrelationDtos1=hcsaLicenceClient.getLicCorrBylicId(applicationDto.getOriginLicenceId()).getEntity();
-                try {Map<Date,String > map=IaisCommonUtils.genNewHashMap();
-                    for (LicAppCorrelationDto licApp :licAppCorrelationDtos1
-                    ) {
-                        AppPremisesCorrelationDto appPremises = applicationClient.getAppPremisesCorrelationDtosByAppId(licApp.getApplicationId()).getEntity();
-                        AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremises.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-                        if(appPreRecommentdationDtoDateRoot!=null){
-                            if(appPreRecommentdationDtoDate!=null&&appPreRecommentdationDtoDateRoot.getRecomInDate().compareTo(appPreRecommentdationDtoDate.getRecomInDate())<0){
-                                map.put(appPreRecommentdationDtoDate.getRecomInDate(),appPremises.getId());
-                            }
-                        }else {
-                            if(appPreRecommentdationDtoDate!=null){
-                                map.put(appPreRecommentdationDtoDate.getRecomInDate(),appPremises.getId());
-                            }
-                        }
-                    }
-                    Set<Date> set = map.keySet();
-                    if(set.size()!=0){
-                        Date[] obj = set.toArray(new Date[0]);
-                        Arrays.sort(obj);
-                        Date inspDate=obj[0];
-                        String appCorrId=map.get(inspDate);
-                        AppPremPreInspectionNcDto appPremPreInspectionNcDto1 = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appCorrId).getEntity();
-                        if (appPremPreInspectionNcDto1 != null) {
-                            String ncId = appPremPreInspectionNcDto1.getId();
-                            List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
-                            if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
-                                reqForInfoSearchListDto.setTwoLastComplianceHistory("Partial");
-                            }
-                        } else {
-                            reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
-                        }
-                    }else {
-                        AppPremisesCorrelationDto appPremisesCorrelationDto1 = applicationClient.getAppPremisesCorrelationDtosByAppId(licAppCorrelationDtos1.get(0).getApplicationId()).getEntity();
-                        AppPremPreInspectionNcDto appPremPreInspectionNcDto1 = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationDto1.getId()).getEntity();
-                        if (appPremPreInspectionNcDto1 != null) {
-                            String ncId = appPremPreInspectionNcDto1.getId();
-                            List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
-                            if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
-                                reqForInfoSearchListDto.setTwoLastComplianceHistory("Partial");
-                            }
-                        } else {
-                            reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
-                        }
-                    }
+                complianceHistoryDto.setComplianceTag("Full");
+                complianceHistoryDto.setSortDate(Formatter.formatDateTime(appPreRecommentdationDtoDate.getRecomInDate(), "yyyy-MM-dd"));
+                complianceHistoryDtos.add(complianceHistoryDto);
+                appIds.add(rfiApplicationQueryDto.getId());
 
-                }catch (Exception e){
-                    reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
-                    log.info(e.getMessage(),e);
-                }
             }
+            if(applicationDto!=null&&applicationDto.getOriginLicenceId()!=null) {
+                complianceHistoryDtos= onlineEnquiriesService.complianceHistoryDtosByLicId(complianceHistoryDtos,applicationDto.getOriginLicenceId(),appIds);
+            }
+            complianceHistoryDtos.sort(Comparator.comparing(ComplianceHistoryDto::getSortDate));
+            reqForInfoSearchListDto.setComplianceHistoryDtos(complianceHistoryDtos);
+
         }
 
         log.debug(StringUtil.changeForLog("licenseeId start ...."+rfiApplicationQueryDto.getLicenseeId()));
