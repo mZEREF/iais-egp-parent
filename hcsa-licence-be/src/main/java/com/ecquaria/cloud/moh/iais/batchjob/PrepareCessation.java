@@ -34,6 +34,9 @@ public class PrepareCessation {
 
     public void doBatchJob(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("The prepareCeaastion is do ..."));
+        jobExecute();
+    }
+    public void jobExecute(){
         List<ApplicationDto> applicationDtos = cessationClient.prepareCessation().getEntity();
         if (!IaisCommonUtils.isEmpty(applicationDtos)) {
             for (ApplicationDto applicationDto : applicationDtos) {
