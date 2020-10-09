@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * FileRepoClient
@@ -37,6 +38,6 @@ public interface FileRepoClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<FileRepoDto>> getFilesByIds(@RequestBody List<String> ids);
 
-    @DeleteMapping(value = "/no-file/{fileId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> removeFileById(@PathVariable("fileId")String fileId);
+    @DeleteMapping(value = "/no-file", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> removeFileById(@RequestBody FileRepoDto fileRepoDto);
 }

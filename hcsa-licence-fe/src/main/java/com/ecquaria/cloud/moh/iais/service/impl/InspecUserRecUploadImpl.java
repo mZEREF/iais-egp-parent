@@ -130,7 +130,12 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                         i--;
                     }
                 }
-                fileRepoClient.removeFileById(removeIds.get(r));
+                List<String> deleteIds = IaisCommonUtils.genNewArrayList();
+                deleteIds.add(removeIds.get(r));
+                List<FileRepoDto> fileRepoDtos = fileRepoClient.getFilesByIds(deleteIds).getEntity();//NOSONAR
+                if(!IaisCommonUtils.isEmpty(fileRepoDtos)){//NOSONAR
+                    fileRepoClient.removeFileById(fileRepoDtos.get(0));
+                }
             }
         }
         return appPremPreInspectionNcDocDtos;
@@ -442,7 +447,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
             for(int i = 0; i< fileRepoDtos.size(); i++){
                 if(id.equals(fileRepoDtos.get(i).getId())){
                     fileRepoDtos.remove(i);
-                    fileRepoClient.removeFileById(id);
+                    fileRepoClient.removeFileById(fileRepoDtos.get(i));
                     return fileRepoDtos;
                 }
             }
