@@ -77,7 +77,7 @@ public class MassEmailDelegator {
         searchParam.setPageNo(1);
         searchParam.setSort("CREATED_DT", SearchParam.DESCENDING);
         searchParam.addFilter("status", AppConsts.COMMON_STATUS_ACTIVE,true);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_EMAIL_SMS_BLAST, "Mass Email");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_BLAST_NOTIFICATIONS, AuditTrailConsts.FUNCTION_MASS_EMAIL);
         setSearchparam(bpc,searchParam);
     }
     /**

@@ -74,7 +74,7 @@ public class WithdrawalDelegator {
         }
 
         String rfiWithdrawAppNo = ParamUtil.getMaskedString(bpc.request,"rfiWithdrawAppNo");
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW, "Withdrawal Application");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_WITHDRAWAL, AuditTrailConsts.FUNCTION_WITHDRAWAL);
         if (!StringUtil.isEmpty(rfiWithdrawAppNo)){
             WithdrawnDto withdrawnDto = withdrawalService.getWithdrawAppInfo(rfiWithdrawAppNo);
             ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", withdrawnDto);

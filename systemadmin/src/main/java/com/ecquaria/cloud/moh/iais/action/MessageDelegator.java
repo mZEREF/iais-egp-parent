@@ -88,8 +88,8 @@ public class MessageDelegator {
      * @throws IllegalAccessException
      */
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ERROR_MESSAGES_MANAGEMENT,
-                "Error Messages Management");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG,
+                AuditTrailConsts.FUNCTION_ERROR_MESSAGES_MANAGEMENT);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, MessageConstants.class);
         ParamUtil.setSessionAttr(request, MessageConstants.PARAM_MESSAGE_SEARCH, null);

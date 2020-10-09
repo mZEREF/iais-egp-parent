@@ -69,7 +69,7 @@ public class InspSupAddAvailabilityDelegator {
             ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", apptNonAvailabilityDateDto);
         }
 
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_ADMIN, "Inspection Sup Add Availability");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_APPOINTMENT, AuditTrailConsts.FUNCTION_NON_AVALIABLE_DATE);
     }
 
     /**

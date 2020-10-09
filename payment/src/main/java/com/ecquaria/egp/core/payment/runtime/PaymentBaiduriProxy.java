@@ -56,7 +56,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 
 	@Override
 	public void pay(BaseProcessClass bpc) throws PaymentException {
-		AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_PAYMENT, "pay");
+		AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_PAYMENT, AuditTrailConsts.FUNCTION_ONLINE_PAYMENT);
 
 		String continueToken = getContinueToken();
 		bpc.request.getSession().setAttribute(IMPL_CONTINUE_TOKEN_PREFIX + getTinyKey(), continueToken);
@@ -125,7 +125,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 
 	@Override
 	public void callBack(BaseProcessClass bpc) throws PaymentException {
-		AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_PAYMENT, "pay");
+		AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_PAYMENT, AuditTrailConsts.FUNCTION_ONLINE_PAYMENT);
 		String continueToken = (String)bpc.request.getSession().getAttribute(IMPL_CONTINUE_TOKEN_PREFIX + getTinyKey());
 		if(StringHelper.isEmpty(continueToken)){
 			throw new PaymentException("Continue token is null.");

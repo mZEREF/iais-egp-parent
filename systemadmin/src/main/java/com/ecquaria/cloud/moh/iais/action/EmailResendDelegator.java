@@ -50,7 +50,7 @@ public class EmailResendDelegator {
     public void start(BaseProcessClass bpc){
         ParamUtil.setSessionAttr(bpc.request,"resendSearchParam",null);
 
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_EMAIL_SMS_BLAST, "Email Resend ");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_BLAST_NOTIFICATIONS, AuditTrailConsts.FUNCTION_RESEND_EMAIL);
     }
     /**
      * doPrepare

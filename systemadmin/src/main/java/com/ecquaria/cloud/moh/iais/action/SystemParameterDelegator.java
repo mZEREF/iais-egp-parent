@@ -70,7 +70,7 @@ public class SystemParameterDelegator {
      * @param bpc
      */
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_PARAMETER_MANAGEMENT, "System Parameter");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG, AuditTrailConsts.FUNCTION_SYSTEM_PARAMETER_MANAGEMENT);
         HttpServletRequest request = bpc.request;
 
         ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_DOMAIN_TYPE, null);

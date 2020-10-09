@@ -81,7 +81,7 @@ public class InspectorCalendarDelegator {
 		ParamUtil.setSessionAttr(request, AppointmentConstants.IS_NEW_VIEW_DATA, AppConsts.TRUE);
 		ParamUtil.setSessionAttr(request, AppointmentConstants.SHORT_NAME_ATTR, null);
 		ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_DROP_YEAR_OPT, null);
-		AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_ADMIN, "Inspector Calendar View");
+		AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_APPOINTMENT, AuditTrailConsts.FUNCTION_INSPECTOR_CLANDAR);
 	}
 
 
