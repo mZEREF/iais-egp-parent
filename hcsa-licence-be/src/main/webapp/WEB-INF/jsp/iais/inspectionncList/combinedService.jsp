@@ -50,6 +50,7 @@
                                                                   </c:if></td>
                                                               </tr>
                                                           </c:forEach>
+                                                          <c:if test="${ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK != applicationViewDto.applicationDto.applicationType && (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status)}">
                                                           <tr id="${ckkId}serDiv${inspectorsParticipant.size()}"style="background-color:${ item.incqDto.sameAnswer ? 'white' : (empty item.incqDto.deconflict ? 'lightcoral': 'lightgreen')}">
                                                               <td>Self Assessment</td>
                                                               <td>${item.incqDto.selfAnswer}</td>
@@ -58,6 +59,7 @@
                                                               <td></td>
                                                               <td></td>
                                                           </tr>
+                                                          </c:if>
                                                           </c:forEach>
                                                           </tbody>
                                                       </table>

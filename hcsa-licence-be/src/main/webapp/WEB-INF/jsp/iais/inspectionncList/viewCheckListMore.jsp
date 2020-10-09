@@ -73,7 +73,7 @@
                                     <div style="float:left">
                                         <a class="back" href="#" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a>
                                     </div>
-                                    <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status && nowTabIn == inspectorUserFinishChecklistId}">
+                                    <c:if test="${(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status) && nowTabIn == inspectorUserFinishChecklistId}">
                                         <div style="float:right">
                                             <button class="btn btn-primary next" type="button" onclick="javascript:doSaveDraftCheckList();">Save Draft</button>
                                         </div>
