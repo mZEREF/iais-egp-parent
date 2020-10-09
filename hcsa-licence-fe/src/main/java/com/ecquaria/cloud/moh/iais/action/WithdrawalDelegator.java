@@ -156,7 +156,6 @@ public class WithdrawalDelegator {
         if (withdrawnDtoList != null && withdrawnDtoList.size() > 0){
             withdrawalService.saveWithdrawn(withdrawnDtoList);
         }
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,isValid);
     }
 
     public void withdrawDoRfi(BaseProcessClass bpc) throws IOException {
@@ -204,18 +203,7 @@ public class WithdrawalDelegator {
                 withdrawnDto.setApplicationNo(appNo);
                 withdrawnDto.setLicenseeId(loginContext.getLicenseeId());
                 withdrawnDto.setWithdrawnReason(withdrawnReason);
-                boolean remarkEmpty = true;
-                if ("WDR005".equals(withdrawnReason)){
-                    String withdrawnRemarks = ParamUtil.getRequestString(bpc.request, "withdrawnRemarks");
-                    withdrawnDto.setWithdrawnRemarks(withdrawnRemarks);
-                    if(StringUtil.isEmpty(withdrawnRemarks)){
-                        remarkEmpty = false;
-                    }
-                }
                 ValidationResult validationResult = WebValidationHelper.validateProperty(withdrawnDto,"save");
-                if(!remarkEmpty){
-                    validationResult.addMessage("withdrawnRemarks",MessageUtil.replaceMessage("GENERAL_ERR0006","Remarks for Withdrawal","field"));
-                }
                 if(validationResult != null && validationResult.isHasErrors()){
                     Map<String, String> errorMap = validationResult.retrieveAll();
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -225,6 +213,7 @@ public class WithdrawalDelegator {
                         ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",commonsMultipartFile.getFileItem().getName());
                     }
                     ParamUtil.setRequestAttr(bpc.request,"withdrawDtoView",withdrawnDto);
+                    isValid = IaisEGPConstant.NO;
                 }else{
                     if (commonsMultipartFile != null && commonsMultipartFile.getSize() > 0 ){
                         String fileRepoId = serviceConfigService.saveFileToRepo(commonsMultipartFile);
@@ -241,6 +230,7 @@ public class WithdrawalDelegator {
                 withdrawnDtoList.add(withdrawnDto);
             }
         }
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,isValid);
         return withdrawnDtoList;
     }
 }
