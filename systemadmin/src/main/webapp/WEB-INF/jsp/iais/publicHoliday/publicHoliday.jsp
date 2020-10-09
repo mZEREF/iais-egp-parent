@@ -26,26 +26,26 @@
                         <div class="row">
                             <div class="form-horizontal">
                                 <div class="form-group">
-                                    <label class="col-md-2 control-label">Year</label>
-                                    <div class="col-md-4 searchdiv">
+                                    <label class="col-md-3 control-label">Year</label>
+                                    <div class="col-md-3 searchdiv">
                                         <iais:select id="year" name="year" options="yearOption" cssClass="yearOption" firstOption="Please Select"
                                                      value="${year}"></iais:select>
                                     </div>
-                                    <label class="col-md-2 control-label">Non-working Date</label>
-                                    <div class="col-md-4">
+                                    <label class="col-md-3 control-label">Non-working Date</label>
+                                    <div class="col-md-3">
                                         <iais:datePicker id="nonWorking" name="nonWorking" value="${nonWorking}"/>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-horizontal" >
                                 <div class="form-group">
-                                    <label class="col-md-2 control-label">Description</label>
-                                    <div class="col-md-4">
+                                    <label class="col-md-3 control-label">Holiday Description</label>
+                                    <div class="col-md-3">
                                         <input id="description" name="description" type="text" maxlength="255"
                                                value="${description}">
                                     </div>
-                                    <label class="col-md-2 control-label">Status</label>
-                                    <div class="col-md-4 searchdiv">
+                                    <label class="col-md-3 control-label">Status</label>
+                                    <div class="col-md-3 searchdiv">
                                         <iais:select id="searchStatus" name="searchStatus" options="statusOption" cssClass="statusOption" firstOption="Please Select"
                                                      value="${searchStatus}"></iais:select>
                                     </div>
