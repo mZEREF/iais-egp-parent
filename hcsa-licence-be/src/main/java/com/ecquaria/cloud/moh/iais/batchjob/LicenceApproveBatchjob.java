@@ -770,7 +770,7 @@ public class LicenceApproveBatchjob {
                 licenceDto.setPremiseSize(applicationDtos.size());
                 superLicDto.setLicenceDto(licenceDto);
 
-                 originLicenceDto = deleteOriginLicenceDto(originLicenceDto,applicationType,licenceDto.getStatus());
+                 originLicenceDto = deleteOriginLicenceDto(originLicenceDto,firstApplicationDto,licenceDto.getStatus());
                 log.info(StringUtil.changeForLog("The applicationType is -->:"+ApplicationConsts.APPLICATION_TYPE_RENEWAL));
                 if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(firstApplicationDto.getApplicationType())){
                     superLicDto.setOriginLicenceDto(originLicenceDto);
@@ -889,15 +889,25 @@ public class LicenceApproveBatchjob {
         return result;
     }
 
-    private LicenceDto deleteOriginLicenceDto(LicenceDto originLicenceDto,String appType,String licenceStatus) {
+    private LicenceDto deleteOriginLicenceDto(LicenceDto originLicenceDto,ApplicationDto applicationDto,String licenceStatus) {
         log.info(StringUtil.changeForLog("The deleteOriginLicenceDto start ..."));
-        log.info(StringUtil.changeForLog("The deleteOriginLicenceDto appType is -->:"+appType));
         log.info(StringUtil.changeForLog("The deleteOriginLicenceDto licenceStatus is -->:"+licenceStatus));
+        String appType = applicationDto.getApplicationType();
+        log.info(StringUtil.changeForLog("The deleteOriginLicenceDto appType is -->:"+appType));
+        String actionFlag = applicationDto.getAlignFlag();
+        log.info(StringUtil.changeForLog("The deleteOriginLicenceDto actionFlag is -->:"+actionFlag));
         if (originLicenceDto != null) {
+            //67406
             if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)){
                 originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
             }else if(ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)){
-                originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
+                if(!ApplicationConsts.GROUP_LICENCE_FLAG_TRANSFER.equals(actionFlag)){
+                    originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
+                }else if(ApplicationConsts.GROUP_LICENCE_FLAG_ORIGIN.equals(actionFlag)){
+                    originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
+                }else{
+                    log.info(StringUtil.changeForLog("The deleteOriginLicenceDto actionFlag is -->:"+actionFlag));
+                }
             }
         }else{
             log.info(StringUtil.changeForLog("The deleteOriginLicenceDto originLicenceDto is null..."));
@@ -1010,7 +1020,7 @@ public class LicenceApproveBatchjob {
                 licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
                 superLicDto.setLicenceDto(licenceDto);
 
-                originLicenceDto = deleteOriginLicenceDto(originLicenceDto,applicationType,licenceDto.getStatus());
+                originLicenceDto = deleteOriginLicenceDto(originLicenceDto,applicationDto,licenceDto.getStatus());
                 log.info(StringUtil.changeForLog("The applicationType is -->:"+ApplicationConsts.APPLICATION_TYPE_RENEWAL));
                 if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
                     superLicDto.setOriginLicenceDto(originLicenceDto);
