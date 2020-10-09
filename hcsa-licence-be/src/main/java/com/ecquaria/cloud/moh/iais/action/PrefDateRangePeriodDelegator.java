@@ -70,7 +70,7 @@ public class PrefDateRangePeriodDelegator {
     public void preLoad(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         log.debug(StringUtil.changeForLog("Define Preferred Date Range Period START ...."));
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_APPOINTMENT,  "Define Preferred Date Range Period");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_APPOINTMENT,  AuditTrailConsts.FUNCTION_DEFINE_PREF_DATE_RANGE);
         preSelectOption(bpc.request);
 
 
@@ -292,7 +292,7 @@ public class PrefDateRangePeriodDelegator {
     public void startStep(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         log.debug(StringUtil.changeForLog("Pref Date Range Period start ...."));
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_APPOINTMENT,  "Preferred Date Range Period");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_APPOINTMENT,  AuditTrailConsts.FUNCTION_DEFINE_PREF_DATE_RANGE);
 
         ParamUtil.setSessionAttr(request, PREF_PERIOD_SEARCH , null);
         ParamUtil.setSessionAttr(request, PREF_PERIOD_RESULT , null);

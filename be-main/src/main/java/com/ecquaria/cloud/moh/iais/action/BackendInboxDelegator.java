@@ -140,7 +140,7 @@ public class BackendInboxDelegator {
         ParamUtil.setSessionAttr(bpc.request, "taskMap",null);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", null);
         ParamUtil.setSessionAttr(bpc.request, "roleIds", (Serializable) selectOptionArrayList);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INBOX, AuditTrailConsts.MODULE_INBOX);
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTRANET_DASHBOARD, AuditTrailConsts.FUNCTION_TASK_LIST);
 
     }
 
@@ -161,7 +161,6 @@ public class BackendInboxDelegator {
     public void prepareData(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchPre start ...."));
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INBOX, AuditTrailConsts.MODULE_INBOX);
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
         List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext.getCurRoleId());

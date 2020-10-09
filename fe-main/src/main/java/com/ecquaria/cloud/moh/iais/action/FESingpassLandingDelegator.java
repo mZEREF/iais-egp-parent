@@ -50,7 +50,7 @@ public class FESingpassLandingDelegator {
      * @throws
      */
     public void startStep(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction("FE Singpass Landing", "Login");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_SINGPASS_CORPASS);
     }
 
     public void redirectToCorppass(BaseProcessClass bpc){
@@ -66,7 +66,7 @@ public class FESingpassLandingDelegator {
     public void singpassCallBack(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         log.info("singpassCallBack===========>>>Start");
-        AuditTrailHelper.auditFunction("FE Landing SingPass", "Login");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_SINGPASS_CORPASS);
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
         String identityNo;
         String scp = null;

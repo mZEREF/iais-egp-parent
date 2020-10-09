@@ -38,7 +38,7 @@ public class HcsaRiskLicenceTenureConfigDelegator {
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_RISK_SCORE_MANAGEMENT, "License Tenure Risk Configuration");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG, AuditTrailConsts.FUNCTION_RISK_SCORE_MANAGEMENT);
         HttpServletRequest request = bpc.request;
 
     }

@@ -58,7 +58,7 @@ public class CessationApplicationBeDelegator {
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>CessationApplicationDelegator");
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CESSATION, "Cessation Application");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CESSATION, AuditTrailConsts.FUNCTION_CESSATION);
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, null);
         ParamUtil.setSessionAttr(bpc.request, "specLicInfo", null);
         ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag",null);

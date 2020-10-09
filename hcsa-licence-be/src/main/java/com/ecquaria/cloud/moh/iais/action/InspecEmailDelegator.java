@@ -133,7 +133,7 @@ public class InspecEmailDelegator {
             }
 
         }
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, " Inspection Task");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_MAIL);
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
         if( taskDto == null) {
             return;

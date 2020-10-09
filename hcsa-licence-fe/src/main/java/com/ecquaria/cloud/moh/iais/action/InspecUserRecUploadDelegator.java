@@ -91,7 +91,7 @@ public class InspecUserRecUploadDelegator {
         inspSetMaskValueDto.setSqlFileSize(sysFileSize);
         inspSetMaskValueDto.setSqlFileType(sysFileTypes);
         ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", inspSetMaskValueDto);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_RECTIFICATION, "Upload Doc Rectification");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_RECTIFICATION);
         ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, messageId);
     }
 

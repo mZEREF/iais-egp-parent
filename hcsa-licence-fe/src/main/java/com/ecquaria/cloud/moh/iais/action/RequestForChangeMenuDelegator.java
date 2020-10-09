@@ -115,7 +115,7 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do start start ...."));
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
         premiseFilterParameter.setPageSize(SysParamUtil.getDefaultPageSize());
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, "menu");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_PREMISES_LIST);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
@@ -143,7 +143,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
         ParamUtil.setSessionAttr(bpc.request, ACKMESSAGE, null);
-        AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_PERSONAL_LIST);
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         log.debug(StringUtil.changeForLog("the do personnleListStart end ...."));
     }

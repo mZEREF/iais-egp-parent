@@ -20,7 +20,7 @@ public class HcsaRiskConfigDelegator {
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_RISK_SCORE_MANAGEMENT, "Risk Score Configuration Menu");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG, AuditTrailConsts.FUNCTION_RISK_SCORE_MANAGEMENT);
     }
 
     public void init(BaseProcessClass bpc){

@@ -75,7 +75,7 @@ public class RegulationDelegator {
      * @author: yichen
      */
     public void startStep(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CHECKLIST_MANAGEMENT,  "Checklist Regulation");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CHECKLIST_MANAGEMENT,  AuditTrailConsts.FUNCTION_CHECKLIST_REGULATION);
         ParamUtil.setSessionAttr(bpc.request, "isUpdate", null);
 
         ParamUtil.setSessionAttr(bpc.request, HcsaRegulationConstants.PARAM_SEARCH, null);

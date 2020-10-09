@@ -84,7 +84,7 @@ public class ResponseForInformationDelegator {
         ParamUtil.setSessionAttr(request,"msg_action_type",messageDto.getMessageType());
         ParamUtil.setSessionAttr(request,"IAIS_MSG_CONTENT",messageDto.getMsgContent());
         ParamUtil.setSessionAttr(request,"licenseeId",licenseeId);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_INFORMATION, "Request For Information Config");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY, AuditTrailConsts.FUNCTION_REQUEST_FOR_INFORMATION);
         // 		Start->OnStepProcess
     }
 

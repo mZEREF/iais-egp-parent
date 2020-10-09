@@ -75,7 +75,7 @@ public class InspTeamNonWorkingDayDelegator {
 	public void startStep(BaseProcessClass bpc) {
 		HttpServletRequest request = bpc.request;
 
-		AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_APPOINTMENT, "Non working day");
+		AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG, AuditTrailConsts.FUNCTION_NONWORKING_DAY);
 
 		ParamUtil.setSessionAttr(request, NON_WKR_DAY_LIST_ATTR, null);
 //		ParamUtil.setSessionAttr(request, CURRENT_SHORT_NAME, null);

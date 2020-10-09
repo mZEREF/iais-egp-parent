@@ -111,7 +111,7 @@ public class InspectionPreDelegator {
             }
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  "Pre Inspection Task");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  AuditTrailConsts.FUNCTION_PRE_INSPECTION);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", null);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", null);

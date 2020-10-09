@@ -38,7 +38,8 @@ public class DirectorDeclare {
      * @throws
      */
     public void doStart(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, "Director Declare");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT,
+                AuditTrailConsts.FUNCTION_DIRECTOR_DECLARE);
         log.debug("****doStart Process ****");
     }
 

@@ -73,7 +73,7 @@ public class ApptConfirmReSchDateDelegator {
         String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         InspSetMaskValueDto inspSetMaskValueDto = new InspSetMaskValueDto();
         inspSetMaskValueDto.setApplicationNo(applicationNo);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW, "Appointment Re-Scheduling Confirm date");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_APPOINTMENT, AuditTrailConsts.FUNCTION_RESCHEDULE);
         ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", inspSetMaskValueDto);
         ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, messageId);
     }

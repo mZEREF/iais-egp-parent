@@ -156,7 +156,7 @@ public class OfficerOnlineEnquiriesDelegator {
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_APPOINTMENT,  "Online Enquiries Config");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY);
         ParamUtil.setSessionAttr(request,"isASO",0);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         for (String role:loginContext.getRoleIds()

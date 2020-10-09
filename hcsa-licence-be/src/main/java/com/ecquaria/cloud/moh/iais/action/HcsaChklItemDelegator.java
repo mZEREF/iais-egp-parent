@@ -90,7 +90,7 @@ public class HcsaChklItemDelegator {
      * @throws IllegalAccessException
      */
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CHECKLIST_MANAGEMENT, "Checklist Item");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CHECKLIST_MANAGEMENT, AuditTrailConsts.FUNCTION_CHECKLIST_ITEM);
         HttpServletRequest request = bpc.request;
 
 

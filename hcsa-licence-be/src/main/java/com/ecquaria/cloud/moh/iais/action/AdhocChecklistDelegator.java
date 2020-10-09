@@ -8,6 +8,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.AdhocChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -97,8 +98,8 @@ public class AdhocChecklistDelegator {
             ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(refNo);
             if (applicationViewDto != null) {
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-                AuditTrailHelper.auditFunctionWithAppNo("Pre-Inspection",
-                        "Adhoc Checklist", applicationDto.getApplicationNo());
+                AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION,
+                        AuditTrailConsts.FUNCTION_ADHOC_CHECKLIST, applicationDto.getApplicationNo());
                 if (inspectionChecklist == null) {
                     inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
                 }

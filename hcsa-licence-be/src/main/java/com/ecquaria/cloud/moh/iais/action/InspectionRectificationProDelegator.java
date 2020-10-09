@@ -121,7 +121,7 @@ public class InspectionRectificationProDelegator {
             }
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  "Inspector Processing Rectification");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  AuditTrailConsts.FUNCTION_INSPECTION_RECTIFICATION);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
     }
 

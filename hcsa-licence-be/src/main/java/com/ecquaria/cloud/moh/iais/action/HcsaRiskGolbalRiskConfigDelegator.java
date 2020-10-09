@@ -36,7 +36,7 @@ public class HcsaRiskGolbalRiskConfigDelegator {
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_RISK_SCORE_MANAGEMENT, "Global Risk Configuration");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG, AuditTrailConsts.FUNCTION_GLOBAL_RISK_CONFIG);
     }
 
     public void init(BaseProcessClass bpc) {

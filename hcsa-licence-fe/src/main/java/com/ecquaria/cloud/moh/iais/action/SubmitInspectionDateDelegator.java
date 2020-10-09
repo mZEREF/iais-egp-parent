@@ -41,7 +41,7 @@ public class SubmitInspectionDateDelegator {
      */
     public void startStep(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>SubmitInspectionDateDelegator");
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW, "Submit Inspection Date");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_SUBMIT_PRE_INSPECT_DATE);
     }
 
 

@@ -96,7 +96,7 @@ public class RequestForChangeDelegator {
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
         String licenceId = ParamUtil.getMaskedString(bpc.request, "licenceId");
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, "amend application");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, null);
         ParamUtil.setSessionAttr(bpc.request,"SvcName",null);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);

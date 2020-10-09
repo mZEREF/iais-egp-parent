@@ -43,7 +43,7 @@ public class AuditTcuListDelegator {
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT, "TCU Audit List");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_TCU_AUDIT_LIST);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -127,7 +127,7 @@ public class AuditTcuListDelegator {
         } else {
             ParamUtil.setRequestAttr(request, SUBMIT_MESSAGE_SUCCESS, MessageUtil.getMessageDesc("AUDIT_ACK002"));
             ParamUtil.setRequestAttr(request, MAIN_URL, "MohAduitTcuList");
-            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "cancel tasks");
+            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_CANCEL_AUDIT_INSP);
             // save cancel task
              auditSystemListService.doCancel(auditTaskDataDtos);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);

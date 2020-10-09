@@ -77,7 +77,7 @@ public class SystemSearchAssignPoolDelegator {
      */
     public void systemPoolAssignStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the systemPoolAssignStart start ...."));
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SERVICE_CONFIGURATOR,  "System Task Assign Pool");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_LOAD_LEVELING,  AuditTrailConsts.FUNCTION_SYS_ADMIN_ASSIGNMENT);
     }
 
     /**

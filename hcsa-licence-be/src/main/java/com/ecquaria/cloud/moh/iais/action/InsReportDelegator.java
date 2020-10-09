@@ -77,11 +77,11 @@ public class InsReportDelegator {
             log.error(e.getMessage(),e);
             bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
         }
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  "Inspection Report");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_REPORT);
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(correlationId);
-        AuditTrailHelper.auditFunctionWithAppNo("Inspection Report", "Inspector generate Report", applicationViewDto.getApplicationDto().getApplicationNo());
+        AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_REPORT, applicationViewDto.getApplicationDto().getApplicationNo());
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");

@@ -62,7 +62,7 @@ public class LicenseeCompanyDelegate {
         }
         //if pop html,cant add audit
         if(!"pop".equals(flag)){
-            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INBOX, "licensee company");
+            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTERNAL_INBOX, AuditTrailConsts.FUNCTION_LICENSEE_COMPANY);
         }
 
         log.debug("****preparePage Process ****");

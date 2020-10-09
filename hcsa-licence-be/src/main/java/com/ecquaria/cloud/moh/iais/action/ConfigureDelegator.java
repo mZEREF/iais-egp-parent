@@ -47,7 +47,7 @@ public class ConfigureDelegator {
      * @throws
      */
     public void start(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SERVICE_CONFIGURATOR, "Assign Report");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG, AuditTrailConsts.FUNCTION_SERVICE_CONFIGURATOR);
 
         HttpServletRequest request = bpc.request;
         stageNames = configureService.listStage();

@@ -72,7 +72,7 @@ public class OfficersReSchedulingDelegator {
      */
     public void mohOfficerReSchedulingStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingStart start ...."));
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  "Moh Officer Rescheduling");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  AuditTrailConsts.FUNCTION_RESCHEDULE);
     }
 
     /**

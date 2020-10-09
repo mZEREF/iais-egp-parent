@@ -78,7 +78,7 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorStart start ...."));
         log.info(StringUtil.changeForLog("Step 1 ==============>" + bpc.request.getSession().getId()));
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "Assign Task");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_LOAD_LEVELING, AuditTrailConsts.FUNCTION_COMMON_POOL);
     }
 
     /**

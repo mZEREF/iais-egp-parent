@@ -84,7 +84,7 @@ public class InspecReassignTaskDelegator {
      */
     public void inspectionSupSearchStart(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchStart start ...."));
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "Reassign Task");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_LOAD_LEVELING, AuditTrailConsts.FUNCTION_REASSIGN_TASK);
     }
 
     /**

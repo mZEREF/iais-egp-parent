@@ -81,7 +81,7 @@ public class InspectionSearchDelegator {
      */
     public void inspectionSupSearchStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchStart start ...."));
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  "Sup Assign Task");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_LOAD_LEVELING,  AuditTrailConsts.FUNCTION_SUPERVISOR_ASSIGNMENT);
     }
 
     /**

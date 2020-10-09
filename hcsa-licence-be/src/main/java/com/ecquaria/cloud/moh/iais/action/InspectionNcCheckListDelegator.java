@@ -122,7 +122,7 @@ public class InspectionNcCheckListDelegator {
 
         }
 
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "Nc Checklist");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_CHECKLIST);
         TaskDto taskDto = taskService.getTaskById(taskId);
         if( taskDto == null) return;
         String appPremCorrId = taskDto.getRefNo();

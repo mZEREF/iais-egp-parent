@@ -67,7 +67,8 @@ public class ApptConfirmSpecificDateDelegator {
         InspSetMaskValueDto inspSetMaskValueDto = new InspSetMaskValueDto();
         inspSetMaskValueDto.setAppPremCorrId(appPremCorrId);
         ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", inspSetMaskValueDto);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW, "Appointment Confirm Specific Date");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_APPOINTMENT,
+                AuditTrailConsts.FUNCTION_CONFIRM_APPOINTMENT);
         ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, messageId);
     }
 

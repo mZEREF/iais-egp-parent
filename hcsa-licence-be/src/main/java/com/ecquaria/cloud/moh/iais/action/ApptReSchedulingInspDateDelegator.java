@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -109,7 +110,7 @@ public class ApptReSchedulingInspDateDelegator {
             ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
             apptInspectionDateDto = new ApptInspectionDateDto();
             apptInspectionDateDto = apptInspectionDateService.getApptSpecificDate(taskDto.getId(), apptInspectionDateDto);
-            AuditTrailHelper.auditFunctionWithAppNo("Re-Scheduling Appointment Inspection Date", "Re-Scheduling Appointment Inspection Date",
+            AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_RESCHEDULE,
                     applicationViewDto.getApplicationDto().getApplicationNo());
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
             ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);

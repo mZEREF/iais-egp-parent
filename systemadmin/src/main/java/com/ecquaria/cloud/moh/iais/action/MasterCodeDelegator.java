@@ -87,7 +87,7 @@ public class MasterCodeDelegator {
     public void doStart(BaseProcessClass bpc) {
         logAboutStart("doStart");
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_ADMIN, "MasterCode Function");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG, AuditTrailConsts.FUNCTION_MASTER_CODE_MANAGEMENT);
         ParamUtil.setSessionAttr(request, MasterCodeConstants.SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(request, MasterCodeConstants.SEARCH_RESULT, null);
         ParamUtil.setSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, null);

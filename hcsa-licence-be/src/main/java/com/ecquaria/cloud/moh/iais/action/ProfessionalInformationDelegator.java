@@ -101,7 +101,7 @@ public class ProfessionalInformationDelegator {
 	public void startStep(BaseProcessClass bpc){
 		HttpServletRequest request = bpc.request;
 		log.debug(StringUtil.changeForLog("Search by professional information start ...."));
-		AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_ADMIN,  "Search by professional information");
+		AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG,  AuditTrailConsts.FUNCTION_SEARCH_BY_PROF);
 
 		ParamUtil.setSessionAttr(request, "name", null);
 		ParamUtil.setSessionAttr(request, "profRegNo", null);

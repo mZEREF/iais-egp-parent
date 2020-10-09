@@ -106,7 +106,7 @@ public class HcsaChklConfigDelegator {
      * @throws IllegalAccessException
      */
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CHECKLIST_MANAGEMENT, "Checklist Config");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CHECKLIST_MANAGEMENT, AuditTrailConsts.FUNCTION_CHECKLIST_CONFIG);
         HttpServletRequest request = bpc.request;
 
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, null);

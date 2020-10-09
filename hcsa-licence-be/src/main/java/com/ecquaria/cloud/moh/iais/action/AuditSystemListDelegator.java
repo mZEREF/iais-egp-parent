@@ -52,7 +52,7 @@ public class AuditSystemListDelegator {
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT, "System Audit List");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_SYSTEM_AUDIT_LIST);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -143,7 +143,7 @@ public class AuditSystemListDelegator {
     public void listpageNext(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT, "hcsa application");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_SYSTEM_AUDIT_LIST);
     }
 
     public void remove(BaseProcessClass bpc) {
@@ -214,13 +214,13 @@ public class AuditSystemListDelegator {
     public void precreatehcl(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT, "Audit System pre create checklist");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_SYSTEM_AUDIT_LIST);
     }
 
     public void precanceltask(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT, "Audit System cancel task");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_CANCEL_AUDIT_INSP);
         getListData(request);
         AuditAssginListValidate auditAssginListValidate = new AuditAssginListValidate();
         Map<String, String> errMap = auditAssginListValidate.validate(request);
@@ -241,14 +241,14 @@ public class AuditSystemListDelegator {
         auditSystemListService.doSubmit(auditTaskDataDtos);
         ParamUtil.setRequestAttr(request,SUBMIT_MESSAGE_SUCCESS,MessageUtil.getMessageDesc("AUDIT_ACK001"));
         ParamUtil.setRequestAttr(request,MAIN_URL,"MohAduitSystemList");
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT, "Audit System submit");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_SYSTEM_AUDIT_LIST);
 
     }
 
     public void createhcl(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT, "Audit System createhcl");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_SYSTEM_AUDIT_LIST);
     }
 
     public void canceltask(BaseProcessClass bpc) {
@@ -263,7 +263,7 @@ public class AuditSystemListDelegator {
         }else {
             ParamUtil.setRequestAttr(request,SUBMIT_MESSAGE_SUCCESS,MessageUtil.getMessageDesc("AUDIT_ACK002"));
             ParamUtil.setRequestAttr(request,MAIN_URL,"MohAduitSystemList");
-            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT, "cencel task");
+            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_CANCEL_AUDIT_INSP);
             // save cancel task
             auditSystemListService.doCancel(auditTaskDataDtos);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);

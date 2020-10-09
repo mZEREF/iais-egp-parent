@@ -2606,7 +2606,7 @@ public class HcsaApplicationDelegator {
             bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
         }
 
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_APPLICATION_MAIN_FLOW, "licence");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_LOAD_LEVELING, AuditTrailConsts.FUNCTION_APPLICATION_MAIN_FLOW);
         TaskDto taskDto = taskService.getTaskById(taskId);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
         String roleId = "";

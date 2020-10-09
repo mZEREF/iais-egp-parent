@@ -75,7 +75,8 @@ public class FECorppassLandingDelegator {
         log.info("corppassCallBack===========>>>Start");
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
 
-        AuditTrailHelper.auditFunction("FE Landing CorpPass", "login");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION,
+                AuditTrailConsts.FUNCTION_SINGPASS_CORPASS);
 
         String uen;
         String identityNo;

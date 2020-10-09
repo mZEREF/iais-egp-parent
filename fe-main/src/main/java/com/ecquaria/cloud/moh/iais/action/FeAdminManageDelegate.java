@@ -56,7 +56,7 @@ public class FeAdminManageDelegate {
      */
     public void doStart(BaseProcessClass bpc){
         log.debug("****doStart Process ****");
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, AuditTrailConsts.MODULE_USER_MANAGEMENT);
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, AuditTrailConsts.FUNCTION_USER_MANAGEMENT);
     }
 
     /**

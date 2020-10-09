@@ -35,7 +35,7 @@ public class HcsaRiskLeadershipConfigDelegator {
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_RISK_SCORE_MANAGEMENT, "Leadership Risk Configuration");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG, AuditTrailConsts.FUNCTION_LEADERSHIP_RISK_CONFIG);
 
     }
 

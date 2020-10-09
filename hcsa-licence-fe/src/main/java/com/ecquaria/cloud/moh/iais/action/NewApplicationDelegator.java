@@ -238,7 +238,7 @@ public class NewApplicationDelegator {
         String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
         //for rfi loading
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW, "application");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
         //clear Session
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
         //Primary Documents

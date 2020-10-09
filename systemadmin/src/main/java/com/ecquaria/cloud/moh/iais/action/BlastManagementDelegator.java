@@ -82,7 +82,7 @@ public class BlastManagementDelegator {
 
     public void start(BaseProcessClass bpc){
 
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_EMAIL_SMS_BLAST, "Blast Management ");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_BLAST_NOTIFICATIONS, AuditTrailConsts.FUNCTION_BLAST_MANAGEMENT);
 
         SearchParam searchParam = getSearchParam(bpc.request,true);
         ParamUtil.setSessionAttr(bpc.request, "blastmanagementSearchParam", searchParam);

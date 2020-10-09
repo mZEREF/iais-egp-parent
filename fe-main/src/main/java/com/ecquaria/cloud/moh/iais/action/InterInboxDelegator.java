@@ -107,7 +107,7 @@ public class InterInboxDelegator {
         interInboxUserDto.setUserDomain(loginContext.getUserDomain());
         log.debug(StringUtil.changeForLog("Login role information --->> ##User-Id:"+interInboxUserDto.getUserId()+"### Licensee-Id:"+interInboxUserDto.getLicenseeId()));
         ParamUtil.setSessionAttr(bpc.request,InboxConst.INTER_INBOX_USER_INFO, interInboxUserDto);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INBOX, AuditTrailConsts.MODULE_INBOX);
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTERNAL_INBOX, AuditTrailConsts.FUNCTION_INBOX);
     }
 
     public void initToPage(BaseProcessClass bpc){

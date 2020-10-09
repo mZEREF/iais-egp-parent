@@ -97,7 +97,7 @@ public class RequestForInformationDelegator {
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_INFORMATION, "Request For Information Config");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY, AuditTrailConsts.FUNCTION_REQUEST_FOR_INFORMATION);
 
         List<String> licenceIds = (List<String>) ParamUtil.getSessionAttr(request, "licRfiIds");
         if(licenceIds.size()==0){

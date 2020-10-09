@@ -81,11 +81,11 @@ public class InsReportAoDelegator {
             log.error(e.getMessage(),e);
             bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
         }
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  "Inspection AO Report");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  AuditTrailConsts.FUNCTION_INSPECTION_REPORT);
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(correlationId);
-        AuditTrailHelper.auditFunctionWithAppNo("Inspection Report", "AO1 process Report",
+        AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_REPORT,
                 applicationViewDto.getApplicationDto().getApplicationNo());
         InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
         InspectionReportDto inspectorAo = insRepService.getInspectorAo(taskDto, applicationViewDto);
