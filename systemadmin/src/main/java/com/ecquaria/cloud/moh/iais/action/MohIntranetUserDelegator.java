@@ -661,7 +661,6 @@ public class MohIntranetUserDelegator {
 
     private void transform(OrgUserDto orgUserDto) {
         String branchUnit = orgUserDto.getBranchUnit();
-        String designation = orgUserDto.getDesignation();
         String division = orgUserDto.getDivision();
         String firstName = orgUserDto.getFirstName();
         String lastName = orgUserDto.getLastName();
@@ -674,9 +673,6 @@ public class MohIntranetUserDelegator {
 
         if (StringUtil.isEmpty(branchUnit)) {
             orgUserDto.setBranchUnit(null);
-        }
-        if (StringUtil.isEmpty(designation)) {
-            orgUserDto.setDesignation(null);
         }
         if (StringUtil.isEmpty(division)) {
             orgUserDto.setDivision(null);
@@ -927,6 +923,7 @@ public class MohIntranetUserDelegator {
         if (!StringUtil.isEmpty(status)) {
             searchParam.addFilter("status", status, true);
         }
+        searchParam.setPageNo(1);
         QueryHelp.setMainSql("systemAdmin", "IntranetUserQuery", searchParam);
         SearchResult searchResult = intranetUserService.doQuery(searchParam);
         ParamUtil.setSessionAttr(request, IntranetUserConstant.SEARCH_PARAM, searchParam);

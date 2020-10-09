@@ -157,7 +157,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="mobileNo">Mobile No:</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="mobileNo">Mobile No:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="mobileNo" type="text" maxLength="8" name="mobileNo"
@@ -167,7 +167,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="officeNo">Office No:</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="officeNo">Office No:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="officeNo" type="text" maxLength="8" name="officeNo"
