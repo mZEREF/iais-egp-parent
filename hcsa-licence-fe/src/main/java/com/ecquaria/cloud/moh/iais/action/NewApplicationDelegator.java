@@ -117,6 +117,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.HEAD;
 import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
