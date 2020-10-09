@@ -481,8 +481,13 @@
               <option value="optional" <c:if test="${routingStage.isMandatory=='false'}">selected="selected"</c:if>>Optional</option>
             </select>
             <span name="iaisErrorMsg" class="error-msg" id="error_isMandatory${routingStages.key}${status.index}"></span>
-          </div>
+            <br>
+            <c:if test="${routingStage.stageCode=='AO1'|| routingStage.stageCode=='AO2'}">
+              <input type="hidden" value="${routingStage.canApprove}" name="canApprove${routingStage.stageCode}${routingStages.key}">
+              <input type="checkbox"  <c:if test="${routingStage.canApprove=='1'}">checked</c:if> onclick="canApprove(this)" /><span>&nbsp;Can Approve ?</span>
+            </c:if>
 
+          </div>
           <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%;text-align:left">
             <select  name="RoutingScheme${routingStage.stageCode}${routingStages.key}"  >
               <option value="" >Please Select</option>
@@ -1086,5 +1091,13 @@
         }
     }
 
+    function canApprove(obj) {
+
+      if(obj.checked ==true){
+          $(obj).prev().val('1');
+      }else {
+          $(obj).prev().val('0');
+      }
+    }
 </script>
 </>

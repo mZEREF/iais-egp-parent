@@ -144,6 +144,7 @@ public class LicenceViewServiceDelegator {
      * @throws
      */
     public void PrepareViewData(BaseProcessClass bpc) throws Exception {
+        // licence AppSubmissionDto doucument add md5
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData start ..."));
         ParamUtil.setSessionAttr(bpc.request, "appealSpecialDocDto",null);
         String rfi = bpc.request.getParameter("rfi");
@@ -596,6 +597,7 @@ public class LicenceViewServiceDelegator {
                         appGrpPrimaryDocDto.setAppGrpId(appSubmissionDto.getAppGrpId());
                         appGrpPrimaryDocDto.setDocSize(appSvcDocDto.getDocSize());
                         appGrpPrimaryDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
+                        appGrpPrimaryDocDto.setMd5Code(appSvcDocDto.getMd5Code());
                         appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
                         appSvcDocDtos.add(appSvcDocDto);
                     }
@@ -1539,6 +1541,7 @@ public class LicenceViewServiceDelegator {
             for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : oldAppGrpPrimaryDocDtos) {
                 AppGrpPrimaryDocDto primaryDocDto =new AppGrpPrimaryDocDto();
                 primaryDocDto.setSvcDocId(appGrpPrimaryDocDto.getSvcDocId());
+                primaryDocDto.setFileRepoId(appGrpPrimaryDocDto.getFileRepoId());
                 appGrpPrimaryDocDtos.add(primaryDocDto);
             }
 
@@ -1547,6 +1550,7 @@ public class LicenceViewServiceDelegator {
             for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){
                 AppGrpPrimaryDocDto primaryDocDto =new AppGrpPrimaryDocDto();
                 primaryDocDto.setSvcDocId(appGrpPrimaryDocDto.getSvcDocId());
+                primaryDocDto.setFileRepoId(appGrpPrimaryDocDto.getFileRepoId());
                 oldAppGrpPrimaryDocDtos.add(primaryDocDto);
             }
 
@@ -1575,6 +1579,7 @@ public class LicenceViewServiceDelegator {
                 copyAppGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
                 AppGrpPrimaryDocDto primaryDocDto =new AppGrpPrimaryDocDto();
                 primaryDocDto.setSvcDocId(appGrpPrimaryDocDto.getSvcDocId());
+                primaryDocDto.setFileRepoId(appGrpPrimaryDocDto.getFileRepoId());
                 copyOldAppGrpPrimaryDocDtos.add(primaryDocDto);
             }
         }
@@ -1588,6 +1593,7 @@ public class LicenceViewServiceDelegator {
             for(AppSvcDocDto appSvcDocDto : oldAppSvcDocDtoLit){
                 AppSvcDocDto svcDocDto=new AppSvcDocDto();
                 svcDocDto.setSvcDocId(appSvcDocDto.getSvcDocId());
+                svcDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
                 appSvcDocDtoLit.add(svcDocDto);
             }
         }else if(appSvcDocDtoLit!=null&&oldAppSvcDocDtoLit==null){
@@ -1595,6 +1601,7 @@ public class LicenceViewServiceDelegator {
             for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLit){
                 AppSvcDocDto svcDocDto=new AppSvcDocDto();
                 svcDocDto.setSvcDocId(appSvcDocDto.getSvcDocId());
+                svcDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
                 oldAppSvcDocDtoLit.add(svcDocDto);
             }
         }else if(appSvcDocDtoLit!=null&&oldAppSvcDocDtoLit!=null){
@@ -1625,6 +1632,7 @@ public class LicenceViewServiceDelegator {
                 copyAppSvcDocDtos.add(appSvcDocDto);
                 AppSvcDocDto svcDocDto =new AppSvcDocDto();
                 svcDocDto.setSvcDocId(appSvcDocDto.getSvcDocId());
+                svcDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
                 copyOldAppSvcDocDtos.add(svcDocDto);
             }
         }

@@ -1599,13 +1599,13 @@
 
                           <div class="col-xs-6">
                             <c:if test="${svcDoc.docSize!=null}">
-                              <span class="newVal " attr="${svcDoc.docSize}${svcDoc.docName}" >
+                              <span class="newVal " attr="${svcDoc.md5Code}${svcDoc.fileRepoId}${svcDoc.docName}" >
                                     <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
                                       value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}" title="Download" class="downloadFile">${svcDoc.docName}</a> <c:out value="(${svcDoc.docSize})KB"/>
                                    </span>
                             </c:if>
                             <c:if test="${svcDoc.docSize==null}">
-                              <span class="newVal " attr="${svcDoc.docSize}${svcDoc.docName}" >
+                              <span class="newVal " attr="${svcDoc.md5Code}${svcDoc.fileRepoId}${svcDoc.docName}" >
 
                               </span>
                             </c:if>
@@ -1613,7 +1613,7 @@
                           <div class="col-xs-6">
 
                             <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize!=null}">
-                                  <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize}${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}" style="display: none">
+                                  <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].md5Code}${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].fileRepoId}${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}" style="display: none">
                                   <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].fileRepoId}"/>&fileRepoName=${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}" title="Download" class="downloadFile">
                                       ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}
                                   </a>
@@ -1621,7 +1621,7 @@
                                 </span>
                             </c:if>
                               <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize==null}">
-                                <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize}${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}" style="display: none">
+                                <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].md5Code}${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].fileRepoId}${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}" style="display: none">
 
                                 </span>
                             </c:if>

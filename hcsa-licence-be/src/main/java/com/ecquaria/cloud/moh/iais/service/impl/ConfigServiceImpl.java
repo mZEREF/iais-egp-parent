@@ -185,14 +185,9 @@ public class ConfigServiceImpl implements ConfigService {
                 premisesSet.add(hcsaSvcSpePremisesTypeDto.getPremisesType());
             }
 
-            List<HcsaConfigPageDto> hcsaConfigPageDtos = (List<HcsaConfigPageDto>) request.getAttribute("hcsaConfigPageDtos");
             request.setAttribute("PremisesType", premisesSet);
             request.setAttribute("hcsaServiceDto", hcsaServiceDto);
             request.setAttribute("crud_action_type", "dovalidate");
-            Map<String, List<HcsaConfigPageDto>> map = IaisCommonUtils.genNewHashMap();
-
-            map.put("APTY002",hcsaConfigPageDtos);
-            request.setAttribute("routingStagess", map);
             request.setAttribute("errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             return;
         }
@@ -995,11 +990,13 @@ public class ConfigServiceImpl implements ConfigService {
                 String workingGroupId = hcsaConfigPageDtos1.get(i).getWorkingGroupId();
                 String routingSchemeName = hcsaConfigPageDtos1.get(i).getRoutingSchemeName();
                 String isMandatory = hcsaConfigPageDtos1.get(i).getIsMandatory();
+                String canApprove = hcsaConfigPageDtos1.get(i).getCanApprove();
                 hcsaConfigPageDtos.get(i).setManhours(manhours);
                 hcsaConfigPageDtos.get(i).setStage(stage);
                 hcsaConfigPageDtos.get(i).setWorkingGroupId(workingGroupId);
                 hcsaConfigPageDtos.get(i).setRoutingSchemeName(routingSchemeName);
                 hcsaConfigPageDtos.get(i).setIsMandatory(isMandatory);
+                hcsaConfigPageDtos.get(i).setCanApprove(canApprove);
             }
         }
     }

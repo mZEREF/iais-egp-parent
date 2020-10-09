@@ -29,4 +29,5 @@ public class HcsaConfigPageDto implements Serializable {
     private String stageId;
     private String appTypeName;
     private String isMandatory;
+    private String canApprove;
 }
