@@ -1898,16 +1898,17 @@ public class HcsaApplicationDelegator {
                 List<ApplicationDto> saveApplicationDtoList = IaisCommonUtils.genNewArrayList();
                 CopyUtil.copyMutableObjectList(applicationDtoList,saveApplicationDtoList);
                 applicationDtoList = removeFastTrackingAndTransfer(applicationDtoList);
+                String ao1Ao2Approve = (String)ParamUtil.getSessionAttr(bpc.request,"Ao1Ao2Approve");
+                boolean isAo1Ao2Approve = "Y".equals(ao1Ao2Approve);
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
                         ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
-                if(isAllSubmit || applicationDto.isFastTracking()){
+                if(isAllSubmit || applicationDto.isFastTracking() || isAo1Ao2Approve){
 //                    if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
 //                        doWithdrawal(applicationDto.getId(),broadcastOrganizationDto,broadcastApplicationDto);
 //                    }
-//                    String ao1Ao2Approve = (String)ParamUtil.getSessionAttr(bpc.request,"Ao1Ao2Approve");
-//                    if("Y".equals(ao1Ao2Approve)){
-//
-//                    }
+                    if(isAo1Ao2Approve){
+                        doAo1Ao2Approve(broadcastOrganizationDto,broadcastApplicationDto,applicationDto);
+                    }
                     //update application Group status
                     ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                     broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
@@ -1999,8 +2000,44 @@ public class HcsaApplicationDelegator {
         log.info(StringUtil.changeForLog("The routingTask end ..."));
     }
 
-    private void doAo1Ao2Approve(BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto){
-
+    private void doAo1Ao2Approve(BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto, ApplicationDto applicationDto) throws FeignException {
+        String appGrpId = applicationDto.getAppGrpId();
+        String applicationNo = applicationDto.getApplicationNo();
+        String status = applicationDto.getStatus();
+        String appId = applicationDto.getId();
+        List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(appGrpId);
+        if(IaisCommonUtils.isEmpty(applicationDtoList) || applicationDtoList.size() == 1){
+            return;
+        }else{
+           boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationNo,
+                   ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+            boolean isAllSubmitAO3 = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationNo,
+                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+            if(!(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(status))
+                    || (isAllSubmitAO3 && (ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(status)))) {
+                if (isAllSubmit) {
+                    String stageId = HcsaConsts.ROUTING_STAGE_AO3;
+                    String roleId = RoleConsts.USER_ROLE_AO3;
+                    updateCurrentApplicationStatus(applicationDtoList, appId, status);
+                    List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+                    List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+                    List<ApplicationDto> creatTaskApplicationList = ao2AppList;
+                    if (IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)) {
+                        creatTaskApplicationList = ao3AppList;
+                    } else {
+                        stageId = HcsaConsts.ROUTING_STAGE_AO2;
+                        roleId = RoleConsts.USER_ROLE_AO2;
+                    }
+                    // send the task to Ao2  or Ao3
+                    TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
+                            stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto());
+                    List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
+                    List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+                    broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
+                    broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
+                }
+            }
+        }
     }
 
     private void doWithdrawal(String appId, BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto) throws FeignException {
