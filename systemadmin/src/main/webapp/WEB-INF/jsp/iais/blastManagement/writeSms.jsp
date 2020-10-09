@@ -35,7 +35,7 @@
                         <div class="form-group">
                             <iais:field value="Select Recipients" required="true"/>
                             <iais:value width="10">
-                                <iais:select name="distribution" firstOption="Please Select" options="distribution" value=""></iais:select>
+                                <iais:select name="distribution" firstOption="Please Select" options="distribution" value="${edit.getDistributionId()}"></iais:select>
                             </iais:value>
                         </div>
 

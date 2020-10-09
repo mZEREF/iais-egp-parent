@@ -656,6 +656,7 @@ public class BlastManagementDelegator {
     }
 
     public void saveSms(BaseProcessClass bpc){
+        ParamUtil.setSessionAttr(bpc.request,"BlastManagementStep","saveSms");
         BlastManagementDto blastManagementDto = (BlastManagementDto)ParamUtil.getSessionAttr(bpc.request,"blastManagementDto");
         String action = ParamUtil.getString(bpc.request, "action");
         String subject = ParamUtil.getString(bpc.request, "subject");
@@ -678,6 +679,7 @@ public class BlastManagementDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "save");
             }
         }else{
+            ParamUtil.setSessionAttr(bpc.request,"blastManagementDto",blastManagementDto);
             if(blastManagementDto.getId() == null){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "createBack");
             }else{

@@ -43,19 +43,32 @@
                             </div>
                         </div>
 
+                        <%--<div class="form-group">--%>
+                            <%--<iais:field value="Attachments" required="false"/>--%>
+                            <%--<div class="document-upload-gp col-xs-8 col-md-8">--%>
+                                <%--<div class="document-upload-list">--%>
+                                    <%--<div class="file-upload-gp">--%>
+                                        <%--<div class="filename fileNameDisplay">--%>
+                                            <%--<c:out value="${fileName}"/>--%>
+                                        <%--</div>--%>
+                                        <%--<input id="selectedFile" name="selectedFile" type="file" multiple="multiple" style="display: none;" aria-label="selectedFile1">--%>
+                                        <%--<a class="btn btn-file-upload btn-secondary" href="#">Upload</a>--%>
+                                    <%--</div>--%>
+                                <%--</div>--%>
+                                <%--<span id="error_fileUploadError" name="iaisErrorMsg" class="error-msg"></span>--%>
+                            <%--</div>--%>
+                        <%--</div>--%>
                         <div class="form-group">
                             <iais:field value="Attachments" required="false"/>
                             <div class="document-upload-gp col-xs-8 col-md-8">
                                 <div class="document-upload-list">
                                     <div class="file-upload-gp">
-                                        <div class="filename fileNameDisplay">
-                                            <c:out value="${fileName}"/>
-                                        </div>
-                                        <input id="selectedFile" name="selectedFile" type="file" multiple="multiple" style="display: none;" aria-label="selectedFile1">
+                                        <input id="selectFile0" name="selectFile0" type="file" class="iptFile" >
                                         <a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                                        <ul class="upload-enclosure-ul">
+                                        </ul>
                                     </div>
                                 </div>
-                                <span id="error_fileUploadError" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                     </div>
@@ -76,6 +89,7 @@
         <input hidden value="${id}" id="blastId" >
         <input hidden value="" id="action" name="action">
         <input hidden value="0" id="fileChange" name="fileChange">
+        <input hidden value="0" id="filecount" name="filecount">
     </form>
     <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 </div>
@@ -108,7 +122,7 @@
     });
 
     $('#selectedFile').change(function (event) {
-        var maxFileSize = 10;
+        var maxFileSize = 7;
         var error = validateUploadSizeMaxOrEmpty(maxFileSize, 'selectedFile');
         console.log(error)
         console.log($("#selectedFile"))
@@ -202,4 +216,74 @@
         return count;
     }
 
+    $('#selectFile'+$('#filecount')).change(function (event) {
+        $('#filecount').val($('#filecount').val()+1)
+        var flag = $(this);
+        if (!flag[0].files || !flag[0].files[0]) {
+            return;
+        }
+        var name = flag[0].files[0].name;
+        var suffix =suffixName(name)[0].toLowerCase();
+        var size = flag[0].files[0].size;
+        var fr = new FileReader();
+        var files = flag[0].files[0];
+        fr.readAsDataURL(files);
+        fr.onload = function (e) {
+            var timeStamp = Math.floor(Math.random() * 10000);
+            $(flag).addClass('li' + timeStamp).hide();
+            var name = "selectFile"+$('#filecount').val();
+            var html = '<input id="'+name+'" name="'+name+'" type="file" class="iptFile" >';
+            $('.btn-file-upload').before(html);
+
+            var li;
+            if (suffix == '.jpg' || suffix == '.jpeg' || suffix == '.png' || suffix == '.bmp' || suffix == '.gif') { //图片格式
+                li =   '<li> <span><i class="fa fa-file-image-o">&nbsp;</i>' + name + '</span> <span class="size">(' + parseInt(files.size / 1000) + 'kb)</span> <span class="remove" data-class="li' + timeStamp + '"  onclick="deleteLi(this)">Delete</span> </li>';
+            } else if (suffix == '.doc' || suffix == '.docx') {
+                li = '<li><span><i class="fa fa-file-word-o">&nbsp;</i>' + name + '</span> <span class="size">(' + parseInt(files.size / 1000) + 'kb)</span> <span class="remove" data-class="li' + timeStamp + '"  onclick="deleteLi(this)">Delete</span> </li>';
+            } else if (suffix == '.xls' || suffix == '.xlsx') {
+                li = '<li><span><i class="fa fa-file-excel-o">&nbsp;</i>' + name + '</span> <span class="size">(' + parseInt(files.size / 1000) + 'kb)</span> <span class="remove" data-class="li' + timeStamp + '"  onclick="deleteLi(this)">Delete</span> </li>';
+            } else if (suffix == '.ppt' || suffix == '.pptx') {
+                li = '<li><span><i class="fa fa-file-pdf-o">&nbsp;</i>' + name + '</span> <span class="size">(' + parseInt(files.size / 1000) + 'kb)</span> <span class="remove" data-class="li' + timeStamp + '"  onclick="deleteLi(this)">Delete</span> </li>';
+            }else if (suffix == '.ppt' || suffix == '.pdf') {
+                li = '<li><span><i class="fa fa-file-pdf-o">&nbsp;</i>' + name + '</span> <span class="size">(' + parseInt(files.size / 1000) + 'kb)</span> <span class="remove" data-class="li' + timeStamp + '"  onclick="deleteLi(this)">Delete</span> </li>';
+            }else if (suffix == '.zip' || suffix == '.rar'|| suffix == '.7z') {
+                li = '<li><span><i class="fa fa-file-excel-o">&nbsp;</i>' + name + '</span> <span class="size">(' + parseInt(files.size / 1000) + 'kb)</span> <span class="remove" data-class="li' + timeStamp + '"  onclick="deleteLi(this)">Delete</span> </li>';
+            }else if (suffix == '.wav' || suffix == '.mp3'|| suffix == '.aac'|| suffix == '.wma') {
+                li = '<li><span><i class="fa fa-file-video-o">&nbsp;</i>' + name + '</span> <span class="size">(' + parseInt(files.size / 1000) + 'kb)</span> <span class="remove" data-class="li' + timeStamp + '"  onclick="deleteLi(this)">Delete</span> </li>';
+            }else if (suffix == '.avi' || suffix == '.mp4'|| suffix == '.mov'|| suffix == '.mkv'||suffix == '.rm' || suffix == '.rmvb'|| suffix == '.mpg'|| suffix == '.mpeg') {
+                li = '<li><span><i class="fa fa-file-video-o">&nbsp;</i>' + name + '</span> <span class="size">(' + parseInt(files.size / 1000) + 'kb)</span> <span class="remove" data-class="li' + timeStamp + '"  onclick="deleteLi(this)">Delete</span> </li>';
+            }else if (suffix == '.txt' ) {
+                li = '<li><span><i class="fa fa-file-text-o">&nbsp;</i>' + name + '</span> <span class="size">(' + parseInt(files.size / 1000) + 'kb)</span> <span class="remove" data-class="li' + timeStamp + '"  onclick="deleteLi(this)">Delete</span> </li>';
+            }else {
+                li = '<li><span><i class="fa fa-file-o">&nbsp;</i>' + name + '</span> <span class="size">(' + parseInt(files.size / 1000) + 'kb)</span> <span class="remove" data-class="li' + timeStamp + '"  onclick="deleteLi(this)">Delete</span> </li>';
+            }
+
+            $('.upload-enclosure-ul').append(li);
+
+        };
+
+
+    });
+
+
+
+    function deleteLi(a) {
+        $(a).parent().remove();
+        var attr = $(a).attr('data-class');
+        var newAttr = '.' + attr;
+        $('.inspection_item_con_file  ' + newAttr + '').remove();
+
+        if ($('.upload-enclosure-ul li').length != 0) {
+            $('.no_file').hide();
+        } else {
+            $('.no_file').show();
+        }
+    }
+
+
+
+    function suffixName(file_name){
+        var result = /\.[^\.]+/.exec(file_name);
+        return result;
+    }
 </script>

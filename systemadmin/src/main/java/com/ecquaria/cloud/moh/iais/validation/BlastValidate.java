@@ -49,7 +49,17 @@ public class BlastValidate implements CustomizeValidator {
                 }
             }
         }
-
+        if("saveSms".equals(step)){
+            if(blastManagementDto.getSubject() == null){
+                errMap.put("subject",MessageUtil.replaceMessage("GENERAL_ERR0006","Header","field"));
+            }
+            if(blastManagementDto.getDistributionId() == null){
+                errMap.put("distribution",MessageUtil.replaceMessage("GENERAL_ERR0006","Recipients","field"));
+            }
+            if(blastManagementDto.getMsgContent() == null){
+                errMap.put("msgContent",MessageUtil.replaceMessage("GENERAL_ERR0006","Text","field"));
+            }
+        }
         if(blastManagementDto.getAttachmentDtos() != null && blastManagementDto.getAttachmentDtos().size() > 0){
             double filesSize = 0;
             for (AttachmentDto item:blastManagementDto.getAttachmentDtos()
