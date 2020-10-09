@@ -275,6 +275,8 @@ public class InspecUserRecUploadDelegator {
                 } else {
                     inspecUserRecUploadDto.setFileSize((int) file.getSize() / 1024);
                 }
+            } else {
+                inspecUserRecUploadDto.setFileSize(1);
             }
             inspecUserRecUploadDto.setFileName(fileName);
         }
