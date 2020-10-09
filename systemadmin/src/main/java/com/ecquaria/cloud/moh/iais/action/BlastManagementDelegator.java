@@ -49,7 +49,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -155,7 +154,7 @@ public class BlastManagementDelegator {
      * @param bpc
      */
     public void edit(BaseProcessClass bpc){
-        String id =  ParamUtil.getRequestString(bpc.request, "editBlast");
+        String id =  ParamUtil.getMaskedString(bpc.request, "editBlast");
         if(id == null ){
             id = (String) ParamUtil.getSessionAttr(bpc.request,"editBlastId");
         }
@@ -195,9 +194,15 @@ public class BlastManagementDelegator {
      * @param bpc
      */
     public void delete(BaseProcessClass bpc){
-        String[] checkboxlist =  ParamUtil.getMaskedStrings(bpc.request, "checkboxlist");
+        String[] checkboxlist =  ParamUtil.getMaskedStrings(bpc.request, "editBlast");
         if(checkboxlist != null && checkboxlist.length > 0){
-            List<String> list = Arrays.asList(checkboxlist);
+            List<String> list = IaisCommonUtils.genNewArrayList();
+            for (String item:checkboxlist
+                 ) {
+                if(!StringUtil.isEmpty(item)){
+                    list.add(item);
+                }
+            }
             blastManagementListService.deleteBlastList(list);
         }
 

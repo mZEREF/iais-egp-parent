@@ -105,9 +105,10 @@
                                 </c:when>
                                 <c:otherwise>
                                     <c:forEach var="item" items="${blastSearchResult.rows}" varStatus="status">
+                                        <c:set var="massIndex" value="${(status.index + 1) + (blastSearchParam.pageNo - 1) * blastSearchParam.pageSize}"></c:set>
                                         <tr style="display: table-row;">
                                             <td>
-                                                <p><input type="checkbox" name="checkboxlist" value="<iais:mask name="checkboxlist" value="${item.id}"/>"
+                                                <p><input type="checkbox" id="edit${massIndex}" name="editBlast" value="<iais:mask name="editBlast" value="${item.id}"/>"
                                                     <c:choose>
                                                     <c:when test="${!empty item.actual}">
                                                         data-edit = "0"
@@ -120,7 +121,7 @@
                                             </td>
                                             <td>
                                                 <p><c:out
-                                                        value="${(status.index + 1) + (blastSearchParam.pageNo - 1) * blastSearchParam.pageSize}"/></p>
+                                                        value="${massIndex}"/></p>
                                             </td>
                                             <td>
                                                 <p><a onclick="preview('${item.id}')"><c:out value="${item.msgName}"/></a>
@@ -143,7 +144,7 @@
                                             </td>
                                             <td>
                                                 <p>
-                                                    <a onclick="edit('${item.id}')">Edit</a>
+                                                    <a onclick="edit('${massIndex}')">Edit</a>
                                                     <a onclick="audit('${item.messageId}','${item.mode}')">Audit</a>
                                                 </p>
                                             </td>
@@ -191,6 +192,7 @@
         $('#support').modal('hide');
     }
     function deleteList() {
+        $("#editBlast").val();
         if ($("input:checkbox:checked").length > 0) {
             var canedit = 1;
             $("input:checkbox:checked").each(function(i){
@@ -213,7 +215,8 @@
     }
 
     function edit(id) {
-        var edit = $("#edit"+id).val();
+        var edit = $("#edit"+id).data("edit");
+        var id = $("#edit"+id).val();
         if(edit == 1){
             $("#editBlast").val(id);
             SOP.Crud.cfxSubmit("mainForm", "edit");
