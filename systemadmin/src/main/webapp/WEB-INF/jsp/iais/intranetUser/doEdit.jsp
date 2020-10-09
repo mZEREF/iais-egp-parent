@@ -9,6 +9,7 @@
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
     <form class="form-horizontal" method="post" id="InternetUserEditForm" action=<%=process.runtime.continueURL()%>>
+        <input type="hidden" name="user_action" value="edit">
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <div class="row">
             <div class="col-lg-12 col-xs-12">
@@ -129,7 +130,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="mobileNo">Mobile No:</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="mobileNo">Mobile No:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="mobileNo" maxlength="8" type="text" name="mobileNo" value="${orgUserDto.mobileNo}">
@@ -138,11 +139,11 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="officeNo">Office No:</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="officeNo">Office No:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="officeNo" type="text" maxlength="8" name="officeNo" value="${orgUserDto.officeTelNo}">
-                                            <span id="error_officeNo" name="iaisErrorMsg" class="error-msg"></span>
+                                            <span id="error_officeTelNo" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </iais:value>
                                 </div>

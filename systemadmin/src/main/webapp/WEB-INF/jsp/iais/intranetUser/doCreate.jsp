@@ -10,6 +10,7 @@
 <div class="main-content">
     <form class="form-horizontal" method="post" id="IntranetUserForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input type="hidden" name="user_action" value="create">
         <input type="hidden" name="paramController" id="paramController"
                value="com.ecquaria.cloud.moh.iais.action.MohIntranetUserDelegator"/>
         <input type="hidden" name="valEntity" id="valEntity"
@@ -172,7 +173,7 @@
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="officeNo" type="text" maxLength="8" name="officeNo"
                                                    value="${orgUserDto.officeTelNo}">
-                                            <span id="error_officeNo" name="iaisErrorMsg" class="error-msg"></span>
+                                            <span id="error_officeTelNo" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </iais:value>
                                 </div>

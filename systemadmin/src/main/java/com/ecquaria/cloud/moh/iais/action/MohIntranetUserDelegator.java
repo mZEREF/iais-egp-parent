@@ -218,7 +218,7 @@ public class MohIntranetUserDelegator {
         }
         Map<String, String> errorMap = new HashMap<>(34);
         OrgUserDto orgUserDto = prepareEditOrgUserDto(bpc);
-        ValidationResult validationResult = WebValidationHelper.validateProperty(orgUserDto, "save");
+        ValidationResult validationResult = WebValidationHelper.validateProperty(orgUserDto, "edit");
         if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
             Map<String, String> validationResultMap = validationResult.retrieveAll();
             errorMap.putAll(validationResultMap);

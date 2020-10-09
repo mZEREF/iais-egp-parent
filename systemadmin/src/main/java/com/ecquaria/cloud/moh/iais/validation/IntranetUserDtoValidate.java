@@ -30,6 +30,7 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         Map<String, String> errorMap = new HashMap<>(34);
+        String user_action = ParamUtil.getRequestString(httpServletRequest, "user_action");
         String userId = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_USERID);
         String startDateStr = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_STARTDATE);
         String endDateStr = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_ENDDATE);
@@ -66,8 +67,8 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
             LocalDate startDate = LocalDate.parse(nStr.toString(), formatter);
             LocalDate endDate = LocalDate.parse(eStr.toString(), formatter);
             LocalDate todayDate = LocalDate.parse(todayStr, formatter);
-             int i = todayDate.compareTo(startDate);
-            if (i >= 0) {
+            int i = todayDate.compareTo(startDate);
+            if (i >= 0&&"create".equals(user_action)) {
                 errorMap.put("accountActivateDatetime", "USER_ERR007");
             } else {
                 int comparatorValue = endDate.compareTo(startDate);

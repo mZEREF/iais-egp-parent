@@ -685,7 +685,7 @@ public class InsRepServiceImpl implements InsRepService {
             updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
             List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
             boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
-                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
             TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtoList,HcsaConsts.ROUTING_STAGE_AO2,RoleConsts.USER_ROLE_AO2,IaisEGPHelper.getCurrentAuditTrailDto());
             createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
             if(isAllSubmit){
@@ -694,11 +694,6 @@ public class InsRepServiceImpl implements InsRepService {
                 taskService.createTasks(taskDtos);
                 createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO2, groupId, null);
             }
-//            updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
-//            List<TaskDto> taskDtos = prepareTaskToAo2(taskDto, serviceId, applicationDto);
-//            taskService.createTasks(taskDtos);
-//            createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
-//            createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO2, groupId, null);
         }
     }
 
