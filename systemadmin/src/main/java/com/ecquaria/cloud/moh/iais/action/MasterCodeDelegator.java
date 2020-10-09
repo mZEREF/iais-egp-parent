@@ -191,8 +191,6 @@ public class MasterCodeDelegator {
         }
         MasterCodeDto masterCodeDto = (MasterCodeDto) ParamUtil.getSessionAttr(request, "MasterCodeView");
         getCategoryValueFromPage(masterCodeDto, request);
-        String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
-        masterCodeDto.setCodeCategory(codeCategory);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         Optional<MasterCodeToExcelDto> cartOptional = null;
         if (!StringUtil.isEmpty(masterCodeDto.getCodeCategory()) && !StringUtil.isEmpty(masterCodeDto.getCodeValue())){
@@ -217,7 +215,7 @@ public class MasterCodeDelegator {
                     errorMap.put("effectiveTo", errMsg);
                 }
             }
-            if (cartOptional.isPresent()) {
+            if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
                 validationResult.setHasErrors(true);
                 String errMsg = MessageUtil.replaceMessage("SYSPAM_ERROR0005","Code Value","Record Name");
                 errorMap.put("codeValue", errMsg);
@@ -231,6 +229,8 @@ public class MasterCodeDelegator {
         if(!isEffect){
             masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
         }
+        String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
+        masterCodeDto.setCodeCategory(codeCategory);
         masterCodeService.saveMasterCode(masterCodeDto);
         ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
         ParamUtil.setRequestAttr(request, "CREATED_DATE", new Date());
@@ -656,7 +656,7 @@ public class MasterCodeDelegator {
                 validationResult.setHasErrors(true);
             }
         }
-        if (cartOptional.isPresent()) {
+        if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
             validationResult.setHasErrors(true);
         }
         if (validationResult != null && validationResult.isHasErrors()) {
@@ -667,7 +667,7 @@ public class MasterCodeDelegator {
                     errorMap.put("effectiveTo", errMsg);
                 }
             }
-            if (cartOptional.isPresent()) {
+            if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
                 validationResult.setHasErrors(true);
                 String errMsg = MessageUtil.replaceMessage("SYSPAM_ERROR0005","Code Value","Record Name");
                 errorMap.put("codeValue", errMsg);

@@ -61,7 +61,7 @@
                         <div class="form-group">
                             <iais:field value="Code Description" required="true"/>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <form><textarea style="width: 100%" rows="6" id="description" name="codeDescriptionEd"
+                                <form><textarea style="width: 100%;margin-bottom: 15px;" rows="6" id="description" name="codeDescriptionEd"
                                                 maxlength="255">${MasterCodeDto.codeDescription}</textarea></form>
                                 <span id="error_codeDescription" name="iaisErrorMsg" class="error-msg"></span>
                             </div>

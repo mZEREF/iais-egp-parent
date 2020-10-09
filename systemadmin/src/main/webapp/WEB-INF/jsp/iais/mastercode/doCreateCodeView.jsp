@@ -43,7 +43,7 @@
                             <iais:field value="Code Description" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <textarea id="codeDescriptionCMC" style="width: 100%" rows="6" name="codeDescriptionCMC"
+                                    <textarea id="codeDescriptionCMC" style="width: 100%;margin-bottom: 15px;" rows="6" name="codeDescriptionCMC"
                                               maxlength="255">${param.codeDescriptionCMC}</textarea>
                                     <span id="error_codeDescription" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
