@@ -2370,23 +2370,23 @@ public class NewApplicationDelegator {
         appEditSelectDto.setPremisesEdit(false);
         appEditSelectDto.setDocEdit(false);
         appEditSelectDto.setPoEdit(false);
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto1 = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
-        if (appSvcRelatedInfoDto1 == null || appSvcRelatedInfoDto == null) {
+        AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+        if (appSvcRelatedInfoDto == null || oldAppSvcRelatedInfoDto == null) {
             return null;
         }
-        List<AppSvcCgoDto> appSvcCgoDtoList1 = appSvcRelatedInfoDto1.getAppSvcCgoDtoList();
-        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList1 = appSvcRelatedInfoDto1.getAppSvcMedAlertPersonList();
-        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList1 = appSvcRelatedInfoDto1.getAppSvcPrincipalOfficersDtoList();
-
         List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+
+        List<AppSvcCgoDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = oldAppSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList = oldAppSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
         Set<String> set = IaisCommonUtils.genNewHashSet();
         List<String> list = IaisCommonUtils.genNewArrayList();
-        List<String> list1 = changeCgo(appSvcCgoDtoList1, appSvcCgoDtoList);
-        List<String> list2 = changeMeadrter(appSvcMedAlertPersonList1, appSvcMedAlertPersonList);
-        List<String> list3 = changePo(appSvcPrincipalOfficersDtoList1, appSvcPrincipalOfficersDtoList);
+        List<String> list1 = changeCgo(appSvcCgoDtoList, oldAppSvcCgoDtoList);
+        List<String> list2 = changeMeadrter(appSvcMedAlertPersonList, oldAppSvcMedAlertPersonList);
+        List<String> list3 = changePo(appSvcPrincipalOfficersDtoList, oldAppSvcPrincipalOfficersDtoList);
         set.addAll(list1);
         set.addAll(list2);
         set.addAll(list3);
@@ -2421,20 +2421,20 @@ public class NewApplicationDelegator {
 
             List<AppSvcCgoDto> appSvcCgoDtoList2 = appSvcRelatedInfoDto2.getAppSvcCgoDtoList();
             if(!list1.isEmpty()){
-                if (appSvcCgoDtoList2 != null && appSvcCgoDtoList1 != null) {
-                    appSvcRelatedInfoDto2.setAppSvcCgoDtoList(appSvcCgoDtoList1);
+                if (appSvcCgoDtoList2 != null && appSvcCgoDtoList != null) {
+                    appSvcRelatedInfoDto2.setAppSvcCgoDtoList(appSvcCgoDtoList);
                 }
             }
             List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList2 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcMedAlertPersonList();
             if(!list2.isEmpty()){
-                if (appSvcMedAlertPersonList2 != null && appSvcMedAlertPersonList1 != null) {
-                    appSvcRelatedInfoDto2.setAppSvcMedAlertPersonList(appSvcMedAlertPersonList1);
+                if (appSvcMedAlertPersonList2 != null && appSvcMedAlertPersonList != null) {
+                    appSvcRelatedInfoDto2.setAppSvcMedAlertPersonList(appSvcMedAlertPersonList);
                 }
             }
             List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList2 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcPrincipalOfficersDtoList();
             if(!list3.isEmpty()){
-                if (appSvcPrincipalOfficersDtoList2 != null && appSvcPrincipalOfficersDtoList1 != null) {
-                    appSvcRelatedInfoDto2.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList1);
+                if (appSvcPrincipalOfficersDtoList2 != null && appSvcPrincipalOfficersDtoList != null) {
+                    appSvcRelatedInfoDto2.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList);
                 }
             }
 

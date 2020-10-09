@@ -1105,12 +1105,11 @@ public class WithOutRenewalDelegator {
     }
     //doLicenceReview
     public void doLicenceReview(BaseProcessClass bpc) throws Exception {
-        String crud_action_type = bpc.request.getParameter("crud_action_type");
+        String crud_action_type = bpc.request.getParameter("crud_action_additional");
         if("exitSaveDraft".equals(crud_action_type)){
             jumpYeMian(bpc.request, bpc.response);
             return;
         }
-
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldAppSubmissionDto");
         List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);

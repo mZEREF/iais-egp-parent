@@ -140,8 +140,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         List<ApplicationDto> applicationDtos = applicationClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
         List<ApplicationDto> newApplicationDtos = IaisCommonUtils.genNewArrayList();
         for (ApplicationDto applicationDto : applicationDtos) {
-            if (!ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationDto.getStatus()) &&
-                    !ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus()) &&
+            if (!ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus()) &&
                     !ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(applicationDto.getStatus()) &&
                     !ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(applicationDto.getStatus()) &&
                     !ApplicationConsts.APPLICATION_STATUS_DELETED.equals(applicationDto.getStatus())&&

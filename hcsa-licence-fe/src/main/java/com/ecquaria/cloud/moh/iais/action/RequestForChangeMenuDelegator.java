@@ -1334,14 +1334,15 @@ public class RequestForChangeMenuDelegator {
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
         boolean isSame = compareLocation(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
-        if(!isSame){
+
+        boolean b = compareHciName(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
+        amendmentFeeDto.setChangeInHCIName(!b);
+        amendmentFeeDto.setChangeInLocation(!isSame);
+        if(!isSame || !b){
             for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1){
                 appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
             }
         }
-        boolean b = compareHciName(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
-        amendmentFeeDto.setChangeInHCIName(!b);
-        amendmentFeeDto.setChangeInLocation(!isSame);
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         Double total = feeDto.getTotal();
         //
@@ -1358,7 +1359,7 @@ public class RequestForChangeMenuDelegator {
                 }else {
                     appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
                 }
-                if (!isSame) {
+                if (!isSame || !b) {
                     List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
                     if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
                         for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
@@ -1381,7 +1382,12 @@ public class RequestForChangeMenuDelegator {
                     appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
                 }
                 appSubmissionService.setRiskToDto(appSubmissionDto);
-                appSubmissionDtoByLicenceId.setAutoRfc(isSame);
+                if(isSame && b){
+                    appSubmissionDtoByLicenceId.setAutoRfc(Boolean.TRUE);
+                }else {
+                    appSubmissionDtoByLicenceId.setAutoRfc(Boolean.FALSE);
+                }
+
                 //update status
          /*  LicenceDto licenceDto = new LicenceDto();
             licenceDto.setId(appSubmissionDto.getLicenceId());

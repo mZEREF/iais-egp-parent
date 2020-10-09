@@ -20,7 +20,7 @@
     <input type="hidden" name="switch_value" value=""/>
     <input type="hidden" id="checkSingle" value="${isSingle}"/>
     <input id="EditValue" type="hidden" name="EditValue" value="" />
-    <input type="hidden" name="crud_action_type" value="" id="crud_action_type">
+    <input type="hidden" name="crud_action_additional" value="" id="crud_action_additional">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -203,7 +203,7 @@
         $('#rfcPending').modal('hide');
     }
     function exitAndSave() {
-        $('#crud_action_type').val('exitSaveDraft');
+        $('#crud_action_additional').val('exitSaveDraft');
         $('#SUBMIT').trigger("click");
     }
 
