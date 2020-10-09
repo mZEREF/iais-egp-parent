@@ -388,7 +388,7 @@
                                                                         <p>${compliance.riskTag}</p>
                                                                     </td>
                                                                     <td>
-                                                                        <p>${compliance.complianceTag}</p>
+                                                                        <p>${compliance.complianceTag}Compliance</p>
                                                                     </td>
                                                                     <td>
                                                                         <p>${compliance.inspectionTypeName}</p>
