@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
-import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -39,7 +38,7 @@ public class SystemParameterValidator implements CustomizeValidator {
 			try {
 				number = Integer.parseInt(value);
 			}catch (NumberFormatException e){
-				errMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "UC_CHKLMD001_ERR003");
+				errMap.put("customErrorMessage", "UC_CHKLMD001_ERR003");
 				return errMap;
 			}
 		}
@@ -67,7 +66,7 @@ public class SystemParameterValidator implements CustomizeValidator {
 		String[] values = IaisEGPHelper.getPageSizeByStrings(value);
 		try {
 			if (values.length != 5){
-				errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, MessageUtil.replaceMessage("GENERAL_ERR0021", "5", "len"));
+				errorMap.put("customErrorMessage", MessageUtil.replaceMessage("GENERAL_ERR0021", "5", "len"));
 				return;
 			}
 
@@ -75,7 +74,7 @@ public class SystemParameterValidator implements CustomizeValidator {
 			for (int i = 0; i < values.length; i++){
 				int val = Integer.parseInt(values[i]);
 				if (val < 10 || val > 100){
-					errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "SYSPAM_ERROR0003");
+					errorMap.put("customErrorMessage", "SYSPAM_ERROR0003");
 					return;
 				}
 
@@ -83,11 +82,11 @@ public class SystemParameterValidator implements CustomizeValidator {
 			}
 
 			if (!IaisEGPHelper.isAsc(to)){
-				errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "UC_CHKLMD001_ERR003");
+				errorMap.put("customErrorMessage", "UC_CHKLMD001_ERR003");
 			}
 
 		}catch (NumberFormatException e){
-			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "UC_CHKLMD001_ERR003");
+			errorMap.put("customErrorMessage", "UC_CHKLMD001_ERR003");
 			return;
 		}
 
@@ -97,21 +96,21 @@ public class SystemParameterValidator implements CustomizeValidator {
 	private static void verifyUploadFileType(Map<String, String> errorMap, String value){
 		String[] arr = FileUtils.fileTypeToArray(value);
 		if (arr == null){
-			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "SYSPAM_ERROR0004");
+			errorMap.put("customErrorMessage", "SYSPAM_ERROR0004");
 		}
 	}
 
 	private void verifyAuditTrailWeek(Map<String, String> errorMap, int value){
 		boolean hasError = value < 1 || (value > 52) ? true : false;
 		if (hasError){
-			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, MessageUtil.getMessageDesc("SYSPAM_ERROR0002"));
+			errorMap.put("customErrorMessage", MessageUtil.getMessageDesc("SYSPAM_ERROR0002"));
 		}
 	}
 
 	private void verifyFileUploadSize(Map<String, String> errorMap, int value){
 		boolean hasError = value < 1 || value > 10 ? true : false;
 		if (hasError){
-			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, MessageUtil.getMessageDesc("SYSPAM_ERROR0001"));
+			errorMap.put("customErrorMessage", MessageUtil.getMessageDesc("SYSPAM_ERROR0001"));
 		}
 	}
 
@@ -119,7 +118,7 @@ public class SystemParameterValidator implements CustomizeValidator {
 		boolean hasError = value == 1;
 
 		if (hasError){
-			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "");
+			errorMap.put("customErrorMessage", "");
 		}
 
 		return errorMap;

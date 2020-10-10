@@ -4,7 +4,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -361,7 +360,7 @@ public class BlackedOutDateDelegator {
                 IaisEGPHelper.parseToDate(rdate, AppConsts.DEFAULT_DATE_FORMAT));
 
         if (!isAfterDate){
-            errorMap.put(CUSTOM_VALIDATEION_ATTR, MessageCodeKey.USER_ERR007);
+            errorMap.put(CUSTOM_VALIDATEION_ATTR, "USER_ERR007");
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             return ;

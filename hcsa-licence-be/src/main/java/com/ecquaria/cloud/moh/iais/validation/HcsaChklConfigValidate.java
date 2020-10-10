@@ -7,7 +7,6 @@ package com.ecquaria.cloud.moh.iais.validation;
  */
 
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
@@ -34,7 +33,7 @@ public class HcsaChklConfigValidate implements CustomizeValidator {
         Date eDate = IaisEGPHelper.parseToDate(eftEndDate);
 
         if (IaisEGPHelper.isAfterDate(eDate, sDate)){
-            errMap.put("configCustomValidation", MessageUtil.getMessageDesc(MessageCodeKey.CHKL_ERR013));
+            errMap.put("configCustomValidation", MessageUtil.getMessageDesc("CHKL_ERR013"));
             return errMap;
         }
 
