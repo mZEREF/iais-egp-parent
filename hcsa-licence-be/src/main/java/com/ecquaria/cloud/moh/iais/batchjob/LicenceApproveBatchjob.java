@@ -773,7 +773,11 @@ public class LicenceApproveBatchjob {
                  originLicenceDto = deleteOriginLicenceDto(originLicenceDto,firstApplicationDto,licenceDto.getStatus());
                 log.info(StringUtil.changeForLog("The applicationType is -->:"+ApplicationConsts.APPLICATION_TYPE_RENEWAL));
                 if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(firstApplicationDto.getApplicationType())){
-                    superLicDto.setOriginLicenceDto(originLicenceDto);
+                    if(originLicenceDto != null && !ApplicationConsts.LICENCE_STATUS_REVOKED.equals(originLicenceDto.getStatus())){
+                        superLicDto.setOriginLicenceDto(originLicenceDto);
+                    }else{
+                        log.info(StringUtil.changeForLog("can not update the originLicenceDto"));
+                    }
                 }
                 //if PostInspNeeded send email
                 if (isPostInspNeeded == Integer.parseInt(AppConsts.YES)) {
@@ -901,11 +905,12 @@ public class LicenceApproveBatchjob {
             if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)){
                 originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
             }else if(ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)){
-                if(!ApplicationConsts.GROUP_LICENCE_FLAG_TRANSFER.equals(groupLicenceFlag)){
-                    originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
-                }else if(ApplicationConsts.GROUP_LICENCE_FLAG_ORIGIN.equals(groupLicenceFlag)){
+                if(ApplicationConsts.GROUP_LICENCE_FLAG_ORIGIN.equals(groupLicenceFlag)){
                     originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
+                }else if(!ApplicationConsts.GROUP_LICENCE_FLAG_TRANSFER.equals(groupLicenceFlag)){
+                    originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
                 }else{
+                    originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_REVOKED);
                     log.info(StringUtil.changeForLog("The deleteOriginLicenceDto actionFlag is -->:"+groupLicenceFlag));
                 }
             }
@@ -1023,7 +1028,11 @@ public class LicenceApproveBatchjob {
                 originLicenceDto = deleteOriginLicenceDto(originLicenceDto,applicationDto,licenceDto.getStatus());
                 log.info(StringUtil.changeForLog("The applicationType is -->:"+ApplicationConsts.APPLICATION_TYPE_RENEWAL));
                 if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-                    superLicDto.setOriginLicenceDto(originLicenceDto);
+                    if(originLicenceDto != null && !ApplicationConsts.LICENCE_STATUS_REVOKED.equals(originLicenceDto.getStatus())){
+                        superLicDto.setOriginLicenceDto(originLicenceDto);
+                    }else{
+                        log.info(StringUtil.changeForLog("can not update the originLicenceDto"));
+                    }
                 }
 
                 //create the lic_app_correlation
