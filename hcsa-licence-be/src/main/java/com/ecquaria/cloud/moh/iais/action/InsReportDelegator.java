@@ -148,14 +148,19 @@ public class InsReportDelegator {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String status = applicationDto.getStatus();
         String applicationType = applicationDto.getApplicationType();
-        AppPremisesRecommendationDto appPremisesRecommendationDto = prepareRecommendation(bpc,applicationType);
+        List<String> appTypes = IaisCommonUtils.genNewArrayList();
+        appTypes.add(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+        appTypes.add(ApplicationConsts.APPLICATION_TYPE_APPEAL);
+        appTypes.add(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
+        appTypes.add(ApplicationConsts.APPLICATION_TYPE_CESSATION);
+        AppPremisesRecommendationDto appPremisesRecommendationDto = prepareRecommendation(bpc,applicationType,appTypes);
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, appPremisesRecommendationDto);
         if (ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)) {
             appPremisesRecommendationDto.setRecommendation("Audit");
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ValidationResult validationResult = WebValidationHelper.validateProperty(appPremisesRecommendationDto, "save");
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
+        if(appTypes.contains(applicationType)){
             String recommendationRfc = ParamUtil.getRequestString(bpc.request, "recommendationRfc");
             if(StringUtil.isEmpty(recommendationRfc)){
                 String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Recommendation", "field");
@@ -197,7 +202,7 @@ public class InsReportDelegator {
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
     }
 
-    private AppPremisesRecommendationDto prepareRecommendation(BaseProcessClass bpc,String appType) {
+    private AppPremisesRecommendationDto prepareRecommendation(BaseProcessClass bpc,String appType,List<String> appTypes) {
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
         String recommendationRfc = ParamUtil.getRequestString(bpc.request, "recommendationRfc");
         String periods = ParamUtil.getRequestString(bpc.request, "periods");
@@ -210,7 +215,7 @@ public class InsReportDelegator {
         String processingDecision = ParamUtil.getRequestString(bpc.request, "processingDecision");
 
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+        if(appTypes.contains(appType)){
             appPremisesRecommendationDto.setRecommendation(recommendationRfc);
         }else {
             appPremisesRecommendationDto.setRecommendation(recommendation);

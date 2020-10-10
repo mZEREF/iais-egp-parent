@@ -404,38 +404,36 @@
                                 </td>
                                 <td class="col-xs-4"></td>
                             </tr>
-                            <c:if test="${appType!='APTY005' && appType!='APTY006' && appType!='APTY008' && appType!='APTY001'}">
-                                <tr id="period" hidden>
-                                    <td class="col-xs-4">
-                                        <p>Period <strong style="color:#ff0000;"> *</strong></p>
-                                    </td>
-                                    <td class="col-xs-4">
-                                        <iais:select cssClass="nice-select periods" name="periods" options="riskOption"
-                                                     firstOption="Please Select"
-                                                     onchange="javascirpt:changePeriod();"
-                                                     value="${appPremisesRecommendationDto.period}"/>
-                                        <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
-                                    </td>
-                                    <td class="col-xs-4"></td>
-                                </tr>
-                                <tr id="selfPeriod" hidden>
-                                    <td class="col-xs-4">
-                                        <p>Other Period <strong style="color:#ff0000;"> *</strong></p>
-                                    </td>
-                                    <td class="col-xs-4">
-                                        <input onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
-                                               onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
-                                               id=recomInNumber type="text" name="number" maxlength="2"
-                                               value="${appPremisesRecommendationDto.recomInNumber}">
-                                        <iais:select cssClass="nice-select chronoUnit" id="chronoUnit" name="chrono"
-                                                     options="chronoOption"
-                                                     value="${appPremisesRecommendationDto.chronoUnit}"/>
-                                        <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
-                                        <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
-                                    </td>
-                                    <td class="col-xs-4"></td>
-                                </tr>
-                            </c:if>
+                            <tr id="period" hidden>
+                                <td class="col-xs-4">
+                                    <p>Period <strong style="color:#ff0000;"> *</strong></p>
+                                </td>
+                                <td class="col-xs-4">
+                                    <iais:select cssClass="nice-select periods" name="periods" options="riskOption"
+                                                 firstOption="Please Select"
+                                                 onchange="javascirpt:changePeriod();"
+                                                 value="${appPremisesRecommendationDto.period}"/>
+                                    <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
+                                </td>
+                                <td class="col-xs-4"></td>
+                            </tr>
+                            <tr id="selfPeriod" hidden>
+                                <td class="col-xs-4">
+                                    <p>Other Period <strong style="color:#ff0000;"> *</strong></p>
+                                </td>
+                                <td class="col-xs-4">
+                                    <input onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                                           onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                                           id=recomInNumber type="text" name="number" maxlength="2"
+                                           value="${appPremisesRecommendationDto.recomInNumber}">
+                                    <iais:select cssClass="nice-select chronoUnit" id="chronoUnit" name="chrono"
+                                                 options="chronoOption"
+                                                 value="${appPremisesRecommendationDto.chronoUnit}"/>
+                                    <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
+                                    <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
+                                </td>
+                                <td class="col-xs-4"></td>
+                            </tr>
                         </c:if>
                         <c:if test="${appType=='APTY005' || appType=='APTY006' || appType=='APTY008' || appType=='APTY001'}">
                             <tr>
@@ -562,7 +560,7 @@
 <script type="text/javascript">
 
     $(function () {
-        console.log('----'+'${RECOMMENDATION_DTO.recommendation}');
+        console.log('----' + '${RECOMMENDATION_DTO.recommendation}');
     })
 
     function insRepsubmit() {
@@ -590,13 +588,13 @@
             $("#selfPeriod").hide();
             const value = $("#periods").find("option:selected").text();
             $("#periodValue").html(value);
-        } else if(recommation == 'IRE003' ) {
+        } else if (recommation == 'IRE003') {
             $("#periodValue").html('Reject');
         } else if (recommendationRfc == 'IRE007') {
             $("#periodValue").html('Approve');
         } else if (recommendationRfc == 'IRE008') {
             $("#periodValue").html('Reject');
-        }else {
+        } else {
             $("#periodValue").html('');
         }
     }
