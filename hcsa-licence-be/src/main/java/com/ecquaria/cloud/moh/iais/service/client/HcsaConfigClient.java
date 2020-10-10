@@ -330,7 +330,8 @@ public interface HcsaConfigClient {
 
     @GetMapping(value = "/hcsa-config/hcas-svc-routing-scheme-by-service-id", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcSpeRoutingSchemeDto>> getHcsaSvcSpeRoutingSchemeDtoByServiceId(@RequestParam("serviceId") String serviceId);
-
+    @GetMapping(value = "/hcsa-config/hcsa-svc-routing-stage-by-service-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaSvcRoutingStageDto>> getHcsaSvcRoutingStageDtoByServiceId(@RequestParam("serviceId") String serviceId);
     @PutMapping(value = "/hcsa-config/service-cannot-use")
     FeignResponseEntity updateService(@RequestParam("serviceId") String serviceId);
 

@@ -396,12 +396,17 @@
                 <td >${routingStage.appTypeName}</td>
                 <td >${routingStage.stageName}</td>
                 <td>
-                  <div class="col-xs-12 col-md-6"  style="margin-top: 1%;margin-bottom: 1%">
+                  <div class="col-xs-12 col-md-6"  style="margin-top: 1%;margin-bottom: 1%;text-align:left">
                     <select disabled name="isMandatory${routingStage.stageCode}${routingStages.key}">
                       <option value="">Please Select</option>
                       <option value="mandatory" <c:if test="${routingStage.isMandatory=='true'}">selected="selected"</c:if> >Mandatory</option>
                       <option value="optional" <c:if test="${routingStage.isMandatory=='false'}">selected="selected"</c:if>>Optional</option>
                     </select>
+                    <br>
+                    <c:if test="${routingStage.stageCode=='AO1'|| routingStage.stageCode=='AO2'}">
+                      <input type="hidden" value="${routingStage.canApprove}" name="canApprove${routingStage.stageCode}${routingStages.key}">
+                      <input type="checkbox" disabled <c:if test="${routingStage.canApprove=='1'}">checked</c:if> onclick="canApprove(this)" /><span>&nbsp;Can Approve ?</span>
+                    </c:if>
                   </div>
 
                   <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%">

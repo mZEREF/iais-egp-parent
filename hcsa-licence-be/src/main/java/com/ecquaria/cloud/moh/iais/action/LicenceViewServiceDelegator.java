@@ -1838,11 +1838,11 @@ public class LicenceViewServiceDelegator {
         if(appGrpPremisesDtoList==null || oldAppSubmissionDtoAppGrpPremisesDtoList==null){
             return;
         }
-        String oldPremisesCode = appGrpPremisesDtoList.get(0).getOldPremisesCode();
+        String oldHciCode = appGrpPremisesDtoList.get(0).getHciCode();
         List<AppGrpPremisesDto> appGrpPremisesDtos=new ArrayList<>(1);
         for(AppGrpPremisesDto appGrpPremisesDto : oldAppSubmissionDtoAppGrpPremisesDtoList){
             String hciCode = appGrpPremisesDto.getHciCode();
-            if(hciCode.equals(oldPremisesCode)){
+            if(hciCode.equals(oldHciCode)){
                 appGrpPremisesDtos.add(appGrpPremisesDto);
                 break;
             }

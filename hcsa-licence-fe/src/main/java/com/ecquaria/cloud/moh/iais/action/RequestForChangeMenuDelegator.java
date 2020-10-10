@@ -1366,7 +1366,6 @@ public class RequestForChangeMenuDelegator {
                             appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
                         }
                     }
-                    appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
                 }
                 appSubmissionDtoByLicenceId.setAmount(total);
                 List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -1656,9 +1655,9 @@ public class RequestForChangeMenuDelegator {
         String newHciName = "";
         String oldHciName = "";
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesListQueryDto.getPremisesType())) {
-            oldHciName = appGrpPremisesDto.getHciName();
+            oldHciName = premisesListQueryDto.getHciName();
         } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())) {
-            oldHciName = appGrpPremisesDto.getConveyanceVehicleNo();
+            oldHciName = premisesListQueryDto.getVehicleNo();
         }
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesListQueryDto.getPremisesType())) {
             newHciName = appGrpPremisesDto.getHciName();

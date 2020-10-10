@@ -686,6 +686,14 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
     }
 
     @Override
+    public FeignResponseEntity<List<HcsaSvcRoutingStageDto>> getHcsaSvcRoutingStageDtoByServiceId(String serviceId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity updateService(String serviceId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

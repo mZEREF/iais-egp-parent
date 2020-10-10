@@ -548,7 +548,7 @@ public class ConfigServiceDelegator {
                 String workstageId = request.getParameter("workstageId" + stageCode+every);
                 String isMandatory=  request.getParameter("isMandatory"+ stageCode+every);
                 //todo can approve ao1 ao2
-
+                String canApprove = request.getParameter("canApprove" + stageCode + every);
                 if (!StringUtil.isEmpty(workloadManhours)) {
                     hcsaSvcSpecificStageWorkloadDto.setStringManhourCount(workloadManhours);
                     hcsaConfigPageDto.setManhours(workloadManhours);
@@ -556,7 +556,11 @@ public class ConfigServiceDelegator {
                         hcsaSvcSpecificStageWorkloadDto.setManhourCount(Integer.valueOf(workloadManhours));
                     }
                 }
-
+                hcsaConfigPageDto.setCanApprove(canApprove);
+                hcsaSvcSpecificStageWorkloadDto.setCanApprove(canApprove);
+                if(canApprove==null){
+                    hcsaSvcSpecificStageWorkloadDto.setCanApprove("0");
+                }
                 hcsaConfigPageDto.setWorkloadId(workloadId);
                 if (!StringUtil.isEmpty(stageId)) {
                     //todo delete

@@ -397,17 +397,29 @@
           </div>
         </div>
       </div>--%>
-
       <div class="form-group">
+        <div class="col-xs-12 col-md-12" style="margin-left: 10%">
+          <span class="error-msg"><c:if test="${errorMap['APTY002']!=null}">Please check New Application routing stage</c:if></span>
+          <br>
+          <span class="error-msg"><c:if test="${errorMap['APTY004']!=null}">Please check Renew routing stage</c:if></span>
+          <br>
+          <span class="error-msg"><c:if test="${errorMap['APTY001']!=null}">Please check Appeal routing stage</c:if></span>
+          <br>
+          <span class="error-msg"><c:if test="${errorMap['APTY005']!=null}">Please check Request For Change routing stage</c:if></span>
+          <br>
+          <span class="error-msg"><c:if test="${errorMap['APTY008']!=null}">Please check Cessation routing stage</c:if></span>
+          <br>
+          <span class="error-msg"><c:if test="${errorMap['APTY006']!=null}">Please check Withdrawal routing stage</c:if></span>
+        </div>
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
           <div class="col-xs-10 col-md-6">
             <div class="components width-center">
-              <a class="btn btn-secondary width-70" onclick="showNEW()"><span class="view">NEW APPLICATION</span></a>
+              <a class="btn btn-secondary width-70"  onclick="showNEW()"><span <c:if test="${errorMap['APTY002']!=null}">style="color: #ff0000" </c:if> class="view">NEW APPLICATION</span></a>
             </div>
           </div>
           <div class="col-xs-10 col-md-6">
             <div class="components width-center">
-              <a class="btn btn-secondary width-70" onclick="showRENEW()"><span class="view">RENEW</span></a>
+              <a class="btn btn-secondary width-70"  onclick="showRENEW()"><span <c:if test="${errorMap['APTY004']!=null}">style="color: #ff0000" </c:if> class="view">RENEW</span></a>
             </div>
           </div>
         </div>
@@ -416,12 +428,12 @@
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
           <div class="col-xs-10 col-md-6">
             <div class="components width-center">
-              <a class="btn btn-secondary width-70" onclick="showAPPEAL()"><span class="view">APPEAL</span></a>
+              <a class="btn btn-secondary width-70"  onclick="showAPPEAL()"><span <c:if test="${errorMap['APTY001']!=null}">style="color: #ff0000" </c:if> class="view">APPEAL</span></a>
             </div>
           </div>
           <div class="col-xs-10 col-md-6">
             <div class="components width-center">
-              <a class="btn btn-secondary width-70" onclick="showRFC()"><span class="view">REQUEST FOR CHANGE</span></a>
+              <a class="btn btn-secondary width-70"  onclick="showRFC()"><span <c:if test="${errorMap['APTY005']!=null}">style="color: #ff0000" </c:if> class="view">REQUEST FOR CHANGE</span></a>
             </div>
           </div>
         </div>
@@ -431,7 +443,7 @@
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
           <div class="col-xs-10 col-md-6">
             <div class="components width-center">
-              <a class="btn btn-secondary width-70" onclick="showCESSATION()"><span class="view">CESSATION</span></a>
+              <a class="btn btn-secondary width-70"  onclick="showCESSATION()"><span <c:if test="${errorMap['APTY008']!=null}">style="color: #ff0000" </c:if> class="view">CESSATION</span></a>
             </div>
           </div>
          <%-- <div class="col-xs-10 col-md-6">
@@ -441,7 +453,7 @@
           </div>--%>
           <div class="col-xs-10 col-md-6">
             <div class="components width-center">
-              <a class="btn btn-secondary width-70" onclick="showWITHDRAWAL()"><span class="view">WITHDRAWAL</span></a>
+              <a class="btn btn-secondary width-70"  onclick="showWITHDRAWAL()"><span <c:if test="${errorMap['APTY006']!=null}">style="color: #ff0000" </c:if> class="view">WITHDRAWAL</span></a>
             </div>
           </div>
         </div>

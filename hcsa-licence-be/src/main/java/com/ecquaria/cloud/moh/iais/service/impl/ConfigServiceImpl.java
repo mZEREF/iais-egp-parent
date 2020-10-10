@@ -189,6 +189,7 @@ public class ConfigServiceImpl implements ConfigService {
             request.setAttribute("hcsaServiceDto", hcsaServiceDto);
             request.setAttribute("crud_action_type", "dovalidate");
             request.setAttribute("errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            request.setAttribute("errorMap", errorMap);
             return;
         }
 
@@ -286,6 +287,7 @@ public class ConfigServiceImpl implements ConfigService {
                  Map<String, List<HcsaConfigPageDto>> tables = getTables(request);
                  request.setAttribute("routingStagess", tables);
                  request.setAttribute("errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                 request.setAttribute("errorMap", errorMap);
                  return;
              }
              if ("save".equals(crud_action_value)) {
@@ -555,6 +557,7 @@ public class ConfigServiceImpl implements ConfigService {
                                 !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(k)){
                             if (StringUtil.isEmpty(schemeType)) {
                                 errorMap.put("schemeType"+k+ i, MessageUtil.replaceMessage("GENERAL_ERR0006","Service Routing Scheme","field"));
+                                errorMap.put(k,"error");
                             }
                             continue;
                         }
@@ -567,6 +570,7 @@ public class ConfigServiceImpl implements ConfigService {
 
                 if (StringUtil.isEmpty(schemeType)) {
                     errorMap.put("schemeType"+k+ i, MessageUtil.replaceMessage("GENERAL_ERR0006","Service Routing Scheme","field"));
+                    errorMap.put(k,"error");
                 }
             }
         });
@@ -582,11 +586,14 @@ public class ConfigServiceImpl implements ConfigService {
                                 !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(k)){
                             if (StringUtil.isEmpty(stringManhourCount)) {
                                 errorMap.put("manhourCount"+k+ i, MessageUtil.replaceMessage("GENERAL_ERR0006","Service Routing Scheme","field"));
+                                errorMap.put(k,"error");
                             }
                             if(StringUtil.isEmpty(isMandatory)){
                                 errorMap.put("isMandatory"+k+i,MessageUtil.replaceMessage("GENERAL_ERR0006","This","field"));
+                                errorMap.put(k,"error");
                             }else if("false".equals(isMandatory)){
                                 errorMap.put("isMandatory"+k+i,"This option must be mandatory");
+                                errorMap.put(k,"error");
                             }
                             continue;
                         }
@@ -597,11 +604,14 @@ public class ConfigServiceImpl implements ConfigService {
                     continue;
                 }else if("".equals(isMandatory)){
                     errorMap.put("isMandatory"+k+i,MessageUtil.replaceMessage("GENERAL_ERR0006","This","field"));
+                    errorMap.put(k,"error");
                 }
                 if(StringUtil.isEmpty(stringManhourCount)){
                     errorMap.put("manhourCount"+k+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Service Workload Manhours","field"));
+                    errorMap.put(k,"error");
                 }else if(!stringManhourCount.matches("^[0-9]+$")){
                     errorMap.put("manhourCount"+k+i,"NEW_ERR0003");
+                    errorMap.put(k,"error");
                 }
             }
         });
@@ -656,7 +666,7 @@ public class ConfigServiceImpl implements ConfigService {
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = hcsaConfigClient.getHcsaStageWorkingGroup(hcsaServiceDto.getId()).getEntity();
 
         List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos = hcsaConfigClient.getHcsaSvcSpeRoutingSchemeDtoByServiceId(hcsaServiceDto.getId()).getEntity();
-
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = hcsaConfigClient.getHcsaSvcRoutingStageDtoByServiceId(hcsaServiceDto.getId()).getEntity();
 
         List<String> types = getType();
         Map<String,List<HcsaSvcStageWorkloadDto>> map=IaisCommonUtils.genNewHashMap();
@@ -722,6 +732,12 @@ public class ConfigServiceImpl implements ConfigService {
                 }else if(hcsaConfigPageDto.getRoutingSchemeName()==null){
                     hcsaConfigPageDto.setIsMandatory("false");
                 }
+                for(HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto : hcsaSvcRoutingStageDtoList){
+                    String appType = hcsaSvcRoutingStageDto.getAppType();
+                    if(type.equals(appType)&& hcsaConfigPageDto.getStageId().equals(hcsaSvcRoutingStageDto.getStageId())){
+                        hcsaConfigPageDto.setCanApprove(hcsaSvcRoutingStageDto.getCanApprove());
+                    }
+                }
             }
 
             hcsaConfigPageDtoMap.put(type,hcsaConfigPageDtos);
@@ -739,6 +755,7 @@ public class ConfigServiceImpl implements ConfigService {
             HcsaConfigPageDto hcsaConfigPageDto = new HcsaConfigPageDto();
             hcsaConfigPageDto.setStageCode(hcsaSvcRoutingStageDto.getStageCode());
             hcsaConfigPageDto.setStage(hcsaSvcRoutingStageDto.getId());
+            hcsaConfigPageDto.setStageId(hcsaSvcRoutingStageDto.getId());
             hcsaConfigPageDto.setStageName(hcsaSvcRoutingStageDto.getStageName());
             for (int i = 0; i < hcsaSvcStageWorkloadDtos.size(); i++) {
                 String stageId = hcsaSvcStageWorkloadDtos.get(i).getStageId();
@@ -876,13 +893,13 @@ public class ConfigServiceImpl implements ConfigService {
         HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(crud_action_value).getEntity();
         List<HcsaServiceCategoryDto> categoryDtos = getHcsaServiceCategoryDto();
         request.getSession().setAttribute("categoryDtos",categoryDtos);
-        Boolean flag = hcsaConfigClient.serviceIdIsUsed(crud_action_value).getEntity();
+       /* Boolean flag = hcsaConfigClient.serviceIdIsUsed(crud_action_value).getEntity();
         List<LicenceDto> entity = hcsaLicenceClient.getLicenceDtosBySvcName(hcsaServiceDto.getSvcName()).getEntity();
         if(flag || !entity.isEmpty()){
             hcsaServiceDto.setServiceIsUsed(true);
         }else {
             hcsaServiceDto.setServiceIsUsed(false);
-        }
+        }*/
         setAttribute(request,hcsaServiceDto);
         Object individualPremises = request.getAttribute("individualPremises");
         if(individualPremises==null){
