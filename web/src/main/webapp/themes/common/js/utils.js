@@ -52,12 +52,12 @@ function doValidationParse(data){
         var rollId = '';
         for(var i= 0 ; i< results.length ; i ++){
             for(var key in results[i]){
-                var error_key="error_" + key.replace(/\./g,'\\.');
-                if ($("#"+error_key).offset().top > 0 && (mintop == 0 || mintop > $("#"+error_key).offset().top)) {
-                    rollId = error_key;
-                    minTop = $("#"+error_key).offset().top;
-                }
                 if (document.getElementById(error_key)) {
+                    var error_key="error_" + key.replace(/\./g,'\\.');
+                    if ($("#"+error_key).offset().top > 0 && (mintop == 0 || mintop > $("#"+error_key).offset().top)) {
+                        rollId = error_key;
+                        minTop = $("#"+error_key).offset().top;
+                    }
                     $("#"+error_key).show();
                     if (error_key == 'error_topErrorDiv'
                         || error_key.indexOf('noEscapeXml') > 0) {
