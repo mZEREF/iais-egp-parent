@@ -286,8 +286,8 @@
                 <input class="form-check-input" <c:if test="${doc.isMandatory}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocMandatory">
                 <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
               </div>
-              <%--<div class="col-xs-12 col-md-12">
-                <label style="margin-left: 0%" class="col-xs-12 col-md-7 control-label">Will the doc be duplicated for individual premises?</label>
+              <div class="col-xs-12 col-md-12">
+               <%-- <label style="margin-left: 0%" class="col-xs-12 col-md-7 control-label">Will the doc be duplicated for individual premises?</label>
                 <div class="col-xs-12 col-md-2">
                   <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" <c:if test="${individualPremises==0}">checked</c:if> value="0">&nbsp;&nbsp;<span style="font-size: 16px">No</span>
                 </div>
