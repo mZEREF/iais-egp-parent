@@ -266,7 +266,5 @@ function scrollPosition(pElementId) {
     var tWindowHeight = $(window).height();
     var tElementHeight = $("#"+pElementId).height();
     var tScrollTop = tTop-tWindowHeight*0.3-tElementHeight*0.5;
-    $('html, body').animate({
-        scrollTop: tScrollTop
-    }, 1000);
+    window.scrollTo(0, tScrollTop);
 }
