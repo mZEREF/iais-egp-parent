@@ -1053,7 +1053,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String offSiteAddressType = appGrpPremisesDtoList.get(i).getOffSiteAddressType();
 
                         if (StringUtil.isEmpty(offSiteAddressType)) {
-                            errorMap.put("offSiteAddressType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Street Name", "field"));
+                            errorMap.put("offSiteAddressType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
                         } else {
                             boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getOffSiteFloorNo());
                             boolean empty1 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getOffSiteBlockNo());
