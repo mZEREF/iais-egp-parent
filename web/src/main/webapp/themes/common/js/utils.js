@@ -48,14 +48,17 @@ function doValidationParse(data){
         $("#iaisErrorFlag").val("BLOCK");
         var results = JSON.parse(data);
 
+        var minTop = -1;
+        var rollId = '';
         for(var i= 0 ; i< results.length ; i ++){
             for(var key in results[i]){
                 var error_key="error_" + key.replace(/\./g,'\\.');
+                if (mintop == 0 || mintop > $("#"+error_key).offset().top) {
+                    rollId = error_key;
+                    minTop = $("#"+error_key).offset().top;
+                }
                 if (document.getElementById(error_key)) {
                     $("#"+error_key).show();
-                    if (i == 0) {
-                        scrollPosition(error_key);
-                    }
                     if (error_key == 'error_topErrorDiv'
                         || error_key.indexOf('noEscapeXml') > 0) {
                         document.getElementById(error_key).innerHTML = results[i][key];
@@ -65,6 +68,7 @@ function doValidationParse(data){
                 }
             }
         }
+        scrollPosition(rollId);
     }
 }
 
