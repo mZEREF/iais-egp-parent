@@ -76,6 +76,8 @@ import java.util.zip.ZipOutputStream;
 public class UploadFileServiceImpl implements UploadFileService {
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
+    @Value("${iais.sharedfolder.application.out}")
+    private String sharedOutPath;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -198,11 +200,15 @@ public class UploadFileServiceImpl implements UploadFileService {
     private String compress(String groupId){
         log.info("------------ start compress() -----------------------");
         long l =   System.currentTimeMillis();
-        try (OutputStream outputStream = Files.newOutputStream(Paths.get(sharedPath + AppServicesConsts.BACKUPS + File.separator + l + AppServicesConsts.ZIP_NAME));
+        String outFolder = sharedOutPath;
+        if (!outFolder.endsWith(File.separator)) {
+            outFolder += File.separator;
+        }
+        try (OutputStream outputStream = Files.newOutputStream(Paths.get(outFolder + l + AppServicesConsts.ZIP_NAME));
                 CheckedOutputStream cos=new CheckedOutputStream(outputStream,new CRC32());
                ZipOutputStream zos=new ZipOutputStream(cos)) {
 
-            log.info(StringUtil.changeForLog("------------zip file name is"+sharedPath+AppServicesConsts.BACKUPS+File.separator+ l+".zip"+"--------------------"));
+            log.info(StringUtil.changeForLog("------------zip file name is"+ outFolder + l+".zip"+"--------------------"));
             File file = new File(sharedPath + AppServicesConsts.FILE_NAME + File.separator + groupId);
 
             zipFile(zos, file);
@@ -244,7 +250,11 @@ public class UploadFileServiceImpl implements UploadFileService {
     public boolean renameAndSave(String fileNamesss,String groupId)  {
         log.info("--------------rename start ---------------------");
         boolean flag = true;
-        File zipFile =new File(sharedPath+AppServicesConsts.BACKUPS);
+        String outFolder = sharedOutPath;
+        if (!outFolder.endsWith(File.separator)) {
+            outFolder += File.separator;
+        }
+        File zipFile =new File(sharedOutPath);
         MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
            File[] files = zipFile.listFiles((dir, name) -> {
@@ -266,12 +276,12 @@ public class UploadFileServiceImpl implements UploadFileService {
 
                    byte[] bytes = by.toByteArray();
                    String s = FileUtil.genMd5FileChecksum(bytes);
-                   File curFile = MiscUtil.generateFile(sharedPath+AppServicesConsts.BACKUPS, s + ".zip");
+                   File curFile = MiscUtil.generateFile(sharedOutPath, s + ".zip");
                    boolean b = file.renameTo(curFile);
                    if(b){
-                       log.info(StringUtil.changeForLog("----------- new zip file name is"+sharedPath+AppServicesConsts.BACKUPS+File.separator+s+".zip"));
+                       log.info(StringUtil.changeForLog("----------- new zip file name is"+outFolder+File.separator+s+".zip"));
                    }
-                   String string = eicGateway(s + AppServicesConsts.ZIP_NAME, AppServicesConsts.BACKUPS + File.separator + s + AppServicesConsts.ZIP_NAME, groupId);
+                   String string = eicGateway(s + AppServicesConsts.ZIP_NAME, s + AppServicesConsts.ZIP_NAME, groupId);
            /*        String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,AppServicesConsts.BACKUPS + File.separator+s+AppServicesConsts.ZIP_NAME,groupId);*/
                    log.info(StringUtil.changeForLog("----"+string));
                    if(!string.equals("SUCCESS")){
