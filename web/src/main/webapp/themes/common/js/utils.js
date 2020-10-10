@@ -48,12 +48,12 @@ function doValidationParse(data){
         $("#iaisErrorFlag").val("BLOCK");
         var results = JSON.parse(data);
 
-        var minTop = -1;
+        var minTop = 0;
         var rollId = '';
         for(var i= 0 ; i< results.length ; i ++){
             for(var key in results[i]){
                 var error_key="error_" + key.replace(/\./g,'\\.');
-                if (mintop == 0 || mintop > $("#"+error_key).offset().top) {
+                if ($("#"+error_key).offset().top > 0 && (mintop == 0 || mintop > $("#"+error_key).offset().top)) {
                     rollId = error_key;
                     minTop = $("#"+error_key).offset().top;
                 }
