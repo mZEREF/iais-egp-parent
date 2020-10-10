@@ -208,8 +208,8 @@ public class FeAdminManageDelegate {
             if (validationResult.isHasErrors()){
                 log.error("****************Error");
                 Map<String,String> errorMap = validationResult.retrieveAll();
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
-
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "back");
             }else{
                 Map<String,String> successMap = IaisCommonUtils.genNewHashMap();
