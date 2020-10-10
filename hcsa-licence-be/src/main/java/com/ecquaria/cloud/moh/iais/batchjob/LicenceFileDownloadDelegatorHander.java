@@ -1,8 +1,9 @@
-package com.ecquaria.cloud.moh.iais.action;
+package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
+import com.ecquaria.cloud.moh.iais.action.LicenceFileDownloadDelegator;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
