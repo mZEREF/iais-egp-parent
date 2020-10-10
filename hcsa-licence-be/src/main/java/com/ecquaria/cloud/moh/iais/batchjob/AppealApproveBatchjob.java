@@ -162,7 +162,7 @@ public class AppealApproveBatchjob {
                           }
                           try {
                               String reason = appealApproveDto.getAppPremiseMiscDto().getReason();
-                              sendAllEmailApproved(applicationDto,reason,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealDto.getOtherReason());
+                              sendAllEmailApproved(applicationDto,reason,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealDto);
                           }catch (Exception e){
 
                           }
@@ -516,7 +516,7 @@ public class AppealApproveBatchjob {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealOther is end ..."));
     }
 
-    public void  sendAllEmailApproved(ApplicationDto applicationDto,String reason,LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto,String otherReason) throws IOException, TemplateException {
+    public void  sendAllEmailApproved(ApplicationDto applicationDto,String reason,LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto,AppPremiseMiscDto appPremiseMiscDto) throws IOException, TemplateException {
         String paymentMethodName = "";
         log.info("start send email sms and msg");
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
@@ -547,7 +547,7 @@ public class AppealApproveBatchjob {
         }
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
         templateContent.put("ApplicantName", licenseeDto.getName());
-        templateContent.put("ApplicationType",  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        templateContent.put("ApplicationType",  MasterCodeUtil.getCodeDesc(appPremiseMiscDto.getAppealType()));
         templateContent.put("ApplicationNo", applicationDto.getApplicationNo());
         templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
@@ -569,8 +569,8 @@ public class AppealApproveBatchjob {
             Date expiryDate;
             try {
                 LicenceDto appealLicenceDto = (LicenceDto) CopyUtil.copyMutableObject(licenceDto);
-                Date startDate = appealLicenceDto.getStartDate();
-                expiryDate= LicenceUtil.getExpiryDate(startDate,appPremisesRecommendationDto);
+                Date endDate = appealLicenceDto.getEndDate();
+                expiryDate= LicenceUtil.getExpiryDate(endDate,appPremisesRecommendationDto);
             }catch (Exception e){
                 expiryDate=new Date();
             }
@@ -579,10 +579,10 @@ public class AppealApproveBatchjob {
             templateContent.put("licenceEndDate", Formatter.formatDate(licenceDto.getExpiryDate()));
             templateContent.put("newEndDate", Formatter.formatDate(expiryDate));
         }else{
-            templateContent.put("content", otherReason);
+            templateContent.put("content", appPremiseMiscDto.getOtherReason());
         }
 
-        String subject = "MOH IAIS – Appeal for "+ MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType())+", "+applicationDto.getApplicationNo()+" is approved";
+        String subject = "MOH IAIS – Appeal for "+ MasterCodeUtil.getCodeDesc(appPremiseMiscDto.getAppealType())+", "+applicationDto.getApplicationNo()+" is approved";
         EmailParam emailParam = new EmailParam();
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_APPROVE_EMAIL);
         emailParam.setTemplateContent(templateContent);
