@@ -69,7 +69,7 @@
 
             <div class="form-group">
                 <div class="col-xs-5 col-md-10">
-                    <iais:field value="Operation Start Date Time" required="true"></iais:field>
+                    <iais:field value="Operation Start Date" required="true"></iais:field>
                     <div class="col-xs-5 col-md-5">
                         <iais:datePicker id="startDate" name="startDate" value="${param.startDate}"></iais:datePicker>
                         <span id="error_dateStart" name="iaisErrorMsg" class="error-msg"></span>
@@ -81,7 +81,7 @@
 
             <div class="form-group">
                 <div class="col-xs-5 col-md-10">
-                    <iais:field value="Operation End Date Time" required="true"></iais:field>
+                    <iais:field value="Operation End Date" required="true"></iais:field>
                     <div class="col-xs-5 col-md-5">
                         <iais:datePicker id="endDate" name="endDate" value="${param.endDate}"></iais:datePicker>
                         <span id="error_dateEnd" name="iaisErrorMsg" class="error-msg"></span>
