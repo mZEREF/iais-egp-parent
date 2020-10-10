@@ -54,7 +54,7 @@ function doValidationParse(data){
                 if (document.getElementById(error_key)) {
                     $("#"+error_key).show();
                     if (i == 0) {
-                        $("#"+error_key).focus();
+                        scrollPosition(error_key);
                     }
                     if (error_key == 'error_topErrorDiv'
                         || error_key.indexOf('noEscapeXml') > 0) {
@@ -259,4 +259,14 @@ function validateUploadSizeMaxOrEmpty(maxSize,selectedFileId) {
         return "N";
     }
     return "Y";
+}
+
+function scrollPosition(pElementId) {
+    var tTop = jQuery("#"+pElementId).offset().top;
+    var tWindowHeight = jQuery(window).height();
+    var tElementHeight = jQuery("#"+pElementId).height();
+    var tScrollTop = tTop-tWindowHeight*0.3-tElementHeight*0.5;
+    jQuery('html, body').animate({
+        scrollTop: tScrollTop
+    }, 1000);
 }
