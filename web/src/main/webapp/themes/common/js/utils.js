@@ -262,11 +262,11 @@ function validateUploadSizeMaxOrEmpty(maxSize,selectedFileId) {
 }
 
 function scrollPosition(pElementId) {
-    var tTop = jQuery("#"+pElementId).offset().top;
-    var tWindowHeight = jQuery(window).height();
-    var tElementHeight = jQuery("#"+pElementId).height();
+    var tTop = $("#"+pElementId).offset().top;
+    var tWindowHeight = $(window).height();
+    var tElementHeight = $("#"+pElementId).height();
     var tScrollTop = tTop-tWindowHeight*0.3-tElementHeight*0.5;
-    jQuery('html, body').animate({
+    $('html, body').animate({
         scrollTop: tScrollTop
     }, 1000);
 }
