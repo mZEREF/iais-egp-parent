@@ -53,6 +53,9 @@ function doValidationParse(data){
                 var error_key="error_" + key.replace(/\./g,'\\.');
                 if (document.getElementById(error_key)) {
                     $("#"+error_key).show();
+                    if (i == 0) {
+                        $("#"+error_key).focus();
+                    }
                     if (error_key == 'error_topErrorDiv'
                         || error_key.indexOf('noEscapeXml') > 0) {
                         document.getElementById(error_key).innerHTML = results[i][key];
