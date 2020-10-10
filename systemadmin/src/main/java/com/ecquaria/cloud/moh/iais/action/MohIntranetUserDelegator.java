@@ -12,13 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserUpLoadDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -28,12 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
@@ -52,17 +41,9 @@ import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.nio.file.Files;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author weilu
@@ -72,11 +53,11 @@ import java.util.Set;
 @Slf4j
 public class MohIntranetUserDelegator {
 
-    private final FilterParameter filterParameter = new FilterParameter.Builder()
-            .clz(OrgUserQueryDto.class)
-            .searchAttr(IntranetUserConstant.SEARCH_PARAM)
-            .resultAttr(IntranetUserConstant.SEARCH_RESULT)
-            .sortField(IntranetUserConstant.INTRANET_USER_SORT_COLUMN).sortType(SearchParam.ASCENDING).build();
+//    private final FilterParameter filterParameter = new FilterParameter.Builder()
+//            .clz(OrgUserQueryDto.class)
+//            .searchAttr(IntranetUserConstant.SEARCH_PARAM)
+//            .resultAttr(IntranetUserConstant.SEARCH_RESULT)
+//            .sortField(IntranetUserConstant.INTRANET_USER_SORT_COLUMN).sortType(SearchParam.ASCENDING).build();
 
     @Autowired
     private IntranetUserService intranetUserService;
@@ -94,7 +75,8 @@ public class MohIntranetUserDelegator {
         ParamUtil.setSessionAttr(bpc.request, "roleMap", null);
         ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", null);
         ParamUtil.setSessionAttr(bpc.request, "userFileSize", null);
-        SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter, true);
+        SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request,IntranetUserConstant.SEARCH_PARAM,OrgUserQueryDto.class.getName(),
+                IntranetUserConstant.INTRANET_USER_SORT_COLUMN,SearchParam.ASCENDING,false);
         QueryHelp.setMainSql("systemAdmin", "IntranetUserQuery", searchParam);
         SearchResult searchResult = intranetUserService.doQuery(searchParam);
         if (!StringUtil.isEmpty(searchResult)) {
@@ -124,7 +106,7 @@ public class MohIntranetUserDelegator {
         if (requestAttr != null) {
             return;
         }
-        SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter, true);
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, IntranetUserConstant.SEARCH_PARAM);
         QueryHelp.setMainSql("systemAdmin", "IntranetUserQuery", searchParam);
         SearchResult searchResult = intranetUserService.doQuery(searchParam);
         if (!StringUtil.isEmpty(searchResult)) {
@@ -909,8 +891,8 @@ public class MohIntranetUserDelegator {
         ParamUtil.setRequestAttr(request, "searchStatus", status);
         ParamUtil.setRequestAttr(request, "privilege", privilege);
         ParamUtil.setRequestAttr(request, "role", role);
-
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
+        SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request,IntranetUserConstant.SEARCH_PARAM,OrgUserQueryDto.class.getName(),
+                IntranetUserConstant.INTRANET_USER_SORT_COLUMN,SearchParam.ASCENDING,true);
         if (!StringUtil.isEmpty(userId)) {
             searchParam.addFilter("userId", userId, true);
         }
@@ -936,12 +918,14 @@ public class MohIntranetUserDelegator {
 
     public void doSorting(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        SearchResultHelper.doSort(request, filterParameter);
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, IntranetUserConstant.SEARCH_PARAM);
+        HalpSearchResultHelper.doSort(request,searchParam);
     }
 
     public void doPaging(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        SearchResultHelper.doPage(request, filterParameter);
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, IntranetUserConstant.SEARCH_PARAM);
+        HalpSearchResultHelper.doPage(request,searchParam);
     }
 
     /*utils*/
@@ -1356,12 +1340,6 @@ public class MohIntranetUserDelegator {
 
     private List<SelectOption> getprivilegeOption() {
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption("Admin Screening Task", "Admin Screening Task");
-        SelectOption so2 = new SelectOption("Approve a Particular Application Stage", "Approve a Particular Application Stage");
-        SelectOption so3 = new SelectOption("Access a Particular Online Enquiry or Report", "access a particular Online Enquiry or Report");
-        result.add(so1);
-        result.add(so2);
-        result.add(so3);
         return result;
     }
 
