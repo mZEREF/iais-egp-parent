@@ -31,19 +31,15 @@
 
     <sql key = "IntranetUserQuery" remarks = "query IntranetUser sql">
         <![CDATA[
-            SELECT
-            id,
-            USER_ID,
-			DISPLAY_NAME,
-			EMAIL_ADDR,
-			STATUS
-			FROM user_account as iu
-            WHERE 1=1 AND STATUS !='CMSTAT002' AND USER_DOMAIN = 'intranet'
-            <#if id??> AND CHARINDEX(:id, iu.id) >0</#if>
-            <#if userId??> and charindex(:userId, iu.USER_ID) >0</#if>
-            <#if displayName??> and charindex(:displayName, iu.DISPLAY_NAME) >0</#if>
-            <#if status??> and charindex(:status, iu.STATUS) >0</#if>
-            <#if email??> and charindex(:email, iu.EMAIL_ADDR) >0</#if>
+            SELECT DISTINCT T1.USER_ID,T1.ID,T1.EMAIL_ADDR,T1.DISPLAY_NAME,T1.STATUS from user_account as T1
+            join user_role T2 on T1.ID =T2.USER_ACCT_ID
+            WHERE 1=1 AND T1.STATUS !='CMSTAT002' AND T1.USER_DOMAIN = 'intranet'
+            <#if id??> AND CHARINDEX(:id, T1.id) >0</#if>
+            <#if userId??> and charindex(:userId, T1.USER_ID) >0</#if>
+            <#if displayName??> and charindex(:displayName, T1.DISPLAY_NAME) >0</#if>
+            <#if status??> and charindex(:status, T1.STATUS) >0</#if>
+            <#if email??> and charindex(:email, T1.EMAIL_ADDR) >0</#if>
+            <#if role??> and charindex(:role, T2.ROLE_ID) >0</#if>
         ]]>
     </sql>
 

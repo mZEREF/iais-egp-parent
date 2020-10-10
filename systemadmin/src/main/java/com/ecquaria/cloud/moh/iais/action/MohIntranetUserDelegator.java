@@ -285,8 +285,8 @@ public class MohIntranetUserDelegator {
         Map<String, String> roleNameGroupId = IaisCommonUtils.genNewHashMap();
         if (!IaisCommonUtils.isEmpty(rolesByDomain)) {
             for (Role role : rolesByDomain) {
-                String roleName = role.getName();
-                String assignRoleId = role.getId();
+                String roleName = role.getName();//APPROVE 1
+                String assignRoleId = role.getId();//AO1
                 assignRoleOption.add(roleName);
                 roleMap.put(roleName, assignRoleId);
                 roleMap1.put(assignRoleId, roleName);
@@ -923,6 +923,9 @@ public class MohIntranetUserDelegator {
         if (!StringUtil.isEmpty(status)) {
             searchParam.addFilter("status", status, true);
         }
+        if (!StringUtil.isEmpty(role)) {
+            searchParam.addFilter("role", role, true);
+        }
         searchParam.setPageNo(1);
         QueryHelp.setMainSql("systemAdmin", "IntranetUserQuery", searchParam);
         SearchResult searchResult = intranetUserService.doQuery(searchParam);
@@ -1340,13 +1343,14 @@ public class MohIntranetUserDelegator {
     }
 
     private List<SelectOption> getRoleOption() {
+        List<Role> rolesByDomain = intranetUserService.getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption("Admin", "Admin");
-        SelectOption so2 = new SelectOption("Professional", "Professional");
-        SelectOption so3 = new SelectOption("Inspector", "Inspector");
-        result.add(so1);
-        result.add(so2);
-        result.add(so3);
+        for(Role role : rolesByDomain){
+            String roleName = role.getName();
+            String roleId = role.getId();
+            SelectOption so = new SelectOption(roleId, roleName);
+            result.add(so);
+        }
         return result;
     }
 

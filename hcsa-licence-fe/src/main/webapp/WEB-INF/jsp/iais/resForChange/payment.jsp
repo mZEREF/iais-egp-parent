@@ -26,7 +26,7 @@
                     <c:otherwise>
                         <c:choose>
                             <c:when test="${'APTY005' == AppSubmissionDto.appType}">
-                                <%@include file="../resForChange/amendHeader.jsp"%>
+                                <%@include file="../resForChange/amendHeaderNotLic.jsp"%>
                             </c:when>
                             <c:when test="${'APTY004' == AppSubmissionDto.appType}">
                                 <%@include file="../withoutrenewal/renewalHeader.jsp"%>
