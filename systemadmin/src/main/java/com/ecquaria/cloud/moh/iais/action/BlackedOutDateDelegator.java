@@ -235,11 +235,11 @@ public class BlackedOutDateDelegator {
         if (!anySelect){
 
             if (StringUtils.isEmpty(startDate)){
-                errorMap.put("inspectionStartDate", "GENERAL_ERR0039");
+                errorMap.put("inspectionStartDate",MessageUtil.replaceMessage("GENERAL_ERR0006","Blacked Out Date Start","field"));
             }
 
             if (StringUtils.isEmpty(endDate)){
-                errorMap.put("inspectionEndDate", "GENERAL_ERR0039");
+                errorMap.put("inspectionEndDate",MessageUtil.replaceMessage("GENERAL_ERR0006","Blacked Out Date End","field"));
             }
 
             if (mandatory){
