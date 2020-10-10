@@ -236,15 +236,6 @@
                                             </c:if>
                                         </c:when>
                                         <c:when test="${app.applicationType == 'APTY001'}">
-                                            <c:if test="${app.status == 'APST005' || app.status == 'APST050' }">
-                                                <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
-                                                    <option value="" selected>Select</option>
-                                                    <option value="Appeal">Appeal</option>
-                                                    <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
-                                                        <option value="Assessment">Assessment</option>
-                                                    </c:if>
-                                                </select>
-                                            </c:if>
                                             <c:if test="${app.status == 'APST008'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
@@ -278,7 +269,7 @@
                                                     </c:if>
                                                 </select>
                                             </c:if>
-                                            <c:if test="${app.status == 'APST006' || app.status == 'APST045'}">
+                                            <c:if test="${app.status == 'APST005' || app.status == 'APST006' || app.status == 'APST045' || app.status == 'APST050'}">
                                                 <select disabled>
                                                     <option>N/A</option>
                                                 </select>
