@@ -236,11 +236,11 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         Date inspStartDate = null;
         for(int i = 0; i < apptUserCalendarDtoList.size(); i++){
             ApptUserCalendarDto apptUserCalendarDto = apptUserCalendarDtoList.get(i);
-            Date earliestStartDate = getEarliestStartDate(apptUserCalendarDto);
+            Date earliestStartDate = getEarliestStartDate(apptUserCalendarDto);//NOSONAR
             if(inspStartDate == null){
                 inspStartDate = earliestStartDate;
             } else {
-                if(earliestStartDate.before(inspStartDate)){
+                if(earliestStartDate.before(inspStartDate)){//NOSONAR
                     inspStartDate = earliestStartDate;
                 }
             }
