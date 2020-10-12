@@ -201,11 +201,11 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         Date endDate = null;
         for(int i = 0; i < apptUserCalendarDtoList.size(); i++){
             ApptUserCalendarDto apptUserCalendarDto = apptUserCalendarDtoList.get(i);
-            Date lastEndDate = getLastEndDate(apptUserCalendarDto);
+            Date lastEndDate = getLastEndDate(apptUserCalendarDto);//NOSONAR
             if(endDate == null){
                 endDate = lastEndDate;
             } else {
-                if(lastEndDate.after(endDate)){
+                if(lastEndDate.after(endDate)){//NOSONAR
                     endDate = lastEndDate;
                 }
             }
