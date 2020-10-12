@@ -928,7 +928,7 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public void sendPostInsTaskFeData(String eventRefNum,String submissionId)  {
         log.info("post inspection call back start ===================>>>>>");
-        log.info("post inspection start eventRefNum ===================>>>>>"+eventRefNum);
+        log.info(StringUtil.changeForLog("post inspection start eventRefNum ===================>>>>>"+eventRefNum));
         List<ApplicationDto> postInspectionApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
         AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         //appGrp --------app -------task    submissionId   operation yiyang    update licPremise
@@ -980,7 +980,7 @@ public class InsRepServiceImpl implements InsRepService {
             log.info(StringUtil.changeForLog("=======================taskDtos ===================>>>>>Success"));
 
         AppSubmissionForAuditDto appSubmissionForAuditDto = applicationClient.getAppSubmissionForAuditDto(eventRefNum).getEntity();
-        appSubmissionForAuditDto.setIsCancel(false);
+        appSubmissionForAuditDto.setIsCancel(Boolean.FALSE);
         log.info(StringUtil.changeForLog("==================  eventBus End  ===================>>>>>"));
         EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.LICENCE_CLIENT, AuditSystemListServiceImpl.class.getName(),
                 "saveAppForAuditToFeAndCreateTrack", currentApp + "-" + currentDomain,

@@ -3,9 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JarFileUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.utils.PDFGenerator;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ResourceUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -126,7 +128,7 @@ public class LicencePrint {
 //                bytes = FileUtils.readFileToByteArray(pdfFile);
                 bpc.request.setAttribute("pdf", bos.toByteArray());
             } catch (Exception e) {
-                e.printStackTrace();
+                log.info(e.getMessage(),e);
             }
         }
     }

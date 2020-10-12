@@ -1382,9 +1382,9 @@ public class RequestForChangeMenuDelegator {
                 }
                 appSubmissionService.setRiskToDto(appSubmissionDto);
                 if(isSame && b){
-                    appSubmissionDtoByLicenceId.setAutoRfc(Boolean.TRUE);
+                    appSubmissionDtoByLicenceId.setAutoRfc(true);
                 }else {
-                    appSubmissionDtoByLicenceId.setAutoRfc(Boolean.FALSE);
+                    appSubmissionDtoByLicenceId.setAutoRfc(false);
                 }
 
                 //update status
