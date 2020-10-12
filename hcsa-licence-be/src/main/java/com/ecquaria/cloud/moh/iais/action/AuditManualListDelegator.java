@@ -206,7 +206,7 @@ public class AuditManualListDelegator {
         if(StringUtil.isEmpty(dochange)){
             if(getSelectedList(request,auditTaskDataDtos)){
                 Map<String, String> errMap = new HashMap<>(1);
-                errMap.put("selectedOne","AUDIT_UC_ERR0006");
+                errMap.put("selectedOne","AUDIT_ERR001");
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
             }else {
