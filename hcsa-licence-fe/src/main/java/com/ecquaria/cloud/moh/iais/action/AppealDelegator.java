@@ -120,6 +120,7 @@ public class AppealDelegator {
         bpc.getSession().removeAttribute("applicationNo");
         bpc.getSession().removeAttribute("file");
         bpc.getSession().removeAttribute("filename");
+        bpc.getSession().removeAttribute("fileReportIdForAppeal");
         bpc.getSession().removeAttribute("appPremisesSpecialDocDto");
         bpc.getSession().removeAttribute("appealingFor");
         bpc.getSession().removeAttribute("type");

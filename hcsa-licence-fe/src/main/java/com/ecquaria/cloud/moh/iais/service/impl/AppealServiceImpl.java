@@ -991,6 +991,7 @@ public class AppealServiceImpl implements AppealService {
         if (appPremisesSpecialDocDto != null) {
             String docName = appPremisesSpecialDocDto.getDocName();
             request.getSession().setAttribute("filename", docName);
+            request.getSession().setAttribute("fileReportIdForAppeal", appPremisesSpecialDocDto.getFileRepoId());
             request.getSession().setAttribute("appPremisesSpecialDocDto", appPremisesSpecialDocDto);
         }
         request.setAttribute("appPremiseMiscDto", appPremiseMiscDto);
