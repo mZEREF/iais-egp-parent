@@ -967,6 +967,22 @@ public class HalpAssessmentGuideDelegator {
         appSelectSvcDto.setAlign(false);
         ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
         ParamUtil.setRequestAttr(bpc.request,"firstVisitFor","Y");
+        if(NEXT.equals(nextstep)){
+            String crud_action_value=bpc.request.getParameter("crud_action_value");
+            String draftNo  =bpc.request.getParameter("draftNo");
+            getDraft(bpc);
+            String attribute =(String)bpc.request.getAttribute(SELECT_DRAFT_NO);
+            if("continue".equals(crud_action_value)){
+                bpc.request.getSession().setAttribute(SELECT_DRAFT_NO, draftNo);
+                bpc.request.getSession().setAttribute("DraftNumber", null);
+            }else if("resume".equals(crud_action_value)){
+                bpc.request.getSession().setAttribute("DraftNumber", attribute);
+            }else if(attribute!=null){
+                //back to curr page
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"doBack");
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_LICENCE);
+            }
+        }
         //test
         //ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
         log.info(StringUtil.changeForLog("do choose svc end ..."));

@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import javax.servlet.http.HttpServletRequest;
+
+import com.google.common.collect.Maps;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -522,7 +524,7 @@ public class ConfigServiceDelegator {
         List<HcsaConfigPageDto> hcsaConfigPageDtos = IaisCommonUtils.genNewArrayList();
         List<String> type = configService.getType();
         List<HcsaSvcCateWrkgrpCorrelationDto> hcsaSvcCateWrkgrpCorrelationDto = configService.getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(selectCategoryId);
-        Map<String ,HcsaSvcCateWrkgrpCorrelationDto> hashMap=new HashMap<>(hcsaSvcCateWrkgrpCorrelationDto.size());
+        Map<String ,HcsaSvcCateWrkgrpCorrelationDto> hashMap= Maps.newHashMapWithExpectedSize(hcsaSvcCateWrkgrpCorrelationDto.size());
         for(HcsaSvcCateWrkgrpCorrelationDto svcCateWrkgrpCorrelationDto : hcsaSvcCateWrkgrpCorrelationDto){
             hashMap.put(svcCateWrkgrpCorrelationDto.getStageId()+svcCateWrkgrpCorrelationDto.getSubOrder(),svcCateWrkgrpCorrelationDto);
         }

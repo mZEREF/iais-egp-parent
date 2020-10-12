@@ -289,6 +289,7 @@ public class NewApplicationDelegator {
         bpc.request.getSession().removeAttribute("appSubmissionDtos");
         bpc.request.getSession().removeAttribute("rfiHcsaService");
         bpc.request.getSession().removeAttribute("ackPageAppSubmissionDto");
+        bpc.request.getSession().removeAttribute("serviceConfig");
     }
 
     /**
@@ -1544,25 +1545,26 @@ public class NewApplicationDelegator {
                     HcsaServiceDto hcsaServiceDto = serviceConfigService.getHcsaServiceDtoById(svcId);
                     ParamUtil.setRequestAttr(bpc.request, HCSASERVICEDTO, hcsaServiceDto);
                     ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
-                }
-                List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
-                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-                if(appGrpPremisesDtoList!=null){
-                    for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
-                        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
-                        if(appPremPhOpenPeriodList!=null){
-                            for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList){
-                                String phDateStr = appPremPhOpenPeriodDto.getPhDateStr();
-                                for(SelectOption selectOption : publicHolidayList){
-                                    if(selectOption.getValue().equals(phDateStr)){
-                                        appPremPhOpenPeriodDto.setDayName(selectOption.getText());
-                                        break;
+                    List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
+                    List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+                    if(appGrpPremisesDtoList!=null){
+                        for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+                            List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+                            if(appPremPhOpenPeriodList!=null){
+                                for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList){
+                                    String phDateStr = appPremPhOpenPeriodDto.getPhDateStr();
+                                    for(SelectOption selectOption : publicHolidayList){
+                                        if(selectOption.getValue().equals(phDateStr)){
+                                            appPremPhOpenPeriodDto.setDayName(selectOption.getText());
+                                            break;
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
+
                 if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
                     requestForChangeService.svcDocToPresmise(appSubmissionDto);
                 }
@@ -2361,8 +2363,8 @@ public class NewApplicationDelegator {
     }
     private List<AppSvcDocDto> copySvcDoc(List<AppSvcDocDto> appSvcDocDtoLit){
         List<AppSvcDocDto> appSvcDocDtos=new ArrayList<>(appSvcDocDtoLit.size());
+        AppSvcDocDto svcDocDto=new AppSvcDocDto();
         for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLit){
-            AppSvcDocDto svcDocDto=new AppSvcDocDto();
             svcDocDto.setSvcDocId(appSvcDocDto.getSvcDocId());
             svcDocDto.setDocName(appSvcDocDto.getDocName());
             svcDocDto.setDocSize(appSvcDocDto.getDocSize());

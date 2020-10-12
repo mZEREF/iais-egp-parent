@@ -1004,8 +1004,8 @@ public class AppealServiceImpl implements AppealService {
                     for(AppSvcCgoDto appSvcCgoDto : appSvcCgoDtos){
                         appSvcCgoDto.setAssignSelect("newOfficer");
                     }
+                    ParamUtil.setRequestAttr(request, "CgoMandatoryCount", appSvcCgoDtos.size());
                 }
-                ParamUtil.setRequestAttr(request, "CgoMandatoryCount", appSvcCgoDtos.size());
                 List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();
                 SelectOption sp0 = new SelectOption("-1", "Select Personnel");
                 cgoSelectList.add(sp0);
