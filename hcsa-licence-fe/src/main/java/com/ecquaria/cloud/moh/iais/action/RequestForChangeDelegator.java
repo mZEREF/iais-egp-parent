@@ -96,7 +96,6 @@ public class RequestForChangeDelegator {
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
         String licenceId = ParamUtil.getMaskedString(bpc.request, "licenceId");
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, null);
         ParamUtil.setSessionAttr(bpc.request,"SvcName",null);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
@@ -602,6 +601,7 @@ public class RequestForChangeDelegator {
                     IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
                 log.info(StringUtil.changeForLog("appSubmissionDto incomplete , licenceId:"+licenceId));
             }else{
+                AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE,appSubmissionDto.getLicenceNo());
                 //set audit trail licNo
                 AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());
                 appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
