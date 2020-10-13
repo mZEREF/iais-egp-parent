@@ -25,10 +25,10 @@
     <div class="col-xs-2">
         <img src="<%=webroot1%>img/paymentNets.png" width="66" height="30" alt="NETS">
     </div>
-    <divc class="col-xs-3">
+    <div class="col-xs-3">
         <%--<img src="/hcsa-licence-web/img/PereOceanGIRO.png" width="66" height="25" alt="GIRO">--%>
         <img src="<%=webroot1%>img/PereOceanGIRO.png" width="66" height="30" alt="GIRO">
-    </divc>
+    </div>
 </div>
 <div class="col-xs-12">
     <div class="col-xs-3">
