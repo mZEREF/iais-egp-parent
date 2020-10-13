@@ -5,17 +5,19 @@ import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.BatchJobConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * FrontendMsgRefreshJobHandler
@@ -37,7 +39,7 @@ public class FrontendMsgRefreshJobHandler extends IJobHandler {
             List<MessageDto> list = iaisSystemClient.getMessagesToRefresh().getEntity();
             Map<String, String> map = IaisCommonUtils.genNewHashMap();
             if (!IaisCommonUtils.isEmpty(list)) {
-                list.get(0).setAuditTrailDto(AuditTrailHelper.getBatchJobDto(AppConsts.USER_DOMAIN_INTERNET));
+                list.get(0).setAuditTrailDto(AuditTrailHelper.getBatchJobDto(AppConsts.USER_DOMAIN_INTERNET, BatchJobConstant.FRONT_MSG_REFRESH));
                 for (MessageDto mc : list) {
                     map.put(mc.getCodeKey(), mc.getMessage());
                     mc.setNeedFlush(false);

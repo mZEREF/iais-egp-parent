@@ -6,6 +6,7 @@ import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.BatchJobConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -70,7 +71,7 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
             List<EicRequestTrackingDto> orgList = orgEicClient.getPendingRecords(moduleName).getEntity();
             List<EicRequestTrackingDto> sysList = eicClient.getPendingRecords(moduleName).getEntity();
             List<EicRequestTrackingDto> apptList = onlineApptEicClient.getPendingRecords(moduleName).getEntity();
-            AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(currentDomain);
+            AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(currentDomain, BatchJobConstant.SELF_RECOVER);
             AuditTrailDto.setThreadDto(auditTrailDto);
             if (!IaisCommonUtils.isEmpty(atList)) {
                 atList.forEach(ert -> {

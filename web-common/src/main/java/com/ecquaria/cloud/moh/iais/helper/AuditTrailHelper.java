@@ -69,14 +69,19 @@ public class AuditTrailHelper {
         dto.setLicenseNum(licNo);
     }
 
-    public static AuditTrailDto getBatchJobDto(String domain) {
+    public static AuditTrailDto getBatchJobDto(String domain, String batchJobName) {
         AuditTrailDto dto = new AuditTrailDto();
         dto.setNricNumber("System");
         dto.setMohUserId("System");
         dto.setMohUserGuid(AppConsts.USER_ID_SYSTEM);
         dto.setUserDomain(domain);
+        dto.setEntityId(batchJobName);
         dto.setOperationType(AuditTrailConsts.OPERATION_TYPE_BATCH_JOB);
         return dto;
+    }
+
+    public static AuditTrailDto getBatchJobDto(String domain) {
+        return getBatchJobDto(domain, null);
     }
 
     private AuditTrailHelper() {
