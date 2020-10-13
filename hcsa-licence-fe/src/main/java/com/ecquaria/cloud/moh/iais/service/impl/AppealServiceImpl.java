@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.action.AppealDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -44,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -722,6 +724,7 @@ public class AppealServiceImpl implements AppealService {
         String licenseeId = licenceDto.getLicenseeId();
         String rfi = (String) request.getSession().getAttribute("rfi");
         List<ApplicationDto> applicationDtoListlist = IaisCommonUtils.genNewArrayList();
+        AuditTrailHelper.auditFunctionWithLicNo(AuditTrailConsts.MODULE_APPEAL,AuditTrailConsts.FUNCTION_APPEAL,licenceDto.getLicenceNo());
         List<PremisesDto> premisess = licenceClient.getPremisesDto(licenceDto.getId()).getEntity();
         String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo);
@@ -885,6 +888,7 @@ public class AppealServiceImpl implements AppealService {
     private String applicationPresmies(HttpServletRequest request, String applicationId) {
         ApplicationDto applicationDto = applicationClient.getApplicationById(applicationId).getEntity();
         String grpId = applicationDto.getAppGrpId();
+        AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_APPEAL,AuditTrailConsts.FUNCTION_APPEAL,applicationDto.getApplicationNo());
         String rfi = (String) request.getSession().getAttribute("rfi");
         ApplicationGroupDto entity = applicationClient.getApplicationGroup(grpId).getEntity();
         String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();

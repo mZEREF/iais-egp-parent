@@ -239,6 +239,7 @@ public class NewApplicationDelegator {
         String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
         //for rfi loading
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
         //clear Session
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
         //Primary Documents
@@ -2063,7 +2064,7 @@ public class NewApplicationDelegator {
 
             AppSubmissionDto personAppsubmit = getPersonAppsubmit(oldAppSubmissionDto, appSubmissionDto, bpc);
 
-            personAppsubmit.setPartPremise(personAppsubmit.isGroupLic());
+            personAppsubmit.setPartPremise(appSubmissionDto.isPartPremise());
             personAppsubmit.setOneLicDoRenew(true);
             // true is auto
             boolean autoRfc = personAppsubmit.isAutoRfc();
@@ -2447,7 +2448,7 @@ public class NewApplicationDelegator {
             }
 
             appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
-            appSubmissionDtoByLicenceId.setPartPremise(appSubmissionDtoByLicenceId.isGroupLic());
+            appSubmissionDtoByLicenceId.setPartPremise(false);
             appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
             RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
             appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
@@ -4680,7 +4681,6 @@ public class NewApplicationDelegator {
         //draftNo = "DN191118000001";
         if (!StringUtil.isEmpty(draftNo)) {
             log.info(StringUtil.changeForLog("draftNo is not empty"));
-            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
             if (appSubmissionDto != null) {
                 if (IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())) {
@@ -4797,7 +4797,6 @@ public class NewApplicationDelegator {
         if (!StringUtil.isEmpty(appNo) && !StringUtil.isEmpty(msgId)) {
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
             if (appSubmissionDto != null) {
-                AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_REQUEST_FOR_INFORMATION,appNo);
                 if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                     requestForChangeService.svcDocToPresmise(appSubmissionDto);
                     List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionService.getAppGrpPremisesDto(appNo);
@@ -5331,7 +5330,6 @@ public class NewApplicationDelegator {
             if(!StringUtil.isEmpty(entryType) && entryType.equals("assessment")){
                 ParamUtil.setSessionAttr(bpc.request,ASSESSMENTCONFIG,"test");
             }
-            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
             appSubmissionDto = new AppSubmissionDto();
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
