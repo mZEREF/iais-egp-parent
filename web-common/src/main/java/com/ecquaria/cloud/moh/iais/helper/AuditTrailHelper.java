@@ -14,6 +14,8 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 
+import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -69,13 +71,25 @@ public class AuditTrailHelper {
         dto.setLicenseNum(licNo);
     }
 
-    public static AuditTrailDto getBatchJobDto(String domain, String batchJobName) {
+    public static AuditTrailDto getBatchJobDto(String domain, Object job) {
         AuditTrailDto dto = new AuditTrailDto();
         dto.setNricNumber("System");
         dto.setMohUserId("System");
         dto.setMohUserGuid(AppConsts.USER_ID_SYSTEM);
         dto.setUserDomain(domain);
-        dto.setEntityId(batchJobName);
+
+        if (job != null){
+            JobHandler handler = job.getClass().getAnnotation(JobHandler.class);
+            if (handler != null){
+                dto.setEntityId(handler.value());
+            }else {
+                Delegator delegator = job.getClass().getAnnotation(Delegator.class);
+                if(delegator != null){
+                    dto.setEntityId(delegator.value());
+                }
+            }
+        }
+
         dto.setOperationType(AuditTrailConsts.OPERATION_TYPE_BATCH_JOB);
         return dto;
     }

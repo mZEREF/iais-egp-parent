@@ -28,7 +28,7 @@ public class FeFetchFileContentJobHandler extends MohJobHandler {
     @Override
     public ReturnT<String> doExecute(String str) throws Exception {
         try {
-            AuditTrailDto.setThreadDto(AuditTrailHelper.getBatchJobDto(AppConsts.USER_DOMAIN_INTERNET, BatchJobConstant.FRONT_FETCH_FILE_CONTENT));
+            AuditTrailDto.setThreadDto(AuditTrailHelper.getBatchJobDto(AppConsts.USER_DOMAIN_INTERNET, this));
             feMainFileRepoClient.fetchFileContent();
         } catch (Throwable th) {
             log.error(th.getMessage(), th);

@@ -71,7 +71,7 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
             List<EicRequestTrackingDto> orgList = orgEicClient.getPendingRecords(moduleName).getEntity();
             List<EicRequestTrackingDto> sysList = eicClient.getPendingRecords(moduleName).getEntity();
             List<EicRequestTrackingDto> apptList = onlineApptEicClient.getPendingRecords(moduleName).getEntity();
-            AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(currentDomain, BatchJobConstant.SELF_RECOVER);
+            AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(currentDomain, this);
             AuditTrailDto.setThreadDto(auditTrailDto);
             if (!IaisCommonUtils.isEmpty(atList)) {
                 atList.forEach(ert -> {

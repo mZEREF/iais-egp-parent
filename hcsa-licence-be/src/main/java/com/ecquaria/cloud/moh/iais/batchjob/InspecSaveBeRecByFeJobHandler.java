@@ -37,7 +37,7 @@ public class InspecSaveBeRecByFeJobHandler extends IJobHandler {
             logAbout("inspecSaveBeRecByFePre");
             List<ProcessFileTrackDto> processFileTrackDtos = inspecSaveBeRecByService.getFileTypeAndStatus(ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION,
                     ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
-            AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+            AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET,this);
             inspecSaveBeRecByService.deleteUnZipFile();
             if(!(IaisCommonUtils.isEmpty(processFileTrackDtos))) {
                 List<String> reportIds = inspecSaveBeRecByService.compressFile(processFileTrackDtos);

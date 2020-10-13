@@ -130,7 +130,7 @@ public class InspectionSendRecJobHandler extends IJobHandler {
             List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = IaisCommonUtils.genNewArrayList();
             InspRectificationSaveDto inspRectificationSaveDto = new InspRectificationSaveDto();
 
-            AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+            AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET,this);
             for(ApplicationViewDto dto : mapApp){
                 ApplicationDto aDto = dto.getApplicationDto();
                 try {
