@@ -28,7 +28,7 @@
                             </div>
 
                             <div class="form-group">
-                                <button type="button"  class="btn btn-primary btn-block" onclick="Utils.submit('mainForm')" >Login  <i class="fa fa-caret-right" aria-hidden="true"></i></button>
+                                <button type="button"  class="btn btn-primary btn-block" onclick="loginSubmit()" >Login  <i class="fa fa-caret-right" aria-hidden="true"></i></button>
                             </div>
                             <div class="checkbox">
                                 <label class="login-label">
@@ -37,7 +37,7 @@
                                 </label>
 
                             </div>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_login"></span>
+                            <span id="error_submit" class="error-msg" hidden> USER ID is mandatory.</span>
 
                         </div>
                     </div>
@@ -50,3 +50,13 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
+<script>
+    function loginSubmit() {
+        var f = $('#entityId').val();
+        if(f===""||f==null){
+            $("#error_submit").show();
+        }else {
+            Utils.submit('mainForm')
+        }
+    }
+</script>

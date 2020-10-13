@@ -159,9 +159,6 @@ public class BackendLoginDelegator {
         String userId= ParamUtil.getString(request,"entityId");
         JwtEncoder encoder = new JwtEncoder();
         Claims claims = Jwts.claims();
-        if("".equals(userId)||userId==null){
-            userId="nonexistent_userId";
-        }
         claims.put("userid", userId);
 
         //Encode the token JWT Token
