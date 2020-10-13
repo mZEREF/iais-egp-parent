@@ -1539,12 +1539,11 @@ public class NewApplicationDelegator {
                 }
                 if(appSubmissionDto != null && !IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){//NOSONAR
                     AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+
                     List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(appSvcRelatedInfoDto.getServiceId());
                     appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
                     String svcId = appSvcRelatedInfoDto.getServiceId();
                     HcsaServiceDto hcsaServiceDto = serviceConfigService.getHcsaServiceDtoById(svcId);
-                    ParamUtil.setRequestAttr(bpc.request, HCSASERVICEDTO, hcsaServiceDto);
-                    ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
                     List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
                     List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
                     if(appGrpPremisesDtoList!=null){
@@ -1561,8 +1560,18 @@ public class NewApplicationDelegator {
                                     }
                                 }
                             }
+                            String premises = appGrpPremisesDto.getPremisesIndexNo();
+                            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+                            for (AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList){
+                                if (!appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(premises)){
+                                    appSvcLaboratoryDisciplinesDtoList.remove(appSvcLaboratoryDisciplinesDto);
+                                }
+                            }
+                            appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
                         }
                     }
+                    ParamUtil.setRequestAttr(bpc.request, HCSASERVICEDTO, hcsaServiceDto);
+                    ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
                 }
 
                 if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
