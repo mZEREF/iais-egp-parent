@@ -57,7 +57,8 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     SystemAdminClient systemAdminClient;
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
-
+    @Value("${iais.sharedfolder.requestForInfo.out}")
+    private String sharedOutPath;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -104,7 +105,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         if(!groupPath.exists()){
             groupPath.mkdirs();
         }
-        try (OutputStream fileInputStream = Files.newOutputStream(Paths.get(sharedPath + RequestForInformationConstants.BACKUPS_REC+File.separator+file.getName()));
+        try (OutputStream fileInputStream = Files.newOutputStream(Paths.get(sharedOutPath+File.separator+file.getName()));
              OutputStream fileOutputStream  = Files.newOutputStream(file.toPath());){
 
             fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
@@ -155,14 +156,14 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     private String compress(String rfiId){
         log.info("------------ start compress() -----------------------");
         long l=   System.currentTimeMillis();
-        File c= new File(sharedPath + RequestForInformationConstants.BACKUPS_REC+File.separator);
+        File c= new File(sharedOutPath+File.separator);
         if(!c.exists()){
             c.mkdirs();
         }
-        try (OutputStream is=Files.newOutputStream(Paths.get(sharedPath + RequestForInformationConstants.BACKUPS_REC+File.separator+ l+RequestForInformationConstants.ZIP_NAME));
+        try (OutputStream is=Files.newOutputStream(Paths.get(sharedOutPath+File.separator+ l+RequestForInformationConstants.ZIP_NAME));
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){
-            log.info(StringUtil.changeForLog("------------zip file name is"+sharedPath + RequestForInformationConstants.BACKUPS_REC+File.separator+ l+RequestForInformationConstants.ZIP_NAME+"--------------------"));
+            log.info(StringUtil.changeForLog("------------zip file name is"+sharedOutPath+File.separator+ l+RequestForInformationConstants.ZIP_NAME+"--------------------"));
             File file = new File(sharedPath + RequestForInformationConstants.FILE_NAME_RFI+File.separator);
 
             MiscUtil.checkDirs(file);
@@ -202,7 +203,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     }
 
     private void rename(String fileNamesss, String rfiId)  {
-        File zipFile =new File(sharedPath + RequestForInformationConstants.BACKUPS_REC);
+        File zipFile =new File(sharedOutPath);
         MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
             File[] files = zipFile.listFiles((dir, name) -> {
@@ -224,13 +225,13 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
                     byte[] bytes = by.toByteArray();
                     String s = FileUtil.genMd5FileChecksum(bytes);
-                    File curFile =new File(sharedPath + RequestForInformationConstants.BACKUPS_REC + File.separator + s + RequestForInformationConstants.ZIP_NAME);
+                    File curFile =new File(sharedOutPath + File.separator + s + RequestForInformationConstants.ZIP_NAME);
                     boolean renameFlag = file.renameTo(curFile);
                     if (!renameFlag) {
                         log.error("Rename file fail");
                     }
-                    log.info(StringUtil.changeForLog("----------- new zip file name is"+sharedPath + RequestForInformationConstants.BACKUPS_REC+File.separator+s+RequestForInformationConstants.ZIP_NAME));
-                    String s1 = saveFileName(s+RequestForInformationConstants.ZIP_NAME,RequestForInformationConstants.BACKUPS_REC + File.separator+s+RequestForInformationConstants.ZIP_NAME,rfiId);
+                    log.info(StringUtil.changeForLog("----------- new zip file name is"+sharedOutPath+File.separator+s+RequestForInformationConstants.ZIP_NAME));
+                    String s1 = saveFileName(s+RequestForInformationConstants.ZIP_NAME,s+RequestForInformationConstants.ZIP_NAME,rfiId);
                     if(!s1.equals("SUCCESS")){
                         MiscUtil.deleteFile(curFile);
                         break;
@@ -243,7 +244,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     }
 
     private void deleteFile(){
-        File file =new File(sharedPath + RequestForInformationConstants.BACKUPS_REC+File.separator);
+        File file =new File(sharedOutPath+File.separator);
         File fileRepPath=new File(sharedPath + RequestForInformationConstants.FILE_NAME_RFI+File.separator+"files");
         File filePath=new File(sharedPath + RequestForInformationConstants.FILE_NAME_RFI+File.separator);
         MiscUtil.checkDirs(fileRepPath);

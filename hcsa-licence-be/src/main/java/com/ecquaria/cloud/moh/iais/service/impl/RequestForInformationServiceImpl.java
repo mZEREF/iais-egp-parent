@@ -109,7 +109,8 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     private String secSecretKey;
     @Autowired
     private BeEicGatewayClient gatewayClient;
-
+    @Value("${iais.sharedfolder.requestForInfo.in}")
+    private String inSharedPath;
     @Value("${iais.syncFileTracking.shared.path}")
     private     String sharedPath;
     @Autowired
@@ -300,13 +301,13 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     @Override
     public void compress(){
         log.info("-------------compress start ---------");
-        if(new File(sharedPath+File.separator+RequestForInformationConstants.BACKUPS_REC+File.separator).isDirectory()){
-            File[] files = new File(sharedPath+File.separator+RequestForInformationConstants.BACKUPS_REC+File.separator).listFiles();
+        if(new File(inSharedPath+File.separator).isDirectory()){
+            File[] files = new File(inSharedPath+File.separator).listFiles();
             for(File fil:files){
                 if(fil.getName().endsWith(RequestForInformationConstants.ZIP_NAME)){
                     String name = fil.getName();
                     String path = fil.getPath();
-                    String relPath=RequestForInformationConstants.BACKUPS_REC+File.separator+name;
+                    String relPath=name;
                     HashMap<String,String> map= IaisCommonUtils.genNewHashMap();
                     map.put("fileName",name);
                     map.put("filePath",relPath);
@@ -530,7 +531,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     @Override
     public void delete() {
         File file =new File(sharedPath+File.separator+File.separator+"folder");
-        File b=new File(sharedPath+File.separator+RequestForInformationConstants.BACKUPS_REC+File.separator);
+        File b=new File(inSharedPath+File.separator);
         File c=new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS);
         if(!c.exists()){
             c.mkdirs();
