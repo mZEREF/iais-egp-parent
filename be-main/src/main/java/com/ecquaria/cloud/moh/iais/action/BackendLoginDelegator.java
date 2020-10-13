@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.jwt.JwtEncoder;
 import com.ecquaria.cloud.moh.iais.common.jwt.JwtVerify;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -75,7 +76,7 @@ public class BackendLoginDelegator {
     }
 
     public void doLogin(BaseProcessClass bpc) throws InvalidKeySpecException, NoSuchAlgorithmException {
-        HttpServletRequest request=bpc.request;
+        HttpServletRequest request = bpc.request;
         JwtVerify verifier = new JwtVerify();
         String jwtt = null;
         if (fakeLogin) {
@@ -114,21 +115,21 @@ public class BackendLoginDelegator {
 
         SessionManager.getInstance(bpc.request).imitateLogin(user, true, true);
         SessionManager.getInstance(bpc.request).initSopLoginInfo(bpc.request);
+
         AccessUtil.initLoginUserInfo(bpc.request);
-        List<AuditTrailDto> trailDtoList = IaisCommonUtils.genNewArrayList(1);
+
         AuditTrailDto auditTrailDto = new AuditTrailDto();
         auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTRANET);
         auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN);
+        auditTrailDto.setMohUserId(userId);
         IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
+        auditTrailDto.setLoginType(AuditTrailConsts.LOGIN_TYPE_MOH);
+        auditTrailDto.setClientIp(MiscUtil.getClientIp(request));
+        auditTrailDto.setUserAgent(AccessUtil.getBrowserInfo(request));
+        auditTrailDto.setModule("Intranet Login");
+        auditTrailDto.setFunctionName("Intranet Login");
         auditTrailDto.setLoginTime(new Date());
-        trailDtoList.add(auditTrailDto);
-        try {
-            String eventRefNo = String.valueOf(System.currentTimeMillis());
-            log.info(StringUtil.changeForLog("be call event bus for login , the event ref number is " + eventRefNo));
-            AuditLogUtil.callWithEventDriven(trailDtoList, submissionClient, eventRefNo);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
+        IaisEGPHelper.callSaveAuditTrail(auditTrailDto);
     }
 
     private Map<String, String> validate(HttpServletRequest request, String userId) {
@@ -137,17 +138,19 @@ public class BackendLoginDelegator {
 
         if (orgUserDto==null||orgUserDto.getUserDomain().equals(AppConsts.USER_DOMAIN_INTERNET)) {
             // Add Audit Trail -- Start
-            List<AuditTrailDto> adList = IaisCommonUtils.genNewArrayList(1);
             AuditTrailDto auditTrailDto = new AuditTrailDto();
-            auditTrailDto.setMohUserId(userId);
             auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTRANET);
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN_FAIL);
-            adList.add(auditTrailDto);
-            try {
-                AuditLogUtil.callWithEventDriven(adList, submissionClient);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
+            auditTrailDto.setMohUserId(userId);
+            IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
+            auditTrailDto.setLoginType(AuditTrailConsts.LOGIN_TYPE_MOH);
+            auditTrailDto.setClientIp(MiscUtil.getClientIp(request));
+            auditTrailDto.setUserAgent(AccessUtil.getBrowserInfo(request));
+            auditTrailDto.setModule("Intranet Login");
+            auditTrailDto.setFailReason("LOGIN_ERR001");
+            auditTrailDto.setFunctionName("Intranet Login");
+            auditTrailDto.setLoginTime(new Date());
+            IaisEGPHelper.callSaveAuditTrail(auditTrailDto);
             // End Audit Trail -- End
             errMap.put("login","LOGIN_ERR001");
         }

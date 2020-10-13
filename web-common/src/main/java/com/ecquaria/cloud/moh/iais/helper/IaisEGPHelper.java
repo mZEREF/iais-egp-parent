@@ -207,7 +207,6 @@ public final class IaisEGPHelper extends EGPHelper {
         }
     }
 
-
     /**
      * @description: The method to set login user info into Audit trail from request
      *
@@ -275,6 +274,21 @@ public final class IaisEGPHelper extends EGPHelper {
         log.info(StringUtil.changeForLog("isLogin the  result is -->:"+result));
         log.info(StringUtil.changeForLog("Judge the if login end ..."));
         return result;
+    }
+
+    public static void callSaveAuditTrail(AuditTrailDto auditTrailDto){
+        SubmissionClient submissionClient = SpringContextHelper.getContext().getBean(SubmissionClient.class);
+        List<AuditTrailDto> trailDtoList = IaisCommonUtils.genNewArrayList(1);
+        trailDtoList.add(auditTrailDto);
+        try {
+            String eventRefNo = String.valueOf(System.currentTimeMillis());
+            StringBuilder console = new StringBuilder();
+            console.append("call event bus for ").append(auditTrailDto.getFunctionName()).append(" that the operation is  ").append(auditTrailDto.getOperation()).append(", the event ref number is ").append(eventRefNo);
+            log.info(console.toString());
+            AuditLogUtil.callWithEventDriven(trailDtoList, submissionClient, eventRefNo);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
     public static String getRootPath() {
