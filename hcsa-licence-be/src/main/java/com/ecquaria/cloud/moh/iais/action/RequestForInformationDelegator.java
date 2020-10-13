@@ -449,7 +449,7 @@ public class RequestForInformationDelegator {
         Date dueDate;
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if(status.equals(RequestForInformationConstants.RFI_RETRIGGER)){
+        if(status.equals(RequestForInformationConstants.RFI_NEW)||status.equals(RequestForInformationConstants.RFI_RETRIGGER)){
             if(date==null){
                 errorMap.put("Due_date",MessageUtil.replaceMessage("GENERAL_ERR0006","Due Date","field"));
             }else {
@@ -537,7 +537,7 @@ public class RequestForInformationDelegator {
         Date dueDate;
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if(status.equals(RequestForInformationConstants.RFI_RETRIGGER)){
+        if(status.equals(RequestForInformationConstants.RFI_NEW)||status.equals(RequestForInformationConstants.RFI_RETRIGGER)){
             if(date==null){
                 errorMap.put("Due_date",MessageUtil.replaceMessage("GENERAL_ERR0006","Due Date","field"));
             }else {
@@ -632,7 +632,7 @@ public class RequestForInformationDelegator {
 //        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 //        inboxMsgService.saveInterMessage(interMessageDto);
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
-        if(status.equals(RequestForInformationConstants.RFI_RETRIGGER)){
+        if(status.equals(RequestForInformationConstants.RFI_NEW)||status.equals(RequestForInformationConstants.RFI_RETRIGGER)){
             try {
 
                 String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
