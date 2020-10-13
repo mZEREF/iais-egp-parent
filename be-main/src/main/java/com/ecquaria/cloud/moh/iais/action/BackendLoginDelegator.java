@@ -116,18 +116,15 @@ public class BackendLoginDelegator {
         SessionManager.getInstance(bpc.request).imitateLogin(user, true, true);
         SessionManager.getInstance(bpc.request).initSopLoginInfo(bpc.request);
 
+        AccessUtil.initLoginUserInfo(bpc.request);
+
         AuditTrailDto auditTrailDto = new AuditTrailDto();
-        auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTRANET);
         auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN);
         auditTrailDto.setMohUserId(userId);
         auditTrailDto.setLoginType(AuditTrailConsts.LOGIN_TYPE_MOH);
-        auditTrailDto.setClientIp(MiscUtil.getClientIp(request));
-        auditTrailDto.setUserAgent(AccessUtil.getBrowserInfo(request));
         auditTrailDto.setModule("Intranet Login");
         auditTrailDto.setFunctionName("Intranet Login");
         auditTrailDto.setLoginTime(new Date());
-
-        AccessUtil.initLoginUserInfo(bpc.request);
         IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
         IaisEGPHelper.callSaveAuditTrail(auditTrailDto);
     }
@@ -139,17 +136,15 @@ public class BackendLoginDelegator {
         if (orgUserDto==null||orgUserDto.getUserDomain().equals(AppConsts.USER_DOMAIN_INTERNET)) {
             // Add Audit Trail -- Start
             AuditTrailDto auditTrailDto = new AuditTrailDto();
-            auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTRANET);
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN_FAIL);
             auditTrailDto.setMohUserId(userId);
-            IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
             auditTrailDto.setLoginType(AuditTrailConsts.LOGIN_TYPE_MOH);
-            auditTrailDto.setClientIp(MiscUtil.getClientIp(request));
-            auditTrailDto.setUserAgent(AccessUtil.getBrowserInfo(request));
             auditTrailDto.setModule("Intranet Login");
             auditTrailDto.setFailReason("LOGIN_ERR001");
             auditTrailDto.setFunctionName("Intranet Login");
             auditTrailDto.setLoginTime(new Date());
+
+            IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
             IaisEGPHelper.callSaveAuditTrail(auditTrailDto);
             // End Audit Trail -- End
             errMap.put("login","LOGIN_ERR001");
