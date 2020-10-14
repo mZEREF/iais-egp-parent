@@ -50,8 +50,8 @@ function doValidationParse(data){
 
         for(var i= 0 ; i< results.length ; i ++){
             for(var key in results[i]){
+                var error_key="error_" + key.replace(/\./g,'\\.');
                 if (document.getElementById(error_key)) {
-                    var error_key="error_" + key.replace(/\./g,'\\.');
                     $("#"+error_key).show();
                     if (error_key == 'error_topErrorDiv'
                         || error_key.indexOf('noEscapeXml') > 0) {
@@ -256,16 +256,4 @@ function validateUploadSizeMaxOrEmpty(maxSize,selectedFileId) {
         return "N";
     }
     return "Y";
-}
-
-function scrollPosition(pElementId) {
-    var tTop = $("#"+pElementId).offset().top;
-    var tLeft = $("#"+pElementId).offset().left;
-    var tWindowHeight = $(window).height();
-    var tWindowWidth = $(window).width();
-    var tElementHeight = $("#"+pElementId).height();
-    var tElementWidth = $("#"+pElementId).width();
-    var tScrollTop = tTop-tWindowHeight*0.3-tElementHeight*0.5;
-    var tScrollLeft = tLeft-tWindowWidth*0.3-tElementWidth*0.5;
-    window.scrollTo(tScrollLeft, tScrollTop);
 }
