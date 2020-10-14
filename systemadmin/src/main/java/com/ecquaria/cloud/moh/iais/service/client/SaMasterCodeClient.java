@@ -74,6 +74,9 @@ public interface SaMasterCodeClient {
     @PutMapping(value = "/iais-mastercode/master-code/expired-or-not-effect",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> inactiveMasterCode(@RequestBody AuditTrailDto auditTrailDto);
 
+    @PutMapping(value = "/iais-mastercode/active-master-code",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> activeMasterCode(@RequestBody AuditTrailDto auditTrailDto);
+
     @GetMapping(path = "/iais-mastercode/max-version")
     FeignResponseEntity<MasterCodeDto> getMaxVersionMsDto(@RequestParam(value = "masterCodeKey") String masterCodeKey);
 

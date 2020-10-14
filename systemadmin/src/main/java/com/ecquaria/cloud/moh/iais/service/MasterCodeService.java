@@ -24,6 +24,7 @@ public interface MasterCodeService {
     boolean masterCodeKeyIsExist(String masterCodekey);
     Boolean saveMasterCodeList(List<MasterCodeToExcelDto> masterCodeToExcelDtoList);
     void inactiveMasterCode(AuditTrailDto auditTrailDto);
+    void activeMasterCode(AuditTrailDto auditTrailDto);
     MasterCodeDto getMaxVersionMsDto(String masterCodeKey);
     void inactiveMsterCode(String masterCodeKey);
 }

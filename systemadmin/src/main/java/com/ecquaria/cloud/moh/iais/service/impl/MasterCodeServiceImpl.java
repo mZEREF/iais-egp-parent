@@ -94,6 +94,11 @@ public class MasterCodeServiceImpl implements MasterCodeService {
     }
 
     @Override
+    public void activeMasterCode(AuditTrailDto auditTrailDto) {
+        saMasterCodeClient.activeMasterCode(auditTrailDto);
+    }
+
+    @Override
     public MasterCodeDto getMaxVersionMsDto(String masterCodeKey) {
         return saMasterCodeClient.getMaxVersionMsDto(masterCodeKey).getEntity();
     }
