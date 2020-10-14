@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +65,19 @@ public class ShowServiceFormsDelegator {
         }
 
 //        String svcId = serviceConfigService.getSvcIdBySvcCode(actionTab);
-        String svcId = HcsaServiceCacheHelper.getServiceByCode(actionTab).getId();
+        List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
+        String svcId = "";
+        if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+            for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
+                if(hcsaServiceDto.getSvcCode().equals(actionTab)){
+                    svcId = hcsaServiceDto.getId();
+                    break;
+                }
+            }
+        }
+        if(StringUtil.isEmpty(svcId)){
+            log.info(StringUtil.changeForLog("can not found match svcId from  hcsaServiceDtos"));
+        }
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcId);
         ServiceStepDto serviceStepDto = new ServiceStepDto();
         serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
