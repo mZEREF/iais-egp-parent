@@ -571,10 +571,10 @@ public class AppealApproveBatchjob {
             Date expiryDate;
             try {
                 LicenceDto appealLicenceDto = (LicenceDto) CopyUtil.copyMutableObject(licenceDto);
-                Date endDate = appealLicenceDto.getEndDate();
-                expiryDate= LicenceUtil.getExpiryDate(endDate,appPremisesRecommendationDto);
+                Date startDate = appealLicenceDto.getStartDate();
+                expiryDate = LicenceUtil.getExpiryDate(startDate,appPremisesRecommendationDto);
             }catch (Exception e){
-                expiryDate=new Date();
+                expiryDate = new Date();
             }
             templateContent.put("serviceName", licenceDto.getSvcName());
             templateContent.put("licenceNo", licenceDto.getLicenceNo());
