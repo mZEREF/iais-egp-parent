@@ -11,9 +11,6 @@
     <webui:setLayout name="none"/>
 
 <title><egov-smc:commonLabel>MasterCard Payment Gateway</egov-smc:commonLabel></title>
-<link rel="stylesheet" type="text/css" media="screen" href="./source/3pp.css">
-<link rel="stylesheet" type="text/css" media="screen" href="./source/3ppcust.css">
-    <%@ include file="/WEB-INF/jsp/inc/script.jsp" %>
     <script src="https://js.stripe.com/v3/"></script>
 
 </head>
