@@ -302,7 +302,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Override
     public void updateEgpUser(FeUserDto feUserDto) {
-        ClientUser clientUser = userClient.findUser(AppConsts.USER_DOMAIN_INTERNET, feUserDto.getUserId()).getEntity();
+        ClientUser clientUser = userClient.findUser(AppConsts.HALP_EGP_DOMAIN, feUserDto.getUserId()).getEntity();
         String pwd = PasswordUtil.encryptPassword(AppConsts.HALP_EGP_DOMAIN, IaisEGPHelper.generateRandomString(6), null);
         if (clientUser != null){
             clientUser.setSalutation(feUserDto.getSalutation());
