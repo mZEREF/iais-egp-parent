@@ -57,6 +57,8 @@ import java.util.zip.ZipFile;
 public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
+    @Value("${iais.sharedfolder.rectification.in}")
+    private String inSharedPath;
     private String download;
     private String zipFile;
     private String compressPath;
@@ -83,11 +85,15 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     @Autowired
     private GenerateIdClient generateIdClient;
 
-   @PostConstruct
+    @PostConstruct
     private void init() {
         compressPath = sharedPath + "recUnZipFile";
         download = compressPath + File.separator + "backupsRec";
-        zipFile = sharedPath + "backupsRec";
+        String inFolder = inSharedPath;
+        if (!inFolder.endsWith(File.separator)) {
+           inFolder += File.separator;
+        }
+        zipFile = inFolder;
     }
 
     @Override
@@ -119,7 +125,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             for(File fil:files) {
                 for(ProcessFileTrackDto pDto : processFileTrackDtos){
                     if (fil.getName().endsWith(".zip") && fil.getName().equals(pDto.getFileName())) {
-                        try (ZipFile unZipFile = new ZipFile(sharedPath + pDto.getFilePath())) {
+                        try (ZipFile unZipFile = new ZipFile(zipFile + pDto.getFilePath())) {
                             for (Enumeration<? extends ZipEntry> entries = unZipFile.entries(); entries.hasMoreElements(); ) {
                                 ZipEntry zipEntry = entries.nextElement();
                                 String reportId = unzipFile(zipEntry, unZipFile);
