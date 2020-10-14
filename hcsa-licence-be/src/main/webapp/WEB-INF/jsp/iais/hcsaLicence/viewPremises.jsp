@@ -602,7 +602,7 @@
                                       </div>
                                       <c:if test="${not empty hashMap[newLicenceDto.uenNo]}">
                                         <div class="row new-img-show" >
-                                          <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-top: 5%">
+                                          <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
                                             <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
                                             <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                               <tr>

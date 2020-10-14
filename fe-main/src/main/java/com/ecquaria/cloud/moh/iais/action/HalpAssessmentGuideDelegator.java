@@ -967,7 +967,8 @@ public class HalpAssessmentGuideDelegator {
         appSelectSvcDto.setAlign(false);
         ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
         ParamUtil.setRequestAttr(bpc.request,"firstVisitFor","Y");
-        if(NEXT.equals(nextstep)){
+        String requestAttr = (String)ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
+        if(NEXT.equals(requestAttr)){
             String crud_action_value=bpc.request.getParameter("crud_action_value");
             String draftNo  =bpc.request.getParameter("draftNo");
             getDraft(bpc);
@@ -980,7 +981,7 @@ public class HalpAssessmentGuideDelegator {
             }else if(attribute!=null){
                 //back to curr page
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"doBack");
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_LICENCE);
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_SERVICE);
             }
         }
         //test
@@ -1218,6 +1219,10 @@ public class HalpAssessmentGuideDelegator {
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
                 bpc.request.getSession().setAttribute("DraftNumber", attribute);
+            }else if(attribute!=null){
+                //back to curr page
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"doBack");
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_LICENCE);
             }
             appSelectSvcDto.setLicPage(true);
             ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
