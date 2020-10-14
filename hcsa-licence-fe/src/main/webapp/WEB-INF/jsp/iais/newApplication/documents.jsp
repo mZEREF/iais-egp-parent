@@ -122,17 +122,26 @@
                           <h3>premises${premStatus.index+1}: ${premDoc.docTitle}</h3>
                           <div class="file-upload-gp">
                             <input class="hidden delFlag" type="hidden" name="${premDelFlag}" value="N"/>
-                            <span  >${primaryDoc.docName}</span>
+                            <span  >
+                              <c:choose>
+                                <c:when test="${!primaryDoc.passValidate}">
+                                  <c:out value="${primaryDoc.docName}"/>
+                                </c:when>
+                                <c:otherwise>
+                                  <a class="<c:if test="${!isClickEdit}">disabled</c:if>" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${v.index}&fileRo${v.index}=<iais:mask name="fileRo${v.index}" value="${primaryDoc.fileRepoId}"/>&fileRepoName=${primaryDoc.docName}"  >${primaryDoc.docName}</a>
+                                </c:otherwise>
+                              </c:choose>
+                            </span>
                             <c:choose>
                               <c:when test="${primaryDoc.docName == '' || primaryDoc.docName == null }">
-                                <span class="hidden delBtn">
-                                  &nbsp;&nbsp;<button type="button" class="">Delete</button>
-                                </span>
+                              <span class="hidden delBtn">
+                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
+                              </span>
                               </c:when>
                               <c:otherwise>
-                                <span class=" delBtn">
-                                  &nbsp;&nbsp;<button type="button" class="">Delete</button>
-                                </span>
+                                <span class="existFile delBtn <c:if test="${!isClickEdit}">hidden</c:if>">
+                                &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
+                              </span>
                               </c:otherwise>
                             </c:choose>
                             <br/>
