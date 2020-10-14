@@ -18,6 +18,7 @@ public class DeleteAppDraftJob {
     public void doBatchJob(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("delete app draft job start ..."));
         String draftValidity = MasterCodeUtil.getCodeDesc("MS006");
+
         log.info(StringUtil.changeForLog("draft validity:"+draftValidity));
         if(!StringUtil.isEmpty(draftValidity)){
             appSubmissionService.deleteOverdueDraft(draftValidity);

@@ -229,7 +229,7 @@ public class CessationEffectiveDateBatchjob {
 
     private void updateLicencesStatusAndSendMails(List<LicenceDto> licenceDtos, Date date) {
         List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
-        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET,this);
         for (LicenceDto licenceDto : licenceDtos) {
             try {
                 licenceDto.setAuditTrailDto(auditTrailDto);
@@ -296,7 +296,7 @@ public class CessationEffectiveDateBatchjob {
         if (licenceDto == null) {
             return;
         }
-        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET,this);
         licenceDto.setAuditTrailDto(auditTrailDto);
         licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
         licenceDto.setEndDate(date);
@@ -360,7 +360,7 @@ public class CessationEffectiveDateBatchjob {
         if (IaisCommonUtils.isEmpty(applicationGroupDtos)) {
             return;
         }
-        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET,this);
         for (ApplicationGroupDto applicationGroupDto : applicationGroupDtos) {
             applicationGroupDto.setAuditTrailDto(auditTrailDto);
             applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_LICENCE_GENERATED);

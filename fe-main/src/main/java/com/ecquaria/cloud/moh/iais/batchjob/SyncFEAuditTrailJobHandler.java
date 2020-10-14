@@ -4,7 +4,9 @@ import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityDto;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.SyncAuditTrailRecordsService;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +33,7 @@ public class SyncFEAuditTrailJobHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         try {
+            AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
             List<AuditTrailEntityDto> auditTrailDtos= syncAuditTrailRecordsService.getAuditTrailsByMigrated1();
             do {
                 log.info("------------------- getData  start --------------");

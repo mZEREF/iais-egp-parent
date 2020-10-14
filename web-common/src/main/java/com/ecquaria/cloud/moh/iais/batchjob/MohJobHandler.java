@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -21,6 +23,7 @@ public abstract class MohJobHandler extends IJobHandler {
 //            JobLogger.log(e);
 //            return ReturnT.FAIL;
 //        }
+        AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
         return  doExecute(s);
     }
     public abstract ReturnT<String> doExecute(String var1) throws Exception;

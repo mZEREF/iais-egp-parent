@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEnt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -26,7 +27,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -1022,8 +1022,23 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public AppGrpPrimaryDocDto getMaxVersionPrimaryDoc(String appGrpId, String configDocId) {
-        return applicationClient.getMaxVersionPrimaryDoc(appGrpId,configDocId).getEntity();
+    public AppGrpPrimaryDocDto getMaxVersionPrimaryComDoc(String appGrpId, String configDocId) {
+        return applicationClient.getMaxVersionPrimaryComDoc(appGrpId,configDocId).getEntity();
+    }
+
+    @Override
+    public AppSvcDocDto getMaxVersionSvcComDoc(String appGrpId, String configDocId) {
+        return applicationClient.getMaxVersionSvcComDoc(appGrpId,configDocId).getEntity();
+    }
+
+    @Override
+    public AppGrpPrimaryDocDto getMaxVersionPrimarySpecDoc(String appGrpId, String configDocId, String appNo) {
+        return applicationClient.getMaxVersionPrimarySpecDoc(appGrpId,configDocId,appNo).getEntity();
+    }
+
+    @Override
+    public AppSvcDocDto getMaxVersionSvcSpecDoc(String appGrpId, String configDocId, String appNo) {
+        return applicationClient.getMaxVersionSvcSpecDoc(appGrpId,configDocId,appNo).getEntity();
     }
 
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){

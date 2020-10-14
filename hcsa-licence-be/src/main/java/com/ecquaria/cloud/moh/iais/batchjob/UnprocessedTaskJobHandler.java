@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
@@ -79,6 +80,7 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) throws IOException, TemplateException{
         log.debug(StringUtil.changeForLog("The NotifyUnprocessedTaskBatchjob is  start..." ));
+        AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
         List<TaskEmailDto> taskEmailDtoList = IaisCommonUtils.genNewArrayList();
         taskEmailDtoList = taskService.getEmailNotifyList();
 

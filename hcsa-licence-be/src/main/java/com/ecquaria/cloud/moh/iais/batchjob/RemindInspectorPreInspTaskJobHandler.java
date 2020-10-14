@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
@@ -88,6 +89,7 @@ public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) throws Exception {
         try {
             logAbout("Remind Inspector Do Pre Inspection");
+            AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
             List<ApplicationDto> applicationDtos =
                     applicationClient.getApplicationByStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS).getEntity();
             if(!IaisCommonUtils.isEmpty(applicationDtos)){

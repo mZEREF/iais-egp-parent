@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEnt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
@@ -76,5 +77,8 @@ public interface AppSubmissionService {
     InterMessageDto getInterMessageBySubjectLike(String subject,String status);
     AppGrpPremisesEntityDto getPremisesByAppNo(String appNo);
     void sendEmailAndSMSAndMessage(AppSubmissionDto appSubmissionDto,String applicantName);
-    AppGrpPrimaryDocDto getMaxVersionPrimaryDoc(String appGrpId,String configDocId);
+    AppGrpPrimaryDocDto getMaxVersionPrimaryComDoc(String appGrpId,String configDocId);
+    AppSvcDocDto getMaxVersionSvcComDoc(String appGrpId, String configDocId);
+    AppGrpPrimaryDocDto getMaxVersionPrimarySpecDoc(String appGrpId,String configDocId,String appNo);
+    AppSvcDocDto getMaxVersionSvcSpecDoc(String appGrpId, String configDocId,String appNo);
 }

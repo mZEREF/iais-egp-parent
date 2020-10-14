@@ -571,10 +571,10 @@ public class AppealApproveBatchjob {
             Date expiryDate;
             try {
                 LicenceDto appealLicenceDto = (LicenceDto) CopyUtil.copyMutableObject(licenceDto);
-                Date endDate = appealLicenceDto.getEndDate();
-                expiryDate= LicenceUtil.getExpiryDate(endDate,appPremisesRecommendationDto);
+                Date startDate = appealLicenceDto.getStartDate();
+                expiryDate = LicenceUtil.getExpiryDate(startDate,appPremisesRecommendationDto);
             }catch (Exception e){
-                expiryDate=new Date();
+                expiryDate = new Date();
             }
             templateContent.put("serviceName", licenceDto.getSvcName());
             templateContent.put("licenceNo", licenceDto.getLicenceNo());
@@ -584,7 +584,7 @@ public class AppealApproveBatchjob {
             templateContent.put("content", appPremiseMiscDto.getOtherReason());
         }
 
-        String subject = "MOH IAIS – Appeal for "+ MasterCodeUtil.getCodeDesc(appPremiseMiscDto.getAppealType())+", "+applicationDto.getApplicationNo()+" is approved";
+        String subject = "MOH IAIS - Appeal for "+ MasterCodeUtil.getCodeDesc(appPremiseMiscDto.getAppealType())+", "+applicationDto.getApplicationNo()+" is approved";
         EmailParam emailParam = new EmailParam();
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_APPROVE_EMAIL);
         emailParam.setTemplateContent(templateContent);

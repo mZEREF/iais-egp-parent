@@ -58,7 +58,8 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
 
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
-
+    @Value("${iais.sharedfolder.auditTrail.out}")
+    private String sharedOutPath;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -79,7 +80,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
     public String getData(List<AuditTrailEntityDto> auditTrailDtos) {
         deleteFile();
         //if path is not exists create path
-        File fileRepPath = MiscUtil.generateFile(sharedPath + RequestForInformationConstants.FILE_NAME_AUDIT, RequestForInformationConstants.FILES);
+        File fileRepPath = MiscUtil.generateFile(sharedPath +File.separator+ RequestForInformationConstants.FILE_NAME_AUDIT, RequestForInformationConstants.FILES);
         MiscUtil.checkDirs(fileRepPath);
 
         AuditTrailEntityEventDto auditTrailEntityEventDto = new AuditTrailEntityEventDto();
@@ -93,19 +94,19 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
 
 
         String s = FileUtil.genMd5FileChecksum(data.getBytes(StandardCharsets.UTF_8));
-        File file=MiscUtil.generateFile(sharedPath + RequestForInformationConstants.FILE_NAME_AUDIT+File.separator, s+RequestForInformationConstants.FILE_FORMAT);
+        File file=MiscUtil.generateFile(sharedPath +File.separator+ RequestForInformationConstants.FILE_NAME_AUDIT+File.separator, s+RequestForInformationConstants.FILE_FORMAT);
         if(!file.exists()){
             boolean createFlag = file.createNewFile();
             if (!createFlag) {
                 log.error("Create File fail");
             }
         }
-        File groupPath=new File(sharedPath + RequestForInformationConstants.FILE_NAME_AUDIT+File.separator);
+        File groupPath=new File(sharedPath +File.separator+ RequestForInformationConstants.FILE_NAME_AUDIT+File.separator);
 
         if(!groupPath.exists()){
             groupPath.mkdirs();
         }
-        try (OutputStream fileInputStream = Files.newOutputStream(Paths.get(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT+File.separator+file.getName()));
+        try (OutputStream fileInputStream = Files.newOutputStream(Paths.get(sharedOutPath+File.separator+file.getName()));
              OutputStream fileOutputStream  = Files.newOutputStream(file.toPath());){
 
             fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
@@ -129,16 +130,16 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
     private String compress(){
         log.info("------------ start compress() -----------------------");
         long l=   System.currentTimeMillis();
-        File c= new File(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT+File.separator);
+        File c= new File(sharedOutPath+File.separator);
         if(!c.exists()){
             c.mkdirs();
         }
-        try (OutputStream is=Files.newOutputStream(Paths.get(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT+File.separator+ l+ AppServicesConsts.ZIP_NAME));
+        try (OutputStream is=Files.newOutputStream(Paths.get(sharedOutPath+File.separator+ l+ AppServicesConsts.ZIP_NAME));
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){
 
-            log.info(StringUtil.changeForLog("------------zip file name is"+sharedPath + RequestForInformationConstants.BACKUPS_AUDIT+File.separator+ l+AppServicesConsts.ZIP_NAME+"--------------------"));
-            File file = new File(sharedPath + RequestForInformationConstants.FILE_NAME_AUDIT+File.separator);
+            log.info(StringUtil.changeForLog("------------zip file name is"+sharedOutPath+File.separator+ l+AppServicesConsts.ZIP_NAME+"--------------------"));
+            File file = new File(sharedPath +File.separator+ RequestForInformationConstants.FILE_NAME_AUDIT+File.separator);
 
             MiscUtil.checkDirs(file);
             zipFile(zos, file);
@@ -179,7 +180,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
 
     private void rename(String fileNamesss)  {
         log.info("--------------rename start ---------------------");
-        File zipFile =new File(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT);
+        File zipFile =new File(sharedOutPath);
         MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
             File[] files = zipFile.listFiles((dir, name) -> {
@@ -202,14 +203,14 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
 
                     byte[] bytes = by.toByteArray();
                     String s = FileUtil.genMd5FileChecksum(bytes);
-                    File curFile =new File(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT + File.separator + s + RequestForInformationConstants.ZIP_NAME);
+                    File curFile =new File(sharedOutPath + File.separator + s + RequestForInformationConstants.ZIP_NAME);
                     boolean renameFlag = file.renameTo(curFile);
                     if (!renameFlag) {
                         log.error("Rename file fail");
                     }
                     log.info(StringUtil.changeForLog("----------- new zip file name is"
-                            +sharedPath + RequestForInformationConstants.BACKUPS_AUDIT+File.separator+s+RequestForInformationConstants.ZIP_NAME));
-                    String s1 = saveFileName(s+RequestForInformationConstants.ZIP_NAME,RequestForInformationConstants.BACKUPS_AUDIT + File.separator+s+RequestForInformationConstants.ZIP_NAME);
+                            +sharedOutPath+File.separator+s+RequestForInformationConstants.ZIP_NAME));
+                    String s1 = saveFileName(s+RequestForInformationConstants.ZIP_NAME,s+RequestForInformationConstants.ZIP_NAME);
                     if(!s1.equals("SUCCESS")){
                         MiscUtil.deleteFile(curFile);
                         break;
@@ -222,9 +223,9 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
     }
 
     private void deleteFile(){
-        File file =new File(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT+File.separator);
-        File fileRepPath=new File(sharedPath + RequestForInformationConstants.FILE_NAME_AUDIT+File.separator+RequestForInformationConstants.FILES);
-        File filePath=new File(sharedPath + RequestForInformationConstants.FILE_NAME_AUDIT+File.separator);
+        File file =new File(sharedOutPath+File.separator);
+        File fileRepPath=new File(sharedPath +File.separator+ RequestForInformationConstants.FILE_NAME_AUDIT+File.separator+RequestForInformationConstants.FILES);
+        File filePath=new File(sharedPath +File.separator+ RequestForInformationConstants.FILE_NAME_AUDIT+File.separator);
         MiscUtil.checkDirs(fileRepPath);
         MiscUtil.checkDirs(file);
         if(fileRepPath.isDirectory()){

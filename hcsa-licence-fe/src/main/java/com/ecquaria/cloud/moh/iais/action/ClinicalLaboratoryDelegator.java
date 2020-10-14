@@ -39,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.sz.commons.util.FileUtil;
@@ -76,6 +77,8 @@ public class ClinicalLaboratoryDelegator {
     WithOutRenewalService outRenewalService;
     @Autowired
     private SystemParamConfig systemParamConfig;
+    @Autowired
+    private AppSubmissionService appSubmissionService;
 
     public static final String GOVERNANCEOFFICERS = "GovernanceOfficers";
     public static final String GOVERNANCEOFFICERSDTO = "GovernanceOfficersDto";
@@ -1087,7 +1090,16 @@ public class ClinicalLaboratoryDelegator {
             List<HcsaSvcDocConfigDto> premServiceDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request,"premServiceDocConfigDto");
             Map<String, CommonsMultipartFile> commonsMultipartFileMap = IaisCommonUtils.genNewHashMap();
             CommonsMultipartFile file = null;
-
+            AppSubmissionDto oldSubmissionDto = NewApplicationHelper.getOldSubmissionDto(bpc.request);
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos = oldSubmissionDto.getAppSvcRelatedInfoDtoList();
+            List<AppSvcDocDto> oldDocs = IaisCommonUtils.genNewArrayList();
+            if(!IaisCommonUtils.isEmpty(oldAppSvcRelatedInfoDtos)){
+                for(AppSvcRelatedInfoDto oldSvcRelDto:oldAppSvcRelatedInfoDtos){
+                    if(currentSvcId.equals(oldSvcRelDto.getServiceId())){
+                        oldDocs = oldSvcRelDto.getAppSvcDocDtoLit();
+                    }
+                }
+            }
             if (appSubmissionDto.isNeedEditController()) {
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                 clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DOCUMENT);
@@ -1117,6 +1129,7 @@ public class ClinicalLaboratoryDelegator {
                             appSvcDocDto.setMd5Code(md5Code);
                             appSvcDocDto.setPremisesVal("");
                             appSvcDocDto.setPremisesType("");
+                            appSvcDocDto.setVersion(getAppSvcDocVersion(hcsaSvcDocConfigDto.getId(),oldDocs,isRfi,md5Code,oldSubmissionDto.getAppGrpId(),null));
                             commonsMultipartFileMap.put(docConfigId, file);
                             //wait api change to get fileRepoId
                             appSvcDocDtoList.add(appSvcDocDto);
@@ -1151,6 +1164,7 @@ public class ClinicalLaboratoryDelegator {
                             appSvcDocDto.setMd5Code(md5Code);
                             appSvcDocDto.setPremisesVal(appGrpPremisesDto.getPremisesIndexNo());
                             appSvcDocDto.setPremisesType(appGrpPremisesDto.getPremisesType());
+                            appSvcDocDto.setVersion(getAppSvcDocVersion(premSvcDocConfig.getId(),oldDocs,isRfi,md5Code,oldSubmissionDto.getAppGrpId(),oldSubmissionDto.getRfiAppNo()));
                             commonsMultipartFileMap.put(premisesIndexNo+premSvcDocConfig.getId(), file);
                             //wait api change to get fileRepoId
                             appSvcDocDtoList.add(appSvcDocDto);
@@ -2995,5 +3009,38 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         return stepName;
+    }
+
+    private Integer getAppSvcDocVersion(String configDocId, List<AppSvcDocDto> oldDocs, boolean isRfi, String md5Code, String appGrpId,String appNo){
+        Integer version = 1;
+        if(StringUtil.isEmpty(configDocId) || IaisCommonUtils.isEmpty(oldDocs) || StringUtil.isEmpty(md5Code)){
+            return version;
+        }
+        if(isRfi){
+            for(AppSvcDocDto appSvcDocDto:oldDocs){
+                Integer oldVersion = appSvcDocDto.getVersion();
+                if(configDocId.equals(appSvcDocDto.getSvcDocId())){
+                    if(md5Code.equals(appSvcDocDto.getMd5Code())){
+                        if(!StringUtil.isEmpty(oldVersion)){
+                            version = oldVersion;
+                        }
+                    }else{
+                        if(StringUtil.isEmpty(appNo)){
+                            AppSvcDocDto maxVersionDocDto = appSubmissionService.getMaxVersionSvcComDoc(appGrpId,configDocId);
+                            if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
+                                version = maxVersionDocDto.getVersion() + 1;
+                            }
+                        }else{
+                            AppSvcDocDto maxVersionDocDto = appSubmissionService.getMaxVersionSvcSpecDoc(appGrpId,configDocId,appNo);
+                            if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
+                                version = maxVersionDocDto.getVersion() + 1;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        return version;
     }
 }

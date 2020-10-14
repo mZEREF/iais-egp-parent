@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
@@ -43,6 +44,7 @@ public class SoloRegisterCorpPassJobHandler extends IJobHandler {
         try{
             log.info("<====== solo register corPass start======>");
             //get licensee
+            AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
             List<LicenseeDto> licenseeDtos = orgUserManageService.getLicenseeNoUen();
             for (LicenseeDto item: licenseeDtos
                  ) {

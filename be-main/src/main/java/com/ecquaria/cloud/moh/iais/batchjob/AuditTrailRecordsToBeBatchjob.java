@@ -1,7 +1,9 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.AuditTrailRecordsToBeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ public class AuditTrailRecordsToBeBatchjob {
     public void preDate(BaseProcessClass bpc)  {
 
         log.debug(StringUtil.changeForLog("The auditTrailRecordsToBeBatchjob is start..." ));
+        AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
         auditTrailRecordsToBeService.info();
         auditTrailRecordsToBeService.compress();
         log.info("------------------- compressFile  end --------------");

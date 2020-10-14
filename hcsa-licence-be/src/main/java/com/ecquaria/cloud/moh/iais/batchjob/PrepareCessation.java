@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
@@ -39,6 +41,7 @@ public class PrepareCessation {
     public void jobExecute(){
         List<ApplicationDto> applicationDtos = cessationClient.prepareCessation().getEntity();
         if (!IaisCommonUtils.isEmpty(applicationDtos)) {
+            AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
             for (ApplicationDto applicationDto : applicationDtos) {
                 try {
                     String originLicenceId = applicationDto.getOriginLicenceId();

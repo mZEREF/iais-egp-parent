@@ -323,7 +323,7 @@
             length=length-1;
             if(length===1){
                 var text=$('.docTitIndex');
-                text.html('Title of Supporting Documents <strong style="color:#ff0000;">*</strong>');
+                text.html('1 Title of Supporting Documents <strong style="color:#ff0000;">*</strong>');
             }
         });
     }
@@ -391,7 +391,7 @@
             lengthInfo=lengthInfo-1;
             if(lengthInfo===1){
                 var text=$('.infoTitIndex');
-                text.html('Title of Information Required <strong style="color:#ff0000;">*</strong>');
+                text.html('1 Title of Information Required <strong style="color:#ff0000;">*</strong>');
             }
         });
     }

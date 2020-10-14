@@ -30,25 +30,15 @@ public final class LoginHelper {
         SessionManager.getInstance(request).initSopLoginInfo(request);
 
         AccessUtil.initLoginUserInfo(request);
-        List<AuditTrailDto> trailDtoList = IaisCommonUtils.genNewArrayList(1);
         AuditTrailDto auditTrailDto = new AuditTrailDto();
         auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
         auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN);
         auditTrailDto.setLoginType(loginType);
-        auditTrailDto.setModule("login");
-        auditTrailDto.setFunctionName("login");
+        auditTrailDto.setModule("Internet Login");
+        auditTrailDto.setFunctionName("Internet Login");
         auditTrailDto.setLoginTime(new Date());
         IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
-        trailDtoList.add(auditTrailDto);
-        SubmissionClient client = SpringContextHelper.getContext().getBean(SubmissionClient.class);
-        try {
-            String eventRefNo = String.valueOf(System.currentTimeMillis());
-            log.info(StringUtil.changeForLog("call event bus for login , the event ref number is " + eventRefNo));
-            AuditLogUtil.callWithEventDriven(trailDtoList, client, eventRefNo);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-
+        IaisEGPHelper.callSaveAuditTrail(auditTrailDto);
     }
 
     public static String getTestMode(HttpServletRequest request){

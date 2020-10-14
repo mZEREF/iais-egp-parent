@@ -2101,6 +2101,13 @@ public class NewApplicationHelper {
         return isCharity;
     }
 
+    public static boolean newAndNotRfi(HttpServletRequest request,String appType){
+        return !checkIsRfi(request) && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
+    }
+
+    public static AppSubmissionDto getOldSubmissionDto(HttpServletRequest request){
+        return ParamUtil.getSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO) == null?new AppSubmissionDto(): (AppSubmissionDto) ParamUtil.getSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+    }
     //=============================================================================
     //private method
     //=============================================================================

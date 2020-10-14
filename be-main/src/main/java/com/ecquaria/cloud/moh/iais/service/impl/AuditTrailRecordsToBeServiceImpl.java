@@ -48,7 +48,8 @@ import java.util.zip.ZipFile;
 public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeService {
     @Value("${iais.syncFileTracking.shared.path}")
     private     String sharedPath;
-
+    @Value("${iais.sharedfolder.auditTrail.in}")
+    private String inSharedPath;
     @Autowired
     private GenerateIdClient generateIdClient;
     @Autowired
@@ -62,7 +63,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
 
 
         File file =new File(sharedPath+File.separator+File.separator+"folder");
-        File b=new File(sharedPath+File.separator+ RequestForInformationConstants.BACKUPS_AUDIT +File.separator);
+        File b=new File(inSharedPath+File.separator);
         File c=new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS);
         if(!c.exists()){
             c.mkdirs();
@@ -79,14 +80,14 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
     @Override
     public void compress(){
         log.info("-------------compress start ---------");
-        File basePath = new File(sharedPath+File.separator+ RequestForInformationConstants.BACKUPS_AUDIT +File.separator);
+        File basePath = new File(inSharedPath+File.separator);
         if(basePath.isDirectory()){
             File[] files = basePath.listFiles();
             for(File fil:files){
                 if(fil.getName().endsWith(RequestForInformationConstants.ZIP_NAME)){
                     String name = fil.getName();
                     String path = fil.getPath();
-                    String relPath=RequestForInformationConstants.BACKUPS_AUDIT+File.separator+name;
+                    String relPath=name;
                     HashMap<String,String> map= IaisCommonUtils.genNewHashMap();
                     map.put("fileName",name);
                     map.put("filePath",relPath);

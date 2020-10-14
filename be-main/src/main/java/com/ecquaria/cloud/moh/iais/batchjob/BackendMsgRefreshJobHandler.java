@@ -5,6 +5,7 @@ import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.BatchJobConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -37,7 +38,7 @@ public class BackendMsgRefreshJobHandler extends IJobHandler {
             List<MessageDto> list = systemBeLicClient.getMessagesToRefresh().getEntity();
             Map<String, String> map = IaisCommonUtils.genNewHashMap();
             if (!IaisCommonUtils.isEmpty(list)) {
-                list.get(0).setAuditTrailDto(AuditTrailHelper.getBatchJobDto(AppConsts.USER_DOMAIN_INTRANET));
+                list.get(0).setAuditTrailDto(AuditTrailHelper.getBatchJobDto(AppConsts.USER_DOMAIN_INTRANET, this));
                 for (MessageDto mc : list) {
                     map.put(mc.getCodeKey(), mc.getMessage());
                     mc.setNeedFlush(false);

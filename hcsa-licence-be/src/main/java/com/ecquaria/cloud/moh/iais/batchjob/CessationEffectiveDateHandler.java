@@ -56,6 +56,7 @@ public class CessationEffectiveDateHandler extends IJobHandler {
     public ReturnT<String> execute(String s) {
         try {
             log.debug(StringUtil.changeForLog("The CessationEffectiveDateHandler is Start ..."));
+            AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
             cessationEffectiveDateBatchjob.jobExecute();
         } catch (Throwable e) {
             log.error(e.getMessage(), e);

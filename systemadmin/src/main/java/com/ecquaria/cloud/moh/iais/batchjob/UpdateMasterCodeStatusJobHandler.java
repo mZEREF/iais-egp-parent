@@ -5,6 +5,7 @@ import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.BatchJobConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -32,7 +33,7 @@ public class UpdateMasterCodeStatusJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) throws Exception {
         JobLogger.log(StringUtil.changeForLog("The InactiveMasterCodeJobHandler start..." ));
         try {
-            AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+            AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
             masterCodeService.inactiveMasterCode(auditTrailDto);
             JobLogger.log(StringUtil.changeForLog("The InactiveMasterCodeJobHandler end..." ));
             return ReturnT.SUCCESS;

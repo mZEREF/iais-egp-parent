@@ -1,10 +1,12 @@
 package com.ecquaria.cloud.moh.iais.job;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AppGrpPaymentClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,7 @@ public class ClientCheckNotResultPaymentJob {
     public void endStep(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do job start ...."));
         List<ApplicationGroupDto> applicationGroupDtoList= applicationClient.getAppGrpDtoPaying().getEntity();
+        AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
         for (ApplicationGroupDto appGrp :applicationGroupDtoList
                 ) {
             try {

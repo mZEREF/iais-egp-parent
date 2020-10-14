@@ -76,7 +76,7 @@ public class CreateDoInspTaskJobHandler extends IJobHandler {
             if(IaisCommonUtils.isEmpty(appPremisesRecommendationDtos)){
                 return ReturnT.SUCCESS;
             }
-            AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+            AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET,this);
             for(AppPremisesRecommendationDto aRecoDto:appPremisesRecommendationDtos){
                 if(aRecoDto.getRecomInDate() != null && aRecoDto.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
                     Date today = new Date();

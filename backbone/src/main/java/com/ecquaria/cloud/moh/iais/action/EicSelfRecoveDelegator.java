@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.BatchJobConstant;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.AtEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicClient;
@@ -62,7 +63,7 @@ public class EicSelfRecoveDelegator {
         List<EicRequestTrackingDto> orgList = orgEicClient.getPendingRecords(moduleName).getEntity();
         List<EicRequestTrackingDto> sysList = eicClient.getPendingRecords(moduleName).getEntity();
         List<EicRequestTrackingDto> apptList = onlineApptEicClient.getPendingRecords(moduleName).getEntity();
-        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(currentDomain);
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(currentDomain, BatchJobConstant.SELF_RECOVER_DELEGATOR);
         if (!IaisCommonUtils.isEmpty(atList)) {
             atList.forEach(ert -> {
                 reTrigger(ert, auditTrailDto);

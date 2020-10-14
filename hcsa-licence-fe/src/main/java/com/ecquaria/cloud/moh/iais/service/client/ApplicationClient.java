@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDe
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -339,6 +340,13 @@ public interface ApplicationClient  {
 
     @PostMapping(path = "/iais-submission/requestForInformation-withdrawal", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> saveRfcWithdrawSubmission(@RequestBody AppSubmissionRequestInformationDto appSubmissionRequestInformationDto);
-    @GetMapping(value = "/iais-application/max-version-primary-doc",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimaryDoc(@RequestParam(name = "appGrpId")String appGrpId,@RequestParam(name = "configDocId")String configDocId);
+    @GetMapping(value = "/iais-application/max-version-primary-com-doc",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimaryComDoc(@RequestParam(name = "appGrpId")String appGrpId,@RequestParam(name = "configDocId")String configDocId);
+    @GetMapping(value = "/iais-application/max-version-svc-com-doc",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcComDoc(@RequestParam(name = "appGrpId")String appGrpId, @RequestParam(name = "configDocId")String configDocId);
+
+    @GetMapping(value = "/iais-application/max-version-primary-spec-doc",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimarySpecDoc(@RequestParam(name = "appGrpId")String appGrpId,@RequestParam(name = "configDocId")String configDocId,@RequestParam(name = "appNo")String appNo);
+    @GetMapping(value = "/iais-application/max-version-svc-spec-doc",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcSpecDoc(@RequestParam(name = "appGrpId")String appGrpId, @RequestParam(name = "configDocId")String configDocId,@RequestParam(name = "appNo")String appNo);
 }

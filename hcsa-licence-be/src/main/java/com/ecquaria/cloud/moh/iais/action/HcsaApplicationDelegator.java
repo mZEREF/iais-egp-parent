@@ -1698,16 +1698,17 @@ public class HcsaApplicationDelegator {
                 hcsaLicenceClient.saveLicenceAppCorrelation(licAppCorrelationDto);
             }
         }
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)||ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus)||ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(appStatus)){
+            List<String> roleIds= new ArrayList<>();
+            roleIds.add(RoleConsts.USER_ROLE_INSPECTIOR);
+            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList=appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNoAndRoleIds(applicationDto.getApplicationNo(), roleIds);
+            if(appPremisesRoutingHistoryDtoList==null||appPremisesRoutingHistoryDtoList.size()==0){
+                applicationDto.setSelfAssMtFlag(4);
+            }
+        }
         //appeal save return fee
         try{
             if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
-                List<String> roleIds= new ArrayList<>();
-                roleIds.add(RoleConsts.USER_ROLE_INSPECTIOR);
-                roleIds.add(RoleConsts.USER_ROLE_PSO);
-                List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList=appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNoAndRoleIds(applicationDto.getApplicationNo(), roleIds);
-                if(appPremisesRoutingHistoryDtoList==null||appPremisesRoutingHistoryDtoList.size()==0){
-                    applicationDto.setSelfAssMtFlag(4);
-                }
                 if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
                     String returnFee = appPremisesRecommendationDto.getRemarks();
                     log.info(StringUtil.changeForLog("appeal return fee remarks in recommendation db : " + returnFee));

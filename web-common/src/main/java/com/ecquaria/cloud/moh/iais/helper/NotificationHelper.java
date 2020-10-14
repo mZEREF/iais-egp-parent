@@ -482,7 +482,7 @@ public class NotificationHelper {
 			interMessageDto.setService_id(svcCodeShow.toString());
 		}
 		interMessageDto.setUserId(licenseeId);
-		interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+		interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
 		interMessageDto.setMsgContent(mesContext);
 		interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 		interMessageDto.setMaskParams(maskParams);
