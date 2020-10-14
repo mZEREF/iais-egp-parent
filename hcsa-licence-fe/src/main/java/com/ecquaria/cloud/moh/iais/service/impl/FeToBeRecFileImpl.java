@@ -1,6 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
+import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -16,9 +17,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.FeToBeRecFileService;
+import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
@@ -29,7 +30,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -49,8 +55,8 @@ import java.util.zip.ZipOutputStream;
 public class FeToBeRecFileImpl implements FeToBeRecFileService {
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
-    private String download;
-    private String fileName;
+    @Value("${iais.sharedfolder.rectification.out}")
+    private String sharedOutPath;
     private String fileFormat = ".text";
     private String backups;
 
@@ -80,20 +86,28 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     private AppEicClient appEicClient;
 
     @PostConstruct
-   private void init() {
-        this.fileName ="userRecFile";
-        this.download = sharedPath + fileName;
-        this.backups = sharedPath+"backupsRec";
+    private void init() {
+        String outFolder = sharedOutPath;
+        if (!outFolder.endsWith(File.separator)) {
+            outFolder += File.separator;
+        }
+        this.backups = outFolder;
+        log.info(StringUtil.changeForLog("backups = " + outFolder));
     }
 
     @Override
     public void compressFile(Map<String, String> appIdItemIdMap) {
         if(appIdItemIdMap != null) {
             for (Map.Entry<String, String> fileId : appIdItemIdMap.entrySet()) {
-                String compress = compress(fileId.getKey());
-                String appId = appIdItemIdMap.get(fileId.getKey());
-                rename(compress, appId);
-                deleteFile();
+                try{
+                    String compress = compress(fileId.getKey());
+                    String appId = appIdItemIdMap.get(fileId.getKey());
+                    rename(compress, appId);
+                    deleteFile();
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    continue;
+                }
             }
         }
     }
@@ -117,36 +131,20 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             String fileId = appPremPreInspectionNcDocDto.getFileRepoId();
             byte[] fileByte = fileRepoClient.getFileFormDataBase(fileId).getEntity();
 
-            File file = new File(download + File.separator + fileId, appPremPreInspectionNcDocDto.getDocName());
-            File backupsFile = new File(backups + File.separator + fileId, appPremPreInspectionNcDocDto.getDocName());
-            File groupPath = new File(download + File.separator + fileId);
-            if(!groupPath.exists()){
-                groupPath.mkdirs();
-            }
-            File groupBackPath = new File(backups + File.separator + fileId);
+            File backupsFile = new File(backups + fileId, appPremPreInspectionNcDocDto.getDocName());
+            File groupBackPath = new File(backups + fileId);
             if(!groupBackPath.exists()){
                 groupBackPath.mkdirs();
             }
             appIdNcItemIdMap.put(fileId, appId);
-            writeFileByFileByte(file, backupsFile, fileByte);
+            writeFileByFileByte(backupsFile, fileByte);
         }
         return appIdNcItemIdMap;
     }
 
-    private void writeFileByFileByte(File file, File backupsFile, byte[] fileByte) {
-        OutputStream fileOutputStream = null;
+    private void writeFileByFileByte(File backupsFile, byte[] fileByte) {
         OutputStream fileOutputStream2 = null;
         try {
-            if(!file.exists()){
-                boolean fileStatus = file.createNewFile();
-                if(fileStatus) {
-                    fileOutputStream = Files.newOutputStream(file.toPath());
-                    fileOutputStream.write(fileByte);
-                }
-            } else {
-                fileOutputStream = Files.newOutputStream(file.toPath());
-                fileOutputStream.write(fileByte);
-            }
             if(!backupsFile.exists()){
                 boolean fileStatus2 = backupsFile.createNewFile();
                 if(fileStatus2) {
@@ -170,31 +168,18 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
 
                 }
             }
-            if(fileOutputStream!=null){
-                try {
-                    fileOutputStream.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(),e);
-                }
-            }
         }
     }
 
     private String compress(String fileId){
         long l = System.currentTimeMillis();
-        try (OutputStream is =  Files.newOutputStream(Paths.get(backups + File.separator + l + ".zip"));
+        try (OutputStream is =  Files.newOutputStream(Paths.get(backups + l + ".zip"));
              CheckedOutputStream cos = new CheckedOutputStream(is, new CRC32());
-             OutputStream is2 =  Files.newOutputStream(Paths.get(download + File.separator + l + ".zip"));
-             CheckedOutputStream cos2 = new CheckedOutputStream(is2, new CRC32());
-             ZipOutputStream zos = new ZipOutputStream(cos);
-             ZipOutputStream zos2 = new ZipOutputStream(cos2)){
+             ZipOutputStream zos = new ZipOutputStream(cos);){
 
-            File file2 = new File(download + File.separator + fileId);
-            File file = new File(backups + File.separator + fileId);
+            File file = new File(backups + "backupsRec" + File.separator + fileId);
             MiscUtil.checkDirs(file);
-            MiscUtil.checkDirs(file2);
             zipFile(zos, file, "backupsRec");
-            zipFile(zos2, file2, fileName);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
@@ -203,7 +188,9 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
 
     private void zipFile(ZipOutputStream zos, File file, String curFileName)  {
         if(file.isDirectory()){
+            log.info(StringUtil.changeForLog("putNextEntry filePath = " + file.getPath()));
             String filePath = file.getPath().substring(file.getPath().indexOf(curFileName));
+            log.info(StringUtil.changeForLog("putNextEntry filePath = " + filePath));
             try {
                 zos.putNextEntry(new ZipEntry(filePath + File.separator));
             } catch (IOException e) {
@@ -258,9 +245,9 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                     }
                     boolean reNameFlag = file.renameTo(curFile);
                     if(reNameFlag) {
-                        String s1 = saveFileName(s + ".zip", "backupsRec" + File.separator + s + ".zip", appId);
+                        String s1 = saveFileName(s + ".zip", s + ".zip", appId);
                         if(!s1.equals(AppConsts.SUCCESS)){
-                            boolean fileDelStatus = new File(backups + File.separator + s + ".zip").delete();
+                            boolean fileDelStatus = new File(backups + s + ".zip").delete();
                             if(!fileDelStatus){
                                 log.debug(StringUtil.changeForLog(file.getName() + "delete false"));
                             }
@@ -277,7 +264,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     }
 
     private void deleteFile(){
-        File file = new File(download);
+        File file = new File(backups);
         if(file.isDirectory()){
             File[] files = file.listFiles((dir, name) -> {
                 if (name.endsWith(fileFormat)) {
