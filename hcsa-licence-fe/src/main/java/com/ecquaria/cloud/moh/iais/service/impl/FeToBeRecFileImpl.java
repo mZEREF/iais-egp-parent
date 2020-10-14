@@ -176,7 +176,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
              CheckedOutputStream cos = new CheckedOutputStream(is, new CRC32());
              ZipOutputStream zos = new ZipOutputStream(cos);){
 
-            File file = new File(backups + "backupsRec" + File.separator + fileId);
+            File file = new File(backups + File.separator + fileId);
             MiscUtil.checkDirs(file);
             zipFile(zos, file, "backupsRec");
         } catch (IOException e) {
