@@ -10,14 +10,30 @@ import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.GenerateLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGrpDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SuperLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
@@ -25,7 +41,18 @@ import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -208,6 +235,9 @@ public class LicenceServiceImpl implements LicenceService {
             trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
             //send approve notification
             try{
+                //send issue uen email
+                log.info(StringUtil.changeForLog("send uen email"));
+                sendUenEmail(eventBusLicenceGroupDtos);
                 sendNotification(eventBusLicenceGroupDtos);
             }catch (Exception e){
                 log.error(e.getMessage(),e);
@@ -218,6 +248,89 @@ public class LicenceServiceImpl implements LicenceService {
         }
 
         return eventBusLicenceGroupDtos;
+    }
+
+
+    private void sendUenEmail(EventBusLicenceGroupDtos eventBusLicenceGroupDtos){
+        log.info(StringUtil.changeForLog("send uen email start"));
+        for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()
+             ) {
+            for (SuperLicDto superLicDto:item.getSuperLicDtos()
+                 ) {
+                //add judge licence is singlepass
+                try {
+
+                    LicenceDto licenceDto = superLicDto.getLicenceDto();
+                    log.info(StringUtil.changeForLog("licence id = " + licenceDto.getId()));
+                    LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
+                    LicenseeIndividualDto licenseeIndividualDto = licenseeDto.getLicenseeIndividualDto();
+                    log.info(StringUtil.changeForLog("licenseeIndividualDto.getUenMailFlag() = " + licenseeIndividualDto.getUenMailFlag()));
+                    if(licenseeIndividualDto.getUenMailFlag() == 0){
+                        Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
+
+                        templateContent.put("HCI_Name", "hciName");
+                        String address = MiscUtil.getAddress(licenseeDto.getBlkNo(),licenseeDto.getStreetName(),licenseeDto.getBuildingName(),licenseeDto.getFloorNo(),licenseeDto.getUnitNo(),licenseeDto.getPostalCode());
+                        templateContent.put("HCI_Address", address);
+                        log.info(StringUtil.changeForLog("HCI_Address = " + address));
+                        templateContent.put("UEN_No", "uen no");
+                        templateContent.put("Applicant", licenseeDto.getName());
+                        templateContent.put("ServiceName", MasterCodeUtil.getCodeDesc(licenseeIndividualDto.getFirstServiceCode()));
+                        templateContent.put("LicenceNo", licenceDto.getLicenceNo());
+                        templateContent.put("GraceDate", licenceDto.getExpiryDate());
+                        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+                        templateContent.put("newSystem", loginUrl);
+                        templateContent.put("emailAddress", systemAddressOne);
+                        templateContent.put("telNo", systemPhoneNumber);
+
+                        String subject = "MOH HALP - Issuance of UEN for Solo Applicant";
+                        EmailParam emailParam = new EmailParam();
+                        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_EMAIL);
+                        emailParam.setTemplateContent(templateContent);
+                        emailParam.setSubject(subject);
+                        emailParam.setQueryCode(licenceDto.getLicenceNo());
+                        emailParam.setReqRefNum(licenceDto.getLicenceNo());
+                        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+                        emailParam.setRefId(licenceDto.getId());
+                        notificationHelper.sendNotification(emailParam);
+                        log.info(StringUtil.changeForLog("send email end"));
+
+                        EmailParam smsParam = new EmailParam();
+                        smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_APPROVE_SMS);
+                        smsParam.setSubject(subject);
+                        smsParam.setTemplateContent(templateContent);
+                        smsParam.setQueryCode(licenceDto.getLicenceNo());
+                        smsParam.setReqRefNum(licenceDto.getLicenceNo());
+                        smsParam.setRefId(licenceDto.getId());
+                        smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+                        notificationHelper.sendNotification(smsParam);
+                        log.info(StringUtil.changeForLog("send sms end"));
+
+                        EmailParam msgParam = new EmailParam();
+                        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_EMAIL);
+                        msgParam.setTemplateContent(templateContent);
+                        msgParam.setSubject(subject);
+                        msgParam.setQueryCode(licenceDto.getLicenceNo());
+                        msgParam.setReqRefNum(licenceDto.getLicenceNo());
+                        List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+                        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(licenseeIndividualDto.getFirstServiceCode()).getEntity();
+                        svcCodeList.add(svcDto.getSvcCode());
+                        msgParam.setSvcCodeList(svcCodeList);
+                        msgParam.setRefId(licenceDto.getId());
+                        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                        notificationHelper.sendNotification(msgParam);
+                        log.info(StringUtil.changeForLog("send msg end"));
+                        //set flag = 1
+                        organizationClient.updateIndividualFlag(licenseeIndividualDto.getId());
+                        log.info(StringUtil.changeForLog("updateIndividualFlag end"));
+                    }
+
+                }catch (Exception e){
+                    continue;
+                }
+
+            }
+        }
+
     }
 
     private void sendNotification(EventBusLicenceGroupDtos eventBusLicenceGroupDtos){
