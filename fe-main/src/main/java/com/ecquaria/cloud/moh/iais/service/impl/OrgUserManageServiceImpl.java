@@ -10,7 +10,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
@@ -362,6 +365,48 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
+    public LicenseeDto saveMyinfoDataByFeUserDtoAndLicenseeDto(LicenseeDto licenseeDto, FeUserDto feUserDto, MyInfoDto myInfoDto ) {
+      if( myInfoDto != null){
+          feUserDto.setEmail(myInfoDto.getEmail());
+          feUserDto.setMobileNo(myInfoDto.getMobileNo());
+          feUserDto.setDisplayName(myInfoDto.getUserName());
+      }
+       editUserAccount(feUserDto);
+       updateEgpUser(feUserDto);
+
+        //update be user
+        OrganizationDto organizationById = getOrganizationById(feUserDto.getOrgId());
+        OrganizationDto organizationDto = new OrganizationDto();
+        organizationDto.setDoMain(AppConsts.USER_DOMAIN_INTERNET);
+        organizationDto.setFeUserDto(feUserDto);
+        organizationDto.setOrgType(organizationById.getOrgType());
+        organizationDto.setStatus(organizationById.getStatus());
+        organizationDto.setUenNo(organizationById.getUenNo());
+        organizationDto.setId(organizationById.getId());
+        updateUserBe(organizationDto);
+        //update licensee
+        if(licenseeDto == null) {
+            licenseeDto = new LicenseeDto();
+        }
+        licenseeDto.setOrganizationId(organizationDto.getId());
+        licenseeDto.setName(feUserDto.getDisplayName());
+        licenseeDto.setEmilAddr(feUserDto.getEmail());
+        LicenseeEntityDto licenseeEntityDto = new LicenseeEntityDto();
+        licenseeEntityDto.setOfficeTelNo(feUserDto.getOfficeTelNo());
+        licenseeEntityDto.setOfficeEmailAddr(feUserDto.getEmail());
+        LicenseeIndividualDto licenseeIndividualDto = new LicenseeIndividualDto();
+        licenseeIndividualDto.setSalutation(feUserDto.getSalutation());
+        licenseeIndividualDto.setIdType(feUserDto.getIdType());
+        licenseeIndividualDto.setIdNo(feUserDto.getIdentityNo());
+        licenseeIndividualDto.setMobileNo(feUserDto.getMobileNo());
+        licenseeIndividualDto.setEmailAddr(feUserDto.getEmail());
+        licenseeDto.setLicenseeEntityDto(licenseeEntityDto);
+        licenseeDto.setLicenseeIndividualDto(licenseeIndividualDto);
+        refreshLicensee(licenseeDto);
+        return licenseeDto;
+    }
+
+    @Override
     public List<LicenseeDto> getLicenseeByOrgId(String orgId){
         return feAdminClient.getLicenseeByOrgId(orgId).getEntity();
     }
@@ -385,4 +430,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     public Boolean validatePwd(FeUserDto feUserDto) {
         return feUserClient.validatePwd(feUserDto).getEntity();
     }
+
+
 }

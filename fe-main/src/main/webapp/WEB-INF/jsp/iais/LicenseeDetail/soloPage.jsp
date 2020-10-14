@@ -96,6 +96,9 @@
                                             <div class="col-xs-2 col-md-2">
                                                 <a   style="padding-left: 90px;" align="left" class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
                                             </div>
+                                            <div class="text-right col-xs-9 col-md-9">
+                                                    <button class="btn btn-primary save" id="reLoadMyInfo">Refresh And Save Data</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -113,7 +116,7 @@
         SOP.Crud.cfxSubmit("mainForm","back");
     })
 
-    $("#refresh").click(function () {
+    $("#reLoadMyInfo").click(function () {
         SOP.Crud.cfxSubmit("mainForm","refresh");
     })
 </script>

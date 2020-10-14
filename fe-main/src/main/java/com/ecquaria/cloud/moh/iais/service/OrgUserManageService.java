@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
@@ -57,4 +58,6 @@ public interface OrgUserManageService {
     List<LicenseeDto> getLicenseeNoUen();
 
     Boolean validatePwd(FeUserDto feUserDto);
+
+    LicenseeDto saveMyinfoDataByFeUserDtoAndLicenseeDto( LicenseeDto licenseeDto, FeUserDto feUserDto, MyInfoDto myInfoDto);
 }

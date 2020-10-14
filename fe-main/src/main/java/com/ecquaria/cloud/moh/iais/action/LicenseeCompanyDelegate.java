@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -75,7 +76,15 @@ public class LicenseeCompanyDelegate {
                 OrganizationDto organizationDto = orgUserManageService.getOrganizationById(organizationId);
                 orgUserManageService.refreshLicensee(organizationDto.getUenNo());
             }else{
-                myInfoAjax.getMyInfo(loginContext.getNricNum());
+                MyInfoDto myInfoDto = myInfoAjax.getMyInfo(loginContext.getNricNum());
+                if(myInfoDto != null){
+                    FeUserDto feUserDto = orgUserManageService.getUserAccount(loginContext.getUserId());
+                    if(myInfoDto != null && feUserDto != null){
+                        orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,myInfoDto);
+                    }
+                }else {
+                    log.info("------- Illegal operation get Myinfo ---------");
+                }
             }
         }
         String type = ParamUtil.getString(bpc.request,"licenseView");

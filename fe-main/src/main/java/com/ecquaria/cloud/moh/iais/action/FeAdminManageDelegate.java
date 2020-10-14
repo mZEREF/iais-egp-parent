@@ -214,37 +214,7 @@ public class FeAdminManageDelegate {
             }else{
                 Map<String,String> successMap = IaisCommonUtils.genNewHashMap();
                 successMap.put("save","suceess");
-                orgUserManageService.editUserAccount(feUserDto);
-                orgUserManageService.updateEgpUser(feUserDto);
-
-                //update be user
-                OrganizationDto organizationById = orgUserManageService.getOrganizationById(feUserDto.getOrgId());
-                OrganizationDto organizationDto = new OrganizationDto();
-                organizationDto.setDoMain(AppConsts.USER_DOMAIN_INTERNET);
-                organizationDto.setFeUserDto(feUserDto);
-                organizationDto.setOrgType(organizationById.getOrgType());
-                organizationDto.setStatus(organizationById.getStatus());
-                organizationDto.setUenNo(organizationById.getUenNo());
-                organizationDto.setId(organizationById.getId());
-                String json = JsonUtil.parseToJson(organizationDto);
-                orgUserManageService.updateUserBe(organizationDto);
-                //update licensee
-                LicenseeDto licenseeDto = new LicenseeDto();
-                licenseeDto.setOrganizationId(organizationDto.getId());
-                licenseeDto.setName(feUserDto.getDisplayName());
-                licenseeDto.setEmilAddr(feUserDto.getEmail());
-                LicenseeEntityDto licenseeEntityDto = new LicenseeEntityDto();
-                licenseeEntityDto.setOfficeTelNo(feUserDto.getOfficeTelNo());
-                licenseeEntityDto.setOfficeEmailAddr(feUserDto.getEmail());
-                LicenseeIndividualDto licenseeIndividualDto = new LicenseeIndividualDto();
-                licenseeIndividualDto.setSalutation(feUserDto.getSalutation());
-                licenseeIndividualDto.setIdType(feUserDto.getIdType());
-                licenseeIndividualDto.setIdNo(feUserDto.getIdentityNo());
-                licenseeIndividualDto.setMobileNo(feUserDto.getMobileNo());
-                licenseeIndividualDto.setEmailAddr(feUserDto.getEmail());
-                licenseeDto.setLicenseeEntityDto(licenseeEntityDto);
-                licenseeDto.setLicenseeIndividualDto(licenseeIndividualDto);
-                orgUserManageService.refreshLicensee(licenseeDto);
+                orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(null,feUserDto,null);
                 if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)) {
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "success");
                 }else{
