@@ -366,10 +366,26 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Override
     public LicenseeDto saveMyinfoDataByFeUserDtoAndLicenseeDto(LicenseeDto licenseeDto, FeUserDto feUserDto, MyInfoDto myInfoDto ) {
+        LicenseeEntityDto licenseeEntityDto;
+        LicenseeIndividualDto licenseeIndividualDto;
+        if(licenseeDto == null) {
+            licenseeDto = new LicenseeDto();
+            licenseeEntityDto = new LicenseeEntityDto();
+            licenseeIndividualDto= new LicenseeIndividualDto();
+        }else {
+            licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
+            licenseeIndividualDto = licenseeDto.getLicenseeIndividualDto();
+        }
       if( myInfoDto != null){
           feUserDto.setEmail(myInfoDto.getEmail());
           feUserDto.setMobileNo(myInfoDto.getMobileNo());
           feUserDto.setDisplayName(myInfoDto.getUserName());
+          licenseeDto.setFloorNo(myInfoDto.getFloor());
+          licenseeDto.setPostalCode(myInfoDto.getPostalCode());
+          licenseeDto.setUnitNo(myInfoDto.getUnitNo());
+          licenseeDto.setBlkNo(myInfoDto.getBlockNo());
+          licenseeDto.setBuildingName(myInfoDto.getBuildingName());
+          licenseeDto.setStreetName(myInfoDto.getStreetName());
       }
        editUserAccount(feUserDto);
        updateEgpUser(feUserDto);
@@ -385,16 +401,11 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         organizationDto.setId(organizationById.getId());
         updateUserBe(organizationDto);
         //update licensee
-        if(licenseeDto == null) {
-            licenseeDto = new LicenseeDto();
-        }
         licenseeDto.setOrganizationId(organizationDto.getId());
         licenseeDto.setName(feUserDto.getDisplayName());
         licenseeDto.setEmilAddr(feUserDto.getEmail());
-        LicenseeEntityDto licenseeEntityDto = new LicenseeEntityDto();
         licenseeEntityDto.setOfficeTelNo(feUserDto.getOfficeTelNo());
         licenseeEntityDto.setOfficeEmailAddr(feUserDto.getEmail());
-        LicenseeIndividualDto licenseeIndividualDto = new LicenseeIndividualDto();
         licenseeIndividualDto.setSalutation(feUserDto.getSalutation());
         licenseeIndividualDto.setIdType(feUserDto.getIdType());
         licenseeIndividualDto.setIdNo(feUserDto.getIdentityNo());
