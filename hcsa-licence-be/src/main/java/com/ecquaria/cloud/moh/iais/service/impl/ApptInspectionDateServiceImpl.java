@@ -522,8 +522,16 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
         List<String> appPremCorrIds = apptInspectionDateDto.getRefNo();
         //end hour - 1, because the function save all start hour
-        AppointmentDto appointmentDtoSave = officersReSchedulingService.subtractEndHourByApptDto(apptInspectionDateDto.getSpecificApptDto());
-        String apptRefNo = appointmentClient.saveManualUserCalendar(appointmentDtoSave).getEntity();
+        String apptRefNo;
+        List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
+        List<String> confirmRefNo = IaisCommonUtils.genNewArrayList();
+        if(StringUtil.isEmpty(apptInspectionDateDto.getSpecificApptDto().getSpecificApptRefNo())){//NOSONAR
+            AppointmentDto appointmentDtoSave = officersReSchedulingService.subtractEndHourByApptDto(apptInspectionDateDto.getSpecificApptDto());
+            apptRefNo = appointmentClient.saveManualUserCalendar(appointmentDtoSave).getEntity();
+            confirmRefNo.add(apptRefNo);
+        } else {
+            apptRefNo = apptInspectionDateDto.getSpecificApptDto().getSpecificApptRefNo();
+        }
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         for(String appPremCorrId : appPremCorrIds) {
             ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
@@ -544,9 +552,6 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         //cancel or confirm appointment date
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
         Map<String, List<ApptUserCalendarDto>> inspectionDateMap = apptInspectionDateDto.getInspectionDateMap();
-        List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
-        List<String> confirmRefNo = IaisCommonUtils.genNewArrayList();
-        confirmRefNo.add(apptRefNo);
         Date inspDate;
         try {
             inspDate = Formatter.parseDateTime(apptInspectionDateDto.getSpecificApptDto().getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT);
@@ -557,7 +562,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         if(inspectionDateMap != null) {
             for (Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()) {
                 String refNo = inspDateMap.getKey();
-                cancelRefNo.add(refNo);
+                if(!refNo.equals(apptRefNo)) {
+                    cancelRefNo.add(refNo);
+                }
             }
         }
         apptCalendarStatusDto.setCancelRefNums(cancelRefNo);

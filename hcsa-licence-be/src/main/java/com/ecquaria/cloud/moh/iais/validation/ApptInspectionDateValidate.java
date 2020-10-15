@@ -55,11 +55,13 @@ public class ApptInspectionDateValidate implements CustomizeValidator {
                 List<ApptUserCalendarDto> apptUserCalendarDtos = inspDateMap.getValue();
                 containsFlag = getContainsFlagByTimeList(apptUserCalendarDtos, specificStartDate, specificEndDate);//NOSONAR
                 if(containsFlag){
+                    specificApptDto.setSpecificApptRefNo(inspDateMap.getKey());
                     return errMap;
                 }
             }
         }
         //key userId value date
+        specificApptDto.setSpecificApptRefNo(null);
         try {
             appointmentClient.validateUserCalendar(specificApptDto).getStatusCode();
         } catch (Exception e) {
