@@ -24,8 +24,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
-import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
@@ -310,15 +308,10 @@ public class WebValidationHelper {
         Map<String, String> errors = result.retrieveAll();
         String errorMsg = generateJsonStr(errors);
         dto.setValidationFail(errorMsg);
-        List<AuditTrailDto> dtoList = IaisCommonUtils.genNewArrayList();
-        dtoList.add(dto);
         dto.setOperation(AuditTrailConsts.OPERATION_VALIDATION_FAIL);
-        SubmissionClient client = SpringContextHelper.getContext().getBean(SubmissionClient.class);
-        try {
-            AuditLogUtil.callWithEventDriven(dtoList, client);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
+
+        IaisEGPHelper.callSaveAuditTrail(dto);
+
         dto.setValidationFail(null);
     }
 
@@ -326,15 +319,8 @@ public class WebValidationHelper {
         AuditTrailDto dto = IaisEGPHelper.getCurrentAuditTrailDto();
         String errorMsg = generateJsonStr(errors);
         dto.setValidationFail(errorMsg);
-        List<AuditTrailDto> dtoList = IaisCommonUtils.genNewArrayList();
-        dtoList.add(dto);
         dto.setOperation(AuditTrailConsts.OPERATION_VALIDATION_FAIL);
-        SubmissionClient client = SpringContextHelper.getContext().getBean(SubmissionClient.class);
-        try {
-            AuditLogUtil.callWithEventDriven(dtoList, client);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
+        IaisEGPHelper.callSaveAuditTrail(dto);
         dto.setValidationFail(null);
     }
 

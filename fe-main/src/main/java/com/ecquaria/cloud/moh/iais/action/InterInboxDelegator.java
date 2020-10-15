@@ -32,7 +32,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
@@ -1055,7 +1054,7 @@ public class InterInboxDelegator {
             AuditTrailDto auditTrailDto = new AuditTrailDto();
             auditTrailDto.setApplicationNum(draft);
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_DELETE);
-            IaisEGPHelper.insertAuditTrail(auditTrailDto);
+            IaisEGPHelper.callSaveAuditTrail(auditTrailDto);
 
             String delDraftAckMsg = MessageUtil.getMessageDesc("NEW_ACK003");
             ParamUtil.setRequestAttr(bpc.request,"needDelDraftMsg",AppConsts.YES);

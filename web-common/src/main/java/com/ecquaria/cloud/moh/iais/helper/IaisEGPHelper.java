@@ -44,7 +44,6 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.egp.api.EGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -184,30 +183,6 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     /**
-     * insert operation of log
-     * reference consts ${@link AuditTrailConsts}
-     * @param auditTrailDto
-     */
-    public static void insertAuditTrail(AuditTrailDto auditTrailDto){
-        ApplicationContext context = SpringContextHelper.getContext();
-        if (context == null){
-            return;
-        }
-
-        SubmissionClient client = context.getBean(SubmissionClient.class);
-
-        log.info("insertAuditTrail.........fe");
-        List<AuditTrailDto> adList = IaisCommonUtils.genNewArrayList(1);
-        IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
-        adList.add(auditTrailDto);
-        try {
-            AuditLogUtil.callWithEventDriven(adList, client);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-    }
-
-    /**
      * @description: The method to set login user info into Audit trail from request
      *
      * @author: Jinhua on 2019/7/17 17:34
@@ -292,6 +267,10 @@ public final class IaisEGPHelper extends EGPHelper {
         return result;
     }
 
+    /**
+     * save audit trail for param
+     * @param auditTrailDto
+     */
     public static void callSaveAuditTrail(AuditTrailDto auditTrailDto){
         SubmissionClient submissionClient = SpringContextHelper.getContext().getBean(SubmissionClient.class);
         List<AuditTrailDto> trailDtoList = IaisCommonUtils.genNewArrayList(1);

@@ -6,12 +6,10 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.sz.commons.util.Calculator;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +20,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.Cookie;
 import java.util.Date;
-import java.util.List;
 
 /**
  * LogoutDelegate
@@ -50,8 +47,7 @@ public class LogoutDelegate {
 
             //Add audit trail
             AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-            List<AuditTrailDto> dtoList = IaisCommonUtils.genNewArrayList();
-            dtoList.add(auditTrailDto);
+
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGOUT);
 
             if (loginContext != null){
@@ -82,7 +78,8 @@ public class LogoutDelegate {
             }
 
             try {
-                AuditLogUtil.callWithEventDriven(dtoList, client);
+                IaisEGPHelper.callSaveAuditTrail(auditTrailDto);
+
                 AuditTrailDto loginDto = bbAuditTrailClient.getLoginInfoBySessionId(sessionId).getEntity();
                 Date now = new Date();
                 if (loginDto != null) {

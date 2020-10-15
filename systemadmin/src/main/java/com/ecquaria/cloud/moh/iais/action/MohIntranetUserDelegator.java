@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.client.rbac.ClientUser;
-import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -12,7 +11,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserUpLoadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -22,12 +27,14 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
-import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloud.role.Role;
-import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -41,9 +48,17 @@ import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author weilu
@@ -212,18 +227,14 @@ public class MohIntranetUserDelegator {
         orgUserDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         intranetUserService.updateOrgUser(orgUserDto);
         editEgpUser(orgUserDto);
-        List<AuditTrailDto> trailDtoList = IaisCommonUtils.genNewArrayList(1);
         AuditTrailDto auditTrailDto = new AuditTrailDto();
         auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
         auditTrailDto.setOperation(AuditTrailConsts.OPERATION_USER_UPDATE);
+
         IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
-        trailDtoList.add(auditTrailDto);
-        SubmissionClient client = SpringContextHelper.getContext().getBean(SubmissionClient.class);
-        try {
-            AuditLogUtil.callWithEventDriven(trailDtoList, client);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
+
+        IaisEGPHelper.callSaveAuditTrail(auditTrailDto);
+
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
     }
 

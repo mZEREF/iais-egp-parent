@@ -4,15 +4,11 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
-import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.sz.commons.util.Calculator;
-import java.util.Date;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -21,6 +17,8 @@ import org.springframework.session.events.SessionCreatedEvent;
 import org.springframework.session.events.SessionDeletedEvent;
 import org.springframework.session.events.SessionExpiredEvent;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 /**
  * IaisSessionListener
@@ -48,9 +46,7 @@ public class IaisFeSessionListener {
             AuditTrailDto auditTrailDto = new AuditTrailDto();
             IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_SESSION_TIMEOUT);
-            List<AuditTrailDto> list = IaisCommonUtils.genNewArrayList(1);
-            list.add(auditTrailDto);
-            AuditLogUtil.callWithEventDriven(list, submissionClient);
+            IaisEGPHelper.callSaveAuditTrail(auditTrailDto);
             AuditTrailDto loginDto = auditTrailMainClient.getLoginInfoBySessionId(sessionEvent.getSession().getId()).getEntity();
             Date now = new Date();
             if (loginDto != null) {

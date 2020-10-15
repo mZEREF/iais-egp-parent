@@ -22,12 +22,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -36,6 +32,9 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Method;
+import java.util.Map;
 
 @Aspect
 @Component
@@ -137,13 +136,7 @@ public class AuditFunctionAspect {
     }
 
     private void callRestApi(AuditTrailDto dto) {
-        List<AuditTrailDto> dtoList = IaisCommonUtils.genNewArrayList();
-        dtoList.add(dto);
-        try {
-            AuditLogUtil.callWithEventDriven(dtoList, client);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
+        IaisEGPHelper.callSaveAuditTrail(dto);
         dto.setViewParams(null);
     }
 }
