@@ -331,9 +331,27 @@
                                         Are you co-locating with another licensee ?
                                       </div>
                                       <div class="col-md-6">
-                                          <span class="col-md-6">
-                                             No
+                                        <div class="col-md-6">
+                                           <span class="newVal" attr="${appGrpPremDto.locateWithOthers}">
+                                            <c:if test="${appGrpPremDto.locateWithOthers=='0'}">
+                                              No
+                                            </c:if>
+                                             <c:if test="${appGrpPremDto.locateWithOthers=='1'}">
+                                               Yes
+                                             </c:if>
                                           </span>
+                                        </div>
+                                        <div class="col-md-6">
+                                           <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].locateWithOthers}">
+                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].locateWithOthers=='0'}">
+                                              No
+                                            </c:if>
+                                             <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].locateWithOthers=='1'}">
+                                               Yes
+                                             </c:if>
+                                          </span>
+                                        </div>
+
                                       </div>
                                     </div>
                                     <div class="row">
@@ -625,10 +643,10 @@
                                                   <td>Case Status Description</td>
                                                   <td>${map.offenceDesc}</td>
                                                   <td>${map.outcome}</td>
-                                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
+                                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                                   <td>${map.prosecutionOutcome}</td>
-                                                  <td><fmt:formatDate value="${map.createdDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
-                                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
+                                                  <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                                 </tr>
                                               </c:forEach>
                                               <tr></tr>
@@ -854,10 +872,10 @@
                                                   <td>${map.caseStatus}</td>
                                                   <td>${map.offenceDesc}</td>
                                                   <td>${map.outcome}</td>
-                                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
+                                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                                   <td>${map.prosecutionOutcome}</td>
-                                                  <td><fmt:formatDate value="${map.createdDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
-                                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
+                                                  <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                                 </tr>
                                               </c:forEach>
                                               <tr></tr>
@@ -940,10 +958,10 @@
                                                   <td>${map.caseStatus}</td>
                                                   <td>${map.offenceDesc}</td>
                                                   <td>${map.outcome}</td>
-                                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
+                                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                                   <td>${map.prosecutionOutcome}</td>
-                                                  <td><fmt:formatDate value="${map.createdDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
-                                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
+                                                  <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                                 </tr>
                                               </c:forEach>
                                               <tr></tr>

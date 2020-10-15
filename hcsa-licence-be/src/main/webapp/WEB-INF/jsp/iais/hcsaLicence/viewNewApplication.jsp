@@ -190,10 +190,10 @@
                                 <td>${map.caseStatus}</td>
                                 <td>${map.offenceDesc}</td>
                                 <td>${map.outcome}</td>
-                                <td><fmt:formatDate value="${map.issueDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
+                                <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                 <td>${map.prosecutionOutcome}</td>
-                                <td><fmt:formatDate value="${map.createdDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
-                                <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
+                                <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                               </tr>
                             </c:forEach>
                             <tr></tr>
@@ -227,10 +227,10 @@
                                 <td>${map.caseStatus}</td>
                                 <td>${map.offenceDesc}</td>
                                 <td>${map.outcome}</td>
-                                <td><fmt:formatDate value="${map.issueDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
+                                <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                 <td>${map.prosecutionOutcome}</td>
-                                <td><fmt:formatDate value="${map.createdDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
-                                <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
+                                <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                               </tr>
                             </c:forEach>
                           </table>
@@ -1214,10 +1214,10 @@
                                   <td>${map.caseStatus}</td>
                                   <td>${map.offenceDesc}</td>
                                   <td>${map.outcome}</td>
-                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                   <td>${map.prosecutionOutcome}</td>
-                                  <td><fmt:formatDate value="${map.createdDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
-                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                 </tr>
                               </c:forEach>
                               <tr></tr>
@@ -1252,10 +1252,10 @@
                                   <td>${map.caseStatus}</td>
                                   <td>${map.offenceDesc}</td>
                                   <td>${map.outcome}</td>
-                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                   <td>${map.prosecutionOutcome}</td>
-                                  <td><fmt:formatDate value="${map.createdDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
-                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                 </tr>
                               </c:forEach>
                               <tr></tr>
@@ -1445,10 +1445,10 @@
                                   <td>${map.caseStatus}</td>
                                   <td>${map.offenceDesc}</td>
                                   <td>${map.outcome}</td>
-                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                   <td>${map.prosecutionOutcome}</td>
-                                  <td><fmt:formatDate value="${map.createdDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
-                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                 </tr>
                               </c:forEach>
 
@@ -1481,10 +1481,10 @@
                                   <td>${map.caseStatus}</td>
                                   <td>${map.offenceDesc}</td>
                                   <td>${map.outcome}</td>
-                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                   <td>${map.prosecutionOutcome}</td>
-                                  <td><fmt:formatDate value="${map.createdDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
-                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/mm/yyyy"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                 </tr>
                               </c:forEach>
 

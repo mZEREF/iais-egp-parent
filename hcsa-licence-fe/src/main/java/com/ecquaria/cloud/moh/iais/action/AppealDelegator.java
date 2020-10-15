@@ -115,7 +115,6 @@ public class AppealDelegator {
 
     public void start(BaseProcessClass bpc){
         log.info("start**************start************");
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_APPEAL, AuditTrailConsts.FUNCTION_APPEAL);
         bpc.getSession().removeAttribute("serviceName");
         bpc.getSession().removeAttribute("applicationNo");
         bpc.getSession().removeAttribute("file");

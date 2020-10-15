@@ -206,11 +206,12 @@
           $('#isDelete').val('Y');
       }
 
-
   });
 
 $('#submit').click(function () {
-  uploadFileValidate();
+    if("N" == $('#isDelete').val()){
+        uploadFileValidate();
+    }
   var error = $('#error_litterFile_Show').html();
   if(error == undefined || error == ""){
     SOP.Crud.cfxSubmit("mainForm", "submit","submit","");

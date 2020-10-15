@@ -739,6 +739,8 @@ public class AppealServiceImpl implements AppealService {
             premisesDtos.add(appGrpPremisesDto);
             break;
         }
+        //appealPageDto
+        AppealPageDto appealDto = getAppealPageDto(request);
         List<AppSvcCgoDto> list = IaisCommonUtils.genNewArrayList();
         for (AppGrpPremisesDto every : premisesDtos) {
             AppSvcCgoDto appSvcCgoDto = MiscUtil.transferEntityDto(every, AppSvcCgoDto.class);
@@ -748,6 +750,19 @@ public class AppealServiceImpl implements AppealService {
             applicationDto.setApplicationType(ApplicationConsts.APPLICATION_TYPE_APPEAL);
             applicationDto.setVersion(1);
             if ("rfi".equals(rfi)) {
+                AppPremisesSpecialDocDto appPremisesSpecialDocDto = appealDto.getAppPremisesSpecialDocDto();
+                String grpId = entity1.getAppGrpId();
+                if(appPremisesSpecialDocDto!=null){
+                    List<AppliSpecialDocDto> appliSpecialDocDtos = applicationClient.getAppliSpecialDocDtoByGroupId(grpId).getEntity();
+                    if(!appliSpecialDocDtos.isEmpty()){
+                        AppliSpecialDocDto appliSpecialDocDto1 = appliSpecialDocDtos.get(appliSpecialDocDtos.size() - 1);
+                        if(!appliSpecialDocDto1.getMd5Code().equals(appPremisesSpecialDocDto.getMd5Code())){
+                            appPremisesSpecialDocDto.setVersion(appliSpecialDocDto1.getVersion()+1);
+                        }else {
+                            appPremisesSpecialDocDto.setVersion(appliSpecialDocDto1.getVersion());
+                        }
+                    }
+                }
                 applicationDto.setVersion(entity1.getVersion() + 1);
                 //if not need new group
                 applicationGroupDto.setId(entity1.getAppGrpId());
@@ -790,8 +805,6 @@ public class AppealServiceImpl implements AppealService {
 
             applicationDtoListlist.add(applicationDto);
         }
-        //appealPageDto
-        AppealPageDto appealDto = getAppealPageDto(request);
         String reasonSelect = appealDto.getAppealReason();
 
         List<AppSvcCgoDto> appSvcCgoDtos = null;
@@ -804,12 +817,6 @@ public class AppealServiceImpl implements AppealService {
         appealDto.setAppId(licenceDto.getId());
         appealDto.setApplicationDto(applicationDtoListlist);
         appealDto.setAppealType(ApplicationConsts.APPEAL_TYPE_LICENCE);
-        if (entity1 != null) {
-            String status = entity1.getStatus();
-            if (ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)) {
-                appealDto.setAppealType("APPEAL006");
-            }
-        }
 
 
         if (appSvcCgoDtos != null && !appSvcCgoDtos.isEmpty()) {
@@ -825,7 +832,6 @@ public class AppealServiceImpl implements AppealService {
         request.setAttribute("groupId", groupId);
         request.setAttribute("draftStatus", AppConsts.COMMON_STATUS_IACTIVE);
         saveData(request);
-        String newApplicationNo = arrayToString(applicationDtoListlist,appNo);
         request.setAttribute("newApplicationNo", appNo);
         try {
             String svcName = licenceDto.getSvcName();
@@ -931,13 +937,24 @@ public class AppealServiceImpl implements AppealService {
         appealDto.setAppealType(ApplicationConsts.APPEAL_TYPE_APPLICAITON);
         //if infomation
         if ("rfi".equals(rfi)) {
+            AppPremisesSpecialDocDto appPremisesSpecialDocDto = appealDto.getAppPremisesSpecialDocDto();
             ApplicationDto rfiApplication = (ApplicationDto) ParamUtil.getSessionAttr(request,"rfiApplication");
+            if(appPremisesSpecialDocDto!=null){
+                List<AppliSpecialDocDto> appliSpecialDocDtos = applicationClient.getAppliSpecialDocDtoByGroupId(rfiApplication.getAppGrpId()).getEntity();
+                if(!appliSpecialDocDtos.isEmpty()){
+                    AppliSpecialDocDto appliSpecialDocDto1 = appliSpecialDocDtos.get(appliSpecialDocDtos.size() - 1);
+                    if(!appliSpecialDocDto1.getMd5Code().equals(appPremisesSpecialDocDto.getMd5Code())){
+                        appPremisesSpecialDocDto.setVersion(appliSpecialDocDto1.getVersion()+1);
+                    }else {
+                        appPremisesSpecialDocDto.setVersion(appliSpecialDocDto1.getVersion());
+                    }
+                }
+            }
             applicationDto1.setVersion(rfiApplication.getVersion() + 1);
             //if need new group
             applicationGroupDto.setId(rfiApplication.getAppGrpId());
             applicationGroupDto.setGroupNo(rfiApplication.getApplicationNo().substring(0,rfiApplication.getApplicationNo().lastIndexOf('-')));
             applicationDto1.setApplicationNo(rfiApplication.getApplicationNo());
-            appealDto.setAppealType("APPEAL006");
             applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
             applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
             s = rfiApplication.getApplicationNo();
@@ -947,6 +964,7 @@ public class AppealServiceImpl implements AppealService {
             String gatewayUrl = env.getProperty("iais.inter.gateway.url");
             List<AppPremisesRoutingHistoryDto> hisList;
             Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
+            params.put("appNo", appNo);
             hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
                     MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
@@ -991,11 +1009,18 @@ public class AppealServiceImpl implements AppealService {
     private void requetForInformationGetMessage(HttpServletRequest request, AppPremiseMiscDto appPremiseMiscDto) {
         String reason = appPremiseMiscDto.getReason();
         String appPremCorreId = appPremiseMiscDto.getAppPremCorreId();
-        AppPremisesSpecialDocDto appPremisesSpecialDocDto = applicationClient.getAppPremisesSpecialDocDtoByCorreId(appPremCorreId).getEntity();
-        if (appPremisesSpecialDocDto != null) {
-            String docName = appPremisesSpecialDocDto.getDocName();
+        AppliSpecialDocDto appliSpecialDocDto = applicationClient.getAppliSpecialDocDtoByCorrId(appPremCorreId).getEntity();
+        AppPremisesSpecialDocDto appPremisesSpecialDocDto =new AppPremisesSpecialDocDto();
+        appPremisesSpecialDocDto.setDocSize(Integer.parseInt(appliSpecialDocDto.getDocSize()));
+        appPremisesSpecialDocDto.setFileRepoId(appliSpecialDocDto.getFileRepoId());
+        appPremisesSpecialDocDto.setMd5Code(appliSpecialDocDto.getMd5Code());
+        appPremisesSpecialDocDto.setDocName(appliSpecialDocDto.getDocName());
+        appPremisesSpecialDocDto.setVersion(appliSpecialDocDto.getVersion());
+        appPremisesSpecialDocDto.setSubmitBy(appliSpecialDocDto.getSubmitBy());
+        if (appliSpecialDocDto != null) {
+            String docName = appliSpecialDocDto.getDocName();
             request.getSession().setAttribute("filename", docName);
-            request.getSession().setAttribute("fileReportIdForAppeal", appPremisesSpecialDocDto.getFileRepoId());
+            request.getSession().setAttribute("fileReportIdForAppeal", appliSpecialDocDto.getFileRepoId());
             request.getSession().setAttribute("appPremisesSpecialDocDto", appPremisesSpecialDocDto);
         }
         request.setAttribute("appPremiseMiscDto", appPremiseMiscDto);
@@ -1058,6 +1083,7 @@ public class AppealServiceImpl implements AppealService {
                 appPremisesSpecialDocDto.setDocName(filename);
                 appPremisesSpecialDocDto.setMd5Code(s);
                 appPremisesSpecialDocDto.setFileRepoId(fileToRepo);
+                appPremisesSpecialDocDto.setVersion(1);
                 if (loginContext != null) {
                     appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
                 } else {
