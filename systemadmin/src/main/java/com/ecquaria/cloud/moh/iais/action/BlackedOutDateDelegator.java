@@ -228,12 +228,10 @@ public class BlackedOutDateDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         SearchParam blackQuery = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 
-        boolean anySelect = StringUtils.isEmpty(startDate) & StringUtils.isEmpty(endDate);
-        boolean mandatory = !StringUtils.isEmpty(startDate) && !StringUtils.isEmpty(endDate);
+        boolean any = StringUtils.isEmpty(startDate) == StringUtils.isEmpty(endDate);
         ParamUtil.setRequestAttr(request, "startDate", startDate);
         ParamUtil.setRequestAttr(request, "endDate", endDate);
-        if (!anySelect){
-
+        if (!any){
             if (StringUtils.isEmpty(startDate)){
                 errorMap.put("inspectionStartDate",MessageUtil.replaceMessage("GENERAL_ERR0006","Blacked Out Date Start","field"));
             }
@@ -242,8 +240,7 @@ public class BlackedOutDateDelegator {
                 errorMap.put("inspectionEndDate",MessageUtil.replaceMessage("GENERAL_ERR0006","Blacked Out Date End","field"));
             }
 
-            if (mandatory){
-
+           if (IaisCommonUtils.isEmpty(errorMap)){
                Date fromDate =  IaisEGPHelper.parseToDate(startDate);
                Date toDate =  IaisEGPHelper.parseToDate(endDate);
 
@@ -255,7 +252,7 @@ public class BlackedOutDateDelegator {
                    String convertEndDate = Formatter.formatDateTime(toDate, SystemAdminBaseConstants.DATE_FORMAT);
                    blackQuery.addFilter("endDate", convertEndDate, true);
                }
-            }
+           }
         }
 
         if (!StringUtils.isEmpty(groupName)){
