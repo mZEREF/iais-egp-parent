@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.MapFormat;
@@ -21,8 +22,6 @@ import java.util.Map;
  */
 @Slf4j
 public class MessageUtil {
-    private static final String CACHE_NAME_MSG                    = "iaisMsgCache";
-
     private MessageUtil() {
         throw new IllegalStateException("Utility class");
     }
@@ -34,7 +33,7 @@ public class MessageUtil {
         }
 
         map.forEach((k, v) -> {
-            SpringContextHelper.getContext().getBean(RedisCacheHelper.class).set(CACHE_NAME_MSG,
+            SpringContextHelper.getContext().getBean(RedisCacheHelper.class).set(RedisNameSpaceConstant.CACHE_NAME_MSG,
                     k, v, RedisCacheHelper.NOT_EXPIRE);
         });
 
@@ -42,7 +41,7 @@ public class MessageUtil {
     }
 
     public static String getMessageDesc(String key) {
-        String msg = SpringContextHelper.getContext().getBean(RedisCacheHelper.class).get(CACHE_NAME_MSG, key);
+        String msg = SpringContextHelper.getContext().getBean(RedisCacheHelper.class).get(RedisNameSpaceConstant.CACHE_NAME_MSG, key);
         if (StringUtil.isEmpty(msg)) {
             msg = key;
         }

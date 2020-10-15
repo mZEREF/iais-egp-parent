@@ -1,15 +1,17 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaServiceClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
+
+import java.util.List;
 
 /**
  * @author: yichen
@@ -19,9 +21,6 @@ import org.apache.http.HttpStatus;
 
 @Slf4j
 public final class HcsaServiceCacheHelper {
-	private static final String CACHE_NAME_HCSA_SERVICE                = "iaisHcsaServiceCache";
-	private static final String KEY_NAME_HCSA_SERVICE_LIST             = "activeServiceList";
-
 	private HcsaServiceCacheHelper(){throw new IllegalStateException("Util class");}
 
 	public static String getServiceNameById(String id){
@@ -46,13 +45,13 @@ public final class HcsaServiceCacheHelper {
 
 	public static HcsaServiceDto getServiceById(String id) {
 		RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
-		HcsaServiceDto hcsaServiceDto = redisCacheHelper.get(CACHE_NAME_HCSA_SERVICE, id);
+		HcsaServiceDto hcsaServiceDto = redisCacheHelper.get(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE, id);
 
 		if (hcsaServiceDto == null){
 			HcsaServiceClient serviceClient = SpringContextHelper.getContext().getBean(HcsaServiceClient.class);
 			hcsaServiceDto = serviceClient.getHcsaServiceDtoByServiceId(id).getEntity();
 			if (hcsaServiceDto != null) {
-				redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, hcsaServiceDto.getId(),
+				redisCacheHelper.set(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE, hcsaServiceDto.getId(),
 						hcsaServiceDto, RedisCacheHelper.NOT_EXPIRE);
 			}
 		}
@@ -100,8 +99,8 @@ public final class HcsaServiceCacheHelper {
 			if (status == HttpStatus.SC_OK){
 				List<HcsaServiceDto> serviceList = result.getEntity();
 				RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
-				redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, KEY_NAME_HCSA_SERVICE_LIST, serviceList);
-				serviceList.forEach(i -> redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, i.getId(),
+				redisCacheHelper.set(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE, RedisNameSpaceConstant.KEY_NAME_HCSA_SERVICE_LIST, serviceList);
+				serviceList.forEach(i -> redisCacheHelper.set(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE, i.getId(),
 						i, RedisCacheHelper.NOT_EXPIRE));
 			}
 		}
@@ -109,12 +108,12 @@ public final class HcsaServiceCacheHelper {
 
 	public static List<HcsaServiceDto> receiveAllHcsaService(){
 		RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
-		List<HcsaServiceDto> list  = redisCacheHelper.get(CACHE_NAME_HCSA_SERVICE, KEY_NAME_HCSA_SERVICE_LIST);
+		List<HcsaServiceDto> list  = redisCacheHelper.get(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE, RedisNameSpaceConstant.KEY_NAME_HCSA_SERVICE_LIST);
 		if(!IaisCommonUtils.isEmpty(list)){
 			return list;
 		}else {
 			receiveServiceMapping();
-			return redisCacheHelper.get(CACHE_NAME_HCSA_SERVICE, KEY_NAME_HCSA_SERVICE_LIST);
+			return redisCacheHelper.get(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE, RedisNameSpaceConstant.KEY_NAME_HCSA_SERVICE_LIST);
 		}
 	}
 
