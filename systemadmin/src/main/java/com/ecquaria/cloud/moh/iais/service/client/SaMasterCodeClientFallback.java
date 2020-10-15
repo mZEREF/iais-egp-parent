@@ -8,9 +8,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeToExcelDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
-
 import java.util.List;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * @Author: Hc
@@ -149,6 +149,14 @@ public class SaMasterCodeClientFallback implements SaMasterCodeClient{
 
     @Override
     public FeignResponseEntity<MasterCodeDto> inactiveMasterCodeByKey(String masterCodeKey) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Void> activeMasterCode(@RequestBody AuditTrailDto auditTrailDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
