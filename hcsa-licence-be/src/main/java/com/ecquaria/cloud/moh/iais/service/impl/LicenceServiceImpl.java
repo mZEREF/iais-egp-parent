@@ -276,7 +276,7 @@ public class LicenceServiceImpl implements LicenceService {
                         templateContent.put("Applicant", licenseeDto.getName());
                         templateContent.put("ServiceName", MasterCodeUtil.getCodeDesc(licenseeIndividualDto.getFirstServiceCode()));
                         templateContent.put("LicenceNo", licenceDto.getLicenceNo());
-                        templateContent.put("GraceDate", licenceDto.getExpiryDate());
+                        templateContent.put("GraceDate", Formatter.formatDate(licenceDto.getExpiryDate()));
                         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
                         templateContent.put("newSystem", loginUrl);
                         templateContent.put("emailAddress", systemAddressOne);
