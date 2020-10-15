@@ -95,6 +95,7 @@ public class RequestForChangeDelegator {
      */
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
+        HcsaServiceCacheHelper.receiveServiceMapping();
         String licenceId = ParamUtil.getMaskedString(bpc.request, "licenceId");
         ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, null);
         ParamUtil.setSessionAttr(bpc.request,"SvcName",null);
@@ -606,7 +607,7 @@ public class RequestForChangeDelegator {
                 AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());
                 appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                 String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
-                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
+                HcsaServiceDto hcsaServiceDto = serviceConfigService.getActiveHcsaServiceDtoByName(svcName);
                 List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
                 hcsaServiceDtoList.add(hcsaServiceDto);
                 ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);

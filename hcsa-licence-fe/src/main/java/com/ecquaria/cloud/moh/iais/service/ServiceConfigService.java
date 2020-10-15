@@ -51,4 +51,6 @@ public interface ServiceConfigService {
     List<SelectOption> getPubHolidaySelect();
     HcsaServiceDto getHcsaServiceDtoById(String id);
     void paymentUpDateByGrpNo(ApplicationGroupDto appGrp);
+
+    HcsaServiceDto getActiveHcsaServiceDtoByName(String svcName);
 }

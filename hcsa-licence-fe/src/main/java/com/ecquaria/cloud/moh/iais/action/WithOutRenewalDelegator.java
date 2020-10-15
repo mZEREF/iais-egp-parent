@@ -876,8 +876,8 @@ public class WithOutRenewalDelegator {
         appSubmissionDtos1.addAll(noAutoAppSubmissionDtos);
         AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         if(!autoAppSubmissionDtos.isEmpty() || !noAutoAppSubmissionDtos.isEmpty()){
-            for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
-                AuditTrailHelper.auditFunctionWithLicNo(AuditTrailConsts.MODULE_RENEW,AuditTrailConsts.MODULE_RENEW,appSubmissionDto.getLicenceNo());
+            if(appSubmissionDtos.size()==1){
+                AuditTrailHelper.auditFunctionWithLicNo(AuditTrailConsts.MODULE_RENEW,AuditTrailConsts.MODULE_RENEW,appSubmissionDtos.get(0).getLicenceNo());
             }
         }
         if (!autoAppSubmissionDtos.isEmpty()) {

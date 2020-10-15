@@ -279,7 +279,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                    File curFile = MiscUtil.generateFile(sharedOutPath, s + ".zip");
                    boolean b = file.renameTo(curFile);
                    if(b){
-                       log.info(StringUtil.changeForLog("----------- new zip file name is"+outFolder+File.separator+s+".zip"));
+                       log.info(StringUtil.changeForLog("----------- new zip file name is"+outFolder+s+".zip"));
                    }
                    String string = eicGateway(s + AppServicesConsts.ZIP_NAME, s + AppServicesConsts.ZIP_NAME, groupId);
            /*        String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,AppServicesConsts.BACKUPS + File.separator+s+AppServicesConsts.ZIP_NAME,groupId);*/
