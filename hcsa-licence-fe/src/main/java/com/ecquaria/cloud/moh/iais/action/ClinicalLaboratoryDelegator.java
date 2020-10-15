@@ -430,12 +430,13 @@ public class ClinicalLaboratoryDelegator {
             List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
             if (appSvcDocDtos != null && !appSvcDocDtos.isEmpty()) {
                 for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
-                    String premVal = appSvcDocDto.getPremisesVal();
+                    /*String premVal = appSvcDocDto.getPremisesVal();
                     if(StringUtil.isEmpty(premVal)){
                         reloadSvcDo.put(appSvcDocDto.getSvcDocId(), appSvcDocDto);
                     }else{
                         reloadSvcDo.put("prem" + appSvcDocDto.getSvcDocId() + premVal, appSvcDocDto);
-                    }
+                    }*/
+                    reloadSvcDo.put(appSvcDocDto.getPrimaryDocReloadName(), appSvcDocDto);
                 }
             }
         }
@@ -3017,28 +3018,41 @@ public class ClinicalLaboratoryDelegator {
             return version;
         }
         if(isRfi){
+            boolean canFound = false;
+            log.info(StringUtil.changeForLog("rfi appNo:"+appNo));
             for(AppSvcDocDto appSvcDocDto:oldDocs){
                 Integer oldVersion = appSvcDocDto.getVersion();
                 if(configDocId.equals(appSvcDocDto.getSvcDocId())){
+                    canFound = true;
                     if(md5Code.equals(appSvcDocDto.getMd5Code())){
                         if(!StringUtil.isEmpty(oldVersion)){
                             version = oldVersion;
                         }
                     }else{
-                        if(StringUtil.isEmpty(appNo)){
-                            AppSvcDocDto maxVersionDocDto = appSubmissionService.getMaxVersionSvcComDoc(appGrpId,configDocId);
-                            if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
-                                version = maxVersionDocDto.getVersion() + 1;
-                            }
-                        }else{
-                            AppSvcDocDto maxVersionDocDto = appSubmissionService.getMaxVersionSvcSpecDoc(appGrpId,configDocId,appNo);
-                            if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
-                                version = maxVersionDocDto.getVersion() + 1;
-                            }
-                        }
+                        version = getVersion(appGrpId,configDocId,appNo);
                     }
                     break;
                 }
+            }
+            if(!canFound){
+                //last doc is null
+                version = getVersion(appGrpId,configDocId,appNo);
+            }
+        }
+        return version;
+    }
+
+    private Integer getVersion(String appGrpId,String configDocId,String appNo){
+        Integer version = 1;
+        if(StringUtil.isEmpty(appNo)){
+            AppSvcDocDto maxVersionDocDto = appSubmissionService.getMaxVersionSvcComDoc(appGrpId,configDocId);
+            if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
+                version = maxVersionDocDto.getVersion() + 1;
+            }
+        }else{
+            AppSvcDocDto maxVersionDocDto = appSubmissionService.getMaxVersionSvcSpecDoc(appGrpId,configDocId,appNo);
+            if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
+                version = maxVersionDocDto.getVersion() + 1;
             }
         }
         return version;

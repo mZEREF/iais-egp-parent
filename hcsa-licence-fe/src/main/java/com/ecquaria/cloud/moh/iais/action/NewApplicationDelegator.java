@@ -5575,30 +5575,42 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("isRfi:"+isRfi));
         if(isRfi){
             log.info(StringUtil.changeForLog("rfi appNo:"+appNo));
+            boolean canFound = false;
             for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:oldDocs){
                 Integer oldVersion = appGrpPrimaryDocDto.getVersion();
                 if(configDocId.equals(appGrpPrimaryDocDto.getSvcComDocId())){
+                    canFound = true;
                     if(md5Code.equals(appGrpPrimaryDocDto.getMd5Code())){
                         if(!StringUtil.isEmpty(oldVersion)){
                             version = oldVersion;
                         }
                     }else{
-                        if(StringUtil.isEmpty(appNo)){
-                            //comm
-                            AppGrpPrimaryDocDto maxVersionDocDto = appSubmissionService.getMaxVersionPrimaryComDoc(appGrpId,configDocId);
-                            if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
-                                version = maxVersionDocDto.getVersion() + 1;
-                            }
-                        }else{
-                            //spec
-                            AppGrpPrimaryDocDto maxVersionDocDto = appSubmissionService.getMaxVersionPrimarySpecDoc(appGrpId,configDocId,appNo);
-                            if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
-                                version = maxVersionDocDto.getVersion() + 1;
-                            }
-                        }
+                        version = getVersion(appGrpId,configDocId,appNo);
                     }
                     break;
                 }
+            }
+            if(!canFound){
+                //last doc is null
+                version = getVersion(appGrpId,configDocId,appNo);
+            }
+        }
+        return version;
+    }
+
+    private Integer getVersion(String appGrpId,String configDocId,String appNo){
+        Integer version = 1;
+        if(StringUtil.isEmpty(appNo)){
+            //comm
+            AppGrpPrimaryDocDto maxVersionDocDto = appSubmissionService.getMaxVersionPrimaryComDoc(appGrpId,configDocId);
+            if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
+                version = maxVersionDocDto.getVersion() + 1;
+            }
+        }else{
+            //spec
+            AppGrpPrimaryDocDto maxVersionDocDto = appSubmissionService.getMaxVersionPrimarySpecDoc(appGrpId,configDocId,appNo);
+            if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
+                version = maxVersionDocDto.getVersion() + 1;
             }
         }
         return version;

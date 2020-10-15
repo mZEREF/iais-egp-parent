@@ -1752,6 +1752,10 @@ public class NewApplicationHelper {
                     String docConfigId = appSvcDocDto.getSvcDocId();
                     if(!StringUtil.isEmpty(docConfigId) && docConfigId.equals(hcsaSvcDocConfigDto.getId())){
                         appSvcDocDto.setUpFileName(hcsaSvcDocConfigDto.getDocTitle());
+                        if(AppConsts.NO.equals(hcsaSvcDocConfigDto.getDupForPrem())){
+                            appSvcDocDto.setPremisesVal("");
+                            appSvcDocDto.setPremisesType("");
+                        }
                         break;
                     }
                 }
