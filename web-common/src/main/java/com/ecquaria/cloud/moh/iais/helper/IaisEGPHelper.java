@@ -228,22 +228,38 @@ public final class IaisEGPHelper extends EGPHelper {
         log.info("start set up audit trail log info..................");
         User user = SessionManager.getInstance(request).getCurrentUser();
         HttpSession session = request.getSession();
-        if (user != null) {
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            if (loginContext != null) {
-                if (AppConsts.USER_DOMAIN_INTERNET.equals(loginContext.getUserDomain())) {
-                    dto.setNricNumber(loginContext.getNricNum());
-                    dto.setUenId(loginContext.getUenNo());
-                    dto.setMohUserId(loginContext.getNricNum());
-                }else if (AppConsts.USER_DOMAIN_INTRANET.equals(loginContext.getUserDomain())){
-                    dto.setMohUserId(loginContext.getLoginId());
-                    dto.setLoginType(AuditTrailConsts.LOGIN_TYPE_MOH);
-                }
-
-                dto.setMohUserGuid(loginContext.getUserId());
-                dto.setOperationType(AppConsts.USER_DOMAIN_INTRANET.equals(loginContext.getUserDomain()) ?
-                        AuditTrailConsts.OPERATION_TYPE_INTRANET : AuditTrailConsts.OPERATION_TYPE_INTERNET);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        if (user != null && loginContext != null) {
+            String nricNum = loginContext.getNricNum();
+            String uenNo = loginContext.getUenNo();
+            String mohUserId = loginContext.getLoginId();
+            String userGuid = loginContext.getUserId();
+            int loginType, operationType;
+            if (AppConsts.USER_DOMAIN_INTERNET.equals(loginContext.getUserDomain())) {
+                dto.setNricNumber(nricNum);
+                dto.setUenId(uenNo);
+                dto.setMohUserId(nricNum);
+                operationType = AuditTrailConsts.OPERATION_TYPE_INTERNET;
+                loginType = StringUtils.isEmpty(uenNo) ? AuditTrailConsts.LOGIN_TYPE_SING_PASS : AuditTrailConsts.LOGIN_TYPE_CORP_PASS;
+            }else if (AppConsts.USER_DOMAIN_INTRANET.equals(loginContext.getUserDomain())){
+                dto.setMohUserId(mohUserId);
+                loginType = AuditTrailConsts.LOGIN_TYPE_MOH;
+                operationType = AuditTrailConsts.OPERATION_TYPE_INTRANET;
+            }else {
+                loginType = AuditTrailConsts.LOGIN_TYPE_EGP;
+                operationType = AuditTrailConsts.OPERATION_TYPE_BATCH_JOB;
             }
+
+            log.info(StringUtil.changeForLog("====>>>>>>nricNum " + nricNum));
+            log.info(StringUtil.changeForLog("====>>>>>>uenNo " + uenNo));
+            log.info(StringUtil.changeForLog("====>>>>>>mohUserId " + mohUserId));
+            log.info(StringUtil.changeForLog("====>>>>>>userGuid " + userGuid));
+            log.info(StringUtil.changeForLog("====>>>>>>loginType " + loginType));
+            log.info(StringUtil.changeForLog("====>>>>>>operationType " + operationType));
+
+            dto.setMohUserGuid(userGuid);
+            dto.setLoginType(loginType);
+            dto.setOperationType(operationType);
             dto.setUserDomain(SessionManager.getInstance(request).getCurrentUserDomain());
         }
 
