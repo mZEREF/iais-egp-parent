@@ -369,11 +369,10 @@
                                                                             </div>
                                                                             <div class="col-sm-5 col-md-7">
                                                                                 <div class="">
-                                                                                    <iais:input id="prgNo"
-                                                                                                maxLength="20"
-                                                                                                type="text"
-                                                                                                name="professionRegoNo"
-                                                                                                value="${currentCgo.profRegNo}"></iais:input>
+                                                                                    <input maxLength="20"
+                                                                                           type="text"
+                                                                                           name="professionRegoNo"
+                                                                                           value="${currentCgo.profRegNo}" onblur="aaa(this)">
                                                                                     <span class="error-msg"
                                                                                           name="iaisErrorMsg"
                                                                                           id="error_professionRegoNo${status.index}"></span>
@@ -406,7 +405,6 @@
                                                                                             </c:when>
                                                                                             <c:otherwise>
                                                                                                 <iais:select
-                                                                                                        id="specialtyID"
                                                                                                         cssClass="specialty"
                                                                                                         name="specialty"
                                                                                                         options="SpecialtySelectList"
@@ -459,8 +457,7 @@
                                                                             </div>
                                                                             <div class="col-sm-5 col-md-7">
                                                                                 <div class="">
-                                                                                    <iais:input id="qualification"
-                                                                                                maxLength="100"
+                                                                                    <iais:input maxLength="100"
                                                                                                 type="text"
                                                                                                 name="qualification"
                                                                                                 value="${currentCgo.subSpeciality}"></iais:input>
@@ -589,7 +586,6 @@
         $('select.assignSel').trigger('change');
 
         // reLoadChange();
-
         showSpecialty();
 
         removeCgo();
@@ -637,7 +633,7 @@
 
         }
         doEdit();
-
+        ajac();
         //init end
         init = 1;
     });
@@ -745,8 +741,8 @@
     });
 
 
-    $('#prgNo').blur(function () {
-        var no = $('#prgNo').val();
+    function aaa(obj){
+        var no = $("input[name='professionRegoNo']").val();
         var jsonData = {
             'prgNo': no
         };
@@ -765,25 +761,48 @@
             'error': function () {
             }
         });
-    });
+    }
+
+
+    var ajac = function () {
+        var no = $("input[name='professionRegoNo']").val();
+        var jsonData = {
+            'prgNo': no
+        };
+        $.ajax({
+            'url': '${pageContext.request.contextPath}/prg-input-info',
+            'dataType': 'json',
+            'data': jsonData,
+            'type': 'GET',
+            'success': function (data) {
+                if (data.name == null) {
+                    notLoading();
+                    return;
+                }
+                loading(data);
+            },
+            'error': function () {
+            }
+        });
+    }
 
     const loading = function (data) {
         const qualification = data.qualification[0];
         const specialty = data.specialty[0];
-        $("#specialtyID").css('border-color', '#ededed');
-        $("#specialtyID").css('color', '#999');
+        $("input[name='specialty']").css('border-color', '#ededed');
+        $("input[name='specialty']").css('color', '#999');
         $(".specialty").addClass('disabled');
         if (specialty == 'Diagnostic Radiology') {
-            $("#specialtyID option[text =specialty]").val("selected", "selected");
-            $("#specialtyID").val(specialty);
+            $("input[name='specialty'] option[text =specialty]").val("selected", "selected");
+            $("input[name='specialty']").val(specialty);
             $(".specialtyDiv .current").text(specialty);
         } else if (specialty == 'Nuclear Medicine') {
-            $("#specialtyID option[text =specialty]").val("selected", "selected");
-            $("#specialtyID").val(specialty);
+            $("input[name='specialty'] option[text =specialty]").val("selected", "selected");
+            $("input[name='specialty']").val(specialty);
             $(".specialtyDiv .current").text(specialty);
         } else {
-            $("#specialtyID option[text ='Others']").val("selected", "selected");
-            $("#specialtyID").val("other");
+            $("input[name='specialty'] option[text =specialty]").val("selected", "selected");
+            $("input[name='specialty']").val(specialty);
             $(".specialtyDiv .current").text("Others");
             $("input[name='specialtyOther']").removeClass('hidden');
             $("input[name='specialtyOther']").val(specialty);
@@ -791,27 +810,27 @@
             $("input[name='specialtyOther']").css('border-color', '#ededed');
             $("input[name='specialtyOther']").css('color', '#999');
         }
-        $("#qualification").val(qualification);
-        $("#qualification").prop('disabled', true);
-        $("#qualification").css('border-color', '#ededed');
-        $("#qualification").css('color', '#999');
-        showSpecialty();
+
+        $("input[name='qualification']").val(qualification);
+        $("input[name='qualification']").prop('disabled', true);
+        $("input[name='qualification']").css('border-color', '#ededed');
+        $("input[name='qualification']").css('color', '#999');
     };
 
     const notLoading = function () {
         $(".specialty").removeClass('disabled');
-        $("#specialtyID option[text ='Please Select']").val("selected", "selected");
-        $("#specialtyID").val("-1");
+        $("input[name='specialty']  option[text ='Please Select']").val("selected", "selected");
+        $(".specialtyDiv .current").text("-1");
         $(".specialtyDiv .current").text("Please Select");
         $("input[name='specialtyOther']").addClass('hidden');
         $("input[name='specialtyOther']").prop('disabled', false);
-        $("#qualification").prop('disabled', false);
-        $("#qualification").css('border-color', null);
-        $("#qualification").css('color', null);
-        $("input[name='specialtyOther']").css('border-color', null);
-        $("input[name='specialtyOther']").css('color', null);
-        $("input[name='specialtyOther']").val("");
-        $("#qualification").val("");
+        $("input[name='specialtyOther']").val('');
+        $("input[name='specialtyOther']").css('border-color', '');
+        $("input[name='specialtyOther']").css('color', '');
+        $("input[name='qualification']").prop('disabled', false);
+        $("input[name='qualification']").css('border-color', '');
+        $("input[name='qualification']").css('color', '');
+        $("input[name='qualification']").val("");
     };
 
 

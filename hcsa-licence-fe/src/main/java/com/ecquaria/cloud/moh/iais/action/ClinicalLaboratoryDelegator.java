@@ -764,14 +764,13 @@ public class ClinicalLaboratoryDelegator {
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
             String crud_action_additional = bpc.request.getParameter("nextStep");
             String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
-            List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
+
             Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP);
             if ("next".equals(crud_action_additional)) {
-                List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST);
+                //List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST);
                 Map<String,AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.LICPERSONSELECTMAP);
-                errList = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoList, licPersonMap, svcCode);
-                for(int i=0;i<appSvcCgoList.size();i++ ){
-                    AppSvcCgoDto appSvcCgoDto = appSvcCgoList.get(i);
+                for(int i=0;i<appSvcCgoDtoList.size();i++ ){
+                    AppSvcCgoDto appSvcCgoDto = appSvcCgoDtoList.get(i);
                     String profRegNo = appSvcCgoDto.getProfRegNo();
                     if(!StringUtil.isEmpty(profRegNo)){
                         List<String> prgNos = IaisCommonUtils.genNewArrayList();
@@ -817,6 +816,8 @@ public class ClinicalLaboratoryDelegator {
                         }
                     }
                 }
+                List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
+                errList = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap, svcCode);
                 if (appSubmissionDto.isNeedEditController()) {
                     /*Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_GOVERNANCE_OFFICERS);
@@ -846,6 +847,7 @@ public class ClinicalLaboratoryDelegator {
                 bpc.request.getSession().setAttribute("coMap", coMap);
             }else{
                 //sync person dropdown and submisson dto
+                List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
                 personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcCgoDtos,svcCode);
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
             }
@@ -1442,6 +1444,33 @@ public class ClinicalLaboratoryDelegator {
             String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
             if (!StringUtil.isEmpty(nextStep)) {
                 doValidatetionServicePerson(errorMap, appSvcPersonnelDtos, currentSvcCod);
+                for (int i = 0; i < appSvcPersonnelDtos.size(); i++) {
+                    AppSvcPersonnelDto appSvcPersonnelDto = appSvcPersonnelDtos.get(i);
+                    String profRegNo = appSvcPersonnelDto.getProfRegNo();
+                    if(!StringUtil.isEmpty(profRegNo)){
+                        List<String> prgNos = IaisCommonUtils.genNewArrayList();
+                        prgNos.add(profRegNo);
+                        ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
+                        professionalParameterDto.setRegNo(prgNos);
+                        professionalParameterDto.setClientId("22222");
+                        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                        String format = simpleDateFormat.format(new Date());
+                        professionalParameterDto.setTimestamp(format);
+                        professionalParameterDto.setSignature("2222");
+                        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                        List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
+                                signature2.date(), signature2.authorization()).getEntity();
+                        String name = professionalResponseDtos.get(0).getName();
+                        if(StringUtil.isEmpty(name)){
+                            errorMap.put("regnNo" + i,"Professional Regn No. is not correct.");
+//                            appSvcCgoDto.setSubSpeciality(null);
+//                            appSvcCgoDto.setSpeciality(null);
+                        }else {
+                            appSvcPersonnelDto.setName(name);
+                        }
+                    }
+                }
                 if (appSubmissionDto.isNeedEditController()) {
                     Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL);

@@ -179,7 +179,7 @@
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-7">
-                                      <iais:input maxLength="20" type="text" name="regnNo"  value="${appSvcPersonnelDto.profRegNo}"></iais:input>
+                                      <input maxLength="20" type="text" name="regnNo"  value="${appSvcPersonnelDto.profRegNo}" onblur="aaa(this)">
                                       <span class="error-msg" name="iaisErrorMsg" id="error_regnNo${status.index}"></span>
                                     </div>
                                   </div>
@@ -251,7 +251,7 @@
 <script>
     var init = 0;
   $(document).ready(function () {
-
+    aaa();
       pageController('');
 
       <%--if(${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && !isClickEdit}){--%>
@@ -440,5 +440,41 @@ var spRemove = function(){
     });
 }
 
+    function aaa() {
+      var no = $("input[name='regnNo']").val();
+      var jsonData = {
+        'prgNo': no
+      };
+      $.ajax({
+        'url': '${pageContext.request.contextPath}/prg-input-info',
+        'dataType': 'json',
+        'data': jsonData,
+        'type': 'GET',
+        'success': function (data) {
+          if (data.name == null) {
+            notLoadingSp();
+            return;
+          }
+          loadingSp(data);
+        },
+        'error': function () {
+        }
+      });
+
+    }
+
+    function loadingSp(data) {
+      const name = data.name;
+      $("input[name='name']").val(name);
+      $("input[name='name']").prop('readonly', true);
+      $("input[name='name']").css('border-color', '#ededed');
+      $("input[name='name']").css('color', '#999');
+    }
+
+    function notLoadingSp() {
+      $("input[name='name']").prop('readonly', false);
+      $("input[name='name']").css('border-color', '');
+      $("input[name='name']").css('color', '');
+    }
 
 </script>
