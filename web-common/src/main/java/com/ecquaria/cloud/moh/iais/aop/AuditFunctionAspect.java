@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -136,7 +137,7 @@ public class AuditFunctionAspect {
     }
 
     private void callRestApi(AuditTrailDto dto) {
-        IaisEGPHelper.callSaveAuditTrail(dto);
+        AuditTrailHelper.callSaveAuditTrail(dto);
         dto.setViewParams(null);
     }
 }

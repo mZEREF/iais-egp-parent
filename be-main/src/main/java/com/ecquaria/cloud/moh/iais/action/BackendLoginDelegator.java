@@ -9,15 +9,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.jwt.JwtEncoder;
 import com.ecquaria.cloud.moh.iais.common.jwt.JwtVerify;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
-import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -33,7 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -126,7 +123,7 @@ public class BackendLoginDelegator {
         auditTrailDto.setFunctionName("Intranet Login");
         auditTrailDto.setLoginTime(new Date());
         IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
-        IaisEGPHelper.callSaveAuditTrail(auditTrailDto);
+        AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
     }
 
     private Map<String, String> validate(HttpServletRequest request, String userId) {
@@ -145,7 +142,7 @@ public class BackendLoginDelegator {
             auditTrailDto.setLoginTime(new Date());
 
             IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
-            IaisEGPHelper.callSaveAuditTrail(auditTrailDto);
+            AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
             // End Audit Trail -- End
             errMap.put("login","LOGIN_ERR001");
         }

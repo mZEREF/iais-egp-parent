@@ -233,10 +233,12 @@ public class MohIntranetUserDelegator {
 
         IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
 
-        IaisEGPHelper.callSaveAuditTrail(auditTrailDto);
+        AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
 
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
     }
+
+
 
     public void doDelete(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);

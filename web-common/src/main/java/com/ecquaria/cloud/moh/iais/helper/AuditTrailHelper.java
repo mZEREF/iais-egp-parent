@@ -15,13 +15,20 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
+import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import lombok.extern.slf4j.Slf4j;
+
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * AuditTrailHelper
@@ -29,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Jinhua
  * @date 2019/8/6 17:58
  */
+@Slf4j
 public class AuditTrailHelper {
 
     public static void auditFunction(String moduleName, String functionName) {
@@ -69,6 +77,25 @@ public class AuditTrailHelper {
         HttpServletRequest request = MiscUtil.getCurrentRequest();
         AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
         dto.setLicenseNum(licNo);
+    }
+
+    /**
+     * save audit trail for param
+     * @param auditTrailDto
+     */
+    public static void callSaveAuditTrail(AuditTrailDto auditTrailDto){
+        SubmissionClient submissionClient = SpringContextHelper.getContext().getBean(SubmissionClient.class);
+        List<AuditTrailDto> trailDtoList = IaisCommonUtils.genNewArrayList(1);
+        trailDtoList.add(auditTrailDto);
+        try {
+            String eventRefNo = String.valueOf(System.currentTimeMillis());
+            StringBuilder console = new StringBuilder();
+            console.append("call event bus for ").append(auditTrailDto.getFunctionName()).append(" that the operation is  ").append(auditTrailDto.getOperation()).append(", the event ref number is ").append(eventRefNo);
+            log.info(console.toString());
+            AuditLogUtil.callWithEventDriven(trailDtoList, submissionClient, eventRefNo);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
     public static AuditTrailDto getBatchJobDto(String domain, Object job) {

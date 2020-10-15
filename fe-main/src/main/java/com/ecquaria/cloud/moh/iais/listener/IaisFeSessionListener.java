@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
@@ -46,7 +47,7 @@ public class IaisFeSessionListener {
             AuditTrailDto auditTrailDto = new AuditTrailDto();
             IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_SESSION_TIMEOUT);
-            IaisEGPHelper.callSaveAuditTrail(auditTrailDto);
+            AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
             AuditTrailDto loginDto = auditTrailMainClient.getLoginInfoBySessionId(sessionEvent.getSession().getId()).getEntity();
             Date now = new Date();
             if (loginDto != null) {

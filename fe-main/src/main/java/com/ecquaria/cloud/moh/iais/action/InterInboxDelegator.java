@@ -1054,7 +1054,7 @@ public class InterInboxDelegator {
             AuditTrailDto auditTrailDto = new AuditTrailDto();
             auditTrailDto.setApplicationNum(draft);
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_DELETE);
-            IaisEGPHelper.callSaveAuditTrail(auditTrailDto);
+            AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
 
             String delDraftAckMsg = MessageUtil.getMessageDesc("NEW_ACK003");
             ParamUtil.setRequestAttr(bpc.request,"needDelDraftMsg",AppConsts.YES);

@@ -1,14 +1,10 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
-import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
@@ -16,7 +12,6 @@ import sop.rbac.user.User;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
-import java.util.List;
 
 @Slf4j
 public final class LoginHelper {
@@ -38,7 +33,7 @@ public final class LoginHelper {
         auditTrailDto.setFunctionName("Internet Login");
         auditTrailDto.setLoginTime(new Date());
         IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
-        IaisEGPHelper.callSaveAuditTrail(auditTrailDto);
+        AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
     }
 
     public static String getTestMode(HttpServletRequest request){
@@ -64,6 +59,6 @@ public final class LoginHelper {
         auditTrailDto.setLoginType(StringUtil.isEmpty(uen) ? AuditTrailConsts.LOGIN_TYPE_SING_PASS : AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
         auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
         auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN_FAIL);
-        IaisEGPHelper.insertAuditTrail(auditTrailDto);
+        AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
     }
 }

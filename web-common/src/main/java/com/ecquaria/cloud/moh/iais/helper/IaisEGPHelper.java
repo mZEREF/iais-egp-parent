@@ -38,8 +38,6 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
-import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
-import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.egp.api.EGPHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -267,24 +265,7 @@ public final class IaisEGPHelper extends EGPHelper {
         return result;
     }
 
-    /**
-     * save audit trail for param
-     * @param auditTrailDto
-     */
-    public static void callSaveAuditTrail(AuditTrailDto auditTrailDto){
-        SubmissionClient submissionClient = SpringContextHelper.getContext().getBean(SubmissionClient.class);
-        List<AuditTrailDto> trailDtoList = IaisCommonUtils.genNewArrayList(1);
-        trailDtoList.add(auditTrailDto);
-        try {
-            String eventRefNo = String.valueOf(System.currentTimeMillis());
-            StringBuilder console = new StringBuilder();
-            console.append("call event bus for ").append(auditTrailDto.getFunctionName()).append(" that the operation is  ").append(auditTrailDto.getOperation()).append(", the event ref number is ").append(eventRefNo);
-            log.info(console.toString());
-            AuditLogUtil.callWithEventDriven(trailDtoList, submissionClient, eventRefNo);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-    }
+
 
     public static String getRootPath() {
         String urlStr = IaisEGPHelper.class.getResource("").toString();

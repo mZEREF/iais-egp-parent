@@ -310,7 +310,7 @@ public class WebValidationHelper {
         dto.setValidationFail(errorMsg);
         dto.setOperation(AuditTrailConsts.OPERATION_VALIDATION_FAIL);
 
-        IaisEGPHelper.callSaveAuditTrail(dto);
+        AuditTrailHelper.callSaveAuditTrail(dto);
 
         dto.setValidationFail(null);
     }
@@ -320,7 +320,7 @@ public class WebValidationHelper {
         String errorMsg = generateJsonStr(errors);
         dto.setValidationFail(errorMsg);
         dto.setOperation(AuditTrailConsts.OPERATION_VALIDATION_FAIL);
-        IaisEGPHelper.callSaveAuditTrail(dto);
+        AuditTrailHelper.callSaveAuditTrail(dto);
         dto.setValidationFail(null);
     }
 
