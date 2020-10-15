@@ -47,7 +47,7 @@ public class PaymentCheckNotResultFromBankJobHandler extends IJobHandler {
             ) {
                 try {
                     PaymentRequestDto paymentRequestDto=paymentClient.getPaymentRequestDtoByReqRefNo(payReq.getReqRefNo()).getEntity();
-                    if("Credit".equals(paymentRequestDto.getPayMethod())){
+                    if("stripe".equals(paymentRequestDto.getPayMethod())){
                         Session session=stripeService.retrieveSession(paymentRequestDto.getSrcSystemConfDto().getClientKey());
                         PaymentIntent paymentIntent=stripeService.retrievePaymentIntent(session.getPaymentIntent());
 

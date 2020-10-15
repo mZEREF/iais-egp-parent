@@ -93,7 +93,8 @@ public class PaymentStripeProxy extends PaymentProxy {
 		try {
 			RequestOptions requestOptions=PaymentBaiduriProxyUtil.getStripeService().authentication();
 			PaymentBaiduriProxyUtil.getStripeService().connectedAccounts("acct_1Gnz03BQeqajk1lG");
-
+			String url=fields.get("vpc_ReturnURL");
+			log.info("url-->"+url);
 			SessionCreateParams createParams =
 					SessionCreateParams.builder()
 							.addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
@@ -182,8 +183,6 @@ public class PaymentStripeProxy extends PaymentProxy {
 		PaymentIntent paymentIntent=null;
 		try{
 
-//			PaymentBaiduriProxyUtil.getStripeService().authentication();
-//			PaymentBaiduriProxyUtil.getStripeService().connectedAccounts("acct_1Gnz03BQeqajk1lG");
 			Session checkoutSession=PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDto.getSrcSystemConfDto().getClientKey());
 			paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentIntent(checkoutSession.getPaymentIntent());
 			log.info(StringUtil.changeForLog("Payment Intent: "+paymentIntent.getStatus()) );
@@ -199,31 +198,15 @@ public class PaymentStripeProxy extends PaymentProxy {
 
 		String response = "payment success";
 		setPaymentResponse(response);
-//		String secureHashType = fields.remove("vpc_SecureHashType");
-//		String responseSecureHash = fields.remove("vpc_SecureHash");
-//		String hashValidated = null;
 		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
-		String invoiceNo = "1234567";//"Send";
-		//hashValidated = "Correct";
-//		String statusNum = fields.get("vpc_TxnResponseCode");
-//		if("0".equals(statusNum)){
-//			status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
-//		}else{
-//			status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
-//		}
+		String invoiceNo = "1234567";
 		if(paymentIntent!=null){
-			//invoiceNo=paymentIntent.getInvoice();
-			if(paymentIntent.getStatus().equals("succeeded")){
+			if("succeeded".equals(paymentIntent.getStatus())){
 				status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
 			}else {
 				status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
 			}
 		}
-//				setReceiptStatus(status);
-		//setPaymentTransStatus(status);
-//				String message = fields.get("vpc_Message");
-
-
 		PaymentDto paymentDto = new PaymentDto();
 		paymentDto.setAmount(amount);
 		paymentDto.setReqRefNo(refNo);
@@ -235,7 +218,6 @@ public class PaymentStripeProxy extends PaymentProxy {
 		PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
 
 		try {
-			//setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
 
 			String results="?result="+ MaskUtil.maskValue("result",status)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",refNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",transNo);
 			String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+paymentRequestDto.getSrcSystemConfDto().getReturnUrl()+results;
