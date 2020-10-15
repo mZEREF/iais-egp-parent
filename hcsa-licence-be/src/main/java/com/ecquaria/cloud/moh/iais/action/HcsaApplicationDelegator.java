@@ -1910,14 +1910,15 @@ public class HcsaApplicationDelegator {
                     if(isAo1Ao2Approve){
                         doAo1Ao2Approve(broadcastOrganizationDto,broadcastApplicationDto,applicationDto);
                     }
-                    //update application Group status
-                    ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-                    broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
-                    applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
-                    applicationGroupDto.setAo3ApprovedDt(new Date());
-                    applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
                     if(isAllSubmit){
+                        //update application Group status
+                        ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+                        broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
+                        applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+                        applicationGroupDto.setAo3ApprovedDt(new Date());
+                        applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                        broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
+
                         //update current application status in db search result
                         updateCurrentApplicationStatus(saveApplicationDtoList,applicationDto.getId(),appStatus,licenseeId);
                         //get and set return fee
