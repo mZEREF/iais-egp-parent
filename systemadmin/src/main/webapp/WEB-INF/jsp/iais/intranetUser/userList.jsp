@@ -2,6 +2,9 @@
     <div class="col-lg-12 col-xs-12">
         <div class="center-content">
             <div class="intranet-content">
+                <h3>
+                    <span>Search Results</span>
+                </h3>
                 <iais:pagination param="IntranetUserSearchParam" result="IntranetUserSearchResult"/>
                 <table class="table">
                     <thead>

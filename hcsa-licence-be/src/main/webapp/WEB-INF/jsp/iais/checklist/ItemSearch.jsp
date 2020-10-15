@@ -98,6 +98,9 @@
           <div class="row">
             <div class="col-xs-12">
               <div class="components">
+                <h3>
+                  <span>Search Results</span>
+                </h3>
                 <iais:pagination  param="checklistItemSearch" result="checklistItemResult"/>
                   <table class="table">
                     <colgroup>

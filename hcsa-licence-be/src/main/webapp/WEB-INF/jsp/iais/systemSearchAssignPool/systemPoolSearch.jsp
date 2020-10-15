@@ -90,6 +90,9 @@
                     </iais:action>
                   </div>
                 </iais:section>
+                <h3>
+                  <span>Search Results</span>
+                </h3>
                 <iais:pagination  param="systemSearchParam" result="systemSearchResult"/>
                 <div class="table-gp">
                   <table class="table application-group">

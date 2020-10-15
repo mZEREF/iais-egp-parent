@@ -52,7 +52,9 @@
                             </div>
                         </div>
                     </div>
-
+                    <h3>
+                        <span>Search Results</span>
+                    </h3>
                     <iais:pagination param="resendSearchParam" result="resendSearchResult"/>
                     <div class="table-gp">
                         <table class="table">

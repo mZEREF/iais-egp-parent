@@ -94,6 +94,9 @@
 
 
       <div class="components">
+        <h3>
+          <span>Search Results</span>
+        </h3>
         <iais:pagination  param="checklistConfigSearch" result="checklistConfigResult"/>
           <table class="table">
             <thead>

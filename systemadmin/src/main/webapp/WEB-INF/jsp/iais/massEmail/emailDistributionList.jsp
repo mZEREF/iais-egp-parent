@@ -75,6 +75,9 @@
                             </div>
                         </div>
                     </div>
+                    <h3>
+                        <span>Search Results</span>
+                    </h3>
                     <iais:pagination param="distributionSearchParam" result="distributionSearchResult"/>
                     <div class="table-gp">
                         <table class="table">

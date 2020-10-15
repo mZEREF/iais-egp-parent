@@ -97,6 +97,10 @@
                     <button class="btn btn-primary" type="button" onclick="javascript:doInspectorSearchTaskSearch()">Search</button>
                   </iais:action>
                 </iais:section>
+
+                <h3>
+                  <span>Search Results</span>
+                </h3>
                 <iais:pagination  param="supTaskSearchParam" result="supTaskSearchResult"/>
                 <div class="table-gp">
                   <table class="table">

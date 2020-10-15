@@ -74,7 +74,9 @@
                             </div>
                         </div>
                     </div>
-
+                    <h3>
+                        <span>Search Results</span>
+                    </h3>
                     <iais:pagination param="blastSearchParam" result="blastSearchResult"/>
 
                     <div class="table-gp">

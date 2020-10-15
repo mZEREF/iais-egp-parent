@@ -93,6 +93,9 @@
             <br><br>
             <div class="col-xs-12">
               <div class="components">
+                <h3>
+                  <span>Search Results</span>
+                </h3>
                 <iais:pagination  param="blackedOutDateQueryAttr" result="blackedOutDateResultAttr"/>
                   <table class="table">
                     <thead>

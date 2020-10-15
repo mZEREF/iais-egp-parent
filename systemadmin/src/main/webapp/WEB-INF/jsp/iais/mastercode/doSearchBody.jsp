@@ -100,5 +100,4 @@
             </div>
         </div>
     </div>
-    <iais:pagination param="MasterCodeSearchParam" result="MasterCodeSearchResult"/>
 </form>

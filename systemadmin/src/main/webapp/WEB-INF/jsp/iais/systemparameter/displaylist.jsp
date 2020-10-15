@@ -83,6 +83,10 @@
                     <div class="row">
                         <br><br>
                         <div class="col-xs-12">
+
+                            <h3>
+                                <span>Search Results</span>
+                            </h3>
                             <iais:pagination  param="systemParamSearch" result="systemParamSearchResult"/>
                             <div class="components">
                                 <div >

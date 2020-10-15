@@ -59,6 +59,9 @@
 
 
             <div class="components">
+                <h3>
+                    <span>Search Results</span>
+                </h3>
                 <iais:pagination  param="msgSearchParam" result="msgSearchResult"/>
                 <br><br>
                 <div >

@@ -11,6 +11,9 @@
                             <h2>Alert Notification Template View</h2>
                         </div>
                         <%@ include file="doSearchBody.jsp" %>
+                        <h3>
+                            <span>Search Results</span>
+                        </h3>
                         <table class="table">
                         <iais:pagination  param="MsgTemplateSearchParam" result="MsgTemplateSearchResult"/>
                             <thead>

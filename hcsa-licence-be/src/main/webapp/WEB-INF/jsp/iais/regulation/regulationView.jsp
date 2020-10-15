@@ -63,6 +63,9 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="components">
+                        <h3>
+                            <span>Search Results</span>
+                        </h3>
                         <iais:pagination  param="regulationSearch" result="regulationResult"/>
                             <table class="table">
                                 <thead>

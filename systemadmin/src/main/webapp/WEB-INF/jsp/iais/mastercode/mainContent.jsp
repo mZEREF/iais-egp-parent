@@ -12,6 +12,10 @@
                             <h2>Master Code Management</h2>
                         </div>
                         <%@ include file="doSearchBody.jsp" %>
+                        <h3>
+                            <span>Search Results</span>
+                        </h3>
+                        <iais:pagination param="MasterCodeSearchParam" result="MasterCodeSearchResult"/>
                         <table class="table">
                             <thead>
                             <tr>

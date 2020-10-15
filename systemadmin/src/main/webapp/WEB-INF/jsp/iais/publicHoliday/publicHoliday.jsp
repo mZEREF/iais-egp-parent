@@ -62,7 +62,9 @@
                                 </div>
                             </div>
                         </div>
-
+                        <h3>
+                            <span>Search Results</span>
+                        </h3>
                         <iais:pagination param="holidaySearchParam" result="HolidaySearchResult"/>
 
                         <div class="table-gp">

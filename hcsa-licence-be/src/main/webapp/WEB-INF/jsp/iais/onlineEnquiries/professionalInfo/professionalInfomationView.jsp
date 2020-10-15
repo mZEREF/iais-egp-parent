@@ -147,6 +147,9 @@
                     <br><br>
                     <div class="col-xs-12">
                         <div class="components">
+                            <h3>
+                                <span>Search Results</span>
+                            </h3>
                             <iais:pagination param="professionalInfoSearch" result="professionalInfoResult"/>
                             <div class="table-gp">
                                 <table class="table">
