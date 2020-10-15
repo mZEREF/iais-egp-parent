@@ -48,7 +48,7 @@ public class AuditCancelTaskDelegator {
         List<AuditTaskDataFillterDto> auditTaskDataDtos = auditSystemPotitalListService.getSystemPotentailAdultCancelList();
         auditTaskDataDtos = auditSystemListService.getInspectors(auditTaskDataDtos);
         ParamUtil.setSessionAttr(request, "auditTaskDataDtos", (Serializable) auditTaskDataDtos);
-        ParamUtil.setSessionAttr(request, "modulename", "Audit Cancel Task List");
+        ParamUtil.setSessionAttr(request, "modulename", AuditTrailConsts.FUNCTION_CANCEL_AUDIT_INSP);
     }
 
     public void pre(BaseProcessClass bpc) {

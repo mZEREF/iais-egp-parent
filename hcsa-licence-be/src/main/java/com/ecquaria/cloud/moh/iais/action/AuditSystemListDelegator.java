@@ -60,7 +60,7 @@ public class AuditSystemListDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,"ISTUC",Boolean.FALSE);
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, null);
-        ParamUtil.setSessionAttr(request,"modulename","System Audit List");
+        ParamUtil.setSessionAttr(request,"modulename",AuditTrailConsts.FUNCTION_SYSTEM_AUDIT_LIST);
     }
 
     public void pre(BaseProcessClass bpc) {

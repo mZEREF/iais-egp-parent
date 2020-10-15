@@ -58,7 +58,7 @@ public class AuditManualListDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,"ISTUC",Boolean.FALSE);
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, null);
-        ParamUtil.setSessionAttr(request,"modulename","Manual Audit List");
+        ParamUtil.setSessionAttr(request,"modulename",AuditTrailConsts.FUNCTION_MANUAL_AUDIT_LIST);
     }
     public void pre(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));

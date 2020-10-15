@@ -60,7 +60,7 @@ public class AuditTcuListDelegator {
             }
         }
         ParamUtil.setSessionAttr(request, "aduitTypeOp", (Serializable) aduitTypeOp);
-        ParamUtil.setSessionAttr(request, "modulename", "TCU Audit List");
+        ParamUtil.setSessionAttr(request, "modulename", AuditTrailConsts.FUNCTION_TCU_AUDIT_LIST);
     }
 
     public void pre(BaseProcessClass bpc) {
