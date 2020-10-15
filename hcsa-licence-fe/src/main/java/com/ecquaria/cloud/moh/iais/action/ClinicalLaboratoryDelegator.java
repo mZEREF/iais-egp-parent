@@ -8,24 +8,12 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.*;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -42,10 +30,12 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
@@ -54,11 +44,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 /**
@@ -79,6 +66,16 @@ public class ClinicalLaboratoryDelegator {
     private SystemParamConfig systemParamConfig;
     @Autowired
     private AppSubmissionService appSubmissionService;
+    @Autowired
+    private FeEicGatewayClient feEicGatewayClient;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     public static final String GOVERNANCEOFFICERS = "GovernanceOfficers";
     public static final String GOVERNANCEOFFICERSDTO = "GovernanceOfficersDto";
@@ -667,6 +664,7 @@ public class ClinicalLaboratoryDelegator {
             String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
             if ("next".equals(crud_action_type)) {
                 errorMap = NewApplicationHelper.doValidateLaboratory(appGrpPremisesDtoList, appSvcLaboratoryDisciplinesDtoList, currentSvcId);
+
                 if (appSubmissionDto.isNeedEditController()) {
                     Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_LABORATORY);
@@ -772,6 +770,53 @@ public class ClinicalLaboratoryDelegator {
                 List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST);
                 Map<String,AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.LICPERSONSELECTMAP);
                 errList = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoList, licPersonMap, svcCode);
+                for(int i=0;i<appSvcCgoList.size();i++ ){
+                    AppSvcCgoDto appSvcCgoDto = appSvcCgoList.get(i);
+                    String profRegNo = appSvcCgoDto.getProfRegNo();
+                    if(!StringUtil.isEmpty(profRegNo)){
+                        List<String> prgNos = IaisCommonUtils.genNewArrayList();
+                        prgNos.add(profRegNo);
+                        ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
+                        professionalParameterDto.setRegNo(prgNos);
+                        professionalParameterDto.setClientId("22222");
+                        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                        String format = simpleDateFormat.format(new Date());
+                        professionalParameterDto.setTimestamp(format);
+                        professionalParameterDto.setSignature("2222");
+                        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                        List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
+                                signature2.date(), signature2.authorization()).getEntity();
+                        String name = professionalResponseDtos.get(0).getName();
+                        if(StringUtil.isEmpty(name)){
+                            errList.put("professionRegoNo"+i,"Professional Regn No. is not correct.");
+//                            appSvcCgoDto.setSubSpeciality(null);
+//                            appSvcCgoDto.setSpeciality(null);
+                        }else {
+                            ProfessionalResponseDto professionalResponseDto = professionalResponseDtos.get(0);
+                            List<String> specialty = professionalResponseDto.getSpecialty();
+                            List<String> subspecialty = professionalResponseDto.getSubspecialty();
+                            String regno = professionalResponseDto.getRegno();
+                            if(!IaisCommonUtils.isEmpty(specialty)){
+                                String spec = specialty.get(0);
+                                if(!StringUtil.isEmpty(spec)){
+                                    if("Diagnostic Radiology".equals(spec)){
+                                        appSvcCgoDto.setSpeciality(spec);
+                                    }else if("Nuclear Medicine".equals(spec)){
+                                        appSvcCgoDto.setSpeciality(spec);
+                                    }else {
+                                        appSvcCgoDto.setSpeciality("other");
+                                        appSvcCgoDto.setSpecialityOther(spec);
+                                    }
+                                }
+                            }if(!IaisCommonUtils.isEmpty(subspecialty)){
+                                appSvcCgoDto.setSubSpeciality(subspecialty.get(0));
+                            }if(!StringUtil.isEmpty(regno)){
+                                appSvcCgoDto.setProfRegNo(regno);
+                            }
+                        }
+                    }
+                }
                 if (appSubmissionDto.isNeedEditController()) {
                     /*Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_GOVERNANCE_OFFICERS);
