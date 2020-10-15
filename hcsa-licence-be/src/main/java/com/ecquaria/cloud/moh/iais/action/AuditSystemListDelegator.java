@@ -182,21 +182,24 @@ public class AuditSystemListDelegator {
                 }catch (Exception e){
                     inspectorId = ParamUtil.getRequestString(request, i + "insOp");
                 }
-                String inspectorName = LicenceUtil.getSelectOptionTextFromSelectOptions(auditTaskDataDtos.get(i).getInspectors(), inspectorId);
+                AuditTaskDataFillterDto auditTaskDataFillterDto = auditTaskDataDtos.get(i);
+                if(!auditTaskDataFillterDto.isAudited()){
+                    String inspectorName = LicenceUtil.getSelectOptionTextFromSelectOptions(auditTaskDataFillterDto.getInspectors(), inspectorId);
+                    auditTaskDataFillterDto.setInspector(inspectorName);
+                    auditTaskDataFillterDto.setInspectorId(inspectorId);
+                    auditTaskDataFillterDto.setAuditType(auditType);
+                }
                 String forad = ParamUtil.getString(request, i + "selectForAd");
                 String number = ParamUtil.getString(request, i + "number");
-                auditTaskDataDtos.get(i).setAuditType(auditType);
-                auditTaskDataDtos.get(i).setInspectorId(inspectorId);
-                auditTaskDataDtos.get(i).setInspector(inspectorName);
                 if (!StringUtil.isEmpty(forad)) {
-                    auditTaskDataDtos.get(i).setSelectedForAudit(true);
+                    auditTaskDataFillterDto.setSelectedForAudit(true);
                 } else {
-                    auditTaskDataDtos.get(i).setSelectedForAudit(false);
+                    auditTaskDataFillterDto.setSelectedForAudit(false);
                 }
                 if (!StringUtil.isEmpty(number)) {
-                    auditTaskDataDtos.get(i).setSelected(true);
+                    auditTaskDataFillterDto.setSelected(true);
                 } else {
-                    auditTaskDataDtos.get(i).setSelected(false);
+                    auditTaskDataFillterDto.setSelected(false);
                 }
             }
         }

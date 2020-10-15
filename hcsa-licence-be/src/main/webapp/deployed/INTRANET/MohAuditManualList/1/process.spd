@@ -207,9 +207,6 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/Step3" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
    <position>{(1000,300)(819,256)(800,-130)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Step3" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
-   <position>{(1050,500)(1135,496)(784,12)(800,-130)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond4" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step2" style="rectanular">
    <position>{(1050,620)(960,640)}</position>
   </SynchronousLink>
@@ -227,6 +224,9 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/next" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond5" style="rectanular">
    <position>{(880,-200)(555,-199)(570,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(1050,500)(1190,458)(1190,258)(860,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -262,7 +262,7 @@
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="1030" y="480">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/Step2" value="&quot;docancel&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Step3" value="&quot;doback&quot;"/>
+   <SwitchCase component="/Pages/WebPage/Page1" value="&quot;doback&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch4" x="700" y="100">
    <Description/>
