@@ -226,8 +226,8 @@ public class WithdrawalDelegator {
                         withdrawnDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
                         withdrawnDto.setFileRepoId(fileRepoId);
                     }
+                    withdrawnDtoList.add(withdrawnDto);
                 }
-                withdrawnDtoList.add(withdrawnDto);
             }
         }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,isValid);

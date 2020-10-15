@@ -140,6 +140,14 @@ public class SaMasterCodeClientFallback implements SaMasterCodeClient{
     }
 
     @Override
+    public FeignResponseEntity<Void> activeMasterCode(AuditTrailDto auditTrailDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<MasterCodeDto> getMaxVersionMsDto(String masterCodeKey) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
