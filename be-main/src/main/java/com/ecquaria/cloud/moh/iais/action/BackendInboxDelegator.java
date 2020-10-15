@@ -329,39 +329,56 @@ public class BackendInboxDelegator {
                     successStatus = ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS;
 
                 }else if(RoleConsts.USER_ROLE_AO1.equals(loginContext.getCurRoleId())){
-                    log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 start ...."));
-                    if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(status)){
-                        try{
-                            replay(bpc,applicationViewDto,taskDto);
+                    if(("ao1approve").equals(action)){
+                        log.debug(StringUtil.changeForLog("the do ao1 approve start ...."));
+                        ParamUtil.setSessionAttr(bpc.request,"bemainAo1Ao2Approve","Y");
+                        successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
+                        routingTask(bpc,"",successStatus,"",applicationViewDto,taskDto);
+                        log.debug(StringUtil.changeForLog("the do ao1 approve end ...."));
+                    }else{
+                        log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 start ...."));
+                        if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(status)){
+                            try{
+                                replay(bpc,applicationViewDto,taskDto);
+                                successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
+                            }catch (Exception e){
+                                log.info(e.getMessage(),e);
+                            }
+
+                        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW.equals(status)){
+                            successStatus = InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER;
+                            inspectorAo1(bpc,applicationViewDto,taskDto);
+                        }else{
                             successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
-                        }catch (Exception e){
-                            log.info(e.getMessage(),e);
+                            routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO2, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02, RoleConsts.USER_ROLE_AO2,applicationViewDto,taskDto);
                         }
 
-                    }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW.equals(status)){
-                        successStatus = InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER;
-                        inspectorAo1(bpc,applicationViewDto,taskDto);
-                    }else{
-                        successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
-                        routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO2, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02, RoleConsts.USER_ROLE_AO2,applicationViewDto,taskDto);
+
+                        log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
                     }
-
-
-                    log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
                 }else if(RoleConsts.USER_ROLE_AO2.equals(loginContext.getCurRoleId())){
-                    log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
-                    if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(status)){
-                        try{
-                            replay(bpc,applicationViewDto,taskDto);
-                        }catch (Exception e){
-                            log.info(e.getMessage(),e);
-                        }
-
+                    if(("ao2approve").equals(action)){
+                        log.debug(StringUtil.changeForLog("the do ao2 approve start ...."));
+                        ParamUtil.setSessionAttr(bpc.request,"bemainAo1Ao2Approve","Y");
+                        successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
+                        routingTask(bpc,"",successStatus,"",applicationViewDto,taskDto);
+                        log.debug(StringUtil.changeForLog("the do ao2 approve end ...."));
                     }else{
-                        routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO3, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03, RoleConsts.USER_ROLE_AO3,applicationViewDto,taskDto);
+                        log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
+                        if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(status)){
+                            try{
+                                replay(bpc,applicationViewDto,taskDto);
+                            }catch (Exception e){
+                                log.info(e.getMessage(),e);
+                            }
+
+                        }else{
+                            routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO3, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03, RoleConsts.USER_ROLE_AO3,applicationViewDto,taskDto);
+                        }
+                        log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
+                        successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
                     }
-                    log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
-                    successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+
                 }else if(RoleConsts.USER_ROLE_AO3.equals(loginContext.getCurRoleId())){
                     //judge the final status is Approve or Reject.
                     AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
@@ -878,6 +895,8 @@ public class BackendInboxDelegator {
         }else{
             log.debug(StringUtil.changeForLog("not has next stageId :" + stageId));
             log.debug(StringUtil.changeForLog("do ao3 approve ----- "));
+            String aoapprove = (String)ParamUtil.getSessionAttr(bpc.request,"bemainAo1Ao2Approve");
+            boolean isAo1Ao2Approve = "Y".equals(aoapprove);
             List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
             List<ApplicationDto> saveApplicationDtoList = IaisCommonUtils.genNewArrayList();
             CopyUtil.copyMutableObjectList(applicationDtoList,saveApplicationDtoList);
@@ -885,15 +904,20 @@ public class BackendInboxDelegator {
             boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
                     appStatus);
             log.debug(StringUtil.changeForLog("isAllSubmit is " + isAllSubmit));
-            if(isAllSubmit || applicationDto.isFastTracking()){
-                //update application Group status
-                ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-                broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
-                applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
-                applicationGroupDto.setAo3ApprovedDt(new Date());
-                applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
+            if(isAllSubmit || applicationDto.isFastTracking() || isAo1Ao2Approve){
+                if(isAo1Ao2Approve){
+                    doAo1Ao2Approve(broadcastOrganizationDto,broadcastApplicationDto,applicationDto,applicationDtoIds);
+                }
+
                 if(isAllSubmit){
+                    //update application Group status
+                    ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+                    broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
+                    applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+                    applicationGroupDto.setAo3ApprovedDt(new Date());
+                    applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
+
                     //update current application status in db search result
                     updateCurrentApplicationStatus(bpc,saveApplicationDtoList,licenseeId);
 
@@ -927,6 +951,44 @@ public class BackendInboxDelegator {
         applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
 
+    private void doAo1Ao2Approve(BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto, ApplicationDto applicationDto,List<String> appNo) throws FeignException {
+        String appGrpId = applicationDto.getAppGrpId();
+        String status = applicationDto.getStatus();
+        String appId = applicationDto.getId();
+        List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(appGrpId);
+        if (IaisCommonUtils.isEmpty(applicationDtoList) || applicationDtoList.size() == 1) {
+            return;
+        } else {
+            boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList, appNo,
+                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+            boolean isAllSubmitAO3 = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList, appNo,
+                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+            if (!(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(status))
+                    || (isAllSubmitAO3 && (ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(status)))) {
+                if (isAllSubmit) {
+                    String stageId = HcsaConsts.ROUTING_STAGE_AO3;
+                    String roleId = RoleConsts.USER_ROLE_AO3;
+                    updateCurrentApplicationStatus(applicationDtoList, appId, status);
+                    List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+                    List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+                    List<ApplicationDto> creatTaskApplicationList = ao2AppList;
+                    if (IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)) {
+                        creatTaskApplicationList = ao3AppList;
+                    } else {
+                        stageId = HcsaConsts.ROUTING_STAGE_AO2;
+                        roleId = RoleConsts.USER_ROLE_AO2;
+                    }
+                    // send the task to Ao2  or Ao3
+                    TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
+                            stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto());
+                    List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
+                    List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+                    broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
+                    broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
+                }
+            }
+        }
+    }
     private List<ApplicationDto> getStatusAppList(List<ApplicationDto> applicationDtos, String status){
         if(IaisCommonUtils.isEmpty(applicationDtos) || StringUtil.isEmpty(status)){
             return null;
@@ -998,8 +1060,15 @@ public class BackendInboxDelegator {
         return  result;
     }
 
-
-
+    private void updateCurrentApplicationStatus(List<ApplicationDto> applicationDtos,String applicationId,String status){
+        if(!IaisCommonUtils.isEmpty(applicationDtos) && !StringUtil.isEmpty(applicationId)){
+            for (ApplicationDto applicationDto : applicationDtos){
+                if(applicationId.equals(applicationDto.getId())){
+                    applicationDto.setStatus(status);
+                }
+            }
+        }
+    }
     private void updateCurrentApplicationStatus(BaseProcessClass bpc,List<ApplicationDto> applicationDtos,String licenseeId) {
         Map<String, String> returnFee = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request, "BackendInboxReturnFee");
         if (!IaisCommonUtils.isEmpty(returnFee) && !IaisCommonUtils.isEmpty(applicationDtos)) {

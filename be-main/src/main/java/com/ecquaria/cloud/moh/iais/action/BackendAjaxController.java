@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -10,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -22,12 +24,14 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -67,6 +71,8 @@ public class BackendAjaxController {
     @Autowired
     private InspEmailService inspEmailService;
 
+    @Autowired
+    TaskService taskService;
 
     @RequestMapping(value = "appGroup.do", method = RequestMethod.POST)
     public @ResponseBody
@@ -218,6 +224,58 @@ public class BackendAjaxController {
         map.put("res",res);
         return map;
     }
+
+    @PostMapping(value = "aoApprove.do")
+    public @ResponseBody
+    Map<String, Object> aoApproveCheck(HttpServletRequest request) {
+        String applicationString =  ParamUtil.getString(request, "applications");
+        String[] applications = applicationString.split(",");
+        int approveCheck = 1;
+        for (String item:applications
+             ) {
+            ApplicationDto applicationDto = inspectionTaskMainClient.getApplicationDtoByAppNo(item).getEntity();
+            HcsaSvcRoutingStageDto canApproveStageDto = getCanApproveStageDto(applicationDto.getApplicationType(), applicationDto.getStatus(), applicationDto.getServiceId());
+            boolean canApprove = checkCanApproveStage(canApproveStageDto);
+            if(!canApprove){
+                approveCheck = 0;
+            }
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("res",approveCheck);
+        return map;
+    }
+
+    private boolean checkCanApproveStage(HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto){
+        if(hcsaSvcRoutingStageDto == null){
+            return false;
+        }
+        boolean flag = false;
+        String canApprove = hcsaSvcRoutingStageDto.getCanApprove();
+        if("1".equals(canApprove)){
+            flag = true;
+        }
+        return flag;
+    }
+
+
+    private HcsaSvcRoutingStageDto getCanApproveStageDto(String appType, String appStatus, String serviceId){
+        if(StringUtil.isEmpty(appType) || StringUtil.isEmpty(appStatus) || StringUtil.isEmpty(serviceId)){
+            return null;
+        }
+        String stageId = HcsaConsts.ROUTING_STAGE_AO1;
+        if(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01)){
+            stageId = HcsaConsts.ROUTING_STAGE_AO1;
+        }else if(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02)){
+            stageId = HcsaConsts.ROUTING_STAGE_AO2;
+        }
+        HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto = new HcsaSvcRoutingStageDto();
+        hcsaSvcRoutingStageDto.setStageId(stageId);
+        hcsaSvcRoutingStageDto.setServiceId(serviceId);
+        hcsaSvcRoutingStageDto.setAppType(appType);
+        HcsaSvcRoutingStageDto result = hcsaConfigClient.getHcsaSvcRoutingStageDto(hcsaSvcRoutingStageDto).getEntity();
+        return result;
+    }
+
 
     private String generateProcessUrl(TaskDto dto, HttpServletRequest request,String taskId) {
         StringBuilder sb = new StringBuilder("https://");

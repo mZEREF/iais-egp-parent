@@ -72,4 +72,7 @@ public interface HcsaConfigMainClient {
                                                                    @RequestParam("stageId") String stageId,
                                                                    @RequestParam("type") String type);
 
+    @PostMapping(value = "/hcsa-routing/stage-can-approve",produces = MediaType.APPLICATION_JSON_VALUE,consumes =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageDto(@RequestBody HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto);
+
 }

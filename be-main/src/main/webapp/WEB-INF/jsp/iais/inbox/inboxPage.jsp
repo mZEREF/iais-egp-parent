@@ -158,6 +158,8 @@
                                 <div class="text-right">
                                     <a class="btn btn-primary btn-support"
                                        onclick="javascript:approve()">Support</a>
+                                    <a class="btn btn-primary btn-approve"
+                                       onclick="javascript:aoApprove('ao1approve')">Approve</a>
                                 </div>
                             </div>
                         </div>
@@ -170,6 +172,8 @@
                                 <div class="text-right">
                                     <a class="btn btn-primary btn-approve"
                                        onclick="javascript:approve()">Support</a>
+                                    <a class="btn btn-primary btn-approve"
+                                       onclick="javascript:aoApprove('ao2approve')">Approve</a>
                                 </div>
                             </div>
                         </div>
@@ -192,7 +196,7 @@
             </c:choose>
         </div>
         <iais:confirm msg="GENERAL_ERR0023"  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
-
+        <iais:confirm msg=""  needCancel="false" callBack="aocancel()" popupOrder="approveAo" ></iais:confirm>
     </form>
 </div>
 <script type="text/javascript">
@@ -222,6 +226,9 @@
     })
     function cancel() {
         $('#support').modal('hide');
+    }
+    function aocancel() {
+        $('#approveAo').modal('hide');
     }
     function tagConfirmCallbacksupport(){
         $('#support').modal('hide');
@@ -285,7 +292,7 @@
                     if (hastaskList == "true") {
                         html += '<td><input type="checkbox" name="taskId" value="' + taskList[res[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
                     }
-                    html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a class="applicationNoAHref" data-href=' + url[res[i].refNo] +' data-task=' + taskList[res[i].refNo] +  '>' + res[i].applicationNo + '</a></p></td>' +
+                    html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a id="' + taskList[res[i].refNo] + '" class="applicationNoAHref" data-href=' + url[res[i].refNo] +' data-task=' + taskList[res[i].refNo] +  '>' + res[i].applicationNo + '</a></p></td>' +
                         '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res[i].serviceId] + '<p></td>' +
                         '<td><p class="visible-xs visible-sm table-row-title">License Expiry Date</p><p>' + res[i].expiryDate + '</p></td>' +
                         '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res[i].status + '</p></td>' +
@@ -326,6 +333,50 @@
     function jumpToPagechangePage() {
         showWaiting();
         submit('page');
+    }
+
+    function aoApprove(action) {
+        if ($("input:checkbox:checked").length > 0) {
+            var arr = new Array();
+            var num = 0;
+            $("input:checkbox:checked").each(function(i){
+
+                if($(this).val() != "on" && $("#"+$(this).val()).html() != ""){
+                    arr[num] = $("#"+$(this).val()).html();
+                    num ++;
+                }
+            });
+            $.ajax({
+                url:'${pageContext.request.contextPath}/backend/aoApprove.do',
+                data:{
+                    applications:  arr.toString()
+                },
+                contentType:"application/x-www-form-urlencoded",
+                type:'POST',
+                'success':function (data) {
+                    if(data.res == 0){
+                        $('#action').val(action);
+                        submit('approve');
+                    }else{
+                        $('#approveAo .modal-body span').html(arr.toString()+ " You have no access to approve.");
+                        $('#approveAo').modal('show');
+
+                    }
+                }
+            });
+            /*$.post(
+                '/main-web/backend/aoApprove.do',
+                {'applications':  arr},
+                function (data, status) {
+                    // $('#action').val(action);
+                    // showWaiting();
+                    // submit('approve');
+                }
+            );*/
+
+        } else {
+            $('#support').modal('show');
+        }
     }
 
     function approve() {
