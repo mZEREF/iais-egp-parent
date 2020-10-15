@@ -34,10 +34,10 @@
         <tr>
           <td style="width: 25%;text-align: center">Service Name</td>
           <td style="width: 15%;text-align: center">Usage</td>
-          <td style="width: 25%;text-align: center">Effective Start Date</td>
+          <td style="width: 20%;text-align: center">Effective Start Date</td>
           <td style="width: 20%;text-align: center">Effective End Date</td>
           <td style="width: 5%;text-align: center">Version</td>
-          <td style="width: 25%;text-align: center">Actions</td>
+          <td style="width: 30%;text-align: center">Actions</td>
         </tr>
         <c:forEach items="${hcsaServiceDtos}"  var="hcsaServiceDto">
       <tr>
@@ -49,8 +49,8 @@
         <td  style="text-align: center"><fmt:formatDate value="${hcsaServiceDto.endDate}" pattern="dd/MM/yyyy"/></td>
         <td  style="text-align: center">${hcsaServiceDto.version}</td>
         <td  style="text-align: center">
-          <button onclick="edit(this)" value="<iais:mask name="crud_action_value"  value="${hcsaServiceDto.id}"/>">update</button>
-          <button value="<iais:mask name="crud_action_value"  value="${hcsaServiceDto.id}"/>" onclick="del(this)">delete</button>
+          <button onclick="edit(this)"  class="btn btn-default btn-sm" value="<iais:mask name="crud_action_value"  value="${hcsaServiceDto.id}"/>">update</button>
+          <button value="<iais:mask name="crud_action_value"  value="${hcsaServiceDto.id}"/>" class="btn btn-default btn-sm" onclick="del(this)">delete</button>
         </td>
 
       </tr>
