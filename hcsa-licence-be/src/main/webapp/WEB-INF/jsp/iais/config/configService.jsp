@@ -685,7 +685,7 @@
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
   </form>
 </div>
-
+<%@ include file="configRepeatJs.jsp" %>
 <iais:confirm msg="Are you sure you want to leave this page ?" callBack="kpi()" popupOrder="kpi" ></iais:confirm>
 
 <iais:confirm msg="Are you sure you want to leave this page ?" callBack="checklists()" popupOrder="checklists" ></iais:confirm>
@@ -748,115 +748,8 @@
         }
     });
 
-  function showNEW() {
-      let jQuery = $('#APTY002').attr("style");
-      $('#APTY001').attr("style","display: none");
-      $('#APTY004').attr("style","display: none");
-      $('#APTY005').attr("style","display: none");
-      $('#APTY006').attr("style","display: none");
-      $('#APTY010').attr("style","display: none");
-      $('#APTY008').attr("style","display: none");
-      if(jQuery=='display: block'){
-          $('#APTY002').attr("style","display: none");
-      }else if(jQuery=='display: none'){
-          $('#APTY002').attr("style","display: block");
-      }
-  }
 
-  function showRENEW() {
-      let jQuery = $('#APTY004').attr("style");
-      $('#APTY001').attr("style","display: none");
-      $('#APTY005').attr("style","display: none");
-      $('#APTY006').attr("style","display: none");
-      $('#APTY010').attr("style","display: none");
-      $('#APTY002').attr("style","display: none");
-      $('#APTY008').attr("style","display: none");
-      if(jQuery=='display: block'){
-          $('#APTY004').attr("style","display: none");
-      }else if(jQuery=='display: none'){
-          $('#APTY004').attr("style","display: block");
-      }
-  }
 
-    function showAPPEAL(){
-        let jQuery = $('#APTY001').attr("style");
-        $('#APTY002').attr("style","display: none");
-        $('#APTY004').attr("style","display: none");
-        $('#APTY006').attr("style","display: none");
-        $('#APTY010').attr("style","display: none");
-        $('#APTY008').attr("style","display: none");
-        $('#APTY005').attr("style","display: none");
-        if(jQuery=='display: block'){
-            $('#APTY001').attr("style","display: none");
-        }else if(jQuery=='display: none'){
-            $('#APTY001').attr("style","display: block");
-        }
-    }
-
-    function showRFC(){
-        let jQuery = $('#APTY005').attr("style");
-        $('#APTY002').attr("style","display: none");
-        $('#APTY004').attr("style","display: none");
-        $('#APTY006').attr("style","display: none");
-        $('#APTY010').attr("style","display: none");
-        $('#APTY008').attr("style","display: none");
-        $('#APTY001').attr("style","display: none");
-        if(jQuery=='display: block'){
-            $('#APTY005').attr("style","display: none");
-        }else if(jQuery=='display: none'){
-            $('#APTY005').attr("style","display: block");
-        }
-
-    }
-
-    function showCESSATION(){
-        let jQuery = $('#APTY008').attr("style");
-        $('#APTY002').attr("style","display: none");
-        $('#APTY004').attr("style","display: none");
-        $('#APTY006').attr("style","display: none");
-        $('#APTY010').attr("style","display: none");
-        $('#APTY005').attr("style","display: none");
-        $('#APTY001').attr("style","display: none");
-        if(jQuery=='display: block'){
-            $('#APTY008').attr("style","display: none");
-        }else if(jQuery=='display: none'){
-            $('#APTY008').attr("style","display: block");
-        }
-    }
-
-  /*  function showSUSPENSION(){
-        let jQuery = $('#APTY010').attr("style");
-        $('#APTY002').attr("style","display: none");
-        $('#APTY004').attr("style","display: none");
-        $('#APTY006').attr("style","display: none");
-        $('#APTY008').attr("style","display: none");
-        $('#APTY005').attr("style","display: none");
-        $('#APTY001').attr("style","display: none");
-        if(jQuery=='display: block'){
-            $('#APTY010').attr("style","display: none");
-        }else if(jQuery=='display: none'){
-            $('#APTY010').attr("style","display: block");
-        }
-    }
-*/
-    function  showWITHDRAWAL(){
-        let jQuery = $('#APTY006').attr("style");
-        $('#APTY002').attr("style","display: none");
-        $('#APTY004').attr("style","display: none");
-        $('#APTY010').attr("style","display: none");
-        $('#APTY008').attr("style","display: none");
-        $('#APTY005').attr("style","display: none");
-        $('#APTY001').attr("style","display: none");
-        if(jQuery=='display: block'){
-            $('#APTY006').attr("style","display: none");
-        }else if(jQuery=='display: none'){
-            $('#APTY006').attr("style","display: block");
-        }
-    }
-
-    function showREVOCATION(){
-
-    }
 
     $('#ServiceType').change(function () {
 
