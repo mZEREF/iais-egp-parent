@@ -190,6 +190,9 @@ public class MasterCodeDelegator {
         }
         MasterCodeDto masterCodeDto = (MasterCodeDto) ParamUtil.getSessionAttr(request, "MasterCodeView");
         getCategoryValueFromPage(masterCodeDto, request);
+        if (StringUtil.isEmpty(masterCodeDto.getVersion())){
+            masterCodeDto.setVersion(1f);
+        }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         Optional<MasterCodeToExcelDto> cartOptional = null;
         if (!StringUtil.isEmpty(masterCodeDto.getCodeCategory()) && !StringUtil.isEmpty(masterCodeDto.getCodeValue())){
