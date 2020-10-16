@@ -277,6 +277,7 @@
       doEdit();
       spRemove();
 
+    notLoadingSpl();
       init = 1;
   });
 
@@ -440,8 +441,8 @@ var spRemove = function(){
     });
 }
 
-    function aaa() {
-      var no = $("input[name='regnNo']").val();
+    function aaa(obj) {
+      var no = $(obj).val();
       var jsonData = {
         'prgNo': no
       };
@@ -455,7 +456,7 @@ var spRemove = function(){
             notLoadingSp();
             return;
           }
-          loadingSp(data);
+          loadingSp(data,obj);
         },
         'error': function () {
         }
@@ -463,12 +464,13 @@ var spRemove = function(){
 
     }
 
-    function loadingSp(data) {
+    function loadingSp(data,obj) {
+      var $CurrentPsnEle = $(obj).closest('table.personnel-content');
       const name = data.name;
-      $("input[name='name']").val(name);
-      $("input[name='name']").prop('readonly', true);
-      $("input[name='name']").css('border-color', '#ededed');
-      $("input[name='name']").css('color', '#999');
+      $CurrentPsnEle.find("input[name='name']").val(name);
+      $CurrentPsnEle.find("input[name='name']").prop('readonly', true);
+      $CurrentPsnEle.find("input[name='name']").css('border-color', '#ededed');
+      $CurrentPsnEle.find("input[name='name']").css('color', '#999');
     }
 
     function notLoadingSp() {
@@ -476,5 +478,15 @@ var spRemove = function(){
       $("input[name='name']").css('border-color', '');
       $("input[name='name']").css('color', '');
     }
+
+    function notLoadingSpl() {
+      let val = $("input[name='name']").val();
+      if(val!=""){
+        $("input[name='name']").prop('readonly', true);
+        $("input[name='name']").css('border-color', '#ededed');
+        $("input[name='name']").css('color', '#999');
+      }
+    }
+
 
 </script>

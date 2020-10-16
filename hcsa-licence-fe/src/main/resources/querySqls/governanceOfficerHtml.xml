@@ -144,7 +144,7 @@
                           </div>
                           <div class="col-xs-5 col-sm-3 col-md-7">
                             <div class="">
-                              <input type="text" name="professionRegoNo" value="" maxlength="20" autocomplete="off"><span id="error_professionRegoNo" name="iaisErrorMsg" class="error-msg"></span>
+                              <input type="text" onblur="aaa(this)" name="professionRegoNo" value="" maxlength="20" autocomplete="off"><span id="error_professionRegoNo" name="iaisErrorMsg" class="error-msg"></span>
                               <span class="error-msg" name="iaisErrorMsg" id="error_professionRegoNo1"></span>
                             </div>
                           </div>
