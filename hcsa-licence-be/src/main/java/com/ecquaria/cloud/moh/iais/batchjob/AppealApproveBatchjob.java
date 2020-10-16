@@ -129,6 +129,7 @@ public class AppealApproveBatchjob {
                   List<ApplicationDto> appealApplicaiton = new ArrayList();
                   List<ApplicationDto> rollBackApplication = IaisCommonUtils.genNewArrayList();
                   List<LicenceDto> appealLicence = IaisCommonUtils.genNewArrayList();
+                  List<AppPremiseMiscDto> appPremiseMiscDtoList=IaisCommonUtils.genNewArrayList();
                   List<LicenceDto> rollBackLicence = IaisCommonUtils.genNewArrayList();
                   List<AppSvcKeyPersonnelDto> appealPersonnel = IaisCommonUtils.genNewArrayList();
                   List<AppSvcKeyPersonnelDto> rollBackPersonnel = IaisCommonUtils.genNewArrayList();
@@ -153,7 +154,7 @@ public class AppealApproveBatchjob {
                                           appealApproveDto);
                                   break;
                               case ApplicationConsts.APPEAL_TYPE_LICENCE :
-                                  appealLicence(applicationDto,appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealDto.getReason());
+                                  appealLicence(appPremiseMiscDtoList,appealDto,appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealDto.getReason());
                                   break;
 //                        case ApplicationConsts.APPEAL_TYPE_OTHER :
 //                            appealOther(appealApplicaiton,rollBackApplication,applicationDto);
@@ -184,6 +185,7 @@ public class AppealApproveBatchjob {
                       appealLicenceDto.setAppealLicence(appealLicence);
                       appealLicenceDto.setRollBackLicence(rollBackLicence);
                       appealLicenceDto.setAuditTrailDto(auditTrailDto);
+                      appealLicenceDto.setAppPremiseMiscDto(appPremiseMiscDtoList);
                       appealService.createAppealLicenceDto(appealLicenceDto);
                   }else{
                       log.info(StringUtil.changeForLog("The appealLicence is Empty."));
@@ -441,7 +443,7 @@ public class AppealApproveBatchjob {
 
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is end ..."));
     }
-    private void appealLicence(ApplicationDto applicationDto,List<LicenceDto> appealLicence,
+    private void appealLicence(List<AppPremiseMiscDto>appPremiseMiscDtoList,AppPremiseMiscDto appPremiseMiscDto,List<LicenceDto> appealLicence,
                                List<LicenceDto> rollBackLicence,
                                LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto,String reason) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence is start ..."));
@@ -496,6 +498,7 @@ public class AppealApproveBatchjob {
                 log.error(StringUtil.changeForLog(""));
             }
             appealLicenceDto.setExpiryDate(expiryDate);
+            appPremiseMiscDtoList.add(appPremiseMiscDto);
             appealLicence.add(appealLicenceDto);
         } else if(licenceDto != null) {
             log.error(StringUtil.changeForLog("licAppCorrelationDtos=======> Licence Id = " + licenceDto.getId()));

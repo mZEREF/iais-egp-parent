@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -726,6 +727,7 @@ public class ClinicalLaboratoryDelegator {
         if (!StringUtil.isEmpty(sB.toString())) {
             map.put("error", "error");
         }
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(map)+"---map----"));
         bpc.request.getSession().setAttribute("serviceConfig", sB.toString());
         return map;
     }

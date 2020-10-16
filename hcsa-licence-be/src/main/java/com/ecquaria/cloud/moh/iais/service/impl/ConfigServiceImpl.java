@@ -893,13 +893,13 @@ public class ConfigServiceImpl implements ConfigService {
         HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(crud_action_value).getEntity();
         List<HcsaServiceCategoryDto> categoryDtos = getHcsaServiceCategoryDto();
         request.getSession().setAttribute("categoryDtos",categoryDtos);
-       /* Boolean flag = hcsaConfigClient.serviceIdIsUsed(crud_action_value).getEntity();
+        Boolean flag = hcsaConfigClient.serviceIdIsUsed(crud_action_value).getEntity();
         List<LicenceDto> entity = hcsaLicenceClient.getLicenceDtosBySvcName(hcsaServiceDto.getSvcName()).getEntity();
         if(flag || !entity.isEmpty()){
             hcsaServiceDto.setServiceIsUsed(true);
         }else {
             hcsaServiceDto.setServiceIsUsed(false);
-        }*/
+        }
         setAttribute(request,hcsaServiceDto);
         Object individualPremises = request.getAttribute("individualPremises");
         if(individualPremises==null){
