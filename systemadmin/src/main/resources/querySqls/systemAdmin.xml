@@ -32,7 +32,7 @@
     <sql key = "IntranetUserQuery" remarks = "query IntranetUser sql">
         <![CDATA[
             SELECT DISTINCT T1.USER_ID,T1.ID,T1.EMAIL_ADDR,T1.DISPLAY_NAME,T1.STATUS from user_account as T1
-            join user_role T2 on T1.ID =T2.USER_ACCT_ID
+            left join user_role T2 on T1.ID =T2.USER_ACCT_ID
             WHERE 1=1 AND T1.STATUS !='CMSTAT002' AND T1.USER_DOMAIN = 'intranet'
             <#if id??> AND CHARINDEX(:id, T1.id) >0</#if>
             <#if userId??> and charindex(:userId, T1.USER_ID) >0</#if>
