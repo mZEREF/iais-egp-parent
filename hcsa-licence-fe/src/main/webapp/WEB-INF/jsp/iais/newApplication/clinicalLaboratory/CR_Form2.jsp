@@ -806,13 +806,13 @@
             $(".specialtyDiv .current").text("Others");
             $("input[name='specialtyOther']").removeClass('hidden');
             $("input[name='specialtyOther']").val(specialty);
-            $("input[name='specialtyOther']").prop('disabled', true);
+            $("input[name='specialtyOther']").prop('readonly', true);
             $("input[name='specialtyOther']").css('border-color', '#ededed');
             $("input[name='specialtyOther']").css('color', '#999');
         }
 
         $("input[name='qualification']").val(qualification);
-        $("input[name='qualification']").prop('disabled', true);
+        $("input[name='qualification']").prop('readonly', true);
         $("input[name='qualification']").css('border-color', '#ededed');
         $("input[name='qualification']").css('color', '#999');
     };
@@ -823,11 +823,11 @@
         $(".specialtyDiv .current").text("-1");
         $(".specialtyDiv .current").text("Please Select");
         $("input[name='specialtyOther']").addClass('hidden');
-        $("input[name='specialtyOther']").prop('disabled', false);
+        $("input[name='specialtyOther']").prop('readonly', false);
         $("input[name='specialtyOther']").val('');
         $("input[name='specialtyOther']").css('border-color', '');
         $("input[name='specialtyOther']").css('color', '');
-        $("input[name='qualification']").prop('disabled', false);
+        $("input[name='qualification']").prop('readonly', false);
         $("input[name='qualification']").css('border-color', '');
         $("input[name='qualification']").css('color', '');
         $("input[name='qualification']").val("");
@@ -839,7 +839,7 @@
             var $contentEle = $(this).closest('.assignContent');
             $contentEle.find('input[name="isPartEdit"]').val('1');
             $contentEle.find('.edit-content').addClass('hidden');
-            $contentEle.find('input[type="text"]').prop('disabled', false);
+            $contentEle.find('input[type="text"]').prop('readonly', false);
             $contentEle.find('div.nice-select').removeClass('disabled');
             $contentEle.find('input[type="text"]').css('border-color', '');
             $contentEle.find('input[type="text"]').css('color', '');
