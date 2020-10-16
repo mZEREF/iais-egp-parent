@@ -116,10 +116,12 @@ public class AuditTrailHelper {
             log.info(StringUtil.changeForLog("batch job class " + job.getClass().getName()));
             JobHandler handler = job.getClass().getAnnotation(JobHandler.class);
             if (handler != null){
+                log.info(StringUtil.changeForLog("handler value" + handler.value()));
                 dto.setFunctionName(handler.value());
             }else {
                 Delegator delegator = job.getClass().getAnnotation(Delegator.class);
                 if(delegator != null){
+                    log.info(StringUtil.changeForLog("delegator value" + delegator.value()));
                     dto.setFunctionName(delegator.value());
                 }
             }
