@@ -943,7 +943,9 @@ public class NotificationHelper {
 			if (userMap.get(his.getRoleId()) == null) {
 				userMap.put(his.getRoleId(), IaisCommonUtils.genNewArrayList());
 			}
-			userMap.get(his.getRoleId()).add(his.getActionby());
+			if(!StringUtil.isEmpty(his.getProcessDecision())) {
+				userMap.get(his.getRoleId()).add(his.getActionby());
+			}
 		}
 		for (String role : roles) {
 			if (RECEIPT_ROLE_ASSIGNED_ASO.equals(role) && userMap.get(RoleConsts.USER_ROLE_ASO) != null) {
