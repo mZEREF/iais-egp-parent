@@ -231,14 +231,17 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         return withdrawApplicationDtoList;
     }
 
-    private void sendInboxMessage(String applicationNo,String serviceId,Map<String, Object> map,String subject){
+    private void sendInboxMessage(String applicationNo,String serviceId,Map<String, Object> map,String subject) throws IOException, TemplateException {
         EmailParam messageParam = new EmailParam();
         HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
         if(serviceDto != null){
             svcCodeList.add(serviceDto.getSvcCode());
         }
-        messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_MESSAGE_ID);
+        Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+        subMap.put("ApplicationNumber", applicationNo);
+        subject = MsgUtil.getTemplateMessageByContent(subject,subMap);
+        messageParam.setTemplateId(TEMPLATE_WITHDRAWAL_ID);
         messageParam.setTemplateContent(map);
         messageParam.setQueryCode(applicationNo);
         messageParam.setReqRefNum(applicationNo);
@@ -257,7 +260,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         map.put("ApplicationNumber", applicationNo);
         String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
         EmailParam emailParam = new EmailParam();
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE);
+        emailParam.setTemplateId(TEMPLATE_WITHDRAWAL_ID);
         emailParam.setTemplateContent(msgInfoMap);
         emailParam.setQueryCode(applicationNo);
         emailParam.setReqRefNum(applicationNo);
