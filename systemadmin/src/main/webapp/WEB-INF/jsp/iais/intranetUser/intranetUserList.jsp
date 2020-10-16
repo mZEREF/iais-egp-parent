@@ -116,10 +116,12 @@
             $('#error_userUploadFile').html('The file has exceeded the maximum upload size of '+ userFileSize + 'M.');
             dismissWaiting();
         } else {
-            const file = $("#inputFile").get(0).files[0];
-            const ext = file.slice(file.lastIndexOf(".") + 1).toLowerCase();
-            if ("xml" != ext) {
-                $('#error_userUploadFile').html('Only files with the following extensions are allowed: XML. Please re-upload the file.');
+            var fileName =  getFileName($("#inputFile").val());
+            var fileType = "XML";
+            var list = fileName.split(".");
+            fileName = list[list.length-1];
+            if(fileType.indexOf(fileName.toUpperCase()) == -1){
+                $('#selectedFileShow').html('Only files with the following extensions are allowed:'+ fileType +'. Please re-upload the file.');
                 dismissWaiting();
             } else {
                 submitUser('doImport');
@@ -129,6 +131,10 @@
 
     function jumpToPagechangePage() {
         SOP.Crud.cfxSubmit("IntranetUserForm", "page");
+    }
+    function getFileName(o) {
+        var pos = o.lastIndexOf("\\");
+        return o.substring(pos + 1);
     }
 
     function sortRecords(sortFieldName, sortType) {
