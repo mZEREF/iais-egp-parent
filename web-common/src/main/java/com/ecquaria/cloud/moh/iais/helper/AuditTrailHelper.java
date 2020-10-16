@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
@@ -112,13 +113,14 @@ public class AuditTrailHelper {
         dto.setUserDomain(domain);
 
         if (job != null){
+            log.info(StringUtil.changeForLog("batch job class " + job.getClass().getName()));
             JobHandler handler = job.getClass().getAnnotation(JobHandler.class);
             if (handler != null){
-                dto.setEntityId(handler.value());
+                dto.setFunctionName(handler.value());
             }else {
                 Delegator delegator = job.getClass().getAnnotation(Delegator.class);
                 if(delegator != null){
-                    dto.setEntityId(delegator.value());
+                    dto.setFunctionName(delegator.value());
                 }
             }
         }

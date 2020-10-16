@@ -2,14 +2,6 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.helper.SpringContextHelper;
-import com.ecquaria.cloud.moh.iais.common.constant.BatchJobConstant;
-import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.AtEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.EicClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicmEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.OnlineApptEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -17,13 +9,21 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.List;
+import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.AtEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.EicClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicmEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.OnlineApptEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.List;
 
 /**
  * EicRecoverJob
@@ -63,7 +63,7 @@ public class EicSelfRecoveDelegator {
         List<EicRequestTrackingDto> orgList = orgEicClient.getPendingRecords(moduleName).getEntity();
         List<EicRequestTrackingDto> sysList = eicClient.getPendingRecords(moduleName).getEntity();
         List<EicRequestTrackingDto> apptList = onlineApptEicClient.getPendingRecords(moduleName).getEntity();
-        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(currentDomain, BatchJobConstant.SELF_RECOVER_DELEGATOR);
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(currentDomain, this);
         if (!IaisCommonUtils.isEmpty(atList)) {
             atList.forEach(ert -> {
                 reTrigger(ert, auditTrailDto);
