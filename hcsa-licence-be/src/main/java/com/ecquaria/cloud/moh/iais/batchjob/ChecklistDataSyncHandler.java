@@ -216,14 +216,21 @@ public class ChecklistDataSyncHandler extends IJobHandler {
     public ReturnT<String> execute(String s) throws Exception {
         try {
             AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
+
+            log.info("=>>>>>>ChecklistDataSyncHandler Start>>>>>>>");
+            log.info("=>>>>>>compareSyncRegulation Start>>>>>>>");
             compareSyncRegulation();
 
+            log.info("=>>>>>>compareSyncItem Start>>>>>>>");
             compareSyncItem();
 
+            log.info("=>>>>>>compareSyncConfig Start>>>>>>>");
             compareSyncConfig();
 
+            log.info("=>>>>>>compareSyncSection Start>>>>>>>");
             compareSyncSection();
 
+            log.info("=>>>>>>compareSyncSectionItem Start>>>>>>>");
             compareSyncSectionItem();
             return ReturnT.SUCCESS;
         }catch (Throwable e) {
