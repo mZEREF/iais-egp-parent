@@ -18,6 +18,7 @@ public class SortableHeaderTag extends DivTagSupport {
     private String param;
     private String jsFunc;
     private boolean needSort;
+    private boolean isFE;
 
     public SortableHeaderTag() {
         super();
@@ -32,6 +33,7 @@ public class SortableHeaderTag extends DivTagSupport {
         setParam("");
         setJsFunc("");
         setNeedSort(true);
+        setIsFE(false);
     }
 
     // Releases any resources we may have (or inherit)
@@ -73,7 +75,11 @@ public class SortableHeaderTag extends DivTagSupport {
 
             generateHtml(sb,isActiveUp,isActiveDown);
         }
-        sb.append("<p style=\"margin-top: 6px;\">"+StringUtil.viewHtml(value)+"</p>");
+        if(isFE){
+            sb.append("<p style=\"margin-top: 6px;\">"+StringUtil.viewHtml(value)+"</p>");
+        }else{
+            sb.append("<p>"+StringUtil.viewHtml(value)+"</p>");
+        }
         sb.append("</th>");
 
         try {
@@ -141,5 +147,8 @@ public class SortableHeaderTag extends DivTagSupport {
 	}
     public void setNeedSort(boolean needSort) {
         this.needSort = needSort;
+    }
+    public void setIsFE(boolean isFE) {
+        this.isFE = isFE;
     }
 }
