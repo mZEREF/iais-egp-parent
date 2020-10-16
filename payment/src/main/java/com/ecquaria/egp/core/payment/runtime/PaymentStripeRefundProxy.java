@@ -8,34 +8,25 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.SrcSystemConfDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.dto.SoapiS2S;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
 import com.ecquaria.egp.core.payment.PaymentTransaction;
-import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Refund;
+import com.stripe.model.checkout.Session;
 import ecq.commons.helper.StringHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import sop.config.ConfigUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -54,7 +45,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
-public class PaymentNetsProxy extends PaymentProxy {
+public class PaymentStripeRefundProxy extends PaymentProxy {
 
 
 	public static final String DEFAULT_ENCODING = "UTF-8";
@@ -69,14 +60,8 @@ public class PaymentNetsProxy extends PaymentProxy {
 	@Override
 	public void pay(BaseProcessClass bpc) throws PaymentException {
 		AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_PAYMENT, AuditTrailConsts.FUNCTION_ONLINE_PAYMENT);
-
 		String continueToken = getContinueToken();
 		bpc.request.getSession().setAttribute(IMPL_CONTINUE_TOKEN_PREFIX + getTinyKey(), continueToken);
-
-		String bigsURL = AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+ConfigUtil.getString("eNets.url");
-		if (StringHelper.isEmpty(bigsURL)) {
-			throw new PaymentException("Nets.url is not set.");
-		}
 
 		Map<String, String> fields = null;
 		try {
@@ -91,55 +76,50 @@ public class PaymentNetsProxy extends PaymentProxy {
 			throw new PaymentException(e1);
 		}
 		SrcSystemConfDto srcSystemConfDto =new SrcSystemConfDto();
-		String merchantTxnRef = Formatter.formatDateTime(new Date(), "yyyyMMdd HH:mm:ss.SSS");
-		String merchantTxnDtm = Formatter.formatDateTime(new Date(), "yyyyMMdd HH:mm:ss.SSS");
+
 		String amo = fields.get("vpc_Amount");
-		String amoOo= String.valueOf(Integer.parseInt(amo)/100);
 		String payMethod = fields.get("vpc_OrderInfo");
 		String reqNo = fields.get("vpc_MerchTxnRef");
 		String returnUrl=this.getPaymentData().getContinueUrl();
-		String umId= "UMID_877772003";
-		String keyId=GatewayConfig.eNetsKeyId;
-		String secretKey=GatewayConfig.eNetsSecretKey ;
-		String s2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/payment-web/s2sTxnEnd";
+		String refNo = reqNo.substring(0,reqNo.indexOf('-'));
+		double amount = Double.parseDouble(amo)/100;
 
-		String txnRep="{\"ss\":\"1\",\"msg\":{\"netsMid\":\""+umId+"\",\"tid\":\"\",\"submissionMode\":\"B\",\"txnAmount\":\""+amoOo+"\",\"merchantTxnRef\":\""+merchantTxnRef+"\",\"merchantTxnDtm\":\""+merchantTxnDtm+"\",\"paymentType\":\"SALE\",\"currencyCode\":\"SGD\",\"paymentMode\":\"\",\"merchantTimeZone\":\"+8:00\",\"b2sTxnEndURL\":\""+fields.get("vpc_ReturnURL")+"\",\"b2sTxnEndURLParam\":\"\",\"s2sTxnEndURL\":\""+s2sUrl+"\",\"s2sTxnEndURLParam\":\"\",\"clientType\":\"W\",\"supMsg\":\"\",\"netsMidIndicator\":\"U\",\"ipAddress\":\"127.0.0.1\",\"language\":\"en\"}}" ;
+		PaymentRequestDto paymentRequestDtoOld=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(refNo).getEntity();
 
-		String hmac= null;
+
+		Session checkoutSession= null;
 		try {
-			hmac = generateSignature(txnRep,secretKey);
-		} catch (Exception e) {
+			checkoutSession = PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDtoOld.getSrcSystemConfDto().getClientKey());
+		} catch (StripeException e) {
 			log.info(e.getMessage(),e);
 		}
-		ParamUtil.setSessionAttr(bpc.request,"txnReq",txnRep);
-		ParamUtil.setSessionAttr(bpc.request,"API_KEY",keyId);
-		ParamUtil.setSessionAttr(bpc.request,"HMAC",hmac);
+		Refund refund;
+
+		try {
+			refund=PaymentBaiduriProxyUtil.getStripeService().createRefund(checkoutSession.getPaymentIntent(),Long.valueOf(amo));
+			srcSystemConfDto.setClientKey(refund.getId());
+		} catch (StripeException e) {
+			log.info(e.getMessage(),e);
+			srcSystemConfDto.setClientKey(UUID.randomUUID().toString());
+		}
 
 
-		srcSystemConfDto.setClientKey(UUID.randomUUID().toString());
 		if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(reqNo)) {
 			PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
 			srcSystemConfDto.setReturnUrl(returnUrl);
 			srcSystemConfDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 			SrcSystemConfDto srcSystemConfDto1 =PaymentBaiduriProxyUtil.getPaymentClient().accessApplicationSrcSystemConfDto(srcSystemConfDto).getEntity();
-			double amount = Double.parseDouble(amo)/100;
 			paymentRequestDto.setAmount(amount);
-			paymentRequestDto.setPayMethod("eNets");
+			paymentRequestDto.setPayMethod("stpRefund");
 			paymentRequestDto.setReqDt(new Date());
 			paymentRequestDto.setReqRefNo(reqNo);
 			paymentRequestDto.setSrcSystemConfDto(srcSystemConfDto1);
 			paymentRequestDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 			PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
-
 		}
 
 		try {
-			StringBuilder bud = new StringBuilder();
-			bud.append(bigsURL).append('?');
-			appendQueryFields(bud, fields);
-
-
-			RedirectUtil.redirect(bud.toString(), bpc.request, bpc.response);
+			RedirectUtil.redirect(fields.get("vpc_ReturnURL"), bpc.request, bpc.response);
 			setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
 		} catch (UnsupportedEncodingException e) {
 			log.info(e.getMessage(),e);
@@ -158,7 +138,6 @@ public class PaymentNetsProxy extends PaymentProxy {
 	@Override
 	public void callBack(BaseProcessClass bpc) throws PaymentException {
 		AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_PAYMENT, AuditTrailConsts.FUNCTION_ONLINE_PAYMENT);
-
 		String continueToken = (String)bpc.request.getSession().getAttribute(IMPL_CONTINUE_TOKEN_PREFIX + getTinyKey());
 		if(StringHelper.isEmpty(continueToken)){
 			throw new PaymentException("Continue token is null.");
@@ -175,21 +154,26 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String gwNo = fields.get("vpc_TransactionNo");
 		setGatewayRefNo(gwNo);
 		HttpServletRequest request = bpc.request;
-		String txnReq= (String) ParamUtil.getSessionAttr(request,"txnReq");
+		Refund refund=null;
+		try{
+			refund=PaymentBaiduriProxyUtil.getStripeService().retrieveRefund(paymentRequestDto.getSrcSystemConfDto().getClientKey());
+
+		}catch (Exception e){
+			log.info(e.getMessage(),e);
+
+		}
 
 		String response = "payment success";
 		setPaymentResponse(response);
-
 		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
-		String invoiceNo = "1234567";//"Send";
-
-		if(receiveS2STxnEnd(txnReq,request).getStatusCodeValue()==200){
-			status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
-		}else {
-			status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
+		String invoiceNo = "1234567";
+		if(refund!=null){
+			if("succeeded".equals(refund.getStatus())){
+				status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
+			}else {
+				status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
+			}
 		}
-
-
 		PaymentDto paymentDto = new PaymentDto();
 		paymentDto.setAmount(amount);
 		paymentDto.setReqRefNo(refNo);
@@ -220,34 +204,6 @@ public class PaymentNetsProxy extends PaymentProxy {
 		}
 	}
 
-	@RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, value =
-			"/s2sTxnEnd", method = RequestMethod.POST)
-	public ResponseEntity<Void> receiveS2STxnEnd(@RequestBody String txnRes,
-												 HttpServletRequest request) {
-		log.debug("MERCHANT APP : in receiveS2STxnEnd :" + txnRes);//jsonmessage received as string
-		try {
-			String generatedHmac = generateSignature(txnRes, GatewayConfig.eNetsSecretKey );//generate mac
-			String macFromGW = request.getHeader("hmac");
-			log.info ("MERCHANT APP : header hmac received :" +
-					macFromGW);//
-			log.info("MERCHANT APP : header hmac generated :" +
-					generatedHmac);
-			if(generatedHmac.equalsIgnoreCase(macFromGW)){
-//parse message
-				ObjectMapper mapper = new ObjectMapper();
-				SoapiS2S txnResObj = mapper.readValue(txnRes, SoapiS2S.class);
-				log.info("MERCHANT APP : in receiveS2STxnEnd :" + txnResObj);
-				//Please handle success or failure response code
-			}
-			else{
-				log.error("signature not matched.");
-//handle exception flow
-			}
-		} catch (Exception e) {
-// TODO handle exception
-			log.error(e.getMessage());}
-		return new ResponseEntity<Void>(HttpStatus.OK);
-	}
 	@Override
 	public void cancel(BaseProcessClass bpc) throws PaymentException {
 		Map<String, String> fields = null;
@@ -446,29 +402,5 @@ public class PaymentNetsProxy extends PaymentProxy {
 	}
 
 
-	public static String generateSignature(String txnReq,String secretKey) throws Exception{
-		String concatPayloadAndSecretKey = txnReq + secretKey;
-		String hmac = encodeBase64(hashSHA256ToBytes(concatPayloadAndSecretKey.getBytes()));
-		System.out.println("hmac" + hmac);
-		return hmac;
 
-	}
-
-
-	public static byte[] hashSHA256ToBytes(byte[] input) throws Exception
-	{
-		byte[] byteData = null;
-
-		MessageDigest md = MessageDigest.getInstance("SHA-256");
-		md.update(input);
-
-		byteData = md.digest();
-
-		return byteData;
-	}
-
-	public static String encodeBase64(byte[] data) throws Exception
-	{
-		return DatatypeConverter.printBase64Binary(data);
-	}
 }
