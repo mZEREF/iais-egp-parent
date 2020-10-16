@@ -49,6 +49,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -60,14 +61,12 @@ import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.BeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -82,7 +81,6 @@ import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -166,12 +164,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Autowired
     private SystemParamConfig systemParamConfig;
-
-    @Autowired
-    private MsgTemplateClient msgTemplateClient;
-
-    @Autowired
-    private InboxMsgService inboxMsgService;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -575,7 +567,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, td.getTaskKey());
         hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT, td.getTaskKey(), null,
-                InspectionConstants.PROCESS_DECI_PENDING_APPLICANT_ACCEPT_INSPECTION_DATE, td.getRoleId(), null, td.getWkGrpId());
+                InspectionConstants.PROCESS_DECI_PENDING_APPLICANT_ACCEPT_INSPECTION_DATE, RoleConsts.USER_ROLE_INSPECTIOR, null, td.getWkGrpId());
         String appHistoryId = appPremisesRoutingHistoryDto.getId();
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         List<AppPremInspCorrelationDto> appPremInspCorrelationDtoList = IaisCommonUtils.genNewArrayList();
