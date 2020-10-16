@@ -154,6 +154,7 @@ public class AuditTrailDelegator {
         operationList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_DELETE), "Delete Record"));
         operationList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_VALIDATION_FAIL), "Data Validation Failure"));
         operationList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_USER_UPDATE), "User Account"));
+        operationList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_INACTIVE_RECORD), "Inactive Record"));
         ParamUtil.setRequestAttr(request, "operationValueTypeSelect", operationList);
 
         List<SelectOption> dataActivites =  IaisCommonUtils.genNewArrayList();

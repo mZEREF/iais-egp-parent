@@ -594,6 +594,8 @@ public class HcsaChklItemDelegator {
             boolean canInactive = hcsaChklService.inActiveItem(itemId);
             if (!canInactive){
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("deleteItemMsg", "CHKL_ERR020"));
+            }else {
+                AuditTrailHelper.callSaveAuditTrailByOperation(AuditTrailConsts.OPERATION_INACTIVE_RECORD);
             }
         }
     }

@@ -157,7 +157,10 @@ public class RegulationDelegator {
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("customValidation",
                         "CHKL_ERR025"));
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            }else {
+                AuditTrailHelper.callSaveAuditTrailByOperation(AuditTrailConsts.OPERATION_INACTIVE_RECORD);
             }
+
         }
 
     }

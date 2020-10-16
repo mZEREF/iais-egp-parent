@@ -79,6 +79,12 @@ public class AuditTrailHelper {
         dto.setLicenseNum(licNo);
     }
 
+    public static void callSaveAuditTrailByOperation(int operation){
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+        auditTrailDto.setOperation(operation);
+        AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
+    }
+
     /**
      * save audit trail for param
      * @param auditTrailDto
