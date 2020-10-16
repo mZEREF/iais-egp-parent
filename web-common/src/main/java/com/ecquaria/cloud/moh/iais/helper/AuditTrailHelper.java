@@ -60,8 +60,8 @@ public class AuditTrailHelper {
         }
 
         IaisEGPHelper.setAuditLoginUserInfo(dto);
-        dto.setApplicationNum(appNo);
-        dto.setLicenseNum(licenceNo);
+      /*  dto.setApplicationNum(appNo);
+        dto.setLicenseNum(licenceNo);*/
         dto.setModule(moduleName);
         dto.setFunctionName(functionName);
         ParamUtil.setSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME, dto);
