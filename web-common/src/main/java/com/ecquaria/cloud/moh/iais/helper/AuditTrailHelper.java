@@ -124,7 +124,7 @@ public class AuditTrailHelper {
                 }
             }
         }
-
+        log.info(StringUtil.changeForLog("batch job function name" + dto.getFunctionName()));
         dto.setOperationType(AuditTrailConsts.OPERATION_TYPE_BATCH_JOB);
         return dto;
     }
