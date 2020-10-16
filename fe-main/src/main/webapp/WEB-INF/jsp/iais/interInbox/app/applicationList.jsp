@@ -100,14 +100,14 @@
                 <thead>
                 <tr>
                     <iais:sortableHeader needSort="true" field="APPLICATION_NO"
-                                         value="Application No."/>
-                    <iais:sortableHeader needSort="true" field="APP_TYPE_DESC" value="Type"/>
-                    <iais:sortableHeader needSort="true" field="code" value="Service"/>
-                    <iais:sortableHeader needSort="true" field="STATUS_DESC" value="Status"/>
+                                         value="Application No." isFE="true"/>
+                    <iais:sortableHeader needSort="true" field="APP_TYPE_DESC" value="Type" isFE="true"/>
+                    <iais:sortableHeader needSort="true" field="code" value="Service" isFE="true"/>
+                    <iais:sortableHeader needSort="true" field="STATUS_DESC" value="Status" isFE="true"/>
                     <iais:sortableHeader needSort="true" field="CREATED_DT"
-                                         value="Submission Date" style="width:16%"/>
+                                         value="Submission Date" style="width:16%" isFE="true"/>
                     <iais:sortableHeader needSort="false" field=""
-                                         value="Actions" style="width:14%"/>
+                                         value="Actions" style="width:14%" />
                 </tr>
                 </thead>
                 <tbody>
