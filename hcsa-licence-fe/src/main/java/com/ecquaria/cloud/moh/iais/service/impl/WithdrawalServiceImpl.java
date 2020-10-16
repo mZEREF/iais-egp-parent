@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -29,10 +30,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -90,6 +89,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     @Autowired
     private Environment env;
 
+    @Autowired
+    private NotificationHelper notificationHelper;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -141,8 +143,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                         msgInfoMap.put("S_LName",serviceName);
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
                         try {
-                            EmailDto emailDto = sendNotification(TEMPLATE_WITHDRAWAL_ID,msgInfoMap,h.getApplicationNo(),h.getLicenseeId());
-                            sendInboxMessage(h.getApplicationNo(),h.getLicenseeId(),null,emailDto.getContent(),serviceId,emailDto.getSubject());
+                            EmailParam emailParam = sendNotification(TEMPLATE_WITHDRAWAL_ID,msgInfoMap,h.getApplicationNo());
+                            notificationHelper.sendNotification(emailParam);
+                            sendInboxMessage(h.getApplicationNo(),serviceId,msgInfoMap,emailParam.getSubject());
                         } catch (Exception e) {
                             log.error(e.getMessage(), e);
                         }
@@ -228,60 +231,41 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         return withdrawApplicationDtoList;
     }
 
-    private void sendInboxMessage(String applicationNo,String licenseeId,HashMap<String, String> maskParams,String templateMessageByContent,String serviceId,String subject){
-        InterMessageDto interMessageDto = new InterMessageDto();
+    private void sendInboxMessage(String applicationNo,String serviceId,Map<String, Object> map,String subject){
+        EmailParam messageParam = new EmailParam();
         HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-        interMessageDto.setSubject(subject);
-        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        String refNo = feEicGatewayClient.getMessageNo(signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
-        interMessageDto.setRefNo(refNo);
+        List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
         if(serviceDto != null){
-            interMessageDto.setService_id(serviceDto.getSvcCode()+"@");
+            svcCodeList.add(serviceDto.getSvcCode());
         }
-        interMessageDto.setUserId(licenseeId);
-        interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        interMessageDto.setMsgContent(templateMessageByContent);
-        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        interMessageDto.setMaskParams(maskParams);
-        feMessageClient.createInboxMessage(interMessageDto);
+        messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_MESSAGE_ID);
+        messageParam.setTemplateContent(map);
+        messageParam.setQueryCode(applicationNo);
+        messageParam.setReqRefNum(applicationNo);
+        messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        messageParam.setRefId(applicationNo);
+        messageParam.setSubject(subject);
+        messageParam.setSvcCodeList(svcCodeList);
+        log.info(StringUtil.changeForLog("send withdraw Application message"));
+        notificationHelper.sendNotification(messageParam);
     }
 
-    private EmailDto sendNotification(String msgId, Map<String, Object> msgInfoMap, String applicationNo, String licenseeId) throws IOException, TemplateException {
+    private EmailParam sendNotification(String msgId, Map<String, Object> msgInfoMap, String applicationNo) throws IOException, TemplateException {
+        log.info(StringUtil.changeForLog("***************** send withdraw application Notification  *****************"));
         MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
-        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
-        EmailDto emailDto=new EmailDto();
-        emailDto.setClientQueryCode(applicationNo);
-        emailDto.setSender(mailSender);
-        emailDto.setContent(templateMessageByContent);
-        emailDto.setSubject(msgTemplateDto.getTemplateName()+applicationNo);
-        List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
-        if(licenseeEmailAddrs!=null){
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            emailDto.setReceipts(licenseeEmailAddrs);
-            try {
-                EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.WithdrawalServiceImpl", "sendNotification",
-                        "hcsa-licence-web-internet", InspRectificationSaveDto.class.getName(), JsonUtil.parseToJson(emailDto));
-                String eicRefNo = eicRequestTrackingDto.getRefNo();
-                feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization());
-                //get eic record
-                eicRequestTrackingDto = licEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-                //update eic record status
-                eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-                eicRequestTrackingDtos.add(eicRequestTrackingDto);
-                licEicClient.updateStatus(eicRequestTrackingDtos);
-            }catch (Exception e){
-                log.error(e.getMessage(),e);
-            }
-        }
-        return emailDto;
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        map.put("ApplicationNumber", applicationNo);
+        String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE);
+        emailParam.setTemplateContent(msgInfoMap);
+        emailParam.setQueryCode(applicationNo);
+        emailParam.setReqRefNum(applicationNo);
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+        emailParam.setRefId(applicationNo);
+        emailParam.setSubject(subject);
+        log.info(StringUtil.changeForLog("***************** send withdraw application Notification  end*****************"));
+        return emailParam;
     }
 
     private void transform(AppSubmissionDto appSubmissionDto,String licenseeId){
