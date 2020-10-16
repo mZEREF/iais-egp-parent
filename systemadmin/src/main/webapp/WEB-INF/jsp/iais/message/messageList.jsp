@@ -158,19 +158,17 @@
     });
 
     function displaySection(){
-        var val = document.getElementById("domainType").value;
+        var val =  $("#domainType").val();
         if(val == null || val == '' ){
             return;
         }
-
-        document.getElementById("msgTypeRow").style = "block";
-
-        if(document.getElementById("msgType").value == null || document.getElementById("msgType").value == '' ){
+        $("#msgTypeRow").attr("style","display: block");
+        if($("#msgType").val() == null || $("#msgType").val()== '' ){
             console.log("can not open div");
             return;
         }
 
-        document.getElementById("moduleTypeRow").style = "block";
+        $("#moduleTypeRow").attr("style","display: block");
 
     }
 </script>
