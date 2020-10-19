@@ -202,6 +202,34 @@
         var apptBackShow = $("#apptBackShow").val();
         if('back' == apptBackShow){
             apptInspectionDateJump();
+            $.post(
+                '/hcsa-licence-web/online-appt/insp.date',
+                function (data) {
+                    dismissWaiting();
+                    var ajaxFlag = data.buttonFlag;
+                    var inspDateList = data.inspDateList;
+                    if('true' == ajaxFlag){
+                        $("#disApptSysInspDate").hide();
+                        $("#apptSysInspDate").show();
+                        $("#apptThreeInspDate").show();
+                        var html = '<div class="row">' +
+                            '<div class="col-md-6">' +
+                            '<ul>';
+                        for(var i = 0; i < inspDateList.length; i++){
+                            html += '<li><span style="font-size: 16px">' + inspDateList[i] + '</span></li>';
+                        }
+                        html += '</ul>' +
+                            '</div>' +
+                            '</div>';
+                        $("#apptDateTitle").after(html);
+                        $("#sysInspDateFlag").val('true');
+                    } else {
+                        $("#disApptSysInspDate").show();
+                        $("#apptSysInspDate").hide();
+                        $("#apptThreeInspDate").hide();
+                    }
+                }
+            )
         }
     })
 

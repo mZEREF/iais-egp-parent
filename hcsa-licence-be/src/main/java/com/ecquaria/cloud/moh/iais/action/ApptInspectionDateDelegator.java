@@ -150,6 +150,8 @@ public class ApptInspectionDateDelegator {
     public void apptInspectionDateSpec(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptInspectionDateSpec start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
+        //cancel System date
+        apptInspectionDateDto = apptInspectionDateService.cancelSystemDateBySpecStep(apptInspectionDateDto);
         List<SelectOption> hours = apptInspectionDateService.getInspectionDateHours();
         List<SelectOption> endHours = apptInspectionDateService.getInspectionDateEndHours();
         ParamUtil.setSessionAttr(bpc.request, "hoursOption", (Serializable) hours);

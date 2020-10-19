@@ -143,4 +143,13 @@ public interface ApptInspectionDateService {
       * @Descripation: saveAppUserCorrelation
       */
     void saveAppUserCorrelation(ApptInspectionDateDto apptInspectionDateDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/10/19
+      * @Param: apptInspectionDateDto
+      * @return: ApptInspectionDateDto
+      * @Descripation: cancel System Date By SpecStep
+      */
+    ApptInspectionDateDto cancelSystemDateBySpecStep(ApptInspectionDateDto apptInspectionDateDto);
 }
