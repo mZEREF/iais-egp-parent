@@ -133,11 +133,11 @@ public class InspecEmailDelegator {
             }
 
         }
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_MAIL);
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
         if( taskDto == null) {
             return;
         }
+        AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_MAIL,taskDto.getApplicationNo());
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
         ParamUtil.setSessionAttr(request,"appPremCorrId",null);
         ParamUtil.setSessionAttr(request,MSG_CON, null);

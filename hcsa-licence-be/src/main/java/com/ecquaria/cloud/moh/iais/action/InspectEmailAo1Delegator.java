@@ -126,11 +126,11 @@ public class InspectEmailAo1Delegator {
             }
 
         }
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_MAIL);
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
         if( taskDto == null) {
             return;
         }
+        AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_MAIL,taskDto.getApplicationNo());
         String appPremCorrId = taskDto.getRefNo();
         List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
         List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
