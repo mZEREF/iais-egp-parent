@@ -201,10 +201,10 @@ public class PaymentStripeProxy extends PaymentProxy {
 		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
 		String invoiceNo = "1234567";
 		if(paymentIntent!=null){
-			if("succeeded".equals(paymentIntent.getStatus())){
-				status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
-			}else {
-				status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
+			switch (paymentIntent.getStatus()){
+				case "succeeded":status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;break;
+				case "requires_payment_method":status =paymentIntent.getStatus();break;
+				default:status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
 			}
 		}
 		PaymentDto paymentDto = new PaymentDto();

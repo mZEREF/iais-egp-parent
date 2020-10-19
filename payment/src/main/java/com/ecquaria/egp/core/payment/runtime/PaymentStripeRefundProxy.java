@@ -185,9 +185,10 @@ public class PaymentStripeRefundProxy extends PaymentProxy {
 		PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
 
 		try {
-
+			String svcName=request.getServerName();
+			svcName=svcName.replace("inter","intra");
 			String results="?result="+ MaskUtil.maskValue("result",status)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",refNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",transNo);
-			String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+paymentRequestDto.getSrcSystemConfDto().getReturnUrl()+results;
+			String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + svcName+paymentRequestDto.getSrcSystemConfDto().getReturnUrl()+results;
 
 
 			RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);
