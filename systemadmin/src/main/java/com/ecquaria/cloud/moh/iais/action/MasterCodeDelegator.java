@@ -47,11 +47,7 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @Author Hua_Chong
@@ -426,6 +422,12 @@ public class MasterCodeDelegator {
                     String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Code Value","field");
                     errItems.add(errMsg);
                     result = true;
+                }else if(masterCodeToExcelDto.getCodeValue().length() >256) {
+                    Map<String,String> stringMap = new HashMap<>(2);
+                    stringMap.put("field","Code Value");
+                    stringMap.put("maxlength","256");
+                    errItems.add( MessageUtil.getMessageDesc("GENERAL_ERR0041",stringMap));
+                    result = true;
                 }
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getStatus())){
                     String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Status","field");
@@ -436,6 +438,24 @@ public class MasterCodeDelegator {
                     String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Sequence","field");
                     errItems.add(errMsg);
                     result = true;
+                }else {
+                    try{
+                        if(masterCodeToExcelDto.getSequence().length() >3){
+                            Map<String,String> stringMap = new HashMap<>(2);
+                            stringMap.put("field","Sequence");
+                            stringMap.put("maxlength","3");
+                            errItems.add( MessageUtil.getMessageDesc("GENERAL_ERR0041",stringMap));
+                            result = true;
+                        }else {
+                            Integer.parseInt(masterCodeToExcelDto.getSequence());
+                        }
+                    }catch (Exception e){
+                        String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0040","Sequence","field");
+                        errItems.add(errMsg);
+                        result = true;
+                    }
+
+
                 }
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getEffectiveFrom())){
                     String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field");
@@ -445,7 +465,7 @@ public class MasterCodeDelegator {
                     try{
                         codeEffFrom = Formatter.parseDate(masterCodeToExcelDto.getEffectiveFrom());
                     }catch (Exception e){
-                        String errMsg = MessageUtil.getMessageDesc("CHKL_ERR003");
+                        String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0040","Effective Start Date","field");
                         errItems.add(errMsg);
                         result = true;
                     }
@@ -458,7 +478,7 @@ public class MasterCodeDelegator {
                     try{
                         codeEffTo = Formatter.parseDate(masterCodeToExcelDto.getEffectiveTo());
                     }catch (Exception e){
-                        String errMsg = MessageUtil.getMessageDesc("CHKL_ERR003");
+                        String errMsg =  MessageUtil.replaceMessage("GENERAL_ERR0040","Effective End Date","field");
                         errItems.add(errMsg);
                         result = true;
                     }
@@ -520,7 +540,7 @@ public class MasterCodeDelegator {
                     }else if ("Inactive".equals(masterCodeToExcelDto.getStatus())){
                         masterCodeToExcelDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                     }else{
-                        String errMsg = MessageUtil.getMessageDesc("MCUPERR003");
+                        String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0040","Status","field");
                         errItems.add(errMsg);
                         result = true;
                     }
@@ -530,16 +550,48 @@ public class MasterCodeDelegator {
                         MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
                         String version = masterCodeToExcelDto1.getVersion();
                         String uploadVersion = masterCodeToExcelDto.getVersion();
-                        if (!StringUtil.isEmpty(version)){
-                            double versionDou = Double.parseDouble(version);
-                            int versionInt = (int) versionDou;
-                            if (versionInt >= Integer.parseInt(uploadVersion)){
-                                String errMsg = MessageUtil.getMessageDesc("SYSPAM_ERROR0006");
-                                errItems.add(errMsg);
+                        if( !StringUtil.stringIsFewDecimal(uploadVersion,2)){
+                            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0040","Version","field");
+                            errItems.add(errMsg);
+                            result = true;
+                        }else {
+                            if(uploadVersion.length() > 4){
+                                Map<String,String> stringMap = new HashMap<>(2);
+                                stringMap.put("field","Version");
+                                stringMap.put("maxlength","4");
+                                errItems.add( MessageUtil.getMessageDesc("GENERAL_ERR0041",stringMap));
                                 result = true;
+                            }else {
+                                double inputVer = Double.parseDouble(uploadVersion);
+                                if(inputVer >= 10){
+                                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0040","Version","field");
+                                    errItems.add(errMsg);
+                                    result = true;
+                                }else {
+                                    if (!StringUtil.isEmpty(version)){
+                                        double versionDou = Double.parseDouble(version);
+                                        if (versionDou >= inputVer){
+                                            String errMsg = MessageUtil.getMessageDesc("SYSPAM_ERROR0006");
+                                            errItems.add(errMsg);
+                                            result = true;
+                                        }
+                                    }
+                                }
                             }
                         }
+
                     }
+                }else {
+                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Version","field");
+                    errItems.add(errMsg);
+                    result = true;
+                }
+                if( !StringUtil.isEmpty(masterCodeToExcelDto.getRemakes()) && masterCodeToExcelDto.getRemakes().length() >256){
+                    Map<String,String> stringMap = new HashMap<>(2);
+                    stringMap.put("field","Remarks");
+                    stringMap.put("maxlength","256");
+                    errItems.add( MessageUtil.getMessageDesc("GENERAL_ERR0041",stringMap));
+                    result = true;
                 }
                 if (cartOptional != null && cartOptional.isPresent()) {
                     MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
