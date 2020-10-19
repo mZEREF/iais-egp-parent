@@ -120,7 +120,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
 
     private void createTaskAndHistory( List<ApplicationDto> creatTaskApplicationList, String stageId, String roleId, List<String> oldAppGroupExcuted, String oldAppGrpId) throws FeignException {
         TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto());
+                stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(),RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN);
         if(taskHistoryDto != null){
             List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
             List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();

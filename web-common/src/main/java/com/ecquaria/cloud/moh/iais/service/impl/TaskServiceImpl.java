@@ -192,7 +192,7 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId,String roleId, AuditTrailDto auditTrailDto) throws FeignException {
+    public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId,String roleId, AuditTrailDto auditTrailDto, String createHistoryRoleId) throws FeignException {
         log.debug(StringUtil.changeForLog("the do getRoutingTaskOneUserForSubmisison start ...."));
         log.info(StringUtil.changeForLog("---------------"+ JsonUtil.parseToJson(applicationDtos) +"--------"+stageId));
         TaskHistoryDto result = new TaskHistoryDto();
@@ -269,7 +269,7 @@ public class TaskServiceImpl implements TaskService {
                             log.debug(StringUtil.changeForLog("the appPremisesCorrelationId is -->;"+appPremisesCorrelationDto.getId()));
                             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
                                     createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),
-                                            stageId,null,roleId,auditTrailDto);
+                                            stageId,null,createHistoryRoleId,auditTrailDto);
                             appPremisesRoutingHistoryDto.setWrkGrpId(workGroupId);
                             appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
                         }

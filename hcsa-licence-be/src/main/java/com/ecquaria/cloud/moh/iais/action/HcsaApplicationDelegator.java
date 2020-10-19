@@ -1862,7 +1862,7 @@ public class HcsaApplicationDelegator {
                     }
                     // send the task to Ao2  or Ao3
                     TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                            stageId,roleId,IaisEGPHelper.getCurrentAuditTrailDto());
+                            stageId,roleId,IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId());
                     List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                     List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
                     broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
@@ -1878,7 +1878,7 @@ public class HcsaApplicationDelegator {
                 TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,newCorrelationId);
                 broadcastOrganizationDto.setCreateTask(newTaskDto);
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),stageId,HcsaConsts.ROUTING_STAGE_PRE,
-                        taskDto.getWkGrpId(),null,null,externalRemarks,roleId);
+                        taskDto.getWkGrpId(),null,null,externalRemarks,taskDto.getRoleId());
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             }else{
                 TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,newCorrelationId);
@@ -1889,7 +1889,7 @@ public class HcsaApplicationDelegator {
                     &&!applicationDto.isFastTracking())
                     &&!ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(appStatus)){
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),stageId,null,
-                        taskDto.getWkGrpId(),null,null,externalRemarks,roleId);
+                        taskDto.getWkGrpId(),null,null,externalRemarks,taskDto.getRoleId());
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             }
         }else{
@@ -1908,7 +1908,7 @@ public class HcsaApplicationDelegator {
 //                        doWithdrawal(applicationDto.getId(),broadcastOrganizationDto,broadcastApplicationDto);
 //                    }
                     if(isAo1Ao2Approve){
-                        doAo1Ao2Approve(broadcastOrganizationDto,broadcastApplicationDto,applicationDto);
+                        doAo1Ao2Approve(broadcastOrganizationDto,broadcastApplicationDto,applicationDto,taskDto);
                     }
                     if(isAllSubmit){
                         //update application Group status
@@ -2002,7 +2002,7 @@ public class HcsaApplicationDelegator {
         log.info(StringUtil.changeForLog("The routingTask end ..."));
     }
 
-    private void doAo1Ao2Approve(BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto, ApplicationDto applicationDto) throws FeignException {
+    private void doAo1Ao2Approve(BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto, ApplicationDto applicationDto, TaskDto taskDto) throws FeignException {
         String appGrpId = applicationDto.getAppGrpId();
         String applicationNo = applicationDto.getApplicationNo();
         String status = applicationDto.getStatus();
@@ -2032,59 +2032,11 @@ public class HcsaApplicationDelegator {
                     }
                     // send the task to Ao2  or Ao3
                     TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                            stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto());
+                            stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId());
                     List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                     List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
                     broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
                     broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
-                }
-            }
-        }
-    }
-
-    private void doWithdrawal(String appId, BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto) throws FeignException {
-        AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
-        if(premiseMiscDto != null){
-            String oldAppId = premiseMiscDto.getRelateRecId();
-            log.info(StringUtil.changeForLog("withdrawal old application id : " + oldAppId));
-            ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
-            if(oldApplication != null){
-                String oldAppGrpId = oldApplication.getAppGrpId();
-                String currentOldApplicationNo = oldApplication.getApplicationNo();
-                String currentOldApplicationStatus = oldApplication.getStatus();
-                List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(oldAppGrpId);
-                if(IaisCommonUtils.isEmpty(applicationDtoList) || applicationDtoList.size() == 1){
-                    return;
-                }else{
-                    boolean isAllSubmitAO3 = applicationService.isOtherApplicaitonSubmit(applicationDtoList,currentOldApplicationNo,
-                            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
-                    if(!(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(currentOldApplicationStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(currentOldApplicationStatus))
-                            || (isAllSubmitAO3 && (ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(currentOldApplicationStatus)))){
-                        //!(ao2 || ao3)
-                        boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,currentOldApplicationNo,
-                                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
-                        if(isAllSubmit){
-                            String stageId = HcsaConsts.ROUTING_STAGE_AO3;
-                            String roleId = RoleConsts.USER_ROLE_AO3;
-                            updateCurrentApplicationStatus(applicationDtoList,oldAppId,ApplicationConsts.APPLICATION_STATUS_WITHDRAWN);
-                            List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
-                            List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
-                            List<ApplicationDto> creatTaskApplicationList = ao2AppList;
-                            if(IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)){
-                                creatTaskApplicationList = ao3AppList;
-                            }else{
-                                stageId = HcsaConsts.ROUTING_STAGE_AO2;
-                                roleId = RoleConsts.USER_ROLE_AO2;
-                            }
-                            // send the task to Ao2  or Ao3
-                            TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                                    stageId,roleId,IaisEGPHelper.getCurrentAuditTrailDto());
-                            List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
-                            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
-                            broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
-                            broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
-                        }
-                    }
                 }
             }
         }
