@@ -86,7 +86,16 @@
                                     </tr>
                                     </tbody>
                                 </table>
-                                <%@include file="../newApplication/paymentMethod.jsp"%>
+                                <c:choose>
+                                    <c:when test="${dAmount=='$0'}">
+                                        <input type="hidden" value="false" name="noNeedPayment">
+                                        <%@include file="../newApplication/noNeedPayment.jsp.jsp"%>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <%@include file="../newApplication/paymentMethod.jsp"%>
+                                    </c:otherwise>
+                                </c:choose>
+
                             </div>
 
                         </div>
@@ -102,13 +111,17 @@
     $(document).ready(function () {
         $('#comDashboard div.navigation-gp').css('margin-left','6.5%');
     });
-    $('#proceed').click(function () {var flag=false;
-        $("input[name='payMethod']").each(function () {
-
-            if ( $(this).prop("checked")){
-                flag=true;
-            }
-        });
+    $('#proceed').click(function () {
+        var flag=false;
+        if($("input[name='payMethod']").size()<=0){
+            flag=true;
+        }else {
+            $("input[name='payMethod']").each(function () {
+                if ( $(this).prop("checked")){
+                    flag=true;
+                }
+            });
+        }
         if(!flag){
             $('#error_pay').html("The field is mandatory.");
             return;

@@ -4,6 +4,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Wenkang
@@ -12,7 +13,7 @@ import java.util.List;
 public interface UploadFileService {
     String saveFile(ApplicationListFileDto applicationListFileDto ) ;
     String getData();
-    String  changeStatus(ApplicationListFileDto applicationListDto);
+    String  changeStatus(ApplicationListFileDto applicationListDto, Map<String,List<String>> map);
     String compressFile(String grpId);
 
     List<ApplicationListFileDto> parse(String data);

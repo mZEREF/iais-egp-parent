@@ -9,7 +9,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import lombok.extern.slf4j.Slf4j;
@@ -44,25 +47,39 @@ public class UploadDelegator {
         log.info("------------------- getData  end --------------");
         //Parse the
         List<ApplicationListFileDto> parse = uploadFileService.parse(data);
+        AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
         for(ApplicationListFileDto applicationListFileDto :parse){
-            uploadFileService.getRelatedDocuments(applicationListFileDto);
-            String grpId = uploadFileService.saveFile(applicationListFileDto);
-            if(StringUtil.isEmpty(grpId)){
-                continue;
-            }
-            log.info("------------------- saveFile  end --------------");
-            String compressFileName = uploadFileService.compressFile(grpId);
-            boolean rename = uploadFileService.renameAndSave(compressFileName,grpId);
-            log.info("------------------- compressFile  end --------------");
+            applicationListFileDto.setAuditTrailDto(intenet);
+            Map<String,List<String>> map=new HashMap();
+            List<String> oldStatus= IaisCommonUtils.genNewArrayList();
+            oldStatus.add(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
             try {
+                uploadFileService.getRelatedDocuments(applicationListFileDto);
+                String grpId = uploadFileService.saveFile(applicationListFileDto);
+                if(StringUtil.isEmpty(grpId)){
+                    continue;
+                }
+                log.info("------------------- saveFile  end --------------");
+                String compressFileName = uploadFileService.compressFile(grpId);
+                boolean rename = uploadFileService.renameAndSave(compressFileName,grpId);
+                log.info("------------------- compressFile  end --------------");
                 if(rename){
-                    AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
-                    applicationListFileDto.setAuditTrailDto(intenet);
-                    uploadFileService.changeStatus(applicationListFileDto);
+                    List<String> newStatus=IaisCommonUtils.genNewArrayList();
+                    newStatus.add(ApplicationConsts.APPLICATION_SUCCESS_ZIP);
+                    map.put("oldStatus",oldStatus);
+                    map.put("newStatus",newStatus);
+                    uploadFileService.changeStatus(applicationListFileDto,map);
                 }
             }catch (Exception e){
-                log.error(e.getMessage(),e);
+
+                List<String> newStatus=IaisCommonUtils.genNewArrayList();
+                newStatus.add(ApplicationConsts.APPLICATION_GROUP_ERROR_ZIP);
+                map.put("oldStatus",oldStatus);
+                map.put("newStatus",newStatus);
+                uploadFileService.changeStatus(applicationListFileDto,map);
             }
+
+
         }
 
     }

@@ -1140,7 +1140,8 @@ public class RequestForChangeMenuDelegator {
     public void jumpBank(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do jumpBank start ...."));
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
-        if (StringUtil.isEmpty(payMethod)) {
+        String noNeedPayment = bpc.request.getParameter("noNeedPayment");
+        if (StringUtil.isEmpty(payMethod)&&StringUtil.isEmpty(noNeedPayment)) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, "prePayment");
             return;
         }

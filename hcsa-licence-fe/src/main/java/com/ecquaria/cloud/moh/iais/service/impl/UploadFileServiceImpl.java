@@ -148,21 +148,16 @@ public class UploadFileServiceImpl implements UploadFileService {
     }
 
     @Override
-    public String  changeStatus(ApplicationListFileDto applicationListDto) {
+    public String  changeStatus(ApplicationListFileDto applicationListDto, Map<String,List<String>> map) {
             List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
-            Map<String,List<String>> map =IaisCommonUtils.genNewHashMap();
-            List<String> oldStatus= IaisCommonUtils.genNewArrayList();
-            oldStatus.add(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
-            List<String> newStatus=IaisCommonUtils.genNewArrayList();
-            newStatus.add(ApplicationConsts.APPLICATION_SUCCESS_ZIP);
+
             List<String> groupIds=IaisCommonUtils.genNewArrayList();
 
             for(ApplicationGroupDto every:applicationGroup){
                 String id = every.getId();
                 groupIds.add(id)  ;
             }
-            map.put("oldStatus",oldStatus);
-            map.put("newStatus",newStatus);
+
             map.put("groupIds",groupIds);
             applicationClient.updateStatus(map).getEntity();
 

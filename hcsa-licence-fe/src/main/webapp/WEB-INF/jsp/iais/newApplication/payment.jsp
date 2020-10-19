@@ -292,7 +292,16 @@
                                     </tr>
                                     </tbody>
                                 </table>
-                                <%@include file="paymentMethod.jsp"%>
+                                <c:choose>
+                                    <c:when test="${AppSubmissionDto.amountStr=='$0'}">
+                                        <input type="hidden" value="false" name="noNeedPayment">
+                                        <%@include file="../newApplication/noNeedPayment.jsp.jsp"%>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <%@include file="paymentMethod.jsp"%>
+                                    </c:otherwise>
+                                </c:choose>
+
                             </div>
                         </div>
                     </div>
@@ -310,12 +319,16 @@
 
     $('.proceed').click(function () {
         var flag=false;
-        $("input[name='payMethod']").each(function () {
+        if($("input[name='payMethod']").size()<=0){
+            flag=true;
+        }else {
+            $("input[name='payMethod']").each(function () {
 
-            if ( $(this).prop("checked")){
-                flag=true;
-            }
-        });
+                if ( $(this).prop("checked")){
+                    flag=true;
+                }
+            });
+        }
         if(!flag){
             $('#error_pay').html("The field is mandatory.");
             return;

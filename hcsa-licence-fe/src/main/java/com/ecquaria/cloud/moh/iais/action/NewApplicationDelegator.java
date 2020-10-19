@@ -2940,7 +2940,8 @@ public class NewApplicationDelegator {
     public void jumpBank(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do jumpBank start ...."));
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
-        if (StringUtil.isEmpty(payMethod)) {
+        String noNeedPayment = bpc.request.getParameter("noNeedPayment");
+        if (StringUtil.isEmpty(payMethod)&&StringUtil.isEmpty(noNeedPayment)) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, "payment");
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             errorMap.put("payMethod","payMethod is empty");
@@ -4125,14 +4126,15 @@ public class NewApplicationDelegator {
         }
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.getAppSvcLaboratoryDisciplinesDtoList();
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = allSvcAllPsnConfig.get(serviceId);
-        dolabory(errorMap, appSvcLaboratoryDisciplinesDtoList, serviceId, sB);
-        log.info(sB.toString());
+
         List<AppSvcCgoDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
         doAppSvcCgoDto(hcsaSvcPersonnelDtos, errorMap, appSvcCgoDtoList, serviceId, sB);
         log.info(sB.toString());
         List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
         doSvcDis(errorMap, appSvcDisciplineAllocationDtoList, serviceId, sB);
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap) + "doSvcDis"));
+        dolabory(errorMap,appSvcDisciplineAllocationDtoList, appSvcLaboratoryDisciplinesDtoList, serviceId, sB);
+        log.info(sB.toString());
         doSvcDisdolabory(errorMap, appSvcDisciplineAllocationDtoList, appSvcLaboratoryDisciplinesDtoList, serviceId, sB);
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap) + "doSvcDisdolabory"));
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
@@ -4184,8 +4186,12 @@ public class NewApplicationDelegator {
 
     }
 
-    private static void dolabory(Map<String, String> map, List<AppSvcLaboratoryDisciplinesDto> list, String serviceId, StringBuilder sB) {
+    private static void dolabory(Map<String, String> map,List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList, List<AppSvcLaboratoryDisciplinesDto> list, String serviceId, StringBuilder sB) {
         if (list != null && list.isEmpty()) {
+
+        }
+        if(list!=null&&appSvcDisciplineAllocationDtoList!=null){
+            List<AppSvcChckListDto> appSvcChckListDtoList = list.get(0).getAppSvcChckListDtoList();
 
         }
     }
