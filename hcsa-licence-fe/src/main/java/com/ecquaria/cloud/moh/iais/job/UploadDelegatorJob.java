@@ -5,11 +5,18 @@ import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,23 +40,38 @@ public class UploadDelegatorJob extends IJobHandler {
             //Parse the
             AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
             List<ApplicationListFileDto> parse = uploadFileService.parse(data);
+            AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
             for(ApplicationListFileDto applicationListFileDto :parse){
-                uploadFileService.getRelatedDocuments(applicationListFileDto);
-                String grpId = uploadFileService.saveFile(applicationListFileDto);
-                if(StringUtil.isEmpty(grpId)){
-                    continue;
-                }
-                log.info("------------------- saveFile  end --------------");
-                String compressFileName = uploadFileService.compressFile(grpId);
-                boolean rename = uploadFileService.renameAndSave(compressFileName,grpId);
-                log.info("------------------- compressFile  end --------------");
+                applicationListFileDto.setAuditTrailDto(intenet);
+                Map<String,List<String>> map=new HashMap();
+                List<String> oldStatus= IaisCommonUtils.genNewArrayList();
+                oldStatus.add(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
                 try {
+                    uploadFileService.getRelatedDocuments(applicationListFileDto);
+                    String grpId = uploadFileService.saveFile(applicationListFileDto);
+                    if(StringUtil.isEmpty(grpId)){
+                        continue;
+                    }
+                    log.info("------------------- saveFile  end --------------");
+                    String compressFileName = uploadFileService.compressFile(grpId);
+                    boolean rename = uploadFileService.renameAndSave(compressFileName,grpId);
+                    log.info("------------------- compressFile  end --------------");
                     if(rename){
-                        uploadFileService.changeStatus(applicationListFileDto);
+                        List<String> newStatus= IaisCommonUtils.genNewArrayList();
+                        newStatus.add(ApplicationConsts.APPLICATION_SUCCESS_ZIP);
+                        map.put("oldStatus",oldStatus);
+                        map.put("newStatus",newStatus);
+                        uploadFileService.changeStatus(applicationListFileDto,map);
                     }
                 }catch (Exception e){
-                    log.error(e.getMessage(),e);
+
+                    List<String> newStatus=IaisCommonUtils.genNewArrayList();
+                    newStatus.add(ApplicationConsts.APPLICATION_GROUP_ERROR_ZIP);
+                    map.put("oldStatus",oldStatus);
+                    map.put("newStatus",newStatus);
+                    uploadFileService.changeStatus(applicationListFileDto,map);
                 }
+
             }
 
         }catch (Exception e){
