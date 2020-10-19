@@ -1538,7 +1538,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         //msg
         try {
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_MSG);
-            List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(appSubmissionDto.getServiceName())).getEntity();
+            String svcName=appSubmissionDto.getServiceName();
+            if(svcName==null){
+                LicenceDto licenceDto= licenceClient.getLicBylicNo(appSubmissionDto.getLicenceNo()).getEntity();
+                svcName=licenceDto.getSvcName();
+            }
+            List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(svcName)).getEntity();
             List<String> svcCode=IaisCommonUtils.genNewArrayList();
             svcCode.add(svcDto.get(0).getSvcCode());
             emailParam.setSvcCodeList(svcCode);

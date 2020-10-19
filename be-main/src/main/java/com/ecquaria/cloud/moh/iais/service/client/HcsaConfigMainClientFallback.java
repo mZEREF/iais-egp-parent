@@ -109,7 +109,7 @@ public class HcsaConfigMainClientFallback implements HcsaConfigMainClient{
         return entity;
     }
 
-
+    @Override
     public FeignResponseEntity<List<ApplicationDto>> returnFee(List<ApplicationDto> applicationDtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

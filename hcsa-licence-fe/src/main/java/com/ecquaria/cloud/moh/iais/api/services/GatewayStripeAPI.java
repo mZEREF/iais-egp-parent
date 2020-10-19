@@ -32,6 +32,24 @@ public class GatewayStripeAPI {
 		return GatewayStripeSubmit.buildForm(sParaTemp, "https://" + request.getServerName()+GatewayStripeConfig.common_gateway_url, "get",
 				strButtonName);
 	}
+	public static String create_partner_trade_by_buyer_url(
+			Map<String, String> sParaTemp,HttpServletRequest request,String returnUrl) throws Exception {
+
+		sParaTemp.put(GatewayConstants.REGISTRY_NAME_KEY, GatewayStripeConfig.payment_registry_name);
+		sParaTemp.put(GatewayConstants.RETURN_URL_KEY, returnUrl);
+		sParaTemp.put(GatewayConstants.NOTIFY_URL_KEY, "https://" + request.getServerName()+GatewayStripeConfig.notify_url);
+		sParaTemp.put(GatewayConstants.INPUT_CHARSET, GatewayStripeConfig.input_charset);
+
+//		sParaTemp.put(GatewayConstants.REGISTRY_NAME_KEY, "moh");
+//		sParaTemp.put(GatewayConstants.RETURN_URL_KEY, "return");
+//		sParaTemp.put(GatewayConstants.NOTIFY_URL_KEY, "notify");
+//		sParaTemp.put(GatewayConstants.INPUT_CHARSET, "UTF_8");
+
+		String strButtonName = "OK";
+
+		return GatewayStripeSubmit.buildUrl(sParaTemp, "https://" + request.getServerName()+GatewayStripeConfig.common_gateway_url, "get",
+				strButtonName);
+	}
 	
 	public static String verifyNotify(HttpServletRequest request) throws Exception{
 		Map<String, String> fields = new HashMap<String, String>();
