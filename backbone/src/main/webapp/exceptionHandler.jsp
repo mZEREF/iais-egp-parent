@@ -35,8 +35,8 @@
     Map<String, Object> errors = errorAttributes.getErrorAttributes(webRequest, false);
     String dateStr = Formatter.formatDateTime(new Date());
     String status = (String) errors.get("status");
-    String error = (String) errorAttributes.get("error");
-    String path = (String) errorAttributes.get("path");
+    String error = (String) errors.get("error");
+    String path = (String) errors.get("path");
   %>
   <div>
     <div>
