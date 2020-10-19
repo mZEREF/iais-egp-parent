@@ -261,9 +261,6 @@ public class OfficerOnlineEnquiriesDelegator {
                         if(!StringUtil.isEmpty(rfiApplicationQueryDto.getId())){
                             filter.put("app_id", rfiApplicationQueryDto.getId());
                         }
-                        if(!StringUtil.isEmpty(rfiApplicationQueryDto.getAppCorrId())){
-                            filter.put("appCorrId", rfiApplicationQueryDto.getAppCorrId());
-                        }
                         licenceParameter.setFilters(filter);
                         SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
                         licParam.setPageNo(0);
@@ -364,9 +361,7 @@ public class OfficerOnlineEnquiriesDelegator {
 
                     if(lic.getAppId()!=null){
                         filter.put("id", lic.getAppId());
-                        if(lic.getAppCorrId()!=null){
-                            filter.put("appCorrId", lic.getAppCorrId());
-                        }
+
                         filter.remove("svc_names");
                         applicationParameter.setFilters(filter);
 
@@ -889,9 +884,7 @@ public class OfficerOnlineEnquiriesDelegator {
                         if(!StringUtil.isEmpty(rfiApplicationQueryDto.getId())){
                             filters.put("app_id", rfiApplicationQueryDto.getId());
                         }
-                        if(!StringUtil.isEmpty(rfiApplicationQueryDto.getAppCorrId())){
-                            filters.put("appCorrId", rfiApplicationQueryDto.getAppCorrId());
-                        }
+
                         licenceParameter.setFilters(filters);
                         SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
                         licParam.setPageNo(0);
@@ -988,9 +981,7 @@ public class OfficerOnlineEnquiriesDelegator {
 
                     if(lic.getAppId()!=null){
                         filters.put("id", lic.getAppId());
-                        if(lic.getAppCorrId()!=null){
-                            filters.put("appCorrId", lic.getAppCorrId());
-                        }
+
                         filters.remove("svc_names");
                         applicationParameter.setFilters(filters);
 
@@ -1499,9 +1490,6 @@ public class OfficerOnlineEnquiriesDelegator {
                         if(!StringUtil.isEmpty(rfiApplicationQueryDto.getId())){
                             filters.put("app_id", rfiApplicationQueryDto.getId());
                         }
-                        if(!StringUtil.isEmpty(rfiApplicationQueryDto.getAppCorrId())){
-                            filters.put("appCorrId", rfiApplicationQueryDto.getAppCorrId());
-                        }
                         licenceParameter.setFilters(filters);
                         SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
                         licParam.setPageNo(0);
@@ -1594,9 +1582,6 @@ public class OfficerOnlineEnquiriesDelegator {
 
                     if(lic.getAppId()!=null){
                         filters.put("id", lic.getAppId());
-                        if(lic.getAppCorrId()!=null){
-                            filters.put("appCorrId", lic.getAppCorrId());
-                        }
                         filters.remove("svc_names");
                         applicationParameter.setFilters(filters);
 
