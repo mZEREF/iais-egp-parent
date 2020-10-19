@@ -88,8 +88,9 @@
                                 <th>Message Name</th>
                                 <th>Distribution Name</th>
                                 <th>Mode of Delivery</th>
-                                <th>Created By</th>
-                                <th>Created Date</th>
+                                <th>Scheduled Send Date</th>
+                                <th>Actual Send Date</th>
+                                <th>Attachment</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -136,10 +137,13 @@
                                                 <p><c:out value="${item.mode}"/></p>
                                             </td>
                                             <td>
-                                                <p><c:out value="${item.createBy}"/></p>
+                                                <p><c:out value="${item.schedule}"/></p>
                                             </td>
                                             <td>
-                                                <p><c:out value="${item.createDt}"/></p>
+                                                <p><c:out value="${item.actual}"/></p>
+                                            </td>
+                                            <td>
+                                                <p><c:out value="${item.docName}"/></p>
                                             </td>
                                             <td>
                                                 <p><iais:code code="${item.status}"></iais:code></p>
