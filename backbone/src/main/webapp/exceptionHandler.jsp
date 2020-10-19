@@ -1,11 +1,7 @@
 <%@ page import="com.ecquaria.cloud.helper.EngineHelper" %>
-<%@ page import="com.ecquaria.cloud.helper.SpringContextHelper" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.Formatter" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.Map" %>
-<%@ page import="org.springframework.boot.web.servlet.error.ErrorAttributes" %>
-<%@ page import="org.springframework.web.context.request.ServletWebRequest" %>
-<%@ page import="org.springframework.web.context.request.WebRequest" %>
 <%--
   Created by IntelliJ IDEA.
   User: MI
@@ -30,9 +26,7 @@
 <script type="text/javascript" src="<%=resourcePath%>/javascripts/egov/jquery-3.5.1.min.js"></script>
 
   <%
-    WebRequest webRequest = new ServletWebRequest(request);
-    ErrorAttributes errorAttributes = SpringContextHelper.getContext().getBean(ErrorAttributes.class);
-    Map<String, Object> errors = errorAttributes.getErrorAttributes(webRequest, false);
+    Map<String, Object> errors = (Map<String, Object>) request.getAttribute("errors");
     String dateStr = Formatter.formatDateTime(new Date());
     String status = (String) errors.get("status");
     String error = (String) errors.get("error");
