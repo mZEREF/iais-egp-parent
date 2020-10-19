@@ -122,13 +122,14 @@ public class InspectionNcCheckListDelegator {
 
         }
 
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_CHECKLIST);
+
         TaskDto taskDto = taskService.getTaskById(taskId);
         if( taskDto == null) return;
         String appPremCorrId = taskDto.getRefNo();
         List<TaskDto> taskDtos = fillupChklistService.getCurrTaskByRefNo(taskDto);
         ParamUtil.setSessionAttr(request,TASKDTOLIST ,(Serializable) taskDtos);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
+        AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_CHECKLIST,appViewDto.getApplicationDto().getApplicationNo());
         //draft start
 
         //draft end
