@@ -645,7 +645,7 @@ public class ConfigServiceImpl implements ConfigService {
                 }
             }
         }
-
+        WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
     }
 
     private   Map<String, List<HcsaConfigPageDto>> getHcsaConfigPageDtos(HcsaServiceDto hcsaServiceDto) {

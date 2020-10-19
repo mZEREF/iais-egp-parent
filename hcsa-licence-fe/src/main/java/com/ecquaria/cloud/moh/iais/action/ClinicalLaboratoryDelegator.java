@@ -1863,7 +1863,7 @@ public class ClinicalLaboratoryDelegator {
             }
 
         }
-
+        WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
     }
 
 
@@ -2486,6 +2486,7 @@ public class ClinicalLaboratoryDelegator {
                 }
             }
         }
+        WebValidationHelper.saveAuditTrailForNoUseResult(map);
     }
 
     private List<AppSvcDocDto> doValidateSvcDocument(List<AppSvcDocDto> appSvcDocDtoList, Map<String, String> errorMap) {
@@ -2535,6 +2536,7 @@ public class ClinicalLaboratoryDelegator {
                 }
             }
         }
+        WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
         return appSvcDocDtoList;
     }
 

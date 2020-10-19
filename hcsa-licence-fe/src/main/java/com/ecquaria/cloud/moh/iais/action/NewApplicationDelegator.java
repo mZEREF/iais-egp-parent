@@ -2174,7 +2174,30 @@ public class NewApplicationDelegator {
             appSubmissionDto.setAppGrpId(appSubmissionDtos1.get(0).getAppGrpId());
         }
         if(amount==0.0){
+            if(draftNo!=null){
+                AppSubmissionDto draftAppSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
+                if(draftAppSubmissionDto!=null){
+                    draftAppSubmissionDto.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                    applicationClient.saveDraft(draftAppSubmissionDto);
+                }
+            }
 
+            List<ApplicationSubDraftDto> entity = applicationClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
+            for (ApplicationSubDraftDto applicationSubDraftDto : entity) {
+                if(!applicationSubDraftDto.getDraftNo().equals(draftNo)){
+                    String draftJson = applicationSubDraftDto.getDraftJson();
+                    AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
+                    appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                    applicationClient.saveDraft(appSubmissionDto1);
+                }else {
+                    if(AppConsts.COMMON_STATUS_ACTIVE.equals(applicationSubDraftDto.getStatus())){
+                        String draftJson = applicationSubDraftDto.getDraftJson();
+                        AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
+                        appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                        applicationClient.saveDraft(appSubmissionDto1);
+                    }
+                }
+            }
         }
         bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtoList);
         bpc.request.getSession().setAttribute("ackPageAppSubmissionDto",ackPageAppSubmissionDto);
@@ -3990,6 +4013,7 @@ public class NewApplicationDelegator {
                 String mapStr = JsonUtil.parseToJson(map);
                 log.info(StringUtil.changeForLog("map json str:" + mapStr));
             }
+            WebValidationHelper.saveAuditTrailForNoUseResult(map);
         }
         Map<String, String> documentMap = IaisCommonUtils.genNewHashMap();
         documentValid(bpc.request, documentMap);
@@ -4009,6 +4033,7 @@ public class NewApplicationDelegator {
             coMap.put("information", "information");
         }
         bpc.request.getSession().setAttribute("coMap", coMap);
+        WebValidationHelper.saveAuditTrailForNoUseResult(previewAndSubmitMap);
         return previewAndSubmitMap;
     }
 
@@ -4053,7 +4078,7 @@ public class NewApplicationDelegator {
             }
         }
 
-
+        WebValidationHelper.saveAuditTrailForNoUseResult(documentMap);
     }
 
     //todo
@@ -5269,6 +5294,7 @@ public class NewApplicationDelegator {
                 appGrpPrimaryDocDto.setPassValidate(true);
             }
         }
+        WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
         return appGrpPrimaryDocDtoList;
     }
 

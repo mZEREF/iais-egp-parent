@@ -385,7 +385,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppEditSelectDto> appEditSelects = applicationListDto.getAppEditSelects();
         List<AppGroupMiscDto> appGroupMiscs = applicationListDto.getAppGroupMiscs();
         List<AppFeeDetailsDto> appFeeDetails = applicationListDto.getAppFeeDetails();
-        List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = applicationListDto.getAppPremisesOperationalUnitDtos();
+        List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = applicationListDto.getAppPremisesOperationalUnits();
 
         List<ApplicationListFileDto> applicationListFileDtoList=IaisCommonUtils.genNewArrayList();
         for(ApplicationGroupDto every :applicationGroup){
@@ -610,7 +610,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             applicationListFileDto.setAppEditSelects(appEditSelectDtos);
             applicationListFileDto.setAppGroupMiscs(appGroupMiscDtos);
             applicationListFileDto.setAppFeeDetails(appFeeDetailsDtos);
-            applicationListFileDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtoList);
+            applicationListFileDto.setAppPremisesOperationalUnits(appPremisesOperationalUnitDtoList);
             applicationListFileDtoList.add(applicationListFileDto);
         }
         return applicationListFileDtoList;

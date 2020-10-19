@@ -46,6 +46,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -1314,7 +1315,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             }
         }
         log.info(StringUtil.changeForLog("the do doValidatePremiss end ...."));
-
+        WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
         return errorMap;
     }
 

@@ -180,7 +180,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
                 errorMap.put("reminderThreshold","GENERAL_ERR0002");
             }
         }
-
+        WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
         return errorMap;
     }
 

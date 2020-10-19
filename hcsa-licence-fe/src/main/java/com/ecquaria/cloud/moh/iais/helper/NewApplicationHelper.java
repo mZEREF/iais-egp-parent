@@ -102,6 +102,7 @@ public class NewApplicationHelper {
                 }
             premCount++;
         }
+        WebValidationHelper.saveAuditTrailForNoUseResult(map);
         return map;
     }
 
@@ -240,6 +241,7 @@ public class NewApplicationHelper {
             }
 
         }
+        WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         return errMap;
     }
 
@@ -539,6 +541,7 @@ public class NewApplicationHelper {
 
 
         }
+        WebValidationHelper.saveAuditTrailForNoUseResult(oneErrorMap);
         return oneErrorMap;
     }
 
@@ -1049,7 +1052,7 @@ public class NewApplicationHelper {
             }
 
         }
-
+        WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         return errMap;
     }
 
