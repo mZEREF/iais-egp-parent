@@ -752,15 +752,18 @@ public class MasterCodeDelegator {
     public void prepareEdit(BaseProcessClass bpc) {
         logAboutStart("prepareEdit");
         HttpServletRequest request = bpc.request;
-        String masterCodeId = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_VALUE);
-        if (!masterCodeId.isEmpty()) {
-            MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
-            List<SelectOption> mcStatusSelectList = IaisCommonUtils.genNewArrayList();
-            mcStatusSelectList.add(new SelectOption("", "Please Select"));
-            mcStatusSelectList.add(new SelectOption("CMSTAT001", "Active"));
-            mcStatusSelectList.add(new SelectOption("CMSTAT003", "Inactive"));
-            ParamUtil.setRequestAttr(bpc.request, "mcStatusSelectList", mcStatusSelectList);
-            ParamUtil.setSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, masterCodeDto);
+        String errorFlag = (String)ParamUtil.getRequestAttr(bpc.request, "errorFlag");
+        List<SelectOption> mcStatusSelectList = IaisCommonUtils.genNewArrayList();
+        mcStatusSelectList.add(new SelectOption("", "Please Select"));
+        mcStatusSelectList.add(new SelectOption("CMSTAT001", "Active"));
+        mcStatusSelectList.add(new SelectOption("CMSTAT003", "Inactive"));
+        ParamUtil.setRequestAttr(bpc.request, "mcStatusSelectList", mcStatusSelectList);
+        if(!AppConsts.FALSE.equals(errorFlag)){
+            String masterCodeId = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_VALUE);
+            if (!masterCodeId.isEmpty()) {
+                MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
+                ParamUtil.setSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, masterCodeDto);
+            }
         }
     }
 
@@ -806,6 +809,7 @@ public class MasterCodeDelegator {
             ParamUtil.setSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, masterCodeDto);
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
+            ParamUtil.setRequestAttr(request, "errorFlag", AppConsts.FALSE);
             return;
         }
 
