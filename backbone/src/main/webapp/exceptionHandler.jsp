@@ -28,7 +28,7 @@
   <%
     Map<String, Object> errors = (Map<String, Object>) request.getAttribute("errors");
     String dateStr = Formatter.formatDateTime(new Date());
-    String status = (String) errors.get("status");
+    Integer status = (Integer) errors.get("status");
     String error = (String) errors.get("error");
     String path = (String) errors.get("path");
   %>
