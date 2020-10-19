@@ -128,8 +128,10 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                         if (hcsaSvcKpiDto.getRemThreshold() != null) {
                             remThreshold = hcsaSvcKpiDto.getRemThreshold();
                         }
-
-                        if(days > remThreshold){
+                        log.info(StringUtil.changeForLog("days:" +days));
+                        log.info(StringUtil.changeForLog("kpi:" +kpi));
+                        log.info(StringUtil.changeForLog("remThreshold:" +remThreshold));
+                        if(days == remThreshold){
                             //judge is email sent
                             JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(item.getId(),"unprocess leader").getEntity();
                             if(jobRemindMsgTrackingDto == null){
@@ -146,7 +148,7 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                 list.add(createjob);
                                 systemBeLicClient.createJobRemindMsgTrackingDtos(list);
                             }
-                        }else if(days > kpi){
+                        }else if(days == kpi){
                             //judge is email sent
                             JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(item.getId(),"unprocess officer").getEntity();
                             if(jobRemindMsgTrackingDto == null){
