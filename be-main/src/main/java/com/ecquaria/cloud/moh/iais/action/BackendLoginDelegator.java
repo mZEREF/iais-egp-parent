@@ -118,6 +118,7 @@ public class BackendLoginDelegator {
         AuditTrailDto auditTrailDto = new AuditTrailDto();
         auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN);
         auditTrailDto.setMohUserId(userId);
+        auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTRANET);
         auditTrailDto.setLoginType(AuditTrailConsts.LOGIN_TYPE_MOH);
         auditTrailDto.setModule("Intranet Login");
         auditTrailDto.setFunctionName("Intranet Login");
@@ -135,6 +136,7 @@ public class BackendLoginDelegator {
             AuditTrailDto auditTrailDto = new AuditTrailDto();
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN_FAIL);
             auditTrailDto.setMohUserId(userId);
+            auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTRANET);
             auditTrailDto.setLoginType(AuditTrailConsts.LOGIN_TYPE_MOH);
             auditTrailDto.setModule("Intranet Login");
             auditTrailDto.setFailReason("LOGIN_ERR001");
