@@ -865,7 +865,7 @@ public class BackendInboxDelegator {
 
                     // send the task to Ao3 or ao2
                     TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                            stageId,roleId,IaisEGPHelper.getCurrentAuditTrailDto());
+                            stageId,roleId,IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId());
                     List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                     List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
                     broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
@@ -906,7 +906,7 @@ public class BackendInboxDelegator {
             log.debug(StringUtil.changeForLog("isAllSubmit is " + isAllSubmit));
             if(isAllSubmit || applicationDto.isFastTracking() || isAo1Ao2Approve){
                 if(isAo1Ao2Approve){
-                    doAo1Ao2Approve(broadcastOrganizationDto,broadcastApplicationDto,applicationDto,applicationDtoIds);
+                    doAo1Ao2Approve(broadcastOrganizationDto,broadcastApplicationDto,applicationDto,applicationDtoIds,taskDto);
                 }
 
                 if(isAllSubmit){
@@ -951,7 +951,7 @@ public class BackendInboxDelegator {
         applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
 
-    private void doAo1Ao2Approve(BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto, ApplicationDto applicationDto,List<String> appNo) throws FeignException {
+    private void doAo1Ao2Approve(BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto, ApplicationDto applicationDto,List<String> appNo,TaskDto taskDto) throws FeignException {
         String appGrpId = applicationDto.getAppGrpId();
         String status = applicationDto.getStatus();
         String appId = applicationDto.getId();
@@ -980,7 +980,7 @@ public class BackendInboxDelegator {
                     }
                     // send the task to Ao2  or Ao3
                     TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                            stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto());
+                            stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId());
                     List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                     List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
                     broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
