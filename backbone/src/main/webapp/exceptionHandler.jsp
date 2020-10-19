@@ -40,7 +40,7 @@
             <strong>An unexpected error has been encountered</strong>
           </div><br/>
           <div id="exception_content">
-            <%=status%>-<%=error%><br/><%=path%>><br/>at <%=dateStr%><br/>
+            <%=status%>-<%=error%><br/><%=path%><br/>at <%=dateStr%><br/>
           </div><br/><hr/>
           <div class="fb-summary-info-error-Appexception-action">
             We are sorry for the error you have encountered.<br/>Please report it to your administrator and we will investigate it.
