@@ -36,7 +36,7 @@ public interface ApptConfirmReSchDateService {
       * @return: ProcessReSchedulingDto
       * @Descripation: getApptSystemDateByCorrId
       */
-    ProcessReSchedulingDto getApptSystemDateByCorrId(String appPremCorrId);
+    ProcessReSchedulingDto getApptSystemDateByCorrId(String appPremCorrId, String appStatus);
 
     /**
       * @author: shicheng

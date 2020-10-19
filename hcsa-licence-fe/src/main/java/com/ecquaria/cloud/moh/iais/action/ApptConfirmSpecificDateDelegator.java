@@ -102,7 +102,7 @@ public class ApptConfirmSpecificDateDelegator {
                 ApplicationDto applicationDto = inspecUserRecUploadService.getApplicationByCorrId(appPremCorrId);
                 String appStatus = applicationDto.getStatus();
                 if(ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING.equals(appStatus)){
-                    apptFeConfirmDateDto = applicantConfirmInspDateService.getSpecificDateDto(appPremCorrId);
+                    apptFeConfirmDateDto = applicantConfirmInspDateService.getSpecificDateDto(appPremCorrId, appStatus);
                     apptFeConfirmDateDto.setCTaskUrl(TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE);
                     String appType = apptFeConfirmDateDto.getApplicationDtos().get(0).getApplicationType();
                     ParamUtil.setSessionAttr(bpc.request, "apptInspFlag", AppConsts.FALSE);

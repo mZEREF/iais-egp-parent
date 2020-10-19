@@ -108,7 +108,7 @@ public class ApptConfirmReSchDateDelegator {
         if(processReSchedulingDto == null) {
             if (ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_APPLICANT.equals(appStatus) ||
                     ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_PENDING_FE.equals(appStatus)) {
-                processReSchedulingDto = apptConfirmReSchDateService.getApptSystemDateByCorrId(appPremCorrId);
+                processReSchedulingDto = apptConfirmReSchDateService.getApptSystemDateByCorrId(appPremCorrId, appStatus);
                 processReSchedulingDto.setApplicationDto(applicationDto);
                 ParamUtil.setSessionAttr(bpc.request, "apptInspFlag", AppConsts.FALSE);
             } else {

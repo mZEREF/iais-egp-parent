@@ -116,7 +116,7 @@ public class ApplicantConfirmInspDateDelegator {
                 ApplicationDto applicationDto = inspecUserRecUploadService.getApplicationByCorrId(appPremCorrId);
                 String appStatus = applicationDto.getStatus();
                 if(ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING.equals(appStatus)){
-                    apptFeConfirmDateDto = applicantConfirmInspDateService.getApptSystemDate(appPremCorrId);
+                    apptFeConfirmDateDto = applicantConfirmInspDateService.getApptSystemDate(appPremCorrId, appStatus);
                     apptFeConfirmDateDto.setCTaskUrl(TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE);
                     ParamUtil.setSessionAttr(bpc.request, "apptInspFlag", AppConsts.FALSE);
                 } else {

@@ -16,11 +16,11 @@ public interface ApplicantConfirmInspDateService {
     /**
       * @author: shicheng
       * @Date 2020/2/18
-      * @Param: appPremCorrId
+      * @Param: appPremCorrId, appStatus
       * @return: ApptFeConfirmDateDto
       * @Descripation: get Appt System Date
       */
-    ApptFeConfirmDateDto getApptSystemDate(String appPremCorrId);
+    ApptFeConfirmDateDto getApptSystemDate(String premCorrId, String appStatus);
 
     /**
      * @author: shicheng
@@ -77,7 +77,7 @@ public interface ApplicantConfirmInspDateService {
       * @return: ApptFeConfirmDateDto
       * @Descripation: getSpecificDateDto
       */
-    ApptFeConfirmDateDto getSpecificDateDto(String appPremCorrId);
+    ApptFeConfirmDateDto getSpecificDateDto(String appPremCorrId, String appStatus);
 
     /**
       * @author: shicheng

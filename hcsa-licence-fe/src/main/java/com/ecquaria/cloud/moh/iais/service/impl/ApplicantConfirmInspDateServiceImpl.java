@@ -117,20 +117,18 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
      *System Date
      */
     @Override
-    public ApptFeConfirmDateDto getApptSystemDate(String appPremCorrId) {
+    public ApptFeConfirmDateDto getApptSystemDate(String appPremCorrId, String appStatus) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
-        //get All CorrDto From Same Premises
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getLastAppPremisesCorrelationDtoByCorreId(appPremCorrId).getEntity();
-        //set All TaskRefNo (AppPremCorrIds)
-        List<String> taskRefNo = getTaskRefNoList(appPremisesCorrelationDtos);
-        apptFeConfirmDateDto.setTaskRefNo(taskRefNo);
 
         if(!StringUtil.isEmpty(appPremCorrId)) {
-            List<ApplicationDto> applicationDtos = applicationClient.getPremisesApplicationsByCorreId(appPremCorrId).getEntity();
+            //get All CorrDto From Same Premises
+            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getLastAppPremisesCorrelationDtoByCorreId(appPremCorrId).getEntity();
+            //set All TaskRefNo (AppPremCorrIds)
+            List<ApplicationDto> applicationDtos = getApplicationBySamePremCorrId(appPremisesCorrelationDtos, apptFeConfirmDateDto, appStatus);
             apptFeConfirmDateDto.setApplicationDtos(applicationDtos);
-            List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = inspectionFeClient.getSystemDtosByAppPremCorrIdList(taskRefNo).getEntity();
+            List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = inspectionFeClient.getSystemDtosByAppPremCorrIdList(apptFeConfirmDateDto.getTaskRefNo()).getEntity();
             apptFeConfirmDateDto.setAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList);
             apptFeConfirmDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDtoList.get(0));
             if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtoList)){
@@ -158,6 +156,28 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             apptFeConfirmDateDto.setAppPremCorrId(appPremCorrId);
         }
         return apptFeConfirmDateDto;
+    }
+
+    private List<ApplicationDto> getApplicationBySamePremCorrId(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos, ApptFeConfirmDateDto apptFeConfirmDateDto, String appStatus) {
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+        List<String> taskRefNo = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){//NOSONAR
+            for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
+                if(appPremisesCorrelationDto != null && !StringUtil.isEmpty(appPremisesCorrelationDto.getId())){
+                    ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(appPremisesCorrelationDto.getId()).getEntity();
+                    if(!StringUtil.isEmpty(appStatus) && applicationDto != null) {
+                        if (appStatus.equals(applicationDto.getStatus())) {
+                            taskRefNo.add(appPremisesCorrelationDto.getId());
+                            applicationDtos.add(applicationDto);
+                        }
+                    }
+                }
+            }
+        }
+        if(!IaisCommonUtils.isEmpty(taskRefNo)){
+            apptFeConfirmDateDto.setTaskRefNo(taskRefNo);
+        }
+        return applicationDtos;
     }
 
     private List<String> getTaskRefNoList(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos) {
@@ -897,18 +917,16 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
      * Specific Date
      */
     @Override
-    public ApptFeConfirmDateDto getSpecificDateDto(String appPremCorrId) {
+    public ApptFeConfirmDateDto getSpecificDateDto(String appPremCorrId, String appStatus) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
         //get All CorrDto From Same Premises
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getLastAppPremisesCorrelationDtoByCorreId(appPremCorrId).getEntity();
         //set All TaskRefNo (AppPremCorrIds)
-        List<String> taskRefNo = getTaskRefNoList(appPremisesCorrelationDtos);
-        apptFeConfirmDateDto.setTaskRefNo(taskRefNo);
-        List<ApplicationDto> applicationDtos = applicationClient.getPremisesApplicationsByCorreId(appPremCorrId).getEntity();
+        List<ApplicationDto> applicationDtos = getApplicationBySamePremCorrId(appPremisesCorrelationDtos, apptFeConfirmDateDto, appStatus);
         apptFeConfirmDateDto.setApplicationDtos(applicationDtos);
-        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = inspectionFeClient.getSystemDtosByAppPremCorrIdList(taskRefNo).getEntity();
+        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = inspectionFeClient.getSystemDtosByAppPremCorrIdList(apptFeConfirmDateDto.getTaskRefNo()).getEntity();
         if(!StringUtil.isEmpty(appPremCorrId)){
             AppPremisesInspecApptDto appPremisesInspecApptDto = appPremisesInspecApptDtoList.get(0);
             apptFeConfirmDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDto);
