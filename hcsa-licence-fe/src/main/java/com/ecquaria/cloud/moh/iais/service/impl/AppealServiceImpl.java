@@ -1010,14 +1010,14 @@ public class AppealServiceImpl implements AppealService {
         String reason = appPremiseMiscDto.getReason();
         String appPremCorreId = appPremiseMiscDto.getAppPremCorreId();
         AppliSpecialDocDto appliSpecialDocDto = applicationClient.getAppliSpecialDocDtoByCorrId(appPremCorreId).getEntity();
-        AppPremisesSpecialDocDto appPremisesSpecialDocDto =new AppPremisesSpecialDocDto();
-        appPremisesSpecialDocDto.setDocSize(Integer.parseInt(appliSpecialDocDto.getDocSize()));
-        appPremisesSpecialDocDto.setFileRepoId(appliSpecialDocDto.getFileRepoId());
-        appPremisesSpecialDocDto.setMd5Code(appliSpecialDocDto.getMd5Code());
-        appPremisesSpecialDocDto.setDocName(appliSpecialDocDto.getDocName());
-        appPremisesSpecialDocDto.setVersion(appliSpecialDocDto.getVersion());
-        appPremisesSpecialDocDto.setSubmitBy(appliSpecialDocDto.getSubmitBy());
         if (appliSpecialDocDto != null) {
+            AppPremisesSpecialDocDto appPremisesSpecialDocDto =new AppPremisesSpecialDocDto();
+            appPremisesSpecialDocDto.setDocSize(Integer.parseInt(appliSpecialDocDto.getDocSize()));
+            appPremisesSpecialDocDto.setFileRepoId(appliSpecialDocDto.getFileRepoId());
+            appPremisesSpecialDocDto.setMd5Code(appliSpecialDocDto.getMd5Code());
+            appPremisesSpecialDocDto.setDocName(appliSpecialDocDto.getDocName());
+            appPremisesSpecialDocDto.setVersion(appliSpecialDocDto.getVersion());
+            appPremisesSpecialDocDto.setSubmitBy(appliSpecialDocDto.getSubmitBy());
             String docName = appliSpecialDocDto.getDocName();
             request.getSession().setAttribute("filename", docName);
             request.getSession().setAttribute("fileReportIdForAppeal", appliSpecialDocDto.getFileRepoId());
