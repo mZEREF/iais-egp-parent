@@ -17,7 +17,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import com.ecquaria.cloud.moh.iais.service.SysInboxMsgService;
@@ -89,6 +88,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
             smsDto.setSender(mailSender);
             smsDto.setContent(content);
             smsDto.setOnlyOfficeHour(true);
+            smsDto.setReqRefNum(msgId);
             String refNo = msgId;
             if (!IaisCommonUtils.isEmpty(recipts)) {
                 JobLogger.log(StringUtil.changeForLog("send sms recipts:" +  String.join("-",recipts)));
@@ -132,6 +132,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
 
                 email.setReceipts(allemail);
                 email.setReqRefNum(item.getMessageId());
+                email.setClientQueryCode(item.getMessageId());
                 JobLogger.log(StringUtil.changeForLog("ClientQueryCode is " + item.getMessageId()));
                 try{
                     if(item.getAttachmentDtos() != null){
