@@ -123,14 +123,21 @@ public class SendMassEmailJobHandler extends IJobHandler {
                 JobLogger.log(StringUtil.changeForLog("subject is " + item.getSubject()));
 
                 List<String> allemail = IaisCommonUtils.genNewArrayList();
+                List<String> allemailNoEmpty = IaisCommonUtils.genNewArrayList();
                 if(!IaisCommonUtils.isEmpty(roleEmail)){
                     allemail.addAll(roleEmail);
                 }
                 if(!IaisCommonUtils.isEmpty(item.getEmailAddress())){
                     allemail.addAll(item.getEmailAddress());
                 }
+                for (String address:allemail
+                ) {
+                    if(!StringUtil.isEmpty(address)){
+                        allemailNoEmpty.add(address);
+                    }
+                }
 
-                email.setReceipts(allemail);
+                email.setReceipts(allemailNoEmpty);
                 email.setReqRefNum(item.getMessageId());
                 email.setClientQueryCode(item.getMessageId());
                 JobLogger.log(StringUtil.changeForLog("ClientQueryCode is " + item.getMessageId()));
