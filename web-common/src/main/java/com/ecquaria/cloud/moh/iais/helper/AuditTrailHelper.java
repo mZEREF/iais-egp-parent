@@ -24,11 +24,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.service.client.AuditTrailWbClient;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -84,6 +86,12 @@ public class AuditTrailHelper {
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         auditTrailDto.setOperation(operation);
         AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
+    }
+
+    public static void directInsert(AuditTrailDto trailDto){
+        AuditTrailWbClient trailWbClient = SpringContextHelper.getContext().getBean(AuditTrailWbClient.class);
+        List<AuditTrailDto> list = Collections.singletonList(trailDto);
+        trailWbClient.insertAuditTrail(list);
     }
 
     /**

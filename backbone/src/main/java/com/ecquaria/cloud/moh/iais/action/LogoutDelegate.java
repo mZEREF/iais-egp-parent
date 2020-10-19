@@ -79,7 +79,8 @@ public class LogoutDelegate {
             }
 
             try {
-                AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
+                auditTrailDto.setFunctionName(StringUtil.capitalize(loginContext.getUserDomain()) + " Logout");
+                AuditTrailHelper.directInsert(auditTrailDto);
 
                 AuditTrailDto loginDto = bbAuditTrailClient.getLoginInfoBySessionId(sessionId).getEntity();
                 Date now = new Date();
