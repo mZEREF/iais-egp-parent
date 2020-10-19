@@ -727,7 +727,8 @@ public class RequestForChangeDelegator {
             error.put("premisesError","RFC_ERR005");
         }
         if(StringUtil.isEmpty(uen) || uen.length() > 10){
-            error.put("uenError","UC_CHKLMD001_ERR001");
+            error.put("uenError",MessageUtil.replaceMessage("GENERAL_ERR0006","UEN of Licence to transfer licence to","field"));
+
         }
         if(StringUtil.isEmpty(email)){
             error.put("emailError","UC_CHKLMD001_ERR001");
