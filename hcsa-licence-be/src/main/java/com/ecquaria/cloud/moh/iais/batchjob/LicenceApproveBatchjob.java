@@ -1229,10 +1229,10 @@ public class LicenceApproveBatchjob {
             if (!IaisCommonUtils.isEmpty(appPremisesOperationalUnitDtos)) {
                 log.info(StringUtil.changeForLog("The licence Generate appPremisesOperationalUnitDtos.size() is -->:"+appPremisesOperationalUnitDtos.size()));
                 for (AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos) {
-                    LicPremPhOpenPeriodDto licPremPhOpenPeriodDto = MiscUtil.transferEntityDto(appPremPhOpenPeriodDto, LicPremPhOpenPeriodDto.class);
-                    licPremPhOpenPeriodDto.setId(null);
-                    licPremPhOpenPeriodDto.setPremId(null);
-                    licPremPhOpenPeriodDtos.add(licPremPhOpenPeriodDto);
+                    PremisesOperationalUnitDto premisesOperationalUnitDto = MiscUtil.transferEntityDto(appPremisesOperationalUnitDto, PremisesOperationalUnitDto.class);
+                    premisesOperationalUnitDto.setId(null);
+                    premisesOperationalUnitDto.setPremisesId(null);
+                    premisesOperationalUnitDtos.add(premisesOperationalUnitDto);
                 }
             }
             premisesDto.setLicPremPhOpenPeriodDtos(licPremPhOpenPeriodDtos);
