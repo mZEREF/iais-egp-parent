@@ -125,18 +125,17 @@ public class AuditTrailHelper {
             JobHandler handler = job.getClass().getAnnotation(JobHandler.class);
             if (handler != null){
                 log.info(StringUtil.changeForLog("handler value" + handler.value()));
-                dto.setFunctionName(handler.value());
                 dto.setEntityId(handler.value());
             }else {
                 Delegator delegator = job.getClass().getAnnotation(Delegator.class);
                 if(delegator != null){
                     log.info(StringUtil.changeForLog("delegator value" + delegator.value()));
-                    dto.setFunctionName(delegator.value());
                     dto.setEntityId(delegator.value());
                 }
             }
         }
         log.info(StringUtil.changeForLog("batch job function name" + dto.getFunctionName()));
+        dto.setFunctionName("Batch Job");
         dto.setOperationType(AuditTrailConsts.OPERATION_TYPE_BATCH_JOB);
         AuditTrailDto.setThreadDto(dto);
         return dto;

@@ -306,7 +306,7 @@
                                         <c:choose>
                                             <%--batchjob--%>
                                             <c:when test="${resultRow.domain == 20001}">
-                                                <td><c:out value="${resultRow.entityId}"></c:out></td>
+                                                <td><c:out value="${resultRow.nricNumber}"></c:out></td>
                                             </c:when>
 
                                             <%--internet--%>
