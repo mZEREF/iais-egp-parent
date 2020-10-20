@@ -148,6 +148,7 @@
             </div>
         </div>
     </div>
+    <%@ include file="/WEB-INF/jsp/iais/common/myinfoDownRemind.jsp" %>
 </form>
 <script type="text/javascript">
     $("#back").click(function () {

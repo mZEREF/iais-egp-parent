@@ -110,6 +110,7 @@
         </div>
     </div>
     <input hidden value="${backtype}" id="backtype">
+    <%@ include file="/WEB-INF/jsp/iais/common/myinfoDownRemind.jsp" %>
 </form>
 <script type="text/javascript">
     $("#back").click(function () {
