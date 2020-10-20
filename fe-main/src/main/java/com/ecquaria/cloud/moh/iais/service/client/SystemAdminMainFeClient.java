@@ -30,4 +30,8 @@ public interface SystemAdminMainFeClient {
 
     @GetMapping(path = "/eicTracking/{referenceNumber}/eic-ref-num", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<EicRequestTrackingDto> getByRefNum(@PathVariable("referenceNumber") String refNum);
+
+
+    @GetMapping(path = "/system-parameter/properties-value/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> getValueByPropertiesKey(@PathVariable("key") String propertiesKey);
 }

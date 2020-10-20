@@ -71,7 +71,7 @@ public final class FileUtils {
         }
     }
 
-    private static void copyInputStreamToFile(final InputStream source, final File file) {
+    public static void copyInputStreamToFile(final InputStream source, final File file) {
         try {
             org.apache.commons.io.FileUtils.copyInputStreamToFile(source, file);
         } catch (IOException e) {
@@ -116,6 +116,24 @@ public final class FileUtils {
             return  org.apache.commons.io.FileUtils.readFileToByteArray(file);
         } catch (IOException e) {
             throw new IaisRuntimeException("the file encounter an error with convert to byte[].", e);
+        }
+    }
+
+    public static void copyFilesToOtherPosition(String src, String dst) throws IOException {
+        File file = new File(src);
+        if (file == null){
+            return;
+        }
+
+        File[] files = file.listFiles();
+        for (File f : files){
+            String srcName = f.getName();
+            File dstFile = new File(dst + srcName);
+            if (dstFile.exists()){
+                dstFile.delete();
+            }
+            dstFile.createNewFile();
+            org.apache.commons.io.FileUtils.copyFile(f, dstFile);
         }
     }
 

@@ -42,4 +42,12 @@ public class SystemAdminMainFeClientFallback implements SystemAdminMainFeClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<String> getValueByPropertiesKey(String propertiesKey) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
