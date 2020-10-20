@@ -37,10 +37,6 @@ import java.io.IOException;
 @WebListener
 @Slf4j
 public class FeMainInitializer implements ServletContextListener {
-
-    @Autowired
-    private SystemParamConfig systemParamConfig;
-
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         // Nothing to do
