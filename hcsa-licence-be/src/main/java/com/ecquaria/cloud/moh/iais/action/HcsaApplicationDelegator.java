@@ -1017,7 +1017,7 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do reject end ...."));
     }
 
-    private void rejectSendNotification(ApplicationViewDto applicationViewDto)throws FeignException, CloneNotSupportedException, IOException, TemplateException{
+    private void rejectSendNotification(ApplicationViewDto applicationViewDto){
         String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
         String appGrpId = applicationViewDto.getApplicationDto().getAppGrpId();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
@@ -1722,6 +1722,8 @@ public class HcsaApplicationDelegator {
                             appReturnFeeDto.setReturnAmount(Double.parseDouble(returnFee));
                             appReturnFeeDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                             appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL);
+                            appReturnFeeDto.setStatus("paying");
+                            appReturnFeeDto.setTriggerCount(0);
                             List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
                             saveReturnFeeDtos.add(appReturnFeeDto);
                             broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
@@ -2131,6 +2133,8 @@ public class HcsaApplicationDelegator {
                 if(returnFee==null || returnFee == 0d){
                    continue;
                 }
+                appReturnFeeDto.setStatus("paying");
+                appReturnFeeDto.setTriggerCount(0);
                 appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
                 appReturnFeeDto.setReturnAmount(returnFee);
                 appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);

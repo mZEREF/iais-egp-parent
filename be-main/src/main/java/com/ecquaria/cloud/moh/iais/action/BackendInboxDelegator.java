@@ -758,6 +758,8 @@ public class BackendInboxDelegator {
                                 appReturnFeeDto.setApplicationNo(oldApplicationNo);
                                 appReturnFeeDto.setReturnAmount(Double.parseDouble(returnFee));
                                 appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL);
+                                appReturnFeeDto.setStatus("paying");
+                                appReturnFeeDto.setTriggerCount(0);
                                 List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
                                 saveReturnFeeDtos.add(appReturnFeeDto);
                                 broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);

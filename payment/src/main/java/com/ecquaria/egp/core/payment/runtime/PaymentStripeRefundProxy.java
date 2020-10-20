@@ -5,9 +5,11 @@ import com.ecquaria.cloud.entity.sopprojectuserassignment.PaymentBaiduriProxyUti
 import com.ecquaria.cloud.entity.sopprojectuserassignment.SMCStringHelperUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.SrcSystemConfDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -78,44 +80,52 @@ public class PaymentStripeRefundProxy extends PaymentProxy {
 		SrcSystemConfDto srcSystemConfDto =new SrcSystemConfDto();
 
 		String amo = fields.get("vpc_Amount");
-		String payMethod = fields.get("vpc_OrderInfo");
+		String refundInfo = fields.get("vpc_OrderInfo");
 		String reqNo = fields.get("vpc_MerchTxnRef");
 		String returnUrl=this.getPaymentData().getContinueUrl();
 		String refNo = reqNo.substring(0,reqNo.indexOf('-'));
 		double amount = Double.parseDouble(amo)/100;
 
-		PaymentRequestDto paymentRequestDtoOld=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(refNo).getEntity();
+		String[] refundInfos=refundInfo.split("@");
+		for(String info :refundInfos){
+			String svcRefNo = info.substring(0,info.indexOf('-'));
+			String svcRefNo1 = info.substring(0,info.indexOf("refund"));
+			String amount1 = info.substring(info.indexOf("refund"));
+			double amount2 = Double.parseDouble(amount1)/100;
+
+			PaymentRequestDto paymentRequestDtoOld=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(svcRefNo).getEntity();
 
 
-		Session checkoutSession= null;
-		try {
-			checkoutSession = PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDtoOld.getSrcSystemConfDto().getClientKey());
-		} catch (StripeException e) {
-			log.info(e.getMessage(),e);
-		}
-		Refund refund;
+			Session checkoutSession= null;
+			try {
+				checkoutSession = PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDtoOld.getSrcSystemConfDto().getClientKey());
+			} catch (StripeException e) {
+				log.info(e.getMessage(),e);
+			}
+			Refund refund;
 
-		try {
-			refund=PaymentBaiduriProxyUtil.getStripeService().createRefund(checkoutSession.getPaymentIntent(),Long.valueOf(amo));
-			srcSystemConfDto.setClientKey(refund.getId());
-		} catch (StripeException e) {
-			log.info(e.getMessage(),e);
-			srcSystemConfDto.setClientKey(UUID.randomUUID().toString());
-		}
+			try {
+				refund=PaymentBaiduriProxyUtil.getStripeService().createRefund(checkoutSession.getPaymentIntent(),Long.valueOf(amount1));
+				srcSystemConfDto.setClientKey(refund.getId());
+			} catch (StripeException e) {
+				log.info(e.getMessage(),e);
+				srcSystemConfDto.setClientKey(UUID.randomUUID().toString());
+			}
 
 
-		if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(reqNo)) {
-			PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
-			srcSystemConfDto.setReturnUrl(returnUrl);
-			srcSystemConfDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-			SrcSystemConfDto srcSystemConfDto1 =PaymentBaiduriProxyUtil.getPaymentClient().accessApplicationSrcSystemConfDto(srcSystemConfDto).getEntity();
-			paymentRequestDto.setAmount(amount);
-			paymentRequestDto.setPayMethod("stpRefund");
-			paymentRequestDto.setReqDt(new Date());
-			paymentRequestDto.setReqRefNo(reqNo);
-			paymentRequestDto.setSrcSystemConfDto(srcSystemConfDto1);
-			paymentRequestDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-			PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
+			if(!StringUtil.isEmpty(amount1)&&!StringUtil.isEmpty(svcRefNo1)) {
+				PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
+				srcSystemConfDto.setReturnUrl(returnUrl);
+				srcSystemConfDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+				SrcSystemConfDto srcSystemConfDto1 =PaymentBaiduriProxyUtil.getPaymentClient().accessApplicationSrcSystemConfDto(srcSystemConfDto).getEntity();
+				paymentRequestDto.setAmount(amount2);
+				paymentRequestDto.setPayMethod("stpRefund");
+				paymentRequestDto.setReqDt(new Date());
+				paymentRequestDto.setReqRefNo(svcRefNo1);
+				paymentRequestDto.setSrcSystemConfDto(srcSystemConfDto1);
+				paymentRequestDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+				PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
+			}
 		}
 
 		try {
@@ -147,62 +157,58 @@ public class PaymentStripeRefundProxy extends PaymentProxy {
 		String transNo = this.getPaymentData().getPaymentTrans().getTransNo();
 		String refNo = this.getPaymentData().getSvcRefNo();
 		double amount = this.getPaymentData().getAmount();
-		PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(refNo).getEntity();
+		String infos=this.getPaymentData().getPaymentDescription();
+		String[] refundInfos=infos.split("@");
+		List<AppReturnFeeDto> appReturnFeeDtos= IaisCommonUtils.genNewArrayList();
+		for(String info :refundInfos){
+			AppReturnFeeDto appReturnFeeDto=new AppReturnFeeDto();
+			String svcRefNo = info.substring(0,info.indexOf("refund"));
+			String amount1 = info.substring(info.indexOf("refund"));
+			double amount2 = Double.parseDouble(amount1)/100;
 
-		Map<String, String> fields = getResponseFieldsMap(bpc);
+			PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(svcRefNo).getEntity();
 
-		String gwNo = fields.get("vpc_TransactionNo");
-		setGatewayRefNo(gwNo);
-		HttpServletRequest request = bpc.request;
-		Refund refund=null;
-		try{
-			refund=PaymentBaiduriProxyUtil.getStripeService().retrieveRefund(paymentRequestDto.getSrcSystemConfDto().getClientKey());
+			HttpServletRequest request = bpc.request;
+			Refund refund=null;
+			try{
+				refund=PaymentBaiduriProxyUtil.getStripeService().retrieveRefund(paymentRequestDto.getSrcSystemConfDto().getClientKey());
 
-		}catch (Exception e){
-			log.info(e.getMessage(),e);
+			}catch (Exception e){
+				log.info(e.getMessage(),e);
 
-		}
-
-		String response = "payment success";
-		setPaymentResponse(response);
-		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
-		String invoiceNo = "1234567";
-		if(refund!=null){
-			if("succeeded".equals(refund.getStatus())){
-				status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
-			}else {
-				status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
 			}
+
+			String response = "payment success";
+			setPaymentResponse(response);
+			String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
+			String invoiceNo = "1234567";
+			if(refund!=null){
+				if("succeeded".equals(refund.getStatus())){
+					status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
+				}else {
+					status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
+				}
+			}
+			PaymentDto paymentDto = new PaymentDto();
+			paymentDto.setAmount(amount2);
+			paymentDto.setReqRefNo(svcRefNo);
+			paymentDto.setTxnRefNo(transNo);
+			paymentDto.setInvoiceNo(invoiceNo);
+
+			paymentDto.setPmtStatus(status);
+			paymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+			PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
+
+			appReturnFeeDto.setStatus(status);
+			appReturnFeeDto.setApplicationNo(svcRefNo);
+			appReturnFeeDtos.add(appReturnFeeDto);
 		}
-		PaymentDto paymentDto = new PaymentDto();
-		paymentDto.setAmount(amount);
-		paymentDto.setReqRefNo(refNo);
-		paymentDto.setTxnRefNo(transNo);
-		paymentDto.setInvoiceNo(invoiceNo);
 
-		paymentDto.setPmtStatus(status);
-		paymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-		PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
+//		Map<String, String> fields = getResponseFieldsMap(bpc);
+//
+//		String gwNo = fields.get("vpc_TransactionNo");
+//		setGatewayRefNo(gwNo);
 
-		try {
-			String svcName=request.getServerName();
-			svcName=svcName.replace("inter","intra");
-			String results="?result="+ MaskUtil.maskValue("result",status)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",refNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",transNo);
-			String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + svcName+paymentRequestDto.getSrcSystemConfDto().getReturnUrl()+results;
-
-
-			RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);
-		} catch (UnsupportedEncodingException e) {
-			log.info(e.getMessage(),e);
-			log.debug(e.getMessage());
-
-			throw new PaymentException(e);
-		} catch (IOException e) {
-			log.info(e.getMessage(),e);
-			log.debug(e.getMessage());
-
-			throw new PaymentException(e);
-		}
 	}
 
 	@Override
