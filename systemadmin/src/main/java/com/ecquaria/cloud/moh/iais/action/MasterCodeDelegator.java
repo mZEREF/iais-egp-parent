@@ -781,8 +781,6 @@ public class MasterCodeDelegator {
             return;
         }
         MasterCodeDto oldMasterCodeDto = (MasterCodeDto) ParamUtil.getSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR);
-        String codeCategory = masterCodeService.findCodeCategoryByDescription(oldMasterCodeDto.getCodeCategory());
-        oldMasterCodeDto.setCodeCategory(codeCategory);
         MasterCodeDto masterCodeDto = (MasterCodeDto) CopyUtil.copyMutableObject(oldMasterCodeDto);
         getEditValueFromPage(masterCodeDto, request);
         if (StringUtil.isEmpty(masterCodeDto.getVersion())){
@@ -837,6 +835,8 @@ public class MasterCodeDelegator {
             //inactive all
             masterCodeService.inactiveMsterCode(masterCodeDto.getMasterCodeKey());
         }
+        String codeCategory = masterCodeService.findCodeCategoryByDescription(oldMasterCodeDto.getCodeCategory());
+        oldMasterCodeDto.setCodeCategory(codeCategory);
         masterCodeService.updateMasterCode(oldMasterCodeDto);
         //create new
         masterCodeDto.setMasterCodeId(null);
@@ -851,6 +851,8 @@ public class MasterCodeDelegator {
         if(nowDate.isBefore(newFromDate) || nowDate.isAfter(newToDate)){
             masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
         }
+        String codeCategory2 = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
+        masterCodeDto.setCodeCategory(codeCategory2);
         masterCodeService.updateMasterCode(masterCodeDto);
         ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
         ParamUtil.setRequestAttr(request, "UPDATED_DATE", new Date());
