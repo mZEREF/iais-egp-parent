@@ -1639,11 +1639,15 @@
     </div>
   </c:if>
 
+<input type="hidden" value="${beEicGatewayClient}" id="beEicGatewayClient">
 
 </div>
 
 <script type="text/javascript">
     $(document).ready(function(){
+        if($('#beEicGatewayClient').val()!=''){
+            alert($('#beEicGatewayClient').val());
+        }
         var svcId = "";
     <c:if test="${rfi=='rfi'}">
         $('.panel-body').attr("style","background-color: #999999;");

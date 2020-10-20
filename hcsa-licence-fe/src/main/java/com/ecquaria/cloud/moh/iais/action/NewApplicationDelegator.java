@@ -2402,13 +2402,15 @@ public class NewApplicationDelegator {
     }
     private List<AppSvcDocDto> copySvcDoc(List<AppSvcDocDto> appSvcDocDtoLit){
         List<AppSvcDocDto> appSvcDocDtos=new ArrayList<>(appSvcDocDtoLit.size());
-        AppSvcDocDto svcDocDto=new AppSvcDocDto();
         for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLit){
+            AppSvcDocDto svcDocDto=new AppSvcDocDto();
             svcDocDto.setSvcDocId(appSvcDocDto.getSvcDocId());
             svcDocDto.setDocName(appSvcDocDto.getDocName());
             svcDocDto.setDocSize(appSvcDocDto.getDocSize());
             svcDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
             svcDocDto.setPremisesVal(appSvcDocDto.getPremisesVal());
+            svcDocDto.setMd5Code(appSvcDocDto.getMd5Code());
+            appSvcDocDtos.add(svcDocDto);
         }
         return appSvcDocDtos;
     }
@@ -5568,7 +5570,7 @@ public class NewApplicationDelegator {
         }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
             copy.setConveyanceVehicleNo(appGrpPremisesDto.getConveyanceVehicleNo());
         }
-
+        copy.setAppPremisesOperationalUnitDtos(appGrpPremisesDto.getAppPremisesOperationalUnitDtos());
         copy.setAppPremPhOpenPeriodList(appGrpPremisesDto.getAppPremPhOpenPeriodList());
         return copy;
     }

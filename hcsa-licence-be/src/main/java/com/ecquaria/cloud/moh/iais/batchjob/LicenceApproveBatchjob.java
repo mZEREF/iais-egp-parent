@@ -57,6 +57,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -72,6 +73,7 @@ import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -80,6 +82,8 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -145,7 +149,17 @@ public class LicenceApproveBatchjob {
 
     @Value("${iais.system.phone.number}")
     private String systemPhoneNumber;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
 
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
     @Autowired
     private NotificationHelper notificationHelper;
 
@@ -235,6 +249,7 @@ public class LicenceApproveBatchjob {
                         eventApplicationGroupDto.setApplicationDto(updateApplicationStatusToGenerated(applicationDtos));
                         eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
                         applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
+                        updateAppealApplicationStatus(applicationDtos);
 
                     }
 
@@ -245,6 +260,23 @@ public class LicenceApproveBatchjob {
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is end ..."));
     }
 
+    private void updateAppealApplicationStatus(List<ApplicationDto> applicationDtos){
+          if(applicationDtos!=null){
+              List<String> appId=new ArrayList<>(applicationDtos.size());
+            for (ApplicationDto applicationDto : applicationDtos){
+                appId.add(applicationDto.getId());
+            }
+              List<ApplicationDto> applicationDtoList = applicationClient.getAppealApplicationByApplicationIds(appId).getEntity();
+              HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+              HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            for(ApplicationDto applicationDto : applicationDtoList){
+                  applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+                  applicationClient.updateApplication(applicationDto);
+                  beEicGatewayClient.updateApplication(applicationDto,signature.date(), signature.authorization(),
+                          signature2.date(), signature2.authorization());
+              }
+          }
+    }
     private void updateExpiryDateByAlignFlag(List<LicenceGroupDto> licenceGroupDtos){
         log.info(StringUtil.changeForLog("The updateExpiryDateByAlignFlag is strat ..."));
         if(!IaisCommonUtils.isEmpty(licenceGroupDtos)){

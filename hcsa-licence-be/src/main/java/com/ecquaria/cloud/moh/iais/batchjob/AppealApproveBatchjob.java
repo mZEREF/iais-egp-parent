@@ -187,6 +187,7 @@ public class AppealApproveBatchjob {
                       appealLicenceDto.setAuditTrailDto(auditTrailDto);
                       appealLicenceDto.setAppPremiseMiscDto(appPremiseMiscDtoList);
                       appealService.createAppealLicenceDto(appealLicenceDto);
+                      appealService.updateAppPremiseMisc(appPremiseMiscDtoList);
                   }else{
                       log.info(StringUtil.changeForLog("The appealLicence is Empty."));
                   }

@@ -291,6 +291,39 @@
                                     </div>
                                   </div>
 
+                                  <c:forEach items="${appGrpPremDto.appPremisesOperationalUnitDtos}" var="appPremisesOperationalUnitDto" varStatus="unitIndex">
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        Floor No.
+                                      </div>
+                                      <div class="col-md-6">
+                                        <div class="col-md-6">
+                                          <span class="newVal " attr="${appPremisesOperationalUnitDto.floorNo}"><c:out value="${appPremisesOperationalUnitDto.floorNo}"/></span>
+
+                                        </div>
+                                        <div class="col-md-6">
+                                          <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremisesOperationalUnitDtos[unitIndex.index].floorNo}" style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremisesOperationalUnitDtos[unitIndex.index].floorNo}"/></span>
+                                        </div>
+                                      </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        Unit No.
+                                      </div>
+                                      <div class="col-md-6">
+                                        <div class="col-md-6"><span class="newVal " attr="${appPremisesOperationalUnitDto.unitNo}"><c:out value="${appPremisesOperationalUnitDto.unitNo}"/></span>
+
+                                        </div>
+                                        <div class="col-md-6">
+                                              <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremisesOperationalUnitDtos[unitIndex.index].unitNo}"
+                                                    style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremisesOperationalUnitDtos[unitIndex.index].unitNo}"/></span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </c:forEach>
+
 
                                   <div class="row">
                                     <div class="col-md-6">
@@ -1104,9 +1137,9 @@
           var a= $('#hciNameShowOrHidden').height();
           var b= $('.panel-body').height();
           if(a>b){
-              $('#hciNameShowOrHidden').height(b-1)
+              $('#hciNameShowOrHidden').height(b)
           }else {
-              $('#hciNameShowOrHidden').height(a-1)
+              $('#hciNameShowOrHidden').height(a)
           }
           $('#hciNameShowOrHidden').show();
           $('#addressShowOrHidden').hide();
@@ -1121,9 +1154,9 @@
         var a= $('#addressShowOrHidden').height();
         var b= $('.panel-body').height();
         if(a>b){
-            $('#addressShowOrHidden').height(b-1)
+            $('#addressShowOrHidden').height(b)
         }else {
-            $('#addressShowOrHidden').height(a-1)
+            $('#addressShowOrHidden').height(a)
         }
           $('#addressShowOrHidden').show();
           $('#hciNameShowOrHidden').hide();

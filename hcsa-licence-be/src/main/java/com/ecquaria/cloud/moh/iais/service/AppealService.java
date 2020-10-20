@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
@@ -18,4 +19,5 @@ public interface AppealService {
     public AppealApplicationDto createAppealApplicationDto(AppealApplicationDto appealApplicationDto);
     public AppealLicenceDto updateFEAppealLicenceDto(String eventRefNum,String submissionId);
 
+    void updateAppPremiseMisc(List<AppPremiseMiscDto> appPremiseMiscDtoList);
 }

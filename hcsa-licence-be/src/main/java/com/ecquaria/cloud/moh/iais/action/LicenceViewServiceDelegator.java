@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
@@ -329,6 +330,7 @@ public class LicenceViewServiceDelegator {
                 svcDocToPresmise(oldAppSubmissionDto);
             }
         }
+
         try {
             contrastNewAndOld(appSubmissionDto);
         }catch (Exception e){
@@ -367,6 +369,13 @@ public class LicenceViewServiceDelegator {
                 String postalCode = appGrpPremisesDto.getPostalCode();
                 String hciName = appGrpPremisesDto.getHciName();
                 String conveyanceVehicleNo = appGrpPremisesDto.getConveyanceVehicleNo();
+                List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
+                if(appPremisesOperationalUnitDtos!=null){
+                    for(AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos){
+                        String floorNo1 = appPremisesOperationalUnitDto.getFloorNo();
+                        String unitNo1 = appPremisesOperationalUnitDto.getUnitNo();
+                    }
+                }
                 map.put("blkNo",blkNo);
                 map.put("floorNo",floorNo);
                 map.put("unitNo",unitNo);
@@ -507,8 +516,14 @@ public class LicenceViewServiceDelegator {
         professionalParameterDto.setSignature("2222");
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        List<DisciplinaryRecordResponseDto> disciplinaryRecordResponseDtos = beEicGatewayClient.getDisciplinaryRecord(professionalParameterDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
+        List<DisciplinaryRecordResponseDto> disciplinaryRecordResponseDtos=new ArrayList<>();
+        try {
+            disciplinaryRecordResponseDtos = beEicGatewayClient.getDisciplinaryRecord(professionalParameterDto, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getEntity();
+        }catch (Exception e){
+            request.setAttribute("beEicGatewayClient","PRS mock server down !");
+        }
+
       /*  List<ProfessionalResponseDto> professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();*/
         List<HfsmsDto> hfsmsDtos = applicationClient.getHfsmsDtoByIdNo(idList).getEntity();
@@ -1057,59 +1072,28 @@ public class LicenceViewServiceDelegator {
         }else if(oldAppGrpPremisesDtoList.size() < appGrpPremisesDtoList.size()){
             creatNewPremise(oldAppGrpPremisesDtoList,appGrpPremisesDtoList);
         }
+        for(int i=0;i<appGrpPremisesDtoList.size();i++){
+            List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDtoList.get(i).getAppPremisesOperationalUnitDtos();
+            List<AppPremisesOperationalUnitDto> oldAppPremisesOperationalUnitDtos = oldAppGrpPremisesDtoList.get(i).getAppPremisesOperationalUnitDtos();
+            if(appPremisesOperationalUnitDtos==null){
+                appPremisesOperationalUnitDtos=new ArrayList<>();
+            }
+            if(oldAppPremisesOperationalUnitDtos==null){
+                oldAppPremisesOperationalUnitDtos=new ArrayList<>();
+            }
+            creatAppPremisesOperationalUnitDto(appPremisesOperationalUnitDtos,oldAppPremisesOperationalUnitDtos);
+        }
         publicPH(appGrpPremisesDtoList,oldAppGrpPremisesDtoList);
         List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+        if(oldAppGrpPrimaryDocDtos==null){
+            oldAppGrpPrimaryDocDtos=new ArrayList<>();
+        }
+        if(appGrpPrimaryDocDtos==null){
+            appGrpPrimaryDocDtos=new ArrayList<>();
+        }
         copyPremiseDoc(appGrpPrimaryDocDtos,oldAppGrpPrimaryDocDtos);
-      /*  sortPremiseDoc(appGrpPrimaryDocDtos,oldAppGrpPrimaryDocDtos);*/
-       /* if (IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos) && oldAppGrpPrimaryDocDtos != null) {
-            appGrpPrimaryDocDtos = new ArrayList<>(oldAppGrpPrimaryDocDtos.size());
-            for (int i = 0; i < oldAppGrpPrimaryDocDtos.size(); i++) {
-                AppGrpPrimaryDocDto appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
-                String svcDocId = oldAppGrpPrimaryDocDtos.get(i).getSvcDocId();
-                if(svcDocId!=null){
-                    appGrpPrimaryDocDto.setSvcDocId(svcDocId);
-                }else {
-                    appGrpPrimaryDocDto.setSvcDocId(oldAppGrpPrimaryDocDtos.get(i).getSvcComDocId());
-                }
-                appGrpPrimaryDocDto.setDocName("");
-                appGrpPrimaryDocDto.setSvcComDocName(oldAppGrpPrimaryDocDtos.get(i).getSvcComDocName());
-                appGrpPrimaryDocDto.setFileRepoId(oldAppGrpPrimaryDocDtos.get(i).getFileRepoId());
-                appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
-            }
-        } else if (appGrpPrimaryDocDtos != null && oldAppGrpPrimaryDocDtos != null) {
-            int size = appGrpPrimaryDocDtos.size();
-            int oldSize = oldAppGrpPrimaryDocDtos.size();
-            if (size < oldSize) {
-                for (int i = 0; i <oldSize - size; i++) {
-                    AppGrpPrimaryDocDto appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
-                    appGrpPrimaryDocDto.setSvcComDocName(oldAppGrpPrimaryDocDtos.get(size+i).getSvcComDocName());
-                    appGrpPrimaryDocDto.setDocName("");
-                    String svcDocId = oldAppGrpPrimaryDocDtos.get(size  + i).getSvcDocId();
-                    if(svcDocId!=null){
-                        appGrpPrimaryDocDto.setSvcDocId(svcDocId);
-                    }else {
-                        appGrpPrimaryDocDto.setSvcDocId(oldAppGrpPrimaryDocDtos.get(size+i).getSvcComDocId());
-                    }
-                    appGrpPrimaryDocDto.setFileRepoId(oldAppGrpPrimaryDocDtos.get(size+i).getFileRepoId());
-                    appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
-                }
-            }else if(oldSize<size){
-                for(int i=0;i<size-oldSize;i++){
-                    AppGrpPrimaryDocDto appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
-                    appGrpPrimaryDocDto.setSvcComDocName(appGrpPrimaryDocDtos.get(oldSize+i).getSvcComDocName());
-                    appGrpPrimaryDocDto.setDocName("");
-                    String svcDocId = appGrpPrimaryDocDtos.get(oldSize + i).getSvcDocId();
-                    if(svcDocId!=null){
-                        appGrpPrimaryDocDto.setSvcDocId(svcDocId);
-                    }else {
-                        appGrpPrimaryDocDto.setSvcDocId(appGrpPrimaryDocDtos.get(oldSize+i).getSvcComDocId());
-                    }
-                    appGrpPrimaryDocDto.setFileRepoId(appGrpPrimaryDocDtos.get(oldSize+i).getFileRepoId());
-                    oldAppGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
-                }
-            }
-        }*/
+
         Map<String,String> docMap = IaisCommonUtils.genNewHashMap();
         docMap.put("common", "0");
         docMap.put("premises", "1");
@@ -1135,41 +1119,14 @@ public class LicenceViewServiceDelegator {
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
         List<AppSvcDocDto> oldAppSvcDocDtoLit = oldAppSvcRelatedInfoDto.getAppSvcDocDtoLit();
+        if(appSvcDocDtoLit==null){
+            appSvcDocDtoLit=new ArrayList<>();
+        }
+        if(oldAppSvcDocDtoLit==null){
+            oldAppSvcDocDtoLit=new ArrayList<>();
+        }
         copyServiceDoc(appSvcDocDtoLit,oldAppSvcDocDtoLit);
-       /* sortServiceDoc(appSvcDocDtoLit,oldAppSvcDocDtoLit);
-        if (IaisCommonUtils.isEmpty(appSvcDocDtoLit) && oldAppSvcDocDtoLit != null) {
-            appSvcDocDtoLit = new ArrayList<>(oldAppSvcDocDtoLit.size());
-            for (int i = 0; i < oldAppSvcDocDtoLit.size(); i++) {
-                AppSvcDocDto appSvcDocDto = new AppSvcDocDto();
-                appSvcDocDto.setSvcDocId(oldAppSvcDocDtoLit.get(i).getSvcDocId());
-                appSvcDocDto.setUpFileName(oldAppSvcDocDtoLit.get(i).getUpFileName());
-                appSvcDocDto.setDocName("");
-                appSvcDocDto.setFileRepoId(oldAppSvcDocDtoLit.get(i).getFileRepoId());
-                appSvcDocDtoLit.add(appSvcDocDto);
-            }
-        } else if (appSvcDocDtoLit != null && oldAppSvcDocDtoLit != null) {
-            int size = appSvcDocDtoLit.size();
-            int oldSize = oldAppSvcDocDtoLit.size();
-            if (size < oldSize) {
-                for (int i = 0; i < oldSize - size; i++) {
-                    AppSvcDocDto appSvcDocDto = new AppSvcDocDto();
-                    appSvcDocDto.setDocName("");
-                    appSvcDocDto.setUpFileName(oldAppSvcDocDtoLit.get(size+i).getUpFileName());
-                    appSvcDocDto.setSvcDocId(oldAppSvcDocDtoLit.get(size+i).getSvcDocId());
-                    appSvcDocDto.setFileRepoId(oldAppSvcDocDtoLit.get(size+i).getFileRepoId());
-                    appSvcDocDtoLit.add(appSvcDocDto);
-                }
-            }else if(oldSize<size){
-                for(int i=0;i < size-oldSize;i++){
-                    AppSvcDocDto appSvcDocDto = new AppSvcDocDto();
-                    appSvcDocDto.setDocName("");
-                    appSvcDocDto.setSvcDocId(appSvcDocDtoLit.get(oldSize+i).getSvcDocId());
-                    appSvcDocDto.setUpFileName(appSvcDocDtoLit.get(oldSize+i).getUpFileName());
-                    appSvcDocDto.setFileRepoId(appSvcDocDtoLit.get(oldSize+i).getFileRepoId());
-                    oldAppSvcDocDtoLit.add(appSvcDocDto);
-                }
-            }
-        }*/
+
         Map<String,String> docMapService = IaisCommonUtils.genNewHashMap();
         docMapService.put("common", "0");
         docMapService.put("svc",appSvcRelatedInfoDto.getServiceId());
@@ -1496,7 +1453,7 @@ public class LicenceViewServiceDelegator {
         int oldSize = oldAppGrpPremisesDtoList.size();
         for (int i = 0; i <oldSize - size; i++) {
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-            appGrpPremisesDto.setPremisesType(oldAppGrpPremisesDtoList.get(appGrpPremisesDtoList.size()+i).getPremisesType());
+            appGrpPremisesDto.setPremisesType(oldAppGrpPremisesDtoList.get(appGrpPremisesDtoList.size()+i-1).getPremisesType());
             appGrpPremisesDto.setPostalCode("");
             appGrpPremisesDto.setOffTelNo("");
             appGrpPremisesDto.setScdfRefNo("");
@@ -1516,6 +1473,17 @@ public class LicenceViewServiceDelegator {
         }
     }
 
+    private void creatAppPremisesOperationalUnitDto(List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDto ,List<AppPremisesOperationalUnitDto> oldAppPremisesOperationalUnitDto){
+        int size = appPremisesOperationalUnitDto.size();
+        int oldSize = oldAppPremisesOperationalUnitDto.size();
+        for(int i=0;i<oldSize-size;i++){
+            AppPremisesOperationalUnitDto premisesOperationalUnitDto=new AppPremisesOperationalUnitDto();
+            premisesOperationalUnitDto.setFloorNo("");
+            premisesOperationalUnitDto.setUnitNo("");
+            premisesOperationalUnitDto.setPremType(oldAppPremisesOperationalUnitDto.get(appPremisesOperationalUnitDto.size()+i-1).getPremType());
+            appPremisesOperationalUnitDto.add(premisesOperationalUnitDto);
+        }
+    }
     private void creatCgo(List<AppSvcCgoDto> appSvcCgoDtoList,List<AppSvcCgoDto>oldAppSvcCgoDtoList){
         int size = appSvcCgoDtoList.size();
         int oldSize = oldAppSvcCgoDtoList.size();
@@ -1613,6 +1581,9 @@ public class LicenceViewServiceDelegator {
             oldAppSvcDocDtoLit.clear();
             appSvcDocDtoLit.addAll(appSvcDocDtoSet);
             oldAppSvcDocDtoLit.addAll(oldAppSvcDocDtoSet);
+        }else if(appSvcDocDtoLit==null&&oldAppSvcDocDtoLit==null){
+            appSvcDocDtoLit=new ArrayList<>();
+            oldAppSvcDocDtoLit=new ArrayList<>();
         }
     }
 

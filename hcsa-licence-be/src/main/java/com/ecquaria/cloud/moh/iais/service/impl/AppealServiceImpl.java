@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -18,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.AppealClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
@@ -30,6 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,7 +60,8 @@ public class AppealServiceImpl implements AppealService {
     private EventBusHelper eventBusHelper;
     @Autowired
     private LicEicClient licEicClient;
-
+    @Autowired
+    private ApplicationClient applicationClient;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -149,6 +153,23 @@ public class AppealServiceImpl implements AppealService {
         }
 
         return appealLicenceDto;
+    }
+
+    @Override
+    public void updateAppPremiseMisc(List<AppPremiseMiscDto> appPremiseMiscDtoList) {
+        List<String> corrIds=new ArrayList<>(appPremiseMiscDtoList.size());
+        for(AppPremiseMiscDto appPremiseMiscDto : appPremiseMiscDtoList){
+            corrIds.add(appPremiseMiscDto.getAppPremCorreId());
+        }
+        List<ApplicationDto> applicationDtos = applicationClient.getApplicationDtoByCorrIds(corrIds).getEntity();
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        for(ApplicationDto applicationDto : applicationDtos){
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+            applicationClient.updateApplication(applicationDto);
+            beEicGatewayClient.updateApplication(applicationDto,signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization());
+        }
     }
 
     public void callFeEicAppealLicence(AppealLicenceDto appealLicenceDto) {

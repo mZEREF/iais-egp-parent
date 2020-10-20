@@ -317,4 +317,8 @@ public interface ApplicationClient {
     FeignResponseEntity<List<AppSubmissionDto>> savePostSubmision(@RequestBody List<AppSubmissionDto> appSubmissionDtos);
     @PostMapping(value = "/iais-application-be/clearHclcode-appIds",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> clearHclcodeByAppIds(@RequestBody List<ApplicationDto> applicationDtos);
+    @PostMapping(value = "/iais-application-be/applications-by-corrids",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getApplicationDtoByCorrIds(@RequestBody List<String> corrIds);
+    @PostMapping(value = "/iais-application-be/appeal-application-by-application-ids",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getAppealApplicationByApplicationIds(@RequestBody List<String> appIds);
 }

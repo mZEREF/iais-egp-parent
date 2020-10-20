@@ -872,7 +872,7 @@
             var $contentEle = $(this).closest('.assignContent');
             $contentEle.find('input[name="isPartEdit"]').val('1');
             $contentEle.find('.edit-content').addClass('hidden');
-            $contentEle.find('input[type="text"]').prop('readonly', false);
+            $contentEle.find('input[type="text"]').prop('disabled', false);
             $contentEle.find('div.nice-select').removeClass('disabled');
             $contentEle.find('input[type="text"]').css('border-color', '');
             $contentEle.find('input[type="text"]').css('color', '');
