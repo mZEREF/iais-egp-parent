@@ -967,8 +967,8 @@ public class MasterCodeDelegator {
     }
 
     private boolean isEffect(MasterCodeDto masterCodeDto){
-        LocalDate fromDate = LocalDate.parse(DateUtil.formatDate(masterCodeDto.getEffectiveFrom(),Formatter.DATE), DateTimeFormatter.ofPattern(Formatter.DATE));
-        LocalDate toDate = LocalDate.parse(DateUtil.formatDate(masterCodeDto.getEffectiveTo(),Formatter.DATE), DateTimeFormatter.ofPattern(Formatter.DATE));
+        LocalDate fromDate = transferLocalDate(masterCodeDto.getEffectiveFrom());
+        LocalDate toDate = transferLocalDate(masterCodeDto.getEffectiveTo());
         LocalDate nowDate = LocalDate.now();
         return isEffect(fromDate,toDate,nowDate);
     }
