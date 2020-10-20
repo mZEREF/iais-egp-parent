@@ -166,9 +166,13 @@ public class FESingpassLandingDelegator {
             Optional<MyInfoDto> infoOpt = Optional.ofNullable(myInfoAjax.getMyInfo(identityNo));
             if (infoOpt.isPresent()){
                 MyInfoDto myInfoDto = infoOpt.get();
-                feUserDto.setDisplayName(myInfoDto.getUserName());
-                feUserDto.setEmail(myInfoDto.getEmail());
-                feUserDto.setMobileNo(myInfoDto.getMobileNo());
+                if(!myInfoDto.isServiceDown()){
+                    feUserDto.setDisplayName(myInfoDto.getUserName());
+                    feUserDto.setEmail(myInfoDto.getEmail());
+                    feUserDto.setMobileNo(myInfoDto.getMobileNo());
+                }else {
+                    ParamUtil.setRequestAttr(request,"myinfoServiceDown", "Y");
+                }
             }else {
                 feUserDto.setIdentityNo(identityNo);
                 feUserDto.setIdType(idType);

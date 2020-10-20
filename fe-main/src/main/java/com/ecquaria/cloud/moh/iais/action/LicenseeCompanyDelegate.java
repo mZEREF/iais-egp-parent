@@ -78,9 +78,13 @@ public class LicenseeCompanyDelegate {
             }else{
                 MyInfoDto myInfoDto = myInfoAjax.getMyInfo(loginContext.getNricNum());
                 if(myInfoDto != null){
-                    FeUserDto feUserDto = orgUserManageService.getUserAccount(loginContext.getUserId());
-                    if(myInfoDto != null && feUserDto != null){
-                        orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,myInfoDto);
+                    if(!myInfoDto.isServiceDown()){
+                        FeUserDto feUserDto = orgUserManageService.getUserAccount(loginContext.getUserId());
+                        if(myInfoDto != null && feUserDto != null){
+                            orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,myInfoDto);
+                        }
+                    }else {
+                        ParamUtil.setRequestAttr(bpc.request,"myinfoServiceDown", "Y");
                     }
                 }else {
                     log.info("------- Illegal operation get Myinfo ---------");

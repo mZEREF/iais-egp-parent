@@ -51,6 +51,9 @@ public class MyInfoAjax {
 				return null;
 			} catch (Exception e) {
 				log.error(e.getMessage(),e);
+				MyInfoDto dto = new MyInfoDto();
+				dto.setServiceDown(true);
+				return dto;
 			}
 
 		}else {

@@ -233,10 +233,14 @@ public class FeAdminManageDelegate {
         if(!StringUtil.isEmpty(loginContext.getNricNum()) && loginContext.getNricNum().equalsIgnoreCase(feUserDto.getIdNumber())){
             MyInfoDto myInfoDto = myInfoAjax.getMyInfo(loginContext.getNricNum());
             if(myInfoDto != null){
-                feUserDto.setEmail(myInfoDto.getEmail());
-                feUserDto.setMobileNo(myInfoDto.getMobileNo());
-                feUserDto.setDisplayName(myInfoDto.getUserName());
-                ParamUtil.setSessionAttr(request, "inter_user_attr", feUserDto);
+                if(!myInfoDto.isServiceDown()){
+                    feUserDto.setEmail(myInfoDto.getEmail());
+                    feUserDto.setMobileNo(myInfoDto.getMobileNo());
+                    feUserDto.setDisplayName(myInfoDto.getUserName());
+                    ParamUtil.setSessionAttr(request, "inter_user_attr", feUserDto);
+                }else {
+                    ParamUtil.setRequestAttr(request,"myinfoServiceDown", "Y");
+                }
             }
         }else {
             log.info("------- Illegal operation get Myinfo ---------");
