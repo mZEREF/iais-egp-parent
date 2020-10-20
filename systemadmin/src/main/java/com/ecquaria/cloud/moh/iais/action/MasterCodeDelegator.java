@@ -546,28 +546,28 @@ public class MasterCodeDelegator {
                     }
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getVersion())){
-                    if (cartOptional.isPresent()) {
-                        MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
-                        String version = masterCodeToExcelDto1.getVersion();
-                        String uploadVersion = masterCodeToExcelDto.getVersion();
-                        if( !StringUtil.stringIsFewDecimal(uploadVersion,2)){
-                            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0040","Version","field");
-                            errItems.add(errMsg);
+                    String uploadVersion = masterCodeToExcelDto.getVersion();
+                    if( !StringUtil.stringIsFewDecimal(uploadVersion,2)){
+                        String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0040","Version","field");
+                        errItems.add(errMsg);
+                        result = true;
+                    }else {
+                        if(uploadVersion.length() > 4){
+                            Map<String,String> stringMap = new HashMap<>(2);
+                            stringMap.put("field","Version");
+                            stringMap.put("maxlength","4");
+                            errItems.add( MessageUtil.getMessageDesc("GENERAL_ERR0041",stringMap));
                             result = true;
                         }else {
-                            if(uploadVersion.length() > 4){
-                                Map<String,String> stringMap = new HashMap<>(2);
-                                stringMap.put("field","Version");
-                                stringMap.put("maxlength","4");
-                                errItems.add( MessageUtil.getMessageDesc("GENERAL_ERR0041",stringMap));
+                            double inputVer = Double.parseDouble(uploadVersion);
+                            if(inputVer >= 10){
+                                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0040","Version","field");
+                                errItems.add(errMsg);
                                 result = true;
                             }else {
-                                double inputVer = Double.parseDouble(uploadVersion);
-                                if(inputVer >= 10){
-                                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0040","Version","field");
-                                    errItems.add(errMsg);
-                                    result = true;
-                                }else {
+                                if (cartOptional.isPresent()) {
+                                    MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
+                                    String version = masterCodeToExcelDto1.getVersion();
                                     if (!StringUtil.isEmpty(version)){
                                         double versionDou = Double.parseDouble(version);
                                         if (versionDou >= inputVer){
@@ -579,7 +579,6 @@ public class MasterCodeDelegator {
                                 }
                             }
                         }
-
                     }
                 }else {
                     String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Version","field");
