@@ -802,58 +802,68 @@ public class MasterCodeDelegator {
                     errorMap.put("effectiveTo", errMsg);
                 }
             }
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-            ParamUtil.setSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, masterCodeDto);
-            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
-            ParamUtil.setRequestAttr(request, "errorFlag", AppConsts.FALSE);
-            return;
+            if(AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
+                errorMap.remove("effectiveFrom");
+                errorMap.remove("effectiveTo");
+            }
+            if(errorMap != null && errorMap.size() > 0){
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                ParamUtil.setSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, masterCodeDto);
+                ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
+                ParamUtil.setRequestAttr(request, "errorFlag", AppConsts.FALSE);
+                return;
+            }
         }
-
-        //update old
-        LocalDate oldFromDate = LocalDate.parse(DateUtil.formatDate(oldMasterCodeDto.getEffectiveFrom(),Formatter.DATE), DateTimeFormatter.ofPattern(Formatter.DATE));
-        LocalDate oldToDate = LocalDate.parse(DateUtil.formatDate(oldMasterCodeDto.getEffectiveTo(),Formatter.DATE), DateTimeFormatter.ofPattern(Formatter.DATE));
-        LocalDate newFromDate = LocalDate.parse(DateUtil.formatDate(masterCodeDto.getEffectiveFrom(),Formatter.DATE), DateTimeFormatter.ofPattern(Formatter.DATE));
-        LocalDate newToDate = LocalDate.parse(DateUtil.formatDate(masterCodeDto.getEffectiveTo(),Formatter.DATE), DateTimeFormatter.ofPattern(Formatter.DATE));
-        LocalDate nowDate = LocalDate.now();
-        //new master code can effect
-        boolean newIsEffect = isEffect(newFromDate,newToDate,nowDate);
-        boolean newCodeActive = AppConsts.COMMON_STATUS_ACTIVE.equals(masterCodeDto.getStatus()) && newIsEffect;
-        boolean oldCodeExpired;
-        if(AppConsts.COMMON_STATUS_ACTIVE.equals(oldMasterCodeDto.getStatus())){
-            boolean oldIsEffect = isEffect(oldFromDate,oldToDate,nowDate);
-            if(oldIsEffect){
-                oldCodeExpired = false;
+        if(AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
+            //inactive all
+            masterCodeService.inactiveMsterCode(masterCodeDto.getMasterCodeKey());
+        }else{
+            //update old
+            LocalDate oldFromDate = transferLocalDate(oldMasterCodeDto.getEffectiveFrom());
+            LocalDate oldToDate = transferLocalDate(oldMasterCodeDto.getEffectiveTo());
+            LocalDate newFromDate = transferLocalDate(masterCodeDto.getEffectiveFrom());
+            LocalDate newToDate = transferLocalDate(masterCodeDto.getEffectiveTo());
+            LocalDate nowDate = LocalDate.now();
+            //new master code can effect
+            boolean newIsEffect = isEffect(newFromDate,newToDate,nowDate);
+            boolean newCodeActive = AppConsts.COMMON_STATUS_ACTIVE.equals(masterCodeDto.getStatus()) && newIsEffect;
+            boolean oldCodeExpired;
+            if(AppConsts.COMMON_STATUS_ACTIVE.equals(oldMasterCodeDto.getStatus())){
+                boolean oldIsEffect = isEffect(oldFromDate,oldToDate,nowDate);
+                if(oldIsEffect){
+                    oldCodeExpired = false;
+                }else{
+                    oldCodeExpired = true;
+                }
             }else{
                 oldCodeExpired = true;
             }
-        }else{
-            oldCodeExpired = true;
+            if(oldCodeExpired || newCodeActive){
+                oldMasterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                //inactive all
+                masterCodeService.inactiveMsterCode(masterCodeDto.getMasterCodeKey());
+            }
+            String codeCategory = masterCodeService.findCodeCategoryByDescription(oldMasterCodeDto.getCodeCategory());
+            oldMasterCodeDto.setCodeCategory(codeCategory);
+            masterCodeService.updateMasterCode(oldMasterCodeDto);
+            //create new
+            masterCodeDto.setMasterCodeId(null);
+            Float version =  masterCodeDto.getVersion();
+            if (StringUtil.isEmpty(version)){
+                masterCodeDto.setVersion(1f);
+            }else{
+                //get max version ms
+                MasterCodeDto maxMsDto = masterCodeService.getMaxVersionMsDto(oldMasterCodeDto.getMasterCodeKey());
+                masterCodeDto.setVersion(maxMsDto.getVersion() + 1);
+            }
+            if(nowDate.isBefore(newFromDate) || nowDate.isAfter(newToDate)){
+                masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            }
+            String codeCategory2 = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
+            masterCodeDto.setCodeCategory(codeCategory2);
+            masterCodeService.updateMasterCode(masterCodeDto);
         }
-        if(oldCodeExpired || newCodeActive){
-            oldMasterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-            //inactive all
-            masterCodeService.inactiveMsterCode(masterCodeDto.getMasterCodeKey());
-        }
-        String codeCategory = masterCodeService.findCodeCategoryByDescription(oldMasterCodeDto.getCodeCategory());
-        oldMasterCodeDto.setCodeCategory(codeCategory);
-        masterCodeService.updateMasterCode(oldMasterCodeDto);
-        //create new
-        masterCodeDto.setMasterCodeId(null);
-        Float version =  masterCodeDto.getVersion();
-        if (StringUtil.isEmpty(version)){
-            masterCodeDto.setVersion(1f);
-        }else{
-            //get max version ms
-            MasterCodeDto maxMsDto = masterCodeService.getMaxVersionMsDto(oldMasterCodeDto.getMasterCodeKey());
-            masterCodeDto.setVersion(maxMsDto.getVersion() + 1);
-        }
-        if(nowDate.isBefore(newFromDate) || nowDate.isAfter(newToDate)){
-            masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-        }
-        String codeCategory2 = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
-        masterCodeDto.setCodeCategory(codeCategory2);
-        masterCodeService.updateMasterCode(masterCodeDto);
         ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
         ParamUtil.setRequestAttr(request, "UPDATED_DATE", new Date());
 
@@ -940,7 +950,20 @@ public class MasterCodeDelegator {
     }
 
     private boolean isEffect(LocalDate fromDate,LocalDate toDate,LocalDate nowDate){
-        return (nowDate.isEqual(fromDate) || nowDate.isAfter(fromDate)) && (nowDate.isEqual(toDate) || nowDate.isBefore(toDate));
+        boolean leftFlag;
+        boolean rightFlag;
+        if(fromDate == null){
+            leftFlag = true;
+        }else{
+            leftFlag = nowDate.isEqual(fromDate) || nowDate.isAfter(fromDate);
+        }
+
+        if(toDate == null){
+            rightFlag = true;
+        }else{
+            rightFlag = nowDate.isEqual(toDate) || nowDate.isBefore(toDate);
+        }
+        return leftFlag && rightFlag;
     }
 
     private boolean isEffect(MasterCodeDto masterCodeDto){
@@ -948,5 +971,13 @@ public class MasterCodeDelegator {
         LocalDate toDate = LocalDate.parse(DateUtil.formatDate(masterCodeDto.getEffectiveTo(),Formatter.DATE), DateTimeFormatter.ofPattern(Formatter.DATE));
         LocalDate nowDate = LocalDate.now();
         return isEffect(fromDate,toDate,nowDate);
+    }
+
+    private LocalDate transferLocalDate(Date date){
+        LocalDate localDate = null;
+        if(date != null){
+            localDate = LocalDate.parse(DateUtil.formatDate(date,Formatter.DATE), DateTimeFormatter.ofPattern(Formatter.DATE));
+        }
+        return localDate;
     }
 }

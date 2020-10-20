@@ -87,14 +87,14 @@
                                 <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group esdDiv">
                             <iais:field value="Effective Start Date" required="true"/>
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <iais:datePicker id="esd" name="esdEd" dateVal="${MasterCodeDto.effectiveFrom}" />
                                 <span id="error_effectiveFrom" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group eedDiv">
                             <iais:field value="Effective End Date" required="true"/>
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <iais:datePicker id="eed" name="eedEd" dateVal="${MasterCodeDto.effectiveTo}" />
@@ -142,6 +142,12 @@
 
 <script>
 
+    $(document).ready(function () {
+        codeStatusChange();
+        $('#codeStatus').trigger('change');
+
+    });
+
     function submit(action){
         $("[name='crud_action_type']").val(action);
         $("#MasterCodeForm").submit();
@@ -151,5 +157,19 @@
         $("[name='crud_action_value']").val(mcId);
         submit("edit");
     }
+
+    var codeStatusChange = function(){
+        $('#codeStatus').change(function () {
+            var status = $(this).val();
+            if('CMSTAT003' == status){
+                $('div.esdDiv').addClass('hidden');
+                $('div.eedDiv').addClass('hidden');
+            }else{
+                $('div.esdDiv').removeClass('hidden');
+                $('div.eedDiv').removeClass('hidden');
+            }
+        });
+    }
+
 
 </script>
