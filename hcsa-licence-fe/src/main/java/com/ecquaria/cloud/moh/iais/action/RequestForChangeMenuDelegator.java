@@ -1141,17 +1141,17 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do jumpBank start ...."));
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
         String noNeedPayment = bpc.request.getParameter("noNeedPayment");
-        if (StringUtil.isEmpty(payMethod)&&StringUtil.isEmpty(noNeedPayment)) {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, "prePayment");
-            return;
-        }
-        bpc.request.getSession().setAttribute("payMethod", payMethod);
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
         try {
             requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos.get(0), payMethod);
         } catch (Exception e) {
             log.info(e.getMessage(), e);
         }
+        if (StringUtil.isEmpty(payMethod)&&StringUtil.isEmpty(noNeedPayment)) {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, "prePayment");
+            return;
+        }
+        bpc.request.getSession().setAttribute("payMethod", payMethod);
         if (0.0 == appSubmissionDtos.get(0).getAmount()) {
             StringBuilder url = new StringBuilder();
             url.append("https://")

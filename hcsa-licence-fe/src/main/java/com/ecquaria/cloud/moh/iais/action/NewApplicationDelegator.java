@@ -3022,6 +3022,14 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do jumpBank start ...."));
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
         String noNeedPayment = bpc.request.getParameter("noNeedPayment");
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        try {
+            if(appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                requestForChangeService.sendRfcSubmittedEmail(appSubmissionDto, payMethod);
+            }
+        } catch (Exception e) {
+            log.info(e.getMessage(), e);
+        }
         if (StringUtil.isEmpty(payMethod)&&StringUtil.isEmpty(noNeedPayment)) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, "payment");
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -3029,7 +3037,6 @@ public class NewApplicationDelegator {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             return;
         }
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         Double totalAmount = appSubmissionDto.getAmount();
         if (totalAmount == 0.0) {
             StringBuilder url = new StringBuilder();

@@ -1505,13 +1505,18 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(appSubmissionDto.getLicenseeId()).getEntity();
         String applicantName = licenseeDto.getName();
-        if (pmtMethod.equals(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO)) {
+        if (pmtMethod==null){
+            emailMap.put("GIRO_PAY", "false");
+            emailMap.put("Online_PAY", "false");
+
+        }else if (pmtMethod.equals(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO)) {
             emailMap.put("GIRO_PAY", "true");
             emailMap.put("GIRO_account_number", "");
             emailMap.put("usual_text_for_GIRO_deduction", appSubmissionDto.getLateFeeStr());
         } else {
             emailMap.put("Online_PAY", "true");
         }
+
         emailMap.put("Payment_Amount", appSubmissionDto.getAmountStr());
         emailMap.put("ApplicantName", applicantName);
         emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
