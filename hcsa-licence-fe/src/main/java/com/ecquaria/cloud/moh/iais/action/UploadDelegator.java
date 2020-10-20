@@ -52,7 +52,7 @@ public class UploadDelegator {
             applicationListFileDto.setAuditTrailDto(intenet);
             Map<String,List<String>> map=new HashMap();
             List<String> oldStatus= IaisCommonUtils.genNewArrayList();
-            oldStatus.add(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+            oldStatus.add(ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP);
             try {
                 uploadFileService.getRelatedDocuments(applicationListFileDto);
                 String grpId = uploadFileService.saveFile(applicationListFileDto);
