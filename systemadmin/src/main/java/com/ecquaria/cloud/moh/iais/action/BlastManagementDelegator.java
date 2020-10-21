@@ -373,7 +373,7 @@ public class BlastManagementDelegator {
         HttpServletRequest request = bpc.request;
         //setfile
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        List<MultipartFile> files = mulReq.getFiles("selectedFile");
+        List<MultipartFile> files = mulReq.getFiles("selectFile");
         String subject = mulReq.getParameter("subject");
         String messageContent = mulReq.getParameter( "messageContent");
         String content = messageContent.replaceAll("\\&[a-zA-Z]{1,10};", "").replaceAll("<[^>]*>", "").replaceAll("\\r", "").replaceAll("\\n", "");
@@ -388,27 +388,6 @@ public class BlastManagementDelegator {
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
         }else{
-
-            List<AttachmentDto> attachmentDtos = IaisCommonUtils.genNewArrayList();
-            String fileChange = mulReq.getParameter("fileChange");
-            if("1".equals(fileChange)){
-                for (MultipartFile file:files
-                ) {
-                    AttachmentDto attachmentDto = new AttachmentDto();
-                    String json = "";
-                    File toFile = FileUtils.multipartFileToFile(file);
-                    try {
-                        byte[] fileToByteArray = FileUtils.readFileToByteArray(toFile);
-                        attachmentDto.setData(fileToByteArray);
-                        attachmentDto.setDocName(file.getOriginalFilename());
-                        attachmentDto.setDocSize(Long.toString(file.getSize()));
-                        attachmentDtos.add(attachmentDto);
-                    }catch (Exception e){
-                        log.info(e.getMessage());
-                    }
-                }
-                blastManagementDto.setAttachmentDtos(attachmentDtos);
-            }
             ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
             ValidationResult validationResult =WebValidationHelper.validateProperty(blastManagementDto, "page2");
             if(validationResult != null && validationResult.isHasErrors()) {

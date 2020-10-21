@@ -52,10 +52,9 @@
                                     <div class="file-upload-gp">
                                         <input id="selectFile" name="selectFile" type="file" class="iptFile" style="display: none;">
                                         <div id="uploadFileBox" class="file-upload-gp">
-<%--                                            <p class="fileList" style="font-size: 2em">file.doc&emsp;<button type="button" class="btn btn-danger btn-sm" onclick="callAjaxDeleteFile('index')"><em class="fa fa-times"></em></button></p>--%>
                                             <c:forEach var="attachmentDto" items="${blastManagementDto.attachmentDtos}"
                                                        varStatus="status">
-                                                <p class="fileList">${attachmentDto.docName}&emsp;<button type="button" class="btn btn-danger btn-sm" onclick="callAjaxDeleteFile('${attachmentDto.id}')"><em class="fa fa-times"></em></button><input hidden name='fileSize' value='${attachmentDto.docSize}'/></p>
+                                                <p class="fileList">${attachmentDto.docName}&emsp;<button type="button" class="btn btn-danger btn-sm" onclick="writeMessageDeleteFile('${attachmentDto.id}')"><em class="fa fa-times"></em></button><input hidden name='fileSize' value='${attachmentDto.docSize}'/></p>
                                             </c:forEach>
                                         </div>
                                         <a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
