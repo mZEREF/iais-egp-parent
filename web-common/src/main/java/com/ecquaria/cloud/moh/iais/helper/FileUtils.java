@@ -126,14 +126,16 @@ public final class FileUtils {
         }
 
         File[] files = file.listFiles();
-        for (File f : files){
-            String srcName = f.getName();
-            File dstFile = new File(dst + srcName);
-            if (dstFile.exists()){
-                dstFile.delete();
+        if (files != null && file.length() > 0){
+            for (File f : files){
+                String srcName = f.getName();
+                File dstFile = new File(dst + srcName);
+                if (dstFile.exists()){
+                    dstFile.delete();
+                }
+                dstFile.createNewFile();
+                org.apache.commons.io.FileUtils.copyFile(f, dstFile);
             }
-            dstFile.createNewFile();
-            org.apache.commons.io.FileUtils.copyFile(f, dstFile);
         }
     }
 
