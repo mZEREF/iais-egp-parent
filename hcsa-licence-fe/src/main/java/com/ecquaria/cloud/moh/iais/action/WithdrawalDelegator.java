@@ -67,8 +67,10 @@ public class WithdrawalDelegator {
         String isDoView = ParamUtil.getString(bpc.request, "isDoView");
         ParamUtil.setSessionAttr(bpc.request, "isDoView", isDoView);
         int configFileSize = systemParamConfig.getUploadFileLimit();
-
+        ParamUtil.setSessionAttr(bpc.request, "withdrawDtoView", null);
         ParamUtil.setSessionAttr(bpc.request,"configFileSize",configFileSize);
+
+
    //     String withdrawAppId = ParamUtil.getMaskedString(bpc.request, "withdrawAppId");
         if (!StringUtil.isEmpty(withdrawAppNo)){
             ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", withdrawAppNo);
@@ -217,6 +219,12 @@ public class WithdrawalDelegator {
                 withdrawnDto.setApplicationNo(appNo);
                 withdrawnDto.setLicenseeId(loginContext.getLicenseeId());
                 withdrawnDto.setWithdrawnReason(withdrawnReason);
+
+                if ("WDR005".equals(withdrawnReason)){
+                    String withdrawnRemarks = ParamUtil.getRequestString(bpc.request, "withdrawnRemarks");
+                    withdrawnDto.setWithdrawnRemarks(withdrawnRemarks);
+                }
+
                 ValidationResult validationResult = WebValidationHelper.validateProperty(withdrawnDto,"save");
                 if(validationResult != null && validationResult.isHasErrors()){
                     Map<String, String> errorMap = validationResult.retrieveAll();

@@ -71,12 +71,25 @@
                         </div>
                     <div class="row">
                         <div class="center-content">
-                            <h3>Reason for Withdrawal<span style="color: red"> *</span></h3>
+                            <h3>Reason for Withdrawal<span style="color: #ff0000"> *</span></h3>
                             <div class="col-md-7">
-                                <iais:select name="withdrawalReason" id="withdrawalReason"
-                                             options="withdrawalReasonList"
-                                             onchange="withdrawalReasons(this.value);"
-                                             value="${withdrawDtoView.withdrawnReason}" disabled="true"/>
+                                <c:choose>
+                                    <c:when test="${isDoView eq 'Y'}">
+                                        <iais:select name="withdrawalReason" id="withdrawalReason"
+                                                     options="withdrawalReasonList"
+                                                     onchange="withdrawalReasons(this.value);"
+                                                     value="${withdrawDtoView.withdrawnReason}"  disabled="true" />
+                                    </c:when>
+                                    <c:otherwise>
+                                        <iais:select name="withdrawalReason" id="withdrawalReason"
+                                                     options="withdrawalReasonList"
+                                                     onchange="withdrawalReasons(this.value);"
+                                                     value="${withdrawDtoView.withdrawnReason}"  />
+                                    </c:otherwise>
+                                </c:choose>
+
+
+
                                 <span id="error_withdrawnReason" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
