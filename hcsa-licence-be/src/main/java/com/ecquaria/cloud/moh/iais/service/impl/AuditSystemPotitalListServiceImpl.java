@@ -114,6 +114,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         auditTaskDataFillterDto.setLicId(auditTaskDataDto.getLicId());
         auditTaskDataFillterDto.setAuditRiskType(auditTaskDataDto.getAuditRiskType());
         auditTaskDataFillterDto.setLicenceDueDate(auditTaskDataDto.getLicenceDueDate());
+        auditTaskDataFillterDto.setLicenceNo(auditTaskDataDto.getLicenceNo());
         if(isNeedInsp &&!StringUtil.isEmpty(auditTaskDataFillterDto.getInspectorId()) && !StringUtil.isEmpty(auditTaskDataFillterDto.getAuditId())){
             OrgUserDto user = applicationViewService.getUserById(auditTaskDataFillterDto.getInspectorId());
             auditTaskDataFillterDto.setInspector(user.getDisplayName());
