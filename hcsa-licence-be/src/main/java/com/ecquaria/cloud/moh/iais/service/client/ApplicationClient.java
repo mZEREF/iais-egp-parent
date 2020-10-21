@@ -321,4 +321,7 @@ public interface ApplicationClient {
     FeignResponseEntity<List<ApplicationDto>> getApplicationDtoByCorrIds(@RequestBody List<String> corrIds);
     @PostMapping(value = "/iais-application-be/appeal-application-by-application-ids",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getAppealApplicationByApplicationIds(@RequestBody List<String> appIds);
+
+    @GetMapping(value = "/iais-application-group-be/app-group-one/{appGroupNo}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationGroupDto> getAppGrpByNo(@PathVariable("appGroupNo") String appGroupNo);
 }
