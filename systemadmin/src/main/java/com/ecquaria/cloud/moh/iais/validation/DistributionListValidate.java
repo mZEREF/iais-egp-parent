@@ -26,6 +26,18 @@ public class DistributionListValidate implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         DistributionListWebDto distribution = (DistributionListWebDto) ParamUtil.getSessionAttr(request, "distribution");
+        if(StringUtil.isEmpty(distribution.getDisname())){
+            errMap.put("disname",MessageUtil.replaceMessage("GENERAL_ERR0006","Distribution Name","field"));
+        }
+        if(StringUtil.isEmpty(distribution.getService())){
+            errMap.put("service",MessageUtil.replaceMessage("GENERAL_ERR0006","Service","field"));
+        }
+        if(StringUtil.isEmpty(distribution.getRole())){
+            errMap.put("role",MessageUtil.replaceMessage("GENERAL_ERR0006","Distribution List","field"));
+        }
+        if(StringUtil.isEmpty(distribution.getMode())){
+            errMap.put("mode",MessageUtil.replaceMessage("GENERAL_ERR0006","Mode of Delivery","field"));
+        }
         if(EMAIL.equals(distribution.getMode())){
             if(distribution.getEmailAddress() != null){
                 for (String item :distribution.getEmailAddress()

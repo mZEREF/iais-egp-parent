@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
@@ -248,21 +247,22 @@ public class MassEmailDelegator {
         List<String> filelist = getAllData(file);
         List<String> address = getEmail(bpc);
         if(repeatList(filelist)){
-            errMap.put("addr", "There are repeated email address(es) provided");
+            errMap.put("file", "There are repeated email address(es) provided");
         }
         if(address != null){
             filelist.addAll(address);
         }
         if(filelist != null ){
             if(repeatList(filelist)){
-                errMap.put("addr", "The provided email address already exists in the distribution list");
+                errMap.put("file", "The provided email address already exists in the distribution list");
             }
             String fileData = StringUtils.join(filelist, "\r\n");
             ParamUtil.setRequestAttr(bpc.request,"emailAddress",fileData);
-        }else{
-            errMap.put("addr", MessageUtil.replaceMessage("GENERAL_ERR0006","Email Addresses","field"));
-            ParamUtil.setRequestAttr(bpc.request,"emailAddress","");
         }
+//        else{
+//            errMap.put("addr", MessageUtil.replaceMessage("GENERAL_ERR0006","Email Addresses","field"));
+//            ParamUtil.setRequestAttr(bpc.request,"emailAddress","");
+//        }
         ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
         ParamUtil.setRequestAttr(bpc.request,"distribution",distributionListWebDto);
         ParamUtil.setRequestAttr(bpc.request,"fileName",file.getOriginalFilename());
