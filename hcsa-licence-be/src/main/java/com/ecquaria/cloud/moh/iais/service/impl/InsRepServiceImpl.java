@@ -651,7 +651,7 @@ public class InsRepServiceImpl implements InsRepService {
             createAppPremisesRoutingHistory(applicationNo, status, taskKey, appPremisesRecommendationDto.getProcessRemarks(), InspectionConstants.INSPECTION_STATUS_PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
         }
         ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW);
-        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO1, groupId1, subStage);
+        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
     }
 
     @Override
@@ -692,7 +692,7 @@ public class InsRepServiceImpl implements InsRepService {
                 // send the task to Ao2  or Ao3
                 List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                 taskService.createTasks(taskDtos);
-                createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO2, groupId, null);
+                createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO1, groupId, null);
             }
         }
     }

@@ -722,12 +722,13 @@ public class RequestForChangeMenuDelegator {
         }
         List<String> licenceIds = personnelEditDto.getLicenceIds();
         if (IaisCommonUtils.isEmpty(licenceIds)) {
-            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "There is ongoing application for the licence");
+            ParamUtil.setRequestAttr(bpc.request, "action_type", "valid");
+            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "personnelAck");
             return;
         } else {
             Boolean allCanRfc = requestForChangeService.isAllCanRfc(licenceIds);
             if (!allCanRfc) {
-                ParamUtil.setRequestAttr(bpc.request, "personnelAck", "personnelAck");
+                ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "personnelAck");
                 ParamUtil.setRequestAttr(bpc.request, "action_type", "valid");
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
                 return;
@@ -803,7 +804,7 @@ public class RequestForChangeMenuDelegator {
             }
         }
         //save
-         requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);
+        requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);
         ParamUtil.setRequestAttr(bpc.request, "action_type", "bank");
         appSubmissionDtos1.get(0).setLicenceNo(null);
         ParamUtil.setSessionAttr(bpc.request, "AppSubmissionDto", appSubmissionDtos1.get(0));
@@ -908,9 +909,6 @@ public class RequestForChangeMenuDelegator {
             if (psnTypes.contains("PO") && StringUtil.isEmpty(designation1)) {
                 errMap.put("designation1", generalSixDes);
             }
-            if (StringUtil.isEmpty(editSelect)) {
-                errMap.put("editSelect1", "GENERAL_ERR0006");
-            }
             if (psnTypes.contains("PO") && StringUtil.isEmpty(officeTelNo1)) {
                 errMap.put("officeTelNo1", MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
             }
@@ -944,9 +942,6 @@ public class RequestForChangeMenuDelegator {
             }
             if (psnTypes.contains("PO") && StringUtil.isEmpty(designation)) {
                 errMap.put("designation", generalSixDes);
-            }
-            if (StringUtil.isEmpty(editSelect)) {
-                errMap.put("editSelect", MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
             }
             if (psnTypes.contains("PO") && StringUtil.isEmpty(officeTelNo)) {
                 errMap.put("officeTelNo", MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No.", "field"));
@@ -1011,9 +1006,6 @@ public class RequestForChangeMenuDelegator {
                 if (psnTypes.contains("PO") && StringUtil.isEmpty(newPerson.getDesignation())) {
                     errMap.put("designation2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
                 }
-                if (StringUtil.isEmpty(editSelect)) {
-                    errMap.put("editSelect2", "GENERAL_ERR0006");
-                }
                 String generalSixTelNo = MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No", "field");
                 if (psnTypes.contains("PO") && StringUtil.isEmpty(newPerson.getOfficeTelNo())) {
                     errMap.put("officeTelNo2", generalSixTelNo);
@@ -1024,7 +1016,7 @@ public class RequestForChangeMenuDelegator {
             }
         }
         if (StringUtil.isEmpty(editSelect)) {
-            errMap.put("editSelect", "GENERAL_ERR0006");
+            errMap.put("editSelect", MessageUtil.replaceMessage("GENERAL_ERR0006", "Edit", "field"));
         }
         //rfc valiant
 

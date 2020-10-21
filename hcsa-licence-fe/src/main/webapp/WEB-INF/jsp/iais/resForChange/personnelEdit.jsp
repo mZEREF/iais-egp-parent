@@ -417,7 +417,7 @@
                 </div>
             </div>
             <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
-            <input type="text" style="display: none" value="${personnelAck}" id="ackMessage" name="ackMessage">
+            <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
             <iais:confirm msg= "RFC_ERR0013" callBack="cancel()"  needCancel="false" popupOrder="ackMessageConfim"></iais:confirm>
         </div>
     </div>
