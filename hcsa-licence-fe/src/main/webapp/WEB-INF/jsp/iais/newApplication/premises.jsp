@@ -172,6 +172,9 @@
 
         removePH();
 
+        addOperational();
+
+        operationDel();
         //Binding method
         $('#Back').click(function(){
             submit(null,'back',null);
@@ -188,8 +191,10 @@
         <c:if test="${!AppSubmissionDto.needEditController && readOnly}">
         readonlyPartPage($('div.premises-content'));
         $('div.premises-content').each(function () {
-          $(this).find('div.other-lic-content .other-lic:checked').closest('div').find('span.check-circle').addClass('radio-disabled');;
-          $(this).find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
+            $(this).find('div.other-lic-content .other-lic:checked').closest('div').find('span.check-circle').addClass('radio-disabled');;
+            $(this).find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
+            $(this).find('.addOperational').addClass('hidden');
+            $(this).find('.opDel').addClass('hidden');
         });
         </c:if>
 
@@ -198,6 +203,8 @@
         $('div.premises-content').each(function () {
             $(this).find('div.other-lic-content .other-lic:checked').closest('div').find('span.check-circle').addClass('radio-disabled');;
             $(this).find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
+            $(this).find('.addOperational').addClass('hidden');
+            $(this).find('.opDel').addClass('hidden');
         });
         </c:if>
 
@@ -218,6 +225,8 @@
               <!--remove ph hidden-->
               premContent.find('.addPubHolDay').removeClass('hidden');
               premContent.find('div.other-lic-content .check-circle').removeClass('radio-disabled');
+              premContent.find('.addOperational').removeClass('hidden');
+              premContent.find('.opDel').removeClass('hidden');
           }
         </c:if>
 

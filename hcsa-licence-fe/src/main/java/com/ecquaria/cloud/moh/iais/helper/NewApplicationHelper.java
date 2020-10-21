@@ -10,9 +10,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.PremisesHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
@@ -2098,6 +2101,63 @@ public class NewApplicationHelper {
     public static AppSubmissionDto getOldSubmissionDto(HttpServletRequest request){
         return ParamUtil.getSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO) == null?new AppSubmissionDto(): (AppSubmissionDto) ParamUtil.getSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
     }
+
+    public static String getPremisesHci(PremisesHciDto premisesHciDto){
+        String premisesHci = premisesHciDto.getPostalCode() + premisesHciDto.getBlkNo();
+        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesHciDto.getPremisesType())){
+            premisesHci = premisesHciDto.getHciName()+premisesHci;
+        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesHciDto.getPremisesType())){
+            premisesHci = premisesHciDto.getVehicleNo()+premisesHci;
+        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesHciDto.getPremisesType())){
+
+        }
+        return premisesHci;
+    }
+
+    public static List<String> genPremisesHciList(AppGrpPremisesDto appGrpPremisesDto){
+        List<String> premisesHciList = IaisCommonUtils.genNewArrayList();
+        if(appGrpPremisesDto != null){
+            String premisesHciPre = "";
+            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+                premisesHciPre = appGrpPremisesDto.getHciName() + appGrpPremisesDto.getPostalCode() + appGrpPremisesDto.getBlkNo();
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+                premisesHciPre = appGrpPremisesDto.getConveyanceVehicleNo() + appGrpPremisesDto.getPostalCode() + appGrpPremisesDto.getBlkNo();
+            }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
+                premisesHciPre = appGrpPremisesDto.getPostalCode() + appGrpPremisesDto.getBlkNo();
+            }
+            premisesHciList.add(premisesHciPre + appGrpPremisesDto.getFloorNo() + appGrpPremisesDto.getUnitNo());
+            List<AppPremisesOperationalUnitDto> operationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
+            if(!IaisCommonUtils.isEmpty(operationalUnitDtos)){
+                for(AppPremisesOperationalUnitDto operationalUnitDto:operationalUnitDtos){
+                    premisesHciList.add(premisesHciPre + operationalUnitDto.getFloorNo() + operationalUnitDto.getUnitNo());
+                }
+            }
+        }
+        return premisesHciList;
+    }
+
+    public static List<String> genPremisesHciList(PremisesDto premisesDto){
+        List<String> premisesHciList = IaisCommonUtils.genNewArrayList();
+        if(premisesDto != null){
+            String premisesHciPre = "";
+            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesDto.getPremisesType())){
+                premisesHciPre = premisesDto.getHciName() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())){
+                premisesHciPre = premisesDto.getVehicleNo() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
+            }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())){
+                premisesHciPre = premisesDto.getPostalCode() + premisesDto.getBlkNo();
+            }
+            premisesHciList.add(premisesHciPre + premisesDto.getFloorNo() + premisesDto.getUnitNo());
+            List<PremisesOperationalUnitDto> operationalUnitDtos = premisesDto.getPremisesOperationalUnitDtos();
+            if(!IaisCommonUtils.isEmpty(operationalUnitDtos)){
+                for(PremisesOperationalUnitDto operationalUnitDto:operationalUnitDtos){
+                    premisesHciList.add(premisesHciPre + operationalUnitDto.getFloorNo() + operationalUnitDto.getUnitNo());
+                }
+            }
+        }
+        return premisesHciList;
+    }
+
     //=============================================================================
     //private method
     //=============================================================================

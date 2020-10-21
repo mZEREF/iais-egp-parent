@@ -39,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
@@ -956,20 +957,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             List<PremisesDto> premisesDtos = licenceClient.getPremisesByLicseeIdAndSvcName(licenseeId,svcNameStr).getEntity();
             List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = applicationClient.getPendAppPremises(licenseeId,svcIdStr).getEntity();
             if(!IaisCommonUtils.isEmpty(premisesDtos)){
-                for(PremisesDto premisesDto:premisesDtos){
-                    String premisesKey = IaisCommonUtils.genPremisesKey(premisesDto.getPostalCode(),premisesDto.getBlkNo(),premisesDto.getFloorNo(),premisesDto.getUnitNo());
-                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesDto.getPremisesType())){
-                        result.add(premisesDto.getHciName()+premisesKey);
-                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())){
-                        result.add(premisesDto.getVehicleNo()+premisesKey);
-                    }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())){
-                        result.add(premisesKey);
-                    }
+                for(PremisesDto premisesHciDto:premisesDtos){
+                    result.addAll(NewApplicationHelper.genPremisesHciList(premisesHciDto));
                 }
             }
             if(!IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)){
-                for(AppGrpPremisesEntityDto premisesDto:appGrpPremisesEntityDtos){
-                    NewApplicationHelper.setPremiseHciList(premisesDto,result);
+                for(AppGrpPremisesEntityDto premisesEntityDto:appGrpPremisesEntityDtos){
+                    PremisesDto premisesDto = MiscUtil.transferEntityDto(premisesEntityDto,PremisesDto.class);
+                    result.addAll(NewApplicationHelper.genPremisesHciList(premisesDto));
                 }
             }
         }

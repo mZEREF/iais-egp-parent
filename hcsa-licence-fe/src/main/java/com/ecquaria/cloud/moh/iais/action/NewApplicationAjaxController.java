@@ -6,14 +6,25 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -25,7 +36,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -591,9 +606,9 @@ public class NewApplicationAjaxController {
     public @ResponseBody
     String genPublicHolidayHtml(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the genPublicHolidayHtml start ...."));
-        String type = ParamUtil.getString(request, "type");
-        String premVal = ParamUtil.getString(request, "premVal");
-        String phLength = ParamUtil.getString(request, "phLength");
+        String type = ParamUtil.getString(request,"type");
+        String premVal = ParamUtil.getString(request,"premVal");
+        String phLength = ParamUtil.getString(request,"phLength");
         List<SelectOption> timeHourList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < 24; i++) {
             timeHourList.add(new SelectOption(String.valueOf(i), i < 10 ? "0" + String.valueOf(i) : String.valueOf(i)));
@@ -896,6 +911,19 @@ public class NewApplicationAjaxController {
                 List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
                 NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos, publicHolidayList);
             }
+
+            List<AppPremisesOperationalUnitDto> operationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
+            if(!IaisCommonUtils.isEmpty(operationalUnitDtos)){
+                StringBuilder operationHtml = new StringBuilder();
+                String sql = SqlMap.INSTANCE.getSql("premises", "premises-operational").getSqlStr();
+                sql = sql.replace("${premType}", "remark");
+                sql = sql.replace("${premIndex}", "");
+                sql = sql.replace("${opCount}", "");
+                for(AppPremisesOperationalUnitDto operationalUnitDto:operationalUnitDtos){
+                    operationHtml.append(sql);
+                }
+                appGrpPremisesDto.setOperationHtml(operationHtml.toString());
+            }
         }
 
         licAppGrpPremisesDtoMap.put(premIndexNo, appGrpPremisesDto);
@@ -1178,6 +1206,30 @@ public class NewApplicationAjaxController {
         return ajaxResDto;
     }
 
+    @PostMapping(value = "/premises-operational-html")
+    public @ResponseBody
+    AjaxResDto genPremOperationalHtml(HttpServletRequest request){
+        AjaxResDto ajaxResDto = new AjaxResDto();
+        ajaxResDto.setResCode("200");
+        String premIndex = ParamUtil.getString(request,"premIndex");
+        String premType = ParamUtil.getString(request,"premType");
+        String opCount = ParamUtil.getString(request,"opCount");
+
+        String premTypeStr = "";
+        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
+            premTypeStr = "onSite";
+        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
+            premTypeStr = "conveyance";
+        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premType)){
+            premTypeStr = "offSite";
+        }
+        String sql = SqlMap.INSTANCE.getSql("premises", "premises-operational").getSqlStr();
+        sql = sql.replace("${premType}", premTypeStr);
+        sql = sql.replace("${premIndex}", premIndex);
+        sql = sql.replace("${opCount}", opCount);
+        ajaxResDto.setResultJson(sql);
+        return ajaxResDto;
+    }
     //=============================================================================
     //private method
     //=============================================================================

@@ -52,6 +52,14 @@
             </c:otherwise>
         </c:choose>
         <c:set var="premValue" value="${status.index}"/>
+        <c:choose>
+            <c:when test="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size() > 0}">
+                <input class="opLength" type="hidden" name="opLength" value="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size()}"/>
+            </c:when>
+            <c:otherwise>
+                <input class="opLength" type="hidden" name="opLength" value="0"/>
+            </c:otherwise>
+        </c:choose>
         <div class="col-xs-12">
             <c:if test="${AppSubmissionDto.appType=='APTY005'||AppSubmissionDto.appType=='APTY004'}">
                 <c:if test="${fn:length(appGrpPremisesDto.licenceDtos)>0}">
@@ -297,6 +305,44 @@
                             <span class="error-msg" name="iaisErrorMsg" id="error_unitNo${status.index}"></span>
                         </iais:value>
                     </iais:row>
+                    <div class="operationDivGroup">
+                        <c:if test="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size()>0}">
+                            <c:forEach var="operationDto" items="${appGrpPremisesDto.appPremisesOperationalUnitDtos}" varStatus="opStat">
+                                <div class="operationDiv">
+                                    <iais:row>
+                                        <iais:field value="Floor No." width="12"/>
+                                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                                            <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}onSiteFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
+                                            <span class="error-msg"></span>
+                                        </iais:value>
+                                        <div class=" col-xs-7 col-sm-4 col-md-2 ">
+                                            <p>(Additional)</p>
+                                        </div>
+                                        <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                                            <p class="text-danger opDel" style="position: absolute;margin-top: 48px;margin-left: -40px;"><em class="fa fa-times-circle"></em></p>
+                                        </div>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Unit No." width="12"/>
+                                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                                            <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}onSiteUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
+                                            <span class="error-msg"></span>
+                                        </iais:value>
+                                        <div class=" col-xs-7 col-sm-4 col-md-2 ">
+                                            <p>(Additional)</p>
+                                        </div>
+                                    </iais:row>
+                                </div>
+                            </c:forEach>
+                        </c:if>
+                        <!--prem operational -->
+                        <iais:row cssClass="addOpDiv">
+                            <iais:field value="" width="12"/>
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                                <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
+                            </iais:value>
+                        </iais:row>
+                    </div>
                     <iais:row>
                         <iais:field value="Street Name " mandatory="true" width="10"/>
                         <iais:value width="10" cssClass="col-md-5">
@@ -545,6 +591,44 @@
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceUnitNo${status.index}"></span>
                         </iais:value>
                     </iais:row>
+                    <div class="operationDivGroup">
+                    <c:if test="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size()>0}">
+                        <c:forEach var="operationDto" items="${appGrpPremisesDto.appPremisesOperationalUnitDtos}" varStatus="opStat">
+                            <div class="operationDiv">
+                                <iais:row>
+                                    <iais:field value="Floor No." width="12"/>
+                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                                        <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}conveyanceFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
+                                        <span class="error-msg"></span>
+                                    </iais:value>
+                                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
+                                        <p>(Additional)</p>
+                                    </div>
+                                    <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                                        <p class="text-danger opDel" style="position: absolute;margin-top: 48px;margin-left: -40px;"><em class="fa fa-times-circle"></em></p>
+                                    </div>
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="Unit No." width="12"/>
+                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                                        <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}conveyanceUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
+                                        <span class="error-msg"></span>
+                                    </iais:value>
+                                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
+                                        <p>(Additional)</p>
+                                    </div>
+                                </iais:row>
+                            </div>
+                        </c:forEach>
+                    </c:if>
+                    <!--prem operational -->
+                    <iais:row cssClass="addOpDiv">
+                        <iais:field value="" width="12"/>
+                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                            <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
+                        </iais:value>
+                    </iais:row>
+                    </div>
                     <iais:row>
                         <iais:field value="Street Name " mandatory="true" width="10"/>
                         <iais:value width="10" cssClass="col-md-5">
@@ -760,6 +844,44 @@
                             <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteUnitNo${status.index}"></span>
                         </iais:value>
                     </iais:row>
+                    <div class="operationDivGroup">
+                    <c:if test="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size()>0}">
+                        <c:forEach var="operationDto" items="${appGrpPremisesDto.appPremisesOperationalUnitDtos}" varStatus="opStat">
+                            <div class="operationDiv">
+                                <iais:row>
+                                    <iais:field value="Floor No." width="12"/>
+                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                                        <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}offSiteFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
+                                        <span class="error-msg"></span>
+                                    </iais:value>
+                                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
+                                        <p>(Additional)</p>
+                                    </div>
+                                    <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                                        <p class="text-danger opDel" style="position: absolute;margin-top: 48px;margin-left: -40px;"><em class="fa fa-times-circle"></em></p>
+                                    </div>
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="Unit No." width="12"/>
+                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                                        <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}offSiteUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
+                                        <span class="error-msg"></span>
+                                    </iais:value>
+                                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
+                                        <p>(Additional)</p>
+                                    </div>
+                                </iais:row>
+                            </div>
+                        </c:forEach>
+                    </c:if>
+                    <!--prem operational -->
+                    <iais:row cssClass="addOpDiv">
+                        <iais:field value="" width="12"/>
+                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                            <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
+                        </iais:value>
+                    </iais:row>
+                    </div>
                     <iais:row>
                         <iais:field value="Street Name " mandatory="true" width="10"/>
                         <iais:value width="10" cssClass="col-md-5">

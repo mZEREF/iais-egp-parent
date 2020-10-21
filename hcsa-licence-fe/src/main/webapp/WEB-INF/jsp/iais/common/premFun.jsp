@@ -62,6 +62,8 @@
             $premContent.find('button.addPubHolDay').removeClass('hidden');
             $premContent.find('div.other-lic-content .check-circle').removeClass('radio-disabled');
             $premContent.find('.removePhBtn').removeClass('hidden');
+            $premContent.find('.addOperational').removeClass('hidden');
+            $premContent.find('.opDel').removeClass('hidden');
             <!--regen ph form  -->
             var premDivName = "";
             if("onSiteSel" == thisId){
@@ -157,6 +159,23 @@
                             copyPhForm(premisesType,data.appPremPhOpenPeriodList,$premContent);
                             <!--set ph -->
                             fillPhForm(premisesType,data.appPremPhOpenPeriodList,$premContent);
+                            <!--set opertaion -->
+                            var $currForm;
+                            if(premisesType == 'onSite') {
+                                $currForm = $premContent.find('.new-premise-form-on-site');
+                            }else if(premisesType == 'conveyance'){
+                                $currForm = $premContent.find('.new-premise-form-conv');
+                            }else if (premisesType == 'offSite'){
+                                $currForm = $premContent.find('.new-premise-form-off-site');
+                            }
+                            $currForm.find('div.addOpDiv').before(data.operationHtml);
+
+
+                            $currForm.find('div.operationDiv').each(function (k) {
+                                var opData = data.appPremisesOperationalUnitDtos[k];
+                                $(this).find('div.floorNo').val(opData.floorNo);
+                                $(this).find('div.unitNo').val(opData.unitNo);
+                            });
 
                             <!--disable this form -->
                             var $premFormOnsite = $premContent.find('div.new-premise-form-on-site');
@@ -169,6 +188,8 @@
                             $premContent.find('a.retrieveAddr').addClass('hidden');
                             $premContent.find('button.addPubHolDay').addClass('hidden');
                             $premContent.find('.removePhBtn').addClass('hidden');
+                            $premContent.find('.addOperational').addClass('hidden');
+                            $premContent.find('.opDel').addClass('hidden');
                             //
                             $premContent.find('input[name="chooseExistData"]').val('1');
                         }
@@ -262,6 +283,7 @@
                 otherLic();
                 cl();
                 preperChange();
+                addOperational();
                 $('.date_picker').datepicker({
                     format:"dd/mm/yyyy"
                 });
@@ -313,6 +335,9 @@
             premContent.find('div.other-lic-content span.check-circle').removeClass('radio-disabled');
             <!--remove placeHolder disabled style -->
             premContent.find('input[name="onSiteFireSafetyCertIssuedDate"]').removeClass('disabled-placeHolder');
+
+            premContent.find('.addOperational').removeClass('hidden');
+            premContent.find('.opDel').removeClass('hidden');
         });
     }
 
@@ -404,6 +429,8 @@
             if('ONSITE' == nameVal){
                 nameVal = 'onSite';
             }else if('CONVEYANCE' == nameVal){
+                nameVal = 'conveyance';
+            }else if('OFFSITE' == nameVal){
                 nameVal = 'conveyance';
             }
 
@@ -667,6 +694,8 @@
                     $premCountEle.find('div.other-lic-content .other-lic:checked').closest('div').find('span.check-circle').addClass('radio-disabled');;
                     $premCountEle.find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
                     $premCountEle.find('.removePhBtn').addClass('hidden');
+                    $premCountEle.find('.addOperational').addClass('hidden');
+                    $premCountEle.find('.opDel').addClass('hidden');
                 }
             }else if('CONVEYANCE' == checkedType){
                 $premCountEle.find('.conveyanceSelect').removeClass('hidden');
@@ -688,6 +717,8 @@
                     $premCountEle.find('a.retrieveAddr').addClass('hidden');
                     $premCountEle.find('button.addPubHolDay').addClass('hidden');
                     $premCountEle.find('.removePhBtn').addClass('hidden');
+                    $premCountEle.find('.addOperational').addClass('hidden');
+                    $premCountEle.find('.opDel').addClass('hidden');
                 }
             }else if('OFFSITE' == checkedType){
                 $premCountEle.find('.conveyanceSelect').addClass('hidden');
@@ -709,6 +740,8 @@
                     $premCountEle.find('a.retrieveAddr').addClass('hidden');
                     $premCountEle.find('button.addPubHolDay').addClass('hidden');
                     $premCountEle.find('.removePhBtn').addClass('hidden');
+                    $premCountEle.find('.addOperational').addClass('hidden');
+                    $premCountEle.find('.opDel').addClass('hidden');
                 }
 
             }
@@ -830,5 +863,63 @@
         }
     }
 
+    var addOperational = function () {
+        $('.addOperational').click(function () {
+            var $premContentEle = $(this).closest('div.premContent');
+            var premType = $premContentEle.find('.premTypeValue').val();
+            var premVal = $premContentEle.find('input[name="premValue"]').val();
+            var $currPremForm = $(this).closest('div.form-horizontal');
+            var opCount = $currPremForm.find('.operationDiv').length;
+            var data = {
+                'premIndex':premVal,
+                'premType':premType,
+                'opCount':opCount
+            };
+            $.ajax({
+                'url':'${pageContext.request.contextPath}/premises-operational-html',
+                'data':data,
+                'dataType':'json',
+                'type':'POST',
+                'success':function (data) {
+                    if(data.resCode == 200){
+                        console.log(data.resultJson)
+                        $currPremForm.find('div.addOpDiv').before(data.resultJson+'');
+                        var length =  $currPremForm.find('div.operationDiv').length;
+                        $premContentEle.find('.opLength').val(length);
+
+                        operationDel();
+                    }
+                },
+                'error':function (data) {
+                }
+            });
+
+        });
+    }
+
+    var operationDel = function () {
+        $('.opDel').click(function () {
+            var $operationDivGroup = $(this).closest('div.operationDivGroup');
+            var $premContentEle = $(this).closest('div.premContent');
+            var $currPremForm = $(this).closest('div.form-horizontal');
+            $(this).closest('div.operationDiv').remove();
+            var premValue = $premContentEle.find('.premValue').val();
+            var premType = $premContentEle.find('.premTypeValue').val();
+            var premTypeVal = '';
+            if('ONSITE' == premType){
+                premTypeVal = 'onSite';
+            }else if('CONVEYANCE' == premType){
+                premTypeVal = 'conveyance';
+            }else if('OFFSITE' == premType){
+                premTypeVal = 'offSite';
+            }
+            $operationDivGroup.find('div.operationDiv').each(function (k,v) {
+                $(this).find('input.floorNo').attr("name",premValue+premTypeVal+'FloorNo'+k);
+                $(this).find('input.unitNo').attr("name",premValue+premTypeVal+'UnitNo'+k);
+            });
+            var length =  $currPremForm.find('div.operationDiv').length;
+            $premContentEle.find('.opLength').val(length);
+        });
+    }
 
 </script>

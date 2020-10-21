@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sqls catalog="premises">
-    <sql key="premisesHtml" cached="no" remarks="generate Governance Officer Html">
+    <sql key="premisesHtml" cached="no" remarks="">
         <![CDATA[
         <div class="row premContent underLine" id="mainPrem">
         <input class="premValue" type="hidden" name="premValue" value="(0)"/>
         <input class="premisesIndexNo" type="hidden" name="premisesIndexNo" value=""/>
         <input class="phLength" type="hidden" name="phLength" value="1"/>
         <input type="hidden" name="rfiCanEdit" value="true"/>
+        <input class="opLength" type="hidden" name="opLength" value="0"/>
         <div class="col-xs-12">
           <div class="form-horizontal">
             <div class="form-group">
@@ -115,6 +116,16 @@
                   <span class="error-msg"></span>
                 </div>
               <div class="clear"></div></div>
+
+              <div class="operationDivGroup">
+                  <div class="form-group addOpDiv">
+                     <label class="col-xs-12 col-md-4 control-label"></label>
+                     <div class=" col-xs-7 col-sm-4 col-md-5 ">
+                        <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
+                     </div>
+                  <div class="clear"></div></div>
+              </div>
+
               <div class="form-group">
                 <label class="col-xs-10 col-md-4 control-label">Street Name <span class="mandatory">*</span></label>
                 <div class="col-sm-7 col-md-5 col-xs-10">
@@ -279,6 +290,16 @@
                   <input type="text" id="conveyanceUnitNo" name="conveyanceUnitNo" maxlength="5" autocomplete="off">
                 </div>
               <div class="clear"></div></div>
+
+            <div class="operationDivGroup">
+              <div class="form-group addOpDiv">
+                 <label class="col-xs-12 col-md-4 control-label"></label>
+                 <div class=" col-xs-7 col-sm-4 col-md-5 ">
+                    <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
+                 </div>
+              <div class="clear"></div></div>
+              </div>
+
               <div class="form-group">
                 <label class="col-xs-10 col-md-4 control-label">Street Name <span class="mandatory">*</span></label>
                 <div class="col-sm-7 col-md-5 col-xs-10">
@@ -420,6 +441,16 @@
                         </div>
                         <div class="clear"></div>
                     </div>
+
+                    <div class="operationDivGroup">
+                        <div class="form-group addOpDiv">
+                           <label class="col-xs-12 col-md-4 control-label"></label>
+                           <div class=" col-xs-7 col-sm-4 col-md-5 ">
+                              <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
+                           </div>
+                        <div class="clear"></div></div>
+                    </div>
+
                     <div class="form-group">
                         <label class="col-xs-10 col-md-4 control-label">Street Name <span
                                 class="mandatory">*</span></label>
@@ -523,7 +554,7 @@
         </div>]]>
     </sql>
     <!--now dont used -->
-    <sql key="premises-ph" cached="no" remarks="generate Governance Officer Html">
+    <sql key="premises-ph" cached="no" remarks="">
         <![CDATA[
             <div class="pubHolidayContent">
                 <div class="form-group">
@@ -572,5 +603,34 @@
                 </div>
             </div>
          ]]>
+    </sql>
+    <sql key="premises-operational" cached="no" remarks="">
+        <![CDATA[
+            <div class="operationDiv">
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Floor No.</label>
+                    <div class=" col-xs-7 col-sm-4 col-md-5 ">
+                        <input class="floorNo" type="text" name="${premIndex}${premType}FloorNo${opCount}" maxlength="3" autocomplete="off">
+                        <span class="error-msg"></span>
+                    </div>
+                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
+                        <p>(Additional)</p>
+                    </div>
+                    <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                        <p class="text-danger opDel" style="position: absolute;margin-top: 48px;margin-left: -40px;"><em class="fa fa-times-circle"></em></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Unit No.</label>
+                    <div class=" col-xs-7 col-sm-4 col-md-5 ">
+                        <input class="unitNo" type="text" name="${premIndex}${premType}UnitNo${opCount}" maxlength="5" autocomplete="off">
+                        <span class="error-msg"></span>
+                    </div>
+                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
+                        <p>(Additional)</p>
+                    </div>
+                </div>
+            </div>
+        ]]>
     </sql>
 </sqls>

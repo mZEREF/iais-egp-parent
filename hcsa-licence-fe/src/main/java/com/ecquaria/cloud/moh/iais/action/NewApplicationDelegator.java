@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
@@ -364,7 +365,11 @@ public class NewApplicationDelegator {
                 }
                 Map<String, AppGrpPremisesDto> newLicAppGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
                 licAppGrpPremisesDtoMap.forEach((k, v) -> {
-                    if (!pendAndLicPremHci.contains(NewApplicationHelper.getPremHci(v))) {
+                    List<String> premisesHciList = NewApplicationHelper.genPremisesHciList(v);
+                    for(String premisesHci:premisesHciList){
+                        if(pendAndLicPremHci.contains(premisesHci)){
+                           continue;
+                        }
                         newLicAppGrpPremisesDtoMap.put(k, v);
                     }
                 });
@@ -1253,6 +1258,8 @@ public class NewApplicationDelegator {
             log.info(StringUtil.changeForLog("payment result:" + result));
             if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
                 log.info("credit card payment success");
+                //todo validate payment is success
+
                 if (appSubmissionDtos != null) {
                     for (AppSubmissionDto appSubmissionDto1 : appSubmissionDtos) {
                         Double amount = appSubmissionDto1.getAmount();
@@ -3812,6 +3819,7 @@ public class NewApplicationDelegator {
         String[] premValue = ParamUtil.getStrings(request, "premValue");
         String[] isParyEdit = ParamUtil.getStrings(request, "isPartEdit");
         String[] chooseExistData = ParamUtil.getStrings(request, "chooseExistData");
+        String[] opLengths = ParamUtil.getStrings(request,"opLength");
         Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request, LICAPPGRPPREMISESDTOMAP);
         for (int i = 0; i < count; i++) {
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
@@ -3893,11 +3901,18 @@ public class NewApplicationDelegator {
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("length can not parse to int"));
             }
+            int opLength = 0;
+            try{
+                opLength = Integer.parseInt(opLengths[i]);
+            }catch(Exception e){
+                log.error(StringUtil.changeForLog("operation length can not parse to int"));
+            }
             if(AppConsts.TRUE.equals(rfiCanEdit[i])){
                 appGrpPremisesDto.setRfiCanEdit(true);
             }else{
                 appGrpPremisesDto.setRfiCanEdit(false);
             }
+            List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
             if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])) {
                 appGrpPremisesDto.setOnsiteStartHH(onsiteStartHH[i]);
                 appGrpPremisesDto.setOnsiteStartMM(onsiteStartMM[i]);
@@ -3950,6 +3965,19 @@ public class NewApplicationDelegator {
                         appPremPhOpenPeriods.add(appPremPhOpenPeriod);
                     }
                 }
+                if(opLength > 0){
+                    for(int j=0;j<opLength;j++){
+                        AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
+                        String opFloorNoName = premValue[i] + "onSiteFloorNo" + j;
+                        String opUnitNoName = premValue[i] + "onSiteUnitNo" + j;
+
+                        String opFloorNo = ParamUtil.getString(request,opFloorNoName);
+                        String opUnitNo = ParamUtil.getString(request,opUnitNoName);
+                        operationalUnitDto.setFloorNo(opFloorNo);
+                        operationalUnitDto.setUnitNo(opUnitNo);
+                        appPremisesOperationalUnitDtos.add(operationalUnitDto);
+                    }
+                }
 
             } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType[i])) {
                 appGrpPremisesDto.setConStartHH(conStartHH[i]);
@@ -3989,6 +4017,19 @@ public class NewApplicationDelegator {
                     if (!StringUtil.isEmpty(convPubHoliday) || !StringUtil.isEmpty(convPbHolDayStartHH) || !StringUtil.isEmpty(convPbHolDayStartMM)
                             || !StringUtil.isEmpty(convPbHolDayEndHH) || !StringUtil.isEmpty(convPbHolDayEndMM)) {
                         appPremPhOpenPeriods.add(appPremPhOpenPeriod);
+                    }
+                }
+                if(opLength > 0){
+                    for(int j=0;j<opLength;j++){
+                        AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
+                        String opFloorNoName = premValue[i] + "conveyanceFloorNo" + j;
+                        String opUnitNoName = premValue[i] + "conveyanceUnitNo" + j;
+
+                        String opFloorNo = ParamUtil.getString(request,opFloorNoName);
+                        String opUnitNo = ParamUtil.getString(request,opUnitNoName);
+                        operationalUnitDto.setFloorNo(opFloorNo);
+                        operationalUnitDto.setUnitNo(opUnitNo);
+                        appPremisesOperationalUnitDtos.add(operationalUnitDto);
                     }
                 }
             } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType[i])) {
@@ -4031,8 +4072,22 @@ public class NewApplicationDelegator {
                         appPremPhOpenPeriods.add(appPremPhOpenPeriod);
                     }
                 }
+                if(opLength > 0){
+                    for(int j=0;j<opLength;j++){
+                        AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
+                        String opFloorNoName = premValue[i] + "offSiteFloorNo" + j;
+                        String opUnitNoName = premValue[i] + "offSiteUnitNo" + j;
+
+                        String opFloorNo = ParamUtil.getString(request,opFloorNoName);
+                        String opUnitNo = ParamUtil.getString(request,opUnitNoName);
+                        operationalUnitDto.setFloorNo(opFloorNo);
+                        operationalUnitDto.setUnitNo(opUnitNo);
+                        appPremisesOperationalUnitDtos.add(operationalUnitDto);
+                    }
+                }
             }
             appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriods);
+            appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
         if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) ||
@@ -4964,6 +5019,13 @@ public class NewApplicationDelegator {
                                 phDto.setPremId(null);
                             }
                             appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
+                        }
+                        //clear operation premId
+                        List<AppPremisesOperationalUnitDto> operationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
+                        if(!IaisCommonUtils.isEmpty(operationalUnitDtos)){
+                            for(AppPremisesOperationalUnitDto operationalUnitDto:operationalUnitDtos){
+                                operationalUnitDto.setPremisesId(null);
+                            }
                         }
                     }
                     appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
