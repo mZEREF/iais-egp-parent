@@ -133,23 +133,6 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                         log.info(StringUtil.changeForLog("remThreshold:" +remThreshold));
                         if(days == remThreshold){
                             //judge is email sent
-                            JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(item.getId(),"unprocess leader").getEntity();
-                            if(jobRemindMsgTrackingDto == null){
-                                //send email to leader and admin
-                                List<String> email = IaisCommonUtils.genNewArrayList();
-                                email.add(item.getLeaderEmailAddr());
-                                sendEmail(item,applicationDto,email);
-                                //record email sent
-                                JobRemindMsgTrackingDto createjob = new JobRemindMsgTrackingDto();
-                                List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
-                                createjob.setMsgKey("unprocess leader");
-                                createjob.setRefNo(item.getId());
-                                createjob.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                                list.add(createjob);
-                                systemBeLicClient.createJobRemindMsgTrackingDtos(list);
-                            }
-                        }else if(days == kpi){
-                            //judge is email sent
                             JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(item.getId(),"unprocess officer").getEntity();
                             if(jobRemindMsgTrackingDto == null){
                                 //send email to officer
@@ -160,6 +143,23 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                 JobRemindMsgTrackingDto createjob = new JobRemindMsgTrackingDto();
                                 List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
                                 createjob.setMsgKey("unprocess officer");
+                                createjob.setRefNo(item.getId());
+                                createjob.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                                list.add(createjob);
+                                systemBeLicClient.createJobRemindMsgTrackingDtos(list);
+                            }
+                        }else if(days == kpi){
+                            //judge is email sent
+                            JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(item.getId(),"unprocess leader").getEntity();
+                            if(jobRemindMsgTrackingDto == null){
+                                //send email to leader and admin
+                                List<String> email = IaisCommonUtils.genNewArrayList();
+                                email.add(item.getLeaderEmailAddr());
+                                sendEmail(item,applicationDto,email);
+                                //record email sent
+                                JobRemindMsgTrackingDto createjob = new JobRemindMsgTrackingDto();
+                                List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
+                                createjob.setMsgKey("unprocess leader");
                                 createjob.setRefNo(item.getId());
                                 createjob.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                                 list.add(createjob);
