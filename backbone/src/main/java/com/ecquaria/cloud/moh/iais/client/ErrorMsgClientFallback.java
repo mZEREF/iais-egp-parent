@@ -12,8 +12,16 @@ import org.springframework.http.HttpHeaders;
  * @author Jinhua
  * @date 2019/11/25 14:23
  */
-public class ErrorMsgClientFallback {
+public class ErrorMsgClientFallback implements ErrorMsgClient{
     public FeignResponseEntity<SearchResult<MessageCode>> retrieveErrorMsgs(SearchParam param){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<String> getValueByPropertiesKey(String propertiesKey) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

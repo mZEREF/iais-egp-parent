@@ -1125,6 +1125,15 @@ public class InterInboxDelegator {
                     .append("&crud_action_type=inbox");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
+        }else if (InboxConst.APP_DO_DRAFT_TYPE_WITHDRAWAL.equals(appType)){
+            StringBuilder url = new StringBuilder();
+            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohWithdrawalApplication")
+                    .append("?withdrawAppNo=")
+                    .append(MaskUtil.maskValue("withdrawAppNo", appNo))
+                    .append("&isDoView=Y");
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
         }else{
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
