@@ -38,6 +38,10 @@ public class FeMainInitializer {
             String resourcePath = this.getClass().getResource("/").getPath();
             File resource = new File(resourcePath);
             String srcPath = resource.getParentFile().getParentFile().getParentFile().getParentFile().getAbsolutePath();
+
+            log.info("=====>>>>>>>>srcpath" + srcPath + "/configs/" + runtimeEnv);
+            log.info("=====>>>>>>>>resourcePath" + resourcePath);
+
             FileUtils.copyFilesToOtherPosition(srcPath + "/configs/" + runtimeEnv, resourcePath);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
