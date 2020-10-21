@@ -118,7 +118,11 @@ public class AuditTrailHelper {
     }
 
     public static AuditTrailDto getBatchJobAuditTrail(String domain){
-        AuditTrailDto batchJobAt = new AuditTrailDto();
+        AuditTrailDto batchJobAt;
+        if ((batchJobAt = getCurrentAuditTrailDto()) == null){
+            batchJobAt = new AuditTrailDto();
+        }
+
         batchJobAt.setNricNumber("System");
         batchJobAt.setMohUserId("System");
         batchJobAt.setMohUserGuid(AppConsts.USER_ID_SYSTEM);
@@ -145,8 +149,6 @@ public class AuditTrailHelper {
             }
         }
         log.info(StringUtil.changeForLog("batch job function name" + trailDto.getFunctionName()));
-        trailDto.setFunctionName("Batch Job");
-        trailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_BATCH_JOB);
         AuditTrailDto.setThreadDto(trailDto);
     }
 
