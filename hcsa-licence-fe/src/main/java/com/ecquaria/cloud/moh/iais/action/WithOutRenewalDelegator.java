@@ -135,8 +135,6 @@ public class WithOutRenewalDelegator {
     private OrganizationLienceseeClient organizationLienceseeClient;
     @Autowired
     private ApplicationClient applicationClient;
-    @Value("${iais.email.sender}")
-    private String mailSender;
 
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
