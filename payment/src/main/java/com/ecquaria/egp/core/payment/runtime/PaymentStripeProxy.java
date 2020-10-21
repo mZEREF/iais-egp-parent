@@ -203,7 +203,8 @@ public class PaymentStripeProxy extends PaymentProxy {
 		if(paymentIntent!=null){
 			switch (paymentIntent.getStatus()){
 				case "succeeded":status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;break;
-				case "requires_payment_method":status =paymentIntent.getStatus();break;
+				case "requires_payment_method":status =PaymentTransactionEntity.TRANS_STATUS_FAILED;break;
+				//case "requires_payment_method":status =paymentIntent.getStatus();break;
 				default:status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
 			}
 		}
