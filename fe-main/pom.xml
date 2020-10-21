@@ -61,41 +61,6 @@
             <artifactId>ecq-sz-commons</artifactId>
         </dependency>
     </dependencies>
-    <profiles>
-        <profile>
-            <id>sz-sit</id>
-            <properties>
-                <package.properties.path>configs/sz-sit</package.properties.path>
-            </properties>
-        </profile>
-        <profile>
-            <id>sg-sit</id>
-            <properties>
-                <package.properties.path>configs/sg-sit</package.properties.path>
-            </properties>
-        </profile>
-        <profile>
-            <id>uat</id>
-            <properties>
-                <package.properties.path>configs/uat</package.properties.path>
-            </properties>
-        </profile>
-        <profile>
-            <id>prod</id>
-            <properties>
-                <package.properties.path>configs/prod</package.properties.path>
-            </properties>
-        </profile>
-        <profile>
-            <id>sz-dev</id>
-            <properties>
-                <package.properties.path>configs/sz-dev</package.properties.path>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-    </profiles>
     <build>
         <finalName>main-web</finalName>
         <resources>
@@ -150,8 +115,8 @@
                 <configuration>
                     <webResources>
                         <resource>
-                            <directory>${package.properties.path}</directory>
-                            <targetPath>WEB-INF/classes</targetPath>
+                            <directory>configs</directory>
+                            <targetPath>WEB-INF/enviroment-files</targetPath>
                             <filtering>true</filtering>
                         </resource>
                     </webResources>
