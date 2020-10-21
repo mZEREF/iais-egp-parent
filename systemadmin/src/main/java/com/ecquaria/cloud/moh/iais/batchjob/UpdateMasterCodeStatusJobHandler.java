@@ -33,7 +33,7 @@ public class UpdateMasterCodeStatusJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) throws Exception {
         JobLogger.log(StringUtil.changeForLog("The InactiveMasterCodeJobHandler start..." ));
         try {
-            AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET);
             masterCodeService.inactiveMasterCode(auditTrailDto);
             JobLogger.log(StringUtil.changeForLog("The InactiveMasterCodeJobHandler end..." ));
             return ReturnT.SUCCESS;

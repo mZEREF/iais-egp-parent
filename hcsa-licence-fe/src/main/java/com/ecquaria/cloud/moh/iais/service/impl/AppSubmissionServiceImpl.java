@@ -845,7 +845,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public void transform(AppSubmissionDto appSubmissionDto, String licenseeId) {
         Double amount = 0.0;
-        AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
+        AuditTrailDto internet = AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTERNET);
         String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE).getEntity();
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){

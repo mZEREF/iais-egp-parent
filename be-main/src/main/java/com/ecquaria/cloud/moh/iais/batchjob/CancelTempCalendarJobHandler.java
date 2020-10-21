@@ -29,7 +29,7 @@ public class CancelTempCalendarJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) {
         try{
             logInfo("<====== Start to cancel temp calendar ======>");
-            AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
             appointmentBeMainClient.cancelTemp(2);
             logInfo("<====== End to cancel temp calendar ======>");
         }catch (Exception e){

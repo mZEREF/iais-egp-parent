@@ -43,7 +43,7 @@ public class SyncFEAuditTrailBatchjob {
         public void run() {
             try {
                 List<AuditTrailEntityDto> atList;
-                AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
+                AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
                 synchronized (this){
                     atList = syncAuditTrailRecordsService.getAuditTrailsByMigrated1();
                 }

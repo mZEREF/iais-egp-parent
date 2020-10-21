@@ -37,7 +37,7 @@ public class ClientCheckNotResultPaymentJob {
     public void endStep(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do job start ...."));
         List<ApplicationGroupDto> applicationGroupDtoList= applicationClient.getAppGrpDtoPaying().getEntity();
-        AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
+        AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
         for (ApplicationGroupDto appGrp :applicationGroupDtoList
                 ) {
             try {

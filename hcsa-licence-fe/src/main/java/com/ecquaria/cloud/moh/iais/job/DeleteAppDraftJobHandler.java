@@ -29,7 +29,7 @@ public class DeleteAppDraftJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) throws Exception {
         try {
             JobLogger.log(StringUtil.changeForLog("delete app draft job start ..."));
-            AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
             String draftValidityStr = String.valueOf(draftValidity);
             JobLogger.log(StringUtil.changeForLog("draft validity str:"+draftValidityStr));
             if(!StringUtil.isEmpty(draftValidityStr)){

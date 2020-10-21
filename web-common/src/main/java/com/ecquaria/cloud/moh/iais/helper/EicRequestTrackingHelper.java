@@ -83,13 +83,7 @@ public final class EicRequestTrackingHelper {
         log.info(StringUtil.changeForLog("eic client request tracking " + client));
         log.info(StringUtil.changeForLog("new eic client ref number" + refNo));
 
-        if (IaisEGPHelper.getCurrentAuditTrailDto()!=null) {
-            eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        }else {
-            AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
-            eicRequestTrackingDto.setAuditTrailDto(intenet);
-        }
-
+        eicRequestTrackingDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
         eicRequestTrackingDto.setActionClsName(actionClsName);
         eicRequestTrackingDto.setDtoClsName(dtoClsName);
         eicRequestTrackingDto.setActionMethod(actionMethod);

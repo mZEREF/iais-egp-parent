@@ -184,7 +184,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
                         JobLogger.log(StringUtil.changeForLog("interMessage ServiceId is " + svcDto.getSvcCode()+'@'));
                         interMessageDto.setMsgContent(item.getMsgContent());
                         interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-                        interMessageDto.setAuditTrailDto(AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET,this));
+                        interMessageDto.setAuditTrailDto(AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET));
                         for (LicenceDto licencedto:licenceList
                         ) {
                             String refNo = sysInboxMsgService.getMessageNo();

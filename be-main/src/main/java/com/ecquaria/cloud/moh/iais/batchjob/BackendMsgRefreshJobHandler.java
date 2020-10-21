@@ -38,7 +38,7 @@ public class BackendMsgRefreshJobHandler extends IJobHandler {
             List<MessageDto> list = systemBeLicClient.getMessagesToRefresh().getEntity();
             Map<String, String> map = IaisCommonUtils.genNewHashMap();
             if (!IaisCommonUtils.isEmpty(list)) {
-                list.get(0).setAuditTrailDto(AuditTrailHelper.getBatchJobDto(AppConsts.USER_DOMAIN_INTRANET, this));
+                list.get(0).setAuditTrailDto(AuditTrailHelper.getBatchJobAuditTrail(AppConsts.USER_DOMAIN_INTRANET));
                 for (MessageDto mc : list) {
                     map.put(mc.getCodeKey(), mc.getMessage());
                     mc.setNeedFlush(false);

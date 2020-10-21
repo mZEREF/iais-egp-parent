@@ -85,7 +85,7 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         try {
-            AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
             List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtos= requestForInformationService.getAllReqForInfo();
             for (LicPremisesReqForInfoDto rfi:licPremisesReqForInfoDtos
             ) {

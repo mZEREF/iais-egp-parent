@@ -58,7 +58,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) {
         try {
-            AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
             List<ApplicationDto> applicationDtoList = applicationClient.saveWithdrawn().getEntity();
             //get old application
             if (!IaisCommonUtils.isEmpty(applicationDtoList)){

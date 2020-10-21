@@ -41,7 +41,7 @@ public class PaymentCheckNotResultFromBankJobHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         try {
-            AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
             List<PaymentRequestDto> paymentRequestDtos=paymentClient.getAllPayingPaymentRequestDto().getEntity();
             for (PaymentRequestDto payReq:paymentRequestDtos
             ) {

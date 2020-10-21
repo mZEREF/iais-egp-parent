@@ -27,7 +27,7 @@ public class SelfDeclNotificationJobHandler extends IJobHandler {
 	@Override
 	public ReturnT<String> execute(String s) throws Exception {
 		try {
-			AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
+			AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
 			applicationService.alertSelfDeclNotification();
 			return ReturnT.SUCCESS;
 		}catch (Throwable e) {

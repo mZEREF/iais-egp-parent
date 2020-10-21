@@ -293,7 +293,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         processFileTrackDto.setFilePath(filePath);
         processFileTrackDto.setRefId(rfiId);
         processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
-        AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
+        AuditTrailDto intenet = AuditTrailHelper.getBatchJobAuditTrail("INTERNET");
         processFileTrackDto.setAuditTrailDto(intenet);
         EicRequestTrackingDto eicRequestTrackingDto=new EicRequestTrackingDto();
         eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());

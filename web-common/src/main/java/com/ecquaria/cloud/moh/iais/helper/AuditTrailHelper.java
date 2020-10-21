@@ -117,36 +117,37 @@ public class AuditTrailHelper {
         return IaisEGPHelper.getCurrentAuditTrailDto();
     }
 
-    public static AuditTrailDto getBatchJobDto(String domain, Object job) {
-        AuditTrailDto dto = new AuditTrailDto();
-        dto.setNricNumber("System");
-        dto.setMohUserId("System");
-        dto.setMohUserGuid(AppConsts.USER_ID_SYSTEM);
-        dto.setUserDomain(domain);
+    public static AuditTrailDto getBatchJobAuditTrail(String domain){
+        AuditTrailDto batchJobAt = new AuditTrailDto();
+        batchJobAt.setNricNumber("System");
+        batchJobAt.setMohUserId("System");
+        batchJobAt.setMohUserGuid(AppConsts.USER_ID_SYSTEM);
+        batchJobAt.setFunctionName("Batch Job");
+        batchJobAt.setOperationType(AuditTrailConsts.OPERATION_TYPE_BATCH_JOB);
+        batchJobAt.setUserDomain(domain);
+        return batchJobAt;
+    }
 
+    public static void setupBatchJobAuditTrail(String domain, Object job) {
+        AuditTrailDto trailDto = getBatchJobAuditTrail(domain);
         if (job != null){
             log.info(StringUtil.changeForLog("batch job class " + job.getClass().getName()));
             JobHandler handler = job.getClass().getAnnotation(JobHandler.class);
             if (handler != null){
                 log.info(StringUtil.changeForLog("handler value" + handler.value()));
-                dto.setEntityId(handler.value());
+                trailDto.setEntityId(handler.value());
             }else {
                 Delegator delegator = job.getClass().getAnnotation(Delegator.class);
                 if(delegator != null){
                     log.info(StringUtil.changeForLog("delegator value" + delegator.value()));
-                    dto.setEntityId(delegator.value());
+                    trailDto.setEntityId(delegator.value());
                 }
             }
         }
-        log.info(StringUtil.changeForLog("batch job function name" + dto.getFunctionName()));
-        dto.setFunctionName("Batch Job");
-        dto.setOperationType(AuditTrailConsts.OPERATION_TYPE_BATCH_JOB);
-        AuditTrailDto.setThreadDto(dto);
-        return dto;
-    }
-
-    public static AuditTrailDto getBatchJobDto(String domain) {
-        return getBatchJobDto(domain, null);
+        log.info(StringUtil.changeForLog("batch job function name" + trailDto.getFunctionName()));
+        trailDto.setFunctionName("Batch Job");
+        trailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_BATCH_JOB);
+        AuditTrailDto.setThreadDto(trailDto);
     }
 
     private AuditTrailHelper() {

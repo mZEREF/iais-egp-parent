@@ -40,12 +40,12 @@ public class AuditChangeFinishedStatusJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) {
         logAbout("AuditChangeFinishedStatusJob");
         try{
-            AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
             List<AuditTaskDataFillterDto> auditTaskDataFillterDtos = auditSystemPotitalListService.getCanInactiveAudit();
             if(IaisCommonUtils.isEmpty(auditTaskDataFillterDtos)){
                 JobLogger.log(StringUtil.changeForLog("--- no audit need inactive----"));
             }else {
-                AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET,this);
+                AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET);
                 for (AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDataFillterDtos) {
                     Boolean isEx = applicationClient.getExistAppByLicId(auditTaskDataFillterDto.getLicId(),auditTaskDataFillterDto.getHclCode()).getEntity();
                     if(isEx != null && isEx){

@@ -26,7 +26,7 @@ public class RoundRobinCommPoolJobHandler extends MohJobHandler {
     @Override
     public ReturnT<String> doExecute(String var1) throws Exception {
         try {
-            AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
             roundRobinCommPoolBatchJob.jobExecute();
             return  ReturnT.SUCCESS;
         } catch (Throwable e) {

@@ -26,7 +26,7 @@ public class FeEventbusTraceCompJobHandler extends MohJobHandler {
     @Override
     public ReturnT<String> doExecute(String str) throws Exception {
         try {
-            AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
             eventBusClient.trackCompersation();
         } catch (Throwable th) {
             log.error(th.getMessage(), th);

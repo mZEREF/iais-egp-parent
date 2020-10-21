@@ -299,7 +299,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         processFileTrackDto.setFileName(fileName);
         processFileTrackDto.setFilePath(filePath);
         processFileTrackDto.setRefId(groupId);
-        AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
+        AuditTrailDto intenet = AuditTrailHelper.getBatchJobAuditTrail("INTERNET");
         processFileTrackDto.setAuditTrailDto(intenet);
         EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, UploadFileServiceImpl.class.getName(),
                 "saveFileName", currentApp + "-" + currentDomain,
@@ -332,7 +332,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         processFileTrackDto.setFilePath(filePath);
         processFileTrackDto.setRefId(groupId);
         processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
-        AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
+        AuditTrailDto intenet = AuditTrailHelper.getBatchJobAuditTrail("INTERNET");
         processFileTrackDto.setAuditTrailDto(intenet);
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(processFileTrackDto)+"processFileTrackDto"));
         String s="FAIL";

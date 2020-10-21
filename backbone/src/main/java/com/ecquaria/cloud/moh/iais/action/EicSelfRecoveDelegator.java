@@ -63,7 +63,7 @@ public class EicSelfRecoveDelegator {
         List<EicRequestTrackingDto> orgList = orgEicClient.getPendingRecords(moduleName).getEntity();
         List<EicRequestTrackingDto> sysList = eicClient.getPendingRecords(moduleName).getEntity();
         List<EicRequestTrackingDto> apptList = onlineApptEicClient.getPendingRecords(moduleName).getEntity();
-        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(currentDomain, this);
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail(currentDomain);
         if (!IaisCommonUtils.isEmpty(atList)) {
             atList.forEach(ert -> {
                 reTrigger(ert, auditTrailDto);
