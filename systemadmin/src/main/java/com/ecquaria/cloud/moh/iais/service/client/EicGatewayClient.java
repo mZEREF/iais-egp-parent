@@ -1,14 +1,18 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * @author: yichen
@@ -19,6 +23,18 @@ import org.springframework.stereotype.Component;
 public class EicGatewayClient {
 	@Value("${iais.intra.gateway.url}")
 	private String gateWayUrl;
+
+	@Value("${iais.hmac.keyId}")
+	private String keyId;
+
+	@Value("${iais.hmac.second.keyId}")
+	private String secKeyId;
+
+	@Value("${iais.hmac.secretKey}")
+	private String secretKey;
+
+	@Value("${iais.hmac.second.secretKey}")
+	private String secSecretKey;
 
 	public FeignResponseEntity<String> saveSystemParameterFe(SystemParameterDto systemParameterDto, String date,
 	                                                      String authorization, String dateSec, String authorizationSec) {
@@ -39,4 +55,13 @@ public class EicGatewayClient {
 		return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/iais-inter-inbox-message", HttpMethod.POST, interInboxDto,
 				MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, InterMessageDto.class);
 	}
+
+	public FeignResponseEntity<Void> syncMasterCodeFe(List<MasterCodeDto> masterCodeDtoList) {
+		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+		return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/mastercode-sync", HttpMethod.POST, masterCodeDtoList,
+				MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+				signature2.date(), signature2.authorization(), Void.class);
+	}
+
 }

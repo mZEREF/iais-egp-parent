@@ -26,5 +26,6 @@ public interface MasterCodeService {
     void inactiveMasterCode(AuditTrailDto auditTrailDto);
     void activeMasterCode(AuditTrailDto auditTrailDto);
     MasterCodeDto getMaxVersionMsDto(String masterCodeKey);
-    void inactiveMsterCode(String masterCodeKey);
+    List<MasterCodeDto> inactiveMsterCode(String masterCodeKey);
+    void syncMasterCodeFe(List<MasterCodeDto> masterCodeDtos);
 }

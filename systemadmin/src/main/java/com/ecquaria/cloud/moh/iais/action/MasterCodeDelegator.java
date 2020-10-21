@@ -229,7 +229,12 @@ public class MasterCodeDelegator {
         }
         String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
         masterCodeDto.setCodeCategory(codeCategory);
-        masterCodeService.saveMasterCode(masterCodeDto);
+        MasterCodeDto msDto = masterCodeService.saveMasterCode(masterCodeDto);
+        //eic
+        List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
+        msDto.setUpdateAt(new Date());
+        syncMasterCodeList.add(msDto);
+        masterCodeService.syncMasterCodeFe(syncMasterCodeList);
         ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
         ParamUtil.setRequestAttr(request, "CREATED_DATE", new Date());
     }
@@ -736,7 +741,12 @@ public class MasterCodeDelegator {
         if(!isEffect){
             masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
         }
-        masterCodeService.saveMasterCode(masterCodeDto);
+        MasterCodeDto msDto = masterCodeService.saveMasterCode(masterCodeDto);
+        //eic
+        List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
+        msDto.setUpdateAt(new Date());
+        syncMasterCodeList.add(msDto);
+        masterCodeService.syncMasterCodeFe(syncMasterCodeList);
         ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
         ParamUtil.setRequestAttr(request, "CREATED_DATE", new Date());
 
@@ -815,9 +825,11 @@ public class MasterCodeDelegator {
                 return;
             }
         }
+        List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
         if(AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
             //inactive all
-            masterCodeService.inactiveMsterCode(masterCodeDto.getMasterCodeKey());
+            List<MasterCodeDto> masterCodeDtos = masterCodeService.inactiveMsterCode(masterCodeDto.getMasterCodeKey());
+            syncMasterCodeList.addAll(masterCodeDtos);
         }else{
             //update old
             LocalDate oldFromDate = transferLocalDate(oldMasterCodeDto.getEffectiveFrom());
@@ -842,11 +854,13 @@ public class MasterCodeDelegator {
             if(oldCodeExpired || newCodeActive){
                 oldMasterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                 //inactive all
-                masterCodeService.inactiveMsterCode(masterCodeDto.getMasterCodeKey());
+                List<MasterCodeDto> masterCodeDtos = masterCodeService.inactiveMsterCode(masterCodeDto.getMasterCodeKey());
+                syncMasterCodeList.addAll(masterCodeDtos);
             }
             String codeCategory = masterCodeService.findCodeCategoryByDescription(oldMasterCodeDto.getCodeCategory());
             oldMasterCodeDto.setCodeCategory(codeCategory);
-            masterCodeService.updateMasterCode(oldMasterCodeDto);
+            oldMasterCodeDto =  masterCodeService.updateMasterCode(oldMasterCodeDto);
+            syncMasterCodeList.add(oldMasterCodeDto);
             //create new
             masterCodeDto.setMasterCodeId(null);
             Float version =  masterCodeDto.getVersion();
@@ -862,8 +876,16 @@ public class MasterCodeDelegator {
             }
             String codeCategory2 = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
             masterCodeDto.setCodeCategory(codeCategory2);
-            masterCodeService.updateMasterCode(masterCodeDto);
+            masterCodeDto = masterCodeService.updateMasterCode(masterCodeDto);
+            syncMasterCodeList.add(masterCodeDto);
         }
+        //eic update fe
+        Date now = new Date();
+        for(MasterCodeDto masterCodeDto1:syncMasterCodeList){
+            masterCodeDto1.setUpdateAt(now);
+        }
+        masterCodeService.syncMasterCodeFe(syncMasterCodeList);
+
         ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
         ParamUtil.setRequestAttr(request, "UPDATED_DATE", new Date());
 

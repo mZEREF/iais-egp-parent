@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeToExcelDto;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
+import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.SaMasterCodeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class MasterCodeServiceImpl implements MasterCodeService {
 
     @Autowired
     private SaMasterCodeClient saMasterCodeClient;
+    @Autowired
+    private EicGatewayClient eicGatewayClient;
     @Override
     @SearchTrack(catalog = MasterCodeConstants.MSG_TEMPLATE_FILE, key = MasterCodeConstants.MSG_TEMPLATE_SQL)
     public SearchResult<MasterCodeQueryDto> doQuery(SearchParam param) {
@@ -104,7 +107,12 @@ public class MasterCodeServiceImpl implements MasterCodeService {
     }
 
     @Override
-    public void inactiveMsterCode(String masterCodeKey) {
-        saMasterCodeClient.inactiveMasterCodeByKey(masterCodeKey);
+    public List<MasterCodeDto> inactiveMsterCode(String masterCodeKey) {
+        return saMasterCodeClient.inactiveMasterCodeByKey(masterCodeKey).getEntity();
+    }
+
+    @Override
+    public void syncMasterCodeFe(List<MasterCodeDto> masterCodeDtos) {
+        eicGatewayClient.syncMasterCodeFe(masterCodeDtos);
     }
 }
