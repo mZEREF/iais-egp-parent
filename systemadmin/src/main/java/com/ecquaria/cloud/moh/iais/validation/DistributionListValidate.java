@@ -50,8 +50,6 @@ public class DistributionListValidate implements CustomizeValidator {
             if(repeatList(distribution.getEmailAddress())){
                 errMap.put("addr", "There are repeated email address(es) provided");
             }
-        }else{
-            errMap.put("addr", MessageUtil.replaceMessage("GENERAL_ERR0006","Email Addresses","field"));
         }
 
 

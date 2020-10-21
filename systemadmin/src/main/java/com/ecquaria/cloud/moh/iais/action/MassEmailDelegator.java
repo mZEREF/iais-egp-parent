@@ -304,7 +304,7 @@ public class MassEmailDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String email = mulReq.getParameter("email");
         List<String> emailAddress = IaisCommonUtils.genNewArrayList();
-        if(email != null){
+        if(!StringUtil.isEmpty(email)){
             List<String> rnemaillist = Arrays.asList(email.split("\r\n"));
             List<String> commaemaillist = Arrays.asList(email.split(","));
             if(rnemaillist.size() > commaemaillist.size() ){
