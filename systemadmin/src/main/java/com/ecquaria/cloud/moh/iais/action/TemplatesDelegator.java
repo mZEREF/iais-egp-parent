@@ -148,18 +148,18 @@ public class TemplatesDelegator {
         }
         List<SelectOption> messageTypeSelectList = IaisCommonUtils.genNewArrayList();
         messageTypeSelectList.add(new SelectOption("", "Please Select"));
-        messageTypeSelectList.add(new SelectOption("MTTP001", "Alert"));
-        messageTypeSelectList.add(new SelectOption("MTTP003", "Letter"));
-        messageTypeSelectList.add(new SelectOption("MTTP004", "Notification"));
-        messageTypeSelectList.add(new SelectOption("MTTP002", "Banner Alert"));
-        messageTypeSelectList.add(new SelectOption("MTTP005", "Scheduled Maintenance"));
+        messageTypeSelectList.add(new SelectOption(MsgTemplateConstants.MSG_TEMPLATE_TYPE_ALERT, "Alert"));
+        messageTypeSelectList.add(new SelectOption(MsgTemplateConstants.MSG_TEMPLATE_TYPE_LETTER, "Letter"));
+        messageTypeSelectList.add(new SelectOption(MsgTemplateConstants.MSG_TEMPLATE_TYPE_NOTIFICATION, "Notification"));
+        messageTypeSelectList.add(new SelectOption(MsgTemplateConstants.MSG_TEMPLATE_TYPE_BANNER_ALERT, "Banner Alert"));
+        messageTypeSelectList.add(new SelectOption(MsgTemplateConstants.MSG_TEMPLATE_TYPE_SCHEDULED_MAINTENANCE, "Scheduled Maintenance"));
         ParamUtil.setRequestAttr(bpc.request, "msgType", messageTypeSelectList);
 
         List<SelectOption> deliveryModeSelectList = IaisCommonUtils.genNewArrayList();
         deliveryModeSelectList.add(new SelectOption("", "Please Select"));
-        deliveryModeSelectList.add(new SelectOption("DEMD001", "Email"));
-        deliveryModeSelectList.add(new SelectOption("DEMD002", "SMS"));
-        deliveryModeSelectList.add(new SelectOption("DEMD003", "System Inbox"));
+        deliveryModeSelectList.add(new SelectOption(MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_EMAIL, "Email"));
+        deliveryModeSelectList.add(new SelectOption(MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_SMS, "SMS"));
+        deliveryModeSelectList.add(new SelectOption(MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_MSG, "System Inbox"));
         ParamUtil.setRequestAttr(bpc.request, "deliveryMode", deliveryModeSelectList);
 
         List<SelectOption> msgProcessList = IaisCommonUtils.genNewArrayList();
