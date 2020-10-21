@@ -170,6 +170,7 @@ public class InsReportDelegator {
         if (validationResult.isHasErrors()) {
             Map<String, String> stringStringMap = validationResult.retrieveAll();
             errorMap.putAll(stringStringMap);
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             String reportClassTop = "active";

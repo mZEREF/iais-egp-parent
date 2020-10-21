@@ -1133,6 +1133,7 @@ public class WithOutRenewalDelegator {
                 ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
                 errorMap.put("rfcEffectiveDate", "RFC_ERR012");
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 renewDto.getAppSubmissionDtos().get(0).setEffectiveDate(date);
                 renewDto.getAppSubmissionDtos().get(0).setEffectiveDateStr(renewEffectiveDate);
@@ -1191,6 +1192,7 @@ public class WithOutRenewalDelegator {
         PaymentValidate paymentValidate = new PaymentValidate();
         Map<String, String> errorMap = paymentValidate.validate(bpc.request);
         if (!errorMap.isEmpty()) {
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);
             return;

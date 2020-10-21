@@ -4,9 +4,9 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -154,6 +154,7 @@ public class MohIntranetUserDelegator {
         ValidationResult validationResult = WebValidationHelper.validateProperty(orgUserDto, "save");
         Map<String, String> errorMap = validationResult.retrieveAll();
         if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);
@@ -201,6 +202,7 @@ public class MohIntranetUserDelegator {
         if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
             Map<String, String> validationResultMap = validationResult.retrieveAll();
             errorMap.putAll(validationResultMap);
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);
@@ -376,11 +378,6 @@ public class MohIntranetUserDelegator {
         if(!StringUtil.isEmpty(assignRoleAo1)){
             String ao1GroupSelect = ParamUtil.getString(bpc.request, "ao1GroupSelect");
             if(!StringUtil.isEmpty(ao1GroupSelect)){
-                UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
-                userGroupCorrelationDto.setUserId(userAccId);
-                userGroupCorrelationDto.setGroupId(ao1GroupSelect);
-                userGroupCorrelationDto.setIsLeadForGroup(0);
-                userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 String roleId = roleMap.get(assignRoleAo1);
                 assignRoles.add(roleId);
                 groupIds.add(ao1GroupSelect);
@@ -390,25 +387,15 @@ public class MohIntranetUserDelegator {
         if(!StringUtil.isEmpty(assignRoleAo1Lead)){
             String ao1GroupLeadSelect = ParamUtil.getString(bpc.request, "ao1GroupLeadSelect");
             if(!StringUtil.isEmpty(ao1GroupLeadSelect)){
-                UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
-                userGroupCorrelationDto.setUserId(userAccId);
-                userGroupCorrelationDto.setGroupId(ao1GroupLeadSelect);
-                userGroupCorrelationDto.setIsLeadForGroup(1);
-                userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 String roleId = roleMap.get(assignRoleAo1Lead);
                 assignRoles.add(roleId);
-                groupIds.add(assignRoleAo1Lead);
+                groupIds.add(ao1GroupLeadSelect);
             }
         }
         //ins
         if(!StringUtil.isEmpty(assignRoleIns)){
             String insGroupSelect = ParamUtil.getString(bpc.request, "insGroupSelect");
             if(!StringUtil.isEmpty(insGroupSelect)){
-                UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
-                userGroupCorrelationDto.setUserId(userAccId);
-                userGroupCorrelationDto.setGroupId(insGroupSelect);
-                userGroupCorrelationDto.setIsLeadForGroup(0);
-                userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 String roleId = roleMap.get(assignRoleIns);
                 assignRoles.add(roleId);
                 groupIds.add(insGroupSelect);
@@ -418,11 +405,6 @@ public class MohIntranetUserDelegator {
         if(!StringUtil.isEmpty(assignRoleInsLead)){
             String insGroupLeadSelect = ParamUtil.getString(bpc.request, "insGroupLeadSelect");
             if(!StringUtil.isEmpty(insGroupLeadSelect)){
-                UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
-                userGroupCorrelationDto.setUserId(userAccId);
-                userGroupCorrelationDto.setGroupId(insGroupLeadSelect);
-                userGroupCorrelationDto.setIsLeadForGroup(1);
-                userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 String roleId = roleMap.get(assignRoleInsLead);
                 assignRoles.add(roleId);
                 groupIds.add(insGroupLeadSelect);
@@ -432,11 +414,6 @@ public class MohIntranetUserDelegator {
         if(!StringUtil.isEmpty(assignRolePso)){
             String psoGroupSelect = ParamUtil.getString(bpc.request, "psoGroupSelect");
             if(!StringUtil.isEmpty(psoGroupSelect)){
-                UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
-                userGroupCorrelationDto.setUserId(userAccId);
-                userGroupCorrelationDto.setGroupId(psoGroupSelect);
-                userGroupCorrelationDto.setIsLeadForGroup(0);
-                userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 String roleId = roleMap.get(assignRolePso);
                 assignRoles.add(roleId);
                 groupIds.add(psoGroupSelect);
@@ -446,11 +423,6 @@ public class MohIntranetUserDelegator {
         if(!StringUtil.isEmpty(assignRolePsoLead)){
             String psoGroupLeadSelect = ParamUtil.getString(bpc.request, "psoGroupLeadSelect");
             if(!StringUtil.isEmpty(psoGroupLeadSelect)){
-                UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
-                userGroupCorrelationDto.setUserId(userAccId);
-                userGroupCorrelationDto.setGroupId(psoGroupLeadSelect);
-                userGroupCorrelationDto.setIsLeadForGroup(1);
-                userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 String roleId = roleMap.get(assignRolePsoLead);
                 assignRoles.add(roleId);
                 groupIds.add(psoGroupLeadSelect);
@@ -461,15 +433,15 @@ public class MohIntranetUserDelegator {
             for(String assignRole : assignRoleOthers){
                 String roleId = roleMap.get(assignRole);
                 assignRoles.add(roleId);
-                if(ApplicationConsts.PERSONNEL_PSN_TYPE_AO2.equals(roleId)){
+                if(RoleConsts.USER_ROLE_AO2.equals(roleId)||RoleConsts.USER_ROLE_AO2_LEAD.equals(roleId)){
                     String groupName = "Level 2 Approval" ;
                     String groupId = roleNameGroupId.get(groupName);
                     groupIds.add(groupId);
-                }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_AO3.equals(roleId)){
+                }else if(RoleConsts.USER_ROLE_AO3.equals(roleId)||RoleConsts.USER_ROLE_AO3_LEAD.equals(roleId)){
                     String groupName = "Level 3 Approval" ;
                     String groupId = roleNameGroupId.get(groupName);
                     groupIds.add(groupId);
-                }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_ASO.equals(roleId)){
+                }else if(RoleConsts.USER_ROLE_ASO.equals(roleId)||RoleConsts.USER_ROLE_ASO_LEAD.equals(roleId)){
                     String groupName = "Admin Screening officer" ;
                     String groupId = roleNameGroupId.get(groupName);
                     groupIds.add(groupId);
@@ -527,9 +499,7 @@ public class MohIntranetUserDelegator {
             }
             intranetUserService.removeRole(orgUserRoleDtos);
             intranetUserService.removeEgpRoles(AppConsts.HALP_EGP_DOMAIN, orgUserDto.getUserId(), removeRoleNames);
-
             //remove group
-
         }
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
         ParamUtil.setRequestAttr(bpc.request, "userAccId", userAccId);
@@ -792,14 +762,14 @@ public class MohIntranetUserDelegator {
             return;
         }
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-        String userDomain = "intranet";
         OrgUserDto orgUserDto;
         ClientUser clientUser;
         if (!StringUtil.isEmpty(userId)) {
-            clientUser = intranetUserService.getUserByIdentifier(userId, userDomain);
+            clientUser = intranetUserService.getUserByIdentifier(userId, AppConsts.HALP_EGP_DOMAIN);
             orgUserDto = intranetUserService.findIntranetUserByUserId(userId);
             if (clientUser == null || orgUserDto == null) {
                 errorMap.put("userId", "This user is not exist.");
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
                 return;
@@ -808,6 +778,7 @@ public class MohIntranetUserDelegator {
                 if (IntranetUserConstant.DEACTIVATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status)) {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
                     errorMap.put("userId", "This user is already in Deactivated status.");
+                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
                 } else if (IntranetUserConstant.DEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
@@ -821,6 +792,7 @@ public class MohIntranetUserDelegator {
                 } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
                     errorMap.put("userId", "This user is already in Active status.");
+                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
                 } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
@@ -834,6 +806,7 @@ public class MohIntranetUserDelegator {
                 } else if (IntranetUserConstant.TERMINATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
                     errorMap.put("userId", "This user is already in Terminated status.");
+                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
                 } else if (IntranetUserConstant.TERMINATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
@@ -847,6 +820,7 @@ public class MohIntranetUserDelegator {
                 } else if (IntranetUserConstant.UNLOCK.equals(actionType) && IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
                     errorMap.put("userId", "This user is already in Active status.");
+                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
                 } else if (IntranetUserConstant.UNLOCK.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
@@ -860,12 +834,14 @@ public class MohIntranetUserDelegator {
                 } else if (IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
                     errorMap.put("userId", "Terminated users cannot be reactivated.");
+                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
                 }
             }
         } else {
             errorMap.put("userId", "ERR0009");
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;

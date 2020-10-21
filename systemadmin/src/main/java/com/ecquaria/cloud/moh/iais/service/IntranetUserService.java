@@ -8,7 +8,6 @@ import com.ecquaria.cloud.role.Role;
 import org.dom4j.DocumentException;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.rbac.user.UserIdentifier;
 
 import java.io.File;
 import java.util.List;
@@ -32,7 +31,6 @@ public interface IntranetUserService {
     ClientUser updateEgpUser(ClientUser clientUser);
     Boolean deleteEgpUser(String userDomian,String userId);
     ClientUser getUserByIdentifier(String userId,String userDomain);
-    Boolean validatepassword(String password, UserIdentifier userIdentifier);
     List<OrgUserRoleDto> assignRole(List<OrgUserRoleDto> orgUserRoleDtos);
     void removeRole(List<OrgUserRoleDto> orgUserRoleDtos);
     void removeEgpRoles(String userDomain,String userId,List<String> roleIds);

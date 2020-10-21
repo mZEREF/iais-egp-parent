@@ -718,6 +718,7 @@ public class RequestForChangeMenuDelegator {
         PersonnelListDto newPerson = new PersonnelListDto();
         Map<String, String> errMap = valiant(bpc, personnelEditDto, newPerson);
         if (!errMap.isEmpty()) {
+            WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
             return;
         }
         List<String> licenceIds = personnelEditDto.getLicenceIds();

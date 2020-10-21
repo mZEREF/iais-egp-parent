@@ -104,7 +104,7 @@
                                     <c:out value="${role}"/>
                                     <div id="psoLead" hidden>
                                         <iais:select name="psoGroupLeadSelect" value="${role}" firstOption="Please Select"
-                                                     options="ao1GroupOptions"></iais:select>
+                                                     options="psoGroupOptions"></iais:select>
                                     </div>
                                 </div>
                                 <br/>
