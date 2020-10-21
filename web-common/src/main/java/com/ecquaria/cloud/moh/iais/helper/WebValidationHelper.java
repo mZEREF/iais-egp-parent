@@ -14,29 +14,36 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.annotation.AuditAppNoFetch;
+import com.ecquaria.cloud.moh.iais.common.annotation.AuditAppNoField;
+import com.ecquaria.cloud.moh.iais.common.annotation.AuditLicNoFetch;
+import com.ecquaria.cloud.moh.iais.common.annotation.AuditLicNoField;
 import com.ecquaria.cloud.moh.iais.common.annotation.CustomMsg;
 import com.ecquaria.cloud.moh.iais.common.annotation.CustomValidate;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-import lombok.extern.slf4j.Slf4j;
-import net.sf.oval.ConstraintViolation;
-import net.sf.oval.Validator;
-import org.apache.commons.lang.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.oval.ConstraintViolation;
+import net.sf.oval.Validator;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * WebValidationHelper
@@ -159,7 +166,7 @@ public class WebValidationHelper {
 
             result.addMessages(customizeValidate(obj.getClass(), propertyName, result.isHasErrors()));
 
-            saveAuditTrail(result);
+            saveAuditTrail(obj, result);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new IaisRuntimeException(e);
@@ -298,7 +305,7 @@ public class WebValidationHelper {
         return null;
     }
 
-    private static void saveAuditTrail(ValidationResult result) {
+    private static void saveAuditTrail(Object obj, ValidationResult result) {
         if (!result.isHasErrors()) {
             return;
         }
@@ -306,22 +313,63 @@ public class WebValidationHelper {
         AuditTrailDto dto = IaisEGPHelper.getCurrentAuditTrailDto();
 
         Map<String, String> errors = result.retrieveAll();
+        saveAuditTrailForNoUseResult(obj, errors);
+    }
+
+    public static void saveAuditTrailForNoUseResult(Object entity, Map<String, String> errors) {
+        AuditTrailDto at = MiscUtil.transferEntityDto(IaisEGPHelper.getCurrentAuditTrailDto(), AuditTrailDto.class);
+        if (entity != null) {
+            Field[] fields = entity.getClass().getDeclaredFields();
+            RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
+            for (Field field : fields) {
+                try {
+                    AuditAppNoField app = field.getAnnotation(AuditAppNoField.class);
+                    AuditAppNoFetch fetch = field.getAnnotation(AuditAppNoFetch.class);
+                    AuditLicNoFetch licFetch = field.getAnnotation(AuditLicNoFetch.class);
+                    AuditLicNoField lic = field.getAnnotation(AuditLicNoField.class);
+                    if (app != null) {
+                        Method getMed = entity.getClass().getMethod("get" + org.springframework.util.StringUtils.capitalize(field.getName()));
+                        String appNo = (String) getMed.invoke(entity, null);
+                        if (!StringUtil.isEmpty(appNo)) {
+                            at.setApplicationNum(appNo);
+                        }
+                    } else if (fetch != null) {
+                        Method getMed = entity.getClass().getMethod("get" + org.springframework.util.StringUtils.capitalize(field.getName()));
+                        String fetchId = (String) getMed.invoke(entity, null);
+                        String appNo = redisCacheHelper.get(RedisNameSpaceConstant.REDIS_AUDIT_TRAIL_NAMESPACE, fetchId);
+                        if (!StringUtil.isEmpty(appNo)) {
+                            at.setApplicationNum(appNo);
+                        }
+                    }
+                    if (lic != null) {
+                        Method getMed = entity.getClass().getMethod("get" + org.springframework.util.StringUtils.capitalize(field.getName()));
+                        String licNo = (String) getMed.invoke(entity, null);
+                        if (!StringUtil.isEmpty(licNo)) {
+                            at.setLicenseNum(licNo);
+                        }
+                    } else if (licFetch != null) {
+                        Method getMed = entity.getClass().getMethod("get" + org.springframework.util.StringUtils.capitalize(field.getName()));
+                        String fetchId = (String) getMed.invoke(entity, null);
+                        String licNo = redisCacheHelper.get(RedisNameSpaceConstant.REDIS_AUDIT_TRAIL_NAMESPACE, fetchId);
+                        if (!StringUtil.isEmpty(licNo)) {
+                            at.setApplicationNum(licNo);
+                        }
+                    }
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                    log.error(e.getMessage(), e);
+                    throw new IaisRuntimeException(e);
+                }
+            }
+        }
         String errorMsg = generateJsonStr(errors);
-        dto.setValidationFail(errorMsg);
-        dto.setOperation(AuditTrailConsts.OPERATION_VALIDATION_FAIL);
-
-        AuditTrailHelper.callSaveAuditTrail(dto);
-
-        dto.setValidationFail(null);
+        at.setValidationFail(errorMsg);
+        at.setOperation(AuditTrailConsts.OPERATION_VALIDATION_FAIL);
+        AuditTrailHelper.callSaveAuditTrail(at);
+        at.setValidationFail(null);
     }
 
     public static void saveAuditTrailForNoUseResult(Map<String, String> errors){
-        AuditTrailDto dto = IaisEGPHelper.getCurrentAuditTrailDto();
-        String errorMsg = generateJsonStr(errors);
-        dto.setValidationFail(errorMsg);
-        dto.setOperation(AuditTrailConsts.OPERATION_VALIDATION_FAIL);
-        AuditTrailHelper.callSaveAuditTrail(dto);
-        dto.setValidationFail(null);
+        saveAuditTrailForNoUseResult(null, errors);
     }
 
     private static String formatValuesMessage(String message, String val){
