@@ -205,6 +205,7 @@ public class InspecUserRecUploadDelegator {
             errorMap = doValidateByRecFile(inspecUserRecUploadDto, mulReq, errorMap, actionValue, file, inspSetMaskValueDto);
             if(errorMap != null && !(errorMap.isEmpty())){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
             } else {
@@ -414,6 +415,7 @@ public class InspecUserRecUploadDelegator {
             }
             if(errorMap != null && errorMap.size() > 0){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, "subflag", AppConsts.FALSE);
             } else {
