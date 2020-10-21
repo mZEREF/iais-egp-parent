@@ -31,17 +31,17 @@ public class FeMainInitializer {
 
     private void copySpConfigProperties(){
         try {
+            String separator = File.separator;
             String runtimeEnv = systemParamConfig.getIaisRuntimeEnv();
 
             log.info(StringUtil.changeForLog("fe main runtimeEnv" + runtimeEnv));
 
-            String resourcePath = this.getClass().getResource("/").getPath();
+            String resourcePath = this.getClass().getResource(separator).getPath();
             File resource = new File(resourcePath);
-            String srcPath = resource.getParentFile().getParentFile().getParentFile().getParentFile().getAbsolutePath();
+            String srcPath = resource.getParentFile() + separator + "enviroment-files";
 
             log.info("=====>>>>>>>>srcPath" + srcPath + "/configs/" + runtimeEnv);
             log.info("=====>>>>>>>>resourcePath" + resourcePath);
-
             FileUtils.copyFilesToOtherPosition(srcPath + "/configs/" + runtimeEnv, resourcePath);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
