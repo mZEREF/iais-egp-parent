@@ -427,10 +427,10 @@ public class MasterCodeDelegator {
                     String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Code Value","field");
                     errItems.add(errMsg);
                     result = true;
-                }else if(masterCodeToExcelDto.getCodeValue().length() >256) {
+                }else if(masterCodeToExcelDto.getCodeValue().length() >25) {
                     Map<String,String> stringMap = new HashMap<>(2);
                     stringMap.put("field","Code Value");
-                    stringMap.put("maxlength","256");
+                    stringMap.put("maxlength","25");
                     errItems.add( MessageUtil.getMessageDesc("GENERAL_ERR0041",stringMap));
                     result = true;
                 }
