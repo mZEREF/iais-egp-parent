@@ -113,6 +113,10 @@ public class AuditTrailHelper {
         }
     }
 
+    public static AuditTrailDto getCurrentAuditTrailDto() {
+        return IaisEGPHelper.getCurrentAuditTrailDto();
+    }
+
     public static AuditTrailDto getBatchJobDto(String domain, Object job) {
         AuditTrailDto dto = new AuditTrailDto();
         dto.setNricNumber("System");
