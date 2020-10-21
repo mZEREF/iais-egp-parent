@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeCategoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeToExcelDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.SaMasterCodeClient;
@@ -113,6 +114,8 @@ public class MasterCodeServiceImpl implements MasterCodeService {
 
     @Override
     public void syncMasterCodeFe(List<MasterCodeDto> masterCodeDtos) {
-        eicGatewayClient.syncMasterCodeFe(masterCodeDtos);
+        if(!IaisCommonUtils.isEmpty(masterCodeDtos)){
+            eicGatewayClient.syncMasterCodeFe(masterCodeDtos);
+        }
     }
 }
