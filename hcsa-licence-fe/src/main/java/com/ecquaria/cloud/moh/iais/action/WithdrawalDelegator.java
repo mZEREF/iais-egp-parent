@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
@@ -65,12 +64,27 @@ public class WithdrawalDelegator {
         log.debug(StringUtil.changeForLog("****The Start Step****"));
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
         String withdrawAppNo = ParamUtil.getMaskedString(bpc.request, "withdrawAppNo");
+        String isDoView = ParamUtil.getString(bpc.request, "isDoView");
+        ParamUtil.setSessionAttr(bpc.request, "isDoView", isDoView);
         int configFileSize = systemParamConfig.getUploadFileLimit();
 
         ParamUtil.setSessionAttr(bpc.request,"configFileSize",configFileSize);
    //     String withdrawAppId = ParamUtil.getMaskedString(bpc.request, "withdrawAppId");
         if (!StringUtil.isEmpty(withdrawAppNo)){
             ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", withdrawAppNo);
+        }
+
+        // just view, so direct return
+        if ("Y".equals(isDoView)){
+            WithdrawnDto withdrawnDto = withdrawalService.getWithdrawAppInfo(withdrawAppNo);
+            AppPremisesSpecialDocDto viewDoc = withdrawnDto.getAppPremisesSpecialDocDto();
+            if (viewDoc != null){
+                ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",viewDoc.getDocName());
+            }
+
+            ParamUtil.setSessionAttr(bpc.request, "withdrawDtoView", withdrawnDto);
+            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "");
+            return;
         }
 
         String rfiWithdrawAppNo = ParamUtil.getMaskedString(bpc.request,"rfiWithdrawAppNo");

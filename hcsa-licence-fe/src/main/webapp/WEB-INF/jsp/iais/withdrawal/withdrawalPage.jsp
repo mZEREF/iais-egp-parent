@@ -34,12 +34,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-xs-12">
-                                <div class="withdraw-addmore gradient-light-grey">
-                                    <a href="#newappModal" data-toggle="modal" data-target="#newappModal"><h4><em
-                                            class="fa fa-plus-circle"></em> Add more applications</h4></a> <%--NOSONAR--%>
-                                </div>
-                            </div>
+
+                                <c:if test="${isDoView != 'Y'}">
+                                    <div class="col-lg-4 col-xs-12">
+                                        <div class="withdraw-addmore gradient-light-grey">
+                                            <a href="#newappModal" data-toggle="modal" data-target="#newappModal"><h4><em
+                                                    class="fa fa-plus-circle"></em> Add more applications</h4></a> <%--NOSONAR--%>
+                                        </div>
+                                    </div>
+                                </c:if>
+
                         </div>
                     </div>
                     <div id="newappModal" class="modal fade" role="dialog">
@@ -72,11 +76,27 @@
                                 <iais:select name="withdrawalReason" id="withdrawalReason"
                                              options="withdrawalReasonList"
                                              onchange="withdrawalReasons(this.value);"
-                                             value="${withdrawDtoView.withdrawnReason}"/>
+                                             value="${withdrawDtoView.withdrawnReason}" disabled="true"/>
                                 <span id="error_withdrawnReason" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                     </div>
+
+
+
+
+
+                    <c:choose>
+                        <c:when test="">
+
+                        </c:when>
+                        <c:otherwise>
+
+                        </c:otherwise>
+                    </c:choose>
+
+
+
 
                     <div id="reason"
                          <c:if test="${withdrawDtoView.withdrawnReason != 'WDR005' || withdrawDtoView.withdrawnReason== null}">hidden</c:if>>
@@ -91,7 +111,7 @@
                                     <div class="file-upload-gp">
                                             <textarea name="withdrawnRemarks" cols="90" rows="15" id="withdrawnRemarks"
                                                       title="content"
-                                                      maxlength="500">${withdrawDtoView.withdrawnRemarks}</textarea>
+                                                      maxlength="500" <c:if test="${isDoView eq 'Y'}"> readonly="readonly"</c:if>   >${withdrawDtoView.withdrawnRemarks}</textarea>
                                     </div>
                                     <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
@@ -103,17 +123,29 @@
                             <div class="document-upload-gp">
                                 <div class="document-upload-list">
                                     <h3>File upload for Withdrawal Reasons</h3>
-                                    <div class="file-upload-gp">
-                                        <input id="selectedFile" type="file" style="display: none;" name = "selectedFile"
-                                               aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary"
-                                                                             href="#">Upload</a>
-                                        <div id="delFile" style="margin-top: 13px;color: #1F92FF;"
-                                             hidden="hidden">
-                                            <strong id="fileName">${file_upload_withdraw}</strong>
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteWdFile()"><em
-                                                    class="fa fa-times"></em></button>
-                                        </div>
-                                    </div>
+
+
+                                    <c:choose>
+                                        <c:when test="${isDoView != 'Y'}">
+                                            <div class="file-upload-gp">
+                                                <input id="selectedFile" type="file" style="display: none;" name = "selectedFile"
+                                                       aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary"
+                                                                                    href="#">Upload</a>
+
+                                                <div id="delFile" style="margin-top: 13px;color: #1F92FF;"
+                                                     hidden="hidden">
+                                                    <strong id="fileName">${file_upload_withdraw}</strong>
+                                                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteWdFile()"><em
+                                                            class="fa fa-times"></em></button>
+                                                </div>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <strong>${file_upload_withdraw}</strong>
+                                        </c:otherwise>
+                                    </c:choose>
+
+
                                     <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
                                     <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
@@ -122,21 +154,25 @@
                         </div>
                     </div>
                 </div>
-                <div class="row" style="padding-bottom: 2%">
-                    <div class="center-content">
-                        <div class="col-md-2 col-md-offset-8" style="text-align: right">
-                            <div class="components">
-                                <a class="btn btn-secondary"
-                                   href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp">Cancel</a>
+
+                <c:if test="${isDoView != 'Y'}">
+                    <div class="row" style="padding-bottom: 2%">
+                        <div class="center-content">
+                            <div class="col-md-2 col-md-offset-8" style="text-align: right">
+                                <div class="components">
+                                    <a class="btn btn-secondary"
+                                       href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp">Cancel</a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="components">
-                                <a class="btn btn-primary" onclick="doSubmit()">Submit</a>
+                            <div class="col-md-2">
+                                <div class="components">
+                                    <a class="btn btn-primary" onclick="doSubmit()">Submit</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </c:if>
+
             </div>
         </div>
     </form>
