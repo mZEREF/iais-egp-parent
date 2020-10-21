@@ -830,6 +830,12 @@
       <rtexprvalue>false</rtexprvalue>
       <type>boolean</type>
     </attribute>
+    <attribute>
+      <name>disabled</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>boolean</type>
+    </attribute>
   </tag>
   <tag>
     <description>SortableHeaderTag</description>

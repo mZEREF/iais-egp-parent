@@ -20,6 +20,7 @@ public class MultipleSelectTag extends DivTagSupport {
     private boolean needMask;
     private String selectValue;
     private boolean needErrorSpan;
+    private boolean disabled;
     public MultipleSelectTag() {
         super();
         init();//NOSONAR
@@ -38,7 +39,7 @@ public class MultipleSelectTag extends DivTagSupport {
         setStyle("");
         setSelectValue("");
         setNeedMask(false);
-        setNeedMask(false);
+        setDisabled(false);
     }
 
     // Releases any resources we may have (or inherit)
@@ -90,7 +91,11 @@ public class MultipleSelectTag extends DivTagSupport {
                         }
                     }
                 }
-                html.append("<label class=\"").append(cssClass).append("\" style=\"").append(style).append("\">\n").append("                                <input value=\"").append(val).append("\" id=\"").append(name).append(index).append("\" name=\"").append(name).append("\" type=\"checkbox\"").append(selected).append(">\n").append("                                <label for=\"").append(name).append(index).append("\">\n").append("                                    <span>").append(txt).append("</span>\n").append("                                </label>\n").append("                            </label><br/>");
+                html.append("<label class=\"").append(cssClass).append("\" style=\"").append(style).append("\">\n").append("                                <input value=\"").append(val).append("\" id=\"").append(name).append(index).append("\" name=\"").append(name).append("\" type=\"checkbox\"").append(selected);
+                if(disabled){
+                    html.append(" disabled=\"true\" ");
+                }
+                html .append(">\n").append("                                <label for=\"").append(name).append(index).append("\">\n").append("                                    <span>").append(txt).append("</span>\n").append("                                </label>\n").append("                            </label><br/>");
                 index++;
             }
         }
@@ -121,7 +126,17 @@ public class MultipleSelectTag extends DivTagSupport {
     public void setCssClass(String cssClass) {
         this.cssClass = cssClass;
     }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
     @Override
+
     public void setStyle(String style) {
 		this.style = style;
 	}
@@ -131,4 +146,6 @@ public class MultipleSelectTag extends DivTagSupport {
     public void setSelectValue(String selectValue) {
         this.selectValue = selectValue;
     }
+
+
 }
