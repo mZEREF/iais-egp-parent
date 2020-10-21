@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
@@ -76,6 +77,8 @@ public class BlastManagementDelegator {
     private static final String FILE_UPLOAD_ERROR = "fileUploadError";
     @Autowired
     BlastManagementListService blastManagementListService;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     @Autowired
     DistributionListService distributionListService;
@@ -86,6 +89,8 @@ public class BlastManagementDelegator {
 
         SearchParam searchParam = getSearchParam(bpc.request,true);
         ParamUtil.setSessionAttr(bpc.request, "blastmanagementSearchParam", searchParam);
+        int configFileSize = systemParamConfig.getUploadFileLimit();
+        ParamUtil.setSessionAttr(bpc.request,"configFileSize",configFileSize);
     }
     /**
      * doPrepare
