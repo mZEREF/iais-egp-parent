@@ -317,6 +317,9 @@ public class WebValidationHelper {
     }
 
     public static void saveAuditTrailForNoUseResult(Object entity, Map<String, String> errors) {
+        if (errors == null || errors.isEmpty()) {
+            return;
+        }
         AuditTrailDto at = MiscUtil.transferEntityDto(IaisEGPHelper.getCurrentAuditTrailDto(), AuditTrailDto.class);
         if (entity != null) {
             Field[] fields = entity.getClass().getDeclaredFields();
