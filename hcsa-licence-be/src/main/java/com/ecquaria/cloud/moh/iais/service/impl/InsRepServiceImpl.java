@@ -668,6 +668,7 @@ public class InsRepServiceImpl implements InsRepService {
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
         String groupId = hcsaSvcStageWorkingGroupDto1.getGroupId();
         String subStage = getSubStage(appPremisesCorrelationId, taskKey);
+        List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
         if (ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType) || ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK.equals(applicationType)) {
             updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_APPEAL_APPROVE);
             List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
@@ -684,16 +685,29 @@ public class InsRepServiceImpl implements InsRepService {
         } else {
             updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
             List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+            TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtoList,HcsaConsts.ROUTING_STAGE_AO2,RoleConsts.USER_ROLE_AO2,IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId());
+            List<TaskDto> taskDtoList = taskHistoryDto.getTaskDtoList();
+            for(TaskDto dto : taskDtoList){
+                String applicationNo1 = dto.getApplicationNo();
+                if(applicationNo.equals(applicationNo1)){
+                    taskDtos.add(dto);
+                }
+            }
             boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
                     ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
-            TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtoList,HcsaConsts.ROUTING_STAGE_AO2,RoleConsts.USER_ROLE_AO2,IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId());
             createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
             if(isAllSubmit){
-                // send the task to Ao2  or Ao3
-                List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
-                taskService.createTasks(taskDtos);
-                createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO1, groupId, null);
+                for(ApplicationDto dto : applicationDtoList){
+                    String appStatus = dto.getStatus();
+                    String applicationNo1 = dto.getApplicationNo();
+                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus)&&!applicationNo.equals(applicationNo1)){
+                        TaskDto ao2Task = taskService.getRoutingTask(dto, HcsaConsts.ROUTING_STAGE_AO2, RoleConsts.USER_ROLE_AO2, appPremisesCorrelationId);
+                        taskDtos.add(ao2Task);
+                        createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO1, groupId, null);
+                    }
+                }
             }
+            taskService.createTasks(taskDtos);
         }
     }
 
@@ -1101,46 +1115,49 @@ public class InsRepServiceImpl implements InsRepService {
         return list;
     }
 
-    private List<TaskDto> prepareTaskToAo2(TaskDto taskDto, String serviceId, ApplicationDto applicationDto) throws FeignException {
+    private List<TaskDto> prepareTaskToAo2(TaskDto taskDto, String serviceId, List<ApplicationDto> applicationDtos) throws FeignException {
         List<TaskDto> list = IaisCommonUtils.genNewArrayList();
-        HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-        hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
-        hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_AO2);
-        hcsaSvcStageWorkingGroupDto.setOrder(1);
-        hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
-        HcsaSvcStageWorkingGroupDto dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
-        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
-        applicationDtos.add(applicationDto);
-        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_AO2);
-        hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-        String schemeType = dto.getSchemeType();
-        String groupId = dto.getGroupId();
-        String userId = null;
-        Set<String> ao2 = taskService.getInspectiors(applicationDto.getApplicationNo(), TaskConsts.TASK_PROCESS_URL_MAIN_FLOW, RoleConsts.USER_ROLE_AO2);
-        if (!ao2.isEmpty()) {
-            userId = ao2.iterator().next();
-            taskDto.setUserId(userId);
+        for(ApplicationDto applicationDto : applicationDtos){
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+            hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
+            hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_AO2);
+            hcsaSvcStageWorkingGroupDto.setOrder(1);
+            hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
+            HcsaSvcStageWorkingGroupDto dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
+            List<ApplicationDto> applicationDtos1 = IaisCommonUtils.genNewArrayList();
+            applicationDtos1.add(applicationDto);
+            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos1, HcsaConsts.ROUTING_STAGE_AO2);
+            hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+            String schemeType = dto.getSchemeType();
+            String groupId = dto.getGroupId();
+            String userId = null;
+            Set<String> ao2 = taskService.getInspectiors(applicationDto.getApplicationNo(), TaskConsts.TASK_PROCESS_URL_MAIN_FLOW, RoleConsts.USER_ROLE_AO2);
+            if (!ao2.isEmpty()) {
+                userId = ao2.iterator().next();
+                taskDto.setUserId(userId);
+            }
+            if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ROUND.equals(schemeType)) {
+                TaskDto taskDto1 = taskService.getUserIdForWorkGroup(groupId);
+                taskDto.setUserId(taskDto1.getUserId());
+            } else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_COMMON.equals(schemeType)) {
+                taskDto.setUserId(null);
+            }else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ASSIGN.equals(schemeType)) {
+                taskDto.setUserId(null);
+                taskDto.setTaskKey(TaskConsts.TASK_TYPE_MAIN_FLOW_SUPER);
+            }
+            taskDto.setId(null);
+            taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_AO2);
+            taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
+            taskDto.setWkGrpId(groupId);
+            taskDto.setDateAssigned(new Date());
+            taskDto.setSlaDateCompleted(null);
+            taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+            taskDto.setRoleId(RoleConsts.USER_ROLE_AO2);
+            taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_MAIN_FLOW);
+            taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            list.add(taskDto);
         }
-        if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ROUND.equals(schemeType)) {
-            TaskDto taskDto1 = taskService.getUserIdForWorkGroup(groupId);
-            taskDto.setUserId(taskDto1.getUserId());
-        } else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_COMMON.equals(schemeType)) {
-            taskDto.setUserId(null);
-        }else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ASSIGN.equals(schemeType)) {
-            taskDto.setUserId(null);
-            taskDto.setTaskKey(TaskConsts.TASK_TYPE_MAIN_FLOW_SUPER);
-        }
-        taskDto.setId(null);
-        taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_AO2);
-        taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
-        taskDto.setWkGrpId(groupId);
-        taskDto.setDateAssigned(new Date());
-        taskDto.setSlaDateCompleted(null);
-        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
-        taskDto.setRoleId(RoleConsts.USER_ROLE_AO2);
-        taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_MAIN_FLOW);
-        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        list.add(taskDto);
+
         return list;
     }
 

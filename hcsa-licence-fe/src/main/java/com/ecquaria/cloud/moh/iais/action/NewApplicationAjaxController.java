@@ -982,9 +982,10 @@ public class NewApplicationAjaxController {
     @GetMapping(value = "/prg-input-info")
     public @ResponseBody
     ProfessionalResponseDto getPrgNoInfo(HttpServletRequest request) {
-        log.debug(StringUtil.changeForLog("the getNewPsnInfo start ...."));
+        log.debug(StringUtil.changeForLog("the prgNo start ...."));
         String professionRegoNo = ParamUtil.getString(request, "prgNo");
         if (StringUtil.isEmpty(professionRegoNo)) {
+            log.debug(StringUtil.changeForLog("the prgNo is null ...."));
             return null;
         }
         ProfessionalResponseDto professionalResponseDto;
@@ -1004,7 +1005,7 @@ public class NewApplicationAjaxController {
         StringBuilder sb = new StringBuilder();
         professionalResponseDto = professionalResponseDtos.get(0);
         List<String> specialty = professionalResponseDto.getSpecialty();
-        if(StringUtil.isEmpty(specialty)){
+        if(IaisCommonUtils.isEmpty(specialty)){
             return professionalResponseDto;
         }
         List<String> qualification = professionalResponseDto.getQualification();
@@ -1024,7 +1025,9 @@ public class NewApplicationAjaxController {
         String s = sb.toString();
         qualification.clear();
         qualification.add(s);
+        log.debug(StringUtil.changeForLog("the prgNo is null ...."));
         return professionalResponseDto;
+
     }
 
 

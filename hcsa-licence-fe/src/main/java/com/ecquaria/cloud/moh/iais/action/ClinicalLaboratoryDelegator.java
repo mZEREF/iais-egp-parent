@@ -790,7 +790,7 @@ public class ClinicalLaboratoryDelegator {
                                 signature2.date(), signature2.authorization()).getEntity();
                         String name = professionalResponseDtos.get(0).getName();
                         if(StringUtil.isEmpty(name)){
-                            errList.put("professionRegoNo"+i,"Professional Regn No. is not correct.");
+                            errList.put("professionRegoNo"+i,"GENERAL_ERR0042");
 //                            appSvcCgoDto.setSubSpeciality(null);
 //                            appSvcCgoDto.setSpeciality(null);
                         }else {
