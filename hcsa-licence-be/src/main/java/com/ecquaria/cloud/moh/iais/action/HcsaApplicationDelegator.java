@@ -1970,34 +1970,32 @@ public class HcsaApplicationDelegator {
                     String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
                     if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(withdrawApplicationDto.getStatus())){
                         applicationService.closeTaskWhenWhAppApprove(withdrawApplicationDto.getId());
-                        String subjectSuppInfo = applicationNo + " is Approved";
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                         msgInfoMap.put("appNum", applicationNo);
                         msgInfoMap.put("reqAppNo",applicationNo);
                         msgInfoMap.put("S_LName",serviceName);
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-                        EmailDto emailDto = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE,msgInfoMap,withdrawApplicationDto.getApplicationNo(),licenseeId,subjectSuppInfo);
-                        sendInboxMessage(licenseeId,null,emailDto.getContent(),serviceId,emailDto.getSubject());
+                        EmailParam emailParam = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE,msgInfoMap,applicationNo);
+                        notificationHelper.sendNotification(emailParam);
+                        sendInboxMessage(applicationNo,serviceId,msgInfoMap,emailParam.getSubject());
                         /**
                          *  Send SMS when withdrawal Application Approve
                          */
                         Map<String, Object> smsInfoMap = IaisCommonUtils.genNewHashMap();
                         sendSMS("",taskDto.getUserId(),smsInfoMap);
                     }else{
-                        String subjectSuppInfo = applicationNo + " is Rejected";
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                         msgInfoMap.put("appNum", applicationNo);
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-                        EmailDto emailDto = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT,msgInfoMap,withdrawApplicationDto.getApplicationNo(),licenseeId,subjectSuppInfo);
-                        sendInboxMessage(licenseeId,null,emailDto.getContent(),serviceId,emailDto.getSubject());
+                        EmailParam emailParam = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT,msgInfoMap,applicationNo);
+                        notificationHelper.sendNotification(emailParam);
+                        sendInboxMessage(applicationNo,serviceId,msgInfoMap,emailParam.getSubject());
                         /**
                          *  Send SMS when withdrawal Application Reject
                          */
                         Map<String, Object> smsInfoMap = IaisCommonUtils.genNewHashMap();
                         sendSMS("",taskDto.getUserId(),smsInfoMap);
                     }
-                    Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                    sendEmail("",msgInfoMap,applicationNo,taskDto.getUserId(),"");
                 }
             }
 
@@ -2104,23 +2102,26 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private void sendInboxMessage(String licenseeId,HashMap<String, String> maskParams,String templateMessageByContent,String serviceId,String subject){
+    private void sendInboxMessage(String applicationNo,String serviceId,Map<String, Object> map,String subject) throws IOException, TemplateException {
+        EmailParam messageParam = new EmailParam();
         HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-        String refNo = inboxMsgService.getMessageNo();
-        InterMessageDto interMessageDto = new InterMessageDto();
-        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
-        interMessageDto.setSubject(subject);
-        interMessageDto.setRefNo(refNo);
+        List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
         if(serviceDto != null){
-            interMessageDto.setService_id(serviceDto.getSvcCode()+"@");
+            svcCodeList.add(serviceDto.getSvcCode());
         }
-        interMessageDto.setUserId(licenseeId);
-        interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        interMessageDto.setMsgContent(templateMessageByContent);
-        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        interMessageDto.setMaskParams(maskParams);
-        inboxMsgService.saveInterMessage(interMessageDto);
+        Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+        subMap.put("ApplicationNumber", applicationNo);
+        subject = MsgUtil.getTemplateMessageByContent(subject,subMap);
+        messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE);
+        messageParam.setQueryCode(applicationNo);
+        messageParam.setTemplateContent(map);
+        messageParam.setReqRefNum(applicationNo);
+        messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        messageParam.setRefId(applicationNo);
+        messageParam.setSubject(subject);
+        messageParam.setSvcCodeList(svcCodeList);
+        log.info(StringUtil.changeForLog("send withdraw Application message"));
+        notificationHelper.sendNotification(messageParam);
     }
 
     private void saveRejectReturnFee(List<ApplicationDto> applicationDtos,BroadcastApplicationDto broadcastApplicationDto){
@@ -2148,26 +2149,22 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private EmailDto sendEmail(String msgId, Map<String, Object> msgInfoMap, String applicationNo, String licenseeId,String subjectSuppInfo) {
-        EmailDto emailDto=new EmailDto();
-            //        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
-//        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
-            emailDto.setClientQueryCode(applicationNo);
-            emailDto.setSender(mailSender);
-//        emailDto.setContent(templateMessageByContent);
-            emailDto.setContent("Send Email");
-//        emailDto.setSubject(msgTemplateDto.getTemplateName()+subjectSuppInfo);
-            emailDto.setSubject(subjectSuppInfo);
-            try{
-                List<String> emailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
-                if (emailAddrs != null && emailAddrs.size()>0){
-                    emailDto.setReceipts(emailAddrs);
-                    emailClient.sendNotification(emailDto).getEntity();
-                }
-            }catch (Exception e){
-                log.error(StringUtil.changeForLog("error"));
-            }
-            return emailDto;
+    private EmailParam sendEmail(String msgId, Map<String, Object> msgInfoMap, String applicationNo) throws IOException, TemplateException {
+        log.info(StringUtil.changeForLog("***************** send withdraw application Email  *****************"));
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
+        EmailParam emailParam = new EmailParam();
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        map.put("ApplicationNumber", applicationNo);
+        String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
+        emailParam.setTemplateContent(msgInfoMap);
+        emailParam.setTemplateId(msgId);
+        emailParam.setReqRefNum(applicationNo);
+        emailParam.setQueryCode(applicationNo);
+        emailParam.setRefId(applicationNo);
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+        emailParam.setSubject(subject);
+        log.info(StringUtil.changeForLog("***************** send withdraw application Email  end*****************"));
+        return emailParam;
     }
 
     private void sendSMS(String msgId,String licenseeId,Map<String, Object> msgInfoMap){
