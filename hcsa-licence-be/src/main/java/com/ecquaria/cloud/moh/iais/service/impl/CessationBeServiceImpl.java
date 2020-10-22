@@ -495,10 +495,10 @@ public class CessationBeServiceImpl implements CessationBeService {
                     }
                 }
                 applicationDto.setNeedNewLicNo(false);
-                applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_TRANSFER);
+                applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NOT);
             } else {
                 applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
-                applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_ORIGIN);
+                applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NEED);
                 applicationDto.setNeedNewLicNo(true);
             }
             applicationClient.updateApplication(applicationDto);
