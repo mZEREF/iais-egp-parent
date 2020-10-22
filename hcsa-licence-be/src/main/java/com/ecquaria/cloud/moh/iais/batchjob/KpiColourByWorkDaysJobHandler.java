@@ -71,6 +71,7 @@ public class KpiColourByWorkDaysJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) throws Exception {
         try {
             logAbout("MohKpiColourShow");
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             List<Date> holidays = appointmentClient.getHolidays().getEntity();
             List<Long> holidayTime = IaisCommonUtils.genNewArrayList();
             if(!IaisCommonUtils.isEmpty(holidays)){
@@ -79,7 +80,7 @@ public class KpiColourByWorkDaysJobHandler extends IJobHandler {
                 }
             }
             List<TaskDto> taskDtos = organizationClient.getKpiTaskByStatus().getEntity();
-            AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET);
+            AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
             if (!IaisCommonUtils.isEmpty(taskDtos)) {
                 for(TaskDto taskDto : taskDtos){
                     try {

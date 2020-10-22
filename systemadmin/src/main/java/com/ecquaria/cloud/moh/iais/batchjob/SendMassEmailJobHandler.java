@@ -102,6 +102,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         JobLogger.log(StringUtil.changeForLog("The SendMassEmailBatchjob is start..." ));
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         //get need send email and sms
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         List<BlastManagementDto> blastManagementDto = blastManagementListService.getBlastBySendTime(df.format(new Date()));
@@ -184,7 +185,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
                         JobLogger.log(StringUtil.changeForLog("interMessage ServiceId is " + svcDto.getSvcCode()+'@'));
                         interMessageDto.setMsgContent(item.getMsgContent());
                         interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-                        interMessageDto.setAuditTrailDto(AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET));
+                        interMessageDto.setAuditTrailDto(AuditTrailHelper.getBatchJobAuditTrail());
                         for (LicenceDto licencedto:licenceList
                         ) {
                             String refNo = sysInboxMsgService.getMessageNo();

@@ -26,7 +26,7 @@ public class LicenceApprovejobHandle extends MohJobHandler{
     @Override
     public ReturnT<String> doExecute(String var1) throws Exception {
         try {
-            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             licenceApproveBatchjob.jobExecute();
             return  ReturnT.SUCCESS;
         } catch (Throwable e) {

@@ -1,10 +1,9 @@
-package com.ecquaria.cloud.moh.iais.job;
+package com.ecquaria.cloud.moh.iais.batch;
 
 import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
@@ -38,9 +37,9 @@ public class UploadDelegatorJob extends IJobHandler {
             String data = uploadFileService.getData();
             log.info("------------------- getData  end --------------");
             //Parse the
-            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             List<ApplicationListFileDto> parse = uploadFileService.parse(data);
-            AuditTrailDto intenet = AuditTrailHelper.getBatchJobAuditTrail("INTERNET");
+            AuditTrailDto intenet = AuditTrailHelper.getBatchJobAuditTrail();
             for(ApplicationListFileDto applicationListFileDto :parse){
                 applicationListFileDto.setAuditTrailDto(intenet);
                 Map<String,List<String>> map=new HashMap();

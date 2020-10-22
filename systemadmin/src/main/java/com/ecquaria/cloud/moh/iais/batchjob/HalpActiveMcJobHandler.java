@@ -25,8 +25,9 @@ public class HalpActiveMcJobHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         JobLogger.log(StringUtil.changeForLog("The InactiveMasterCodeJobHandler start..." ));
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         try {
-            AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET);
+            AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail();
             masterCodeService.activeMasterCode(auditTrailDto);
             JobLogger.log(StringUtil.changeForLog("The InactiveMasterCodeJobHandler end..." ));
             return ReturnT.SUCCESS;

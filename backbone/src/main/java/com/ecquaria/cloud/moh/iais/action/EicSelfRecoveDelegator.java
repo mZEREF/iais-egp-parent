@@ -55,6 +55,7 @@ public class EicSelfRecoveDelegator {
 
     public void selfRecover(BaseProcessClass bpc) {
         log.info("<======== Start EIC Self Recover Job =========>");
+
         String moduleName = currentApp + "-" + currentDomain;
         List<EicRequestTrackingDto> atList = atEicClient.getPendingRecords(moduleName).getEntity();
         List<EicRequestTrackingDto> appList = appEicClient.getPendingRecords(moduleName).getEntity();
@@ -63,7 +64,7 @@ public class EicSelfRecoveDelegator {
         List<EicRequestTrackingDto> orgList = orgEicClient.getPendingRecords(moduleName).getEntity();
         List<EicRequestTrackingDto> sysList = eicClient.getPendingRecords(moduleName).getEntity();
         List<EicRequestTrackingDto> apptList = onlineApptEicClient.getPendingRecords(moduleName).getEntity();
-        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail(currentDomain);
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail();
         if (!IaisCommonUtils.isEmpty(atList)) {
             atList.forEach(ert -> {
                 reTrigger(ert, auditTrailDto);

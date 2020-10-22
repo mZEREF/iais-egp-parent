@@ -64,7 +64,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * ApplicationServiceImpl
@@ -224,7 +223,6 @@ public class ApplicationServiceImpl implements ApplicationService {
         String moduleName = currentApp + "-" + currentDomain;
         EicRequestTrackingDto dto = new EicRequestTrackingDto();
         dto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-        dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         dto.setActionClsName(this.getClass().getName());
         dto.setActionMethod("callEicInterApplication");
         dto.setDtoClsName(applicationDto.getClass().getName());

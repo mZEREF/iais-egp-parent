@@ -35,10 +35,11 @@ public class BackendMsgRefreshJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) {
         try{
             logInfo("<====== Start to refresh error msg ======>");
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             List<MessageDto> list = systemBeLicClient.getMessagesToRefresh().getEntity();
             Map<String, String> map = IaisCommonUtils.genNewHashMap();
             if (!IaisCommonUtils.isEmpty(list)) {
-                list.get(0).setAuditTrailDto(AuditTrailHelper.getBatchJobAuditTrail(AppConsts.USER_DOMAIN_INTRANET));
+                list.get(0).setAuditTrailDto(AuditTrailHelper.getBatchJobAuditTrail());
                 for (MessageDto mc : list) {
                     map.put(mc.getCodeKey(), mc.getMessage());
                     mc.setNeedFlush(false);

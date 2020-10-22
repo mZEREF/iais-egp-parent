@@ -44,7 +44,7 @@ public class SoloRegisterCorpPassJobHandler extends IJobHandler {
         try{
             log.info("<====== solo register corPass start======>");
             //get licensee
-            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTERNET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             List<LicenseeDto> licenseeDtos = orgUserManageService.getLicenseeNoUen();
             for (LicenseeDto item: licenseeDtos
                  ) {

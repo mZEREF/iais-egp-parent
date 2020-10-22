@@ -1,10 +1,9 @@
-package com.ecquaria.cloud.moh.iais.job;
+package com.ecquaria.cloud.moh.iais.batch;
 
 import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -36,9 +35,10 @@ public class ClientCheckNotResultPaymentHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         try {
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             log.debug(StringUtil.changeForLog("the do job start ...."));
             List<ApplicationGroupDto> applicationGroupDtoList= applicationClient.getAppGrpDtoPaying().getEntity();
-            AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET);
+            AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail();
             for (ApplicationGroupDto appGrp :applicationGroupDtoList
             ) {
                 try {

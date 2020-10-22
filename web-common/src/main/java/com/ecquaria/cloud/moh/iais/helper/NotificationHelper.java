@@ -484,7 +484,6 @@ public class NotificationHelper {
 		interMessageDto.setUserId(licenseeId);
 		interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
 		interMessageDto.setMsgContent(mesContext);
-		interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 		interMessageDto.setMaskParams(maskParams);
 		if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
 			commonFeMessageClient.createInboxMessage(interMessageDto);
@@ -497,7 +496,6 @@ public class NotificationHelper {
 		String moduleName = currentApp + "-" + currentDomain;
 		EicRequestTrackingDto dto = new EicRequestTrackingDto();
 		dto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-		dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 		dto.setActionClsName(this.getClass().getName());
 		dto.setActionMethod("callEicInterMsg");
 		dto.setDtoClsName(interMessageDto.getClass().getName());

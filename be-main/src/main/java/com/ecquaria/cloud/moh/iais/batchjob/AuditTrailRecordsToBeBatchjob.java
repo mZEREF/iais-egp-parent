@@ -26,9 +26,9 @@ public class AuditTrailRecordsToBeBatchjob {
     }
 
     public void preDate(BaseProcessClass bpc)  {
-
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         log.debug(StringUtil.changeForLog("The auditTrailRecordsToBeBatchjob is start..." ));
-        AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
+
         auditTrailRecordsToBeService.info();
         auditTrailRecordsToBeService.compress();
         log.info("------------------- compressFile  end --------------");

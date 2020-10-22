@@ -215,7 +215,7 @@ public class ChecklistDataSyncHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         try {
-            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
+
 
             log.info("=>>>>>>ChecklistDataSyncHandler Start>>>>>>>");
             log.info("=>>>>>>compareSyncRegulation Start>>>>>>>");

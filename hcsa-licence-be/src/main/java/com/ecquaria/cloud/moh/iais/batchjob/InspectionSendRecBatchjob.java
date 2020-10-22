@@ -145,7 +145,7 @@ public class InspectionSendRecBatchjob {
         List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = IaisCommonUtils.genNewArrayList();
         InspRectificationSaveDto inspRectificationSaveDto = new InspRectificationSaveDto();
 
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET);
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
         for(ApplicationViewDto dto : mapApp){
             ApplicationDto aDto = dto.getApplicationDto();
             String appPremCorrId = dto.getAppPremisesCorrelationId();

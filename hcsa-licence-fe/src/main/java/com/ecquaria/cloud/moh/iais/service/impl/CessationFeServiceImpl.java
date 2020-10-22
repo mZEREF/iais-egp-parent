@@ -559,7 +559,7 @@ public class CessationFeServiceImpl implements CessationFeService {
     private Map<String, String> transform(AppSubmissionDto appSubmissionDto, String licenseeId, List<String> premiseIds) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         Double amount = 0.0;
-        AuditTrailDto internet = AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTERNET);
+        AuditTrailDto internet = AuditTrailHelper.getBatchJobAuditTrail();
         String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_CESSATION).getEntity();
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
@@ -629,7 +629,7 @@ public class CessationFeServiceImpl implements CessationFeService {
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
         Double amount = 0.0;
-        AuditTrailDto internet = AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTERNET);
+        AuditTrailDto internet = AuditTrailHelper.getBatchJobAuditTrail();
         appSubmissionDto.setAppGrpId(applicationDto.getAppGrpId());
         ApplicationGroupDto entity1 = applicationClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
         appSubmissionDto.setFromBe(false);

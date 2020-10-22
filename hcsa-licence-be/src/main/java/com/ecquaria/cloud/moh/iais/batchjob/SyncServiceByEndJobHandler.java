@@ -33,7 +33,7 @@ public class SyncServiceByEndJobHandler extends MohJobHandler {
         try {
             logAbout("SyncServiceByEndJobHandler");
             //get expire Service By End Date
-            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getNeedInActiveServices(AppConsts.COMMON_STATUS_ACTIVE).getEntity();
             if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){//NOSONAR
                 List<HcsaServiceDto> updateServiceList = IaisCommonUtils.genNewArrayList();

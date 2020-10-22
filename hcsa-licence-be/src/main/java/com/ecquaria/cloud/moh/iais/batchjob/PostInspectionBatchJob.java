@@ -68,7 +68,7 @@ public class PostInspectionBatchJob {
         Map<String, List<String>> map = hcsaLicenceClient.getPostInspectionMap().getEntity();
         log.debug(StringUtil.changeForLog("=============map size================"+map.size()));
         //insGrpId  licIds
-        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET);
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail();
 //        map.clear();
 //        String inGrpId1 = "10F81292-D8E8-EA11-8B79-000C293F0C99";
 //        String inGrpId2 = "A3368785-F8EB-EA11-8B79-000C293F0C99";

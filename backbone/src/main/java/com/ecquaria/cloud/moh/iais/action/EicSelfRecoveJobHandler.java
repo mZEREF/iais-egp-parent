@@ -61,6 +61,7 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) {
         try {
+
             log.info("<======== Start EIC Self Recover Job =========>");
             JobLogger.log("<======== Start EIC Self Recover Job =========>");
             String moduleName = currentApp + "-" + currentDomain;
@@ -71,7 +72,7 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
             List<EicRequestTrackingDto> orgList = orgEicClient.getPendingRecords(moduleName).getEntity();
             List<EicRequestTrackingDto> sysList = eicClient.getPendingRecords(moduleName).getEntity();
             List<EicRequestTrackingDto> apptList = onlineApptEicClient.getPendingRecords(moduleName).getEntity();
-            AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail(currentDomain);
+            AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail();
             AuditTrailDto.setThreadDto(auditTrailDto);
             if (!IaisCommonUtils.isEmpty(atList)) {
                 atList.forEach(ert -> {

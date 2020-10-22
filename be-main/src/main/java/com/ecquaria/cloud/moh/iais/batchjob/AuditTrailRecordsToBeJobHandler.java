@@ -26,7 +26,7 @@ public class AuditTrailRecordsToBeJobHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         try {
-            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             auditTrailRecordsToBeService.info();
             auditTrailRecordsToBeService.compress();
             return ReturnT.SUCCESS;

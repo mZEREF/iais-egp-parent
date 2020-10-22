@@ -86,7 +86,7 @@ public class CreateDoInspTaskBatchJob {
         if(IaisCommonUtils.isEmpty(appPremisesRecommendationDtos)){
             return;
         }
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET);
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
         for(AppPremisesRecommendationDto aRecoDto:appPremisesRecommendationDtos){
             if(aRecoDto.getRecomInDate() != null && aRecoDto.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
                 Date today = new Date();

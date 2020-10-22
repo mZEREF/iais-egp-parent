@@ -23,7 +23,7 @@ public abstract class MohJobHandler extends IJobHandler {
 //            JobLogger.log(e);
 //            return ReturnT.FAIL;
 //        }
-        AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
+
         return  doExecute(s);
     }
     public abstract ReturnT<String> doExecute(String var1) throws Exception;

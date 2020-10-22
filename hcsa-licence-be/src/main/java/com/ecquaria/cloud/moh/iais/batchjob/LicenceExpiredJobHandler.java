@@ -54,8 +54,9 @@ public class LicenceExpiredJobHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) {
         try {
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             log.debug(StringUtil.changeForLog("The licenceExpiredHandler is Start ..."));
-            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
+
             licenceExpiredBatchJob.jobExecute();
         }catch (Exception e){
             log.error(e.getMessage(), e);

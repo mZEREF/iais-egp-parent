@@ -141,7 +141,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 map.put("filePath",relPath);
                 ProcessFileTrackDto processFileTrackDto = applicationClient.isFileExistence(map).getEntity();
                 if(processFileTrackDto!=null){
-                    AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail("INTRANET");
+                    AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
                     processFileTrackDto.setAuditTrailDto(intranet);
                     processFileTrackDto.setStatus("PFT002");
                     try {
@@ -388,7 +388,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private Boolean fileToDto(String str,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,ProcessFileTrackDto processFileTrackDto,
                               String submissionId,Long l)
            {
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail("INTRANET");
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
 
 
@@ -493,7 +493,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
         log.info(StringUtil.changeForLog(file.getPath()+"file path*************"));
         List<FileRepoDto> fileRepoDtos = IaisCommonUtils.genNewArrayList();
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail("intranet");
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
         if(file.isDirectory()){
             File[] files = file.listFiles();
             log.info(StringUtil.changeForLog(files.length+"files.length------"));
@@ -618,7 +618,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
 
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail("INTRANET");
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
         List<ApplicationDto> listNewApplicationDto =IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> requestForInfList  =IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> updateTaskList  =IaisCommonUtils.genNewArrayList();
@@ -908,7 +908,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         if(updateTaskList==null){
             return;
         }
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail("intranet");
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(updateTaskList)+"updateTaskList"));
         for(ApplicationDto applicationDto : updateTaskList){
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity();

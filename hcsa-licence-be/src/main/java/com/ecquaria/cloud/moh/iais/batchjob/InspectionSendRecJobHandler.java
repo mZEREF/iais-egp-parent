@@ -120,6 +120,7 @@ public class InspectionSendRecJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) throws Exception {
         try {
             logAbout("Send Rectification Message To Applicant First");
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             List<ApplicationViewDto> mapApp =  fillUpCheckListGetAppClient.getApplicationDtoByNcItem().getEntity();
             if(IaisCommonUtils.isEmpty(mapApp)){
                 return ReturnT.SUCCESS;
@@ -130,7 +131,7 @@ public class InspectionSendRecJobHandler extends IJobHandler {
             List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = IaisCommonUtils.genNewArrayList();
             InspRectificationSaveDto inspRectificationSaveDto = new InspRectificationSaveDto();
 
-            AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET);
+            AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
             for(ApplicationViewDto dto : mapApp){
                 ApplicationDto aDto = dto.getApplicationDto();
                 try {

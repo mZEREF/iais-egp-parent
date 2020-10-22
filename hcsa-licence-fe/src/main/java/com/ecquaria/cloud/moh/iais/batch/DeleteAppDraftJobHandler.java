@@ -1,12 +1,10 @@
-package com.ecquaria.cloud.moh.iais.job;
+package com.ecquaria.cloud.moh.iais.batch;
 
 
 import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
@@ -29,7 +27,7 @@ public class DeleteAppDraftJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) throws Exception {
         try {
             JobLogger.log(StringUtil.changeForLog("delete app draft job start ..."));
-            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             String draftValidityStr = String.valueOf(draftValidity);
             JobLogger.log(StringUtil.changeForLog("draft validity str:"+draftValidityStr));
             if(!StringUtil.isEmpty(draftValidityStr)){

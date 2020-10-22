@@ -156,7 +156,7 @@ public class InspecTaskToLeaderBatchJob {
 
     private void createTask(int report, int leadTask, int allApp, List<AppInspectionStatusDto> appInspectionStatusDtos) {
         int all = report + leadTask;
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET);
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
         if(all == allApp){
             for(AppInspectionStatusDto appInspStatusDto : appInspectionStatusDtos){
                 if (appInspStatusDto == null || StringUtil.isEmpty(appInspStatusDto.getAppPremCorreId())) {

@@ -27,7 +27,7 @@ public class RfiFileRepoDownloadJobHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         try {
-            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             requestForInformationService.delete();
             requestForInformationService.compress();
 

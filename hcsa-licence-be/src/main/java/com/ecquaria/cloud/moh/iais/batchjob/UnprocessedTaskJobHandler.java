@@ -89,7 +89,7 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) throws IOException, TemplateException{
         log.debug(StringUtil.changeForLog("The NotifyUnprocessedTaskBatchjob is  start..." ));
-        AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         List<TaskEmailDto> taskEmailDtoList = IaisCommonUtils.genNewArrayList();
         taskEmailDtoList = taskService.getEmailNotifyList();
 

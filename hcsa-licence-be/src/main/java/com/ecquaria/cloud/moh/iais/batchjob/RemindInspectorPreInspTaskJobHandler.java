@@ -89,7 +89,7 @@ public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) throws Exception {
         try {
             logAbout("Remind Inspector Do Pre Inspection");
-            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             List<ApplicationDto> applicationDtos =
                     applicationClient.getApplicationByStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS).getEntity();
             if(!IaisCommonUtils.isEmpty(applicationDtos)){

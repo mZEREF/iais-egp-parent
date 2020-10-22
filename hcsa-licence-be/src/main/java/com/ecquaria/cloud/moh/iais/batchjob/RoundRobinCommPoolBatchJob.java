@@ -174,7 +174,7 @@ public class RoundRobinCommPoolBatchJob {
         String date = getDate();
         log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob date -- >:" +date));
         List<TaskDto> taskDtoList = taskService.getTaskDtoByDate(date);
-        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET);
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail();
         if(!IaisCommonUtils.isEmpty(taskDtoList)){
             log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskDtoList.size() -- >:" +taskDtoList.size()));
             for (TaskDto taskDto : taskDtoList){

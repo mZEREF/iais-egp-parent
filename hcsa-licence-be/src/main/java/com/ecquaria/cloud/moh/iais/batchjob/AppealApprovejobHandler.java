@@ -26,7 +26,7 @@ public class AppealApprovejobHandler extends MohJobHandler{
     @Override
     public ReturnT<String> doExecute(String var1) throws Exception {
         try {
-            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             appealApproveBatchjob.jobExecute();
             return  ReturnT.SUCCESS;
         } catch (Throwable e) {

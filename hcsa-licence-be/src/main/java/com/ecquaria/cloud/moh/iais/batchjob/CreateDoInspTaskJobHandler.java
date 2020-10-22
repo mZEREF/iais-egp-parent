@@ -7,7 +7,6 @@ import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -61,6 +60,7 @@ public class CreateDoInspTaskJobHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         try {
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             logAbout("Create Checklist By Inspection Date");
             List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = IaisCommonUtils.genNewArrayList();
             List<ApplicationDto> applicationDtoList = applicationClient.getApplicationByStatus(ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION).getEntity();
@@ -76,7 +76,7 @@ public class CreateDoInspTaskJobHandler extends IJobHandler {
             if(IaisCommonUtils.isEmpty(appPremisesRecommendationDtos)){
                 return ReturnT.SUCCESS;
             }
-            AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET);
+
             for(AppPremisesRecommendationDto aRecoDto:appPremisesRecommendationDtos){
                 if(aRecoDto.getRecomInDate() != null && aRecoDto.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
                     Date today = new Date();
@@ -87,10 +87,9 @@ public class CreateDoInspTaskJobHandler extends IJobHandler {
                         AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(aRecoDto.getAppPremCorreId()).getEntity();
                         if(InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION.equals(appInspectionStatusDto.getStatus())) {
                             log.debug(StringUtil.changeForLog("Current Application No. = " + applicationDto.getApplicationNo()));
-                            ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION, intranet);
-                            applicationDto1.setAuditTrailDto(intranet);
+                            ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
                             applicationService.updateFEApplicaiton(applicationDto1);
-                            updateInspectionStatus(aRecoDto.getAppPremCorreId(), InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY, intranet);
+                            updateInspectionStatus(aRecoDto.getAppPremCorreId(), InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY);
                         }
                     }
                 }
@@ -108,16 +107,14 @@ public class CreateDoInspTaskJobHandler extends IJobHandler {
         JobLogger.log(StringUtil.changeForLog("****The****" + methodName +" *****Start****"));
     }
 
-    private void updateInspectionStatus(String appPremCorreId, String status, AuditTrailDto intranet) {
+    private void updateInspectionStatus(String appPremCorreId, String status) {
         AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremCorreId).getEntity();
         appInspectionStatusDto.setStatus(status);
-        appInspectionStatusDto.setAuditTrailDto(intranet);
         appInspectionStatusClient.update(appInspectionStatusDto);
     }
 
-    private ApplicationDto updateApplication(ApplicationDto applicationDto, String appStatus, AuditTrailDto intranet) {
+    private ApplicationDto updateApplication(ApplicationDto applicationDto, String appStatus) {
         applicationDto.setStatus(appStatus);
-        applicationDto.setAuditTrailDto(intranet);
         return applicationViewService.updateApplicaiton(applicationDto);
     }
 }

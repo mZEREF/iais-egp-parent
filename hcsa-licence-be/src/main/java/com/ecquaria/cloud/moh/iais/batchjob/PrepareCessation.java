@@ -41,7 +41,7 @@ public class PrepareCessation {
     public void jobExecute(){
         List<ApplicationDto> applicationDtos = cessationClient.prepareCessation().getEntity();
         if (!IaisCommonUtils.isEmpty(applicationDtos)) {
-            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
+
             for (ApplicationDto applicationDto : applicationDtos) {
                 try {
                     String originLicenceId = applicationDto.getOriginLicenceId();

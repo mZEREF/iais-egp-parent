@@ -65,6 +65,7 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) throws Exception {
         try {
             logAbout("inspTaskToLeaderJob");
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             List<AppInspectionStatusDto> appInspectionStatusDtos = appInspectionStatusClient.getAppInspectionStatusByStatus(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER).getEntity();
             if (IaisCommonUtils.isEmpty(appInspectionStatusDtos)) {
                 return ReturnT.SUCCESS;
@@ -151,7 +152,7 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
 
     private void createTask(int report, int leadTask, int allApp, List<AppInspectionStatusDto> appInspectionStatusDtos) {
         int all = report + leadTask;
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET);
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
         if(all == allApp){
             for(AppInspectionStatusDto appInspStatusDto : appInspectionStatusDtos){
                 if (appInspStatusDto == null || StringUtil.isEmpty(appInspStatusDto.getAppPremCorreId())) {

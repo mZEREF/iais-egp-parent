@@ -101,7 +101,7 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
             int days = weeks * 7;
             log.info(StringUtil.changeForLog("System days = " + days));
             JobLogger.log(StringUtil.changeForLog("System days = " + days));
-            AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET);
+            AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
             for(ApplicationDto applicationDto : applicationDtos){
                 try {
                     ApplicationGroupDto applicationGroupDto = inspectionTaskClient.getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId()).getEntity();

@@ -25,7 +25,7 @@ public class PrepareCessationJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) throws Exception {
         try {
             log.debug(StringUtil.changeForLog("The prepareCessation is Start ..."));
-            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             prepareCessation.jobExecute();
         } catch (Throwable e) {
             log.error(e.getMessage(), e);

@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -57,6 +58,7 @@ public class ApproveWdAppBatchJob {
 
     public void approveWithdrawalStep(BaseProcessClass bpc) {
         try {
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             List<ApplicationDto> applicationDtoList = applicationClient.saveWithdrawn().getEntity();
             //get old application
             if (!IaisCommonUtils.isEmpty(applicationDtoList)){

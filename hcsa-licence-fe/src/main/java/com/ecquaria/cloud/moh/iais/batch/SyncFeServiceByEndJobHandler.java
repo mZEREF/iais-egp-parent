@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.job;
+package com.ecquaria.cloud.moh.iais.batch;
 
 import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
@@ -34,7 +34,7 @@ public class SyncFeServiceByEndJobHandler extends MohJobHandler {
         try {
             logAbout("SyncServiceByEndJobHandler");
             //get expire Service By End Date
-            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigFeClient.getNeedInActiveServices(AppConsts.COMMON_STATUS_ACTIVE).getEntity();
             if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){//NOSONAR
                 List<HcsaServiceDto> updateServiceList = IaisCommonUtils.genNewArrayList();

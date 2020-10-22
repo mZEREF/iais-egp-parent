@@ -117,7 +117,7 @@ public class AuditTrailHelper {
         return IaisEGPHelper.getCurrentAuditTrailDto();
     }
 
-    public static AuditTrailDto getBatchJobAuditTrail(String domain){
+    public static AuditTrailDto getBatchJobAuditTrail(){
         AuditTrailDto batchJobAt;
         if ((batchJobAt = getCurrentAuditTrailDto()) == null){
             batchJobAt = new AuditTrailDto();
@@ -128,12 +128,12 @@ public class AuditTrailHelper {
         batchJobAt.setMohUserGuid(AppConsts.USER_ID_SYSTEM);
         batchJobAt.setFunctionName("Batch Job");
         batchJobAt.setOperationType(AuditTrailConsts.OPERATION_TYPE_BATCH_JOB);
-        batchJobAt.setUserDomain(domain);
+        //batchJobAt.setUserDomain(domain);
         return batchJobAt;
     }
 
-    public static void setupBatchJobAuditTrail(String domain, Object job) {
-        AuditTrailDto trailDto = getBatchJobAuditTrail(domain);
+    public static void setupBatchJobAuditTrail(Object job) {
+        AuditTrailDto trailDto = getBatchJobAuditTrail();
         if (job != null){
             log.info(StringUtil.changeForLog("batch job class " + job.getClass().getName()));
             JobHandler handler = job.getClass().getAnnotation(JobHandler.class);

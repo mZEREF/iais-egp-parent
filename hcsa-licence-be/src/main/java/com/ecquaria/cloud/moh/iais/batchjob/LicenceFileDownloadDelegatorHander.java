@@ -27,7 +27,7 @@ public class LicenceFileDownloadDelegatorHander extends IJobHandler {
     public ReturnT<String> execute(String s) throws Exception {
         log.debug(StringUtil.changeForLog("The licenceFileDownloadDelegatorHander is Start ..."));
         try {
-            AuditTrailHelper.setupBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET, this);
+
             licenceFileDownloadDelegator.jobStart();
         }catch (Exception e){
             return ReturnT.FAIL;

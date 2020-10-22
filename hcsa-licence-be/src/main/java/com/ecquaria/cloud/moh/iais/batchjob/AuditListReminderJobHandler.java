@@ -43,6 +43,7 @@ public class AuditListReminderJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) {
         logAbout("AuditListReminderJob");
         try{
+
              if(isSendEmail(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_LIST_REMIND,"AuditListReminderJob")){
                  auditSystemListService.sendMailForAuditPlaner(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_LIST_REMIND);
                  saveJobRemindMsgTrackingDto(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_LIST_REMIND,"AuditListReminderJob");
@@ -93,7 +94,7 @@ public class AuditListReminderJobHandler extends IJobHandler {
 
 
     private void saveJobRemindMsgTrackingDto(String emailKey,String msgKey){
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail(AppConsts.DOMAIN_INTRANET);
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
         JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
         jobRemindMsgTrackingDto.setRefNo(emailKey);
         jobRemindMsgTrackingDto.setMsgKey(msgKey);
