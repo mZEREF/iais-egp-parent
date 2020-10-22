@@ -1268,6 +1268,7 @@ public class LicenceApproveBatchjob {
                 }
             }
             premisesDto.setLicPremPhOpenPeriodDtos(licPremPhOpenPeriodDtos);
+            premisesDto.setPremisesOperationalUnitDtos(premisesOperationalUnitDtos);
             premisesGroupDto.setPremisesDto(premisesDto);
             //create lic_premises
             String premisesId = appGrpPremisesEntityDto.getId();
