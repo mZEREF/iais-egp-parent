@@ -1069,8 +1069,8 @@ public class LicenceApproveBatchjob {
                 originLicenceDto = deleteOriginLicenceDto(originLicenceDto,applicationDto,licenceDto.getStatus());
                 log.info(StringUtil.changeForLog("The applicationType is -->:"+ApplicationConsts.APPLICATION_TYPE_RENEWAL));
                 if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-                    log.info(StringUtil.changeForLog("The originLicenceDto.getStatus() is -->:"+originLicenceDto.getStatus()));
                     if(originLicenceDto != null && ApplicationConsts.LICENCE_STATUS_REVOKED.equals(originLicenceDto.getStatus())){
+                        log.info(StringUtil.changeForLog("The originLicenceDto.getStatus() is -->:"+originLicenceDto.getStatus()));
                         originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
                     }
                     superLicDto.setOriginLicenceDto(originLicenceDto);
