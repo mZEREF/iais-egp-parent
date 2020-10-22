@@ -131,7 +131,7 @@ public class BackendLoginDelegator {
         OrgUserDto orgUserDto= (OrgUserDto) ParamUtil.getSessionAttr(request,"orgUserDto");
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
 
-        if (orgUserDto==null||orgUserDto.getUserDomain().equals(AppConsts.USER_DOMAIN_INTERNET)||orgUserDto.getUserRoles().size()==0) {
+        if (orgUserDto==null||orgUserDto.getUserDomain().equals(AppConsts.USER_DOMAIN_INTERNET)) {
             // Add Audit Trail -- Start
             AuditTrailDto auditTrailDto = new AuditTrailDto();
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN_FAIL);
@@ -147,6 +147,23 @@ public class BackendLoginDelegator {
             AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
             // End Audit Trail -- End
             errMap.put("login","LOGIN_ERR001");
+        }
+        if (orgUserDto!=null&&orgUserDto.getUserRoles().size()==0) {
+            // Add Audit Trail -- Start
+            AuditTrailDto auditTrailDto = new AuditTrailDto();
+            auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN_FAIL);
+            auditTrailDto.setMohUserId(userId);
+            auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTRANET);
+            auditTrailDto.setLoginType(AuditTrailConsts.LOGIN_TYPE_MOH);
+            auditTrailDto.setModule("Intranet Login");
+            auditTrailDto.setFailReason("LOGIN_ERR002");
+            auditTrailDto.setFunctionName("Intranet Login");
+            auditTrailDto.setLoginTime(new Date());
+
+            IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
+            AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
+            // End Audit Trail -- End
+            errMap.put("login","LOGIN_ERR002");
         }
         return errMap;
     }
