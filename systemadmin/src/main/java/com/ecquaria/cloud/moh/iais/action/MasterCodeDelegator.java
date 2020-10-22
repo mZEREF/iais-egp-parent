@@ -876,7 +876,12 @@ public class MasterCodeDelegator {
             }else{
                 //get max version ms
                 MasterCodeDto maxMsDto = masterCodeService.getMaxVersionMsDto(oldMasterCodeDto.getMasterCodeKey());
-                masterCodeDto.setVersion(maxMsDto.getVersion() + 1);
+                Float maxVersion = maxMsDto.getVersion();
+                if (maxVersion != null){
+                    masterCodeDto.setVersion(maxMsDto.getVersion() + 1);
+                }else{
+                    masterCodeDto.setVersion(1.00f);
+                }
             }
             if(nowDate.isBefore(newFromDate) || nowDate.isAfter(newToDate)){
                 masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
