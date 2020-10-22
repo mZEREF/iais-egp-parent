@@ -880,7 +880,7 @@ public class MasterCodeDelegator {
                 if (maxVersion != null){
                     masterCodeDto.setVersion(maxMsDto.getVersion() + 1);
                 }else{
-                    masterCodeDto.setVersion(1.00f);
+                    masterCodeDto.setVersion(1f);
                 }
             }
             if(nowDate.isBefore(newFromDate) || nowDate.isAfter(newToDate)){
