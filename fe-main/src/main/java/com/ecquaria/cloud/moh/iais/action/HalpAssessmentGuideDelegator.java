@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
@@ -1479,7 +1480,15 @@ public class HalpAssessmentGuideDelegator {
         if (!StringUtil.isEmpty(amendHCISearchResult)) {
             ParamUtil.setSessionAttr(bpc.request, "amendHCISearchParam", amendHCISearchParam);
             ParamUtil.setRequestAttr(bpc.request, "amendHCISearchResult", amendHCISearchResult);
-            ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, (Serializable) amendHCISearchResult.getRows());
+            List<SelfPremisesListQueryDto> selfPremisesListQueryDtoList = amendHCISearchResult.getRows();
+            List<PremisesListQueryDto> premisesListQueryDtoList = IaisCommonUtils.genNewArrayList();
+            for (SelfPremisesListQueryDto selfPremisesListQueryDto:selfPremisesListQueryDtoList
+                 ) {
+                PremisesListQueryDto premisesListQueryDto = MiscUtil.transferEntityDto(selfPremisesListQueryDto, PremisesListQueryDto.class);
+                premisesListQueryDtoList.add(premisesListQueryDto);
+            }
+
+            ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, (Serializable) premisesListQueryDtoList);
         }
         log.info("****end ******");
     }
