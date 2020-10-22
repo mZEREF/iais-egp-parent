@@ -1474,17 +1474,17 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(appSubmissionDto.getLicenseeId()).getEntity();
         String applicantName = licenseeDto.getName();
-        if (pmtMethod==null){
-            emailMap.put("GIRO_PAY", "false");
-            emailMap.put("Online_PAY", "false");
-
-        }else if (pmtMethod.equals(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO)) {
+         if (pmtMethod.equals(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO)) {
             emailMap.put("GIRO_PAY", "true");
             emailMap.put("GIRO_account_number", "");
             emailMap.put("usual_text_for_GIRO_deduction", appSubmissionDto.getLateFeeStr());
         } else {
             emailMap.put("Online_PAY", "true");
         }
+         if("0.0".equals(appSubmissionDto.getAmountStr())){
+             emailMap.put("GIRO_PAY", "false");
+             emailMap.put("Online_PAY", "false");
+         }
 
         emailMap.put("Payment_Amount", appSubmissionDto.getAmountStr());
         emailMap.put("ApplicantName", applicantName);
@@ -1493,7 +1493,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
         emailMap.put("systemLink", loginUrl);
         emailMap.put("email_address", systemParamConfig.getSystemAddressOne());
-        emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
         EmailParam emailParam = new EmailParam();
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT);
         emailParam.setTemplateContent(emailMap);
@@ -1551,7 +1552,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         emailMap.put("HCSA_Regulations", "");
         emailMap.put("systemLink", loginUrl);
         emailMap.put("email", systemParamConfig.getSystemAddressOne());
-        emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
         EmailParam emailParam = new EmailParam();
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED);
         emailParam.setTemplateContent(emailMap);
@@ -1603,7 +1605,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             }
         }
         emailMap.put("ServiceNames", stringBuilder);
-        emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
         EmailParam emailParam = new EmailParam();
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER);
         emailParam.setTemplateContent(emailMap);

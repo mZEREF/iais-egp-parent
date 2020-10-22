@@ -1064,7 +1064,8 @@ public class HcsaApplicationDelegator {
                 emailMap.put("ApplicationNumber", applicationNo);
                 emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
                 emailMap.put("email_address", systemParamConfig.getSystemAddressOne());
-                emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+                emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
                 EmailParam emailParam = new EmailParam();
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED);
                 emailParam.setTemplateContent(emailMap);
@@ -2363,7 +2364,8 @@ public class HcsaApplicationDelegator {
         emailMap.put("TAT_time", StringUtil.viewHtml(Formatter.formatDateTime(new Date(),Formatter.DATE)));
         emailMap.put("details", "HCI Name :"+applicationViewDto.getHciName()+"<br>"+"HCI Address :"+applicationViewDto.getHciAddress()+"<br>"+"Licensee :"+applicationName+"<br>"+"Comment :"+internalRemarks+"<br>");
         emailMap.put("systemLink", loginUrl);
-        emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
         EmailParam emailParam = new EmailParam();
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION);
         emailParam.setTemplateContent(emailMap);

@@ -249,7 +249,8 @@ public class CessationEffectiveDateBatchjob {
                 emailMap.put("ApplicationNumber", licenceNo);
                 emailMap.put("CessationDate", Formatter.formatDateTime(date));
                 emailMap.put("email", systemParamConfig.getSystemAddressOne());
-                emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+                emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
                 EmailParam emailParam = new EmailParam();
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE);
                 emailParam.setTemplateContent(emailMap);
@@ -321,7 +322,8 @@ public class CessationEffectiveDateBatchjob {
             emailMap.put("ApplicationNumber", licenceNo);
             emailMap.put("CessationDate", Formatter.formatDateTime(date));
             emailMap.put("email", systemParamConfig.getSystemAddressOne());
-            emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+            emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE);
             emailParam.setTemplateContent(emailMap);

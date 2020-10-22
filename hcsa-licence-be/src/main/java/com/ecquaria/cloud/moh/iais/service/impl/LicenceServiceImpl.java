@@ -417,7 +417,8 @@ public class LicenceServiceImpl implements LicenceService {
         emailMap.put("ApplicationNumber", applicationNo);
         emailMap.put("ApplicationDate", appDate);
         emailMap.put("systemLink", loginUrl);
-        emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
         EmailParam emailParam = new EmailParam();
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT);
         emailParam.setTemplateContent(emailMap);

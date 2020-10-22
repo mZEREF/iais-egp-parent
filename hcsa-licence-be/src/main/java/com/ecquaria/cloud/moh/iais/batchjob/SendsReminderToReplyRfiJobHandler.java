@@ -160,7 +160,8 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
             emailMap.put("email", systemParamConfig.getSystemAddressOne());
             emailMap.put("TATtime", Formatter.formatDate(cal.getTime()));
             emailMap.put("systemLink", loginUrl);
-            emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+            emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
 
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER);
