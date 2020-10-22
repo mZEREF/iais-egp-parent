@@ -85,7 +85,7 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
 
         if (!StringUtil.isEmpty(officeNo)) {
             if (!officeNo.matches("^[6][0-9]{7}$")) {
-                errorMap.put("officeNo", "MSGTYPE0002");
+                errorMap.put("officeTelNo", "GENERAL_ERR0015");
             }
         }
         return errorMap;
