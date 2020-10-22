@@ -117,6 +117,8 @@
         retrieveAddr();
         otherLic();
         doEdit();
+        addOperational();
+        operationDel();
         $("select[name='onSiteAddressType']").trigger('change');
         $("select[name='conveyanceAddrType']").trigger('change');
         $("select[name='offSiteAddrType']").trigger('change');

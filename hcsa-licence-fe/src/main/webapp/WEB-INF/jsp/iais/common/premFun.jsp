@@ -64,6 +64,9 @@
             $premContent.find('.removePhBtn').removeClass('hidden');
             $premContent.find('.addOperational').removeClass('hidden');
             $premContent.find('.opDel').removeClass('hidden');
+            //init opertation
+            $premContent.find('div.operationDivGroup div.operationDiv').remove();
+            $premContent.find('input[name="opLength"]').val(0);
             <!--regen ph form  -->
             var premDivName = "";
             if("onSiteSel" == thisId){
@@ -171,10 +174,10 @@
                             $currForm.find('div.addOpDiv').before(data.operationHtml);
 
 
-                            $currForm.find('div.operationDiv').each(function (k) {
+                            $currForm.find('div.operationDivGroup div.operationDiv').each(function (k) {
                                 var opData = data.appPremisesOperationalUnitDtos[k];
-                                $(this).find('div.floorNo').val(opData.floorNo);
-                                $(this).find('div.unitNo').val(opData.unitNo);
+                                $(this).find('input.floorNo').val(opData.floorNo);
+                                $(this).find('input.unitNo').val(opData.unitNo);
                             });
 
                             <!--disable this form -->
