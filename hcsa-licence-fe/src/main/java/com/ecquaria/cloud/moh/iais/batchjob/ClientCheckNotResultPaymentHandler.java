@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.batch;
+package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;

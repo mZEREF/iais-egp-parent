@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.batch;
+package com.ecquaria.cloud.moh.iais.batchjob;
 
 
 import com.ecquaria.cloud.annotation.Delegator;
