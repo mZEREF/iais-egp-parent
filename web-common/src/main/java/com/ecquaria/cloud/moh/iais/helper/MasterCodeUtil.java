@@ -47,7 +47,6 @@ public final class MasterCodeUtil {
     private static final String RETRIEVE_MASTER_CODES              = "retrieveMasterCodes";
 
     //Code Categorys
-    public static final String CATE_ID_NATIONALITY                 = "6B201379-730B-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_RISK_LEVEL                  = "2CFD766C-730B-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_SERVICE_TYPE                = "0D675C87-730B-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_APP_TYPE                    = "623F4561-1D0C-EA11-BE7D-000C29F371DC";
