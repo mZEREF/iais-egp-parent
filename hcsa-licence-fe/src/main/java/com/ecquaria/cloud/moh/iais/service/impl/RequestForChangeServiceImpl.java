@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -490,13 +491,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         Set<String> distinctVehicleNo = IaisCommonUtils.genNewHashSet();
-        String oldPremiseHci = "";
+        List<String> oldPremiseHciList = IaisCommonUtils.genNewArrayList();
         //new rfi
         boolean appTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
         if ((appTypeFlag && rfi) && (oldAppSubmissionDto != null)) {
             AppGrpPremisesDto oldAppGrpPremisesDto = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0);
-            String premiseKey = NewApplicationHelper.getPremKey(oldAppGrpPremisesDto);
-            oldPremiseHci = NewApplicationHelper.getPremHci(oldAppGrpPremisesDto);
+            oldPremiseHciList = NewApplicationHelper.genPremisesHciList(oldAppGrpPremisesDto);
         }
         boolean needAppendMsg = false;
         String licenseeId = appSubmissionDto.getLicenseeId();
@@ -520,6 +520,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     errorMap.put("premisesSelect" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Add or select a premises from the list", "field"));
                 } else if (needValidate || !StringUtil.isEmpty(premisesSelect) || "newPremise".equals(premisesSelect)) {
                     StringBuilder stringBuilder = new StringBuilder();
+                    List<AppPremisesOperationalUnitDto> operationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
                     if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
                         String onsiteStartHH = appGrpPremisesDtoList.get(i).getOnsiteStartHH();
                         String onsiteStartMM = appGrpPremisesDtoList.get(i).getOnsiteStartMM();
@@ -745,6 +746,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                         .append(appGrpPremisesDtoList.get(i).getUnitNo());
                             }
                         }
+                        checkOperaionUnit(operationalUnitDtos,errorMap,"opFloorNo","opUnitNo");
+
                         String postalCode = appGrpPremisesDtoList.get(i).getPostalCode();
                         if (!StringUtil.isEmpty(postalCode)) {
                             if (postalCode.length() < 6) {
@@ -778,13 +781,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         boolean newTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
                         if ((newTypeFlag && hciFlag) && !rfi) {
                             //new
-                            if (!IaisCommonUtils.isEmpty(premisesHciList) && premisesHciList.contains(currentHci)) {
-                                errorMap.put("premisesHci" + i, "NEW_ERR0005");
+                            if (!IaisCommonUtils.isEmpty(premisesHciList)) {
+                                checkHciIsSame(appGrpPremisesDto,premisesHciList,errorMap,"premisesHci" + i);
                             }
                         } else if (((newTypeFlag && hciFlag) && rfi) && clickEdit) {
                             //new rfi
-                            if (!IaisCommonUtils.isEmpty(premisesHciList) && !oldPremiseHci.equals(currentHci) && premisesHciList.contains(currentHci)) {
-                                errorMap.put("premisesHci" + i, "NEW_ERR0005");
+                            if (!IaisCommonUtils.isEmpty(premisesHciList) && !oldPremiseHciList.contains(currentHci)) {
+                                checkHciIsSame(appGrpPremisesDto,premisesHciList,errorMap,"premisesHci" + i);
                             }
                         }
                         //0065116
@@ -995,6 +998,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                         .append(appGrpPremisesDtoList.get(i).getConveyanceUnitNo());
                             }
                         }
+
+                        checkOperaionUnit(operationalUnitDtos,errorMap,"opConvFloorNo","opConvUnitNo");
+
                         String conveyancePostalCode = appGrpPremisesDtoList.get(i).getConveyancePostalCode();
                         if (StringUtil.isEmpty(conveyancePostalCode)) {
                             errorMap.put("conveyancePostalCode" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Postal Code", "field"));
@@ -1028,13 +1034,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         boolean newTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
                         if (newTypeFlag && hciFlag && !rfi) {
                             //new
-                            if (!IaisCommonUtils.isEmpty(premisesHciList) && premisesHciList.contains(currentHci)) {
-                                errorMap.put("premisesHci" + i, "NEW_ERR0005");
+                            if (!IaisCommonUtils.isEmpty(premisesHciList)) {
+                                checkHciIsSame(appGrpPremisesDto,premisesHciList,errorMap,"premisesHci" + i);
                             }
                         } else if (newTypeFlag && hciFlag && rfi && clickEdit) {
                             //new rfi
-                            if (!IaisCommonUtils.isEmpty(premisesHciList) && !oldPremiseHci.equals(currentHci) && premisesHciList.contains(currentHci)) {
-                                errorMap.put("premisesHci" + i, "NEW_ERR0005");
+                            if (!IaisCommonUtils.isEmpty(premisesHciList) && !oldPremiseHciList.contains(currentHci)) {
+                                checkHciIsSame(appGrpPremisesDto,premisesHciList,errorMap,"premisesHci" + i);
                             }
                         }
                         //65116
@@ -1098,6 +1104,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                         .append(appGrpPremisesDtoList.get(i).getOffSiteUnitNo());
                             }
                         }
+
+                        checkOperaionUnit(operationalUnitDtos,errorMap,"opOffFloorNo","opOffUnitNo");
+
                         String offSitePostalCode = appGrpPremisesDtoList.get(i).getOffSitePostalCode();
                         if (!StringUtil.isEmpty(offSitePostalCode)) {
                             if (offSitePostalCode.length() < 6) {
@@ -1277,13 +1286,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         boolean newTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
                         if (newTypeFlag && hciFlag && !rfi) {
                             //new
-                            if (!IaisCommonUtils.isEmpty(premisesHciList) && premisesHciList.contains(currentHci)) {
-                                errorMap.put("premisesHci" + i, "NEW_ERR0005");
+                            if (!IaisCommonUtils.isEmpty(premisesHciList)) {
+                                checkHciIsSame(appGrpPremisesDto,premisesHciList,errorMap,"premisesHci" + i);
                             }
                         } else if (newTypeFlag && hciFlag && rfi && clickEdit) {
                             //new rfi
-                            if (!IaisCommonUtils.isEmpty(premisesHciList) && !oldPremiseHci.equals(currentHci) && premisesHciList.contains(currentHci)) {
-                                errorMap.put("premisesHci" + i, "NEW_ERR0005");
+                            if (!IaisCommonUtils.isEmpty(premisesHciList) && !oldPremiseHciList.contains(currentHci)) {
+                                checkHciIsSame(appGrpPremisesDto,premisesHciList,errorMap,"premisesHci" + i);
                             }
                         }
                         //65116
@@ -1663,4 +1672,48 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         }
         return date;
     }
+
+    private void  checkHciIsSame(AppGrpPremisesDto appGrpPremisesDto,List<String> premisesHciList,Map<String, String> errorMap,String errName){
+        List<String> currHciList = NewApplicationHelper.genPremisesHciList(appGrpPremisesDto);
+        for(String hci:currHciList){
+            if(premisesHciList.contains(hci)){
+                errorMap.put(errName, "NEW_ERR0005");
+            }
+        }
+    }
+
+    private void checkOperaionUnit(List<AppPremisesOperationalUnitDto> operationalUnitDtos,Map<String, String> errorMap,String floorErrName,String unitErrName){
+
+        if(!IaisCommonUtils.isEmpty(operationalUnitDtos)){
+            int opLength = 0;
+            for(AppPremisesOperationalUnitDto operationalUnitDto:operationalUnitDtos){
+                String floorNo = operationalUnitDto.getFloorNo();
+                String unitNo = operationalUnitDto.getUnitNo();
+                boolean floorNoFlag = StringUtil.isEmpty(floorNo);
+                boolean unitNoFlag = StringUtil.isEmpty(unitNo);
+                if(floorNoFlag){
+                    errorMap.put(floorErrName + opLength, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
+                }
+                if(unitNoFlag){
+                    errorMap.put(unitErrName + opLength, MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
+                }
+
+                String floorNoErr = errorMap.get("opFloorNo" + opLength);
+                if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo)) {
+                    Pattern pattern = compile("[0-9]*");
+                    boolean noFlag = pattern.matcher(floorNo).matches();
+                    if (noFlag) {
+                        int floorNum = Integer.parseInt(floorNo);
+                        if (10 > floorNum) {
+                            floorNo = "0" + floorNum;
+                            operationalUnitDto.setFloorNo(floorNo);
+                        }
+                    }
+                }
+                opLength++;
+            }
+        }
+
+    }
+
 }

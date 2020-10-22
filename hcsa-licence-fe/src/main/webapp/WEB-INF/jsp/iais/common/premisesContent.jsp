@@ -313,7 +313,7 @@
                                         <iais:field value="Floor No." width="12"/>
                                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                                             <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}onSiteFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
-                                            <span class="error-msg"></span>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_opFloorNo${opStat.index}"></span>
                                         </iais:value>
                                         <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                             <p>(Additional)</p>
@@ -326,7 +326,7 @@
                                         <iais:field value="Unit No." width="12"/>
                                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                                             <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}onSiteUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
-                                            <span class="error-msg"></span>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_opUnitNo${opStat.index}"></span>
                                         </iais:value>
                                         <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                             <p>(Additional)</p>
@@ -599,7 +599,7 @@
                                     <iais:field value="Floor No." width="12"/>
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                                         <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}conveyanceFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
-                                        <span class="error-msg"></span>
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_opConvFloorNo${opStat.index}"></span>
                                     </iais:value>
                                     <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                         <p>(Additional)</p>
@@ -612,7 +612,7 @@
                                     <iais:field value="Unit No." width="12"/>
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                                         <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}conveyanceUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
-                                        <span class="error-msg"></span>
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_opConvUnitNo${opStat.index}"></span>
                                     </iais:value>
                                     <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                         <p>(Additional)</p>
@@ -852,7 +852,7 @@
                                     <iais:field value="Floor No." width="12"/>
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                                         <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}offSiteFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
-                                        <span class="error-msg"></span>
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_opOffFloorNo${opStat.index}"></span>
                                     </iais:value>
                                     <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                         <p>(Additional)</p>
@@ -865,7 +865,7 @@
                                     <iais:field value="Unit No." width="12"/>
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                                         <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}offSiteUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
-                                        <span class="error-msg"></span>
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_opOffUnitNo${opStat.index}"></span>
                                     </iais:value>
                                     <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                         <p>(Additional)</p>
