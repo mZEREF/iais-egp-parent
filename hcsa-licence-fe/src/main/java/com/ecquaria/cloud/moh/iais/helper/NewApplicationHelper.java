@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.PremisesHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
@@ -2100,18 +2099,6 @@ public class NewApplicationHelper {
 
     public static AppSubmissionDto getOldSubmissionDto(HttpServletRequest request){
         return ParamUtil.getSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO) == null?new AppSubmissionDto(): (AppSubmissionDto) ParamUtil.getSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
-    }
-
-    public static String getPremisesHci(PremisesHciDto premisesHciDto){
-        String premisesHci = premisesHciDto.getPostalCode() + premisesHciDto.getBlkNo();
-        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesHciDto.getPremisesType())){
-            premisesHci = premisesHciDto.getHciName()+premisesHci;
-        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesHciDto.getPremisesType())){
-            premisesHci = premisesHciDto.getVehicleNo()+premisesHci;
-        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesHciDto.getPremisesType())){
-
-        }
-        return premisesHci;
     }
 
     public static List<String> genPremisesHciList(AppGrpPremisesDto appGrpPremisesDto){
