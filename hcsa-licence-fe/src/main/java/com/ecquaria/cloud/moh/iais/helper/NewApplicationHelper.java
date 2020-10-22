@@ -2329,12 +2329,12 @@ public class NewApplicationHelper {
                     //cgo column -> cgoC1 , po not have cgoC1 po to sync data shouldnt set null
                     person.setOfficeTelNo(officeTelNo);
                 }
-                String preferredMode = selPerson.getPreferredMode();
+               /* String preferredMode = selPerson.getPreferredMode();
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(person.getPsnType())){
                     person.setPreferredMode(preferredMode);
                 }else if(!StringUtil.isEmpty(preferredMode)){
                     person.setPreferredMode(preferredMode);
-                }
+                }*/
                 //sync other field
                 String designation = selPerson.getDesignation();
                 String professionType = selPerson.getProfessionType();

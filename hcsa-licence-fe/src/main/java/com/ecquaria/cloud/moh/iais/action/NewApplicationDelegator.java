@@ -2236,23 +2236,25 @@ public class NewApplicationDelegator {
                     applicationClient.saveDraft(draftAppSubmissionDto);
                 }
             }
-
-            List<ApplicationSubDraftDto> entity = applicationClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
-            for (ApplicationSubDraftDto applicationSubDraftDto : entity) {
-                if(!applicationSubDraftDto.getDraftNo().equals(draftNo)){
-                    String draftJson = applicationSubDraftDto.getDraftJson();
-                    AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
-                    appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                    applicationClient.saveDraft(appSubmissionDto1);
-                }else {
-                    if(AppConsts.COMMON_STATUS_ACTIVE.equals(applicationSubDraftDto.getStatus())){
+            if(!StringUtil.isEmpty(appSubmissionDto.getLicenceId())){
+                List<ApplicationSubDraftDto> entity = applicationClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
+                for (ApplicationSubDraftDto applicationSubDraftDto : entity) {
+                    if(!applicationSubDraftDto.getDraftNo().equals(draftNo)){
                         String draftJson = applicationSubDraftDto.getDraftJson();
                         AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
                         appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
                         applicationClient.saveDraft(appSubmissionDto1);
+                    }else {
+                        if(AppConsts.COMMON_STATUS_ACTIVE.equals(applicationSubDraftDto.getStatus())){
+                            String draftJson = applicationSubDraftDto.getDraftJson();
+                            AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
+                            appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                            applicationClient.saveDraft(appSubmissionDto1);
+                        }
                     }
                 }
             }
+
         }
         bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtoList);
         bpc.request.getSession().setAttribute("ackPageAppSubmissionDto",ackPageAppSubmissionDto);
@@ -2597,8 +2599,7 @@ public class NewApplicationDelegator {
                         boolean b=appSvcPrincipalOfficersDto.getSalutation().equals(appSvcPrincipalOfficersDto1.getSalutation())
                                 &&appSvcPrincipalOfficersDto.getName().equals(appSvcPrincipalOfficersDto1.getName())
                                 &&appSvcPrincipalOfficersDto.getMobileNo().equals(appSvcPrincipalOfficersDto1.getMobileNo())
-                                &&appSvcPrincipalOfficersDto.getEmailAddr().equals(appSvcPrincipalOfficersDto1.getEmailAddr())
-                                &&appSvcPrincipalOfficersDto.getPreferredMode().equals(appSvcPrincipalOfficersDto1.getPreferredMode());
+                                &&appSvcPrincipalOfficersDto.getEmailAddr().equals(appSvcPrincipalOfficersDto1.getEmailAddr());
                         if(!b){
                             ids.add(appSvcPrincipalOfficersDto.getIdNo());
                         }
@@ -3168,7 +3169,7 @@ public class NewApplicationDelegator {
                 applicationClient.saveDraft(draftAppSubmissionDto);
             }
         }
-        if (!StringUtil.isEmpty(licenceId)) {
+        if (!StringUtil.isEmpty(appSubmissionDto.getLicenceId())) {
             List<ApplicationSubDraftDto> entity = applicationClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
             for (ApplicationSubDraftDto applicationSubDraftDto : entity) {
                 if(!applicationSubDraftDto.getDraftNo().equals(draftNo)){
@@ -5628,7 +5629,28 @@ public class NewApplicationDelegator {
             copy.setConveyanceVehicleNo(appGrpPremisesDto.getConveyanceVehicleNo());
         }
         copy.setAppPremisesOperationalUnitDtos(appGrpPremisesDto.getAppPremisesOperationalUnitDtos());
-        copy.setAppPremPhOpenPeriodList(appGrpPremisesDto.getAppPremPhOpenPeriodList());
+        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos=new ArrayList<>();
+        if(appPremPhOpenPeriodList!=null){
+            for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList){
+                AppPremPhOpenPeriodDto premPhOpenPeriodDto=new AppPremPhOpenPeriodDto();
+                premPhOpenPeriodDto.setConvEndToMM(appPremPhOpenPeriodDto.getConvEndToMM());
+                premPhOpenPeriodDto.setConvEndToHH(appPremPhOpenPeriodDto.getConvEndToHH());
+                premPhOpenPeriodDto.setConvStartFromHH(appPremPhOpenPeriodDto.getConvStartFromHH());
+                premPhOpenPeriodDto.setConvStartFromMM(appPremPhOpenPeriodDto.getConvStartFromMM());
+                premPhOpenPeriodDto.setOnsiteStartFromMM(appPremPhOpenPeriodDto.getOnsiteStartFromMM());
+                premPhOpenPeriodDto.setOnsiteStartFromHH(appPremPhOpenPeriodDto.getOnsiteStartFromHH());
+                premPhOpenPeriodDto.setOnsiteEndToHH(appPremPhOpenPeriodDto.getOnsiteEndToHH());
+                premPhOpenPeriodDto.setOnsiteEndToMM(appPremPhOpenPeriodDto.getOnsiteEndToMM());
+                premPhOpenPeriodDto.setPhDate(appPremPhOpenPeriodDto.getPhDate());
+                premPhOpenPeriodDto.setPhDateStr(appPremPhOpenPeriodDto.getPhDateStr());
+                premPhOpenPeriodDto.setStartFrom(appPremPhOpenPeriodDto.getStartFrom());
+                premPhOpenPeriodDto.setEndTo(appPremPhOpenPeriodDto.getEndTo());
+                appPremPhOpenPeriodDtos.add(premPhOpenPeriodDto);
+            }
+
+        }
+        copy.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
         return copy;
     }
     private boolean eqGrpPremises(List<AppGrpPremisesDto> appGrpPremisesDtoList, List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {

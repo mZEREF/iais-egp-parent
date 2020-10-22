@@ -320,10 +320,12 @@ public class InboxServiceImpl implements InboxService {
         if(!IaisCommonUtils.isEmpty(apps)){
             for(ApplicationDto app : apps){
                 if(!(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(app.getStatus()))
-                        && !(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(app.getStatus()))
+                        && !(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(app.getStatus()))
                         && !(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(app.getStatus()))
                         && !(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(app.getStatus()))
-                        && !(ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED.equals(app.getStatus()))){
+                        && !(ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED.equals(app.getStatus()))
+                        && !(ApplicationConsts.APPLICATION_STATUS_DELETED.equals(app.getStatus()))
+                        && !(ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE.equals(app.getStatus()))){
                     errorMap.put("errorMessage1","This application is performing the renew process");
                 }
             }
