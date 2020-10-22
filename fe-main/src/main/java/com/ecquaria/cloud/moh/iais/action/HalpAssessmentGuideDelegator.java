@@ -1343,7 +1343,12 @@ public class HalpAssessmentGuideDelegator {
                     bpc.request.setAttribute("isAppealShow","1");
                     bpc.request.setAttribute("appealApplication",licIdValue.get(0));
                     ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
-                    ParamUtil.setRequestAttr(bpc.request,"guide_back_action","backRenew");
+                    String actionType = ParamUtil.getString(bpc.request,"guide_action_type");
+                    if ("renew".equals(actionType)){
+                        ParamUtil.setRequestAttr(bpc.request,"guide_back_action","backRenewUpdate");
+                    }else{
+                        ParamUtil.setRequestAttr(bpc.request,"guide_back_action","backRenew");
+                    }
                     return;
                 }
             }
