@@ -1301,15 +1301,6 @@ public class NewApplicationDelegator {
         }
 
         if ("ack".equals(switch2)) {
-            //send email
-            try {
-                if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
-                    requestForChangeService.sendRfcPaymentOnlineOrGIROSuccesedEmail(appSubmissionDto);
-                }
-
-            } catch (Exception e) {
-                log.error(StringUtil.changeForLog("send email error ...."));
-            }
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "payment success !!!");
         }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, switch2);

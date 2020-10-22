@@ -1250,7 +1250,6 @@ public class RequestForChangeMenuDelegator {
                 serviceConfigService.updatePaymentStatus(appGrp);
                 bpc.request.setAttribute("createDate", new Date());
                 requestForChangeService.sendRfcEmailToOfficer(appSubmissionDtos.get(0));
-                requestForChangeService.sendRfcPaymentOnlineOrGIROSuccesedEmail(appSubmissionDtos.get(0));
             }
 
             bpc.request.setAttribute("pmtRefNo", pmtRefNo);

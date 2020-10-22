@@ -1457,57 +1457,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         return organizationLienceseeClient.getFeUserDtoByLicenseeId(licenseeId).getEntity();
     }
 
-    @Override
-    public void sendRfcPaymentOnlineOrGIROSuccesedEmail(AppSubmissionDto appSubmissionDto) throws IOException, TemplateException {
-        String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
-        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-        LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(appSubmissionDto.getLicenseeId()).getEntity();
-        String applicantName = licenseeDto.getName();
-        if (appSubmissionDto.getAppEditSelectDto() != null) {
-            emailMap.put("change", "true");
-        } else {
-            emailMap.put("no_change", "true");
-        }
-        emailMap.put("ApplicantName", applicantName);
-        emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
-        emailMap.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
-        emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
-        emailMap.put("systemLink", loginUrl);
-        emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-        EmailParam emailParam = new EmailParam();
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT);
-        emailParam.setTemplateContent(emailMap);
-        emailParam.setQueryCode(appSubmissionDto.getAppGrpNo());
-        emailParam.setReqRefNum(appSubmissionDto.getAppGrpNo());
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP_GRP);
-        emailParam.setRefId(appSubmissionDto.getAppGrpId());
-        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT).getEntity();
-        map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
-        map.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
-        String subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
-        emailParam.setSubject(subject);
-        //email
-        notificationHelper.sendNotification(emailParam);
-        //msg
-        try {
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT_MSG);
-            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-            List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(appSubmissionDto.getServiceName())).getEntity();
-            List<String> svcCode=IaisCommonUtils.genNewArrayList();
-            svcCode.add(svcDto.get(0).getSvcCode());
-            emailParam.setSvcCodeList(svcCode);
-            emailParam.setRefId(appSubmissionDto.getLicenceId());
-            notificationHelper.sendNotification(emailParam);
-        }catch (Exception e){
-            log.info(e.getMessage(),e);
-        }
 
-        //sms
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT_SMS);
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-        notificationHelper.sendNotification(emailParam);
-    }
 
     @Override
     public void sendRfcSubmittedEmail(AppSubmissionDto appSubmissionDto, String pmtMethod) throws IOException, TemplateException {

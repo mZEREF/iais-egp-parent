@@ -54,11 +54,14 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -385,12 +388,71 @@ public class LicenceServiceImpl implements LicenceService {
                                 sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,corpPassUrl,MohName,organizationDto,inspectionRecommendation);
                             }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
                                 sendRenewalAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,MohName,inspectionRecommendation);
+                            }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
+                                try {
+                                    sendRfcApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList);
+                                } catch (IOException e) {
+                                    log.info(e.getMessage(),e);
+                                }
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+
+    public void sendRfcApproveNotification(String applicantName,
+                                           String applicationTypeShow,
+                                           String applicationNo,
+                                           String appDate,
+                                           String licenceNo,
+                                           List<String> svcCodeList) throws IOException {
+        String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+        emailMap.put("change", "true");
+        emailMap.put("ApplicantName", applicantName);
+        emailMap.put("ApplicationType", applicationTypeShow);
+        emailMap.put("ApplicationNumber", applicationNo);
+        emailMap.put("ApplicationDate", appDate);
+        emailMap.put("systemLink", loginUrl);
+        emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT);
+        emailParam.setTemplateContent(emailMap);
+        emailParam.setQueryCode(applicationNo);
+        emailParam.setReqRefNum(applicationNo);
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+        emailParam.setRefId(applicationNo);
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT).getEntity();
+        map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationTypeShow}).get(0).getText());
+        map.put("ApplicationNumber", applicationNo);
+        String subject = null;
+        try {
+            subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
+        } catch (TemplateException e) {
+            log.info(e.getMessage(),e);
+        }
+        emailParam.setSubject(subject);
+        //email
+        notificationHelper.sendNotification(emailParam);
+        //msg
+        try {
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT_MSG);
+            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            emailParam.setSvcCodeList(svcCodeList);
+            emailParam.setRefId(applicationNo);
+            notificationHelper.sendNotification(emailParam);
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+        }
+
+        //sms
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT_SMS);
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        notificationHelper.sendNotification(emailParam);
     }
 
     private void sendRenewalAppApproveNotification(String applicantName,
