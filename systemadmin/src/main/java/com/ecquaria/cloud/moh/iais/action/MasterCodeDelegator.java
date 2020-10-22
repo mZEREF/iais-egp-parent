@@ -120,6 +120,13 @@ public class MasterCodeDelegator {
             if (StringUtil.isEmpty(masterCodeQueryDto.getCodeValue())) {
                 masterCodeQueryDto.setCodeValue("N/A");
             }
+            String categoryDescription = masterCodeQueryDto.getCodeCategory();
+            String category = masterCodeService.findCodeCategoryByDescription(categoryDescription);
+            MasterCodeCategoryDto masterCodeCategoryDto = masterCodeService.getMasterCodeCategory(category);
+            Integer isCanEdit = masterCodeCategoryDto.getIsEditable();
+            if (isCanEdit == 0){
+                masterCodeQueryDto.setIsCentrallyManage(isCanEdit);
+            }
             masterCodeQueryDto.setStatus(MasterCodeUtil.getCodeDesc(masterCodeQueryDto.getStatus()));
         }
 

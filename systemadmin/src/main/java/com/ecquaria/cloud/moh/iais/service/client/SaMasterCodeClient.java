@@ -62,6 +62,9 @@ public interface SaMasterCodeClient {
     @GetMapping(path = "/iais-mastercode/mastercode-catergory")
     FeignResponseEntity<List<MasterCodeCategoryDto>> getAllMasterCodeCategory();
 
+    @GetMapping(path = "/iais-mastercode/mastercode-catergory-entity")
+    FeignResponseEntity<MasterCodeCategoryDto> getMasterCodeCategory(@RequestParam(value = "categoryId")String categoryId);
+
     @GetMapping(path = "/iais-mastercode/master-code/master-code-key")
     FeignResponseEntity<Boolean> masterCodeKeyIsExist(@RequestParam(value = "masterCodeKey") String masterCodeKey);
 

@@ -78,6 +78,11 @@ public class MasterCodeServiceImpl implements MasterCodeService {
     }
 
     @Override
+    public MasterCodeCategoryDto getMasterCodeCategory(String categoryId) {
+        return saMasterCodeClient.getMasterCodeCategory(categoryId).getEntity();
+    }
+
+    @Override
     public boolean masterCodeKeyIsExist(String masterCodekey) {
         return saMasterCodeClient.masterCodeKeyIsExist(masterCodekey).getEntity();
     }
