@@ -1069,11 +1069,11 @@ public class LicenceApproveBatchjob {
                 originLicenceDto = deleteOriginLicenceDto(originLicenceDto,applicationDto,licenceDto.getStatus());
                 log.info(StringUtil.changeForLog("The applicationType is -->:"+ApplicationConsts.APPLICATION_TYPE_RENEWAL));
                 if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-                    if(originLicenceDto != null && !ApplicationConsts.LICENCE_STATUS_REVOKED.equals(originLicenceDto.getStatus())){
-                        superLicDto.setOriginLicenceDto(originLicenceDto);
-                    }else{
-                        log.info(StringUtil.changeForLog("can not update the originLicenceDto"));
+                    log.info(StringUtil.changeForLog("The originLicenceDto.getStatus() is -->:"+originLicenceDto.getStatus()));
+                    if(originLicenceDto != null && ApplicationConsts.LICENCE_STATUS_REVOKED.equals(originLicenceDto.getStatus())){
+                        originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
                     }
+                    superLicDto.setOriginLicenceDto(originLicenceDto);
                 }
 
                 //create the lic_app_correlation
