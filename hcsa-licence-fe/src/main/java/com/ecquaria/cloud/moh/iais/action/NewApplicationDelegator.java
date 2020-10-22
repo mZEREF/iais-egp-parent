@@ -798,8 +798,9 @@ public class NewApplicationDelegator {
                     }
                     appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
                 }
-                ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+                //ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             }
+            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
         String crud_action_value = ParamUtil.getString(bpc.request, "crud_action_value");
         String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
