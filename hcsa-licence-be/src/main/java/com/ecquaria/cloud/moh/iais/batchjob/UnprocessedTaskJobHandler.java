@@ -4,15 +4,18 @@ import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -27,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.service.KpiAndReminderService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +58,8 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
     private InspEmailService inspEmailService;
     @Autowired
     private EmailClient emailClient;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     private final String EMAILMPLATEID = "A0D4EADD-D61B-EA11-BE7D-000C29F371DC";
 
@@ -65,6 +71,9 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
 
     @Autowired
     SystemBeLicClient systemBeLicClient;
+
+    @Autowired
+    OrganizationClient organizationClient;
 
     @Autowired
     InsRepService insRepService;
@@ -128,9 +137,12 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                         if (hcsaSvcKpiDto.getRemThreshold() != null) {
                             remThreshold = hcsaSvcKpiDto.getRemThreshold();
                         }
+                        int sysday = systemParamConfig.getUnprocessedSystemAdmin() + kpi;
                         log.info(StringUtil.changeForLog("days:" +days));
                         log.info(StringUtil.changeForLog("kpi:" +kpi));
                         log.info(StringUtil.changeForLog("remThreshold:" +remThreshold));
+                        log.info(StringUtil.changeForLog("systemParamConfig.getUnprocessedSystemAdmin():" +systemParamConfig.getUnprocessedSystemAdmin()));
+
                         if(days == remThreshold){
                             //judge is email sent
                             JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(item.getId(),"unprocess officer").getEntity();
@@ -164,6 +176,30 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                 createjob.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                                 list.add(createjob);
                                 systemBeLicClient.createJobRemindMsgTrackingDtos(list);
+                            }
+                        }else if(days == sysday){
+                            //judge is email sent
+                            JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(item.getId(),"unprocess leader").getEntity();
+                            if(jobRemindMsgTrackingDto == null){
+                                //send email to leader and admin
+                                List<String> email = IaisCommonUtils.genNewArrayList();
+                                List<OrgUserDto> systemAdmin = organizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
+                                if(!IaisCommonUtils.isEmpty(systemAdmin)){
+                                    for (OrgUserDto orgUserDto:systemAdmin
+                                         ) {
+                                        email.add(orgUserDto.getEmail());
+                                    }
+                                    sendEmail(item,applicationDto,email);
+                                    //record email sent
+                                    JobRemindMsgTrackingDto createjob = new JobRemindMsgTrackingDto();
+                                    List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
+                                    createjob.setMsgKey("unprocess SystemAdmin");
+                                    createjob.setRefNo(item.getId());
+                                    createjob.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                                    list.add(createjob);
+                                    systemBeLicClient.createJobRemindMsgTrackingDtos(list);
+                                }
+
                             }
                         }
 

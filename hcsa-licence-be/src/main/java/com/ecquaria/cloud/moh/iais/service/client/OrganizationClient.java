@@ -185,6 +185,9 @@ public interface OrganizationClient {
     @PostMapping(value = "/organization/individual-send-mail", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> updateIndividualFlag(@RequestParam("id") String id);
 
+    @GetMapping(value = "/iais-orguser-be/OrgUsers/{roleId}")
+    FeignResponseEntity<List<OrgUserDto>> retrieveOrgUserAccountByRoleId(@PathVariable("roleId") String roleId);
+
     @GetMapping(value = "/iais-task/get-task-by-application-and-role-id-and-status",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getTaskByApplicationNoAndRoleIdAndStatus(@RequestParam("applicationNo") String applicationNo,@RequestParam("roleId") String roleId,@RequestParam("status") String status);
 }
