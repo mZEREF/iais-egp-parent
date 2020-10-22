@@ -352,7 +352,7 @@ public class WebValidationHelper {
                         String fetchId = (String) getMed.invoke(entity, null);
                         String licNo = redisCacheHelper.get(RedisNameSpaceConstant.REDIS_AUDIT_TRAIL_NAMESPACE, fetchId);
                         if (!StringUtil.isEmpty(licNo)) {
-                            at.setApplicationNum(licNo);
+                            at.setLicenseNum(licNo);
                         }
                     }
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
