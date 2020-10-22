@@ -336,7 +336,7 @@ public class WebValidationHelper {
                     } else if (fetch != null) {
                         Method getMed = entity.getClass().getMethod("get" + org.springframework.util.StringUtils.capitalize(field.getName()));
                         String fetchId = (String) getMed.invoke(entity, null);
-                        String appNo = redisCacheHelper.get(RedisNameSpaceConstant.REDIS_AUDIT_TRAIL_NAMESPACE, fetchId);
+                        String appNo = redisCacheHelper.get(RedisNameSpaceConstant.REDIS_AUDIT_TRAIL_APP_NAMESPACE, fetchId);
                         if (!StringUtil.isEmpty(appNo)) {
                             at.setApplicationNum(appNo);
                         }
@@ -350,7 +350,7 @@ public class WebValidationHelper {
                     } else if (licFetch != null) {
                         Method getMed = entity.getClass().getMethod("get" + org.springframework.util.StringUtils.capitalize(field.getName()));
                         String fetchId = (String) getMed.invoke(entity, null);
-                        String licNo = redisCacheHelper.get(RedisNameSpaceConstant.REDIS_AUDIT_TRAIL_NAMESPACE, fetchId);
+                        String licNo = redisCacheHelper.get(RedisNameSpaceConstant.REDIS_AUDIT_TRAIL_LIC_NAMESPACE, fetchId);
                         if (!StringUtil.isEmpty(licNo)) {
                             at.setLicenseNum(licNo);
                         }
