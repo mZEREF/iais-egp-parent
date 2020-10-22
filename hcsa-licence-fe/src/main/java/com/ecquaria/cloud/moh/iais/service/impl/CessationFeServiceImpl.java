@@ -598,12 +598,12 @@ public class CessationFeServiceImpl implements CessationFeService {
             String hciCode = dto.getHciCode();
             if (hciCodes.contains(hciCode)) {
                 applicationDto.setNeedNewLicNo(false);
-                applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NOT);
                 applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE);
+                applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NOT);
             } else {
                 applicationDto.setNeedNewLicNo(true);
-                applicationDto.setStatus(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NEED);
-                applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_ORIGIN);
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
+                applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NEED);
             }
             applicationClient.updateApplicationDto(applicationDto);
         }
