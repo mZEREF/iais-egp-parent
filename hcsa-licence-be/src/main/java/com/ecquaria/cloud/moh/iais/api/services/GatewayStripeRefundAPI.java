@@ -32,8 +32,8 @@ public class GatewayStripeRefundAPI {
 		return GatewayStripeRefundSubmit.buildForm(sParaTemp, "https://" + request.getServerName()+GatewayStripeRefundConfig.common_gateway_url, "get",
 				strButtonName);
 	}
-	public static String create_partner_trade_by_buyer_url(
-			Map<String, String> sParaTemp,HttpServletRequest request,String returnUrl) throws Exception {
+	public static Map<String, String> create_partner_trade_by_buyer_sParaTemp(
+			Map<String, String> sParaTemp, HttpServletRequest request, String returnUrl) throws Exception {
 
 		sParaTemp.put(GatewayConstants.REGISTRY_NAME_KEY, GatewayStripeRefundConfig.payment_registry_name);
 		sParaTemp.put(GatewayConstants.RETURN_URL_KEY, returnUrl);

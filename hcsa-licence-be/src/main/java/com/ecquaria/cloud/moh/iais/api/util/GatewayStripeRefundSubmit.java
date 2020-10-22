@@ -48,14 +48,14 @@ public class GatewayStripeRefundSubmit {
         return sbHtml.toString();
     }
 
-    public static String buildUrl(Map<String, String> sParaTemp, String gateway, String strMethod,
-                                  String strButtonName) throws Exception {
+    public static Map<String, String> buildUrl(Map<String, String> sParaTemp, String gateway, String strMethod,
+                                               String strButtonName) throws Exception {
         Map<String, String> sPara = buildRequestPara(sParaTemp);
         StringBuilder url = new StringBuilder();
         url.append(gateway);
         appendQueryFields(url,sPara);
 
-        return url.toString();
+        return sParaTemp;
     }
     /**
      * This method is for creating a URL query string.

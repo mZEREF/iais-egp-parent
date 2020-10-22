@@ -1226,16 +1226,15 @@ public class WithOutRenewalDelegator {
                 String html="";
                 switch (payMethod){
                     case ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT:
-                        html = GatewayStripeAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, backUrl);
-                        break;
+                        html = GatewayStripeAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, backUrl);break;
                     case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
-                        html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, backUrl);break;
+                        html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, backUrl);break;
                     case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
-                        html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, backUrl);break;
-                    default: html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, backUrl);break;
+                        html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, backUrl);break;
+                    default: html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, backUrl);
 
                 }
-                ParamUtil.setRequestAttr(bpc.request,"jumpHtml",html);
+                bpc.response.sendRedirect(html);
                 bpc.request.setAttribute("paymentAmount", totalAmount);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);

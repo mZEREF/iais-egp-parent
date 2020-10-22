@@ -155,6 +155,15 @@ public class BeEicGatewayClient {
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
     }
 
+    public FeignResponseEntity<Void> doStripeRefund(Map<String, String> param,
+                                                      String date, String authorization, String dateSec,
+                                                      String authorizationSec) {
+        Map<String, Object> param1 = IaisCommonUtils.genNewHashMap();
+        param1.putAll(param);
+        return IaisEGPHelper.callEicGatewayWithParam(gateWayUrl + "/api/v1/stripe-refund", HttpMethod.GET, param1,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Void.class);
+    }
+
 
     public FeignResponseEntity<Void> syncInspPeriodToFe(HcsaServicePrefInspPeriodDto period,
                                          String date, String authorization, String dateSec, String authorizationSec) {

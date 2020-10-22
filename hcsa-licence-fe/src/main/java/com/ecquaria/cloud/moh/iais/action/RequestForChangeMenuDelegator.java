@@ -1171,15 +1171,15 @@ public class RequestForChangeMenuDelegator {
                 String html="";
                 switch (payMethod){
                     case ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT:
-                        html = GatewayStripeAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, url);
+                        html = GatewayStripeAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
                         break;
                     case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
-                        html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, url);break;
+                        html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);break;
                     case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
-                        html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, url);break;
-                    default: html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, url);break;
+                        html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);break;
+                    default: html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);break;
                 }
-                ParamUtil.setRequestAttr(bpc.request, "jumpHtml", html);
+                bpc.response.sendRedirect(html);
             } catch (Exception e) {
                 log.info(e.getMessage(), e);
             }

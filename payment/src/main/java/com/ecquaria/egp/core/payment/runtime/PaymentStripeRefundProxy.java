@@ -83,15 +83,15 @@ public class PaymentStripeRefundProxy extends PaymentProxy {
 		String refundInfo = fields.get("vpc_OrderInfo");
 		String reqNo = fields.get("vpc_MerchTxnRef");
 		String returnUrl=this.getPaymentData().getContinueUrl();
-		String refNo = reqNo.substring(0,reqNo.indexOf('-'));
+		//String refNo = reqNo.substring(0,reqNo.indexOf('-'));
 		double amount = Double.parseDouble(amo)/100;
 
 		String[] refundInfos=refundInfo.split("@");
 		for(String info :refundInfos){
 			String svcRefNo = info.substring(0,info.indexOf('-'));
 			String svcRefNo1 = info.substring(0,info.indexOf("refund"));
-			String amount1 = info.substring(info.indexOf("refund"));
-			double amount2 = Double.parseDouble(amount1)/100;
+			String amount1 = info.substring(info.indexOf("refund")).replace("refund","");
+			double amount2 = Double.parseDouble(amount1);
 
 			PaymentRequestDto paymentRequestDtoOld=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(svcRefNo).getEntity();
 
@@ -105,7 +105,7 @@ public class PaymentStripeRefundProxy extends PaymentProxy {
 			Refund refund;
 
 			try {
-				refund=PaymentBaiduriProxyUtil.getStripeService().createRefund(checkoutSession.getPaymentIntent(),Long.valueOf(amount1));
+				refund=PaymentBaiduriProxyUtil.getStripeService().createRefund(checkoutSession.getPaymentIntent(), (long) amount2);
 				srcSystemConfDto.setClientKey(refund.getId());
 			} catch (StripeException e) {
 				log.info(e.getMessage(),e);
@@ -163,8 +163,8 @@ public class PaymentStripeRefundProxy extends PaymentProxy {
 		for(String info :refundInfos){
 			AppReturnFeeDto appReturnFeeDto=new AppReturnFeeDto();
 			String svcRefNo = info.substring(0,info.indexOf("refund"));
-			String amount1 = info.substring(info.indexOf("refund"));
-			double amount2 = Double.parseDouble(amount1)/100;
+			String amount1 = info.substring(info.indexOf("refund")).replace("refund","");
+			double amount2 = Double.parseDouble(amount1);
 
 			PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(svcRefNo).getEntity();
 

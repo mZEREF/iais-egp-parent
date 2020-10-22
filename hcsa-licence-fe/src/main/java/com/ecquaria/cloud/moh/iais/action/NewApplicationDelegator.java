@@ -3067,22 +3067,24 @@ public class NewApplicationDelegator {
             fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
             fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDto.getAppGrpNo());
             try {
-                //String url="";
-                String html="";
+                String url="";
+                //String html="";
                 switch (payMethod){
                     case ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT:
-                        html = GatewayStripeAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, GatewayStripeConfig.return_url);
-                        //url= GatewayStripeAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, GatewayStripeConfig.return_url);
-                        //bpc.response.sendRedirect(url);
-                        break;
+                        //html = GatewayStripeAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, GatewayStripeConfig.return_url);
+                        url= GatewayStripeAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, GatewayStripeConfig.return_url);break;
                     case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
-                        html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, GatewayConfig.return_url);break;
+                        url= GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, GatewayConfig.return_url);break;
+                        //html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, GatewayConfig.return_url);break;
                     case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
-                        html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, GatewayConfig.return_url);break;
-                    default: html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, GatewayConfig.return_url);break;
-
+                        url= GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, GatewayConfig.return_url);break;
+                        //html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, GatewayConfig.return_url);break;
+                    default:
+                        url= GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, GatewayConfig.return_url);
+                        //html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, GatewayConfig.return_url);break;
                 }
-                ParamUtil.setRequestAttr(bpc.request, "jumpHtml", html);
+                bpc.response.sendRedirect(url);
+                //ParamUtil.setRequestAttr(bpc.request, "jumpHtml", html);
             } catch (Exception e) {
                 log.info(e.getMessage(), e);
             }
