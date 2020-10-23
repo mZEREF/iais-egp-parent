@@ -317,4 +317,7 @@ public interface ApplicationClient {
 
     @GetMapping(value = "/iais-application-be/save-appPremisesRecommendationDto-last-insp",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremisesRecommendationDto> saveAppPremisesRecommendationDtoForLastInsp(@RequestParam("appId") String appId, @RequestParam("oldAppId") String oldAppId);
+
+    @GetMapping(value = "/iais-application-be/delete-appPremisesRecommendationDto-last-insp",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> deleteAppPremisesRecommendationDtoForLastInsp(@RequestParam("corrId") String corrId);
 }
