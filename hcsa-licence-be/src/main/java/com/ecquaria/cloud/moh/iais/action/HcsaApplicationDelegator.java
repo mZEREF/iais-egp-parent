@@ -309,6 +309,7 @@ public class HcsaApplicationDelegator {
         String nextStageReplys = ParamUtil.getString(bpc.request,"nextStageReplys");
         validateCanApprove(approveSelect,applicationViewDto,errorMap);
         if(!errorMap.isEmpty()){
+            WebValidationHelper.saveAuditTrailForNoUseResult(applicationViewDto.getApplicationDto(), errorMap);
             String doProcess = "Y";
             ParamUtil.setRequestAttr(bpc.request, "doProcess",doProcess);
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "PREPARE");
