@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
-import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -27,8 +26,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class IaisFeSessionListener {
-    @Autowired
-    private SubmissionClient submissionClient;
     @Autowired
     private AuditTrailMainClient auditTrailMainClient;
 
