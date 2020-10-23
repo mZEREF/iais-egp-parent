@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainBeClient;
-import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.sz.commons.util.Calculator;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +21,6 @@ import org.springframework.session.events.SessionExpiredEvent;
  * @date 2020/9/29 14:50
  */
 public class IaisBeSessionListener {
-    @Autowired
-    private SubmissionClient submissionClient;
     @Autowired
     private AuditTrailMainBeClient auditTrailMainClient;
 
