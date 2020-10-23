@@ -1470,6 +1470,15 @@ public class HalpAssessmentGuideDelegator {
         amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsSearchParam);
         SearchResult<SelfPremisesListQueryDto> amendHCISearchResult = requestForChangeService.searchPreInfo(amendDetailsSearchParam);
+        amendHCISearchResult.getRows().stream().forEach(h -> {
+            List<PremisesDto> premisesDtoList = inboxService.getPremisesByLicId(h.getLicenceId());
+            List<String> addressList = IaisCommonUtils.genNewArrayList();
+            for (PremisesDto premisesDto:premisesDtoList
+            ) {
+                addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                h.setPremisesDtoList(addressList);
+            }
+        });
         if (amendHCISearchResult != null && amendHCISearchResult.getRowCount() > 0) {
             ParamUtil.setSessionAttr(bpc.request, "amendHCISearchParam", amendDetailsSearchParam);
             ParamUtil.setRequestAttr(bpc.request, "amendHCISearchResult", amendHCISearchResult);
@@ -1488,6 +1497,15 @@ public class HalpAssessmentGuideDelegator {
         amendDetailsRemoveSearchParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsRemoveSearchParam);
         SearchResult<SelfPremisesListQueryDto> amendDetailsRemoveSearchResult = requestForChangeService.searchPreInfo(amendDetailsRemoveSearchParam);
+        amendDetailsRemoveSearchResult.getRows().stream().forEach(h -> {
+            List<PremisesDto> premisesDtoList = inboxService.getPremisesByLicId(h.getLicenceId());
+            List<String> addressList = IaisCommonUtils.genNewArrayList();
+            for (PremisesDto premisesDto:premisesDtoList
+            ) {
+                addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                h.setPremisesDtoList(addressList);
+            }
+        });
         if (!StringUtil.isEmpty(amendDetailsRemoveSearchResult)) {
             ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_DETAILS_REMOVE_SEARCH_PARAM, amendDetailsRemoveSearchParam);
             ParamUtil.setRequestAttr(bpc.request,GuideConsts.AMEND_DETAILS_REMOVE_SEARCH_RESULT, amendDetailsRemoveSearchResult);
@@ -1501,6 +1519,15 @@ public class HalpAssessmentGuideDelegator {
         amendHCISearchParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendHCISearchParam);
         SearchResult<SelfPremisesListQueryDto> amendHCISearchResult = requestForChangeService.searchPreInfo(amendHCISearchParam);
+        amendHCISearchResult.getRows().stream().forEach(h -> {
+            List<PremisesDto> premisesDtoList = inboxService.getPremisesByLicId(h.getLicenceId());
+            List<String> addressList = IaisCommonUtils.genNewArrayList();
+            for (PremisesDto premisesDto:premisesDtoList
+            ) {
+                addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                h.setPremisesDtoList(addressList);
+            }
+        });
         if (!StringUtil.isEmpty(amendHCISearchResult)) {
             ParamUtil.setSessionAttr(bpc.request, "amendHCISearchParam", amendHCISearchParam);
             ParamUtil.setRequestAttr(bpc.request, "amendHCISearchResult", amendHCISearchResult);
@@ -1523,6 +1550,15 @@ public class HalpAssessmentGuideDelegator {
         amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsSearchParam);
         SearchResult<SelfPremisesListQueryDto> amendDetailsSearchResult = requestForChangeService.searchPreInfo(amendDetailsSearchParam);
+        amendDetailsSearchResult.getRows().stream().forEach(h -> {
+            List<PremisesDto> premisesDtoList = inboxService.getPremisesByLicId(h.getLicenceId());
+            List<String> addressList = IaisCommonUtils.genNewArrayList();
+            for (PremisesDto premisesDto:premisesDtoList
+            ) {
+                addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                h.setPremisesDtoList(addressList);
+            }
+        });
         if (!StringUtil.isEmpty(amendDetailsSearchResult)) {
             ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEE_SEARCH_PARAM, amendDetailsSearchParam);
             ParamUtil.setRequestAttr(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEE_SEARCH_RESULT, amendDetailsSearchResult);
@@ -1548,6 +1584,15 @@ public class HalpAssessmentGuideDelegator {
         amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsSearchParam);
         SearchResult<SelfPremisesListQueryDto> amendDetailsSearchResult = requestForChangeService.searchPreInfo(amendDetailsSearchParam);
+        amendDetailsSearchResult.getRows().stream().forEach(h -> {
+            List<PremisesDto> premisesDtoList = inboxService.getPremisesByLicId(h.getLicenceId());
+            List<String> addressList = IaisCommonUtils.genNewArrayList();
+            for (PremisesDto premisesDto:premisesDtoList
+            ) {
+                addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                h.setPremisesDtoList(addressList);
+            }
+        });
         if (!StringUtil.isEmpty(amendDetailsSearchResult)) {
             ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_PERSONNEL_SEARCH_PARAM, amendDetailsSearchParam);
             ParamUtil.setRequestAttr(bpc.request, GuideConsts.AMEND_UPDATE_PERSONNEL_SEARCH_RESULT, amendDetailsSearchResult);
@@ -1611,6 +1656,15 @@ public class HalpAssessmentGuideDelegator {
         ceaseLicenceParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", ceaseLicenceParam);
         SearchResult<SelfPremisesListQueryDto> ceaseLicenceResult = requestForChangeService.searchPreInfo(ceaseLicenceParam);
+        ceaseLicenceResult.getRows().stream().forEach(h -> {
+            List<PremisesDto> premisesDtoList = inboxService.getPremisesByLicId(h.getLicenceId());
+            List<String> addressList = IaisCommonUtils.genNewArrayList();
+            for (PremisesDto premisesDto:premisesDtoList
+            ) {
+                addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                h.setPremisesDtoList(addressList);
+            }
+        });
         if (!StringUtil.isEmpty(ceaseLicenceResult)) {
             ParamUtil.setSessionAttr(bpc.request, GuideConsts.CEASE_LICENCE_SEARCH_PARAM, ceaseLicenceParam);
             ParamUtil.setRequestAttr(bpc.request, GuideConsts.CEASE_LICENCE_SEARCH_RESULT, ceaseLicenceResult);

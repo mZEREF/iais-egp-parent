@@ -59,7 +59,21 @@
                                     <c:out value="Off-site"/>
                                 </c:if>
                             </td>
-                            <td>${pool.address}</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${pool.premisesDtoList.size() == 1}">
+                                        <P>${pool.premisesDtoList[0]}</P>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <select>
+                                            <option value ="">Multiple</option>
+                                            <c:forEach items="${pool.premisesDtoList}" var="address" varStatus="index">
+                                                <option value ="${address}">${address}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
                         </tr>
                     </c:forEach>
                 </c:otherwise>
