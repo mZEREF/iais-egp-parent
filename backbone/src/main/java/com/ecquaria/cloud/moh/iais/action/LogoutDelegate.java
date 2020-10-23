@@ -89,7 +89,7 @@ public class LogoutDelegate {
                     long duration = now.getTime() - before.getTime();
                     int minutes = (int) Calculator.div(duration, 60000, 0);
                     auditTrailDto.setTotalSessionDuration(minutes);
-                    AuditTrailHelper.callSaveSessionDuration(sessionId, 30);
+                    AuditTrailHelper.callSaveSessionDuration(sessionId, minutes);
                 }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
