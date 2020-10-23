@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.dto.SoapiS2S;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
@@ -20,16 +19,9 @@ import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
 import com.ecquaria.egp.core.payment.PaymentTransaction;
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ecq.commons.helper.StringHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import sop.config.ConfigUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -101,7 +93,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String umId= "UMID_877772003";
 		String keyId=GatewayConfig.eNetsKeyId;
 		String secretKey=GatewayConfig.eNetsSecretKey ;
-		String s2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/payment-web/s2sTxnEnd";
+		String s2sUrl="/payment-web/s2sTxnEnd";
 
 		String txnRep="{\"ss\":\"1\",\"msg\":{\"netsMid\":\""+umId+"\",\"tid\":\"\",\"submissionMode\":\"B\",\"txnAmount\":\""+amoOo+"\",\"merchantTxnRef\":\""+merchantTxnRef+"\",\"merchantTxnDtm\":\""+merchantTxnDtm+"\",\"paymentType\":\"SALE\",\"currencyCode\":\"SGD\",\"paymentMode\":\"\",\"merchantTimeZone\":\"+8:00\",\"b2sTxnEndURL\":\""+fields.get("vpc_ReturnURL")+"\",\"b2sTxnEndURLParam\":\"\",\"s2sTxnEndURL\":\""+s2sUrl+"\",\"s2sTxnEndURLParam\":\"\",\"clientType\":\"W\",\"supMsg\":\"\",\"netsMidIndicator\":\"U\",\"ipAddress\":\"127.0.0.1\",\"language\":\"en\"}}" ;
 
@@ -183,11 +175,11 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
 		String invoiceNo = "1234567";//"Send";
 
-		if(receiveS2STxnEnd(txnReq,request).getStatusCodeValue()==200){
-			status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
-		}else {
-			status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
-		}
+//		if(receiveS2STxnEnd(txnReq,request).getStatusCodeValue()==200){
+//			status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
+//		}else {
+//			status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
+//		}
 
 
 		PaymentDto paymentDto = new PaymentDto();
@@ -220,34 +212,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		}
 	}
 
-	@RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, value =
-			"/s2sTxnEnd", method = RequestMethod.POST)
-	public ResponseEntity<Void> receiveS2STxnEnd(@RequestBody String txnRes,
-												 HttpServletRequest request) {
-		log.debug("MERCHANT APP : in receiveS2STxnEnd :" + txnRes);//jsonmessage received as string
-		try {
-			String generatedHmac = generateSignature(txnRes, GatewayConfig.eNetsSecretKey );//generate mac
-			String macFromGW = request.getHeader("hmac");
-			log.info ("MERCHANT APP : header hmac received :" +
-					macFromGW);//
-			log.info("MERCHANT APP : header hmac generated :" +
-					generatedHmac);
-			if(generatedHmac.equalsIgnoreCase(macFromGW)){
-//parse message
-				ObjectMapper mapper = new ObjectMapper();
-				SoapiS2S txnResObj = mapper.readValue(txnRes, SoapiS2S.class);
-				log.info("MERCHANT APP : in receiveS2STxnEnd :" + txnResObj);
-				//Please handle success or failure response code
-			}
-			else{
-				log.error("signature not matched.");
-//handle exception flow
-			}
-		} catch (Exception e) {
-// TODO handle exception
-			log.error(e.getMessage());}
-		return new ResponseEntity<Void>(HttpStatus.OK);
-	}
+
 	@Override
 	public void cancel(BaseProcessClass bpc) throws PaymentException {
 		Map<String, String> fields = null;

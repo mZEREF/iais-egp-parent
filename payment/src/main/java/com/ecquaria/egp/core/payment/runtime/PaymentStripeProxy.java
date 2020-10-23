@@ -122,7 +122,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 		} catch (StripeException e) {
 			log.info(e.getMessage(),e);
 			String results="?result="+ MaskUtil.maskValue("result",PaymentTransactionEntity.TRANS_STATUS_FAILED)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",reqNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo","TRN-000");
-			String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+fields.get("vpc_ReturnURL")+results;
+			String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+returnUrl+results;
 			try {
 				RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);
 			} catch (IOException ex) {
