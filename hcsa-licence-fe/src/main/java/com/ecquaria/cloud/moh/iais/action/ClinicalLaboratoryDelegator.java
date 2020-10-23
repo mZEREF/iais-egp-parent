@@ -791,31 +791,30 @@ public class ClinicalLaboratoryDelegator {
                         String name = professionalResponseDtos.get(0).getName();
                         if(StringUtil.isEmpty(name)){
                             errList.put("professionRegoNo"+i,"GENERAL_ERR0042");
-//                            appSvcCgoDto.setSubSpeciality(null);
-//                            appSvcCgoDto.setSpeciality(null);
-                        }else {
-                            ProfessionalResponseDto professionalResponseDto = professionalResponseDtos.get(0);
-                            List<String> specialty = professionalResponseDto.getSpecialty();
-                            List<String> subspecialty = professionalResponseDto.getSubspecialty();
-                            String regno = professionalResponseDto.getRegno();
-                            if(!IaisCommonUtils.isEmpty(specialty)){
-                                String spec = specialty.get(0);
-                                if(!StringUtil.isEmpty(spec)){
-                                    if("Diagnostic Radiology".equals(spec)){
-                                        appSvcCgoDto.setSpeciality(spec);
-                                    }else if("Nuclear Medicine".equals(spec)){
-                                        appSvcCgoDto.setSpeciality(spec);
-                                    }else {
-                                        appSvcCgoDto.setSpeciality("other");
-                                        appSvcCgoDto.setSpecialityOther(spec);
-                                    }
-                                }
-                            }if(!IaisCommonUtils.isEmpty(subspecialty)){
-                                appSvcCgoDto.setSubSpeciality(subspecialty.get(0));
-                            }if(!StringUtil.isEmpty(regno)){
-                                appSvcCgoDto.setProfRegNo(regno);
-                            }
                         }
+//                        else {
+//                            ProfessionalResponseDto professionalResponseDto = professionalResponseDtos.get(0);
+//                            List<String> specialty = professionalResponseDto.getSpecialty();
+//                            List<String> subspecialty = professionalResponseDto.getSubspecialty();
+//                            String regno = professionalResponseDto.getRegno();
+//                            if(!IaisCommonUtils.isEmpty(specialty)){
+//                                String spec = specialty.get(0);
+//                                if(!StringUtil.isEmpty(spec)){
+//                                    if("Diagnostic Radiology".equals(spec)){
+//                                        appSvcCgoDto.setSpeciality(spec);
+//                                    }else if("Nuclear Medicine".equals(spec)){
+//                                        appSvcCgoDto.setSpeciality(spec);
+//                                    }else {
+//                                        appSvcCgoDto.setSpeciality("other");
+//                                        appSvcCgoDto.setSpecialityOther(spec);
+//                                    }
+//                                }
+//                            }if(!IaisCommonUtils.isEmpty(subspecialty)){
+//                                appSvcCgoDto.setSubSpeciality(subspecialty.get(0));
+//                            }if(!StringUtil.isEmpty(regno)){
+//                                appSvcCgoDto.setProfRegNo(regno);
+//                            }
+//                        }
                     }
                 }
                 List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);

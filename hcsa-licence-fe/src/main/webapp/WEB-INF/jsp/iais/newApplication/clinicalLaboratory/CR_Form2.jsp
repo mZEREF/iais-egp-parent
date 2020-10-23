@@ -631,7 +631,7 @@
 
         }
         doEdit();
-        ajac();
+        //ajac();
         //init end
         init = 1;
     });
@@ -751,7 +751,7 @@
             'type': 'GET',
             'success': function (data) {
                 if (data.name == null) {
-                    notLoading();
+                    //notLoading();
                     return;
                 }
                 loading(data,obj);
@@ -774,7 +774,7 @@
             'type': 'GET',
             'success': function (data) {
                 if (data.name == null) {
-                    notLoading();
+                    //notLoading();
                     return;
                 }
                 loadingJsp(data);
@@ -787,9 +787,9 @@
     const loadingJsp = function (data) {
         const qualification = data.qualification[0];
         const specialty = data.specialty[0];
-        $("input[name='specialty']").css('border-color', '#ededed');
-        $("input[name='specialty']").css('color', '#999');
-        $(".specialty").addClass('disabled');
+        // $("input[name='specialty']").css('border-color', '#ededed');
+        // $("input[name='specialty']").css('color', '#999');
+        // $(".specialty").addClass('disabled');
         if (specialty == 'Diagnostic Radiology') {
             $("input[name='specialty'] option[text =specialty]").val("selected", "selected");
             $("input[name='specialty']").val(specialty);
@@ -806,14 +806,14 @@
             $(".specialtyDiv .current").text("Others");
             $("input[name='specialtyOther']").removeClass('hidden');
             $("input[name='specialtyOther']").val(specialty);
-            $("input[name='specialtyOther']").prop('readonly', true);
-            $("input[name='specialtyOther']").css('border-color', '#ededed');
-            $("input[name='specialtyOther']").css('color', '#999');
+            // $("input[name='specialtyOther']").prop('readonly', true);
+            // $("input[name='specialtyOther']").css('border-color', '#ededed');
+            // $("input[name='specialtyOther']").css('color', '#999');
         }
         $('input[name="qualification"]').val(qualification);
-        $('input[name="qualification"]').prop('readonly', true);
-        $('input[name="qualification"]').css('border-color', '#ededed');
-        $('input[name="qualification"]').css('color', '#999');
+        // $('input[name="qualification"]').prop('readonly', true);
+        // $('input[name="qualification"]').css('border-color', '#ededed');
+        // $('input[name="qualification"]').css('color', '#999');
     };
 
 
@@ -821,9 +821,9 @@
         const qualification = data.qualification[0];
         const specialty = data.specialty[0];
         var $CurrentPsnEle = $(obj).closest('table.assignContent');
-        $("input[name='specialty']").css('border-color', '#ededed');
-        $("input[name='specialty']").css('color', '#999');
-        $(".specialty").addClass('disabled');
+        // $("input[name='specialty']").css('border-color', '#ededed');
+        // $("input[name='specialty']").css('color', '#999');
+        // $(".specialty").addClass('disabled');
         if (specialty == 'Diagnostic Radiology') {
             $CurrentPsnEle.find("input[name='specialty'] option[text =specialty]").val("selected", "selected");
             $CurrentPsnEle.find("input[name='specialty']").val(specialty);
@@ -840,14 +840,14 @@
             $CurrentPsnEle.find(".specialtyDiv .current").text("Others");
             $CurrentPsnEle.find("input[name='specialtyOther']").removeClass('hidden');
             $CurrentPsnEle.find("input[name='specialtyOther']").val(specialty);
-            $CurrentPsnEle.find("input[name='specialtyOther']").prop('readonly', true);
-            $CurrentPsnEle.find("input[name='specialtyOther']").css('border-color', '#ededed');
-            $CurrentPsnEle.find("input[name='specialtyOther']").css('color', '#999');
+            // $CurrentPsnEle.find("input[name='specialtyOther']").prop('readonly', true);
+            // $CurrentPsnEle.find("input[name='specialtyOther']").css('border-color', '#ededed');
+            // $CurrentPsnEle.find("input[name='specialtyOther']").css('color', '#999');
         }
         $CurrentPsnEle.find('input[name="qualification"]').val(qualification);
-        $CurrentPsnEle.find('input[name="qualification"]').prop('readonly', true);
-        $CurrentPsnEle.find('input[name="qualification"]').css('border-color', '#ededed');
-        $CurrentPsnEle.find('input[name="qualification"]').css('color', '#999');
+        // $CurrentPsnEle.find('input[name="qualification"]').prop('readonly', true);
+        // $CurrentPsnEle.find('input[name="qualification"]').css('border-color', '#ededed');
+        // $CurrentPsnEle.find('input[name="qualification"]').css('color', '#999');
     };
 
     const notLoading = function () {
