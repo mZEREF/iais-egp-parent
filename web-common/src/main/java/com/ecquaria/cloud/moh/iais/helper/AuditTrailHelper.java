@@ -19,19 +19,22 @@ import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.audit.SessionDurationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailWbClient;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
+import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * AuditTrailHelper
@@ -108,6 +111,29 @@ public class AuditTrailHelper {
             console.append("call event bus for ").append(auditTrailDto.getFunctionName()).append(" that the operation is  ").append(auditTrailDto.getOperation()).append(", the event ref number is ").append(eventRefNo);
             log.info(console.toString());
             AuditLogUtil.callWithEventDriven(trailDtoList, submissionClient, eventRefNo);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    public static void callSaveSessionDuration(String sessionId, int duration){
+        SubmissionClient submissionClient = SpringContextHelper.getContext().getBean(SubmissionClient.class);
+        SessionDurationDto durationDto = new SessionDurationDto();
+        try {
+            String eventRefNo = String.valueOf(System.currentTimeMillis());
+            durationDto.setEventRefNo(eventRefNo);
+            SubmitReq req = new SubmitReq();
+            req.setProject("Audit Trail Function");
+            req.setProcess("Save Audit Trail");
+            req.setStep("Save");
+            req.setService(EventBusConsts.SERVICE_NAME_AUDIT_TRAIL);
+            req.setOperation(EventBusConsts.OPERATION_AUDIT_TRAIL_UPDATE_SESSION_DURATION);
+            req.setSopUrl("No SOP");
+            req.setData(JsonUtil.parseToJson(durationDto));
+            req.setCallbackUrl((String)null);
+            req.setUserId("SOP");
+            req.setWait(false);
+            submissionClient.submit("http://iais-event-bus", req);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
