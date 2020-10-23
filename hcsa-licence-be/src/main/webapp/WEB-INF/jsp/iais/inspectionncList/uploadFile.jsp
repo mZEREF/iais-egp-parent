@@ -203,6 +203,23 @@
                 var list = fileName.split(".");
                 fileName = list[list.length-1];
                 if(fileType.indexOf(fileName.toUpperCase()) == -1){
+                   var fileTypelist = fileType.split(",");
+                   if(fileTypelist.length >5) {
+                       var stringBiff = "";
+                       for(var indexlist = 0;indexlist <fileTypelist.length; indexlist++){
+                           if(indexlist== 0){
+                               stringBiff += fileTypelist[indexlist];
+                           }else if(indexlist== fileTypelist.length-1){
+                               stringBiff += fileTypelist[indexlist]+"<br/>";
+                           }  else if(indexlist %5 == 0) {
+                               stringBiff += fileTypelist[indexlist] +"," +"<br/>";
+
+                           }else {
+                               stringBiff += fileTypelist[indexlist] +",";
+                           }
+                       }
+                       fileType = stringBiff;
+                   }
                     $('#selectedFileShow').html('Only files with the following extensions are allowed:'+ fileType +'. Please re-upload the file.');
                 }
             }catch (e){
