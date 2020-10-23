@@ -543,7 +543,7 @@
             <div class="row">&nbsp;</div>
             <div class="row">&nbsp;</div>
         </c:if>
-        <div class="row" height="1" style="display: none ;color:#ff0000;" id="selectDecisionMsg">
+        <div class="row" height="1" style="display: none ;color:#ff0000;padding-left: 20px" id="selectDecisionMsg">
             <iais:message key="CESS_ERR002" escape="flase"></iais:message>
         </div>
         <iais:action style="text-align:right;">
@@ -671,8 +671,9 @@
         });
         var flog = false;
         for (var i = 0; i < dropIds.length; i++) {
-            var str = dropIds[i].split('|')[1];
-            if (str == '1') {
+            var str3 = dropIds[i].split('|')[3];
+            var str1 = dropIds[i].split('|')[1];
+            if (str1 === '1'&& str3 === 'Active') {
                 flog = true;
             }
         }
@@ -694,7 +695,7 @@
         var flog = false;
         for (var i = 0; i < dropIds.length; i++) {
             var str = dropIds[i].split('|')[3];
-            if (str == 'Active') {
+            if (str === 'Active') {
                 flog = true;
             }
         }
