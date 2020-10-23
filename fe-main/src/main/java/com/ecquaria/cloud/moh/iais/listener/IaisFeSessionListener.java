@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -44,11 +45,11 @@ public class IaisFeSessionListener {
     public void sessionExpiredEvent(SessionExpiredEvent sessionEvent) {
         LoginContext loginContext = sessionEvent.getSession().getAttribute(AppConsts.SESSION_ATTR_LOGIN_USER);
         if (loginContext != null) {
-            AuditTrailDto auditTrailDto = new AuditTrailDto();
+            AuditTrailDto loginDto = auditTrailMainClient.getLoginInfoBySessionId(sessionEvent.getSession().getId()).getEntity();
+            AuditTrailDto auditTrailDto = MiscUtil.transferEntityDto(loginDto, AuditTrailDto.class);
             IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_SESSION_TIMEOUT);
             AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
-            AuditTrailDto loginDto = auditTrailMainClient.getLoginInfoBySessionId(sessionEvent.getSession().getId()).getEntity();
             Date now = new Date();
             if (loginDto != null) {
                 Date before = Formatter.parseDateTime(loginDto.getActionTime());
