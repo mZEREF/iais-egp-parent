@@ -206,6 +206,6 @@ public interface HcsaLicenceClient {
     @PostMapping(value = "/hcsa-licence/test-licId", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> testLicence(@RequestBody List<LicInspectionGroupDto> licInspectionGroupDtos);
 
-    @GetMapping(value = "/hcsa-licence/find-lic-effDate",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/hcsa-licence/find-lic-effDateApproved",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity <List<LicenceDto>> getLicDtosWithApproved();
 }

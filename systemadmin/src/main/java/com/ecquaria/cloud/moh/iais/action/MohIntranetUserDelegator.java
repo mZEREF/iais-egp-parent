@@ -480,7 +480,9 @@ public class MohIntranetUserDelegator {
                 userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
                 userGroupCorrelationDtos.add(userGroupCorrelationDto);
             }
-            intranetUserService.addUserGroupId(userGroupCorrelationDtos);
+            if(!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)){
+                intranetUserService.addUserGroupId(userGroupCorrelationDtos);
+            }
         }
         if (removeRoles != null) {
             List<String> removeRoleIds = IaisCommonUtils.genNewArrayList();
@@ -496,9 +498,9 @@ public class MohIntranetUserDelegator {
                     //AO1
                     removeRoleNames.add(roleName);
                 }
+                intranetUserService.removeRole(orgUserRoleDtos);
+                intranetUserService.removeEgpRoles(AppConsts.HALP_EGP_DOMAIN, orgUserDto.getUserId(), removeRoleNames);
             }
-            intranetUserService.removeRole(orgUserRoleDtos);
-            intranetUserService.removeEgpRoles(AppConsts.HALP_EGP_DOMAIN, orgUserDto.getUserId(), removeRoleNames);
             //remove group
         }
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
