@@ -80,7 +80,7 @@ public class LogoutDelegate {
 
             try {
                 auditTrailDto.setFunctionName(StringUtil.capitalize(loginContext.getUserDomain()) + " Logout");
-                AuditTrailHelper.directInsert(auditTrailDto);
+                AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
 
                 AuditTrailDto loginDto = bbAuditTrailClient.getLoginInfoBySessionId(sessionId).getEntity();
                 Date now = new Date();
@@ -88,7 +88,6 @@ public class LogoutDelegate {
                     Date before = Formatter.parseDateTime(loginDto.getActionTime());
                     long duration = now.getTime() - before.getTime();
                     int minutes = (int) Calculator.div(duration, 60000, 0);
-                    auditTrailDto.setTotalSessionDuration(minutes);
                     AuditTrailHelper.callSaveSessionDuration(sessionId, minutes);
                 }
             } catch (Exception e) {
