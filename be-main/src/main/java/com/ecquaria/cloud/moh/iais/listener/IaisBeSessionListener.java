@@ -2,10 +2,8 @@ package com.ecquaria.cloud.moh.iais.listener;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainBeClient;
-import com.ecquaria.sz.commons.util.Calculator;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -36,9 +34,6 @@ public class IaisBeSessionListener {
             AuditTrailDto loginDto = auditTrailMainClient.getLoginInfoBySessionId(sessionEvent.getSession().getId()).getEntity();
             Date now = new Date();
             if (loginDto != null) {
-                Date before = Formatter.parseDateTime(loginDto.getActionTime());
-                long duration = now.getTime() - before.getTime();
-                int minutes = (int) Calculator.div(duration, 60000, 0);
                 auditTrailMainClient.updateSessionDuration(sessionEvent.getSession().getId(), 30);
             }
         }
