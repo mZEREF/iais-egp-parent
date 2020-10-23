@@ -1005,11 +1005,11 @@ public class NewApplicationAjaxController {
         StringBuilder sb = new StringBuilder();
         professionalResponseDto = professionalResponseDtos.get(0);
         List<String> specialty = professionalResponseDto.getSpecialty();
+        List<String> qualification = professionalResponseDto.getQualification();
+        List<String> subspecialty = professionalResponseDto.getSubspecialty();
         if(IaisCommonUtils.isEmpty(specialty)){
             return professionalResponseDto;
         }
-        List<String> qualification = professionalResponseDto.getQualification();
-        List<String> subspecialty = professionalResponseDto.getSubspecialty();
         if (!IaisCommonUtils.isEmpty(qualification)) {
             String s = qualification.get(0);
             if(!StringUtil.isEmpty(s)){
@@ -1017,7 +1017,7 @@ public class NewApplicationAjaxController {
             }
         }
         if (!IaisCommonUtils.isEmpty(subspecialty)) {
-            String s = qualification.get(0);
+            String s = subspecialty.get(0);
             if(!StringUtil.isEmpty(s)){
                 sb.append(s);
             }
