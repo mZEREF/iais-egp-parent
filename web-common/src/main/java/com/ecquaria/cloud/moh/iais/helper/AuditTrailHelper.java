@@ -121,6 +121,8 @@ public class AuditTrailHelper {
         SessionDurationDto durationDto = new SessionDurationDto();
         try {
             String eventRefNo = String.valueOf(System.currentTimeMillis());
+            durationDto.setSessionId(sessionId);
+            durationDto.setDuration(duration);
             durationDto.setEventRefNo(eventRefNo);
             SubmitReq req = new SubmitReq();
             req.setProject("Audit Trail Function");
