@@ -2000,7 +2000,8 @@ public class HcsaApplicationDelegator {
                         applicationService.closeTaskWhenWhAppApprove(withdrawApplicationDto.getId());
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                         msgInfoMap.put("Applicant", licenseeDto.getName());
-                        msgInfoMap.put("appNum", applicationNo);
+                        msgInfoMap.put("ApplicationType", applicationType);
+                        msgInfoMap.put("ApplicationNumber", applicationNo);
                         msgInfoMap.put("reqAppNo",applicationNo);
                         msgInfoMap.put("S_LName",serviceName);
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
@@ -2025,7 +2026,10 @@ public class HcsaApplicationDelegator {
                         sendSMS("",taskDto.getUserId(),smsInfoMap);
                     }else{
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                        msgInfoMap.put("appNum", applicationNo);
+                        msgInfoMap.put("ApplicationNumber", applicationNo);
+                        msgInfoMap.put("ApplicationType", applicationType);
+                        msgInfoMap.put("Applicant", licenseeDto.getName());
+                        msgInfoMap.put("ApplicationDate",applicationViewDto.getSubmissionDate());
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
                         EmailParam emailParam = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT,msgInfoMap,applicationNo);
                         notificationHelper.sendNotification(emailParam);
