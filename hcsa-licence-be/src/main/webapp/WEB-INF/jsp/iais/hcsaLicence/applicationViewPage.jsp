@@ -185,6 +185,21 @@
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
+                                                    <%--Choose to inspect for 6 months--%>
+                                                    <c:if test="${(applicationViewDto.applicationDto.status == 'APST007' || applicationViewDto.applicationDto.status == 'APST012') && isChooseInspection}">
+                                                        <div id="chooseInspectionBox">
+                                                            <iais:row>
+                                                                <iais:field value="Choose to inspect for 6 months?" required="false"/>
+                                                                <iais:value width="10">
+                                                                    <p>
+                                                                        <input class="form-check-input" id="chooseInspection"
+                                                                               type="checkbox" name="chooseInspection" aria-invalid="false" <c:if test="${chooseInspectionChecked == 'Y'}">checked</c:if> value="Y">
+                                                                        <label class="form-check-label" for="chooseInspection"><span class="check-square"></span></label>
+                                                                    </p>
+                                                                </iais:value>
+                                                            </iais:row>
+                                                        </div>
+                                                    </c:if>
 
                                                     <div id="comments" class="hidden">
                                                         <%String commentsValue = request.getParameter("comments");%>

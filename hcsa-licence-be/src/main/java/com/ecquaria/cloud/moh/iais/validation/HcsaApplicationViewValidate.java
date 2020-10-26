@@ -167,6 +167,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                                 }
                             }
                         }
+                        //check ins
+                        checkInspectionForSixMonth(request,errMap,verified);
                     } else if (ROLLBACK.equals(nextStage)) {
                         String rollBack = ParamUtil.getRequestString(request, "rollBack");
                         ParamUtil.setRequestAttr(request, "selectRollBack", rollBack);
@@ -197,6 +199,16 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
     /**
      * private method
      */
+
+    private void checkInspectionForSixMonth(HttpServletRequest request,Map<String, String> errMap, String verified){
+        String[] chooseInspections =  ParamUtil.getStrings(request,"chooseInspection");
+        if(chooseInspections!=null){
+            if(RoleConsts.PROCESS_TYPE_INS.equals(verified)){
+                errMap.put("verified","Can not routing to inspection");
+            }
+            ParamUtil.setRequestAttr(request,"chooseInspectionChecked","Y");
+        }
+    }
 
     private void checkBroadcast(String roleId, Map<String, String> errMap,String status, String recommendationStr,HttpServletRequest request){
         boolean broadcastAsoPso = (boolean)ParamUtil.getSessionAttr(request,"broadcastAsoPso");

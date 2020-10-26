@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppLastInsGroup;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
@@ -182,6 +183,9 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "oldApplicationNo", null);
         ParamUtil.setSessionAttr(bpc.request, "feAppealSpecialDocDto",null);
         ParamUtil.setSessionAttr(bpc.request,"Ao1Ao2Approve","N");
+        ParamUtil.setSessionAttr(bpc.request,"isChooseInspection",false);
+        ParamUtil.setSessionAttr(bpc.request,"chooseInspectionChecked","N");
+        ParamUtil.setSessionAttr(bpc.request,"AppLastInsGroup",null);
         log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
 
         initData(bpc);
@@ -437,6 +441,24 @@ public class HcsaApplicationDelegator {
             String verified = ParamUtil.getString(bpc.request,"verified");
             String rollBack = ParamUtil.getMaskedString(bpc.request,"rollBack");
             String nextStage=null;
+
+            boolean chooseInspection = (boolean) ParamUtil.getSessionAttr(bpc.request,"isChooseInspection");
+            boolean needSaveInspection = (ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(status)) && chooseInspection;
+            if(needSaveInspection){
+                String[] chooseInspections =  ParamUtil.getStrings(bpc.request,"chooseInspection");
+                AppLastInsGroup appLastInsGroup =  (AppLastInsGroup)ParamUtil.getSessionAttr(bpc.request,"AppLastInsGroup");
+                if(appLastInsGroup != null){
+                    if(chooseInspections!=null){
+                        applicationClient.saveAppPremisesRecommendationDtoForLastInsp(appLastInsGroup.getAppId(),appLastInsGroup.getOldAppId());
+                    }else{
+                        applicationClient.deleteAppPremisesRecommendationDtoForLastInsp(appPremCorreId);
+                        ParamUtil.setSessionAttr(bpc.request,"chooseInspectionChecked","N");
+                    }
+                    if(RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)){
+                        applicationClient.saveLastInsForSixMonthToRenew(appLastInsGroup.getAppId(),appLastInsGroup.getOldAppId());
+                    }
+                }
+            }
 
             //62875
             String stage = ParamUtil.getString(bpc.request,"nextStage");
@@ -2700,6 +2722,34 @@ public class HcsaApplicationDelegator {
 
         //cessation
         setCessation(bpc.request,applicationViewDto,correlationId);
+
+        //set choose inspection
+        setChooseInspectionValue(bpc.request,applicationViewDto);
+    }
+
+    private void setChooseInspectionValue(HttpServletRequest request, ApplicationViewDto applicationViewDto){
+        boolean chooseInspection = chooseInspection(applicationViewDto,request);
+//        ParamUtil.setSessionAttr(request,"isChooseInspection",chooseInspection);
+        ParamUtil.setSessionAttr(request,"isChooseInspection",true);
+    }
+
+    private boolean chooseInspection(ApplicationViewDto applicationViewDto,HttpServletRequest request){
+        boolean flag = false;
+        if(applicationViewDto != null){
+            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+            String originLicenceId = applicationDto.getOriginLicenceId();
+            if(!StringUtil.isEmpty(originLicenceId)){
+                AppLastInsGroup appLastInsGroup = applicationClient.getAppLastInsGroup(applicationDto.getId(), originLicenceId).getEntity();
+                boolean recomTypeLastIns = appLastInsGroup.isRecomTypeLastIns();
+                flag = recomTypeLastIns;
+                boolean saveRecomTypeForLastIns = appLastInsGroup.isSaveRecomTypeForLastIns();
+                if(saveRecomTypeForLastIns){
+                    ParamUtil.setSessionAttr(request,"chooseInspectionChecked","Y");
+                }
+                ParamUtil.setSessionAttr(request,"AppLastInsGroup",appLastInsGroup);
+            }
+        }
+        return flag;
     }
 
     private void setCessation(HttpServletRequest request, ApplicationViewDto applicationViewDto, String correlationId){
