@@ -752,7 +752,7 @@ public class ApplicationClientFallback implements ApplicationClient {
     }
 
     @Override
-    public FeignResponseEntity<List<WithdrawApplicationDto>> getApplicationByAppTypesAndStatus(List<String[]> appTandS) {
+    public FeignResponseEntity<List<WithdrawApplicationDto>> getApplicationByAppTypesAndStatus(List<String[]> appTandS, String licenseeId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
