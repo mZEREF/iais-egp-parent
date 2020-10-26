@@ -362,6 +362,8 @@ public class NotificationHelper {
 							emailDto.setBccList(bccEmail);
 						}
 					}
+					//replace num
+					mesContext = MessageTemplateUtil.replaceNum(mesContext);
 					emailDto.setContent(mesContext);
 					emailDto.setSubject(subject);
 					emailDto.setSender(this.mailSender);
@@ -380,9 +382,6 @@ public class NotificationHelper {
 					if (!IaisCommonUtils.isEmpty(emailDto.getReceipts()) ||
 						!IaisCommonUtils.isEmpty(emailDto.getCcList()) ||
 						!IaisCommonUtils.isEmpty(emailDto.getBccList())) {
-						//replace num
-						mesContext = MessageTemplateUtil.replaceNum(mesContext);
-						emailDto.setContent(mesContext);
 						if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
 							String gatewayUrl = env.getProperty("iais.inter.gateway.url");
 							HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -418,12 +417,11 @@ public class NotificationHelper {
 								if (officerFlag) {
 									templateContent.put("officer_name", officerValue);
 									mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
+									//replace num
+									mesContext = MessageTemplateUtil.replaceNum(mesContext);
+									emailDto.setContent(mesContext);
 								}
 							}
-
-							//replace num
-							mesContext = MessageTemplateUtil.replaceNum(mesContext);
-							emailDto.setContent(mesContext);
 							emailDto.setReceipts(officerEmails);
 							if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
 								String gatewayUrl = env.getProperty("iais.inter.gateway.url");
