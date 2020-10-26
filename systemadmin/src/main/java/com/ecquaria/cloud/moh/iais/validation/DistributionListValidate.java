@@ -43,7 +43,7 @@ public class DistributionListValidate implements CustomizeValidator {
                 for (String item :distribution.getEmailAddress()
                 ) {
                     if(!ValidationUtils.isEmail(item)){
-                        errMap.put("addr", MessageUtil.getMessageDesc("USER_ERR005"));
+                        errMap.put("addr", MessageUtil.getMessageDesc("GENERAL_ERR0014"));
                     }
                 }
             }

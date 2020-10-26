@@ -243,7 +243,7 @@ public class HcsaChklItemDelegator {
         boolean duplicationRecord = hcsaChklService.submitCloneItem(chklItemDtos).booleanValue();
         if (duplicationRecord){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("cloneItemMsg", "CHKL_ERR012"));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("cloneItemMsg", "CHKL_ERR007"));
             return;
         }
 

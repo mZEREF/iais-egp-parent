@@ -46,7 +46,7 @@ public class HolidayValidate implements CustomizeValidator {
             if(!(origal != null && publicHolidayDto.getFromDate().equals(origal.getFromDate()))){
                 PublicHolidayDto publicHolidayDtoDate = publicHolidayService.publicHoliday(publicHolidayDto.getFromDate());
                 if(publicHolidayDtoDate != null){
-                    errMap.put("sub_date", MessageUtil.getMessageDesc("OAPPT_ACK010"));
+                    errMap.put("sub_date", MessageUtil.getMessageDesc("OAPPT_ERR007"));
                 }
             }
 
@@ -60,7 +60,7 @@ public class HolidayValidate implements CustomizeValidator {
             int year = c.get(Calendar.YEAR);
             PublicHolidayDto publicHolidayDtoDis = publicHolidayService.publicHolidayByDis(publicHolidayDto.getDescription(),year);
             if(publicHolidayDtoDis != null){
-                errMap.put("description", MessageUtil.getMessageDesc("OAPPT_ACK010"));
+                errMap.put("description", MessageUtil.getMessageDesc("OAPPT_ERR007"));
             }
         }
         if(StringUtil.isEmpty(publicHolidayDto.getStatus())){

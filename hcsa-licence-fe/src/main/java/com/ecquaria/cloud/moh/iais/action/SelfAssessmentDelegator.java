@@ -331,7 +331,7 @@ public class SelfAssessmentDelegator {
             boolean fullPower = hasFillUpAnswer(selfAssessmentDetail).booleanValue();
             if (!fullPower) {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("noFillUpItemError", "SELF_CHECKLIST_ERROR0001"));
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("noFillUpItemError", "UC_INSTA004_ERR008"));
             } else {
                 selfAssessmentDetail.setCanEdit(false);
 

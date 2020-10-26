@@ -448,7 +448,7 @@ public class NewApplicationHelper {
                 String designation = poDto.get(i).getDesignation();
                 String officeTelNo = poDto.get(i).getOfficeTelNo();
                 /*if(StringUtil.isEmpty(modeOfMedAlert)||"-1".equals(modeOfMedAlert)){
-                    oneErrorMap.put("modeOfMedAlert"+dpoIndex,"UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("modeOfMedAlert"+dpoIndex,"GENERAL_ERR0039");
                 }*/
 
                 boolean licPerson = poDto.get(i).isLicPerson();

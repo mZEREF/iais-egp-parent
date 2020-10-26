@@ -960,7 +960,7 @@ public class NewApplicationDelegator {
                     }
                 } else {
 //                    if(comm.getIsMandatory()){
-//                        errorMap.put(name, "UC_CHKLMD001_ERR001");
+//                        errorMap.put(name, "GENERAL_ERR0039");
 //                    }
                 }
             }
@@ -1002,7 +1002,7 @@ public class NewApplicationDelegator {
                         }
                     } else {
 //                        if(prem.getIsMandatory()) {
-//                            errorMap.put(name, "UC_CHKLMD001_ERR001");
+//                            errorMap.put(name, "GENERAL_ERR0039");
 //                        }
                     }
                 }

@@ -418,7 +418,7 @@ public class RequestForChangeDelegator {
             error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0006","Letter of Undertaking","field"));
         }
         if(!isEmail){
-            error.put("emailError","RFC_ERR003");
+            error.put("emailError","GENERAL_ERR0014");
         }
         if(confirms == null || confirms.length == 0){
             error.put("confirmError","RFC_ERR004");
@@ -731,7 +731,7 @@ public class RequestForChangeDelegator {
 
         }
         if(StringUtil.isEmpty(email)){
-            error.put("emailError","UC_CHKLMD001_ERR001");
+            error.put("emailError","GENERAL_ERR0039");
         }
         return error;
     }
