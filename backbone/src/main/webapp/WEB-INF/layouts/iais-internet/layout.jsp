@@ -9,7 +9,7 @@
 
 <html lang="en">
 <head>
-    <title>HALP</title>
+    <title><c:out value="${iais_Audit_Trail_dto_Attr.functionName}"/></title>
     <%@ include file="/WEB-INF/jsp/inc/iais-internet-common-include.jsp" %>
 
     <%-- BEGIN additional header --%>
