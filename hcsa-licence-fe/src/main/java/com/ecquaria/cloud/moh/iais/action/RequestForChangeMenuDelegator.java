@@ -1251,6 +1251,9 @@ public class RequestForChangeMenuDelegator {
                 serviceConfigService.updatePaymentStatus(appGrp);
                 bpc.request.setAttribute("createDate", new Date());
                 requestForChangeService.sendRfcEmailToOfficer(appSubmissionDtos.get(0));
+            }else{
+                switchValue = "loading";
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"prePayment");
             }
 
             bpc.request.setAttribute("pmtRefNo", pmtRefNo);

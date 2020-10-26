@@ -1297,7 +1297,8 @@ public class NewApplicationDelegator {
                     log.error(StringUtil.changeForLog("send email error ...."));
                 }
             }else{
-                switch2 = "payFailed";
+                switch2 = "loading";
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"payment");
             }
         }
 
