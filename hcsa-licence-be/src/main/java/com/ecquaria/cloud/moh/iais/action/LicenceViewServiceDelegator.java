@@ -58,6 +58,12 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
@@ -69,11 +75,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * LicenceViewServiceDelegator
@@ -546,6 +547,7 @@ public class LicenceViewServiceDelegator {
                 List<ComplaintDto> complaintDtos = listHashMap.get(disciplinaryRecordResponseDto.getRegno());
                 if(complaintDtos==null){
                     complaintDtos=new ArrayList<>();
+                    List<ComplaintDto> complaintDtoList = addMoneySymbol(disciplinaryRecordResponseDto.getComplaints());
                     complaintDtos.addAll(disciplinaryRecordResponseDto.getComplaints());
                     listHashMap.put(disciplinaryRecordResponseDto.getRegno(),complaintDtos);
                 }else {
@@ -558,6 +560,19 @@ public class LicenceViewServiceDelegator {
         request.getSession().setAttribute("hashMap",(Serializable)hashMap);
 
     }
+
+    private List<ComplaintDto> addMoneySymbol(List<ComplaintDto> complaints) {
+        if(!IaisCommonUtils.isEmpty(complaints)){//NOSONAR
+            for(ComplaintDto complaintDto : complaints){
+                if(complaintDto != null && !StringUtil.isEmpty(complaintDto.getFineamount())) {
+                    String money = "$" + complaintDto.getFineamount();
+                    complaintDto.setFineamount(money);
+                }
+            }
+        }
+        return complaints;
+    }
+
     private void authorisedPerson( String licenseeId,AppSubmissionDto appSubmissionDto){
         if(licenseeId==null){
             return;
