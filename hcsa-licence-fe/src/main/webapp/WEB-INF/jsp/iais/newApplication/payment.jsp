@@ -87,7 +87,12 @@
                                                 <c:if test="${complexSpecifiedFeeExt.svcNames.size()>0 }">
                                                     <tr>
                                                         <td class="breakdown">
-                                                            <p>&nbsp;&nbsp;<em>Complex Specified Services <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()})</c:if></em></p>
+                                                            <p>&nbsp;&nbsp;
+                                                                <em>Complex Specified Services
+                                                                    <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()}) </c:if>
+                                                                    (1 x ${AppSubmissionDto.appGrpPremisesDtoList.size()} Premises)
+                                                                </em>
+                                                            </p>
                                                             <c:forEach var="svcName" items="${complexSpecifiedFeeExt.svcNames}">
                                                                 <p>&nbsp;&nbsp;- <c:out value="${svcName}"></c:out></p>
                                                             </c:forEach>
