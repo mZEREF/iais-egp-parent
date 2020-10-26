@@ -1989,19 +1989,35 @@ public class HcsaApplicationDelegator {
                  * Send Withdrawal Application Email
                  */
                 if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(withdrawApplicationDto.getApplicationType())){
+                    LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
                     String serviceId = applicationViewDto.getApplicationDto().getServiceId();
                     String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
+                    String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+                    ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+                    Integer isByGIRO = applicationGroupDto.getIsByGiro();
                     String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
                     if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(withdrawApplicationDto.getStatus())){
                         applicationService.closeTaskWhenWhAppApprove(withdrawApplicationDto.getId());
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+                        msgInfoMap.put("Applicant", licenseeDto.getName());
                         msgInfoMap.put("appNum", applicationNo);
                         msgInfoMap.put("reqAppNo",applicationNo);
                         msgInfoMap.put("S_LName",serviceName);
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+                        msgInfoMap.put("paymentType",isByGIRO);
+                        msgInfoMap.put("ApplicationDate",applicationViewDto.getSubmissionDate());
+                        msgInfoMap.put("returnMount",applicationViewDto.getReturnFee());
+                        if (isByGIRO == 0){
+                            msgInfoMap.put("paymentMode","GIRO");
+                        }else{
+                            msgInfoMap.put("paymentMode","Online Payment");
+                        }
+                        msgInfoMap.put("adminFee","100");
+                        msgInfoMap.put("systemLink",loginUrl);
+                        msgInfoMap.put("emailAddress",systemAddressOne);
                         EmailParam emailParam = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE,msgInfoMap,applicationNo);
                         notificationHelper.sendNotification(emailParam);
-                        sendInboxMessage(applicationNo,serviceId,msgInfoMap,emailParam.getSubject());
+                        sendInboxMessage(applicationViewDto,serviceId,msgInfoMap,emailParam.getSubject());
                         /**
                          *  Send SMS when withdrawal Application Approve
                          */
@@ -2013,7 +2029,7 @@ public class HcsaApplicationDelegator {
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
                         EmailParam emailParam = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT,msgInfoMap,applicationNo);
                         notificationHelper.sendNotification(emailParam);
-                        sendInboxMessage(applicationNo,serviceId,msgInfoMap,emailParam.getSubject());
+                        sendInboxMessage(applicationViewDto,serviceId,msgInfoMap,emailParam.getSubject());
                         /**
                          *  Send SMS when withdrawal Application Reject
                          */
@@ -2126,25 +2142,27 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private void sendInboxMessage(String applicationNo,String serviceId,Map<String, Object> map,String subject) throws IOException, TemplateException {
+    private void sendInboxMessage(ApplicationViewDto applicationViewDto,String serviceId,Map<String, Object> map,String subject) throws IOException, TemplateException {
         EmailParam messageParam = new EmailParam();
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
         if(serviceDto != null){
             svcCodeList.add(serviceDto.getSvcCode());
         }
         Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-        subMap.put("ApplicationNumber", applicationNo);
+        subMap.put("ApplicationNumber", applicationDto.getApplicationNo());
+        subMap.put("ApplicationType", applicationDto.getApplicationType());
         subject = MsgUtil.getTemplateMessageByContent(subject,subMap);
         messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE);
-        messageParam.setQueryCode(applicationNo);
+        messageParam.setQueryCode(applicationDto.getApplicationNo());
         messageParam.setTemplateContent(map);
-        messageParam.setReqRefNum(applicationNo);
+        messageParam.setReqRefNum(applicationDto.getApplicationNo());
         messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-        messageParam.setRefId(applicationNo);
+        messageParam.setRefId(applicationDto.getApplicationNo());
         messageParam.setSubject(subject);
         messageParam.setSvcCodeList(svcCodeList);
-        log.info(StringUtil.changeForLog("send withdraw Application message"));
+        log.info(StringUtil.changeForLog("send withdraw Application approve message"));
         notificationHelper.sendNotification(messageParam);
     }
 
