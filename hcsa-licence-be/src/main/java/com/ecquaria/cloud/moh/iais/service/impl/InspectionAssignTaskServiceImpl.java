@@ -720,10 +720,9 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
         map.put("applicant", licenseeDto.getName());
         String hciName = appGrpPremisesDto.getHciName();
-        if(StringUtil.isEmpty(hciName)){
-            hciName = "";
+        if(!StringUtil.isEmpty(hciName)){
+            map.put("hciName", hciName);
         }
-        map.put("hciName", hciName);
         map.put("date", dateStr);
         map.put("dateTime", dateTime);
         map.put("systemLink", url);

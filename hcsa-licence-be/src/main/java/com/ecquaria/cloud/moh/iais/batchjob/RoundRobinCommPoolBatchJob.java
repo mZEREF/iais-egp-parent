@@ -488,8 +488,8 @@ public class RoundRobinCommPoolBatchJob {
         Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
         map.put("applicant", licenseeDto.getName());
         String hciName = appGrpPremisesDto.getHciName();
-        if(StringUtil.isEmpty(hciName)){
-            hciName = "";
+        if(!StringUtil.isEmpty(hciName)){
+            map.put("hciName", hciName);
         }
         map.put("hciName", hciName);
         map.put("date", dateStr);
