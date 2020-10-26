@@ -1125,9 +1125,6 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             }
             hciNameCode = html.toString();
         }
-        if(!StringUtil.isEmpty(hciName)) {
-            map.put("hciName", hciName);
-        }
         if(!StringUtil.isEmpty(hciNameCode)) {
             map.put("hciNameCode", hciNameCode);
         }
