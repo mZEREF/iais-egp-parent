@@ -1124,6 +1124,7 @@ public class ClinicalLaboratoryDelegator {
                 for(AppSvcRelatedInfoDto oldSvcRelDto:oldAppSvcRelatedInfoDtos){
                     if(currentSvcId.equals(oldSvcRelDto.getServiceId())){
                         oldDocs = oldSvcRelDto.getAppSvcDocDtoLit();
+                        break;
                     }
                 }
             }
