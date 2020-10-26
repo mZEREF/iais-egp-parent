@@ -90,7 +90,7 @@
                                                             <p>&nbsp;&nbsp;
                                                                 <em>Complex Specified Services
                                                                     <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()}) </c:if>
-                                                                    (1 x ${AppSubmissionDto.appGrpPremisesDtoList.size()} Premises)
+                                                                    (1 x ${AppSubmissionDto.appGrpPremisesDtoList.size()} premises)
                                                                 </em>
                                                             </p>
                                                             <c:forEach var="svcName" items="${complexSpecifiedFeeExt.svcNames}">
