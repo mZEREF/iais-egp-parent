@@ -306,7 +306,7 @@
                           <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                             <tr>
                               <td>Professional Regn No.</td>
-                              <td width="10%">Complaints</td>
+                              <td>Complaints</td>
                               <td>Final Outcome</td>
                               <td>Fine Amounts</td>
                               <td>Restrictive Practice Start Date</td>
@@ -320,9 +320,9 @@
                               <tr>
                                 <td>${cgo.profRegNo}</td>
                                 <td>
-                                  <p>${list.complaint1}</p>
-                                  <p>${list.complaint2}</p>
-                                  <p>${list.complaint3}</p>
+                                  <nobr><p>${list.complaint1}</p></nobr>
+                                  <nobr><p>${list.complaint2}</p></nobr>
+                                  <nobr><p>${list.complaint3}</p></nobr>
                                 </td>
                                 <td>${list.finaloutcome}</td>
                                 <td>${list.fineamount}</td>
@@ -654,7 +654,7 @@
                                 <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                   <tr>
                                     <td>Professional Regn No.</td>
-                                    <td width="10%">Complaints</td>
+                                    <td >Complaints</td>
                                     <td>Final Outcome</td>
                                     <td>Fine Amounts</td>
                                     <td>Restrictive Practice Start Date</td>
@@ -668,9 +668,9 @@
                                     <tr>
                                       <td>${appSvcPersonnelDtoList.profRegNo}</td>
                                       <td>
-                                        <p>${list.complaint1}</p>
-                                        <p>${list.complaint2}</p>
-                                        <p>${list.complaint3}</p>
+                                        <nobr><p>${list.complaint1}</p></nobr>
+                                        <nobr><p>${list.complaint2}</p></nobr>
+                                        <nobr><p>${list.complaint3}</p></nobr>
                                       </td>
                                       <td>${list.finaloutcome}</td>
                                       <td>${list.fineamount}</td>
@@ -693,7 +693,7 @@
                                 <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                   <tr>
                                     <td>Professional Regn No.</td>
-                                    <td width="10%">Complaints</td>
+                                    <td>Complaints</td>
                                     <td>Final Outcome</td>
                                     <td>Fine Amounts</td>
                                     <td>Restrictive Practice Start Date</td>
@@ -707,9 +707,10 @@
                                     <tr>
                                       <td>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}</td>
                                       <td>
-                                        <p>${list.complaint1}</p>
-                                        <p>${list.complaint2}</p>
-                                        <p>${list.complaint3}</p>
+                                        <nobr><p>${list.complaint1}</p></nobr>
+                                        <nobr><p>${list.complaint2}</p></nobr>
+                                        <nobr> <p>${list.complaint3}</p></nobr>
+
                                       </td>
                                       <td>${list.finaloutcome}</td>
                                       <td>${list.fineamount}</td>
@@ -1010,7 +1011,7 @@
                                 <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                   <tr>
                                     <td>Professional Regn No.</td>
-                                    <td width="10%">Complaints</td>
+                                    <td >Complaints</td>
                                     <td>Final Outcome</td>
                                     <td>Fine Amounts</td>
                                     <td>Restrictive Practice Start Date</td>
@@ -1024,9 +1025,9 @@
                                     <tr>
                                       <td>${appSvcPersonnelDtoList.profRegNo}</td>
                                       <td>
-                                        <p>${list.complaint1}</p>
-                                        <p>${list.complaint2}</p>
-                                        <p>${list.complaint3}</p>
+                                        <nobr><p>${list.complaint1}</p></nobr>
+                                        <nobr><p>${list.complaint2}</p></nobr>
+                                        <nobr><p>${list.complaint3}</p></nobr>
                                       </td>
                                       <td>${list.finaloutcome}</td>
                                       <td>${list.fineamount}</td>
@@ -1049,7 +1050,7 @@
                                 <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                   <tr>
                                     <td>Professional Regn No.</td>
-                                    <td width="10%">Complaints</td>
+                                    <td >Complaints</td>
                                     <td>Final Outcome</td>
                                     <td>Fine Amounts</td>
                                     <td>Restrictive Practice Start Date</td>
@@ -1063,9 +1064,10 @@
                                     <tr>
                                       <td>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}</td>
                                       <td>
-                                        <p>${list.complaint1}</p>
-                                        <p>${list.complaint2}</p>
-                                        <p>${list.complaint3}</p>
+                                        <nobr> <p>${list.complaint1}</p></nobr>
+                                        <nobr> <p>${list.complaint2}</p></nobr>
+                                        <nobr> <p>${list.complaint3}</p></nobr>
+
                                       </td>
                                       <td>${list.finaloutcome}</td>
                                       <td>${list.fineamount}</td>

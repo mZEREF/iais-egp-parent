@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.KpiAndReminderService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -146,7 +147,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
             String service = request.getParameter("service");
             request.setAttribute("service",service);
             if(StringUtil.isEmpty(service)){
-                errorMap.put("service","ERR0009");
+                errorMap.put("service", MessageUtil.replaceMessage("GENERAL_ERR0006","Service","field"));
             }
         }
         String module = request.getParameter("module");
@@ -160,7 +161,24 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
             String stageCode1 = request.getParameter(stageCode);
           request.setAttribute(stageCode,stageCode1);
             if(StringUtil.isEmpty(stageCode1)){
-                errorMap.put(stageCode,"ERR0009");
+                if("ASO".equals(stageCode)){
+                    errorMap.put(stageCode,MessageUtil.replaceMessage("GENERAL_ERR0006","Admin Screening Process","field"));
+                }else if("PSO".equals(stageCode)){
+                    errorMap.put(stageCode,MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Screening Process","field"));
+                }else if("PRE".equals(stageCode)){
+                    errorMap.put(stageCode,MessageUtil.replaceMessage("GENERAL_ERR0006","Pre-Inspection","field"));
+                }else if("INP".equals(stageCode)){
+                    errorMap.put(stageCode,MessageUtil.replaceMessage("GENERAL_ERR0006","Inspection","field"));
+                }else if("POT".equals(stageCode)){
+                    errorMap.put(stageCode,MessageUtil.replaceMessage("GENERAL_ERR0006","Post-Inspection","field"));
+                }else if("AO1".equals(stageCode)){
+                    errorMap.put(stageCode,MessageUtil.replaceMessage("GENERAL_ERR0006","Approval Officer Level 1","field"));
+                }else if ("AO2".equals(stageCode)){
+                    errorMap.put(stageCode,MessageUtil.replaceMessage("GENERAL_ERR0006","Approval Officer Level 2","field"));
+                }else if("AO3".equals(stageCode)){
+                    errorMap.put(stageCode,MessageUtil.replaceMessage("GENERAL_ERR0006","Approval Officer Level 3","field"));
+                }
+
             }else {
                 if(!stageCode1.matches("^[0-9]{0,5}$")){
                     errorMap.put(stageCode,"GENERAL_ERR0002");
@@ -169,12 +187,12 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
         }
 
         if(StringUtil.isEmpty(module)){
-            errorMap.put("module","ERR0009");
+            errorMap.put("module", MessageUtil.replaceMessage("GENERAL_ERR0006","Module","field"));
         }
         request.setAttribute("module",module);
 
         if(StringUtil.isEmpty(reminderThreshold)){
-            errorMap.put("reminderThreshold","ERR0009");
+            errorMap.put("reminderThreshold",MessageUtil.replaceMessage("GENERAL_ERR0006","Reminder Threshold","field"));
         }else {
             if(!reminderThreshold.matches("^[0-9]{0,5}$")){
                 errorMap.put("reminderThreshold","GENERAL_ERR0002");

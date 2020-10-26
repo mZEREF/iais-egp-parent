@@ -182,6 +182,8 @@ public class ConfigServiceDelegator {
         String displayDescription = request.getParameter("displayDescription");
         String serviceCode = request.getParameter("serviceCode");
         String serviceType = request.getParameter("ServiceType");
+        String oldEffectiveDate = request.getParameter("oldEffectiveDate");
+        String oldEndDate = request.getParameter("oldEndDate");
         String serviceIsUse = request.getParameter("serviceIsUse");
         String[] premisesTypes = request.getParameterValues("PremisesType");
         String version = request.getParameter("version");
@@ -669,12 +671,20 @@ public class ConfigServiceDelegator {
 
         //todo delete
         if (!StringUtil.isEmpty(serviceId)) {
-                 hcsaServiceDto.setId(serviceId);
+            hcsaServiceDto.setId(serviceId);
         }
         hcsaServiceDto.setCategoryId(selectCategoryId);
         hcsaServiceDto.setSvcName(serviceName);
         hcsaServiceDto.setSvcCode(serviceCode);
+        hcsaServiceDto.setOldEffectiveDate(oldEffectiveDate);
+        if(!StringUtil.isEmpty(oldEndDate)){
+            try {
+                Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(oldEndDate);
+                hcsaServiceDto.setOldEndDate(parse);
+            }catch (Exception e){
 
+            }
+        }
         try {
             Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(startDate);
             String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(parse);

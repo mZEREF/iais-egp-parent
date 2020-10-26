@@ -163,11 +163,11 @@ public class ConfigServiceImpl implements ConfigService {
         Map<String, Boolean> entity = hcsaConfigClient.isExistHcsaService(hcsaServiceDto).getEntity();
         Boolean svcCode = entity.get("svcCode");
         if(svcCode!=null&&svcCode){
-            errorMap.put("code","This Service Code is already in use , please select another Service Code");
+            errorMap.put("code",MessageUtil.getMessageDesc("SC_ERR002"));
         }
         Boolean svcName = entity.get("svcName");
         if(svcName!=null&&svcName){
-            errorMap.put("Name","This Service Name is already in use , Please select another Service Name");
+            errorMap.put("Name",MessageUtil.getMessageDesc("SC_ERR001"));
         }
 
         if (!errorMap.isEmpty()) {
@@ -451,12 +451,17 @@ public class ConfigServiceImpl implements ConfigService {
         String effectiveDate = hcsaServiceDto.getEffectiveDate();
         Date endDate = hcsaServiceDto.getEndDate();
         boolean serviceIsUsed = hcsaServiceDto.isServiceIsUsed();
+        Date oldEndDate = hcsaServiceDto.getOldEndDate();
         if (StringUtil.isEmpty(effectiveDate)) {
             errorMap.put("effectiveDate", MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field"));
         }else if(!serviceIsUsed){
             Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(effectiveDate);
             if(parse.before(new Date())){
                 errorMap.put("effectiveDate","RSM_ERR012");
+            }else {
+                if(StringUtil.isEmpty(oldEndDate)){
+
+                }
             }
         }
         if(!StringUtil.isEmpty(endDate)){
@@ -1096,6 +1101,8 @@ public class ConfigServiceImpl implements ConfigService {
             parse = new SimpleDateFormat(DATE_FORMAT).parse(effectiveDate);
             String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(parse);
             hcsaServiceDto.setEffectiveDate(format);
+            hcsaServiceDto.setOldEffectiveDate(format);
+            hcsaServiceDto.setOldEndDate(hcsaServiceDto.getEndDate());
         } catch (ParseException e) {
           log.error(e.getMessage(),e);
         }

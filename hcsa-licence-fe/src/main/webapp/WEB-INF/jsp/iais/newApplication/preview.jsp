@@ -152,6 +152,7 @@
         </div>
     </div>
 </div>
+<input type="hidden" value="${RFC_ERR004}" id="RFC_ERR004">
 <script type="text/javascript">
 
     $(document).ready(function() {
@@ -179,7 +180,7 @@
             let jQuery = $('#verifyInfoCheckbox').prop("checked");
             var charityHci  = $('#charityHci').prop('checked');
             if(!jQuery){
-                $('#error_fieldMandatory').html("The field is mandatory");
+                $('#error_fieldMandatory').html($('#RFC_ERR004').val());
                 canSubmit = false;
             }else{
                 $('#error_fieldMandatory').html("");

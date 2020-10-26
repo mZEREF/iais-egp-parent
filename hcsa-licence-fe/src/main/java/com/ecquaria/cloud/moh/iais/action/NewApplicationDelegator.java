@@ -279,6 +279,7 @@ public class NewApplicationDelegator {
             //init session and data
             initSession(bpc);
         }
+        bpc.request.getSession().setAttribute("RFC_ERR004",MessageUtil.getMessageDesc("RFC_ERR004"));
         /*    initOldSession(bpc);*/
         log.info(StringUtil.changeForLog("the do Start end ...."));
     }
@@ -290,6 +291,7 @@ public class NewApplicationDelegator {
         bpc.request.getSession().removeAttribute("rfiHcsaService");
         bpc.request.getSession().removeAttribute("ackPageAppSubmissionDto");
         bpc.request.getSession().removeAttribute("serviceConfig");
+        bpc.request.getSession().removeAttribute("app-rfc-tranfer");
     }
 
     /**
@@ -4287,6 +4289,7 @@ public class NewApplicationDelegator {
         Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(dto.getAppSvcCgoDtoList(), licPersonMap, dto.getServiceCode());
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(govenMap)));
         if (!govenMap.isEmpty()) {
+            errorMap.put("CGO", "error");
             sB.append(serviceId);
             log.info("govenMap is error");
         }
@@ -4338,7 +4341,13 @@ public class NewApplicationDelegator {
         }
         if(list!=null&&appSvcDisciplineAllocationDtoList!=null){
             List<AppSvcChckListDto> appSvcChckListDtoList = list.get(0).getAppSvcChckListDtoList();
+            if(appSvcChckListDtoList!=null){
+                if(appSvcChckListDtoList.size()!=appSvcDisciplineAllocationDtoList.size()){
+                    map.put("allocation","allocation error");
+                    sB.append(serviceId);
+                }
 
+            }
         }
     }
 

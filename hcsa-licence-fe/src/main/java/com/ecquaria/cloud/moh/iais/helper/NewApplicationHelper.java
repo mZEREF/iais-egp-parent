@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -111,7 +112,7 @@ public class NewApplicationHelper {
     public static Map<String,String> doValidateGovernanceOfficers(List<AppSvcCgoDto> appSvcCgoList, Map<String,AppSvcPersonAndExtDto> licPersonMap, String svcCode){
 
         if(appSvcCgoList == null){
-            return IaisCommonUtils.genNewHashMap();
+            return new HashMap<>(1);
         }
 
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
@@ -140,7 +141,7 @@ public class NewApplicationHelper {
                     errMap.put("salutation"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Salutation","field"));
                 }
                 String speciality = appSvcCgoList.get(i).getSpeciality();
-                if("-1".equals(speciality)){
+                if(StringUtil.isEmpty(speciality)||"-1".equals(speciality)){
                     errMap.put("speciality"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Specialty","field"));
                 }else {
                     if("other".equals(speciality)){

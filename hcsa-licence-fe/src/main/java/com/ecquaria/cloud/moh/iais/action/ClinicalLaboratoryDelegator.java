@@ -811,6 +811,8 @@ public class ClinicalLaboratoryDelegator {
                 if (errList.isEmpty()) {
                     if (allChecked.isEmpty()) {
                         coMap.put("information", "information");
+                    }else {
+                        coMap.put("information", "");
                     }
                     //sync person dropdown and submisson dto
                     personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcCgoDtos,svcCode);
@@ -1035,6 +1037,8 @@ public class ClinicalLaboratoryDelegator {
                 if (map.isEmpty()) {
                     if (allChecked.isEmpty()) {
                         coMap.put("information", "information");
+                    }else {
+                        coMap.put("information", "");
                     }
                     //sync person dropdown and submisson dto
                     personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcPrincipalOfficersDtoList,svcCode);
