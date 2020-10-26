@@ -2729,8 +2729,8 @@ public class HcsaApplicationDelegator {
 
     private void setChooseInspectionValue(HttpServletRequest request, ApplicationViewDto applicationViewDto){
         boolean chooseInspection = chooseInspection(applicationViewDto,request);
-//        ParamUtil.setSessionAttr(request,"isChooseInspection",chooseInspection);
-        ParamUtil.setSessionAttr(request,"isChooseInspection",true);
+        ParamUtil.setSessionAttr(request,"isChooseInspection",chooseInspection);
+//        ParamUtil.setSessionAttr(request,"isChooseInspection",true);
     }
 
     private boolean chooseInspection(ApplicationViewDto applicationViewDto,HttpServletRequest request){
