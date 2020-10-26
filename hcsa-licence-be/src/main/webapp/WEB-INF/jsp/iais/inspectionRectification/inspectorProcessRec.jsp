@@ -377,7 +377,7 @@
             $("#actionValue").val('acccond');
             inspectorProRecSubmit("acccond");
         } else {
-            var errMsg = 'The field is mandatory.';
+            var errMsg = 'Processing Decision is mandatory.';
             $("#error_selectValue").text(errMsg);
             dismissWaiting();
         }
