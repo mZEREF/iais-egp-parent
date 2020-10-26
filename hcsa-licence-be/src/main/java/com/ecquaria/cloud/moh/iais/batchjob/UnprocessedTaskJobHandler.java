@@ -137,13 +137,13 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                         if (hcsaSvcKpiDto.getRemThreshold() != null) {
                             remThreshold = hcsaSvcKpiDto.getRemThreshold();
                         }
-                        int sysday = systemParamConfig.getUnprocessedSystemAdmin() + kpi;
+                        int sysday = systemParamConfig.getUnprocessedSystemAdmin() + kpi + 1;
                         log.info(StringUtil.changeForLog("days:" +days));
                         log.info(StringUtil.changeForLog("kpi:" +kpi));
                         log.info(StringUtil.changeForLog("remThreshold:" +remThreshold));
                         log.info(StringUtil.changeForLog("systemParamConfig.getUnprocessedSystemAdmin():" +systemParamConfig.getUnprocessedSystemAdmin()));
 
-                        if(days == remThreshold){
+                        if(days == remThreshold && remThreshold > 0){
                             //judge is email sent
                             JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(item.getId(),"unprocess officer").getEntity();
                             if(jobRemindMsgTrackingDto == null){
@@ -160,7 +160,7 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                 list.add(createjob);
                                 systemBeLicClient.createJobRemindMsgTrackingDtos(list);
                             }
-                        }else if(days == kpi){
+                        }else if(days == (kpi + 1) && kpi > 0){
                             //judge is email sent
                             JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(item.getId(),"unprocess leader").getEntity();
                             if(jobRemindMsgTrackingDto == null){
