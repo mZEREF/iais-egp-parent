@@ -11,11 +11,12 @@
 
 <%-- BEGIN taglib --%>
 <%@ taglib uri="ecquaria/sop/layout" prefix="layout"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%-- END taglib --%>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title><c:out value="${iais_Audit_Trail_dto_Attr.functionName}"/></title>
+	<title><c:out value="${iais_Audit_Trail_dto_Attr.functionName}" default="HALP"/></title>
 	<%@ include file="/WEB-INF/jsp/inc/iais-intranet-common-include.jsp" %>
 	<%-- BEGIN additional header --%>
 	<layout:insertAttribute name="header-ext" ignore="true" />

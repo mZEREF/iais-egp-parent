@@ -4,12 +4,13 @@
 <%-- BEGIN taglib --%>
 <%@ taglib uri="ecquaria/sop/layout" prefix="layout"%>
 <%@ taglib uri="ecquaria/sop/sop-core" prefix="sop-core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <%-- END taglib --%>
 
 <html lang="en">
 <head>
-    <title><c:out value="${iais_Audit_Trail_dto_Attr.functionName}"/></title>
+    <title><c:out value="${iais_Audit_Trail_dto_Attr.functionName}" default="HALP"/></title>
     <%@ include file="/WEB-INF/jsp/inc/iais-internet-common-include.jsp" %>
 
     <%-- BEGIN additional header --%>
