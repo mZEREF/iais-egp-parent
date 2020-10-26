@@ -71,7 +71,7 @@
                         </div>
                     <div class="row">
                         <div class="center-content">
-                            <h3>Reason for Withdrawal<span style="color: #ff0000"> *</span></h3>
+                            <h3>Reason for Withdrawal  <c:if test="${isDoView != 'Y'}"> <span style="color: #ff0000"> *</span> </c:if> </h3>
                             <div class="col-md-7">
                                 <c:choose>
                                     <c:when test="${isDoView eq 'Y'}">
@@ -115,7 +115,7 @@
                          <c:if test="${withdrawDtoView.withdrawnReason != 'WDR005' || withdrawDtoView.withdrawnReason== null}">hidden</c:if>>
                         <div class="row">
                             <div class="center-content">
-                                <label class="col-md-4" style="font-size:2rem">Remarks<span style="color: red"> *</span></label>
+                                <label class="col-md-4" style="font-size:2rem">Remarks <c:if test="${isDoView != 'Y'}"> <span style="color: #ff0000"> *</span> </c:if></label>
                             </div>
                         </div>
                         <div class="row">
@@ -154,7 +154,12 @@
                                             </div>
                                         </c:when>
                                         <c:otherwise>
-                                            <strong>${file_upload_withdraw}</strong>
+                                            <c:set var="fileRpId" value="${withdrawDtoView.appPremisesSpecialDocDto.fileRepoId}"></c:set>
+                                            <c:set var="fileDocName" value="${withdrawDtoView.appPremisesSpecialDocDto.docName}"></c:set>
+                                            <a class="" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${fileRpId}&fileRo${fileRpId}=<iais:mask name="fileRo${fileRpId}"
+                                            value="${fileRpId}"/>&fileRepoName=${fileDocName}"  >${fileDocName}</a>
+
+
                                         </c:otherwise>
                                     </c:choose>
 

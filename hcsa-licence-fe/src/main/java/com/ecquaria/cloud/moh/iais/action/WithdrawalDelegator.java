@@ -79,6 +79,7 @@ public class WithdrawalDelegator {
         // just view, so direct return
         if ("Y".equals(isDoView)){
             WithdrawnDto withdrawnDto = withdrawalService.getWithdrawAppInfo(withdrawAppNo);
+            ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", withdrawnDto.getPrevAppNo());
             AppPremisesSpecialDocDto viewDoc = withdrawnDto.getAppPremisesSpecialDocDto();
             if (viewDoc != null){
                 ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",viewDoc.getDocName());
