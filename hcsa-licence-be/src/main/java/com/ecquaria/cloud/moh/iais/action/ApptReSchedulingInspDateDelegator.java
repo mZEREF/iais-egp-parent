@@ -110,8 +110,7 @@ public class ApptReSchedulingInspDateDelegator {
             ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
             apptInspectionDateDto = new ApptInspectionDateDto();
             apptInspectionDateDto = apptInspectionDateService.getApptSpecificDate(taskDto.getId(), apptInspectionDateDto);
-            AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_RESCHEDULE,
-                    applicationViewDto.getApplicationDto().getApplicationNo());
+            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  AuditTrailConsts.FUNCTION_RESCHEDULE);
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
             ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         }
