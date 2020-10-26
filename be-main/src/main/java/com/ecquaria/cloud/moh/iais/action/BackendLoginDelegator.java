@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import com.ecquaria.sz.commons.util.StringUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -76,14 +77,19 @@ public class BackendLoginDelegator {
         HttpServletRequest request = bpc.request;
         JwtVerify verifier = new JwtVerify();
         String jwtt = null;
+        String userId = null;
         if (fakeLogin) {
             jwtt = (String) request.getAttribute("encryptJwtt");
+            Jws<Claims> claimsFromToken = verifier.parseVerifyJWT(jwtt, base64encodedPub + "\r\n");
+            Claims claims = claimsFromToken.getBody();
+            userId = (String) claims.get("userid");
         } else {
-            jwtt = request.getHeader("authToken");
+            String userIdStr = request.getHeader("userid");
+            if (!StringUtil.isEmpty(userIdStr)) {
+                userId = userIdStr.substring(userIdStr.indexOf('\\'));
+            }
         }
-        Jws<Claims> claimsFromToken = verifier.parseVerifyJWT(jwtt, base64encodedPub + "\r\n");
-        Claims claims = claimsFromToken.getBody();
-        String userId = (String) claims.get("userid");
+
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         OrgUserDto orgUserDto = null;
         try {
