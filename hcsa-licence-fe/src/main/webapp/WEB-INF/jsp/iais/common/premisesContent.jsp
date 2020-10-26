@@ -327,6 +327,7 @@
                                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                                             <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}onSiteUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
                                             <span class="error-msg" name="iaisErrorMsg" id="error_opUnitNo${opStat.index}"></span>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_floorUnit${opStat.index}"></span>
                                         </iais:value>
                                         <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                             <p>(Additional)</p>
@@ -613,6 +614,7 @@
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                                         <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}conveyanceUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_opConvUnitNo${opStat.index}"></span>
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_ConvFloorUnit${opStat.index}"></span>
                                     </iais:value>
                                     <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                         <p>(Additional)</p>
@@ -866,6 +868,7 @@
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                                         <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}offSiteUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_opOffUnitNo${opStat.index}"></span>
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_offFloorUnit${opStat.index}"></span>
                                     </iais:value>
                                     <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                         <p>(Additional)</p>
