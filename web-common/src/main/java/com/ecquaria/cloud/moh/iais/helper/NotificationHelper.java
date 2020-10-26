@@ -380,6 +380,9 @@ public class NotificationHelper {
 					if (!IaisCommonUtils.isEmpty(emailDto.getReceipts()) ||
 						!IaisCommonUtils.isEmpty(emailDto.getCcList()) ||
 						!IaisCommonUtils.isEmpty(emailDto.getBccList())) {
+						//replace num
+						mesContext = MessageTemplateUtil.replaceNum(mesContext);
+						emailDto.setContent(mesContext);
 						if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
 							String gatewayUrl = env.getProperty("iais.inter.gateway.url");
 							HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
