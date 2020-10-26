@@ -1289,7 +1289,7 @@ public class NewApplicationDelegator {
                 serviceConfigService.updatePaymentStatus(appGrp);
                 //send email
                 try {
-                    sendNewApplicationPaymentOnlineSuccesedEmail(appSubmissionDto, pmtMethod, pmtRefNo);
+//                    sendNewApplicationPaymentOnlineSuccesedEmail(appSubmissionDto, pmtMethod, pmtRefNo);
                     //requestForChangeService.sendEmail(appSubmissionDto.getAppGrpId(),null,appSubmissionDto.getApplicationDtos().get(0).getApplicationNo(),null,null,appSubmissionDto.getAmount(),null,null,appSubmissionDto.getLicenseeId(),"RfcAndOnPay",null);
                     LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
                     appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());

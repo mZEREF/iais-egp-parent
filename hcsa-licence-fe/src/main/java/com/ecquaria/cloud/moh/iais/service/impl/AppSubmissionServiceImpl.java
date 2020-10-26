@@ -130,7 +130,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             ApplicationDto applicationDto =  appSubmissionDto.getApplicationDtos().get(0);
             String applicationType =  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("MOH IAIS - Your ").append(applicationType).append(',');
+            stringBuilder.append("MOH HALP - Your ").append(applicationType).append(',');
             int index = 0;
             StringBuilder stringBuilderAPPNum = new StringBuilder();
             for(ApplicationDto applicationDtoApp : appSubmissionDto.getApplicationDtos()){
@@ -165,7 +165,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String syName = "<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"<br/>"+AppConsts.MOH_AGENCY_NAME+"</b>";
             templateContent.put("MOH_AGENCY_NAME",syName);
             EmailParam emailParam = new EmailParam();
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL );
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL);
             emailParam.setTemplateContent(templateContent);
             emailParam.setSubject(subject);
             emailParam.setQueryCode(applicationDto.getApplicationNo());
