@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.SrcSystemConfDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -82,7 +81,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 			log.debug(e1.getMessage());
 			throw new PaymentException(e1);
 		}
-		SrcSystemConfDto srcSystemConfDto =new SrcSystemConfDto();
+		PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
 		String merchantTxnRef = Formatter.formatDateTime(new Date(), "yyyyMMdd HH:mm:ss.SSS");
 		String merchantTxnDtm = Formatter.formatDateTime(new Date(), "yyyyMMdd HH:mm:ss.SSS");
 		String amo = fields.get("vpc_Amount");
@@ -108,18 +107,14 @@ public class PaymentNetsProxy extends PaymentProxy {
 		ParamUtil.setSessionAttr(bpc.request,"HMAC",hmac);
 
 
-		srcSystemConfDto.setClientKey(UUID.randomUUID().toString());
+		paymentRequestDto.setQueryCode(UUID.randomUUID().toString());
 		if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(reqNo)) {
-			PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
-			srcSystemConfDto.setReturnUrl(returnUrl);
-			srcSystemConfDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-			SrcSystemConfDto srcSystemConfDto1 =PaymentBaiduriProxyUtil.getPaymentClient().accessApplicationSrcSystemConfDto(srcSystemConfDto).getEntity();
+			paymentRequestDto.setReturnUrl(returnUrl);
 			double amount = Double.parseDouble(amo)/100;
 			paymentRequestDto.setAmount(amount);
 			paymentRequestDto.setPayMethod("eNets");
 			paymentRequestDto.setReqDt(new Date());
 			paymentRequestDto.setReqRefNo(reqNo);
-			paymentRequestDto.setSrcSystemConfDto(srcSystemConfDto1);
 			paymentRequestDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 			PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
 
@@ -195,7 +190,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		try {
 
 			String results="?result="+ MaskUtil.maskValue("result",status)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",refNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",transNo);
-			String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+paymentRequestDto.getSrcSystemConfDto().getReturnUrl()+results;
+			String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+paymentRequestDto.getReturnUrl()+results;
 
 
 			RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);

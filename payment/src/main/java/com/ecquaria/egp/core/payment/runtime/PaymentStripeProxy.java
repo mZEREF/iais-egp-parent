@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.SrcSystemConfDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -83,7 +82,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 			log.debug(e1.getMessage());
 			throw new PaymentException(e1);
 		}
-		SrcSystemConfDto srcSystemConfDto =new SrcSystemConfDto();
+		PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
 
 		String amo = fields.get("vpc_Amount");
 		String payMethod = fields.get("vpc_OrderInfo");
@@ -116,7 +115,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 											.build())
 							.build();
 			Session session= PaymentBaiduriProxyUtil.getStripeService().createSession(createParams);
-			srcSystemConfDto.setClientKey(session.getId());
+			paymentRequestDto.setQueryCode(session.getId());
 			ParamUtil.setSessionAttr(bpc.request,"CHECKOUT_SESSION_ID",session.getId());
 
 		} catch (StripeException e) {
@@ -130,16 +129,12 @@ public class PaymentStripeProxy extends PaymentProxy {
 			}
 		}
 		if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(reqNo)) {
-			PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
-			srcSystemConfDto.setReturnUrl(returnUrl);
-			srcSystemConfDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-			SrcSystemConfDto srcSystemConfDto1 =PaymentBaiduriProxyUtil.getPaymentClient().accessApplicationSrcSystemConfDto(srcSystemConfDto).getEntity();
+			paymentRequestDto.setReturnUrl(returnUrl);
 			double amount = Double.parseDouble(amo)/100;
 			paymentRequestDto.setAmount(amount);
 			paymentRequestDto.setPayMethod("stripe");
 			paymentRequestDto.setReqDt(new Date());
 			paymentRequestDto.setReqRefNo(reqNo);
-			paymentRequestDto.setSrcSystemConfDto(srcSystemConfDto1);
 			paymentRequestDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 			PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
 		}
@@ -188,13 +183,13 @@ public class PaymentStripeProxy extends PaymentProxy {
 		PaymentIntent paymentIntent=null;
 		try{
 
-			Session checkoutSession=PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDto.getSrcSystemConfDto().getClientKey());
+			Session checkoutSession=PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDto.getQueryCode());
 			paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentIntent(checkoutSession.getPaymentIntent());
 			log.info(StringUtil.changeForLog("Payment Intent: "+paymentIntent.getStatus()) );
 		}catch (Exception e){
 			log.info(e.getMessage(),e);
 			try {
-				Session checkoutSession=PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDto.getSrcSystemConfDto().getClientKey());
+				Session checkoutSession=PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDto.getQueryCode());
 				paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentIntent(checkoutSession.getPaymentIntent());
 			}catch (Exception e1){
 				log.info(e.getMessage(),e1);
@@ -226,7 +221,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 		try {
 
 			String results="?result="+ MaskUtil.maskValue("result",status)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",refNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",transNo);
-			String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+paymentRequestDto.getSrcSystemConfDto().getReturnUrl()+results;
+			String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+paymentRequestDto.getReturnUrl()+results;
 
 
 			RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);

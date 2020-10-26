@@ -47,7 +47,7 @@ public class PaymentCheckNotResultFromBankJob {
             try {
                 PaymentRequestDto paymentRequestDto=paymentClient.getPaymentRequestDtoByReqRefNo(payReq.getReqRefNo()).getEntity();
                 if("stripe".equals(paymentRequestDto.getPayMethod())){
-                    Session session=stripeService.retrieveSession(paymentRequestDto.getSrcSystemConfDto().getClientKey());
+                    Session session=stripeService.retrieveSession(paymentRequestDto.getQueryCode());
                     PaymentIntent paymentIntent=stripeService.retrievePaymentIntent(session.getPaymentIntent());
 
                     PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();

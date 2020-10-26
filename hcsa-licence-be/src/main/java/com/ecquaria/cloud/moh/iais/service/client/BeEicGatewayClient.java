@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
@@ -155,13 +156,11 @@ public class BeEicGatewayClient {
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
     }
 
-    public FeignResponseEntity<Void> doStripeRefund(Map<String, String> param,
-                                                      String date, String authorization, String dateSec,
-                                                      String authorizationSec) {
-        Map<String, Object> param1 = IaisCommonUtils.genNewHashMap();
-        param1.putAll(param);
-        return IaisEGPHelper.callEicGatewayWithParam(gateWayUrl + "/api/v1/stripe-refund", HttpMethod.GET, param1,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Void.class);
+    public FeignResponseEntity<List> doStripeRefunds(List<AppReturnFeeDto> appReturnFeeDtos,
+                                                                       String date, String authorization, String dateSec,
+                                                                       String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/api/v1/stripe-refund", HttpMethod.POST, appReturnFeeDtos,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, List.class);
     }
 
 

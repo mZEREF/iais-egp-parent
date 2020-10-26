@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.SrcSystemConfDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -77,7 +76,7 @@ public class PaymentStripeRefundProxy extends PaymentProxy {
 			log.debug(e1.getMessage());
 			throw new PaymentException(e1);
 		}
-		SrcSystemConfDto srcSystemConfDto =new SrcSystemConfDto();
+		PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
 
 		String amo = fields.get("vpc_Amount");
 		String refundInfo = fields.get("vpc_OrderInfo");
@@ -98,7 +97,7 @@ public class PaymentStripeRefundProxy extends PaymentProxy {
 
 			Session checkoutSession= null;
 			try {
-				checkoutSession = PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDtoOld.getSrcSystemConfDto().getClientKey());
+				checkoutSession = PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDtoOld.getQueryCode());
 			} catch (StripeException e) {
 				log.info(e.getMessage(),e);
 			}
@@ -106,23 +105,19 @@ public class PaymentStripeRefundProxy extends PaymentProxy {
 
 			try {
 				refund=PaymentBaiduriProxyUtil.getStripeService().createRefund(checkoutSession.getPaymentIntent(), (long) amount2);
-				srcSystemConfDto.setClientKey(refund.getId());
+				paymentRequestDto.setQueryCode(refund.getId());
 			} catch (StripeException e) {
 				log.info(e.getMessage(),e);
-				srcSystemConfDto.setClientKey(UUID.randomUUID().toString());
+				paymentRequestDto.setQueryCode(UUID.randomUUID().toString());
 			}
 
 
 			if(!StringUtil.isEmpty(amount1)&&!StringUtil.isEmpty(svcRefNo1)) {
-				PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
-				srcSystemConfDto.setReturnUrl(returnUrl);
-				srcSystemConfDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-				SrcSystemConfDto srcSystemConfDto1 =PaymentBaiduriProxyUtil.getPaymentClient().accessApplicationSrcSystemConfDto(srcSystemConfDto).getEntity();
+				paymentRequestDto.setReturnUrl(returnUrl);
 				paymentRequestDto.setAmount(amount2);
 				paymentRequestDto.setPayMethod("stpRefund");
 				paymentRequestDto.setReqDt(new Date());
 				paymentRequestDto.setReqRefNo(svcRefNo1);
-				paymentRequestDto.setSrcSystemConfDto(srcSystemConfDto1);
 				paymentRequestDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 				PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
 			}
@@ -171,7 +166,7 @@ public class PaymentStripeRefundProxy extends PaymentProxy {
 			HttpServletRequest request = bpc.request;
 			Refund refund=null;
 			try{
-				refund=PaymentBaiduriProxyUtil.getStripeService().retrieveRefund(paymentRequestDto.getSrcSystemConfDto().getClientKey());
+				refund=PaymentBaiduriProxyUtil.getStripeService().retrieveRefund(paymentRequestDto.getQueryCode());
 
 			}catch (Exception e){
 				log.info(e.getMessage(),e);
