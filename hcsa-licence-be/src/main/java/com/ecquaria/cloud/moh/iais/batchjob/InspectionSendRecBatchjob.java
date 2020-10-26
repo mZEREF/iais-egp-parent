@@ -22,18 +22,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspEmailFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -83,9 +82,6 @@ public class InspectionSendRecBatchjob {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
     @Autowired
-    private InboxMsgService inboxMsgService;
-
-    @Autowired
     private SystemParamConfig systemParamConfig;
 
     @Autowired
@@ -111,9 +107,8 @@ public class InspectionSendRecBatchjob {
     private String secSecretKey;
 
     @Autowired
-    private InspectionSendRecBatchjob(SystemBeLicClient systemBeLicClient, SystemParamConfig systemParamConfig, FillUpCheckListGetAppClient fillUpCheckListGetAppClient, InboxMsgService inboxMsgService){
+    private InspectionSendRecBatchjob(SystemBeLicClient systemBeLicClient, SystemParamConfig systemParamConfig, FillUpCheckListGetAppClient fillUpCheckListGetAppClient){
         this.fillUpCheckListGetAppClient = fillUpCheckListGetAppClient;
-        this.inboxMsgService = inboxMsgService;
         this.systemParamConfig = systemParamConfig;
         this.systemBeLicClient = systemBeLicClient;
     }
@@ -279,15 +274,15 @@ public class InspectionSendRecBatchjob {
             String checkItemId = adhocChecklistItemDto.getItemId();
             if(!StringUtil.isEmpty(checkItemId)){
                 ChecklistItemDto checklistItemDto = inspectionRectificationProService.getChklItemById(checkItemId);
-                inspEmailFieldDto.setRegulation("-");
+                inspEmailFieldDto.setRegulation("");
                 inspEmailFieldDto.setQuestion(checklistItemDto.getChecklistItem());
             } else {
-                inspEmailFieldDto.setRegulation("-");
+                inspEmailFieldDto.setRegulation("");
                 inspEmailFieldDto.setQuestion(adhocChecklistItemDto.getQuestion());
             }
         }
         inspEmailFieldDto.setBeNcRemark(beRemark);
-        inspEmailFieldDto.setServiceName("-");
+        inspEmailFieldDto.setServiceName("");
         return inspEmailFieldDto;
     }
 
@@ -312,7 +307,7 @@ public class InspectionSendRecBatchjob {
     }
 
     private String getItemCategory(ChecklistConfigDto checklistConfigDto) {
-        String category = "-";
+        String category = "";
         boolean commonFlag = checklistConfigDto.isCommon();
         if(!commonFlag){
             String subSvc = checklistConfigDto.getSvcSubType();

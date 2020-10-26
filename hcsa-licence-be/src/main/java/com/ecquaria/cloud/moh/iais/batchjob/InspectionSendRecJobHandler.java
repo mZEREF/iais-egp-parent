@@ -25,18 +25,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspEmailFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -44,7 +43,6 @@ import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,9 +84,6 @@ public class InspectionSendRecJobHandler extends IJobHandler {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
     @Autowired
-    private InboxMsgService inboxMsgService;
-
-    @Autowired
     private SystemParamConfig systemParamConfig;
 
     @Autowired
@@ -102,9 +97,6 @@ public class InspectionSendRecJobHandler extends IJobHandler {
 
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
-
-    @Autowired
-    private MsgTemplateClient msgTemplateClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -281,15 +273,15 @@ public class InspectionSendRecJobHandler extends IJobHandler {
             String checkItemId = adhocChecklistItemDto.getItemId();
             if(!StringUtil.isEmpty(checkItemId)){
                 ChecklistItemDto checklistItemDto = inspectionRectificationProService.getChklItemById(checkItemId);
-                inspEmailFieldDto.setRegulation("-");
+                inspEmailFieldDto.setRegulation("");
                 inspEmailFieldDto.setQuestion(checklistItemDto.getChecklistItem());
             } else {
-                inspEmailFieldDto.setRegulation("-");
+                inspEmailFieldDto.setRegulation("");
                 inspEmailFieldDto.setQuestion(adhocChecklistItemDto.getQuestion());
             }
         }
         inspEmailFieldDto.setBeNcRemark(beRemark);
-        inspEmailFieldDto.setServiceName("-");
+        inspEmailFieldDto.setServiceName("");
         return inspEmailFieldDto;
     }
 
@@ -307,8 +299,8 @@ public class InspectionSendRecJobHandler extends IJobHandler {
                     log.info(StringUtil.changeForLog("clItemDto == null"));
                     JobLogger.log(StringUtil.changeForLog("clItemDto == null"));
                     clItemDto = new ChecklistItemDto();
-                    clItemDto.setRegulationClause("-");
-                    clItemDto.setChecklistItem("-");
+                    clItemDto.setRegulationClause("");
+                    clItemDto.setChecklistItem("");
                 }
                 if(inspEmailFieldDto == null){
                     inspEmailFieldDto = new InspEmailFieldDto();
@@ -327,7 +319,7 @@ public class InspectionSendRecJobHandler extends IJobHandler {
     }
 
     private String getItemCategory(ChecklistConfigDto checklistConfigDto) {
-        String category = "-";
+        String category = "";
         boolean commonFlag = checklistConfigDto.isCommon();
         if(!commonFlag){
             String subSvc = checklistConfigDto.getSvcSubType();

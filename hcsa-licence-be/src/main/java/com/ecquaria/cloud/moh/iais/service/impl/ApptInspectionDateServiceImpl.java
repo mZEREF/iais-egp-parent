@@ -1099,7 +1099,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String hciName = appGrpPremisesDto.getHciName();
         String hciCode = appGrpPremisesDto.getHciCode();
         if(StringUtil.isEmpty(hciName)){
-            hciName = "-";
+            hciName = "";
         }
         String address1 = systemParamConfig.getSystemAddressOne();
         String address2 = systemParamConfig.getSystemAddressTwo();
@@ -1110,8 +1110,27 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         map.put("applicationType", appTypeShow);
         map.put("applicationNo", appNoShow.toString());
         map.put("submitDate", strSubmitDt);
-        map.put("hciName", hciName);
-        map.put("hciCode", hciCode);
+        String hciNameCode;
+        if(StringUtil.isEmpty(hciName) && StringUtil.isEmpty(hciCode)) {
+            hciNameCode = "";
+        } else {
+            StringBuilder html = new StringBuilder("for");
+            html.append(' ');
+            if(!StringUtil.isEmpty(hciName)){
+                html.append(hciName);
+                html.append(", ");
+            }
+            if(!StringUtil.isEmpty(hciCode)){
+                html.append(hciCode);
+            }
+            hciNameCode = html.toString();
+        }
+        if(!StringUtil.isEmpty(hciName)) {
+            map.put("hciName", hciName);
+        }
+        if(!StringUtil.isEmpty(hciNameCode)) {
+            map.put("hciNameCode", hciNameCode);
+        }
         map.put("hciAddress", address);
         map.put("today", todayDate);
         map.put("time", todayTime);

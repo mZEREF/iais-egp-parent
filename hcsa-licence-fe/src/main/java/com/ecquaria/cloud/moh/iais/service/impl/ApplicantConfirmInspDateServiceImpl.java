@@ -824,7 +824,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             String appNo = applicationDto.getApplicationNo();
             String appGroupId = applicationDto.getAppGrpId();
             String licenceId = applicationDto.getOriginLicenceId();
-            String licenceDueDateStr = "-";
+            String licenceDueDateStr = "";
             if(!StringUtil.isEmpty(licenceId)){
                 LicenceDto licenceDto = licenceClient.getLicBylicId(licenceId).getEntity();
                 Date licenceDueDate = licenceDto.getExpiryDate();
@@ -846,11 +846,11 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             AppGrpPremisesDto appGrpPremisesDto = applicationClient.getAppGrpPremisesByCorrId(appPremCorrId).getEntity();
             String hciName = appGrpPremisesDto.getHciName();
             if(StringUtil.isEmpty(hciName)){
-                hciName = "-";
+                hciName = "";
             }
             String hciCode = appGrpPremisesDto.getHciCode();
             if(StringUtil.isEmpty(hciCode)){
-                hciCode = "-";
+                hciCode = "";
             }
             String serviceId = applicationDto.getServiceId();
             HcsaServiceDto hcsaServiceDto = appConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
@@ -875,13 +875,19 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 dateStrList.add("-");
             }
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-            map.put("hciName", hciName);
-            map.put("hciCode", hciCode);
+            if(!StringUtil.isEmpty(hciName)) {
+                map.put("hciName", hciName);
+            }
+            if(!StringUtil.isEmpty(hciCode)) {
+                map.put("hciCode", hciCode);
+            }
             String appTypeShow = MasterCodeUtil.getCodeDesc(appType);
             map.put("appType", appTypeShow);
             map.put("appDate", submitDtStr);
             map.put("serviceName", serviceName);
-            map.put("licence_due_date", licenceDueDateStr);
+            if(!StringUtil.isEmpty(licenceDueDateStr)) {
+                map.put("licence_due_date", licenceDueDateStr);
+            }
             map.put("applicationNo", appNo);
             map.put("dateStrList", dateStrList);
             map.put("fe_date", dateStr);

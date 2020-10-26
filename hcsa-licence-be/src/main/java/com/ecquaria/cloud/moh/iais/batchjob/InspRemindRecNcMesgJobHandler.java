@@ -265,15 +265,15 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
             String checkItemId = adhocChecklistItemDto.getItemId();
             if(!StringUtil.isEmpty(checkItemId)){
                 ChecklistItemDto checklistItemDto = inspectionRectificationProService.getChklItemById(checkItemId);
-                inspEmailFieldDto.setRegulation("-");
+                inspEmailFieldDto.setRegulation("");
                 inspEmailFieldDto.setQuestion(checklistItemDto.getChecklistItem());
             } else {
-                inspEmailFieldDto.setRegulation("-");
+                inspEmailFieldDto.setRegulation("");
                 inspEmailFieldDto.setQuestion(adhocChecklistItemDto.getQuestion());
             }
         }
         inspEmailFieldDto.setBeNcRemark(beRemark);
-        inspEmailFieldDto.setServiceName("-");
+        inspEmailFieldDto.setServiceName("");
         return inspEmailFieldDto;
     }
 
@@ -301,7 +301,7 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
     }
 
     private String getItemCategory(ChecklistConfigDto checklistConfigDto) {
-        String category = "-";
+        String category = "";
         boolean commonFlag = checklistConfigDto.isCommon();
         if(!commonFlag){
             String subSvc = checklistConfigDto.getSvcSubType();

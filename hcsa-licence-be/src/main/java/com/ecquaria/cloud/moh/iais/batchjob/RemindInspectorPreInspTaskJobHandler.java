@@ -270,10 +270,10 @@ public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
         String hciName = appGrpPremisesDto.getHciName();
         String hciCode = appGrpPremisesDto.getHciCode();
         if(StringUtil.isEmpty(hciName)){
-            hciName = "-";
+            hciName = "";
         }
         if(StringUtil.isEmpty(hciCode)){
-            hciCode = "-";
+            hciCode = "";
         }
         String appNo = applicationDto.getApplicationNo();
         String appType = applicationDto.getApplicationType();
@@ -287,8 +287,12 @@ public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
         }
         String appDateStr = Formatter.formatDateTime(appDate, "dd/MM/yyyy HH:mm:ss");
         templateMap.put("appNo", appNo);
-        templateMap.put("hciName", hciName);
-        templateMap.put("hciCode", hciCode);
+        if(!StringUtil.isEmpty(hciCode)) {
+            templateMap.put("hciName", hciName);
+        }
+        if(!StringUtil.isEmpty(hciCode)) {
+            templateMap.put("hciCode", hciCode);
+        }
         templateMap.put("hciAddress", address);
         templateMap.put("serviceName", hcsaServiceDto.getSvcName());
         templateMap.put("applicationNo", appNo);
