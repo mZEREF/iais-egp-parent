@@ -156,6 +156,8 @@
                                         <c:otherwise>
                                             <c:set var="fileRpId" value="${withdrawDtoView.appPremisesSpecialDocDto.fileRepoId}"></c:set>
                                             <c:set var="fileDocName" value="${withdrawDtoView.appPremisesSpecialDocDto.docName}"></c:set>
+
+                                            <%--NewApplicationAjaxController method - > file-repo--%>
                                             <a class="" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${fileRpId}&fileRo${fileRpId}=<iais:mask name="fileRo${fileRpId}"
                                             value="${fileRpId}"/>&fileRepoName=${fileDocName}"  >${fileDocName}</a>
 
