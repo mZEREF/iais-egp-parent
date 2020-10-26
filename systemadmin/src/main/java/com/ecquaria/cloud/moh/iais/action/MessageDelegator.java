@@ -79,6 +79,7 @@ public class MessageDelegator {
         moduleList.add(new SelectOption("Revocation", "Revocation"));
         moduleList.add(new SelectOption("Reinstatement", "Reinstatement"));
         moduleList.add(new SelectOption("Appeal", "Appeal"));
+        moduleList.add(new SelectOption("Online Enquiry", "Online Enquiry"));
         ParamUtil.setRequestAttr(request, "moduleTypeSelect", moduleList);
     }
 
