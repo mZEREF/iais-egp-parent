@@ -157,12 +157,10 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY001","APST039"});
         applicationTandS.add(new String[]{"APTY001","APST011"});
 
-        List<WithdrawApplicationDto> withdrawAppList =  withdrawalService.getCanWithdrawAppList(applicationTandS);
+        List<WithdrawApplicationDto> withdrawAppList =  withdrawalService.getCanWithdrawAppList(applicationTandS,loginContext.getLicenseeId());
         PaginationHandler<WithdrawApplicationDto> handler = new PaginationHandler<>("withdrawPagDiv", "withdrawBodyDiv");
         handler.setAllData(withdrawAppList);
         handler.preLoadingPage();
-
-
 
     }
 

@@ -226,8 +226,8 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     }
 
     @Override
-    public List<WithdrawApplicationDto> getCanWithdrawAppList(List<String[]> appTandS) {
-        List<WithdrawApplicationDto> withdrawApplicationDtoList = applicationClient.getApplicationByAppTypesAndStatus(appTandS).getEntity();
+    public List<WithdrawApplicationDto> getCanWithdrawAppList(List<String[]> appTandS,String licenseeId) {
+        List<WithdrawApplicationDto> withdrawApplicationDtoList = applicationClient.getApplicationByAppTypesAndStatus(appTandS,licenseeId).getEntity();
         return withdrawApplicationDtoList;
     }
 

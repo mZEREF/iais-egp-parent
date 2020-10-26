@@ -14,5 +14,5 @@ public interface WithdrawalService {
     void saveWithdrawn(List<WithdrawnDto> withdrawnDto);
     void saveRfiWithdrawn(List<WithdrawnDto> withdrawnDtoList);
     WithdrawnDto getWithdrawAppInfo(String appNo);
-    List<WithdrawApplicationDto> getCanWithdrawAppList(List<String[]> appTandS);
+    List<WithdrawApplicationDto> getCanWithdrawAppList(List<String[]> appTandS,String licenseeId);
 }
