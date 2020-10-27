@@ -354,7 +354,7 @@
                 contentType:"application/x-www-form-urlencoded",
                 type:'POST',
                 'success':function (data) {
-                    if(data.res == 0){
+                    if(data.res == 1){
                         $('#action').val(action);
                         submit('approve');
                     }else{

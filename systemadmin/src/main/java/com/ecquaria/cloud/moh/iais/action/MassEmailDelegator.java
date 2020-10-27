@@ -15,12 +15,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
@@ -244,25 +246,47 @@ public class MassEmailDelegator {
         DistributionListWebDto distributionListWebDto = getDistribution(bpc);
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         MultipartFile file = mulReq.getFile("selectedFile");
+        String mode = mulReq.getParameter("mode");
         List<String> filelist = getAllData(file);
-        List<String> address = getEmail(bpc);
-        if(repeatList(filelist)){
-            errMap.put("file", "There are repeated email address(es) provided");
-        }
-        if(address != null){
-            filelist.addAll(address);
-        }
-        if(filelist != null ){
+        if(SMS.equals(mode)){
+            List<String> address = getEmail(bpc,"mobile");
             if(repeatList(filelist)){
-                errMap.put("file", "The provided email address already exists in the distribution list");
+                errMap.put("file", "There are repeated mobile provided");
             }
-            String fileData = StringUtils.join(filelist, "\r\n");
-            ParamUtil.setRequestAttr(bpc.request,"emailAddress",fileData);
+            if(!isMobileEmail(filelist)){
+                errMap.put("file", MessageUtil.getMessageDesc("GENERAL_ERR0007"));
+            }
+            if(address != null){
+                filelist.addAll(address);
+            }
+            if(filelist != null ){
+                if(repeatList(filelist) && StringUtil.isEmpty(errMap.get("file"))){
+                    errMap.put("file", "The provided mobile already exists in the distribution list");
+                }
+                String fileData = StringUtils.join(filelist, "\r\n");
+                ParamUtil.setRequestAttr(bpc.request,"emailAddress",fileData);
+            }
+        }else{
+            List<String> address = getEmail(bpc,"email");
+            if(repeatList(filelist)){
+                errMap.put("file", "There are repeated email address(es) provided");
+            }
+            if(!isErrEmail(filelist)){
+                errMap.put("file", MessageUtil.getMessageDesc("GENERAL_ERR0014"));
+            }
+            if(address != null){
+                filelist.addAll(address);
+            }
+            if(filelist != null ){
+                if(repeatList(filelist) && StringUtil.isEmpty(errMap.get("file"))){
+                    errMap.put("file", "The provided email address already exists in the distribution list");
+                }
+                String fileData = StringUtils.join(filelist, "\r\n");
+                ParamUtil.setRequestAttr(bpc.request,"emailAddress",fileData);
+            }
+
         }
-//        else{
-//            errMap.put("addr", MessageUtil.replaceMessage("GENERAL_ERR0006","Email Addresses","field"));
-//            ParamUtil.setRequestAttr(bpc.request,"emailAddress","");
-//        }
+
         ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
         ParamUtil.setRequestAttr(bpc.request,"distribution",distributionListWebDto);
         ParamUtil.setRequestAttr(bpc.request,"fileName",file.getOriginalFilename());
@@ -277,6 +301,24 @@ public class MassEmailDelegator {
 
     }
 
+    private boolean isErrEmail(List<String> list){
+        for (String item:list
+        ) {
+            if(!ValidationUtils.isEmail(item)){
+                return false;
+            }
+        }
+        return true;
+    }
+    private boolean isMobileEmail(List<String> list){
+        for (String item:list
+        ) {
+            if(!item.matches("^[8|9][0-9]{7}$")){
+                return false;
+            }
+        }
+        return true;
+    }
     private boolean repeatList(List<String> list){
         Map<String,String> repeatMap = IaisCommonUtils.genNewHashMap();
         for (String item:list
@@ -300,9 +342,9 @@ public class MassEmailDelegator {
         return errMap;
     }
 
-    private List<String> getEmail(BaseProcessClass bpc){
+    private List<String> getEmail(BaseProcessClass bpc,String name){
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String email = mulReq.getParameter("email");
+        String email = mulReq.getParameter(name);
         List<String> emailAddress = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(email)){
             List<String> rnemaillist = Arrays.asList(email.split("\r\n"));
@@ -327,8 +369,11 @@ public class MassEmailDelegator {
         String mobile = mulReq.getParameter("mobile");
 
         DistributionListWebDto distributionListDto = new DistributionListWebDto();
-
-        distributionListDto.setEmailAddress(getEmail(bpc));
+        String textarea = "email";
+        if(SMS.equals(mode)){
+            textarea ="mobile";
+        }
+        distributionListDto.setEmailAddress(getEmail(bpc,textarea));
 
         if(!StringUtil.isEmpty(id))
         {

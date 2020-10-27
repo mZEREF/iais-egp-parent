@@ -22,7 +22,7 @@
             <div class="center-content">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <h3>
-                        <span>Audit Trial</span>
+                        <span>Audit Trail</span>
                     </h3>
                     <iais:pagination param="auditSearchParam" result="searchResult"/>
                     <div class="table-gp">

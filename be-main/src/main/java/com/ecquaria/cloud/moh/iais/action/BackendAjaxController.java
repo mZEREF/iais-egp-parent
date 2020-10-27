@@ -230,14 +230,14 @@ public class BackendAjaxController {
     Map<String, Object> aoApproveCheck(HttpServletRequest request) {
         String applicationString =  ParamUtil.getString(request, "applications");
         String[] applications = applicationString.split(",");
-        int approveCheck = 1;
+        int approveCheck = 0;
         for (String item:applications
              ) {
             ApplicationDto applicationDto = inspectionTaskMainClient.getApplicationDtoByAppNo(item).getEntity();
             HcsaSvcRoutingStageDto canApproveStageDto = getCanApproveStageDto(applicationDto.getApplicationType(), applicationDto.getStatus(), applicationDto.getServiceId());
             boolean canApprove = checkCanApproveStage(canApproveStageDto);
-            if(!canApprove){
-                approveCheck = 0;
+            if(canApprove){
+                approveCheck = 1;
             }
         }
         Map<String, Object> map = new HashMap<>();

@@ -9,6 +9,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
+import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IssuanceAddresses;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -62,6 +64,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -238,6 +241,8 @@ public class LicenceServiceImpl implements LicenceService {
             trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
             //send approve notification
             try{
+                //save new acra info
+                saveNewAcra(eventBusLicenceGroupDtos);
                 //send issue uen email
                 log.info(StringUtil.changeForLog("send uen email"));
                 sendUenEmail(eventBusLicenceGroupDtos);
@@ -253,6 +258,26 @@ public class LicenceServiceImpl implements LicenceService {
         return eventBusLicenceGroupDtos;
     }
 
+    private void saveNewAcra(EventBusLicenceGroupDtos eventBusLicenceGroupDtos){
+        log.info(StringUtil.changeForLog("save New Acra"));
+        for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()
+        ) {
+            for (SuperLicDto superLicDto:item.getSuperLicDtos()
+            ) {
+                LicenceDto licenceDto = superLicDto.getLicenceDto();
+                GenerateUENDto generateUENDto = new GenerateUENDto();
+                int sequenceNumber = 0;
+                String consumerId = "waiting";
+                String agencyReferenceNumber = "waiting";
+                generateUENDto.setSequenceNumber(sequenceNumber);
+                generateUENDto.getBasic().setAgencyReferenceNumber(agencyReferenceNumber);
+
+                IssuanceAddresses addresses = new IssuanceAddresses();
+//                addresses.setStandard();
+
+            }
+        }
+    }
 
     private void sendUenEmail(EventBusLicenceGroupDtos eventBusLicenceGroupDtos){
         log.info(StringUtil.changeForLog("send uen email start"));
@@ -260,14 +285,13 @@ public class LicenceServiceImpl implements LicenceService {
              ) {
             for (SuperLicDto superLicDto:item.getSuperLicDtos()
                  ) {
-                //add judge licence is singlepass
                 try {
-
                     LicenceDto licenceDto = superLicDto.getLicenceDto();
                     log.info(StringUtil.changeForLog("licence id = " + licenceDto.getId()));
                     LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
                     LicenseeIndividualDto licenseeIndividualDto = licenseeDto.getLicenseeIndividualDto();
                     log.info(StringUtil.changeForLog("licenseeIndividualDto.getUenMailFlag() = " + licenseeIndividualDto.getUenMailFlag()));
+                    //judge licence is singlepass
                     if(licenseeIndividualDto.getUenMailFlag() == 0){
                         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
 
@@ -279,7 +303,9 @@ public class LicenceServiceImpl implements LicenceService {
                         templateContent.put("Applicant", licenseeDto.getName());
                         templateContent.put("ServiceName", MasterCodeUtil.getCodeDesc(licenseeIndividualDto.getFirstServiceCode()));
                         templateContent.put("LicenceNo", licenceDto.getLicenceNo());
-                        templateContent.put("GraceDate", Formatter.formatDate(licenceDto.getExpiryDate()));
+                        Calendar c = Calendar.getInstance();
+                        c.add(Calendar.DAY_OF_MONTH, systemParamConfig.getIssueUenGraceDay());
+                        templateContent.put("GraceDate", Formatter.formatDate(c.getTime()));
                         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
                         templateContent.put("newSystem", loginUrl);
                         templateContent.put("emailAddress", systemAddressOne);
@@ -298,7 +324,7 @@ public class LicenceServiceImpl implements LicenceService {
                         log.info(StringUtil.changeForLog("send email end"));
 
                         EmailParam smsParam = new EmailParam();
-                        smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_APPROVE_SMS);
+                        smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_EMAIL);
                         smsParam.setSubject(subject);
                         smsParam.setTemplateContent(templateContent);
                         smsParam.setQueryCode(licenceDto.getLicenceNo());
