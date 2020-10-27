@@ -2008,20 +2008,21 @@ public class HcsaApplicationDelegator {
                         msgInfoMap.put("reqAppNo",applicationNo);
                         msgInfoMap.put("S_LName",serviceName);
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-                        msgInfoMap.put("paymentType",isByGIRO);
                         msgInfoMap.put("ApplicationDate",applicationViewDto.getSubmissionDate());
                         msgInfoMap.put("returnMount",applicationViewDto.getReturnFee());
                         if (isByGIRO == 0){
                             msgInfoMap.put("paymentMode","GIRO");
+                            msgInfoMap.put("paymentType","0");
                         }else{
                             msgInfoMap.put("paymentMode","Online Payment");
+                            msgInfoMap.put("paymentType","1");
                         }
                         msgInfoMap.put("adminFee","100");
                         msgInfoMap.put("systemLink",loginUrl);
                         msgInfoMap.put("emailAddress",systemAddressOne);
                         EmailParam emailParam = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE,msgInfoMap,applicationNo);
                         notificationHelper.sendNotification(emailParam);
-                        sendInboxMessage(applicationViewDto,serviceId,msgInfoMap,emailParam.getSubject());
+                        sendInboxMessage(applicationViewDto,serviceId,msgInfoMap,emailParam.getSubject(),MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE);
                         /**
                          *  Send SMS when withdrawal Application Approve
                          */
@@ -2036,7 +2037,7 @@ public class HcsaApplicationDelegator {
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
                         EmailParam emailParam = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT,msgInfoMap,applicationNo);
                         notificationHelper.sendNotification(emailParam);
-                        sendInboxMessage(applicationViewDto,serviceId,msgInfoMap,emailParam.getSubject());
+                        sendInboxMessage(applicationViewDto,serviceId,msgInfoMap,emailParam.getSubject(),MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT);
                         /**
                          *  Send SMS when withdrawal Application Reject
                          */
@@ -2149,7 +2150,7 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private void sendInboxMessage(ApplicationViewDto applicationViewDto,String serviceId,Map<String, Object> map,String subject) throws IOException, TemplateException {
+    private void sendInboxMessage(ApplicationViewDto applicationViewDto,String serviceId,Map<String, Object> map,String subject,String messageTemplateId) throws IOException, TemplateException {
         EmailParam messageParam = new EmailParam();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
@@ -2161,7 +2162,7 @@ public class HcsaApplicationDelegator {
         subMap.put("ApplicationNumber", applicationDto.getApplicationNo());
         subMap.put("ApplicationType", applicationDto.getApplicationType());
         subject = MsgUtil.getTemplateMessageByContent(subject,subMap);
-        messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE);
+        messageParam.setTemplateId(messageTemplateId);
         messageParam.setQueryCode(applicationDto.getApplicationNo());
         messageParam.setTemplateContent(map);
         messageParam.setReqRefNum(applicationDto.getApplicationNo());
