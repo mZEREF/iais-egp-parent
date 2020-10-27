@@ -1826,6 +1826,9 @@ public class HcsaApplicationDelegator {
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
             applicationDto.setNeedNewLicNo(true);
         }
+        if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)&&ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+        }
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setApplicationDto(applicationDto);
         // send the task
