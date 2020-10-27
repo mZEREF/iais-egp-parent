@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -69,7 +70,7 @@ public class ReCessationApplicationBeDelegator {
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
 
-    private static final String APPCESSATIONDTO = "appCessationDto";
+    private static final String APPCESSATIONDTO = "appCess";
     private static final String READINFO = "readInfo";
     private static final String WHICHTODO = "whichTodo";
     private static final String EFFECTIVEDATE = "effectiveDate";
@@ -93,17 +94,18 @@ public class ReCessationApplicationBeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "isGrpLic", null);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtoSave",null);
         ParamUtil.setSessionAttr(bpc.request, "taskDto",null);
+        ParamUtil.setSessionAttr(bpc.request, READINFO,null);
     }
 
     public void init(BaseProcessClass bpc) throws Exception {
-        String taskId = "6577DD28-5417-EB11-8B7A-000C293F0C99";
-//        try{
-//            taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
-//        }catch(MaskAttackException e){
-//            log.error(e.getMessage(),e);
-//            bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
-//        }
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_REPORT);
+        String taskId = null;
+        try{
+            taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
+        }catch(MaskAttackException e){
+            log.error(e.getMessage(),e);
+            bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+        }
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CESSATION, AuditTrailConsts.FUNCTION_CESSATION);
         TaskDto taskDto = taskService.getTaskById(taskId);
         String refNo = taskDto.getRefNo();
         List<AppCessLicDto> appCessLicDtos = cessationBeService.initData(refNo);
@@ -112,7 +114,6 @@ public class ReCessationApplicationBeDelegator {
         String originLicenceId = applicationDto.getOriginLicenceId();
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         licIds.add(originLicenceId);
-        boolean isGrpLicence = cessationBeService.isGrpLicence(licIds);
         List<String> specLicIds = cessationBeService.filtrateSpecLicIds(licIds);
         List<AppSpecifiedLicDto> specLicInfo = cessationBeService.getSpecLicInfo(licIds);
         if (specLicInfo.size() > 0) {
@@ -140,7 +141,6 @@ public class ReCessationApplicationBeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "reasonOption", (Serializable) reasonOption);
         ParamUtil.setSessionAttr(bpc.request, "patientsOption", (Serializable) patientsOption);
         ParamUtil.setSessionAttr(bpc.request, READINFO, null);
-        ParamUtil.setSessionAttr(bpc.request, "isGrpLic", isGrpLicence);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
     }
 
@@ -174,8 +174,8 @@ public class ReCessationApplicationBeDelegator {
     public void saveData(BaseProcessClass bpc) {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
-        List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtoSave");
-        cessationBeService.saveRfiCessation(appCessationDtos, taskDto, loginContext);
+        AppCessationDto appCessationDto = (AppCessationDto) ParamUtil.getSessionAttr(bpc.request, "appCessationDtoSave");
+        cessationBeService.saveRfiCessation(appCessationDto, taskDto, loginContext);
     }
 
     public void response(BaseProcessClass bpc) throws IOException {

@@ -199,28 +199,28 @@ public class CessationBeServiceImpl implements CessationBeService {
             LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
-            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
-            String svcType = hcsaServiceDto.getSvcType();
-            if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
-                List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
-                if (!IaisCommonUtils.isEmpty(specLicIds)) {
-                    for (String specLicId : specLicIds) {
-                        AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
-                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
-                        if (specLicenceDto != null) {
-                            String specLicenceNo = specLicenceDto.getLicenceNo();
-                            String licenceDtoId = specLicenceDto.getId();
-                            String specSvcName = specLicenceDto.getSvcName();
-                            appSpecifiedLicDto.setBaseLicNo(licenceNo);
-                            appSpecifiedLicDto.setBaseSvcName(svcName);
-                            appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
-                            appSpecifiedLicDto.setSpecSvcName(specSvcName);
-                            appSpecifiedLicDto.setSpecLicId(licenceDtoId);
-                            appSpecifiedLicDtos.add(appSpecifiedLicDto);
-                        }
-                    }
-                }
-            }
+//            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
+//            String svcType = hcsaServiceDto.getSvcType();
+//            if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
+//                List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
+//                if (!IaisCommonUtils.isEmpty(specLicIds)) {
+//                    for (String specLicId : specLicIds) {
+//                        AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
+//                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
+//                        if (specLicenceDto != null) {
+//                            String specLicenceNo = specLicenceDto.getLicenceNo();
+//                            String licenceDtoId = specLicenceDto.getId();
+//                            String specSvcName = specLicenceDto.getSvcName();
+//                            appSpecifiedLicDto.setBaseLicNo(licenceNo);
+//                            appSpecifiedLicDto.setBaseSvcName(svcName);
+//                            appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
+//                            appSpecifiedLicDto.setSpecSvcName(specSvcName);
+//                            appSpecifiedLicDto.setSpecLicId(licenceDtoId);
+//                            appSpecifiedLicDtos.add(appSpecifiedLicDto);
+//                        }
+//                    }
+//                }
+//            }
         }
         return appSpecifiedLicDtos;
     }
@@ -236,20 +236,20 @@ public class CessationBeServiceImpl implements CessationBeService {
         for (String licId : licIds) {
             LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
             String svcName = licenceDto.getSvcName();
-            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
-            String svcType = hcsaServiceDto.getSvcType();
-            if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
-                List<String> specIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
-                if (!IaisCommonUtils.isEmpty(specIds)) {
-                    for (String specLicId : specIds) {
-                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
-                        if (specLicenceDto != null) {
-                            String licenceDtoId = specLicenceDto.getId();
-                            specLicIds.add(licenceDtoId);
-                        }
-                    }
-                }
-            }
+//            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
+//            String svcType = hcsaServiceDto.getSvcType();
+//            if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
+//                List<String> specIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
+//                if (!IaisCommonUtils.isEmpty(specIds)) {
+//                    for (String specLicId : specIds) {
+//                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
+//                        if (specLicenceDto != null) {
+//                            String licenceDtoId = specLicenceDto.getId();
+//                            specLicIds.add(licenceDtoId);
+//                        }
+//                    }
+//                }
+//            }
         }
         if (!IaisCommonUtils.isEmpty(specLicIds)) {
             for (String specId : specLicIds) {
@@ -458,7 +458,7 @@ public class CessationBeServiceImpl implements CessationBeService {
     }
 
     @Override
-    public void saveRfiCessation(List<AppCessationDto> appCessationDtos, TaskDto taskDto, LoginContext loginContext) {
+    public void saveRfiCessation(AppCessationDto appCessationDto, TaskDto taskDto, LoginContext loginContext) {
         String refNo = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(refNo);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -467,7 +467,6 @@ public class CessationBeServiceImpl implements CessationBeService {
         licIds.add(originLicenceId);
         List<String> corrIds = IaisCommonUtils.genNewArrayList();
         corrIds.add(refNo);
-        AppCessationDto appCessationDto = appCessationDtos.get(0);
         AppCessMiscDto appCessMiscDto = setMiscData(appCessationDto, applicationDto.getId());
         cessationClient.updateCessation(appCessMiscDto).getEntity();
     }

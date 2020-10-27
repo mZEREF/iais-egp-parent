@@ -34,7 +34,7 @@ public interface CessationBeService {
 
     List<AppCessLicDto> initData (String corrId);
 
-    void saveRfiCessation(List<AppCessationDto> appCessationDtos, TaskDto taskDto, LoginContext loginContext);
+    void saveRfiCessation(AppCessationDto appCessationDto, TaskDto taskDto, LoginContext loginContext);
 
 
 }
