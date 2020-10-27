@@ -11,7 +11,7 @@
 %>
 <script async src="https://cse.google.com/cse.js?cx=0a2eb3555bf6be84a"></script>
 <header>
-    <div class="container gcse-search">
+    <div class="container">
         <div class="row">
             <div class="col-xs-10 col-lg-6">
                 <div class="logo-img"><a href="<%=internetWebSite%>"><img src="<%=webrooth%>img/moh-logo.svg" alt="Ministry of Health" width="235" height="64"></a>
@@ -27,6 +27,7 @@
         </div>
     </div>
 </header>
+<div class="gcse-search"></div>
 <script type="text/javascript">
 
     var size = 1.0;
