@@ -450,12 +450,12 @@ public class HcsaApplicationDelegator {
                 if(appLastInsGroup != null){
                     if(chooseInspections!=null){
                         applicationClient.saveAppPremisesRecommendationDtoForLastInsp(appLastInsGroup.getAppId(),appLastInsGroup.getOldAppId());
+                        if(RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)){
+                            applicationClient.saveLastInsForSixMonthToRenew(appLastInsGroup.getAppId(),appLastInsGroup.getOldAppId());
+                        }
                     }else{
                         applicationClient.deleteAppPremisesRecommendationDtoForLastInsp(appPremCorreId);
                         ParamUtil.setSessionAttr(bpc.request,"chooseInspectionChecked","N");
-                    }
-                    if(RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)){
-                        applicationClient.saveLastInsForSixMonthToRenew(appLastInsGroup.getAppId(),appLastInsGroup.getOldAppId());
                     }
                 }
             }
