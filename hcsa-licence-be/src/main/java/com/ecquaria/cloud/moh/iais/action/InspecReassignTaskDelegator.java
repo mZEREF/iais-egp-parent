@@ -22,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
@@ -200,7 +199,7 @@ public class InspecReassignTaskDelegator {
     public void inspectionSupSearchDoSearch(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchDoSearch start ...."));
         SearchParam searchParam = getSearchParam(bpc, true);
-        PoolRoleCheckDto poolRoleCheckDto = (PoolRoleCheckDto)ParamUtil.getSessionAttr(bpc.request, "poolRoleCheckDto");
+        PoolRoleCheckDto poolRoleCheckDto = (PoolRoleCheckDto) ParamUtil.getSessionAttr(bpc.request, "poolRoleCheckDto");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         //get search filter
         String application_no = ParamUtil.getRequestString(bpc.request, "application_no");
@@ -214,7 +213,7 @@ public class InspecReassignTaskDelegator {
         Map<String, String> roleMap = poolRoleCheckDto.getRoleMap();
         String roleId = getCheckRoleIdByMap(roleIdCheck, roleMap);
         loginContext.setCurRoleId(roleId);
-        if(!StringUtil.isEmpty(roleId)){
+        if (!StringUtil.isEmpty(roleId)) {
             poolRoleCheckDto.setCheckCurRole(roleIdCheck);
             ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
         }
@@ -298,7 +297,7 @@ public class InspecReassignTaskDelegator {
             for (String workGrpId : workGroupIds) {
                 List<TaskDto> supervisorPoolByGroupWordId = inspectionService.getSupervisorPoolByGroupWordId(workGrpId);
                 for (TaskDto tDto : supervisorPoolByGroupWordId) {
-                    if(curRole.equals(tDto.getRoleId())){
+                    if (curRole.equals(tDto.getRoleId())) {
                         taskDtoList.add(tDto);
                     }
                 }
@@ -308,7 +307,7 @@ public class InspecReassignTaskDelegator {
                 List<TaskDto> taskDtos = inspectionService.getReassignPoolByGroupWordId(workGrpId);
                 for (TaskDto tDto : taskDtos) {
                     String userId = tDto.getUserId();
-                    if (loginUserId.equals(userId)&&curRole.equals(tDto.getRoleId())) {
+                    if (loginUserId.equals(userId) && curRole.equals(tDto.getRoleId())) {
                         taskDtoList.add(tDto);
                     }
                 }
@@ -320,6 +319,7 @@ public class InspecReassignTaskDelegator {
 
     /**
      * StartStep: inspectionSupSearchSort
+     *
      * @param bpc
      * @throws
      */
@@ -362,6 +362,7 @@ public class InspecReassignTaskDelegator {
 
     /**
      * StartStep: inspectionSupSearchAssign
+     *
      * @param bpc
      * @throws
      */
@@ -396,6 +397,7 @@ public class InspecReassignTaskDelegator {
 
     /**
      * StartStep: inspectionSupSearchValidate
+     *
      * @param bpc
      * @throws
      */
@@ -404,9 +406,15 @@ public class InspecReassignTaskDelegator {
         InspectionTaskPoolListDto inspectionTaskPoolListDto = getValueFromPage(bpc);
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         if (!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue))) {
-            ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionTaskPoolListDto, "create");
-            if (validationResult.isHasErrors()) {
-                Map<String, String> errorMap = validationResult.retrieveAll();
+            String inspectorCheck = ParamUtil.getString(bpc.request, "inspectorCheck");
+            if (StringUtil.isEmpty(inspectorCheck)) {
+                GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto) ParamUtil.getSessionAttr(bpc.request, "groupRoleFieldDto");
+                if (groupRoleFieldDto == null) {
+                    LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+                    groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
+                }
+                Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+                errorMap.put("inspectorCheck",MessageUtil.replaceMessage("GENERAL_ERR0006", groupRoleFieldDto.getGroupMemBerName(), "field"));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
@@ -423,7 +431,7 @@ public class InspecReassignTaskDelegator {
         InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto) ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
         String inspectorCheck = ParamUtil.getString(bpc.request, "inspectorCheck");
         String reassignRemarks = ParamUtil.getRequestString(bpc.request, "reassignRemarks");
-        if(inspectionTaskPoolListDto!=null&&!StringUtil.isEmpty(inspectorCheck)) {
+        if (inspectionTaskPoolListDto != null && !StringUtil.isEmpty(inspectorCheck)) {
             String[] nameValue = {inspectorCheck};
             AuditTrailHelper.setAuditAppNo(inspectionTaskPoolListDto.getApplicationNo());
             List<SelectOption> inspectorCheckList = inspectionService.getCheckInspector(nameValue, inspectionTaskPoolListDto);
@@ -473,15 +481,15 @@ public class InspecReassignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "inspectionTaskPoolListDto", inspectionTaskPoolListDto);
         ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
         //send email
-        try{
+        try {
 //            sendEmail(bpc.request);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(StringUtil.changeForLog("reassign email error"));
         }
     }
 
-    private void sendEmail(HttpServletRequest request){
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request, "applicationViewDto");
+    private void sendEmail(HttpServletRequest request) {
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, "applicationViewDto");
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         String subject = "reassign reject";
         String mesContext = "reassign email";
@@ -495,10 +503,10 @@ public class InspecReassignTaskDelegator {
         emailClient.sendNotification(emailDto).getEntity();
         HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
         //send message
-        sendMessage(subject,licenseeId,mesContext,maskParams,applicationViewDto.getApplicationDto().getServiceId());
+        sendMessage(subject, licenseeId, mesContext, maskParams, applicationViewDto.getApplicationDto().getServiceId());
     }
 
-    private void sendMessage(String subject, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams, String serviceId){
+    private void sendMessage(String subject, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams, String serviceId) {
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
         interMessageDto.setSubject(subject);
@@ -512,16 +520,17 @@ public class InspecReassignTaskDelegator {
         interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         interMessageDto.setMaskParams(maskParams);
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-        if(hcsaServiceDto!=null){
-            interMessageDto.setService_id(hcsaServiceDto.getSvcCode()+"@");
+        if (hcsaServiceDto != null) {
+            interMessageDto.setService_id(hcsaServiceDto.getSvcCode() + "@");
             inboxMsgService.saveInterMessage(interMessageDto);
         }
     }
+
     private String getCheckRoleIdByMap(String roleIdCheck, Map<String, String> roleMap) {
         String roleId = "";
-        if(roleMap != null && !StringUtil.isEmpty(roleIdCheck)){
+        if (roleMap != null && !StringUtil.isEmpty(roleIdCheck)) {
             roleId = roleMap.get(roleIdCheck);
-            if(!StringUtil.isEmpty(roleId)){
+            if (!StringUtil.isEmpty(roleId)) {
                 return roleId;
             } else {
                 return "";

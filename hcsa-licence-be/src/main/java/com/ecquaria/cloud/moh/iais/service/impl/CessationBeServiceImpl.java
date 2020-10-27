@@ -9,13 +9,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -31,11 +27,8 @@ import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -98,6 +91,8 @@ public class CessationBeServiceImpl implements CessationBeService {
     private SystemParamConfig systemParamConfig;
     @Value("${iais.email.sender}")
     private String mailSender;
+    @Autowired
+    private ApplicationViewService applicationViewService;
 
     @Override
     public List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds) {
@@ -291,10 +286,10 @@ public class CessationBeServiceImpl implements CessationBeService {
             String hciName = null;
             String hciAddress = null;
             List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
-            if(!IaisCommonUtils.isEmpty(appCessHciDtos)){
-                for(AppCessHciDto appCessHciDto : appCessHciDtos){
+            if (!IaisCommonUtils.isEmpty(appCessHciDtos)) {
+                for (AppCessHciDto appCessHciDto : appCessHciDtos) {
                     String hciCode1 = appCessHciDto.getHciCode();
-                    if(hciCode.equals(hciCode1)){
+                    if (hciCode.equals(hciCode1)) {
                         hciName = appCessHciDto.getHciName();
                         hciAddress = appCessHciDto.getHciAddress();
                     }
@@ -307,8 +302,8 @@ public class CessationBeServiceImpl implements CessationBeService {
                 if (effectiveDate.after(new Date())) {
                     String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
                     Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                    LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
-                    String applicantName=licenseeDto.getName();
+                    LicenseeDto licenseeDto = inspEmailService.getLicenseeDtoById(licenseeId);
+                    String applicantName = licenseeDto.getName();
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     emailMap.put("ApplicationNumber", applicationNo);
@@ -317,13 +312,13 @@ public class CessationBeServiceImpl implements CessationBeService {
                     emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("systemLink", loginUrl);
-                    emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+                    emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
+                    emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
                     MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE).getEntity();
-                    Map<String,Object> map=IaisCommonUtils.genNewHashMap();
+                    Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                     map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     map.put("ApplicationNumber", applicationNo);
-                    String subject= MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
+                    String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
                     EmailParam emailParam = new EmailParam();
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE);
                     emailParam.setTemplateContent(emailMap);
@@ -336,7 +331,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                     notificationHelper.sendNotification(emailParam);
                     //msg
                     HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
-                    List<String> svcCode=IaisCommonUtils.genNewArrayList();
+                    List<String> svcCode = IaisCommonUtils.genNewArrayList();
                     svcCode.add(svcDto.getSvcCode());
                     emailParam.setSvcCodeList(svcCode);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_MSG);
@@ -349,7 +344,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                     //sendEmail(FURTHERDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
                 } else {
                     Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                    LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
+                    LicenseeDto licenseeDto = inspEmailService.getLicenseeDtoById(licenseeId);
                     String applicantName = licenseeDto.getName();
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
@@ -357,13 +352,13 @@ public class CessationBeServiceImpl implements CessationBeService {
                     emailMap.put("ApplicationNumber", applicationNo);
                     emailMap.put("CessationDate", Formatter.formatDateTime(effectiveDate));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
-                    emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-                    emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+                    emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
+                    emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
                     MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE).getEntity();
-                    Map<String,Object> map=IaisCommonUtils.genNewHashMap();
+                    Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                     map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     map.put("ApplicationNumber", applicationNo);
-                    String subject= MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
+                    String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
                     EmailParam emailParam = new EmailParam();
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE);
                     emailParam.setTemplateContent(emailMap);
@@ -376,7 +371,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                     notificationHelper.sendNotification(emailParam);
                     //msg
                     HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
-                    List<String> svcCode=IaisCommonUtils.genNewArrayList();
+                    List<String> svcCode = IaisCommonUtils.genNewArrayList();
                     svcCode.add(svcDto.getSvcCode());
                     emailParam.setSvcCodeList(svcCode);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_MSG);
@@ -410,7 +405,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                 licNos.add(licenceNo);
             }
         }
-        Collections.sort(appCessationDtosConfirms,(s1, s2)->(s1.getAppNo().compareTo(s2.getAppNo())));
+        Collections.sort(appCessationDtosConfirms, (s1, s2) -> (s1.getAppNo().compareTo(s2.getAppNo())));
         return appCessationDtosConfirms;
     }
 
@@ -420,9 +415,67 @@ public class CessationBeServiceImpl implements CessationBeService {
         return entity.isGrpLic();
     }
 
+    @Override
+    public List<AppCessLicDto> initData(String corrId) {
+        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(corrId);
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String originLicenceId = applicationDto.getOriginLicenceId();
+        List<String> licIds = IaisCommonUtils.genNewArrayList();
+        licIds.add(originLicenceId);
+        List<String> corrIds = IaisCommonUtils.genNewArrayList();
+        corrIds.add(corrId);
+        List<AppCessLicDto> appCessDtosByLicIds = getAppCessDtosByLicIds(licIds);
+        List<AppCessMiscDto> appCessMiscDtos = cessationClient.getAppCessMiscDtosByCorrIds(corrIds).getEntity();
+        if (!IaisCommonUtils.isEmpty(appCessDtosByLicIds)) {
+            AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
+            if (!IaisCommonUtils.isEmpty(appCessMiscDtos)) {
+                AppCessMiscDto appCessMiscDto = appCessMiscDtos.get(0);
+                AppCessHciDto appCessHciDto = appCessLicDto.getAppCessHciDtos().get(0);
+                Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
+                MiscUtil.transferEntityDto(appCessMiscDto, AppCessHciDto.class, fieldMap, appCessHciDto);
+                Boolean patNeedTrans = appCessMiscDto.getPatNeedTrans();
+                if (patNeedTrans) {
+                    String patTransType = appCessMiscDto.getPatTransType();
+                    String patTransTo = appCessMiscDto.getPatTransTo();
+
+                    appCessHciDto.setPatientSelect(patTransType);
+                    if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+                        appCessHciDto.setPatHciName(patTransTo);
+                    }
+                    if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+                        appCessHciDto.setPatRegNo(patTransTo);
+                    }
+                    if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+                        appCessHciDto.setPatOthers(patTransTo);
+                    }
+                } else {
+                    String remarks = appCessMiscDto.getPatNoReason();
+                    appCessHciDto.setPatNoRemarks(remarks);
+                }
+            }
+        }
+        return appCessDtosByLicIds;
+    }
+
+    @Override
+    public void saveRfiCessation(List<AppCessationDto> appCessationDtos, TaskDto taskDto, LoginContext loginContext) {
+        String refNo = taskDto.getRefNo();
+        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(refNo);
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String originLicenceId = applicationDto.getOriginLicenceId();
+        List<String> licIds = IaisCommonUtils.genNewArrayList();
+        licIds.add(originLicenceId);
+        List<String> corrIds = IaisCommonUtils.genNewArrayList();
+        corrIds.add(refNo);
+        AppCessationDto appCessationDto = appCessationDtos.get(0);
+        AppCessMiscDto appCessMiscDto = setMiscData(appCessationDto, applicationDto.getId());
+        cessationClient.updateCessation(appCessMiscDto).getEntity();
+    }
+
+
     private void routingTaskToAo3(List<ApplicationDto> applicationDtos, LoginContext loginContext) throws FeignException {
         String curRoleId = loginContext.getCurRoleId();
-        for(ApplicationDto applicationDto :applicationDtos) {
+        for (ApplicationDto applicationDto : applicationDtos) {
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
             appPremisesRoutingHistoryDto.setRoleId(curRoleId);
             appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_ASO);
@@ -436,14 +489,14 @@ public class CessationBeServiceImpl implements CessationBeService {
             asoHistory.add(appPremisesRoutingHistoryDto);
             taskService.createHistorys(asoHistory);
         }
-            TaskHistoryDto taskHistoryDto = prepareTask(applicationDtos);
-            List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
-            taskService.createTasks(taskDtos);
-            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
-            appPremisesRoutingHistoryDtos.get(0).setActionby(loginContext.getUserId());
-            appPremisesRoutingHistoryDtos.get(0).setWrkGrpId(workGroupId);
-            taskService.createHistorys(appPremisesRoutingHistoryDtos);
-        }
+        TaskHistoryDto taskHistoryDto = prepareTask(applicationDtos);
+        List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
+        taskService.createTasks(taskDtos);
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+        appPremisesRoutingHistoryDtos.get(0).setActionby(loginContext.getUserId());
+        appPremisesRoutingHistoryDtos.get(0).setWrkGrpId(workGroupId);
+        taskService.createHistorys(appPremisesRoutingHistoryDtos);
+    }
 
     private Map<String, String> transform(AppSubmissionDto appSubmissionDto, List<String> premiseIds) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
@@ -576,29 +629,29 @@ public class CessationBeServiceImpl implements CessationBeService {
         TaskHistoryDto taskHistoryDto = new TaskHistoryDto();
         List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = IaisCommonUtils.genNewArrayList();
-        Date  assignDate = new Date();
+        Date assignDate = new Date();
         String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
         TaskDto userIdForWorkGroup = taskService.getUserIdForWorkGroup(workGroupId);
         String userId = userIdForWorkGroup.getUserId();
-        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,HcsaConsts.ROUTING_STAGE_AO3);
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_AO3);
         hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
 
-        for(ApplicationDto applicationDto : applicationDtos){
-            int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
-                    HcsaConsts.ROUTING_STAGE_AO3,applicationDto.getApplicationType());
+        for (ApplicationDto applicationDto : applicationDtos) {
+            int score = getConfigScoreForService(hcsaSvcStageWorkingGroupDtos, applicationDto.getServiceId(),
+                    HcsaConsts.ROUTING_STAGE_AO3, applicationDto.getApplicationType());
             List<AppPremisesCorrelationDto> appPremisesCorrelations = getAppPremisesCorrelationId(applicationDto.getId());
-            if(!IaisCommonUtils.isEmpty(appPremisesCorrelations)){
-                for (AppPremisesCorrelationDto appPremisesCorrelationDto :appPremisesCorrelations ){
-                    TaskDto taskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),HcsaConsts.ROUTING_STAGE_AO3, TaskConsts.TASK_TYPE_MAIN_FLOW,
-                            appPremisesCorrelationDto.getId(),workGroupId,
-                            userId, assignDate,score,TaskUrl,RoleConsts.USER_ROLE_AO3,
+            if (!IaisCommonUtils.isEmpty(appPremisesCorrelations)) {
+                for (AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelations) {
+                    TaskDto taskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(), HcsaConsts.ROUTING_STAGE_AO3, TaskConsts.TASK_TYPE_MAIN_FLOW,
+                            appPremisesCorrelationDto.getId(), workGroupId,
+                            userId, assignDate, score, TaskUrl, RoleConsts.USER_ROLE_AO3,
                             IaisEGPHelper.getCurrentAuditTrailDto());
                     taskDtos.add(taskDto);
                     //create history
-                    log.debug(StringUtil.changeForLog("the appPremisesCorrelationId is -->;"+appPremisesCorrelationDto.getId()));
+                    log.debug(StringUtil.changeForLog("the appPremisesCorrelationId is -->;" + appPremisesCorrelationDto.getId()));
                     AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
-                            createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),
-                                    HcsaConsts.ROUTING_STAGE_AO3,null,RoleConsts.USER_ROLE_AO3,IaisEGPHelper.getCurrentAuditTrailDto());
+                            createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(),
+                                    HcsaConsts.ROUTING_STAGE_AO3, null, RoleConsts.USER_ROLE_AO3, IaisEGPHelper.getCurrentAuditTrailDto());
                     appPremisesRoutingHistoryDto.setWrkGrpId(workGroupId);
                     appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
                 }
@@ -610,40 +663,40 @@ public class CessationBeServiceImpl implements CessationBeService {
     }
 
 
-    private int getConfigScoreForService(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos,String serviceId,
-                                         String stageId,String appType){
+    private int getConfigScoreForService(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos, String serviceId,
+                                         String stageId, String appType) {
         int result = 0;
-        if(StringUtil.isEmpty(serviceId) || StringUtil.isEmpty(stageId) || StringUtil.isEmpty(appType)){
+        if (StringUtil.isEmpty(serviceId) || StringUtil.isEmpty(stageId) || StringUtil.isEmpty(appType)) {
             return result;
         }
-        for (HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto :hcsaSvcStageWorkingGroupDtos){
-            if(serviceId.equals(hcsaSvcStageWorkingGroupDto.getServiceId())
+        for (HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto : hcsaSvcStageWorkingGroupDtos) {
+            if (serviceId.equals(hcsaSvcStageWorkingGroupDto.getServiceId())
                     && stageId.equals(hcsaSvcStageWorkingGroupDto.getStageId())
-                    && appType.equals(hcsaSvcStageWorkingGroupDto.getType())){
-                result = hcsaSvcStageWorkingGroupDto.getCount() == null ? 0 :hcsaSvcStageWorkingGroupDto.getCount();
+                    && appType.equals(hcsaSvcStageWorkingGroupDto.getType())) {
+                result = hcsaSvcStageWorkingGroupDto.getCount() == null ? 0 : hcsaSvcStageWorkingGroupDto.getCount();
             }
         }
         return result;
     }
 
-    private List<AppPremisesCorrelationDto> getAppPremisesCorrelationId(String appId){
-        return  taskApplicationClient.getAppPremisesCorrelationsByAppId(appId).getEntity();
+    private List<AppPremisesCorrelationDto> getAppPremisesCorrelationId(String appId) {
+        return taskApplicationClient.getAppPremisesCorrelationsByAppId(appId).getEntity();
     }
 
-    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
+    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId) {
         log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos start ...."));
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
-        log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos stageId -->:"+stageId));
-        for(ApplicationDto applicationDto : applicationDtos){
+        log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos stageId -->:" + stageId));
+        for (ApplicationDto applicationDto : applicationDtos) {
             AppGrpPremisesEntityDto appGrpPremisesEntityDto = hcsaAppClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setStageId(stageId);
             hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
             hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
-            if(appGrpPremisesEntityDto != null){
+            if (appGrpPremisesEntityDto != null) {
                 hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
-            }else{
-                log.error(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos this APP do not have the premise :"+applicationDto.getApplicationNo()));
+            } else {
+                log.error(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos this APP do not have the premise :" + applicationDto.getApplicationNo()));
             }
             hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
         }
@@ -652,8 +705,8 @@ public class CessationBeServiceImpl implements CessationBeService {
     }
 
     private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus,
-                                                                         String stageId, String internalRemarks,String roleId,
-                                                                         AuditTrailDto auditTrailDto){
+                                                                         String stageId, String internalRemarks, String roleId,
+                                                                         AuditTrailDto auditTrailDto) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(stageId);

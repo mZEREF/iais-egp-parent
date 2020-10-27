@@ -601,7 +601,6 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public ApplicationViewDto getApplicationViewDto(String correlationId) {
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(correlationId);
-
         return applicationViewDto;
     }
 

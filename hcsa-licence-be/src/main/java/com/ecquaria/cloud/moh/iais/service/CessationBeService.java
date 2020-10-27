@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.List;
@@ -30,4 +31,10 @@ public interface CessationBeService {
     List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, Map<String, String> appIdPremisesMap , LoginContext loginContext) throws Exception;
 
     boolean isGrpLicence(List<String> licIds);
+
+    List<AppCessLicDto> initData (String corrId);
+
+    void saveRfiCessation(List<AppCessationDto> appCessationDtos, TaskDto taskDto, LoginContext loginContext);
+
+
 }
