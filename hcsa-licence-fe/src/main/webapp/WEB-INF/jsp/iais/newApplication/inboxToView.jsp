@@ -10,7 +10,12 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
-<%@ include file="./inboxView/dashboard.jsp" %>
+<c:if test="${applicationDto.applicationType == 'APTY008'}">
+    <%@include file="../cessation/head.jsp" %>
+</c:if>
+<c:if test="${applicationDto.applicationType != 'APTY008'}">
+    <%@ include file="./inboxView/dashboard.jsp" %>
+</c:if>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type_tab" value="">
