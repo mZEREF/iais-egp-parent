@@ -675,19 +675,19 @@ public class ClinicalLaboratoryDelegator {
                     appSubmissionDto.setChangeSelectDto(appEditSelectDto);
                 }
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
-                HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
-                Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
-                if (errorMap.isEmpty() && allChecked.isEmpty()) {
-                    coMap.put("information", "information");
-                } else {
-                    coMap.put("information", "");
-                }
-                bpc.request.getSession().setAttribute("coMap", coMap);
             }
             ParamUtil.setSessionAttr(bpc.request, "reloadLaboratoryDisciplines", (Serializable) reloadChkLstMap);
 
             currentSvcDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcDto);
+            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+            Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
+            if (errorMap.isEmpty() && allChecked.isEmpty()) {
+                coMap.put("information", "information");
+            } else {
+                coMap.put("information", "");
+            }
+            bpc.request.getSession().setAttribute("coMap", coMap);
             if (!errorMap.isEmpty()) {
                 //set audit
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
@@ -931,18 +931,17 @@ public class ClinicalLaboratoryDelegator {
                 }
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
 
-
-                HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
-                Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
-                if (errorMap.isEmpty() && allChecked.isEmpty()) {
-                    coMap.put("information", "information");
-                } else {
-                    coMap.put("information", "");
-                }
-                bpc.request.getSession().setAttribute("coMap", coMap);
             }
             currentSvcRelatedDto.setAppSvcDisciplineAllocationDtoList(daList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
+            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+            Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
+            if (errorMap.isEmpty() && allChecked.isEmpty()) {
+                coMap.put("information", "information");
+            } else {
+                coMap.put("information", "");
+            }
+            bpc.request.getSession().setAttribute("coMap", coMap);
             if (!errorMap.isEmpty()) {
                 //set audit
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);

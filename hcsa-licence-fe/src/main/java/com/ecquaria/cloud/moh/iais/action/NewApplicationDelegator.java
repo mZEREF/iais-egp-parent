@@ -4343,14 +4343,21 @@ public class NewApplicationDelegator {
         if (list != null && list.isEmpty()) {
 
         }
-        if(list!=null&&appSvcDisciplineAllocationDtoList!=null){
+        if(list!=null&&appSvcDisciplineAllocationDtoList!=null&&!list.isEmpty()){
             List<AppSvcChckListDto> appSvcChckListDtoList = list.get(0).getAppSvcChckListDtoList();
-            if(appSvcChckListDtoList!=null){
-                if(appSvcChckListDtoList.size()!=appSvcDisciplineAllocationDtoList.size()){
-                    map.put("allocation","allocation error");
-                    sB.append(serviceId);
+            if(appSvcChckListDtoList!=null&&!appSvcChckListDtoList.isEmpty()){
+                for(AppSvcChckListDto appSvcChckListDto : appSvcChckListDtoList){
+                    boolean flag=false;
+                    for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
+                        if(appSvcChckListDto.getChkLstConfId().equals(appSvcDisciplineAllocationDto.getChkLstConfId())){
+                            flag=true;
+                        }
+                    }
+                    if(!flag){
+                        map.put("allocation","allocation error");
+                        sB.append(serviceId);
+                    }
                 }
-
             }
         }
     }

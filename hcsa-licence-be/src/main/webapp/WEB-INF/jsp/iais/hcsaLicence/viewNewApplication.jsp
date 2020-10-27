@@ -319,10 +319,10 @@
                             <c:forEach items="${listHashMap[cgo.profRegNo]}" var="list">
                               <tr>
                                 <td>${cgo.profRegNo}</td>
-                                <td>
-                                  <nobr><p>${list.complaint1}</p></nobr>
-                                  <nobr><p>${list.complaint2}</p></nobr>
-                                  <nobr><p>${list.complaint3}</p></nobr>
+                                <td style="text-align: left">
+                                  <nobr><p style="margin-bottom: 10%">${list.complaint1}</p></nobr>
+                                  <nobr><p style="margin-bottom: 10%">${list.complaint2}</p></nobr>
+                                  <nobr><p style="margin-bottom: 10%">${list.complaint3}</p></nobr>
                                 </td>
                                 <td>${list.finaloutcome}</td>
                                 <td>${list.fineamount}</td>
@@ -358,10 +358,10 @@
                             <c:forEach items="${listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo]}" var="list">
                               <tr>
                                 <td>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}</td>
-                                <td>
-                                  <p>${list.complaint1}</p>
-                                  <p>${list.complaint2}</p>
-                                  <p>${list.complaint3}</p>
+                                <td style="text-align: left">
+                                  <nobr><p style="margin-bottom: 10%">${list.complaint1}</p></nobr>
+                                  <nobr><p style="margin-bottom: 10%">${list.complaint2}</p></nobr>
+                                  <nobr><p style="margin-bottom: 10%">${list.complaint3}</p></nobr>
                                 </td>
                                 <td>${list.finaloutcome}</td>
                                 <td>${list.fineamount}</td>
@@ -667,10 +667,10 @@
                                   <c:forEach items="${listHashMap[appSvcPersonnelDtoList.profRegNo]}" var="list">
                                     <tr>
                                       <td>${appSvcPersonnelDtoList.profRegNo}</td>
-                                      <td>
-                                        <nobr><p>${list.complaint1}</p></nobr>
-                                        <nobr><p>${list.complaint2}</p></nobr>
-                                        <nobr><p>${list.complaint3}</p></nobr>
+                                      <td style="text-align: left">
+                                        <nobr><p style="margin-bottom: 10%">${list.complaint1}</p></nobr>
+                                        <nobr><p style="margin-bottom: 10%">${list.complaint2}</p></nobr>
+                                        <nobr><p style="margin-bottom: 10%">${list.complaint3}</p></nobr>
                                       </td>
                                       <td>${list.finaloutcome}</td>
                                       <td>${list.fineamount}</td>
@@ -706,11 +706,10 @@
                                   <c:forEach items="${listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}" var="list">
                                     <tr>
                                       <td>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}</td>
-                                      <td>
-                                        <nobr><p>${list.complaint1}</p></nobr>
-                                        <nobr><p>${list.complaint2}</p></nobr>
-                                        <nobr> <p>${list.complaint3}</p></nobr>
-
+                                      <td style="text-align: left">
+                                        <nobr><p style="margin-bottom: 10%">${list.complaint1}</p></nobr>
+                                        <nobr><p style="margin-bottom: 10%">${list.complaint2}</p></nobr>
+                                        <nobr><p style="margin-bottom: 10%">${list.complaint3}</p></nobr>
                                       </td>
                                       <td>${list.finaloutcome}</td>
                                       <td>${list.fineamount}</td>
@@ -1024,10 +1023,10 @@
                                   <c:forEach items="${listHashMap[appSvcPersonnelDtoList.profRegNo]}" var="list">
                                     <tr>
                                       <td>${appSvcPersonnelDtoList.profRegNo}</td>
-                                      <td>
-                                        <nobr><p>${list.complaint1}</p></nobr>
-                                        <nobr><p>${list.complaint2}</p></nobr>
-                                        <nobr><p>${list.complaint3}</p></nobr>
+                                      <td style="text-align: left">
+                                        <nobr><p style="margin-bottom: 10%">${list.complaint1}</p></nobr>
+                                        <nobr><p style="margin-bottom: 10%">${list.complaint2}</p></nobr>
+                                        <nobr><p style="margin-bottom: 10%">${list.complaint3}</p></nobr>
                                       </td>
                                       <td>${list.finaloutcome}</td>
                                       <td>${list.fineamount}</td>
@@ -1063,11 +1062,10 @@
                                   <c:forEach items="${listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}" var="list">
                                     <tr>
                                       <td>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}</td>
-                                      <td>
-                                        <nobr> <p>${list.complaint1}</p></nobr>
-                                        <nobr> <p>${list.complaint2}</p></nobr>
-                                        <nobr> <p>${list.complaint3}</p></nobr>
-
+                                      <td style="text-align: left">
+                                        <nobr><p style="margin-bottom: 10%">${list.complaint1}</p></nobr>
+                                        <nobr><p style="margin-bottom: 10%">${list.complaint2}</p></nobr>
+                                        <nobr><p style="margin-bottom: 10%">${list.complaint3}</p></nobr>
                                       </td>
                                       <td>${list.finaloutcome}</td>
                                       <td>${list.fineamount}</td>

@@ -55,6 +55,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -459,8 +460,13 @@ public class ConfigServiceImpl implements ConfigService {
             if(parse.before(new Date())){
                 errorMap.put("effectiveDate","RSM_ERR012");
             }else {
-                if(StringUtil.isEmpty(oldEndDate)){
-
+                if(!StringUtil.isEmpty(oldEndDate)){
+                    Calendar calendar=Calendar.getInstance();
+                    calendar.setTime(oldEndDate);
+                    calendar.add(Calendar.DAY_OF_MONTH,1);
+                    if(calendar.getTime().after(parse)){
+                        errorMap.put("effectiveDate","The start time cannot be earlier than the end time of the previous version");
+                    }
                 }
             }
         }

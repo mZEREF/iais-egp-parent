@@ -682,7 +682,7 @@
       </div>
     </div>
     <input type="text" style="display: none" name="oldEffectiveDate" value="${hcsaServiceDto.oldEffectiveDate}">
-    <input type="text" style="display: none" name="oldEndDate" <fmt:formatDate value="${hcsaServiceDto.oldEndDate}" pattern="dd/MM/yyyy"/> ">
+    <input type="text" style="display: none" name="oldEndDate" value="<fmt:formatDate value="${hcsaServiceDto.oldEndDate}" pattern="dd/MM/yyyy"/>"  >
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
   </form>
 </div>
