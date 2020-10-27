@@ -370,7 +370,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 emailDto.setClientQueryCode("isNotAuto");
                 if(!licenseeEmailAddrs.isEmpty()){
                     emailDto.setReceipts(licenseeEmailAddrs);
-                    emailClient.sendNotification(emailDto).getEntity();
+//                    emailClient.sendNotification(emailDto).getEntity();
                 }
                 String messageNo = inboxMsgService.getMessageNo();
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
@@ -380,7 +380,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 HashMap<String,String> mapParam = IaisCommonUtils.genNewHashMap();
                 mapParam.put("licenceId",licenceDto.getId());
                 interMessageDto.setMaskParams(mapParam);
-                inboxMsgService.saveInterMessage(interMessageDto);
+//                inboxMsgService.saveInterMessage(interMessageDto);
         }
 
     }
