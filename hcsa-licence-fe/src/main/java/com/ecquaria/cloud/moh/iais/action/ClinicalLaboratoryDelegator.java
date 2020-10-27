@@ -3106,12 +3106,18 @@ public class ClinicalLaboratoryDelegator {
         if(StringUtil.isEmpty(appNo)){
             AppSvcDocDto maxVersionDocDto = appSubmissionService.getMaxVersionSvcComDoc(appGrpId,configDocId);
             if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
-                version = maxVersionDocDto.getVersion() + 1;
+                //judege dto is null
+                if(!StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())){
+                    version = maxVersionDocDto.getVersion() + 1;
+                }
             }
         }else{
             AppSvcDocDto maxVersionDocDto = appSubmissionService.getMaxVersionSvcSpecDoc(appGrpId,configDocId,appNo);
             if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
-                version = maxVersionDocDto.getVersion() + 1;
+                //judege dto is null
+                if(!StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())){
+                    version = maxVersionDocDto.getVersion() + 1;
+                }
             }
         }
         return version;

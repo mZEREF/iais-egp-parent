@@ -5749,13 +5749,19 @@ public class NewApplicationDelegator {
             //comm
             AppGrpPrimaryDocDto maxVersionDocDto = appSubmissionService.getMaxVersionPrimaryComDoc(appGrpId,configDocId);
             if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
-                version = maxVersionDocDto.getVersion() + 1;
+                //judege dto is null
+                if(!StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())){
+                    version = maxVersionDocDto.getVersion() + 1;
+                }
             }
         }else{
             //spec
             AppGrpPrimaryDocDto maxVersionDocDto = appSubmissionService.getMaxVersionPrimarySpecDoc(appGrpId,configDocId,appNo);
             if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
-                version = maxVersionDocDto.getVersion() + 1;
+                //judege dto is null
+                if(!StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())){
+                    version = maxVersionDocDto.getVersion() + 1;
+                }
             }
         }
         return version;
