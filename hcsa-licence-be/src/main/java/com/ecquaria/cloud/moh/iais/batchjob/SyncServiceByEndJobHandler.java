@@ -39,8 +39,8 @@ public class SyncServiceByEndJobHandler extends MohJobHandler {
                 List<HcsaServiceDto> updateServiceList = IaisCommonUtils.genNewArrayList();
                 for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
                     if(hcsaServiceDto != null){
-                        log.info(StringUtil.changeForLog("hcsaServiceDto Id = " + hcsaServiceDto.getId()));
-                        JobLogger.log(StringUtil.changeForLog("hcsaServiceDto Id = " + hcsaServiceDto.getId()));
+                        log.info(StringUtil.changeForLog("hcsaServiceDto03 Id = " + hcsaServiceDto.getId()));
+                        JobLogger.log(StringUtil.changeForLog("hcsaServiceDto03 Id = " + hcsaServiceDto.getId()));
                         try {
                             hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                             updateServiceList.add(hcsaServiceDto);
@@ -56,6 +56,28 @@ public class SyncServiceByEndJobHandler extends MohJobHandler {
             } else {
                 log.info(StringUtil.changeForLog("hcsaServiceDtos is Null"));
                 JobLogger.log(StringUtil.changeForLog("hcsaServiceDtos is Null"));
+            }
+            List<HcsaServiceDto> hcsaServiceDtoList = hcsaConfigClient.getNeedActiveServices(AppConsts.COMMON_STATUS_IACTIVE).getEntity();
+            if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)){//NOSONAR
+                List<HcsaServiceDto> updateServiceList = IaisCommonUtils.genNewArrayList();
+                for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList){
+                    if(hcsaServiceDto != null){
+                        log.info(StringUtil.changeForLog("hcsaServiceDto01 Id = " + hcsaServiceDto.getId()));
+                        JobLogger.log(StringUtil.changeForLog("hcsaServiceDto01 Id = " + hcsaServiceDto.getId()));
+                        try {
+                            hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            updateServiceList.add(hcsaServiceDto);
+                        } catch (Exception e) {
+                            log.error(e.getMessage(), e);
+                            JobLogger.log(e);
+                            continue;
+                        }
+                    }
+                }
+                hcsaConfigClient.saveServiceList(updateServiceList);
+                HcsaServiceCacheHelper.receiveServiceMapping();
+            } else {
+                log.info(StringUtil.changeForLog("hcsaServiceDtoList is Null"));
             }
             return ReturnT.SUCCESS;
         } catch (Throwable e) {
