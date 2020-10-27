@@ -365,7 +365,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public LicenseeDto saveMyinfoDataByFeUserDtoAndLicenseeDto(LicenseeDto licenseeDto, FeUserDto feUserDto, MyInfoDto myInfoDto ) {
+    public LicenseeDto saveMyinfoDataByFeUserDtoAndLicenseeDto(LicenseeDto licenseeDto, FeUserDto feUserDto, MyInfoDto myInfoDto,boolean amendLicensee ) {
         LicenseeEntityDto licenseeEntityDto;
         LicenseeIndividualDto licenseeIndividualDto;
         if(licenseeDto == null) {
@@ -400,20 +400,22 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         organizationDto.setUenNo(organizationById.getUenNo());
         organizationDto.setId(organizationById.getId());
         updateUserBe(organizationDto);
-        //update licensee
-        licenseeDto.setOrganizationId(organizationDto.getId());
-        licenseeDto.setName(feUserDto.getDisplayName());
-        licenseeDto.setEmilAddr(feUserDto.getEmail());
-        licenseeEntityDto.setOfficeTelNo(feUserDto.getOfficeTelNo());
-        licenseeEntityDto.setOfficeEmailAddr(feUserDto.getEmail());
-        licenseeIndividualDto.setSalutation(feUserDto.getSalutation());
-        licenseeIndividualDto.setIdType(feUserDto.getIdType());
-        licenseeIndividualDto.setIdNo(feUserDto.getIdentityNo());
-        licenseeIndividualDto.setMobileNo(feUserDto.getMobileNo());
-        licenseeIndividualDto.setEmailAddr(feUserDto.getEmail());
-        licenseeDto.setLicenseeEntityDto(licenseeEntityDto);
-        licenseeDto.setLicenseeIndividualDto(licenseeIndividualDto);
-        refreshLicensee(licenseeDto);
+        if(amendLicensee){
+            //update licensee
+            licenseeDto.setOrganizationId(organizationDto.getId());
+            licenseeDto.setName(feUserDto.getDisplayName());
+            licenseeDto.setEmilAddr(feUserDto.getEmail());
+            licenseeEntityDto.setOfficeTelNo(feUserDto.getOfficeTelNo());
+            licenseeEntityDto.setOfficeEmailAddr(feUserDto.getEmail());
+            licenseeIndividualDto.setSalutation(feUserDto.getSalutation());
+            licenseeIndividualDto.setIdType(feUserDto.getIdType());
+            licenseeIndividualDto.setIdNo(feUserDto.getIdentityNo());
+            licenseeIndividualDto.setMobileNo(feUserDto.getMobileNo());
+            licenseeIndividualDto.setEmailAddr(feUserDto.getEmail());
+            licenseeDto.setLicenseeEntityDto(licenseeEntityDto);
+            licenseeDto.setLicenseeIndividualDto(licenseeIndividualDto);
+            refreshLicensee(licenseeDto);
+        }
         return licenseeDto;
     }
 

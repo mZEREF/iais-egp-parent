@@ -59,5 +59,5 @@ public interface OrgUserManageService {
 
     Boolean validatePwd(FeUserDto feUserDto);
 
-    LicenseeDto saveMyinfoDataByFeUserDtoAndLicenseeDto( LicenseeDto licenseeDto, FeUserDto feUserDto, MyInfoDto myInfoDto);
+    LicenseeDto saveMyinfoDataByFeUserDtoAndLicenseeDto( LicenseeDto licenseeDto, FeUserDto feUserDto, MyInfoDto myInfoDto,boolean amendLicensee);
 }

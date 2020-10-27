@@ -81,7 +81,7 @@ public class LicenseeCompanyDelegate {
                     if(!myInfoDto.isServiceDown()){
                         FeUserDto feUserDto = orgUserManageService.getUserAccount(loginContext.getUserId());
                         if(myInfoDto != null && feUserDto != null){
-                            orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,myInfoDto);
+                            orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,myInfoDto,true);
                         }
                     }else {
                         ParamUtil.setRequestAttr(bpc.request,"myinfoServiceDown", "Y");
