@@ -285,11 +285,12 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 }
             }else{
                 String subject = "MOH HALP - 1st Renewal Notice: Your "+ serviceName +" is due for renewal";
-                Calendar nowCalendar = Calendar.getInstance();
                 Calendar expireCalendar = Calendar.getInstance();
-                int endDate = MiscUtil.getDaysBetween(nowCalendar,expireCalendar);
+                expireCalendar.setTime(expiryDate);
+                expireCalendar.add(Calendar.MONTH, -2);
                 String expireDateString = DateUtil.formatDate(expiryDate);
-                map.put("endDate", endDate);
+                String temp = DateUtil.formatDate(expireCalendar.getTime());
+                map.put("endDate", temp);
                 map.put("expireDate", expireDateString);
                 //first - sixth reminder
                 log.info(StringUtil.changeForLog("send renewal application first - sixth reminder"));
