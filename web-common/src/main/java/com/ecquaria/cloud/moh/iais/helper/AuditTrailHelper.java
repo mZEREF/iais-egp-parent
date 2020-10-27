@@ -20,8 +20,10 @@ import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.SessionDurationDto;
+import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -176,7 +178,13 @@ public class AuditTrailHelper {
                 }
             }
         }
+
         log.info(StringUtil.changeForLog("batch job function name" + trailDto.getFunctionName()));
+        RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
+        String threadKey = Thread.currentThread().getId() + Thread.currentThread().getName();
+        log.info(StringUtil.changeForLog("=======>>>>>>>>>>>>>>threadKey >>>>>>>   " + threadKey));
+        redisCacheHelper.set("iaisCrTdAuditTrailCache", threadKey,
+                trailDto, 180000L);
         AuditTrailDto.setThreadDto(trailDto);
     }
 
