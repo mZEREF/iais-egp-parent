@@ -203,8 +203,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
     private void checkInspectionForSixMonth(HttpServletRequest request,Map<String, String> errMap, String verified){
         String[] chooseInspections =  ParamUtil.getStrings(request,"chooseInspection");
         if(chooseInspections!=null){
-            if(RoleConsts.PROCESS_TYPE_INS.equals(verified)){
-                errMap.put("verified","Can not routing to inspection");
+            if(RoleConsts.PROCESS_TYPE_INS.equals(verified) || RoleConsts.USER_ROLE_AO1.equals(verified)){
+                errMap.put("verified","Can not routing to inspection or ao1");
             }
             ParamUtil.setRequestAttr(request,"chooseInspectionChecked","Y");
         }

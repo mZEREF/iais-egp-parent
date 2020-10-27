@@ -1509,8 +1509,7 @@ public class WithOutRenewalDelegator {
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDto.getServiceName());
                 List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
                 svcCodeList.add(hcsaServiceDto.getSvcCode());
-                FeeExtDto detailFeeDto = appSubmissionDto.getDetailFeeDto();
-                String amountStr = detailFeeDto.getAmountStr();
+                String amountStr = (String)ParamUtil.getSessionAttr(request, "totalStr");
                 appNo = getAppNo(groupNo,index);
                 log.info(StringUtil.changeForLog("send renewal application notification application no : " + appNo));
                 log.info(StringUtil.changeForLog("send renewal application notification amountStr : " + amountStr));

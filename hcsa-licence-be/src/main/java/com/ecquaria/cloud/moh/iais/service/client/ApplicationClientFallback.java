@@ -803,4 +803,12 @@ public class ApplicationClientFallback implements ApplicationClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getHistoryByAppNoAndDecision(String applicationNo, String decision) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

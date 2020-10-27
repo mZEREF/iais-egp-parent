@@ -320,4 +320,7 @@ public interface ApplicationClient {
 
     @GetMapping(value = "/iais-application-be/delete-appPremisesRecommendationDto-last-insp")
     FeignResponseEntity<String> deleteAppPremisesRecommendationDtoForLastInsp(@RequestParam("corrId") String corrId);
+
+    @GetMapping(value = "/iais-application-be/getHistory/{applicationNo}/{decision}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getHistoryByAppNoAndDecision(@PathVariable("applicationNo") String applicationNo, @PathVariable("decision") String decision);
 }

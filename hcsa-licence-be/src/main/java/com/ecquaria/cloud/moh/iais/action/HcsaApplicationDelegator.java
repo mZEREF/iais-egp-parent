@@ -2372,6 +2372,13 @@ public class HcsaApplicationDelegator {
             taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
             TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
         }
+        //be cessation flow
+        if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())){
+            List<AppPremisesRoutingHistoryDto> rollBackHistroyList = applicationClient.getHistoryByAppNoAndDecision(applicationDto.getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_CESSATION_BE_DECISION).getEntity();
+            if(!IaisCommonUtils.isEmpty(rollBackHistroyList) && rollBackHistroyList.size() < 2){
+                TaskUrl = TaskConsts.TASK_PROCESS_URL_RESCHEDULING_CESSATION_RFI;
+            }
+        }
 
         TaskDto newTaskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),stageId,taskType,
                 taskDto.getRefNo(),wrkGpId, userId,new Date(),0,TaskUrl,roleId,

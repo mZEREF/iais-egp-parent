@@ -479,7 +479,7 @@ public class CessationBeServiceImpl implements CessationBeService {
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
             appPremisesRoutingHistoryDto.setRoleId(curRoleId);
             appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_ASO);
-            appPremisesRoutingHistoryDto.setProcessDecision(ApplicationConsts.PROCESSING_DECISION_VERIFIED);
+            appPremisesRoutingHistoryDto.setProcessDecision(ApplicationConsts.APPLICATION_STATUS_CESSATION_BE_DECISION);
             appPremisesRoutingHistoryDto.setApplicationNo(applicationDto.getApplicationNo());
             appPremisesRoutingHistoryDto.setActionby(loginContext.getUserId());
             appPremisesRoutingHistoryDto.setAppStatus(applicationDto.getStatus());
