@@ -242,7 +242,7 @@ public class LicenceServiceImpl implements LicenceService {
             //send approve notification
             try{
                 //save new acra info
-                saveNewAcra(eventBusLicenceGroupDtos);
+//                saveNewAcra(eventBusLicenceGroupDtos);
                 //send issue uen email
                 log.info(StringUtil.changeForLog("send uen email"));
                 sendUenEmail(eventBusLicenceGroupDtos);
