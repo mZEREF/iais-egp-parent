@@ -57,3 +57,5 @@
     ga('create', 'UA-66523606-1', 'auto');
     ga('send', 'pageview');
 </script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<script async src="path/to/autotrack.js"></script>
