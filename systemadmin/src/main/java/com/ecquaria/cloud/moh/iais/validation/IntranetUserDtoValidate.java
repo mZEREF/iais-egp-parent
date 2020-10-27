@@ -39,13 +39,13 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
         //userId
         if (!StringUtil.isEmpty(userId)) {
             if (!userId.matches("^[A-Za-z0-9]+$")) {
-                errorMap.put("userId", "USER_ERR012");
+                errorMap.put("userId", "USER_ERR003");
             } else {
                 OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
                 if (intranetUserByUserId != null) {
                     String valiuserId = intranetUserByUserId.getUserId();
                     if (userId.equals(valiuserId)) {
-                        errorMap.put("userId", "USER_ERR012");
+                        errorMap.put("userId", "USER_ERR002");
                     }
                 }
             }
