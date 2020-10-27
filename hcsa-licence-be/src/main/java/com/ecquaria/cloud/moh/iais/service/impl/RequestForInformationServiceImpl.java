@@ -463,7 +463,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     }
     private boolean fileToDto(String str,ProcessFileTrackDto processFileTrackDto,String submissionId){
         LicPremisesReqForInfoDto licPremisesReqForInfoDto = JsonUtil.parseToObject(str, LicPremisesReqForInfoDto.class);
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
+        AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
         licPremisesReqForInfoDto.setAuditTrailDto(intranet);
         //eventbus
         licPremisesReqForInfoDto.setEventRefNo(processFileTrackDto.getRefId());
@@ -477,7 +477,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     private void changeStatus( ProcessFileTrackDto processFileTrackDto){
         /*  applicationClient.updateStatus().getEntity();*/
         processFileTrackDto.setProcessType(RequestForInformationConstants.RFI_CLOSE);
-        AuditTrailDto batchJobDto = AuditTrailHelper.getBatchJobAuditTrail();
+        AuditTrailDto batchJobDto = AuditTrailHelper.getCurrentAuditTrailDto();
         processFileTrackDto.setAuditTrailDto(batchJobDto);
         processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_COMPLETE);
         systemClient.updateProcessFileTrack(processFileTrackDto);
@@ -502,7 +502,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         fileName.append(split[i]);
                     }
 
-                    AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
+                    AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
                     FileRepoDto fileRepoDto = new FileRepoDto();
                     fileRepoDto.setId(split[0]);
                     fileRepoDto.setAuditTrailDto(intranet);

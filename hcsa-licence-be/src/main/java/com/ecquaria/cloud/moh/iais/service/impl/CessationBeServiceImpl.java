@@ -501,7 +501,7 @@ public class CessationBeServiceImpl implements CessationBeService {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         String licenseeId = appSubmissionDto.getLicenseeId();
         Double amount = 0.0;
-        AuditTrailDto internet = AuditTrailHelper.getBatchJobAuditTrail();
+        AuditTrailDto internet = AuditTrailHelper.getCurrentAuditTrailDto();
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_CESSATION, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();

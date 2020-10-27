@@ -261,7 +261,7 @@ public class PublicHolidayDelegate {
             publicHolidayService.createHolidays(publicHolidayDtos);
         }else{
             Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-            errMap.put("selectedFile", MessageUtil.getMessageDesc("CHKL_ERR006"));
+            errMap.put("selectedFile", MessageUtil.getMessageDesc("CHKL_ERR011"));
             ParamUtil.setRequestAttr(bpc.request,"filename", filename);
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
         }

@@ -289,7 +289,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         processFileTrackDto.setFilePath(filePath);
         processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
         processFileTrackDto.setRefId(appId);
-        AuditTrailDto internet = AuditTrailHelper.getBatchJobAuditTrail();
+        AuditTrailDto internet = AuditTrailHelper.getCurrentAuditTrailDto();
         processFileTrackDto.setAuditTrailDto(internet);
         String s = AppConsts.FAIL;
         try {
