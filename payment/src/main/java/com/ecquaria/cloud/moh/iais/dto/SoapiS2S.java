@@ -24,25 +24,25 @@ public class SoapiS2S<T> {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Msg {
 
-        private String netsMid="";
-        private String tid="";
-        private String submissionMode="";
-        private String txnAmount="";
-        private String merchantTxnRef="";
-        private String merchantTxnDtm="";
-        private String paymentType="";
-        private String currencyCode="";
-        private String paymentMode="";
-        private String merchantTimeZone="";
-        private String b2sTxnEndURL="";
-        private String b2sTxnEndURLParam="";
-        private String s2sTxnEndURL="";
-        private String s2sTxnEndURLParam="";
-        private String clientType="";
-        private String supMsg="";
-        private String netsMidIndicator="";
-        private String ipAddress="";
-        private String language="";
+        private String netsMid;
+        private String tid;
+        private String submissionMode;
+        private String txnAmount;
+        private String merchantTxnRef;
+        private String merchantTxnDtm;
+        private String paymentType;
+        private String currencyCode;
+        private String paymentMode;
+        private String merchantTimeZone;
+        private String b2sTxnEndURL;
+        private String b2sTxnEndURLParam;
+        private String s2sTxnEndURL;
+        private String s2sTxnEndURLParam;
+        private String clientType;
+        private String supMsg;
+        private String netsMidIndicator;
+        private String ipAddress;
+        private String language;
 
         public String getNetsMid() {
             return netsMid;
@@ -197,30 +197,4 @@ public class SoapiS2S<T> {
         }
     }
 
-    public String getJsonString() {
-        return "{\n" +
-                "\"ss\":\"1\", \n" +
-                "\"msg\":{\n" +
-                " \"ipAddress\":\""+msg.getIpAddress()+"\", \n" +
-                " \"submissionMode\":\""+msg.getSubmissionMode()+"\", \n" +
-                " \"txnAmount\":\""+msg.getTxnAmount()+"\", \n" +
-                " \"tid\":\""+msg.getTid()+"\", \n" +
-                " \"merchantTxnRef\":\""+msg.getMerchantTxnRef()+"\", \n" +
-                " \"b2sTxnEndURL\":\""+msg.getB2sTxnEndURL()+"\", \n" +
-                " \"b2sTxnEndURLParam\":\""+msg.getB2sTxnEndURLParam()+"\", \n" +
-                " \"s2sTxnEndURLParam\":\""+msg.getS2sTxnEndURLParam()+"\", \n" +
-                " \"s2sTxnEndURL\":\""+msg.getS2sTxnEndURL()+"\", \n" +
-                " \"netsMid\":\""+msg.getNetsMid()+"\", \n" +
-                " \"language\":\""+msg.getLanguage()+"\", \n" +
-                " \"supMsg\":\""+msg.getSupMsg()+"\", \n" +
-                " \"merchantTxnDtm\":\""+msg.getMerchantTxnDtm()+"\", \n" +
-                " \"paymentType\":\""+msg.getPaymentType()+"\", \n" +
-                " \"paymentMode\":\""+msg.getPaymentMode()+"\",\n" +
-                " \"clientType\":\""+msg.getClientType()+"\", \n" +
-                " \"currencyCode\":\"SGD\", \n" +
-                " \"merchantTimeZone\":\""+msg.getMerchantTimeZone()+"\", \n" +
-                " \"netsMidIndicator\":\""+msg.getNetsMidIndicator()+"\",  } }";
-    }
-
-    private  String jsonString ;
 }

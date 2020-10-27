@@ -83,18 +83,21 @@ public class PaymentNetsProxy extends PaymentProxy {
 		}
 		PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
 		String merchantTxnRef = Formatter.formatDateTime(new Date(), "yyyyMMdd HH:mm:ss.SSS");
+		merchantTxnRef=merchantTxnRef.substring(0,merchantTxnRef.length()-1);
 		String merchantTxnDtm = Formatter.formatDateTime(new Date(), "yyyyMMdd HH:mm:ss.SSS");
 		String amo = fields.get("vpc_Amount");
-		String amoOo= String.valueOf(Integer.parseInt(amo)/100);
+		String amoOo= String.valueOf(Integer.parseInt(amo));
 		String payMethod = fields.get("vpc_OrderInfo");
 		String reqNo = fields.get("vpc_MerchTxnRef");
 		String returnUrl=this.getPaymentData().getContinueUrl();
 		String umId= "UMID_877772003";
 		String keyId=GatewayConfig.eNetsKeyId;
 		String secretKey=GatewayConfig.eNetsSecretKey ;
-		String s2sUrl="/payment-web/s2sTxnEnd";
-
-		String txnRep="{\"ss\":\"1\",\"msg\":{\"netsMid\":\""+umId+"\",\"tid\":\"\",\"submissionMode\":\"B\",\"txnAmount\":\""+amoOo+"\",\"merchantTxnRef\":\""+merchantTxnRef+"\",\"merchantTxnDtm\":\""+merchantTxnDtm+"\",\"paymentType\":\"SALE\",\"currencyCode\":\"SGD\",\"paymentMode\":\"\",\"merchantTimeZone\":\"+8:00\",\"b2sTxnEndURL\":\""+fields.get("vpc_ReturnURL")+"\",\"b2sTxnEndURLParam\":\"\",\"s2sTxnEndURL\":\""+s2sUrl+"\",\"s2sTxnEndURLParam\":\"\",\"clientType\":\"W\",\"supMsg\":\"\",\"netsMidIndicator\":\"U\",\"ipAddress\":\"127.0.0.1\",\"language\":\"en\"}}" ;
+		String s2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+bpc.request.getContextPath()+"/s2sTxnEnd";
+		String b2sUrl=fields.get("vpc_ReturnURL").substring(0,fields.get("vpc_ReturnURL").indexOf("?"));
+		String b2sUrlPram="\""+fields.get("vpc_ReturnURL")+"\"";
+		//String b2sUrlPram="{\"sessionId\":\""+fields.get("vpc_ReturnURL").substring(fields.get("vpc_ReturnURL").indexOf("=")+1)+"\"}";
+		String txnRep="{\"ss\":\"1\",\"msg\":{\"netsMid\":\""+umId+"\",\"tid\":\"\",\"submissionMode\":\"B\",\"txnAmount\":\""+amoOo+"\",\"merchantTxnRef\":\""+merchantTxnRef+"\",\"merchantTxnDtm\":\""+merchantTxnDtm+"\",\"paymentType\":\"SALE\",\"currencyCode\":\"SGD\",\"paymentMode\":\"\",\"merchantTimeZone\":\"+8:00\",\"b2sTxnEndURL\":\""+b2sUrl+"\",\"b2sTxnEndURLParam\":"+b2sUrlPram+",\"s2sTxnEndURL\":\""+s2sUrl+"\",\"s2sTxnEndURLParam\":\"\",\"clientType\":\"W\",\"supMsg\":\"\",\"netsMidIndicator\":\"U\",\"ipAddress\":\"127.0.0.1\",\"language\":\"en\"}}" ;
 
 		String hmac= null;
 		try {

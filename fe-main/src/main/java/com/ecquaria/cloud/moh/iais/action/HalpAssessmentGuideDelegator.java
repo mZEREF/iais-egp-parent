@@ -1736,7 +1736,7 @@ public class HalpAssessmentGuideDelegator {
             ParamUtil.setRequestAttr(bpc.request, InboxConst.LIC_CEASED_ERR_RESULT, Boolean.TRUE);
             cessationError = MessageUtil.getMessageDesc("CESS_ERR002");
             bpc.request.setAttribute("cessationError",cessationError);
-            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
+            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licPremIdValue);
         } else {
             ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
             StringBuilder url = new StringBuilder();
