@@ -554,7 +554,7 @@ public class AppealApproveBatchjob {
         }
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
         templateContent.put("ApplicantName", licenseeDto.getName());
-        templateContent.put("ApplicationType",  MasterCodeUtil.getCodeDesc(appPremiseMiscDto.getAppealType()));
+        templateContent.put("ApplicationType",  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
         templateContent.put("ApplicationNo", applicationDto.getApplicationNo());
         templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
@@ -586,7 +586,7 @@ public class AppealApproveBatchjob {
             templateContent.put("licenceEndDate", Formatter.formatDate(licenceDto.getExpiryDate()));
             templateContent.put("newEndDate", Formatter.formatDate(expiryDate));
         }else{
-            templateContent.put("content", appPremiseMiscDto.getOtherReason());
+//            templateContent.put("content", appPremiseMiscDto.getOtherReason());
         }
 
         String subject = "MOH IAIS - Appeal for "+ MasterCodeUtil.getCodeDesc(appPremiseMiscDto.getAppealType())+", "+applicationDto.getApplicationNo()+" is approved";
