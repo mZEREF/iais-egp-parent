@@ -28,10 +28,7 @@ import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.*;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.CessationBeService;
-import com.ecquaria.cloud.moh.iais.service.InspEmailService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -93,6 +90,8 @@ public class CessationBeServiceImpl implements CessationBeService {
     private String mailSender;
     @Autowired
     private ApplicationViewService applicationViewService;
+    @Autowired
+    private ApplicationService applicationService;
 
     @Override
     public List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds) {
@@ -458,10 +457,11 @@ public class CessationBeServiceImpl implements CessationBeService {
     }
 
     @Override
-    public void saveRfiCessation(AppCessationDto appCessationDto, TaskDto taskDto, LoginContext loginContext) {
+    public void saveRfiCessation(AppCessationDto appCessationDto, TaskDto taskDto, LoginContext loginContext) throws FeignException {
         String refNo = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(refNo);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        completedTask(taskDto,applicationDto.getApplicationNo());
         String originLicenceId = applicationDto.getOriginLicenceId();
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         licIds.add(originLicenceId);
@@ -469,6 +469,28 @@ public class CessationBeServiceImpl implements CessationBeService {
         corrIds.add(refNo);
         AppCessMiscDto appCessMiscDto = setMiscData(appCessationDto, applicationDto.getId());
         cessationClient.updateCessation(appCessMiscDto).getEntity();
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+        applicationDtos.add(applicationDto);
+        updateApplicaitonStatus(applicationDto,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+        routingTaskToAo3(applicationDtos, loginContext);
+    }
+    private TaskDto completedTask(TaskDto taskDto, String appNo) {
+        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+        taskDto.setSlaDateCompleted(new Date());
+        taskDto.setApplicationNo(appNo);
+        taskDto.setSlaRemainInDays(taskService.remainDays(taskDto));
+        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        return taskService.updateTask(taskDto);
+    }
+
+    private void updateApplicaitonStatus(ApplicationDto applicationDto, String appStatus) {
+        applicationDto.setStatus(appStatus);
+        try {
+            applicationService.updateFEApplicaiton(applicationDto);
+        } catch (Exception e) {
+            log.info(StringUtil.changeForLog("========================eic error===================="));
+        }
+        applicationClient.updateApplication(applicationDto).getEntity();
     }
 
 

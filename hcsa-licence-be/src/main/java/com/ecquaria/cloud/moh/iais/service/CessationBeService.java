@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloudfeign.FeignException;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public interface CessationBeService {
 
     List<AppCessLicDto> initData (String corrId);
 
-    void saveRfiCessation(AppCessationDto appCessationDto, TaskDto taskDto, LoginContext loginContext);
+    void saveRfiCessation(AppCessationDto appCessationDto, TaskDto taskDto, LoginContext loginContext) throws FeignException;
 
 
 }

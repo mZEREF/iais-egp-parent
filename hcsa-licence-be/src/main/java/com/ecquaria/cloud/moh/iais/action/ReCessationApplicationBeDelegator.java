@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -171,7 +172,7 @@ public class ReCessationApplicationBeDelegator {
         }
     }
 
-    public void saveData(BaseProcessClass bpc) {
+    public void saveData(BaseProcessClass bpc) throws FeignException {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         AppCessationDto appCessationDto = (AppCessationDto) ParamUtil.getSessionAttr(bpc.request, "appCessationDtoSave");
