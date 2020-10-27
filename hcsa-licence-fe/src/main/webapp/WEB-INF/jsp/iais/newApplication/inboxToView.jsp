@@ -11,7 +11,23 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <c:if test="${applicationDto.applicationType == 'APTY008'}">
-    <%@include file="../cessation/head.jsp" %>
+    <%
+        String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
+    %>
+    <div class="dashboard" id="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')">
+        <div class="container">
+            <div class="navigation-gp">
+                <div class="row">
+                    <%@ include file="../common/dashboardDropDown.jsp" %>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12" style="padding-left: 95px;">
+                        <h1>Cessation Form</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </c:if>
 <c:if test="${applicationDto.applicationType != 'APTY008'}">
     <%@ include file="./inboxView/dashboard.jsp" %>
