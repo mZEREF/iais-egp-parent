@@ -988,6 +988,8 @@ public class NewApplicationAjaxController {
             log.debug(StringUtil.changeForLog("the prgNo is null ...."));
             return null;
         }
+//        String specialtyJsp = ParamUtil.getString(request, "specialty");
+//        String qualificationJsp = ParamUtil.getString(request, "qualification");
         ProfessionalResponseDto professionalResponseDto;
         List<String> prgNos = IaisCommonUtils.genNewArrayList();
         prgNos.add(professionRegoNo);

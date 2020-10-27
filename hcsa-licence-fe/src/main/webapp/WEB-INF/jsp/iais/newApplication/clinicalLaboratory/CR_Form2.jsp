@@ -764,9 +764,6 @@
     const loading = function (data,obj) {
         var specialtyHtml = $("select[name='specialty']").val();
         var qualificationHtml =$("input[name='qualification']").val();
-        if(specialtyHtml!=''||qualificationHtml!=''){
-            return;
-        }
         const qualification = data.qualification[0];
         const specialty = data.specialty[0];
         const $CurrentPsnEle = $(obj).closest('table.assignContent');
