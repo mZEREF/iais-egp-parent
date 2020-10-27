@@ -149,7 +149,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     !ApplicationConsts.APPLICATION_STATUS_DELETED.equals(applicationDto.getStatus())&&
                     !ApplicationConsts.APPLICATION_STATUS_RECALLED.equals(applicationDto.getStatus())&&
                     !ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(applicationDto.getStatus())&&
-                    !ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE.equals(applicationDto.getStatus())) {
+                    !ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE.equals(applicationDto.getStatus())&&
+                    !ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(applicationDto.getStatus())) {
                 newApplicationDtos.add(applicationDto);
             }
         }

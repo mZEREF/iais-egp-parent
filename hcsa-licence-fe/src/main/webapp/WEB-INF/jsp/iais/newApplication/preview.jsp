@@ -152,11 +152,13 @@
         </div>
     </div>
 </div>
+<iais:confirm msg="There are no changes made to this licence, please amend the licence before submitting" callBack="cancel()" needFungDuoJi="false" needCancel="false"  popupOrder="rfc_ERROR"></iais:confirm>
 <input type="hidden" value="${RFC_ERR004}" id="RFC_ERR004">
 <script type="text/javascript">
 
     $(document).ready(function() {
         //Binding method
+      /*  $('#rfc_ERROR').modal('show');*/
         if($('#saveDraftSuccess').val()=='success'){
             $('#saveDraft').modal('show');
         }

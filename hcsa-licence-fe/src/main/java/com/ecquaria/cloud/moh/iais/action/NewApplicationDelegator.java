@@ -2263,6 +2263,11 @@ public class NewApplicationDelegator {
             }
 
         }
+        if(autoSaveAppsubmission.isEmpty()&&notAutoSaveAppsubmission.isEmpty()){
+            bpc.request.setAttribute("RFC_ERROR","There are no changes made to this licence, please amend the licence before submitting");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
+            return;
+        }
         bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtoList);
         bpc.request.getSession().setAttribute("ackPageAppSubmissionDto",ackPageAppSubmissionDto);
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
@@ -4344,21 +4349,24 @@ public class NewApplicationDelegator {
 
         }
         if(list!=null&&appSvcDisciplineAllocationDtoList!=null&&!list.isEmpty()){
-            List<AppSvcChckListDto> appSvcChckListDtoList = list.get(0).getAppSvcChckListDtoList();
-            if(appSvcChckListDtoList!=null&&!appSvcChckListDtoList.isEmpty()){
-                for(AppSvcChckListDto appSvcChckListDto : appSvcChckListDtoList){
-                    boolean flag=false;
-                    for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
-                        if(appSvcChckListDto.getChkLstConfId().equals(appSvcDisciplineAllocationDto.getChkLstConfId())){
-                            flag=true;
+            for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : list){
+                List<AppSvcChckListDto> appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+                if(appSvcChckListDtoList!=null&&!appSvcChckListDtoList.isEmpty()){
+                    for(AppSvcChckListDto appSvcChckListDto : appSvcChckListDtoList){
+                        boolean flag=false;
+                        for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
+                            if(appSvcChckListDto.getChkLstConfId().equals(appSvcDisciplineAllocationDto.getChkLstConfId())){
+                                flag=true;
+                            }
                         }
-                    }
-                    if(!flag){
-                        map.put("allocation","allocation error");
-                        sB.append(serviceId);
+                        if(!flag){
+                            map.put("allocation","allocation error");
+                            sB.append(serviceId);
+                        }
                     }
                 }
             }
+
         }
     }
 
