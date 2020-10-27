@@ -1618,7 +1618,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(appSubmissionDto.getLicenseeId()).getEntity();
         String applicantName = licenseeDto.getName();
-        emailMap.put("officer_name", "officer_name");
+        emailMap.put("officer_name", "");
         emailMap.put("ServiceLicenceName", appSubmissionDto.getServiceName());
         emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
         emailMap.put("Licensee", applicantName);
