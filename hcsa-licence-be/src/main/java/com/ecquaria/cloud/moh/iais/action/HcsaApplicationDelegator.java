@@ -3110,6 +3110,14 @@ public class HcsaApplicationDelegator {
         boolean hasRollBackHistoryList = rollBackHistroyList != null && rollBackHistroyList.size() > 0;
         boolean isCessationOrWithdrawal = ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType);
         boolean finalStage = isFinalStage(taskDto, applicationViewDto);
+        //if be cessation flow
+        boolean isBeCessationFlow = false;
+        if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
+            List<AppPremisesRoutingHistoryDto> temp = applicationClient.getHistoryByAppNoAndDecision(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_CESSATION_BE_DECISION).getEntity();
+            if(!IaisCommonUtils.isEmpty(temp) && temp.size() < 2){
+                isBeCessationFlow = true;
+            }
+        }
         nextStageList.add(new SelectOption("", "Please Select"));
         if(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) && !finalStage){
 //            nextStageList.add(new SelectOption("VERIFIED", "Support"));
@@ -3146,14 +3154,19 @@ public class HcsaApplicationDelegator {
 
         //62875
         if(hasRollBackHistoryList && RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
-            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Approve"));
-            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast"));
-            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Trigger to DMS"));
+            if(!isBeCessationFlow){
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Approve"));
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast"));
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Trigger to DMS"));
+            }
         }
         //if final stage
-        if(finalStage && isCessationOrWithdrawal && !hasRollBackHistoryList){
+        if((finalStage && isCessationOrWithdrawal && !hasRollBackHistoryList) || isBeCessationFlow){
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Approve"));
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REJECT,"Reject"));
+            if(isBeCessationFlow){
+                finalStage = true;
+            }
         }
         ParamUtil.setSessionAttr(request, "finalStage", finalStage);
         ParamUtil.setRequestAttr(request,"hasRollBackHistoryList", hasRollBackHistoryList);
