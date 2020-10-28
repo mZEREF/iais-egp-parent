@@ -948,42 +948,47 @@ public class InsRepServiceImpl implements InsRepService {
         List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(postInspectionApps)) {
             for(ApplicationDto applicationDto : postInspectionApps){
-                String corrId = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity().getId();
-                String serviceId = applicationDto.getServiceId();
-                String applicationNo = applicationDto.getApplicationNo();
-                String wrkGrpId = null ;
-                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-                String categoryId = hcsaServiceDto.getCategoryId();
-                List<HcsaSvcCateWrkgrpCorrelationDto> entity = hcsaConfigClient.getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(categoryId).getEntity();
-                for(HcsaSvcCateWrkgrpCorrelationDto dto : entity){
-                    String stageId = dto.getStageId();
-                    if(HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
-                        wrkGrpId = dto.getWrkGrpId();
-                        break;
+                try {
+                    String corrId = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity().getId();
+                    String serviceId = applicationDto.getServiceId();
+                    String applicationNo = applicationDto.getApplicationNo();
+                    String wrkGrpId = null ;
+                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+                    String categoryId = hcsaServiceDto.getCategoryId();
+                    List<HcsaSvcCateWrkgrpCorrelationDto> entity = hcsaConfigClient.getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(categoryId).getEntity();
+                    for(HcsaSvcCateWrkgrpCorrelationDto dto : entity){
+                        String stageId = dto.getStageId();
+                        if(HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
+                            wrkGrpId = dto.getWrkGrpId();
+                            break;
+                        }
                     }
+                    TaskDto taskDto = new TaskDto();
+                    taskDto.setApplicationNo(applicationNo);
+                    taskDto.setRefNo(corrId);
+                    taskDto.setPriority(0);
+                    taskDto.setWkGrpId(wrkGrpId);
+                    taskDto.setAuditTrailDto(auditTrailDto);
+                    taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
+                    taskDto.setDateAssigned(new Date());
+                    taskDto.setSlaDateCompleted(null);
+                    taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+                    taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
+                    taskDto.setProcessUrl("/hcsa-licence-web/eservice/INTRANET/MohInspectionPreInspector");
+                    taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
+                    taskDto.setSlaAlertInDays(0);
+                    taskDto.setScore(0);
+                    taskDto.setSlaInDays(0);
+                    taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    taskDto.setEventRefNo(corrId);
+                    //history
+                    createPostRoutingHistory(applicationNo,applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, InspectionConstants.INSPECTION_STATUS_PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN,null , null);
+                    createPostRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, null, RoleConsts.USER_ROLE_INSPECTIOR, wrkGrpId, null);
+                    taskDtos.add(taskDto);
+                }catch (Exception e){
+                    log.info(e.getMessage());
+                    continue;
                 }
-                TaskDto taskDto = new TaskDto();
-                taskDto.setApplicationNo(applicationNo);
-                taskDto.setRefNo(corrId);
-                taskDto.setPriority(0);
-                taskDto.setWkGrpId(wrkGrpId);
-                taskDto.setAuditTrailDto(auditTrailDto);
-                taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
-                taskDto.setDateAssigned(new Date());
-                taskDto.setSlaDateCompleted(null);
-                taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
-                taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
-                taskDto.setProcessUrl("/hcsa-licence-web/eservice/INTRANET/MohInspectionPreInspector");
-                taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
-                taskDto.setSlaAlertInDays(0);
-                taskDto.setScore(0);
-                taskDto.setSlaInDays(0);
-                taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                taskDto.setEventRefNo(corrId);
-                //history
-                createAppPremisesRoutingHistory(applicationNo,applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, InspectionConstants.INSPECTION_STATUS_PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN,null , null);
-                createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, null, RoleConsts.USER_ROLE_INSPECTIOR, wrkGrpId, null);
-                taskDtos.add(taskDto);
             }
             log.info(StringUtil.changeForLog("================== taskDtos ===================>>>>>"+taskDtos.size()));
         }
@@ -1051,6 +1056,24 @@ public class InsRepServiceImpl implements InsRepService {
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
         appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
+        appPremisesRoutingHistoryDto.setProcessDecision(processDec);
+        appPremisesRoutingHistoryDto.setRoleId(roleId);
+        appPremisesRoutingHistoryDto.setWorkingGroup(wrkGroupId);
+        appPremisesRoutingHistoryDto.setWrkGrpId(wrkGroupId);
+        appPremisesRoutingHistoryDto.setSubStage(subStage);
+        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
+        return appPremisesRoutingHistoryDto;
+    }
+
+    private AppPremisesRoutingHistoryDto createPostRoutingHistory(String appNo, String appStatus,
+                                                                         String stageId, String internalRemarks, String processDec, String roleId, String wrkGroupId, String subStage) {
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+        appPremisesRoutingHistoryDto.setApplicationNo(appNo);
+        appPremisesRoutingHistoryDto.setStageId(stageId);
+        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
+        appPremisesRoutingHistoryDto.setActionby("6FBF1C5D-FEE0-EA11-BE85-000C29F371DC");
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setProcessDecision(processDec);

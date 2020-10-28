@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -66,27 +65,15 @@ public class PostInspectionBatchJob {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         Map<String, List<String>> map = hcsaLicenceClient.getPostInspectionMap().getEntity();
-        log.debug(StringUtil.changeForLog("=============map size================"+map.size()));
-        //insGrpId  licIds
+        log.debug(StringUtil.changeForLog("=============map size================" + map.size()));
         AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail();
-//        map.clear();
-//        String inGrpId1 = "10F81292-D8E8-EA11-8B79-000C293F0C99";
-//        String inGrpId2 = "A3368785-F8EB-EA11-8B79-000C293F0C99";
-//        List<String> licIds1 = IaisCommonUtils.genNewArrayList();
-//        licIds1.add("6BC15A13-BEFD-EA11-8B79-000C293F0C99");
-//        licIds1.add("7AC15A13-BEFD-EA11-8B79-000C293F0C99");
-//        List<String> licIds2 = IaisCommonUtils.genNewArrayList();
-//        licIds2.add("54C15A13-BEFD-EA11-8B79-000C293F0C99");
-//        licIds2.add("49C15A13-BEFD-EA11-8B79-000C293F0C99");
-//        map.put(inGrpId1,licIds1);
-//        map.put(inGrpId2,licIds2);
         map.forEach((insGrpId, licIds) -> {
             List<String> insGrpIds = IaisCommonUtils.genNewArrayList();
             List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
             String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
             List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity();
-            for(AppSubmissionDto entity : appSubmissionDtoList){
-                try{
+            for (AppSubmissionDto entity : appSubmissionDtoList) {
+                try {
                     entity.setAppGrpNo(grpNo);
                     entity.setAppType(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION);
                     entity.setAmount(0.0);
@@ -104,8 +91,8 @@ public class PostInspectionBatchJob {
                     appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
                     setRiskToDto(entity);
                     appSubmissionDtos.add(entity);
-                }catch (Exception e){
-                    log.error(e.getMessage(),e);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
                     continue;
                 }
             }
@@ -132,7 +119,7 @@ public class PostInspectionBatchJob {
     private void setRiskToDto(AppSubmissionDto appSubmissionDto) {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<RiskAcceptiionDto> riskAcceptiionDtoList = IaisCommonUtils.genNewArrayList();
-        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
             RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
             riskAcceptiionDto.setScvCode(appSvcRelatedInfoDto.getServiceCode());
             riskAcceptiionDto.setApptype(appSubmissionDto.getAppType());
@@ -141,10 +128,10 @@ public class PostInspectionBatchJob {
 
         List<RiskResultDto> riskResultDtoList = hcsaConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
 
-        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
             String serviceCode = appSvcRelatedInfoDto.getServiceCode();
-            RiskResultDto riskResultDto = getRiskResultDtoByServiceCode(riskResultDtoList,serviceCode);
-            if(riskResultDto!= null){
+            RiskResultDto riskResultDto = getRiskResultDtoByServiceCode(riskResultDtoList, serviceCode);
+            if (riskResultDto != null) {
                 appSvcRelatedInfoDto.setScore(riskResultDto.getScore());
                 appSvcRelatedInfoDto.setDoRiskDate(riskResultDto.getDoRiskDate());
             }
@@ -152,13 +139,13 @@ public class PostInspectionBatchJob {
     }
 
 
-    private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList,String serviceCode){
-        if(riskResultDtoList == null || StringUtil.isEmpty(serviceCode)){
+    private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList, String serviceCode) {
+        if (riskResultDtoList == null || StringUtil.isEmpty(serviceCode)) {
             return null;
         }
-        for(RiskResultDto riskResultDto : riskResultDtoList){
-            if(serviceCode.equals(riskResultDto.getSvcCode())){
-                return riskResultDto ;
+        for (RiskResultDto riskResultDto : riskResultDtoList) {
+            if (serviceCode.equals(riskResultDto.getSvcCode())) {
+                return riskResultDto;
             }
         }
         return null;
