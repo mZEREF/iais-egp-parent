@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.inspector;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailSession;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -39,6 +40,11 @@ public class FeignRequestInterceptor implements RequestInterceptor {
         if (dto == null) {
             dto = AuditTrailDto.getThreadDto();
             log.info(StringUtil.changeForLog("FeignRequestInterceptor Thread Dto" + JsonUtil.parseToJson(dto)));
+        }
+
+        if (dto == null) {
+            dto = (AuditTrailDto) AuditTrailSession.get("auditTrailSystem");
+            log.info(StringUtil.changeForLog("AuditTrailSession get Dto" + JsonUtil.parseToJson(dto)));
         }
 
         if (dto != null) {
