@@ -15,7 +15,9 @@
 
         submit: function (form, action, value) {
             showWaiting();
-            SOP.Crud.cfxSubmit(form, action, value);
+            document.getElementById('crud_action_type').value = action;
+            document.getElementById('crud_action_value').value = value;
+            document.getElementById(formName).submit();
         },
 
         markSubmit: function (form, action, paramNameId, paramValue) {
