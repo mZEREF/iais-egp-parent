@@ -38,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -110,6 +111,8 @@ public class InsRepServiceImpl implements InsRepService {
     private String currentApp;
     @Value("${iais.current.domain}")
     private String currentDomain;
+    @Autowired
+    private AuditSystemListServiceImpl auditSystemListService;
 
     private final String APPROVAL = "Approval";
     private final String REJECT = "Reject";
@@ -1005,6 +1008,22 @@ public class InsRepServiceImpl implements InsRepService {
                 "saveAppForAuditToFeAndCreateTrack", currentApp + "-" + currentDomain,
                 AppSubmissionForAuditDto.class.getName(), JsonUtil.parseToJson(appSubmissionForAuditDto));
         FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getLicEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
+        try{
+            if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
+                EicRequestTrackingDto entity = fetchResult.getEntity();
+                if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
+                    auditSystemListService.saveAppForAuditToFeAndCreateTrack(appSubmissionForAuditDto);
+                    entity.setProcessNum(1);
+                    Date now = new Date();
+                    entity.setFirstActionAt(now);
+                    entity.setLastActionAt(now);
+                    entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                    eicRequestTrackingHelper.getLicEicClient().saveEicTrack(entity);
+                }
+            }
+        }catch (Exception e){
+            log.error(StringUtil.changeForLog(e.getMessage()));
+        }
         log.info(StringUtil.changeForLog("==================  eic End  ===================>>>>>"));
     }
 
