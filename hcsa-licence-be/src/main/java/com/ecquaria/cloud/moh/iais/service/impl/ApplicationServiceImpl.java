@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SelfAssMtEmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
@@ -214,6 +215,42 @@ public class ApplicationServiceImpl implements ApplicationService {
             updateFEApplicaiton(applicationdto);
         }
         return applicationDtos;
+    }
+
+    @Override
+    public List<PaymentRequestDto> eicFeStripeRefund(List<AppReturnFeeDto> appReturnFeeDtos) {
+        log.info(StringUtil.changeForLog("The updateFEPaymentRefund start ..."));
+        String moduleName = currentApp + "-" + currentDomain;
+        EicRequestTrackingDto dto = new EicRequestTrackingDto();
+        dto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
+        dto.setActionClsName(this.getClass().getName());
+        dto.setActionMethod("callEicInterPaymentRefund");
+        dto.setDtoClsName(appReturnFeeDtos.getClass().getName());
+        dto.setDtoObject(JsonUtil.parseToJson(appReturnFeeDtos));
+        String refNo = String.valueOf(System.currentTimeMillis());
+        log.info(StringUtil.changeForLog("The updateFEPaymentRefund refNo is  -- >:"+refNo));
+        dto.setRefNo(refNo);
+        dto.setModuleName(moduleName);
+        eicClient.saveEicTrack(dto);
+        List paymentRequestDtos=callEicInterPaymentRefund(appReturnFeeDtos);
+        dto = eicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
+        Date now = new Date();
+        dto.setProcessNum(1);
+        dto.setFirstActionAt(now);
+        dto.setLastActionAt(now);
+        dto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+        List<EicRequestTrackingDto> list = IaisCommonUtils.genNewArrayList(1);
+        list.add(dto);
+        eicClient.updateStatus(list);
+        log.info(StringUtil.changeForLog("The updateFEPaymentRefund end ..."));
+        return paymentRequestDtos;
+    }
+
+    private List callEicInterPaymentRefund(List<AppReturnFeeDto> appReturnFeeDtos) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return beEicGatewayClient.doStripeRefunds(appReturnFeeDtos, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
     }
 
 

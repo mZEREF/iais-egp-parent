@@ -273,6 +273,9 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-application-be/get-returnfee-appNo")
     FeignResponseEntity<AppReturnFeeDto> getReturnFeeByAppNo(@PathVariable(name = "appNo")String appNo);
 
+    @GetMapping(value = "/iais-application-be/get-returnfee-status")
+    FeignResponseEntity<List<AppReturnFeeDto>> getAppReturnFeeByStatus(@RequestParam("status") String status);
+
     @GetMapping(value = "/iais-application-be/application/pending-reminder/self-assessment/", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<SelfAssMtEmailDto>> getPendingSubmitSelfAss(@RequestParam("msgKey") String msgKey);
 

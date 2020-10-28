@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * EicGatewayClient
@@ -34,4 +37,10 @@ public class BeEicGatewayMainClient {
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, InterMessageDto.class);
     }
 
+    public FeignResponseEntity<List> doStripeRefunds(List<AppReturnFeeDto> appReturnFeeDtos,
+                                                     String date, String authorization, String dateSec,
+                                                     String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/api/v1/stripe-refund", HttpMethod.POST, appReturnFeeDtos,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, List.class);
+    }
 }

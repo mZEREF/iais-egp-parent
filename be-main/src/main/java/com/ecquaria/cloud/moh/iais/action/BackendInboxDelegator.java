@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -844,6 +845,11 @@ public class BackendInboxDelegator {
                                 appReturnFeeDto.setTriggerCount(0);
                                 List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
                                 saveReturnFeeDtos.add(appReturnFeeDto);
+                                try {
+                                    doRefunds(saveReturnFeeDtos);
+                                }catch (Exception e){
+                                    log.info(e.getMessage(),e);
+                                }
                                 broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
                                 broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
                             }
@@ -1035,6 +1041,19 @@ public class BackendInboxDelegator {
         applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
 
+    private void doRefunds(List<AppReturnFeeDto> saveReturnFeeDtos){
+        List<PaymentRequestDto> paymentRequestDtos= applicationViewService.eicFeStripeRefund(saveReturnFeeDtos);
+        for (PaymentRequestDto refund:paymentRequestDtos
+        ) {
+            for (AppReturnFeeDto appreturn:saveReturnFeeDtos
+            ) {
+                if(appreturn.getApplicationNo().equals(refund.getReqRefNo())){
+                    appreturn.setStatus(refund.getStatus());
+                }
+            }
+        }
+    }
+
     private void doAo1Ao2Approve(BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto, ApplicationDto applicationDto,List<String> appNo,TaskDto taskDto) throws FeignException {
         String appGrpId = applicationDto.getAppGrpId();
         String status = applicationDto.getStatus();
@@ -1107,7 +1126,14 @@ public class BackendInboxDelegator {
                 appReturnFeeDto.setReturnAmount(returnFee);
                 appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
                 appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
+                appReturnFeeDto.setStatus("paying");
+                appReturnFeeDto.setTriggerCount(0);
                 saveReturnFeeDtos.add(appReturnFeeDto);
+                try {
+                    doRefunds(saveReturnFeeDtos);
+                }catch (Exception e){
+                    log.info(e.getMessage(),e);
+                }
                 log.info(StringUtil.changeForLog("**** saveRejectReturnFee applicationDto ReturnFee***** " +applicationDto.getApplicationNo() + " and " + applicationDto.getReturnFee()));
 //                applicationService.saveAppReturnFee(appReturnFeeDto);
             }
