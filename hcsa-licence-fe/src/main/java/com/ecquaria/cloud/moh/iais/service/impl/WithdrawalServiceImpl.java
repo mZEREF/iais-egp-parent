@@ -136,7 +136,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                     ApplicationDto applicationDto = applicationClient.getApplicationById(h.getApplicationId()).getEntity();
                     String serviceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceId();
                     if (!StringUtil.isEmpty(serviceId)){
-                        String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                         msgInfoMap.put("ApplicationNumber", h.getApplicationNo());
                         msgInfoMap.put("ApplicationType", applicationDto.getApplicationType());
