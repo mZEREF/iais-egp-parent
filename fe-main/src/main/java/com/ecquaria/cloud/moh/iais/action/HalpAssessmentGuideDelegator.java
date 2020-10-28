@@ -180,6 +180,7 @@ public class HalpAssessmentGuideDelegator {
         if (!StringUtil.isEmpty(renewLicSearchResult)) {
             ParamUtil.setSessionAttr(bpc.request, GuideConsts.RENEW_LICENCE_SEARCH_PARAM, renewLicSearchParam);
             ParamUtil.setRequestAttr(bpc.request, GuideConsts.RENEW_LICENCE_SEARCH_RESULT, renewLicSearchResult);
+            ParamUtil.setSessionAttr(bpc.request,"licence_err_list", null);
         }
         log.info("****end ******");
     }
@@ -1263,6 +1264,7 @@ public class HalpAssessmentGuideDelegator {
         if (!StringUtil.isEmpty(renewLicUpdateSearchResult)) {
             ParamUtil.setSessionAttr(bpc.request, GuideConsts.RENEW_LICENCE_UPDATE_SEARCH_PARAM, renewLicUpdateSearchParam);
             ParamUtil.setRequestAttr(bpc.request, GuideConsts.RENEW_LICENCE_UPDATE_SEARCH_RESULT, renewLicUpdateSearchResult);
+            ParamUtil.setSessionAttr(bpc.request,"licence_err_list", null);
         }
         log.info("****end ******");
     }
