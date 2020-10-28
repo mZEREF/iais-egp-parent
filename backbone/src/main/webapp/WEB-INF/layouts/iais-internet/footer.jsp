@@ -1,3 +1,4 @@
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <footer class="footerlogin">
     <div class="container">
         <div class="row">
