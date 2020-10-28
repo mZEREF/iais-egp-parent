@@ -23,7 +23,10 @@
         markSubmit: function (form, action, paramNameId, paramValue) {
             showWaiting();
             $('#' + paramNameId).val(paramValue);
-            SOP.Crud.cfxSubmit(form, action, paramValue);
+
+            document.getElementById('crud_action_type').value = action;
+            document.getElementById('crud_action_value').value = paramValue;
+            document.getElementById(formName).submit();
         },
 
         clearClickStatus: function (divName) {
@@ -49,14 +52,16 @@
         var val = $("#crud_search_button").attr("value");
         if (val != null && val != ''){
             showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", val);
+            document.getElementById('crud_action_type').value = val;
+            document.getElementById("mainForm").submit();
         }
     })
 
     $("#crud_cancel_link").click(function () {
         var val = $("#crud_cancel_link").attr("value");
         if (val != null && val != ''){
-            SOP.Crud.cfxSubmit("mainForm", val);
+            document.getElementById('crud_action_type').value = val;
+            document.getElementById("mainForm").submit();
         }
     })
 
@@ -69,15 +74,21 @@
     })
 
     function jumpToPagechangePage(){
-        SOP.Crud.cfxSubmit("mainForm", "changePage");
+        document.getElementById('crud_action_type').value = 'changePage';
+        document.getElementById("mainForm").submit();
     }
 
     function sortRecords(sortFieldName,sortType){
-        SOP.Crud.cfxSubmit("mainForm","sortRecords",sortFieldName,sortType);
+        document.getElementById('crud_action_type').value = 'sortRecords';
+        document.getElementById('crud_action_value').value = sortFieldName;
+        document.getElementById('crud_action_additional').value = sortType;
+        document.getElementById("mainForm").submit();
     }
 
     $("#backLastPageId").click(function () {
         SOP.Crud.cfxSubmit("mainForm", "doBack");
+        document.getElementById('crud_action_type').value = 'doBack';
+        document.getElementById("mainForm").submit();
     })
 
 
