@@ -27,7 +27,6 @@
         </div>
     </div>
 </header>
-<div class="gcse-search"></div>
 <script type="text/javascript">
 
     var size = 1.0;
