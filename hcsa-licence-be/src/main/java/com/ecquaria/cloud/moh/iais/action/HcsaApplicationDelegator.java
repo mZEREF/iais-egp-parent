@@ -500,7 +500,7 @@ public class HcsaApplicationDelegator {
                 if(appLastInsGroup != null){
                     if(chooseInspections!=null){
                         applicationClient.saveAppPremisesRecommendationDtoForLastInsp(appLastInsGroup.getAppId(),appLastInsGroup.getOldAppId());
-                        if(RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)){
+                        if(RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)){
                             applicationClient.saveLastInsForSixMonthToRenew(appLastInsGroup.getAppId(),appLastInsGroup.getOldAppId());
                         }
                     }else{
