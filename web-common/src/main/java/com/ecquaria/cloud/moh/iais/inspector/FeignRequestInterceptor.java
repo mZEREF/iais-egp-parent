@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Jinhua
  * @date 2020/9/22 17:45
+ *
  */
 @Component
 @Slf4j
@@ -26,6 +27,7 @@ public class FeignRequestInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate requestTemplate) {
         AuditTrailDto dto = null;
+        //when properties {feign.hystrix.enabled} is false , ServletRequestAttributes will be null
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attributes != null) {
             HttpServletRequest request = attributes.getRequest();
@@ -36,7 +38,6 @@ public class FeignRequestInterceptor implements RequestInterceptor {
 
         if (dto == null) {
             dto = AuditTrailDto.getThreadDto();
-            log.info(StringUtil.changeForLog("FeignRequestInterceptor Thread Dto" + JsonUtil.parseToJson(dto)));
             log.info(StringUtil.changeForLog("FeignRequestInterceptor Thread Dto" + JsonUtil.parseToJson(dto)));
         }
 

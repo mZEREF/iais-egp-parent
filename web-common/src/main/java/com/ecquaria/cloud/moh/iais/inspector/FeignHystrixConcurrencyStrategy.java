@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.inspector;
 
-import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixThreadPoolKey;
 import com.netflix.hystrix.strategy.HystrixPlugins;
 import com.netflix.hystrix.strategy.concurrency.HystrixConcurrencyStrategy;
@@ -55,7 +54,7 @@ public class FeignHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy 
             HystrixPlugins.getInstance().registerPropertiesStrategy(propertiesStrategy);
         } catch (Exception e) {
         log.error("Failed to register Sleuth Hystrix Concurrency Strategy", e);
-    }
+        }
     }
 
     private void logCurrentStateOfHystrixPlugins(HystrixEventNotifier eventNotifier,
