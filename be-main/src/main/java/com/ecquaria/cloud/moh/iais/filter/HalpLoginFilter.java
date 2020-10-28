@@ -49,6 +49,6 @@ public class HalpLoginFilter implements Filter {
                 }
             }
         }
-
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 }
