@@ -433,6 +433,7 @@ public class RequestForChangeDelegator {
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
             doValidateLojic(uen,error,licenceDto,licenseeDto);
             if(error.isEmpty()){
+                WebValidationHelper.saveAuditTrailForNoUseResult(licenceDto,error);
                 String newLicenseeId="";
                 if(licenseeDto!=null){
                     newLicenseeId = licenseeDto.getId();
@@ -557,10 +558,9 @@ public class RequestForChangeDelegator {
         ParamUtil.setSessionAttr(bpc.request,"premisesInput",selectCheakboxs);
         log.info(StringUtil.changeForLog("The doValidate licenceId is -->:"+licenceId));
         log.info(StringUtil.changeForLog("The doValidate uen is -->:"+uen));
-
+        LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
         Map<String,String> error = doValidateEmpty(uen,selectCheakboxs,"Email");
         if(error.isEmpty()){
-            LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
             doValidateLojic(uen,error,licenceDto,licenseeDto);
         }
@@ -570,6 +570,7 @@ public class RequestForChangeDelegator {
         log.info(StringUtil.changeForLog("The selectCheakboxs.toString() is -->:"+ArrayUtils.toString(selectCheakboxs)));
         ParamUtil.setRequestAttr(bpc.request,"selectCheakboxs",ArrayUtils.toString(selectCheakboxs));
         if(!error.isEmpty()){
+            WebValidationHelper.saveAuditTrailForNoUseResult(licenceDto,error);
             ParamUtil.setRequestAttr(bpc.request,"isValidate","N");
         }else{
             prepareTranfer(bpc);
