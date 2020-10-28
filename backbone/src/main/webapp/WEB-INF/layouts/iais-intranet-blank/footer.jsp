@@ -4,6 +4,8 @@
             <div class="col-xs-12 col-md-7">
                 <div class="footer-link">
                     <ul class="list-inline">
+                        <li><label>HALP</label></li>
+                        <li><a href="<iais:code code="MRUS007"/>">Who we are</a></li>
                         <li><a href="#">Privacy Statement</a></li>
                         <li><a href="#">Terms Of Use</a></li>
                         <li><a href="#">Rate This E-Service</a></li>
