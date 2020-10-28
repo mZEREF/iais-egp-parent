@@ -39,12 +39,7 @@ public class FeignRequestInterceptor implements RequestInterceptor {
 
         if (dto == null) {
             dto = AuditTrailDto.getThreadDto();
-            log.info(StringUtil.changeForLog("FeignRequestInterceptor Thread Dto" + JsonUtil.parseToJson(dto)));
-        }
-
-        if (dto == null) {
-            dto = (AuditTrailDto) AuditTrailSession.get("auditTrailSystem");
-            log.info(StringUtil.changeForLog("AuditTrailSession get Dto" + JsonUtil.parseToJson(dto)));
+            log.info(StringUtil.changeForLog("auditTrailDto thread Dto" + JsonUtil.parseToJson(dto)));
         }
 
         if (dto != null) {
