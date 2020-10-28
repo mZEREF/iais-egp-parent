@@ -16,23 +16,20 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
-import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-import com.ecquaria.sz.commons.util.StringUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Date;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.Date;
-import java.util.Map;
 
 /**
  * BackendLoginDelegator
@@ -45,8 +42,6 @@ import java.util.Map;
 public class BackendLoginDelegator {
     @Autowired
     private OrganizationMainClient organizationMainClient;
-    @Autowired
-    private SubmissionClient submissionClient;
     @Value("${halp.fakelogin.flag}")
     private boolean fakeLogin;
     @Value("${jwt.login.base64encodedpub}")
@@ -76,20 +71,15 @@ public class BackendLoginDelegator {
     public void doLogin(BaseProcessClass bpc) throws InvalidKeySpecException, NoSuchAlgorithmException {
         HttpServletRequest request = bpc.request;
         JwtVerify verifier = new JwtVerify();
-        String jwtt = null;
-        String userId = null;
-        if (fakeLogin) {
-            jwtt = (String) request.getAttribute("encryptJwtt");
-            Jws<Claims> claimsFromToken = verifier.parseVerifyJWT(jwtt, base64encodedPub + "\r\n");
-            Claims claims = claimsFromToken.getBody();
-            userId = (String) claims.get("userid");
-        } else {
-            String userIdStr = request.getHeader("userid");
-            if (!StringUtil.isEmpty(userIdStr)) {
-                userId = userIdStr.substring(userIdStr.indexOf('\\'));
-            }
-        }
+        String jwtt = (String) request.getAttribute("encryptJwtt");
+        Jws<Claims> claimsFromToken = verifier.parseVerifyJWT(jwtt, base64encodedPub + "\r\n");
+        Claims claims = claimsFromToken.getBody();
+        String userId = (String) claims.get("userid");
 
+        doLogin(userId, bpc.request);
+    }
+
+    public void doLogin(String userId, HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         OrgUserDto orgUserDto = null;
         try {
@@ -100,12 +90,12 @@ public class BackendLoginDelegator {
         }
         errorMap = validate(request, userId);
         if (!errorMap.isEmpty()) {
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
+            ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, IntranetUserConstant.ISVALID, "N");
             return;
         }
 
-        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
+        ParamUtil.setRequestAttr(request, IntranetUserConstant.ISVALID, "Y");
 
         User user = new User();
         assert orgUserDto != null;
@@ -116,10 +106,10 @@ public class BackendLoginDelegator {
         user.setPassword("$2a$12$BaTEVyvwaRuop2SdFoK5jOZvK8tnycxVNx1MYVGjbd1vPEQLcaK4K");
         user.setId(orgUserDto.getUserId());
 
-        SessionManager.getInstance(bpc.request).imitateLogin(user, true, true);
-        SessionManager.getInstance(bpc.request).initSopLoginInfo(bpc.request);
+        SessionManager.getInstance(request).imitateLogin(user, true, true);
+        SessionManager.getInstance(request).initSopLoginInfo(request);
 
-        AccessUtil.initLoginUserInfo(bpc.request);
+        AccessUtil.initLoginUserInfo(request);
 
         AuditTrailDto auditTrailDto = new AuditTrailDto();
         auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN);
