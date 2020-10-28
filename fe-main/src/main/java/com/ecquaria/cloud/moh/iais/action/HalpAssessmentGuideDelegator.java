@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.assessmentGuide.GuideConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MasterCodeConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -180,7 +181,6 @@ public class HalpAssessmentGuideDelegator {
         if (!StringUtil.isEmpty(renewLicSearchResult)) {
             ParamUtil.setSessionAttr(bpc.request, GuideConsts.RENEW_LICENCE_SEARCH_PARAM, renewLicSearchParam);
             ParamUtil.setRequestAttr(bpc.request, GuideConsts.RENEW_LICENCE_SEARCH_RESULT, renewLicSearchResult);
-            ParamUtil.setSessionAttr(bpc.request,"licence_err_list", null);
         }
         log.info("****end ******");
     }
@@ -1264,7 +1264,6 @@ public class HalpAssessmentGuideDelegator {
         if (!StringUtil.isEmpty(renewLicUpdateSearchResult)) {
             ParamUtil.setSessionAttr(bpc.request, GuideConsts.RENEW_LICENCE_UPDATE_SEARCH_PARAM, renewLicUpdateSearchParam);
             ParamUtil.setRequestAttr(bpc.request, GuideConsts.RENEW_LICENCE_UPDATE_SEARCH_RESULT, renewLicUpdateSearchResult);
-            ParamUtil.setSessionAttr(bpc.request,"licence_err_list", null);
         }
         log.info("****end ******");
     }
@@ -1321,6 +1320,7 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void doRenewStep(BaseProcessClass bpc) throws IOException {
+        String actionType = ParamUtil.getString(bpc.request,"guide_action_type");
         String [] licIds = ParamUtil.getStrings(bpc.request, "renewLicenId");
         Map<String, String> renewErrorMap = IaisCommonUtils.genNewHashMap();
         String tmp = MessageUtil.getMessageDesc("INBOX_ACK015");
@@ -1364,7 +1364,6 @@ public class HalpAssessmentGuideDelegator {
                     bpc.request.setAttribute("isAppealShow","1");
                     bpc.request.setAttribute("appealApplication",licIdValue.get(0));
                     ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
-                    String actionType = ParamUtil.getString(bpc.request,"guide_action_type");
                     if ("renew".equals(actionType)){
                         ParamUtil.setRequestAttr(bpc.request,"guide_back_action","backRenewUpdate");
                     }else{
@@ -1391,7 +1390,6 @@ public class HalpAssessmentGuideDelegator {
                     }
                 }
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,renewErrorMessage.toString());
-                String actionType = ParamUtil.getString(bpc.request,"guide_action_type");
                 if ("renew".equals(actionType)){
                     ParamUtil.setRequestAttr(bpc.request,"guide_back_action","backRenewUpdate");
                 }else{

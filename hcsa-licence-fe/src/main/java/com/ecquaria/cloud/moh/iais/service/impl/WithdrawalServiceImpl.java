@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -33,17 +34,11 @@ import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +71,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
     @Autowired
     private CessationClient cessationClient;
+
+    @Autowired
+    private OrganizationLienceseeClient organizationLienceseeClient;
 
     @Autowired
     private FeMessageClient feMessageClient;
@@ -135,17 +133,22 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             withdrawnDtoList.forEach(h -> {
                 AppSubmissionDto appSubmissionDto = applicationClient.gainSubmissionDto(h.getApplicationNo()).getEntity();
                 if (appSubmissionDto != null){
+                    ApplicationDto applicationDto = applicationClient.getApplicationById(h.getApplicationId()).getEntity();
                     String serviceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceId();
                     if (!StringUtil.isEmpty(serviceId)){
                         String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                        msgInfoMap.put("reqAppNo",h.getApplicationNo());
-                        msgInfoMap.put("S_LName",serviceName);
+                        msgInfoMap.put("ApplicationNumber", h.getApplicationNo());
+                        msgInfoMap.put("ApplicationType", applicationDto.getApplicationType());
+                        LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeDtoById(h.getLicenseeId()).getEntity();
+                        String applicantName = licenseeDto.getName();
+                        msgInfoMap.put("Applicant", applicantName);
+                        msgInfoMap.put("ApplicationDate",new Date());
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
                         try {
                             EmailParam emailParam = sendNotification(TEMPLATE_WITHDRAWAL_ID,msgInfoMap,h.getApplicationNo());
                             notificationHelper.sendNotification(emailParam);
-                            sendInboxMessage(h.getApplicationNo(),serviceId,msgInfoMap,emailParam.getSubject());
+                            sendInboxMessage(applicationDto,serviceId,msgInfoMap,emailParam.getSubject());
                         } catch (Exception e) {
                             log.error(e.getMessage(), e);
                         }
@@ -231,7 +234,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         return withdrawApplicationDtoList;
     }
 
-    private void sendInboxMessage(String applicationNo,String serviceId,Map<String, Object> map,String subject) throws IOException, TemplateException {
+    private void sendInboxMessage(ApplicationDto applicationDto,String serviceId,Map<String, Object> map,String subject) throws IOException, TemplateException {
         EmailParam messageParam = new EmailParam();
         HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
@@ -239,14 +242,15 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             svcCodeList.add(serviceDto.getSvcCode());
         }
         Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-        subMap.put("ApplicationNumber", applicationNo);
+        subMap.put("ApplicationNumber", applicationDto.getApplicationNo());
+        subMap.put("ApplicationType", applicationDto.getApplicationType());
         subject = MsgUtil.getTemplateMessageByContent(subject,subMap);
         messageParam.setTemplateId(TEMPLATE_WITHDRAWAL_ID);
         messageParam.setTemplateContent(map);
-        messageParam.setQueryCode(applicationNo);
-        messageParam.setReqRefNum(applicationNo);
+        messageParam.setQueryCode(applicationDto.getApplicationNo());
+        messageParam.setReqRefNum(applicationDto.getApplicationNo());
         messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-        messageParam.setRefId(applicationNo);
+        messageParam.setRefId(applicationDto.getApplicationNo());
         messageParam.setSubject(subject);
         messageParam.setSvcCodeList(svcCodeList);
         log.info(StringUtil.changeForLog("send withdraw Application message"));
