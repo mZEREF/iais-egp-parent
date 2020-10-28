@@ -17,7 +17,7 @@
             showWaiting();
             document.getElementById('crud_action_type').value = action;
             document.getElementById('crud_action_value').value = value;
-            document.getElementById(formName).submit();
+            document.getElementById(form).submit();
         },
 
         markSubmit: function (form, action, paramNameId, paramValue) {
@@ -26,7 +26,7 @@
 
             document.getElementById('crud_action_type').value = action;
             document.getElementById('crud_action_value').value = paramValue;
-            document.getElementById(formName).submit();
+            document.getElementById(form).submit();
         },
 
         clearClickStatus: function (divName) {
@@ -86,7 +86,6 @@
     }
 
     $("#backLastPageId").click(function () {
-        SOP.Crud.cfxSubmit("mainForm", "doBack");
         document.getElementById('crud_action_type').value = 'doBack';
         document.getElementById("mainForm").submit();
     })
