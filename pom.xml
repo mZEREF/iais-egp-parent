@@ -13,12 +13,12 @@
     <parent>
         <groupId>com.ecquaria.egp</groupId>
         <artifactId>egp-engine-service</artifactId>
-        <version>20.04.0</version>
+        <version>20.04.0-PATCH1</version>
     </parent>
 
     <properties>
         <revision>0.1</revision>
-        <engine-version>20.04.0</engine-version>
+        <engine-version>20.04.0-PATCH1</engine-version>
         <org.codehaus.mojo.version>1.4</org.codehaus.mojo.version>
         <biz.paluch.maven.configurator.version>1.0.1</biz.paluch.maven.configurator.version>
         <jacoco.version>0.8.5</jacoco.version>
