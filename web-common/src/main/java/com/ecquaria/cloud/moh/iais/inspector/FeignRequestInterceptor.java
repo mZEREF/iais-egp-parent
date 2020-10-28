@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import lombok.extern.slf4j.Slf4j;
@@ -35,12 +36,12 @@ public class FeignRequestInterceptor implements RequestInterceptor {
 
         if (dto == null) {
             dto = AuditTrailDto.getThreadDto();
+            log.info(StringUtil.changeForLog("FeignRequestInterceptor Thread Dto" + JsonUtil.parseToJson(dto)));
+            log.info(StringUtil.changeForLog("FeignRequestInterceptor Thread Dto" + JsonUtil.parseToJson(dto)));
         }
 
         if (dto != null) {
             requestTemplate.header("currentAuditTrail", JsonUtil.parseToJson(dto));
         }
-
-
     }
 }
