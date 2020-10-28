@@ -42,7 +42,7 @@ public class FeMainInitializer {
 
             log.info("=====>>>>>>>>srcPath" + srcPath + "/configs/" + runtimeEnv);
             log.info("=====>>>>>>>>resourcePath" + resourcePath);
-            FileUtils.copyFilesToOtherPosition(srcPath + "/configs/" + runtimeEnv, resourcePath);
+            FileUtils.copyFilesToOtherPosition(srcPath + separator + runtimeEnv, resourcePath);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
