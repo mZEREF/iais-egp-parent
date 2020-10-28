@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -995,14 +996,16 @@ public class InsRepServiceImpl implements InsRepService {
 //        taskService.createTasks(taskDtos);
         log.info(StringUtil.changeForLog("==================  eventBus Start  ===================>>>>>"));
             eventBusHelper.submitAsyncRequest(taskDtos, submissionId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK, EventBusConsts.OPERATION_POST_INSPECTION_TASK, eventRefNum, null);
-            log.info(StringUtil.changeForLog("=======================taskDtos ===================>>>>>Success"));
+        log.info(StringUtil.changeForLog("=======================taskDtos ===================>>>>>Success"));
 
         AppSubmissionForAuditDto appSubmissionForAuditDto = applicationClient.getAppSubmissionForAuditDto(eventRefNum).getEntity();
         appSubmissionForAuditDto.setIsCancel(Boolean.FALSE);
+        appSubmissionForAuditDto.setAuditTrailDto(auditTrailDto);
         log.info(StringUtil.changeForLog("==================  eventBus End  ===================>>>>>"));
         EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.LICENCE_CLIENT, AuditSystemListServiceImpl.class.getName(),
                 "saveAppForAuditToFeAndCreateTrack", currentApp + "-" + currentDomain,
                 AppSubmissionForAuditDto.class.getName(), JsonUtil.parseToJson(appSubmissionForAuditDto));
+        FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getLicEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
         log.info(StringUtil.changeForLog("==================  eic End  ===================>>>>>"));
     }
 
