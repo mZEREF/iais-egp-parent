@@ -76,6 +76,6 @@
 </form>
 <script type="text/javascript">
     $("#back").click(function () {
-        SOP.Crud.cfxSubmit("mainForm","backToMenu");
+        Utils.submit("mainForm","backToMenu");
     })
 </script>
