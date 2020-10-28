@@ -20,10 +20,8 @@ import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.SessionDurationDto;
-import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -33,10 +31,11 @@ import com.ecquaria.cloud.moh.iais.service.client.AuditTrailWbClient;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * AuditTrailHelper
@@ -180,11 +179,6 @@ public class AuditTrailHelper {
         }
 
         log.info(StringUtil.changeForLog("batch job function name" + trailDto.getFunctionName()));
-        RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
-        String threadKey = Thread.currentThread().getId() + Thread.currentThread().getName();
-        log.info(StringUtil.changeForLog("=======>>>>>>>>>>>>>>threadKey >>>>>>>   " + threadKey));
-        redisCacheHelper.set("iaisCrTdAuditTrailCache", threadKey,
-                trailDto, 180000L);
         AuditTrailDto.setThreadDto(trailDto);
     }
 
