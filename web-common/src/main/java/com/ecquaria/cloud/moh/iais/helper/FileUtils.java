@@ -121,12 +121,14 @@ public final class FileUtils {
 
     public static void copyFilesToOtherPosition(String src, String dst) throws IOException {
         File file = new File(src);
+        log.info("SRC file exists ===> " + file.exists());
         if (file == null){
             return;
         }
 
         File[] files = file.listFiles();
         if (files != null && file.length() > 0){
+            log.info("SRC file list ===> " + files.length);
             for (File f : files){
                 String srcName = f.getName();
                 File dstFile = new File(dst + srcName);
