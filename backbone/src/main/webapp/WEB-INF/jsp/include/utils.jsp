@@ -15,25 +15,11 @@
 
         submit: function (form, action, value, additional, formValue) {
             showWaiting();
-            if ($('#crud_action_type') != null){
-                $('#crud_action_type').value = action;
-            }
-
-            if ($('#crud_action_value') != null){
-                $('#crud_action_value').value = value;
-            }
-
-            if ($('#crud_action_additional') != null){
-                $('#crud_action_additional').value = additional;
-            }
-
-            if ($('#crud_action_type_form_value') != null){
-                $('#crud_action_type_form_value').value = formValue;
-            }
-
-            if ($(form) != null){
-                $(form).submit();
-            }
+            document.getElementById('crud_action_type').value = action;
+            document.getElementById('crud_action_value').value = value;
+            document.getElementById('crud_action_additional').value = additional;
+            document.getElementById('crud_action_type_form_value').value = formValue;
+            document.getElementById(form).submit();
         },
 
         markSubmit: function (form, action, paramNameId, paramValue) {
