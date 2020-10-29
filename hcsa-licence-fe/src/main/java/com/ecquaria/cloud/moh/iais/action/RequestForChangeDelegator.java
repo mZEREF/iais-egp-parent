@@ -731,17 +731,17 @@ public class RequestForChangeDelegator {
         if(selectCheakboxs == null || selectCheakboxs.length == 0){
             error.put("premisesError","RFC_ERR005");
         }
-       /* if(StringUtil.isEmpty(uen) || uen.length() > 10){
+        if(StringUtil.isEmpty(uen) || uen.length() > 10){
             error.put("uenError",MessageUtil.replaceMessage("GENERAL_ERR0006","UEN of Licence to transfer licence to","field"));
 
-        }*/
+        }
         if(StringUtil.isEmpty(email)){
             error.put("emailError","GENERAL_ERR0039");
         }
         return error;
     }
     private Map<String,String> doValidateLojic(String uen,Map<String,String> error,LicenceDto licenceDto,LicenseeDto licenseeDto){
-      /*  if(licenceDto==null){
+        if(licenceDto==null){
             error.put("uenError","Licence Error!!!");
         }else{
             if(licenseeDto == null){
@@ -760,7 +760,7 @@ public class RequestForChangeDelegator {
                     error.put("uenError","RFC_ERR007");
                 }
             }
-        }*/
+        }
         return error;
     }
 
