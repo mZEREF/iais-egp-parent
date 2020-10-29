@@ -41,7 +41,6 @@
 <script type="text/javascript" src="<%=EngineHelper.getContextPath()%>/javascripts/sop/sopweb-base.js.jsp"></script>
 <script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/sop/tooltip.js"></script>
 <script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/sop/timepicker.js"></script>
-<script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/sop/csrf.js"></script>
 <!-- END: javascript -->
 <%
     boolean aBoolean = ConfigHelper.getBoolean("owasp.csrf.enable", false);
