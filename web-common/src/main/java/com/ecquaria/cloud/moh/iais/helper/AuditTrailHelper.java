@@ -181,7 +181,6 @@ public class AuditTrailHelper {
 
         log.info(StringUtil.changeForLog("batch job function name" + trailDto.getFunctionName()));
 
-        AuditTrailSession.set("auditTrailSystem", trailDto);
         AuditTrailDto.setThreadDto(trailDto);
     }
 
