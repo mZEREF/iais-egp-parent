@@ -2058,7 +2058,7 @@ public class HcsaApplicationDelegator {
                         applicationService.closeTaskWhenWhAppApprove(withdrawApplicationDto.getId());
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                         msgInfoMap.put("Applicant", licenseeDto.getName());
-                        msgInfoMap.put("ApplicationType", applicationType);
+                        msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType));
                         msgInfoMap.put("ApplicationNumber", applicationNo);
                         msgInfoMap.put("reqAppNo",applicationNo);
                         msgInfoMap.put("S_LName",serviceName);
@@ -2075,7 +2075,7 @@ public class HcsaApplicationDelegator {
                         msgInfoMap.put("adminFee","100");
                         msgInfoMap.put("systemLink",loginUrl);
                         msgInfoMap.put("emailAddress",systemAddressOne);
-                        EmailParam emailParam = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE,msgInfoMap,applicationNo);
+                        EmailParam emailParam = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE,msgInfoMap,applicationViewDto.getApplicationDto());
                         notificationHelper.sendNotification(emailParam);
                         sendInboxMessage(applicationViewDto,serviceId,msgInfoMap,emailParam.getSubject(),MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE);
                         /**
@@ -2086,11 +2086,11 @@ public class HcsaApplicationDelegator {
                     }else{
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                         msgInfoMap.put("ApplicationNumber", applicationNo);
-                        msgInfoMap.put("ApplicationType", applicationType);
+                        msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType));
                         msgInfoMap.put("Applicant", licenseeDto.getName());
                         msgInfoMap.put("ApplicationDate",applicationViewDto.getSubmissionDate());
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-                        EmailParam emailParam = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT,msgInfoMap,applicationNo);
+                        EmailParam emailParam = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT,msgInfoMap,applicationViewDto.getApplicationDto());
                         notificationHelper.sendNotification(emailParam);
                         sendInboxMessage(applicationViewDto,serviceId,msgInfoMap,emailParam.getSubject(),MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT);
                         /**
@@ -2226,10 +2226,10 @@ public class HcsaApplicationDelegator {
         if(serviceDto != null){
             svcCodeList.add(serviceDto.getSvcCode());
         }
-        Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-        subMap.put("ApplicationNumber", applicationDto.getApplicationNo());
-        subMap.put("ApplicationType", applicationDto.getApplicationType());
-        subject = MsgUtil.getTemplateMessageByContent(subject,subMap);
+//        Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+//        subMap.put("ApplicationNumber", applicationDto.getApplicationNo());
+//        subMap.put("ApplicationType", applicationDto.getApplicationType());
+//        subject = MsgUtil.getTemplateMessageByContent(subject,subMap);
         messageParam.setTemplateId(messageTemplateId);
         messageParam.setQueryCode(applicationDto.getApplicationNo());
         messageParam.setTemplateContent(map);
@@ -2272,18 +2272,19 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private EmailParam sendEmail(String msgId, Map<String, Object> msgInfoMap, String applicationNo) throws IOException, TemplateException {
+    private EmailParam sendEmail(String msgId, Map<String, Object> msgInfoMap, ApplicationDto applicationDto) throws IOException, TemplateException {
         log.info(StringUtil.changeForLog("***************** send withdraw application Email  *****************"));
         MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
         EmailParam emailParam = new EmailParam();
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        map.put("ApplicationNumber", applicationNo);
+        map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationNo()));
+        map.put("ApplicationNumber", applicationDto.getApplicationNo());
         String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
         emailParam.setTemplateContent(msgInfoMap);
         emailParam.setTemplateId(msgId);
-        emailParam.setReqRefNum(applicationNo);
-        emailParam.setQueryCode(applicationNo);
-        emailParam.setRefId(applicationNo);
+        emailParam.setReqRefNum(applicationDto.getApplicationNo());
+        emailParam.setQueryCode(applicationDto.getApplicationNo());
+        emailParam.setRefId(applicationDto.getApplicationNo());
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
         emailParam.setSubject(subject);
         log.info(StringUtil.changeForLog("***************** send withdraw application Email  end*****************"));
