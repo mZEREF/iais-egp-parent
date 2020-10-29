@@ -15,10 +15,20 @@
 
         submit: function (formName, action, value, additional, formValue) {
             showWaiting();
-            document.getElementById('crud_action_type').value = action;
-            document.getElementById('crud_action_value').value = value;
-            document.getElementById('crud_action_additional').value = additional;
-            document.getElementById('crud_action_type_form_value').value = formValue;
+            var inputs = $(form).find("input");
+            if(inputs.length != 0){
+                inputs.each(function(index, obj) {
+                    if('crud_action_type' == obj.name) {
+                        obj.value = action;
+                    } else if('crud_action_value' == obj.name) {
+                        obj.value = value;
+                    } else if('crud_action_additional' == obj.name) {
+                        obj.value = additional;
+                    } else if('crud_action_type_form_value' == obj.name) {
+                        obj.value = formValue;
+                    }
+                });
+            }
             document.getElementById(formName).submit();
         },
 
