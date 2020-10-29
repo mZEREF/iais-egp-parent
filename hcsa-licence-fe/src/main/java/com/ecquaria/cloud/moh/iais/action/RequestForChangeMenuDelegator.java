@@ -1291,7 +1291,7 @@ public class RequestForChangeMenuDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
         List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
-        boolean premise = false;
+
 
         List<AppGrpPremisesDto> oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDtoappSubmissionDto.getAppGrpPremisesDtoList();
         for (AppGrpPremisesDto appGrpPremisesDto : oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList) {
@@ -1301,11 +1301,12 @@ public class RequestForChangeMenuDelegator {
             }
             appGrpPremisesDto.setLicenceDtos(null);
         }
-        if (appGrpPremisesDtoList1.equals(oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList)) {
-            premise = true;
-        }
-        if (premise) {
-            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
+        boolean eqGrpPremises = NewApplicationDelegator.eqGrpPremises(appGrpPremisesDtoList1, oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList);
+        if (!eqGrpPremises) {
+            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
+            bpc.request.setAttribute("RFC_ERROR_NO_CHANGE","There are no changes made to this premises, please amend the premises before submitting");
+
             return;
         }
         String licenceId = appSubmissionDto.getLicenceId();

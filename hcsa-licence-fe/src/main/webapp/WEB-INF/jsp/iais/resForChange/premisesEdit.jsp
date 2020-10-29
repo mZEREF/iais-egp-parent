@@ -96,6 +96,21 @@
       <%@include file="../common/premFun.jsp"%>
     </div>
   </div>
+  <div class="modal fade" id="rfc_ERROR" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body" style="text-align: center;">
+          <div class="row">
+            <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem;">${RFC_ERROR_NO_CHANGE}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <input type="hidden" value="${RFC_ERROR_NO_CHANGE}" id="RFC_ERROR_NO_CHANGE">
 </form>
 
 
@@ -103,6 +118,9 @@
     var init;
     $(document).ready(function () {
         <!-- init start-->
+        if($('#RFC_ERROR_NO_CHANGE').val()!=''){
+            $('#rfc_ERROR').modal('show');
+        }
         if($('#rfcPendingApplication').val()=='errorRfcPendingApplication'){
             $('#ackMessageConfim').modal('show');
         }

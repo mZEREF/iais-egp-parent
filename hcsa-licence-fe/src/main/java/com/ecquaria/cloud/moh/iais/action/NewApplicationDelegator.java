@@ -5591,7 +5591,7 @@ public class NewApplicationDelegator {
         appSubmissionDto.setDropDownPsnMapStr(personMapStr);
     }
 
-    private List<AppGrpPremisesDto> copyAppGrpPremises(List<AppGrpPremisesDto> appGrpPremisesDtoList) {
+    private static List<AppGrpPremisesDto> copyAppGrpPremises(List<AppGrpPremisesDto> appGrpPremisesDtoList) {
         List<AppGrpPremisesDto> cpoyList=new ArrayList<>(appGrpPremisesDtoList.size());
         for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
             AppGrpPremisesDto copy = copyAppGrpPremisesDto(appGrpPremisesDto);
@@ -5601,7 +5601,7 @@ public class NewApplicationDelegator {
         return cpoyList;
     }
 
-    private AppGrpPremisesDto copyAppGrpPremisesDto(AppGrpPremisesDto appGrpPremisesDto){
+    private static AppGrpPremisesDto copyAppGrpPremisesDto(AppGrpPremisesDto appGrpPremisesDto){
         AppGrpPremisesDto copy=new AppGrpPremisesDto();
         copy.setPremisesType(appGrpPremisesDto.getPremisesType());
         copy.setPostalCode(appGrpPremisesDto.getPostalCode());
@@ -5680,7 +5680,7 @@ public class NewApplicationDelegator {
         copy.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
         return copy;
     }
-    private boolean eqGrpPremises(List<AppGrpPremisesDto> appGrpPremisesDtoList, List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
+    public static boolean eqGrpPremises(List<AppGrpPremisesDto> appGrpPremisesDtoList, List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
         List<AppGrpPremisesDto> appGrpPremisesDtos = copyAppGrpPremises(appGrpPremisesDtoList);
         List<AppGrpPremisesDto> oldAppGrpPremisesDtos = copyAppGrpPremises(oldAppGrpPremisesDtoList);
         if (!appGrpPremisesDtos.equals(oldAppGrpPremisesDtos)) {

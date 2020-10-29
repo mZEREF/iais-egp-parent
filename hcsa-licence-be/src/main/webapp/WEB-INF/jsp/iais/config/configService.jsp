@@ -591,8 +591,8 @@
                   <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
                 </div>
                 <div class="col-xs-12 col-md-2 up">
-                  <a class="btn  btn-secondary up view" onclick="up(this)">UP</a>
-                  <a class="btn  btn-secondary down view" onclick="down(this)">DOWN</a>
+                  <a class="btn  btn-secondary up view" onclick="up(this)" style="margin-bottom: 10%;width:60%;">UP</a>
+                  <a class="btn  btn-secondary down view" onclick="down(this)" style="margin-bottom: 10%;width:60%;">DOWN</a>
                 </div>
                 <div class="col-xs-12 col-md-2">
                   <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
@@ -613,8 +613,8 @@
                     <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
                   </div>
                   <div class="col-xs-12 col-md-2 up">
-                    <a class="btn  btn-secondary up view"onclick="up(this)">UP</a>
-                    <a class="btn  btn-secondary down view" onclick="down(this)">DOWN</a>
+                    <a class="btn  btn-secondary up view"onclick="up(this)" style="margin-bottom: 10%;width:60%;">UP</a>
+                    <a class="btn  btn-secondary down view" onclick="down(this)" style="margin-bottom: 10%;width:60%;">DOWN</a>
                   </div>
                   <div class="col-xs-12 col-md-2">
                     <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
@@ -635,8 +635,8 @@
                       <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
                     </div>
                     <div class="col-xs-12 col-md-2 up">
-                      <a class="btn  btn-secondary up view" onclick="up(this)">UP</a>
-                      <a class="btn  btn-secondary down view" onclick="down(this)">DOWN</a>
+                      <a class="btn  btn-secondary up view" onclick="up(this)" style="margin-bottom: 10%;width:60%;">UP</a>
+                      <a class="btn  btn-secondary down view" onclick="down(this)" style="margin-bottom: 10%;width:60%;">DOWN</a>
                     </div>
                     <div class="col-xs-12 col-md-2">
                       <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
@@ -817,8 +817,8 @@
             "            <a class=\"btn  btn-secondary view\"  onclick=\"outdent(this)\" >outdent</a>\n" +
             "          </div>\n" +
             "           <div class=\"col-xs-12 col-md-2 up\">\n" +
-            "                    <a class=\"btn  btn-secondary up view\" onclick=\"up(this)\">UP</a>\n" +
-            "                    <a class=\"btn  btn-secondary down view\" onclick=\"down(this)\">DOWN</a>\n" +
+            "                    <a class=\"btn  btn-secondary up view\" onclick=\"up(this)\" style=\"margin-bottom: 10%;width:60%;\">UP</a>\n" +
+            "                    <a class=\"btn  btn-secondary down view\" onclick=\"down(this)\" style=\"margin-bottom: 10%;width:60%;\">DOWN</a>\n" +
             "                  </div>\n" +
             "                  <div class=\"col-xs-12 col-md-2\">\n" +
             "                    <a class=\"btn  btn-secondary view\"  onclick=\"removeThis(this)\" >-</a>\n" +

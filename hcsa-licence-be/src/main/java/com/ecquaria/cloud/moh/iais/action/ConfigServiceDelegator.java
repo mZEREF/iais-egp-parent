@@ -51,7 +51,7 @@ public class ConfigServiceDelegator {
     @Autowired
     private OrganizationClient organizationClient;
 
-    private static final String CLINICAL_GOVERNANCE_OFFICER ="Clinical Governance Officer";
+    private static final String CLINICAL_GOVERNANCE_OFFICER ="Clinical Governance Officers";
     private static final String SERVICE_PERSONNEL="Service Personnel";
     private static final String PRINCIPAL_OFFICERS="Principal Officers";
     private static final String DOCUMENTS    =       "Documents";
