@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import sop.security.DefaultAuthorisationHandler;
 import sop.webflow.rt.engine5.SOPEngineRequest;
 
 /**
@@ -11,7 +12,8 @@ import sop.webflow.rt.engine5.SOPEngineRequest;
  * @date 2020/10/28 10:54
  */
 @Slf4j
-public class HalpAuthorisationHandler  {
+public class HalpAuthorisationHandler extends DefaultAuthorisationHandler {
+    @Override
     public void onAuthorisationFailure(HttpServletRequest request, SOPEngineRequest sopReq) {
         log.info("<==== HALP auth ====>");
     }
