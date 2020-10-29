@@ -17,17 +17,17 @@
             showWaiting();
             var inputs = document.getElementById(formName).getElementsByTagName("input");
             if(inputs.length != 0){
-                inputs.each(function(index, obj) {
-                    if('crud_action_type' == obj.name) {
-                        obj.value = action;
-                    } else if('crud_action_value' == obj.name) {
-                        obj.value = value;
-                    } else if('crud_action_additional' == obj.name) {
-                        obj.value = additional;
-                    } else if('crud_action_type_form_value' == obj.name) {
-                        obj.value = formValue;
+                for (var i = 0; i < inputs.length; i++) {
+                    if('crud_action_type' == inputs[i].name) {
+                        inputs[i].value = action;
+                    } else if('crud_action_value' == inputs[i].name) {
+                        inputs[i].value = value;
+                    } else if('crud_action_additional' == inputs[i].name) {
+                        inputs[i].value = additional;
+                    } else if('crud_action_type_form_value' == inputs[i].name) {
+                        inputs[i].value = formValue;
                     }
-                });
+                }
             }
             document.getElementById(formName).submit();
         },
