@@ -618,7 +618,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
 
-        AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
         List<ApplicationDto> listNewApplicationDto =IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> requestForInfList  =IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> updateTaskList  =IaisCommonUtils.genNewArrayList();
