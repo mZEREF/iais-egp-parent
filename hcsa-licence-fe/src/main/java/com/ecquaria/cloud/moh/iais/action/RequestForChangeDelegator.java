@@ -168,6 +168,11 @@ public class RequestForChangeDelegator {
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
         String UNID=ParamUtil.getString(bpc.request, "UNID");
+        boolean isRfi = false;
+        String licenceNo = "";
+        if(licenceDto != null){
+            licenceNo = licenceDto.getLicenceNo();
+        }
         if(StringUtil.isEmpty(amendType)){
             flag = false;
             String errMsg = "Please select a type of amendment";
@@ -175,7 +180,7 @@ public class RequestForChangeDelegator {
             //set audit
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             errorMap.put("ErrorMsg",errMsg);
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            NewApplicationHelper.setAudiErrMap(isRfi,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,errorMap,"",licenceNo);
         }
         if(licenceDto != null && UNID==null) {
             String status = licenceDto.getStatus();
@@ -186,7 +191,7 @@ public class RequestForChangeDelegator {
                 //set audit
                 Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
                 errorMap.put("ErrorMsg",errMsg);
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                NewApplicationHelper.setAudiErrMap(isRfi,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,errorMap,"",licenceNo);
             }
         }
         if(flag){

@@ -690,7 +690,7 @@ public class ClinicalLaboratoryDelegator {
             bpc.request.getSession().setAttribute("coMap", coMap);
             if (!errorMap.isEmpty()) {
                 //set audit
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.LABORATORYDISCIPLINES);
                 return;
@@ -819,7 +819,7 @@ public class ClinicalLaboratoryDelegator {
                     ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
                 } else {
                     //set audit
-                    WebValidationHelper.saveAuditTrailForNoUseResult(errList);
+                    NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errList,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.GOVERNANCEOFFICERS);
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errList));
                     coMap.put("information", "");
@@ -944,7 +944,7 @@ public class ClinicalLaboratoryDelegator {
             bpc.request.getSession().setAttribute("coMap", coMap);
             if (!errorMap.isEmpty()) {
                 //set audit
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.DISCIPLINEALLOCATION);
                 return;
@@ -1053,7 +1053,7 @@ public class ClinicalLaboratoryDelegator {
             }
             if (!map.isEmpty()) {
                 //set audit
-                WebValidationHelper.saveAuditTrailForNoUseResult(map);
+                NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),map,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.PRINCIPALOFFICERS);
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(map));
                 return;
@@ -1268,7 +1268,7 @@ public class ClinicalLaboratoryDelegator {
             }
             bpc.request.getSession().setAttribute("coMap", coMap);
             if (!errorMap.isEmpty()) {
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, AppServicesConsts.NAVTABS_SERVICEFORMS);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.DOCUMENTS);
@@ -1471,7 +1471,7 @@ public class ClinicalLaboratoryDelegator {
             bpc.request.getSession().setAttribute("coMap", coMap);
             if (!errorMap.isEmpty()) {
                 //set audit
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.NUCLEARMEDICINEIMAGING);
                 return;
@@ -1566,7 +1566,7 @@ public class ClinicalLaboratoryDelegator {
                 bpc.request.getSession().setAttribute("coMap",coMap);
                 if (!errorMap.isEmpty()) {
                     //set audit
-                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                    NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
                     ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.MEDALERT_PERSON);
                     //todo change(medAlert page is the final svc page,will jump to preview page)
@@ -1843,7 +1843,6 @@ public class ClinicalLaboratoryDelegator {
             }
 
         }
-        WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
     }
 
 
@@ -2466,7 +2465,6 @@ public class ClinicalLaboratoryDelegator {
                 }
             }
         }
-        WebValidationHelper.saveAuditTrailForNoUseResult(map);
     }
 
     private List<AppSvcDocDto> doValidateSvcDocument(List<AppSvcDocDto> appSvcDocDtoList, Map<String, String> errorMap) {
@@ -2516,7 +2514,6 @@ public class ClinicalLaboratoryDelegator {
                 }
             }
         }
-        WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
         return appSvcDocDtoList;
     }
 

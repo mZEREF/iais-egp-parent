@@ -841,7 +841,7 @@ public class NewApplicationDelegator {
             }
             if (errorMap.size() > 0) {
                 //set audit
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
                 String hciNameUsed = errorMap.get("hciNameUsed");
                 if (!StringUtil.isEmpty(hciNameUsed)) {
                     ParamUtil.setRequestAttr(bpc.request, "newAppPopUpMsg", hciNameUsed);
@@ -1074,7 +1074,7 @@ public class NewApplicationDelegator {
         }
         if (errorMap.size() > 0) {
             //set audit
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, (Serializable) errorMap);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "documents");
@@ -1224,7 +1224,7 @@ public class NewApplicationDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         if (!errorMap.isEmpty()) {
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request),appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, "test");
@@ -1646,9 +1646,10 @@ public class NewApplicationDelegator {
         stringBuilder.append(oldAppSubmissionDto);
         log.info(StringUtil.changeForLog("oldAppSubmissionDto:" + stringBuilder.toString()));
         Map<String, String> doComChangeMap = doComChange(appSubmissionDto, oldAppSubmissionDto);
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         if (!doComChangeMap.isEmpty()) {
             //set audit
-            WebValidationHelper.saveAuditTrailForNoUseResult(doComChangeMap);
+            NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),doComChangeMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
             ParamUtil.setRequestAttr(bpc.request, "Msg", doComChangeMap);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
@@ -1658,7 +1659,6 @@ public class NewApplicationDelegator {
         Map<String, String> map = doPreviewAndSumbit(bpc);
         if (!map.isEmpty()) {
             //set audit
-            WebValidationHelper.saveAuditTrailForNoUseResult(map);
             ParamUtil.setRequestAttr(bpc.request, "Msg", map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
@@ -1805,9 +1805,9 @@ public class NewApplicationDelegator {
         appEditSelectDto.setDocEdit(false);
         appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
         Map<String, String> map = doPreviewAndSumbit(bpc);
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         if (!map.isEmpty()) {
             //set audit
-            WebValidationHelper.saveAuditTrailForNoUseResult(map);
             ParamUtil.setRequestAttr(bpc.request, "Msg", map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
@@ -1823,7 +1823,7 @@ public class NewApplicationDelegator {
             //set audit
             Map<String,String> appealOrCesed = IaisCommonUtils.genNewHashMap();
             appealOrCesed.put("appealOrCesed",String.valueOf(otherOperation));
-            WebValidationHelper.saveAuditTrailForNoUseResult(appealOrCesed);
+            NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),appealOrCesed,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
             bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
@@ -1838,7 +1838,7 @@ public class NewApplicationDelegator {
             //set audit
             Map<String,String> errMap2 = IaisCommonUtils.genNewHashMap();
             errMap2.put("licenceHadSubmit",String.valueOf(licHadSubmit));
-            WebValidationHelper.saveAuditTrailForNoUseResult(errMap2);
+            NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errMap2,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
             bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
@@ -2900,11 +2900,10 @@ public class NewApplicationDelegator {
      */
     public void doSubmit(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do doSubmit start ...."));
-
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         Map<String, String> map = doPreviewAndSumbit(bpc);
         if (!map.isEmpty()) {
             //set audit
-            WebValidationHelper.saveAuditTrailForNoUseResult(map);
             ParamUtil.setRequestAttr(bpc.request, "Msg", map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
@@ -2916,7 +2915,6 @@ public class NewApplicationDelegator {
             coMap.put("previewli", "previewli");
             bpc.request.getSession().setAttribute("coMap", coMap);
         }
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         //sync person data
         Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
         NewApplicationHelper.syncPsnData(appSubmissionDto, personMap);
@@ -3049,7 +3047,7 @@ public class NewApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, "payment");
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             errorMap.put("payMethod","payMethod is empty");
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request),appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
             return;
         }
         Double totalAmount = appSubmissionDto.getAmount();
@@ -4143,11 +4141,12 @@ public class NewApplicationDelegator {
                 String mapStr = JsonUtil.parseToJson(map);
                 log.info(StringUtil.changeForLog("map json str:" + mapStr));
             }
-            WebValidationHelper.saveAuditTrailForNoUseResult(map);
+            NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),map,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
         }
         Map<String, String> documentMap = IaisCommonUtils.genNewHashMap();
         documentValid(bpc.request, documentMap);
         doCommomDocument(bpc.request, documentMap);
+        NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),documentMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
         if (!documentMap.isEmpty()) {
             previewAndSubmitMap.put("document", MessageUtil.replaceMessage("GENERAL_ERR0006","document","field"));
             String documentMapStr = JsonUtil.parseToJson(documentMap);
@@ -4163,7 +4162,7 @@ public class NewApplicationDelegator {
             coMap.put("information", "information");
         }
         bpc.request.getSession().setAttribute("coMap", coMap);
-        WebValidationHelper.saveAuditTrailForNoUseResult(previewAndSubmitMap);
+        NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),previewAndSubmitMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
         return previewAndSubmitMap;
     }
 
@@ -4208,7 +4207,6 @@ public class NewApplicationDelegator {
             }
         }
 
-        WebValidationHelper.saveAuditTrailForNoUseResult(documentMap);
     }
 
     //todo
@@ -5448,7 +5446,6 @@ public class NewApplicationDelegator {
                 appGrpPrimaryDocDto.setPassValidate(true);
             }
         }
-        WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
         return appGrpPrimaryDocDtoList;
     }
 
