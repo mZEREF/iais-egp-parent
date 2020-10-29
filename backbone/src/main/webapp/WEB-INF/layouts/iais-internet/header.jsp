@@ -1,15 +1,18 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.UrlConfig" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper" %>
+<%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
 <%
     String webrooth=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
     String internetWebSite = UrlConfig.getInstance().getInternetWebSite();
     String internetInbox = UrlConfig.getInstance().getInternetInbox();
-//    if(!IaisEGPHelper.isLogin()){
-//        internetInbox= internetWebSite;
-//    }
+    String googleSearch = ConfigHelper.getString("halp.googlesearch.flag", "Y");
+    if ("Y".equals(googleSearch)) {
 %>
 <script async src="https://cse.google.com/cse.js?cx=0a2eb3555bf6be84a"></script>
+<%
+    }
+%>
+
 <header>
     <div class="container">
         <div class="row">
