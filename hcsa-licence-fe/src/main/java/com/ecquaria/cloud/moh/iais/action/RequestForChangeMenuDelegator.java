@@ -1165,7 +1165,7 @@ public class RequestForChangeMenuDelegator {
             }
             fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(a));
             fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
-            fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDtos.get(0).getAppGrpNo());
+            fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDtos.get(0).getAppGrpNo()+"_"+System.currentTimeMillis());
             try {
                 String url="/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/doPayment";
                 String html="";

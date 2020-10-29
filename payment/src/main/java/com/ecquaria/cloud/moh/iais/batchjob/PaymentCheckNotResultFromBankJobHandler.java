@@ -4,12 +4,10 @@ import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.StripeService;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentAppGrpClient;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
@@ -52,7 +50,8 @@ public class PaymentCheckNotResultFromBankJobHandler extends IJobHandler {
                         PaymentIntent paymentIntent=stripeService.retrievePaymentIntent(session.getPaymentIntent());
 
                         PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();
-                        ApplicationGroupDto applicationGroupDto=paymentAppGrpClient.paymentUpDateByGrpNo(paymentRequestDto.getReqRefNo()).getEntity();
+                        String appGrpNo=paymentRequestDto.getReqRefNo().substring(0,'_');
+                        ApplicationGroupDto applicationGroupDto=paymentAppGrpClient.paymentUpDateByGrpNo(appGrpNo).getEntity();
                         if(paymentDto!=null){
                             if(paymentIntent!=null && "succeeded".equals(paymentIntent.getStatus())){
                                 paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);

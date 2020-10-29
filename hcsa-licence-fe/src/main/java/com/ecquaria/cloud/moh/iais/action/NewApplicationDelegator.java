@@ -1299,7 +1299,7 @@ public class NewApplicationDelegator {
                     log.error(StringUtil.changeForLog("send email error ...."));
                 }
             }else{
-                switch2 = "doSubmit";
+                switch2 = "loading";
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"payment");
             }
         }
@@ -3077,7 +3077,7 @@ public class NewApplicationDelegator {
             Map<String, String> fieldMap = new HashMap<String, String>();
             fieldMap.put(GatewayConstants.AMOUNT_KEY, amount);
             fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
-            fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDto.getAppGrpNo());
+            fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDto.getAppGrpNo()+"_"+System.currentTimeMillis());
             try {
                 String url="";
                 //String html="";

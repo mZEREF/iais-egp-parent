@@ -1243,7 +1243,7 @@ public class WithOutRenewalDelegator {
             Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
             fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(totalAmount));
             fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
-            fieldMap.put(GatewayConstants.SVCREF_NO, groupNo);
+            fieldMap.put(GatewayConstants.SVCREF_NO, groupNo+"_"+System.currentTimeMillis());
             try {
                 String html="";
                 switch (payMethod){
