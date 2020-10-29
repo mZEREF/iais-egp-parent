@@ -947,7 +947,7 @@ public class InsRepServiceImpl implements InsRepService {
         log.info("post inspection call back start ===================>>>>>");
         log.info(StringUtil.changeForLog("post inspection start eventRefNum ===================>>>>>"+eventRefNum));
         List<ApplicationDto> postInspectionApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
-        AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail();
         //appGrp --------app -------task    submissionId   operation yiyang    update licPremise
         List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(postInspectionApps)) {
@@ -994,8 +994,8 @@ public class InsRepServiceImpl implements InsRepService {
                     continue;
                 }
             }
-            log.info(StringUtil.changeForLog("================== taskDtos ===================>>>>>"+taskDtos.size()));
         }
+        log.info(StringUtil.changeForLog("================== taskDtos ===================>>>>>"+taskDtos.size()));
         log.info(StringUtil.changeForLog("==================  eventBus Start  ===================>>>>>"));
             eventBusHelper.submitAsyncRequest(taskDtos, submissionId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK, EventBusConsts.OPERATION_POST_INSPECTION_TASK, eventRefNum, null);
         log.info(StringUtil.changeForLog("=======================taskDtos ===================>>>>>Success"));
