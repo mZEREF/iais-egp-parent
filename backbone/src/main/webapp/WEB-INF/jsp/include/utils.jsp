@@ -13,11 +13,14 @@
             return o.substring(pos + 1);
         },
 
-        submit: function (form, action, value) {
+        submit: function (form, action, value, additional, formValue) {
             showWaiting();
             document.getElementById('crud_action_type').value = action;
             document.getElementById('crud_action_value').value = value;
+            document.getElementById('crud_action_additional').value = additional;
+            document.getElementById('crud_action_type_form_value').value = formValue;
             document.getElementById(form).submit();
+            SOP.Crud.cfxSubmit("mainForm", "doBack");
         },
 
         markSubmit: function (form, action, paramNameId, paramValue) {
