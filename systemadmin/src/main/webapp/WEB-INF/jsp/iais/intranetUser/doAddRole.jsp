@@ -17,12 +17,12 @@
             <iais:row>
                 <iais:field value="UserId"/>
                 <iais:value width="7">
-                    <p>${userIdName}</p>
+                    <span style="font-size: 25px">${userIdName}</span>
                 </iais:value>
             </iais:row>
             <iais:row>
                 <iais:field value="Add Role" required="true"/>
-                <iais:value width="5">
+                <div class="col-md-3">
                     <c:forEach items="${assignRoleOption}" var="role">
                         <c:choose>
                             <c:when test="${role=='Approval Officer 1'}">
@@ -31,7 +31,7 @@
                                            name="assignRoleAo1" value="${role}">
                                     <label class="form-check-label" for="ao1Check"><span
                                             class="check-square"></span></label>
-                                    <c:out value="${role}"/>
+                                    <span style="font-size: 18px">${role}</span>
                                     <div id="ao1" hidden>
                                         <iais:select name="ao1GroupSelect" value="${role}" firstOption="Please Select"
                                                      options="ao1GroupOptions"></iais:select>
@@ -45,7 +45,7 @@
                                            type="checkbox" name="assignRoleAo1Lead" value="${role}">
                                     <label class="form-check-label" for="ao1LeadCheck"><span
                                             class="check-square"></span></label>
-                                    <c:out value="${role}"/>
+                                    <span style="font-size: 18px">${role}</span>
                                     <div id="ao1Lead" hidden>
                                         <iais:select name="ao1GroupLeadSelect" value="${role}" firstOption="Please Select"
                                                      options="ao1GroupOptions"></iais:select>
@@ -59,7 +59,7 @@
                                            name="assignRoleIns" value="${role}">
                                     <label class="form-check-label" for="insCheck"><span
                                             class="check-square"></span></label>
-                                    <c:out value="${role}"/>
+                                    <span style="font-size: 18px">${role}</span>
                                     <div id="ins" hidden>
                                         <iais:select name="insGroupSelect" value="${role}" firstOption="Please Select"
                                                      options="insGroupOptions"></iais:select>
@@ -73,7 +73,7 @@
                                            type="checkbox" name="assignRoleInsLead" value="${role}">
                                     <label class="form-check-label" for="insLeadCheck"><span
                                             class="check-square"></span></label>
-                                    <c:out value="${role}"/>
+                                    <span style="font-size: 18px">${role}</span>
                                     <div id="insLead" hidden>
                                         <iais:select name="insGroupLeadSelect" value="${role}" firstOption="Please Select"
                                                      options="insGroupOptions"></iais:select>
@@ -87,7 +87,7 @@
                                            name="assignRolePso" value="${role}">
                                     <label class="form-check-label" for="psoCheck"><span
                                             class="check-square"></span></label>
-                                    <c:out value="${role}"/>
+                                    <span style="font-size: 18px">${role}</span>
                                     <div id="pso" hidden>
                                         <iais:select name="psoGroupSelect" value="${role}" firstOption="Please Select"
                                                      options="psoGroupOptions"></iais:select>
@@ -101,7 +101,7 @@
                                            type="checkbox" name="assignRolePsoLead" value="${role}">
                                     <label class="form-check-label" for="psoLeadCheck"><span
                                             class="check-square"></span></label>
-                                    <c:out value="${role}"/>
+                                    <span style="font-size: 18px">${role}</span>
                                     <div id="psoLead" hidden>
                                         <iais:select name="psoGroupLeadSelect" value="${role}" firstOption="Please Select"
                                                      options="psoGroupOptions"></iais:select>
@@ -115,14 +115,14 @@
                                            value="${role}">
                                     <label class="form-check-label" for="roleId"><span
                                             class="check-square"></span></label>
-                                    <c:out value="${role}"/>
+                                    <span style="font-size: 18px;font-weight: normal">${role}</span>
                                 </div>
                                 <br/>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
                     <span id="error_userId" name="iaisErrorMsg" class="error-msg"></span>
-                </iais:value>
+                </div>
             </iais:row>
             <iais:action>
                 <a style="margin-left: 86%" class="btn btn-primary" href="#" onclick="submit('doDeactivate')">Add</a>
@@ -139,7 +139,7 @@
                                    value="${alreadyAssignRoleIds[status.index]}">
                             <label class="form-check-label" for="removeRoleId"><span
                                     class="check-square"></span></label>
-                            <c:out value="${role}"/>
+                            <span style="font-size: 18px">${role}</span>
                         </div>
                     </c:forEach>
                 </iais:value>

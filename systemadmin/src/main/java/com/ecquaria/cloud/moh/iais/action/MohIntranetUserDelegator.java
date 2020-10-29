@@ -50,12 +50,6 @@ import java.util.*;
 @Slf4j
 public class MohIntranetUserDelegator {
 
-//    private final FilterParameter filterParameter = new FilterParameter.Builder()
-//            .clz(OrgUserQueryDto.class)
-//            .searchAttr(IntranetUserConstant.SEARCH_PARAM)
-//            .resultAttr(IntranetUserConstant.SEARCH_RESULT)
-//            .sortField(IntranetUserConstant.INTRANET_USER_SORT_COLUMN).sortType(SearchParam.ASCENDING).build();
-
     @Autowired
     private IntranetUserService intranetUserService;
 
@@ -258,7 +252,7 @@ public class MohIntranetUserDelegator {
             }
         }
         List<Role> rolesByDomain = intranetUserService.getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
-        List<String> assignRoleOption = IaisCommonUtils.genNewArrayList();
+        List<String> assignRoleOptionFull = IaisCommonUtils.genNewArrayList();
         Map<String, String> roleMap = IaisCommonUtils.genNewHashMap();
         Map<String, String> roleMap1 = IaisCommonUtils.genNewHashMap();
         Map<String, String> roleNameGroupId = IaisCommonUtils.genNewHashMap();
@@ -266,27 +260,27 @@ public class MohIntranetUserDelegator {
             for (Role role : rolesByDomain) {
                 String roleName = role.getName();//APPROVE 1
                 String assignRoleId = role.getId();//AO1
-                assignRoleOption.add(roleName);
+                assignRoleOptionFull.add(roleName);
                 roleMap.put(roleName, assignRoleId);
                 roleMap1.put(assignRoleId, roleName);
             }
         }
         // already assign role
         List<OrgUserRoleDto> orgUserRoleDtos = intranetUserService.retrieveRolesByuserAccId(userAccId);
-        Set<String> roleNames = IaisCommonUtils.genNewHashSet();
+        Set<String> roleIds = IaisCommonUtils.genNewHashSet();
         List<String> assignRoleIds = IaisCommonUtils.genNewArrayList();
         if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
             for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
-                String roleName = orgUserRoleDto.getRoleName();
+                String roleId = orgUserRoleDto.getRoleName();
                 String assignRoleId = orgUserRoleDto.getId();
-                roleNames.add(roleName);
+                roleIds.add(roleId);
                 assignRoleIds.add(assignRoleId);
             }
         }
-        List<String> roleIds = IaisCommonUtils.genNewArrayList();
-        for (String roleName : roleNames) {
-            String s = roleMap1.get(roleName);
-            roleIds.add(s);
+        List<String> alreadyAssignRoleOptionFull = IaisCommonUtils.genNewArrayList();
+        for (String roleId : roleIds) {
+            String roleNameFull = roleMap1.get(roleId);
+            alreadyAssignRoleOptionFull.add(roleNameFull);
         }
 
         List<WorkingGroupDto> workingGroups = intranetUserService.getWorkingGroups();
@@ -308,38 +302,13 @@ public class MohIntranetUserDelegator {
                 ao1GroupOptions.add(so);
             }
         }
-        assignRoleOption.removeAll(roleIds);
-        //remove
-//        List<UserGroupCorrelationDto> userGroupsByUserId = intranetUserService.getUserGroupsByUserId(userAccId);
-//        List<SelectOption> insGroupRemoveOptions = IaisCommonUtils.genNewArrayList();
-//        List<SelectOption> psoGroupRemoveOptions = IaisCommonUtils.genNewArrayList();
-//        List<SelectOption> ao1GroupRemoveOptions = IaisCommonUtils.genNewArrayList();
-//        if(!IaisCommonUtils.isEmpty(userGroupsByUserId)){
-//            for(UserGroupCorrelationDto userGroupCorrelationDto : userGroupsByUserId){
-//                String groupId = userGroupCorrelationDto.getGroupId();
-//                String groupName = intranetUserService.getWrkGrpById(groupId);
-//                if (groupName.contains("Inspection")) {
-//                    SelectOption so = new SelectOption(groupId, groupName);
-//                    insGroupRemoveOptions.add(so);
-//                } else if (groupName.contains("Professional")) {
-//                    SelectOption so = new SelectOption(groupId, groupName);
-//                    psoGroupRemoveOptions.add(so);
-//                } else if (groupName.contains("Level 1")) {
-//                    SelectOption so = new SelectOption(groupId, groupName);
-//                    ao1GroupRemoveOptions.add(so);
-//                }
-//            }
-//        }
-        ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", assignRoleOption);//Professional Screening  - Nursing Home
-        ParamUtil.setRequestAttr(bpc.request, "alreadyAssignRoles", roleNames);
+        assignRoleOptionFull.removeAll(alreadyAssignRoleOptionFull);
+        ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", assignRoleOptionFull);//Professional Screening  - Nursing Home
+        ParamUtil.setRequestAttr(bpc.request, "alreadyAssignRoles", roleIds);
         ParamUtil.setRequestAttr(bpc.request, "alreadyAssignRoleIds", assignRoleIds);
         ParamUtil.setSessionAttr(bpc.request, "psoGroupOptions", (Serializable)psoGroupOptions);
         ParamUtil.setSessionAttr(bpc.request, "ao1GroupOptions", (Serializable) ao1GroupOptions);
         ParamUtil.setSessionAttr(bpc.request, "insGroupOptions", (Serializable)insGroupOptions);
-//        ParamUtil.setSessionAttr(bpc.request, "psoGroupRemoveOptions", (Serializable)psoGroupRemoveOptions);
-//        ParamUtil.setSessionAttr(bpc.request, "ao1GroupRemoveOptions", (Serializable) ao1GroupRemoveOptions);
-//        ParamUtil.setSessionAttr(bpc.request, "insGroupRemoveOptions", (Serializable)insGroupRemoveOptions);
-        //key = Professional Screening  - Nursing Home  value = AO1
         ParamUtil.setSessionAttr(bpc.request, "roleMap", (Serializable) roleMap);
         //key = Professional Screening  - Nursing Home  value = AO1
         ParamUtil.setSessionAttr(bpc.request, "roleNameGroupId", (Serializable) roleNameGroupId);
