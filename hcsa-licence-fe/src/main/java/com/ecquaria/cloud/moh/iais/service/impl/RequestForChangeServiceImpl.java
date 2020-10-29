@@ -1597,7 +1597,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         notificationHelper.sendNotification(emailParam);
         //msg
         try {
-            List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(appSubmissionDto.getServiceName())).getEntity();
+            String svcName=appSubmissionDto.getServiceName();
+            if(svcName==null){
+                LicenceDto licenceDto= licenceClient.getLicBylicNo(appSubmissionDto.getLicenceNo()).getEntity();
+                svcName=licenceDto.getSvcName();
+            }
+            List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(svcName)).getEntity();
             List<String> svcCode=IaisCommonUtils.genNewArrayList();
             svcCode.add(svcDto.get(0).getSvcCode());
             emailParam.setSvcCodeList(svcCode);
@@ -1650,9 +1655,14 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         notificationHelper.sendNotification(emailParam);
         //msg
         try {
-            HcsaServiceDto svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(appSubmissionDto.getServiceName())).getEntity().get(0);
+            String svcName=appSubmissionDto.getServiceName();
+            if(svcName==null){
+                LicenceDto licenceDto= licenceClient.getLicBylicNo(appSubmissionDto.getLicenceNo()).getEntity();
+                svcName=licenceDto.getSvcName();
+            }
+            List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(svcName)).getEntity();
             List<String> svcCode=IaisCommonUtils.genNewArrayList();
-            svcCode.add(svcDto.getSvcCode());
+            svcCode.add(svcDto.get(0).getSvcCode());
             emailParam.setSvcCodeList(svcCode);
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_MSG);
             emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
