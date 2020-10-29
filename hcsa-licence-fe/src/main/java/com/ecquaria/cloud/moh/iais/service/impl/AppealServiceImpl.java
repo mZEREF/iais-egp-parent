@@ -438,7 +438,18 @@ public class AppealServiceImpl implements AppealService {
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         validae(request, errorMap);
-        WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+        String type =(String)request.getSession().getAttribute(TYPE);
+        String appealingFor = (String) request.getSession().getAttribute(APPEALING_FOR);
+        if(LICENCE.equals(type)){
+            LicenceDto licenceDto = licenceClient.getLicBylicId(appealingFor).getEntity();
+            WebValidationHelper.saveAuditTrailForNoUseResult(licenceDto,errorMap);
+        }else if(APPLICATION.equals(type)){
+            ApplicationDto applicationDto = applicationClient.getApplicationById(appealingFor).getEntity();
+            WebValidationHelper.saveAuditTrailForNoUseResult(applicationDto,errorMap);
+        }else {
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+        }
+
         return errorMap;
     }
 

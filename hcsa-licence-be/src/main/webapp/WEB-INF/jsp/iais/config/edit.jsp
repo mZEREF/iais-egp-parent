@@ -42,9 +42,9 @@
       </div>
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
-          <div class="col-xs-0 col-md-7 component-title" style="margin-bottom: 20px;">
+        <%--  <div class="col-xs-0 col-md-7 component-title" style="margin-bottom: 20px;">
             <a class="btn btn-secondary" onclick="back()"> Back</a>
-          </div>
+          </div>--%>
           <h2 class="col-xs-0 col-md-7 component-title">Edit HCSA Service</h2>
           <input type="text" style="display: none" name="serviceId" id="serviceId" value="${hcsaServiceDto.id}">
           <input type="text" style="display: none" name="serviceIsUse" value="${hcsaServiceDto.serviceIsUsed}">

@@ -9,6 +9,7 @@
 <webui:setLayout name="iais-internet"/>
     <%@include file="dashboard.jsp"%>
     <%@include file="../common/dashboard.jsp" %>
+    <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
     <style>
       .col-xs-12.col-md-8.text-right>.nav{
         margin-right: 20%;
@@ -17,10 +18,10 @@
 <div class="tab-pane" id="tabApp" role="tabpanel">
   <form class="form-inline" method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-  <input type="hidden" name="crud_action_type_form_value" value="">
+  <input type="hidden" name="crud_action_type_form_value" id="crud_action_type_form_value" value="">
   <input type="hidden" id="hiddenIndex" name="hiddenIndex" value="" />
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
+    <input type="hidden" name="crud_action_type" id="crud_action_type" value="">
+    <input type="hidden" name="crud_action_value" id="crud_action_value" value="">
 
   <div class="tab-search col-xs-11" style="margin-left: 10%;margin-top:1%">
     <div class="form-group">
@@ -100,22 +101,26 @@
     var index =  $premAddrEle.find('.statusIndex').val();
     $('#hiddenIndex').val(index);
     /*doSubmitForm('prePremisesEdit','', '');*/
-      SOP.Crud.cfxSubmit("menuListForm", "prePremisesEdit");
+      Utils.submit('menuListForm','prePremisesEdit','')
+     /* SOP.Crud.cfxSubmit("menuListForm", "prePremisesEdit");*/
   });
   
   $('#Back').click(function() {
   });
 
   function jumpToPagechangePage(){
-      SOP.Crud.cfxSubmit("menuListForm", "doPage");
+      Utils.submit('menuListForm','doPage','');
+    /*  SOP.Crud.cfxSubmit("menuListForm", "doPage");*/
   }
 
   function sortRecords(sortFieldName,sortType){
-      SOP.Crud.cfxSubmit("menuListForm","doSort",sortFieldName,sortType);
+      Utils.submit('menuListForm','doPage',sortFieldName,sortType,'');
+    /*  SOP.Crud.cfxSubmit("menuListForm","doSort",sortFieldName,sortType);*/
   }
 
   $('#premiseSearch').click(function () {
-      SOP.Crud.cfxSubmit("menuListForm", "doSearch",$('#premType').val(),"");
+      Utils.submit('menuListForm','doSearch',$('#premType').val(),'','');
+     /* SOP.Crud.cfxSubmit("menuListForm", "doSearch",$('#premType').val(),"");*/
   });
   $('#premiseClear').click(function () {
 
