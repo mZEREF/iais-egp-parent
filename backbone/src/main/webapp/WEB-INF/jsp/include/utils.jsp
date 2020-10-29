@@ -15,7 +15,7 @@
 
         submit: function (formName, action, value, additional, formValue) {
             showWaiting();
-            var inputs = $(form).find("input");
+            var inputs = document.getElementById(formName).getElementsByTagName("input");
             if(inputs.length != 0){
                 inputs.each(function(index, obj) {
                     if('crud_action_type' == obj.name) {
