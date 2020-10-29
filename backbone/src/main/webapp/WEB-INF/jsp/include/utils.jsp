@@ -13,13 +13,13 @@
             return o.substring(pos + 1);
         },
 
-        submit: function (form, action, value, additional, formValue) {
+        submit: function (formName, action, value, additional, formValue) {
             showWaiting();
             document.getElementById('crud_action_type').value = action;
             document.getElementById('crud_action_value').value = value;
             document.getElementById('crud_action_additional').value = additional;
             document.getElementById('crud_action_type_form_value').value = formValue;
-            document.getElementById(form).submit();
+            document.getElementById(formName).submit();
         },
 
         markSubmit: function (form, action, paramNameId, paramValue) {
