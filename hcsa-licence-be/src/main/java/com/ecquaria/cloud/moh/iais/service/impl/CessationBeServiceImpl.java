@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -33,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -198,28 +200,28 @@ public class CessationBeServiceImpl implements CessationBeService {
             LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
-//            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
-//            String svcType = hcsaServiceDto.getSvcType();
-//            if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
-//                List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
-//                if (!IaisCommonUtils.isEmpty(specLicIds)) {
-//                    for (String specLicId : specLicIds) {
-//                        AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
-//                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
-//                        if (specLicenceDto != null) {
-//                            String specLicenceNo = specLicenceDto.getLicenceNo();
-//                            String licenceDtoId = specLicenceDto.getId();
-//                            String specSvcName = specLicenceDto.getSvcName();
-//                            appSpecifiedLicDto.setBaseLicNo(licenceNo);
-//                            appSpecifiedLicDto.setBaseSvcName(svcName);
-//                            appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
-//                            appSpecifiedLicDto.setSpecSvcName(specSvcName);
-//                            appSpecifiedLicDto.setSpecLicId(licenceDtoId);
-//                            appSpecifiedLicDtos.add(appSpecifiedLicDto);
-//                        }
-//                    }
-//                }
-//            }
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
+            String svcType = hcsaServiceDto.getSvcType();
+            if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
+                List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
+                if (!IaisCommonUtils.isEmpty(specLicIds)) {
+                    for (String specLicId : specLicIds) {
+                        AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
+                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
+                        if (specLicenceDto != null) {
+                            String specLicenceNo = specLicenceDto.getLicenceNo();
+                            String licenceDtoId = specLicenceDto.getId();
+                            String specSvcName = specLicenceDto.getSvcName();
+                            appSpecifiedLicDto.setBaseLicNo(licenceNo);
+                            appSpecifiedLicDto.setBaseSvcName(svcName);
+                            appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
+                            appSpecifiedLicDto.setSpecSvcName(specSvcName);
+                            appSpecifiedLicDto.setSpecLicId(licenceDtoId);
+                            appSpecifiedLicDtos.add(appSpecifiedLicDto);
+                        }
+                    }
+                }
+            }
         }
         return appSpecifiedLicDtos;
     }
@@ -235,20 +237,20 @@ public class CessationBeServiceImpl implements CessationBeService {
         for (String licId : licIds) {
             LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
             String svcName = licenceDto.getSvcName();
-//            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
-//            String svcType = hcsaServiceDto.getSvcType();
-//            if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
-//                List<String> specIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
-//                if (!IaisCommonUtils.isEmpty(specIds)) {
-//                    for (String specLicId : specIds) {
-//                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
-//                        if (specLicenceDto != null) {
-//                            String licenceDtoId = specLicenceDto.getId();
-//                            specLicIds.add(licenceDtoId);
-//                        }
-//                    }
-//                }
-//            }
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
+            String svcType = hcsaServiceDto.getSvcType();
+            if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
+                List<String> specIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
+                if (!IaisCommonUtils.isEmpty(specIds)) {
+                    for (String specLicId : specIds) {
+                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
+                        if (specLicenceDto != null) {
+                            String licenceDtoId = specLicenceDto.getId();
+                            specLicIds.add(licenceDtoId);
+                        }
+                    }
+                }
+            }
         }
         if (!IaisCommonUtils.isEmpty(specLicIds)) {
             for (String specId : specLicIds) {
@@ -270,6 +272,7 @@ public class CessationBeServiceImpl implements CessationBeService {
             AppCessationDto appCessationDto = appCessationDtos.get(i);
             String premiseId = appCessationDto.getPremiseId();
             String licId = appCessationDto.getLicId();
+            List<String> specIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
             LicenceDto entity = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
             String licenseeId = entity.getLicenseeId();
             licIds.clear();
@@ -306,9 +309,22 @@ public class CessationBeServiceImpl implements CessationBeService {
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     emailMap.put("ApplicationNumber", applicationNo);
+                    StringBuilder svcNameLicNo = new StringBuilder();
+                    svcNameLicNo.append(svcName).append(" ").append(licenceNo);
+                    if(!IaisCommonUtils.isEmpty(specIds)){
+                        for(String specLicId :specIds){
+                            svcNameLicNo.append("<br/>");
+                            LicenceDto specLicDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
+                            String svcName1 = specLicDto.getSvcName();
+                            String licenceNo1 = specLicDto.getLicenceNo();
+                            svcNameLicNo.append(svcName1).append(" ").append(licenceNo1);
+                        }
+                    }
+                    emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
+                    emailMap.put("CessationDate", DateFormatUtils.format(effectiveDate,"dd-MM-yyyy"));
+                    emailMap.put("ApplicationDate", DateFormatUtils.format(new Date(),"dd-MM-yyyy"));
                     emailMap.put("ServiceLicenceName", svcName);
                     emailMap.put("CessationDate", Formatter.formatDateTime(effectiveDate));
-                    emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("systemLink", loginUrl);
                     emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
@@ -340,16 +356,61 @@ public class CessationBeServiceImpl implements CessationBeService {
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_SMS);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
                     notificationHelper.sendNotification(emailParam);
-                    //sendEmail(FURTHERDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
+                    //licEmail
+                    emailMap.clear();
+                    emailMap.put("ApplicantName", applicantName);
+                    emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.LICENCE_STATUS_CEASED}).get(0).getText());
+                    emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
+                    emailMap.put("ApplicationNumber", licenceNo);
+                    emailMap.put("CessationDate", DateFormatUtils.format(effectiveDate,"dd-MM-yyyy"));
+                    emailMap.put("email", systemParamConfig.getSystemAddressOne());
+                    emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
+                    emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
+
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE);
+                    emailParam.setTemplateContent(emailMap);
+                    emailParam.setQueryCode(licenceNo);
+                    emailParam.setReqRefNum(licenceNo);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+                    emailParam.setRefId(licId);
+                    map.clear();
+                    InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE);
+                    map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.LICENCE_STATUS_CEASED}).get(0).getText());
+                    map.put("ApplicationNumber", licenceNo);
+                    subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
+                    emailParam.setSubject(subject);
+                    //email
+                    notificationHelper.sendNotification(emailParam);
+                    //sms
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE_SMS);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+                    notificationHelper.sendNotification(emailParam);
+                    //msg
+                    svcCode.add(svcDto.getSvcCode());
+                    emailParam.setSvcCodeList(svcCode);
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE_MSG);
+                    emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    emailParam.setRefId(licId);
                 } else {
                     Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                     LicenseeDto licenseeDto = inspEmailService.getLicenseeDtoById(licenseeId);
                     String applicantName = licenseeDto.getName();
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
-                    emailMap.put("ServiceLicenceName", svcName);
+                    StringBuilder svcNameLicNo = new StringBuilder();
+                    svcNameLicNo.append(svcName).append(" : ").append(licenceNo);
+                    if(!IaisCommonUtils.isEmpty(specIds)){
+                        for(String specLicId :specIds){
+                            svcNameLicNo.append("<br/>");
+                            LicenceDto specLicDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
+                            String svcName1 = specLicDto.getSvcName();
+                            String licenceNo1 = specLicDto.getLicenceNo();
+                            svcNameLicNo.append(svcName1).append(" : ").append(licenceNo1);
+                        }
+                    }
+                    emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
                     emailMap.put("ApplicationNumber", applicationNo);
-                    emailMap.put("CessationDate", Formatter.formatDateTime(effectiveDate));
+                    emailMap.put("CessationDate", DateFormatUtils.format(effectiveDate,"dd-MM-yyyy"));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
                     emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
@@ -380,7 +441,41 @@ public class CessationBeServiceImpl implements CessationBeService {
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_SMS);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
                     notificationHelper.sendNotification(emailParam);
-                    //sendEmail(PRESENTDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
+                    //lic email
+                    emailMap.clear();
+                    emailMap.put("ApplicantName", applicantName);
+                    emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
+                    emailMap.put("LicenceNumber", licenceNo);
+                    emailMap.put("CessationDate", DateFormatUtils.format(new Date(),"dd-MM-yyyy"));
+                    emailMap.put("email", systemParamConfig.getSystemAddressOne());
+                    emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
+                    emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
+
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE);
+                    emailParam.setTemplateContent(emailMap);
+                    emailParam.setQueryCode(licenceNo);
+                    emailParam.setReqRefNum(licenceNo);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+                    emailParam.setRefId(licId);
+                    map.clear();
+                    InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE);
+                    map.put("ServiceLicenceName", svcNameLicNo.toString());
+                    map.put("LicenceNumber", licenceNo);
+                    subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
+                    emailParam.setSubject(subject);
+                    //email
+                    notificationHelper.sendNotification(emailParam);
+                    //sms
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_SMS);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+                    notificationHelper.sendNotification(emailParam);
+                    //msg
+                    svcCode.add(svcDto.getSvcCode());
+                    emailParam.setSvcCodeList(svcCode);
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
+                    emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    emailParam.setRefId(licId);
+                    notificationHelper.sendNotification(emailParam);
                 }
             } catch (Exception e) {
                 e.getMessage();

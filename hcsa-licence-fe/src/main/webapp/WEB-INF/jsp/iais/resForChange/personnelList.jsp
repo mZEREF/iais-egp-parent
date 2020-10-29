@@ -8,6 +8,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@include file="../common/dashboard.jsp" %>
+<%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <br/>
 <div class="tab-pane" id="tabApp" role="tabpanel">
     <form class="form-inline" method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
@@ -98,15 +99,15 @@
     }
 
     function doSearch() {
-        SOP.Crud.cfxSubmit("menuListForm", "search");
+        Utils.submit.cfxSubmit("menuListForm", "search");
     }
 
 
     function jumpToPagechangePage() {
-        SOP.Crud.cfxSubmit("menuListForm", "page");
+        Utils.submit("menuListForm", "page");
     }
 
     function sortRecords(sortFieldName, sortType) {
-        SOP.Crud.cfxSubmit("menuListForm", "sort", sortFieldName, sortType);
+        Utils.submit("menuListForm", "sort", sortFieldName, sortType);
     }
 </script>

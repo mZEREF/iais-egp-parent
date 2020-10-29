@@ -150,8 +150,8 @@ public class LicenceExpiredBatchJob {
                 emailMap.put("LicenceNumber", licenceNo);
                 emailMap.put("CessationDate", Formatter.formatDateTime(date));
                 emailMap.put("email", systemParamConfig.getSystemAddressOne());
-                emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+                emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
+                emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
                 EmailParam emailParam = new EmailParam();
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE);
                 emailParam.setTemplateContent(emailMap);
@@ -217,50 +217,50 @@ public class LicenceExpiredBatchJob {
                 String licenceNo = licenceDto.getLicenceNo();
                 String licenseeId = licenceDto.getLicenseeId();
 
-                    Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                    LicenseeDto licenseeDto = inspEmailService.getLicenseeDtoById(licenseeId);
-                    String applicantName = licenseeDto.getName();
-                    emailMap.put("ApplicantName", applicantName);
-                    emailMap.put("ServiceLicenceName", svcName);
-                    emailMap.put("LicenceNumber", licenceNo);
-                    emailMap.put("CessationDate", Formatter.formatDateTime(date));
-                    emailMap.put("email", systemParamConfig.getSystemAddressOne());
-                    emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
-                    EmailParam emailParam = new EmailParam();
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE);
-                    emailParam.setTemplateContent(emailMap);
-                    emailParam.setQueryCode(licenceNo);
-                    emailParam.setReqRefNum(licenceNo);
-                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
-                    emailParam.setRefId(licenceDtoId);
-                    Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-                    InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE);
-                    map.put("ServiceLicenceName", svcName);
-                    map.put("LicenceNumber", licenceNo);
-                    String subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
-                    emailParam.setSubject(subject);
-                    //email
-                    notificationHelper.sendNotification(emailParam);
-                    //sms
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_SMS);
-                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
-                    notificationHelper.sendNotification(emailParam);
-                    //msg
-                    HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(svcName).getEntity();
-                    List<String> svcCode = IaisCommonUtils.genNewArrayList();
-                    svcCode.add(svcDto.getSvcCode());
-                    emailParam.setSvcCodeList(svcCode);
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
-                    emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                    emailParam.setRefId(licenceDto.getId());
-                    notificationHelper.sendNotification(emailParam);
-                    //cessationBeService.sendEmail(LICENCEENDDATE, date, svcName, licenceDtoId, licenseeId, licenceNo);
-                } catch (Exception e) {
-                    log.error(e.getMessage(), e);
-                    continue;
-                }
+                Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+                LicenseeDto licenseeDto = inspEmailService.getLicenseeDtoById(licenseeId);
+                String applicantName = licenseeDto.getName();
+                emailMap.put("ApplicantName", applicantName);
+                emailMap.put("ServiceLicenceName", svcName);
+                emailMap.put("LicenceNumber", licenceNo);
+                emailMap.put("CessationDate", Formatter.formatDateTime(date));
+                emailMap.put("email", systemParamConfig.getSystemAddressOne());
+                emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
+                emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
+                EmailParam emailParam = new EmailParam();
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE);
+                emailParam.setTemplateContent(emailMap);
+                emailParam.setQueryCode(licenceNo);
+                emailParam.setReqRefNum(licenceNo);
+                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+                emailParam.setRefId(licenceDtoId);
+                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+                InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE);
+                map.put("ServiceLicenceName", svcName);
+                map.put("LicenceNumber", licenceNo);
+                String subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
+                emailParam.setSubject(subject);
+                //email
+                notificationHelper.sendNotification(emailParam);
+                //sms
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_SMS);
+                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+                notificationHelper.sendNotification(emailParam);
+                //msg
+                HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(svcName).getEntity();
+                List<String> svcCode = IaisCommonUtils.genNewArrayList();
+                svcCode.add(svcDto.getSvcCode());
+                emailParam.setSvcCodeList(svcCode);
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
+                emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                emailParam.setRefId(licenceDto.getId());
+                notificationHelper.sendNotification(emailParam);
+                //cessationBeService.sendEmail(LICENCEENDDATE, date, svcName, licenceDtoId, licenseeId, licenceNo);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                continue;
             }
+        }
         try {
             hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -290,8 +290,8 @@ public class LicenceExpiredBatchJob {
                 emailMap.put("LicenceNumber", licenceNo);
                 emailMap.put("CessationDate", Formatter.formatDate(new Date()));
                 emailMap.put("email", systemParamConfig.getSystemAddressOne());
-                emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+                emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
+                emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
                 EmailParam emailParam = new EmailParam();
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE);
                 emailParam.setTemplateContent(emailMap);

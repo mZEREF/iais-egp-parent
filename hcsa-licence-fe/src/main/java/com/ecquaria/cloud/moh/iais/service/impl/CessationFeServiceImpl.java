@@ -303,6 +303,7 @@ public class CessationFeServiceImpl implements CessationFeService {
             AppCessationDto appCessationDto = appCessationDtos.get(i);
             String premiseId = appCessationDto.getPremiseId();
             String licId = appCessationDto.getLicId();
+            List<String> specLicIds = licenceClient.getSpecIdsByBaseId(licId).getEntity();
             LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
             String licenseeId = licenceDto.getLicenseeId();
             licIds.clear();
@@ -340,13 +341,27 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     emailMap.put("ApplicationNumber", applicationNo);
+                    StringBuilder svcNameLicNo = new StringBuilder();
+                    svcNameLicNo.append(svcName).append(" ").append(licenceNo);
+                    if(!IaisCommonUtils.isEmpty(specLicIds)){
+                       for(String specLicId :specLicIds){
+                           svcNameLicNo.append("\r\n");
+                           LicenceDto specLicDto = licenceClient.getLicBylicId(specLicId).getEntity();
+                           String svcName1 = specLicDto.getSvcName();
+                           String licenceNo1 = specLicDto.getLicenceNo();
+                           svcNameLicNo.append(svcName1).append(" ").append(licenceNo1);
+                       }
+                    }
+                    emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
+                    emailMap.put("CessationDate", DateFormatUtils.format(effectiveDate,"dd-MM-yyyy"));
+                    emailMap.put("ApplicationDate", DateFormatUtils.format(new Date(),"dd-MM-yyyy"));
                     emailMap.put("ServiceLicenceName", svcName);
                     emailMap.put("CessationDate", Formatter.formatDateTime(effectiveDate));
                     emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("systemLink", loginUrl);
-                    emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+                    emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
+                    emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
                     MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE).getEntity();
                     Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                     map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
@@ -374,19 +389,29 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_SMS);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
                     notificationHelper.sendNotification(emailParam);
-                    //sendEmail(FURTHERDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
                 } else {
                     Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                     LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
                     String applicantName = licenseeDto.getName();
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
-                    emailMap.put("ServiceLicenceName", svcName);
+                    StringBuilder svcNameLicNo = new StringBuilder();
+                    svcNameLicNo.append(svcName).append(" ").append(licenceNo);
+                    if(!IaisCommonUtils.isEmpty(specLicIds)){
+                        for(String specLicId :specLicIds){
+                            svcNameLicNo.append("\r\n");
+                            LicenceDto specLicDto = licenceClient.getLicBylicId(specLicId).getEntity();
+                            String svcName1 = specLicDto.getSvcName();
+                            String licenceNo1 = specLicDto.getLicenceNo();
+                            svcNameLicNo.append(svcName1).append(" ").append(licenceNo1);
+                        }
+                    }
+                    emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
                     emailMap.put("ApplicationNumber", applicationNo);
                     emailMap.put("CessationDate", Formatter.formatDateTime(effectiveDate));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
-                    emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-                    emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+                    emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
+                    emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
                     MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE).getEntity();
                     Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                     map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
@@ -414,7 +439,6 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_SMS);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
                     notificationHelper.sendNotification(emailParam);
-                    //sendEmail(PRESENTDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
                 }
             } catch (Exception e) {
                 log.info(StringUtil.changeForLog("==================== email error ===============>>>>>>>" + e.getMessage()));
