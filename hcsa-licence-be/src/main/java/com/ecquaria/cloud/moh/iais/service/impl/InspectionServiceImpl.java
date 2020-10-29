@@ -401,15 +401,17 @@ public class InspectionServiceImpl implements InspectionService {
 
     private InspectionSubPoolQueryDto getLeadByAppPremCorrId(TaskDto taskDto, List<AppPremisesCorrelationDto> appPremisesCorrelationDtos, InspectionSubPoolQueryDto iDto) {
         if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)) {
+            String refNo = taskDto.getRefNo();
             for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos) {
-                String refNo = taskDto.getRefNo();
                 log.error(StringUtil.changeForLog("==============="+refNo));
-                if (appPremisesCorrelationDto.getId().equals(taskDto.getRefNo())) {
-                    List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-                    List<String> leadName = getWorkGroupLeadsByGroupId(taskDto.getWkGrpId(), orgUserDtos);
-                    Set<String> leadNameSet = new HashSet<>(leadName);
-                    leadName = new ArrayList<>(leadNameSet);
-                    iDto.setGroupLead(leadName);
+                if(appPremisesCorrelationDto != null) {
+                    if (appPremisesCorrelationDto.getId().equals(taskDto.getRefNo())) {
+                        List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                        List<String> leadName = getWorkGroupLeadsByGroupId(taskDto.getWkGrpId(), orgUserDtos);
+                        Set<String> leadNameSet = new HashSet<>(leadName);
+                        leadName = new ArrayList<>(leadNameSet);
+                        iDto.setGroupLead(leadName);
+                    }
                 }
             }
         }
