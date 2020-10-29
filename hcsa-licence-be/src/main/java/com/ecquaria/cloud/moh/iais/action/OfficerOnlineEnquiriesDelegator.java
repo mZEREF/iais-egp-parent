@@ -113,7 +113,7 @@ public class OfficerOnlineEnquiriesDelegator {
     @Autowired
     InsepctionNcCheckListService insepctionNcCheckListService;
     @Autowired
-    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+    FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     CessationBeService cessationBeService;
     @Autowired
@@ -123,7 +123,7 @@ public class OfficerOnlineEnquiriesDelegator {
     @Autowired
     HcsaChklClient hcsaChklClient;
     @Autowired
-    private ApplicationClient applicationClient;
+    ApplicationClient applicationClient;
     @Autowired
     AppInspectionStatusClient appInspectionStatusClient;
 
@@ -1119,32 +1119,32 @@ public class OfficerOnlineEnquiriesDelegator {
         }
         reqForInfoSearchListDto.setBlkNo(rfiApplicationQueryDto.getBlkNo());
         ApplicationDto applicationDto =applicationClient.getApplicationById(rfiApplicationQueryDto.getId()).getEntity();
-        AppPremisesRecommendationDto appPreRecommentdationDtoDateRoot= fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-        AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+        try {
+            AppPremisesRecommendationDto appPreRecommentdationDtoDateRoot= fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+            AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
 
-        if(appPreRecommentdationDtoDateRoot!=null&&appPreRecommentdationDtoDate!=null){
-            try {
-                HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
-                hcsaRiskScoreDto.setAppType(rfiApplicationQueryDto.getApplicationType());
-                hcsaRiskScoreDto.setLicId(licenceId);
-                List<ApplicationDto> applicationDtos = new ArrayList<>(1);
-                if(applicationDto!=null&&licenceId!=null){
-                    applicationDto.setNeedInsp(true);
-                    applicationDtos.add(applicationDto);
-                    hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
-                    hcsaRiskScoreDto.setServiceId(rfiApplicationQueryDto.getSvcId());
-                    HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
-                    String riskLevel = entity.getRiskLevel();
-                    reqForInfoSearchListDto.setCurrentRiskTagging(MasterCodeUtil.retrieveOptionsByCodes(new String[]{riskLevel}).get(0).getText());
-                }
-            }catch (Exception e){
-                reqForInfoSearchListDto.setCurrentRiskTagging("-");
-                log.info(e.getMessage(),e);
-            }
-
-            List<ComplianceHistoryDto> complianceHistoryDtos= IaisCommonUtils.genNewArrayList();
-            Set<String> appIds=IaisCommonUtils.genNewHashSet();
             if(appPreRecommentdationDtoDateRoot!=null&&appPreRecommentdationDtoDate!=null){
+                try {
+                    HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
+                    hcsaRiskScoreDto.setAppType(rfiApplicationQueryDto.getApplicationType());
+                    hcsaRiskScoreDto.setLicId(licenceId);
+                    List<ApplicationDto> applicationDtos = new ArrayList<>(1);
+                    if(applicationDto!=null&&licenceId!=null){
+                        applicationDto.setNeedInsp(true);
+                        applicationDtos.add(applicationDto);
+                        hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
+                        hcsaRiskScoreDto.setServiceId(rfiApplicationQueryDto.getSvcId());
+                        HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
+                        String riskLevel = entity.getRiskLevel();
+                        reqForInfoSearchListDto.setCurrentRiskTagging(MasterCodeUtil.retrieveOptionsByCodes(new String[]{riskLevel}).get(0).getText());
+                    }
+                }catch (Exception e){
+                    reqForInfoSearchListDto.setCurrentRiskTagging("-");
+                    log.info(e.getMessage(),e);
+                }
+
+                List<ComplianceHistoryDto> complianceHistoryDtos= IaisCommonUtils.genNewArrayList();
+                Set<String> appIds=IaisCommonUtils.genNewHashSet();
                 AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(rfiApplicationQueryDto.getAppCorrId()).getEntity();
                 if (appPremPreInspectionNcDto != null) {
                     String ncId = appPremPreInspectionNcDto.getId();
@@ -1171,12 +1171,18 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 complianceHistoryDtos.sort(Comparator.comparing(ComplianceHistoryDto::getSortDate));
                 reqForInfoSearchListDto.setComplianceHistoryDtos(complianceHistoryDtos);
+            }else {
+                reqForInfoSearchListDto.setCurrentRiskTagging("-");
+                reqForInfoSearchListDto.setLastComplianceHistory("-");
+                reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
             }
-        }else {
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
             reqForInfoSearchListDto.setCurrentRiskTagging("-");
             reqForInfoSearchListDto.setLastComplianceHistory("-");
             reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
         }
+
 
 
         reqForInfoSearchListDto.setBuildingName(rfiApplicationQueryDto.getBuildingName());
