@@ -20,7 +20,6 @@
             document.getElementById('crud_action_additional').value = additional;
             document.getElementById('crud_action_type_form_value').value = formValue;
             document.getElementById(form).submit();
-            SOP.Crud.cfxSubmit("mainForm", "doBack");
         },
 
         markSubmit: function (form, action, paramNameId, paramValue) {
