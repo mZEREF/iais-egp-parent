@@ -1652,7 +1652,9 @@ public class LicenceApproveBatchjob {
             }
             log.info(StringUtil.changeForLog("The  getLicenceDto  licenseeId is " + licenseeId));
             log.info(StringUtil.changeForLog("The  getLicenceDto  flag is " + flag));
-            if(!StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())&&ApplicationConsts.GROUP_LICENCE_FLAG_TRANSFER.equals(flag)){
+            if(!StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())&&
+                    (ApplicationConsts.GROUP_LICENCE_FLAG_TRANSFER.equals(flag)
+                    ||ApplicationConsts.GROUP_LICENCE_FLAG_All_TRANSFER.equals(flag))){
                 licenseeId =  applicationGroupDto.getNewLicenseeId();
                 log.info(StringUtil.changeForLog("The  getLicenceDto  newlicenseeId is " + licenseeId));
             }
