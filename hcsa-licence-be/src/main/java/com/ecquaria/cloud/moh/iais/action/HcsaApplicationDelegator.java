@@ -1135,7 +1135,7 @@ public class HcsaApplicationDelegator {
                 emailMap.put("ApplicantName", applicationName);
                 emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE}).get(0).getText());
                 emailMap.put("ApplicationNumber", applicationNo);
-                emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+                emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
                 emailMap.put("email_address", systemParamConfig.getSystemAddressOne());
                 emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
         emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");

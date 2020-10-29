@@ -288,7 +288,7 @@ public class LicenceExpiredBatchJob {
                 emailMap.put("ApplicantName", applicantName);
                 emailMap.put("ServiceLicenceName", svcName);
                 emailMap.put("LicenceNumber", licenceNo);
-                emailMap.put("CessationDate", Formatter.formatDateTime(new Date()));
+                emailMap.put("CessationDate", Formatter.formatDate(new Date()));
                 emailMap.put("email", systemParamConfig.getSystemAddressOne());
                 emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
         emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");

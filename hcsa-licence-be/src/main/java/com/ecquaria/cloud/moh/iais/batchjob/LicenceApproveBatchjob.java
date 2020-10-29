@@ -1951,7 +1951,7 @@ public class LicenceApproveBatchjob {
             String applicantName = licenseeDto.getName();
             String organizationId = licenseeDto.getOrganizationId();
             OrganizationDto organizationDto = organizationClient.getOrganizationById(organizationId).getEntity();
-            String appDate = Formatter.formatDateTime(new Date(), "dd/MM/yyyy");
+            String appDate = Formatter.formatDate(new Date());
             String MohName = AppConsts.MOH_AGENCY_NAME;
             log.info(StringUtil.changeForLog("send notification applicantName : " + applicantName));
             //new application send email zhilin

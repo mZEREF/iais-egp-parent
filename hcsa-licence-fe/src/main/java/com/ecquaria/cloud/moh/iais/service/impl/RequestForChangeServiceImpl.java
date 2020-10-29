@@ -1516,7 +1516,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         emailMap.put("ApplicantName", applicantName);
         emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
         emailMap.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
-        emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+        emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
         emailMap.put("systemLink", loginUrl);
         emailMap.put("email_address", systemParamConfig.getSystemAddressOne());
         emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
@@ -1570,7 +1570,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         emailMap.put("name_transferee", newLicenseeDto.getName());
         emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
         emailMap.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
-        emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+        emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
         emailMap.put("ExistingLicensee", applicantName);
         emailMap.put("transferee_licensee", newLicenseeDto.getName());
         emailMap.put("LicenceNumber", appSubmissionDto.getLicenceNo());
@@ -1621,7 +1621,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         String applicantName = licenseeDto.getName();
         emailMap.put("officer_name", "");
         emailMap.put("ServiceLicenceName", appSubmissionDto.getServiceName());
-        emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+        emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
         emailMap.put("Licensee", applicantName);
         emailMap.put("LicenceNumber", appSubmissionDto.getLicenceNo());
         StringBuilder stringBuilder = new StringBuilder();
