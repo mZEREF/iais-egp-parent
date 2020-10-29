@@ -41,9 +41,33 @@ public class HcsaApplicationUploadFileValidate implements CustomizeValidator {
             }
             //type
             if(!fileType){
-                errMap.put("selectedFile",MessageUtil.replaceMessage("GENERAL_ERR0018", applicationViewDto.getSystemFileType(),"fileType"));
+                String type = getFileType(applicationViewDto.getSystemFileType());
+                errMap.put("selectedFile",MessageUtil.replaceMessage("GENERAL_ERR0018",type,"fileType"));
             }
         }
         return errMap;
+    }
+
+    private String getFileType(String type){
+        String[] fileTypelist = type.split(",");
+        if(fileTypelist.length >5) {
+            StringBuffer stringBiff = new StringBuffer();
+            stringBiff.append("<br/>");
+            for(int indexlist = 0;indexlist <fileTypelist.length; indexlist++){
+                if(indexlist== 0){
+                    stringBiff.append( fileTypelist[indexlist]);
+                }else if(indexlist== fileTypelist.length-1){
+                    stringBiff .append( fileTypelist[indexlist]);
+                }  else if(indexlist %5 == 0) {
+                    stringBiff .append(fileTypelist[indexlist]).append(",<br/>");
+
+                }else {
+                    stringBiff.append(fileTypelist[indexlist]).append(',') ;
+                }
+            }
+          return stringBiff.toString();
+        }else {
+            return "<br/>" + type;
+        }
     }
 }
