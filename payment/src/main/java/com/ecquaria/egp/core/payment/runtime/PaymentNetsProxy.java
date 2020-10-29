@@ -178,6 +178,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 //		}else {
 //			status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
 //		}
+		setPaymentTransStatus(status);
 
 
 		PaymentDto paymentDto = new PaymentDto();
