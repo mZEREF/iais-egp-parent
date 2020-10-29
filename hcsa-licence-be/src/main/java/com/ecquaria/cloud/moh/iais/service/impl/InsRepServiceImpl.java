@@ -978,7 +978,7 @@ public class InsRepServiceImpl implements InsRepService {
                     taskDto.setSlaDateCompleted(null);
                     taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
                     taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
-                    taskDto.setProcessUrl("/hcsa-licence-web/eservice/INTRANET/MohInspectionPreInspector");
+                    taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
                     taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
                     taskDto.setSlaAlertInDays(0);
                     taskDto.setScore(0);
