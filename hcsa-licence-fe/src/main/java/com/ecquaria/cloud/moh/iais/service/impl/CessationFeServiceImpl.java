@@ -346,7 +346,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     svcNameLicNo.append(svcName).append(" ").append(licenceNo);
                     if(!IaisCommonUtils.isEmpty(specLicIds)){
                        for(String specLicId :specLicIds){
-                           svcNameLicNo.append("\r\n");
+                           svcNameLicNo.append("<br/>");
                            LicenceDto specLicDto = licenceClient.getLicBylicId(specLicId).getEntity();
                            String svcName1 = specLicDto.getSvcName();
                            String licenceNo1 = specLicDto.getLicenceNo();
@@ -436,7 +436,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     svcNameLicNo.append(svcName).append(" ").append(licenceNo);
                     if(!IaisCommonUtils.isEmpty(specLicIds)){
                         for(String specLicId :specLicIds){
-                            svcNameLicNo.append("\r\n");
+                            svcNameLicNo.append("<br/>");
                             LicenceDto specLicDto = licenceClient.getLicBylicId(specLicId).getEntity();
                             String svcName1 = specLicDto.getSvcName();
                             String licenceNo1 = specLicDto.getLicenceNo();
@@ -445,7 +445,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     }
                     emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
                     emailMap.put("ApplicationNumber", applicationNo);
-                    emailMap.put("CessationDate", Formatter.formatDateTime(effectiveDate));
+                    emailMap.put("CessationDate", DateFormatUtils.format(effectiveDate,"dd-MM-yyyy"));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
                     emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");

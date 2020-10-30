@@ -259,7 +259,6 @@ public class CessationBeServiceImpl implements CessationBeService {
                 }
             }
         }
-//        specLicIds.contains(licIds);
         return specLicIdsE;
     }
 
