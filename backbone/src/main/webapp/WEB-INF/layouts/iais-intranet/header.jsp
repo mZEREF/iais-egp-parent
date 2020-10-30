@@ -37,7 +37,6 @@
         </div>
     </div>
 </header>
-<div>Banner Alert</div>
 <script type="text/javascript">
     $(document).ready(function () {
         $('#sidebarCollapse').on('click', function () {
