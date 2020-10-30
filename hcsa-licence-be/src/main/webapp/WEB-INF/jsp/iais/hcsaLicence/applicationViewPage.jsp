@@ -177,11 +177,10 @@
                                                     <div id="verifiedDropdown" class="hidden">
                                                         <iais:row>
                                                             <iais:field value="Assign To" required="false"/>
-                                                            <iais:value width="10">
+                                                            <iais:value width="10" id="verifyCallAjaxDropDown">
                                                                 <iais:select cssClass="verified" name="verified"
                                                                              options="verifiedValues"
                                                                              value="${selectVerified}"></iais:select>
-                                                                <span id="error_verified" name="iaisErrorMsg" class="error-msg"></span>
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
@@ -189,12 +188,19 @@
                                                     <c:if test="${(applicationViewDto.applicationDto.status == 'APST007' || applicationViewDto.applicationDto.status == 'APST012') && isChooseInspection}">
                                                         <div id="chooseInspectionBox">
                                                             <iais:row>
-                                                                <iais:field value="Choose to inspect for 6 months?" required="false"/>
+                                                                <iais:field value="To use recent inspection report? (View Report)" required="false"/>
                                                                 <iais:value width="10">
                                                                     <p>
                                                                         <input class="form-check-input" id="chooseInspection"
                                                                                type="checkbox" name="chooseInspection" aria-invalid="false" <c:if test="${chooseInspectionChecked == 'Y'}">checked</c:if> value="Y">
                                                                         <label class="form-check-label" for="chooseInspection"><span class="check-square"></span></label>
+                                                                        <c:if test="${!empty AppLastInsGroup.fileReportIdForViewLastReport}">
+                                                                            <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo&fileRo=<iais:mask name="fileRo"  value="${AppLastInsGroup.fileReportIdForViewLastReport}"/>&fileRepoName=${AppLastInsGroup.reportName}"
+                                                                               title="Download" class="downloadFile"><span id="${AppLastInsGroup.fileReportIdForViewLastReport}Down">trueDown</span></a>
+                                                                            <a  onclick="doVerifyFileGo('${AppLastInsGroup.fileReportIdForViewLastReport}')"><c:out
+                                                                                    value="${AppLastInsGroup.reportName}"></c:out>
+                                                                            </a>
+                                                                        </c:if>
                                                                     </p>
                                                                 </iais:value>
                                                             </iais:row>
@@ -392,6 +398,7 @@
         </form>
         <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
         <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp" %>
+        <iais:confirm msg="GENERAL_ACK018"  needCancel="false" callBack="tagConfirmCallbacksupportReport()" popupOrder="supportReport" ></iais:confirm>
     </div>
 </div>
 
@@ -457,6 +464,36 @@
         if('${isShowInspection}' == 'N'){
             $('#ApplicationViewInspection').css('display', 'none');
         }
+    }
+
+    $("[name='chooseInspection']").click(function () {
+        callAjaxDropDown();
+    });
+
+    //chooseInspection
+    //verifyCallAjaxDropDown
+    function callAjaxDropDown(){
+        showWaiting();
+        var isChecked = $("[name='chooseInspection']").is(':checked');
+        var verified = $("[name='verified']").val();
+        var chooseInspection;
+        if(isChecked){
+            chooseInspection = "Y";
+        }else{
+            chooseInspection = "N";
+        }
+        $.ajax({
+            type: "post",
+            url:  "${pageContext.request.contextPath}/callInspectionForSixth",
+            data: {verified:verified, chooseInspection:chooseInspection},
+            dataType: "text",
+            success: function (data) {
+                $('#verifyCallAjaxDropDown').html(data);
+                dismissWaiting();
+            },
+            error: function (msg) {
+            }
+        });
     }
 
     //check DMS decision value
@@ -760,7 +797,28 @@
         }
     }
 
+    function doVerifyFileGo(verify) {
+        showWaiting();
+        var data = {"repoId":verify};
+        $.post(
+            "${pageContext.request.contextPath}/verifyFileExist",
+            data,
+            function (data) {
+                if(data != null ){
+                    if(data.verify == 'N'){
+                        $('#supportReport').modal('show');
+                    }else {
+                        $("#"+verify+"Down").click();
+                    }
+                    dismissWaiting();
+                }
+            }
+        )
+    }
 
+    function tagConfirmCallbacksupportReport(){
+        $('#supportReport').modal('hide');
+    }
 </script>
 
 
