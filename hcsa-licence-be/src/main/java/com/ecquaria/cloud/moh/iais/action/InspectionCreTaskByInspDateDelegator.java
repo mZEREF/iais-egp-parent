@@ -59,6 +59,7 @@ public class InspectionCreTaskByInspDateDelegator {
      * @throws
      */
     public void mohCreTaskByInspecDateStart(BaseProcessClass bpc){
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         log.debug(StringUtil.changeForLog("the mohCreTaskByInspecDateStart start ...."));
     }
 

@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -65,6 +64,7 @@ public class InspecTaskToLeaderBatchJob {
      * @throws
      */
     public void inspTaskToLeaderStart(BaseProcessClass bpc){
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         logAbout("Inspection Create Task To Leader");
     }
 

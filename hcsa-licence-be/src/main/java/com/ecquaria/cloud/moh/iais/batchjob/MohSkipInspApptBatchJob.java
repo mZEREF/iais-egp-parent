@@ -67,6 +67,7 @@ public class MohSkipInspApptBatchJob {
      * @throws
      */
     public void mohSkipInspApptStart(BaseProcessClass bpc){
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         logAbout("Skip Online Appointment Inspection Date");
     }
 

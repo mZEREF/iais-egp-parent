@@ -93,6 +93,7 @@ public class InspRemindRecNcMesgBatchJob {
      * @throws
      */
     public void remindRecNcMesgStart(BaseProcessClass bpc){
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         logAbout("Remind Applicant Rectify N/C");
     }
 

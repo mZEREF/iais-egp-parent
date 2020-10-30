@@ -61,6 +61,7 @@ public class CreateDoInspTaskBatchJob {
      * @throws
      */
     public void mohCreateInspectionTaskStart(BaseProcessClass bpc){
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         log.debug(StringUtil.changeForLog("the mohCreateInspectionTaskStart start ...."));
     }
 

@@ -119,6 +119,7 @@ public class InspectionSendRecBatchjob {
      * @throws
      */
     public void mohInspecSendRectifiToUserStart(BaseProcessClass bpc){
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         log.debug(StringUtil.changeForLog("the mohInspecSendRectifiToUserStart start ...."));
     }
 

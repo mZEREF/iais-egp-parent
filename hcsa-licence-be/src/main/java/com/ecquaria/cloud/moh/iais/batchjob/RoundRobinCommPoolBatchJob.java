@@ -166,6 +166,7 @@ public class RoundRobinCommPoolBatchJob {
     private String secSecretKey;
 
     public void doBatchJob(BaseProcessClass bpc) throws FeignException {
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         jobExecute();
     }
 
