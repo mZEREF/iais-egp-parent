@@ -78,7 +78,7 @@
                                       <a class="btn btn-primary corpPass" href="<%=SIMConfig.getInstance().getIdpSingpassInitiatedUrl()%>>" style="background: #1F92FF; color: white">Login using SingPass</a>
                                     <%}else{%>
                                       <a class="btn btn-primary corpPass" href="javascript:void(0)" onclick="Utils.submit('mainForm','singpassLogin')" style="background: #1F92FF; color: white">Login using SingPass</a>
-                                  }
+                                <%  }
                                 %>
 
                               </div>
