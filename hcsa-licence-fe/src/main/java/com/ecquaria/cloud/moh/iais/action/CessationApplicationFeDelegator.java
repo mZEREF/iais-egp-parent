@@ -213,6 +213,7 @@ public class CessationApplicationFeDelegator {
                    WebValidationHelper.saveAuditTrailForNoUseResult(licenceDto,errorMap);
                }
             }
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;
