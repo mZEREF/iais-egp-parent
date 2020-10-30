@@ -43,6 +43,14 @@ public class HtmlElementHelper {
         StringBuffer html = new StringBuffer();
         html.append("<select");
         if (attributes != null) {
+            if (attributes.get("style") == null) {
+                attributes.put("style", "display:none;");
+            } else {
+                String style = attributes.get("style");
+                if (style.indexOf("display") < 0) {
+                    attributes.put("style", "display:none;" + style);
+                }
+            }
             for (Map.Entry<String, String> entry : attributes.entrySet()) {
                 prepareAttribute(html, entry.getKey(), entry.getValue());
             }
