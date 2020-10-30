@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -2668,6 +2669,13 @@ public class ClinicalLaboratoryDelegator {
 
     public static List<SelectOption> genPersonnelDesignSel(String currentSvcCod) {
         List<SelectOption> designation = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> commonDes = IaisCommonUtils.genNewArrayList();
+        commonDes.add(new SelectOption(MasterCodeUtil.getCodeDesc("DES005"),MasterCodeUtil.getCodeDesc("DES005")));
+        commonDes.add(new SelectOption(MasterCodeUtil.getCodeDesc("DES006"),MasterCodeUtil.getCodeDesc("DES006")));
+        commonDes.add(new SelectOption(MasterCodeUtil.getCodeDesc("DES007"),MasterCodeUtil.getCodeDesc("DES007")));
+        commonDes.add(new SelectOption(MasterCodeUtil.getCodeDesc("DES008"),MasterCodeUtil.getCodeDesc("DES008")));
+        commonDes.add(new SelectOption(MasterCodeUtil.getCodeDesc("DES009"),MasterCodeUtil.getCodeDesc("DES009")));
+        commonDes.add(new SelectOption(MasterCodeUtil.getCodeDesc("DES010"),MasterCodeUtil.getCodeDesc("DES010")));
         if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)) {
             SelectOption designationOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_DIAGNOSTIC_RADIOGRAPHER, ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_DIAGNOSTIC_RADIOGRAPHER);
             SelectOption designationOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_RADIATION_THERAPIST, ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_RADIATION_THERAPIST);
@@ -2675,6 +2683,7 @@ public class ClinicalLaboratoryDelegator {
             designation.add(designationOp1);
             designation.add(designationOp2);
             designation.add(designationOp3);
+            designation.addAll(commonDes);
         } else if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(currentSvcCod)) {
 
         } else if (AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(currentSvcCod)) {
@@ -2682,6 +2691,7 @@ public class ClinicalLaboratoryDelegator {
             SelectOption designationOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_CLINICAL_NURSE_LEADER, ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_CLINICAL_NURSE_LEADER);
             designation.add(designationOp1);
             designation.add(designationOp2);
+            designation.addAll(commonDes);
         } else if (AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(currentSvcCod)) {
 
         }
