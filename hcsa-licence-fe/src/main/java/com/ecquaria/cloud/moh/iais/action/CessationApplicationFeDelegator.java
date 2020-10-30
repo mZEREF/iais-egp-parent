@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -21,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,6 +51,8 @@ public class CessationApplicationFeDelegator {
     private CessationFeService cessationFeService;
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
+    @Autowired
+    private LicenceClient licenceClient;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -98,6 +102,8 @@ public class CessationApplicationFeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "rfiPremiseId", null);
         ParamUtil.setSessionAttr(bpc.request, "rfiAppId", rfiAppId);
         ParamUtil.setSessionAttr(bpc.request, "rfiPremiseId", rfiPremiseId);
+        ParamUtil.setSessionAttr(bpc.request, "licIds", null);
+        ParamUtil.setSessionAttr(bpc.request, "isGrpLic",null);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -145,6 +151,7 @@ public class CessationApplicationFeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "patientsOption", (Serializable) patientsOption);
         ParamUtil.setSessionAttr(bpc.request, "size", size);
         ParamUtil.setSessionAttr(bpc.request, READINFO, null);
+        ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable)licIds);
     }
 
     public void prepareData(BaseProcessClass bpc) {
@@ -159,6 +166,7 @@ public class CessationApplicationFeDelegator {
             bpc.response.sendRedirect(tokenUrl);
             return;
         }
+        List<String> licIds = (List<String>)ParamUtil.getSessionAttr(bpc.request, "licIds");
         List<AppCessLicDto> appCessDtosByLicIds = (List<AppCessLicDto>) ParamUtil.getSessionAttr(bpc.request, APPCESSATIONDTOS);
         int size = (int) ParamUtil.getSessionAttr(bpc.request, "size");
         List<AppCessLicDto> appCessHciDtos = prepareDataForValiant(bpc, size, appCessDtosByLicIds);
@@ -199,7 +207,12 @@ public class CessationApplicationFeDelegator {
             }
         }
         if (!errorMap.isEmpty()) {
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            if(!IaisCommonUtils.isEmpty(licIds)){
+               if(licIds.size()==1){
+                   LicenceDto licenceDto = licenceClient.getLicBylicId(licIds.get(0)).getEntity();
+                   WebValidationHelper.saveAuditTrailForNoUseResult(licenceDto,errorMap);
+               }
+            }
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;

@@ -750,7 +750,7 @@ public class RequestForChangeMenuDelegator {
         boolean edit = isEdit(personnelEditDto, oldPersonnelDto);
         if(!edit){
             ParamUtil.setRequestAttr(bpc.request, "action_type", "valid");
-            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "personnelAck");
+            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "personnelEdit");
             return;
         }
         if (IaisCommonUtils.isEmpty(licenceIds)) {

@@ -419,6 +419,7 @@
             <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
             <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
             <iais:confirm msg= "RFC_ERR0013" callBack="cancel()"  needCancel="false" popupOrder="ackMessageConfim"></iais:confirm>
+            <iais:confirm msg= "RFC_ERR016" callBack="cancel()"  needCancel="false" popupOrder="ackMessageEdit"></iais:confirm>
         </div>
     </div>
 </form>
@@ -428,11 +429,15 @@
     $('.needDisableI').css('color', '#999');
     function cancel(){
         $('#ackMessageConfim').modal('hide');
+        $('#ackMessageEdit').modal('hide');
     }
     $(document).ready(function () {
 
         if($('#ackMessage').val()=='personnelAck'){
             $('#ackMessageConfim').modal('show');
+        }
+        if($('#ackMessage').val()=='personnelEdit'){
+            $('#ackMessageEdit').modal('show');
         }
 
         $('#previewAndSub').click(function () {
