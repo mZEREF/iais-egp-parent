@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.FeToBeRecFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class InspecUserRecFeToBeDelegator {
      * @throws
      */
     public void inspecUserRecFeToBeStatrt(BaseProcessClass bpc){
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         logAbout("Fe Create Zip");
     }
 

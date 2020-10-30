@@ -5,6 +5,7 @@ import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.FeToBeRecFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class InspecUserRecFeToBeJobHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         try {
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             logAbout("inspecUserRecFeToBePre");
             Map<String, String> appItemMap = feToBeRecFileService.getDocFile();
             feToBeRecFileService.compressFile(appItemMap);
