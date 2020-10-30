@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
@@ -296,10 +297,10 @@ public class ClientReschedulingDelegator {
             String reason=ParamUtil.getString(httpServletRequest,"reason"+id);
             if("".equals(reason)||reason==null){
                 String appId=apptViewDtos.get(id).getAppId();
-                errMap.put("reason"+appId,"ERR0009");
+                errMap.put("reason" + appId, MessageUtil.replaceMessage("GENERAL_ERR0006", "Reason for Request","field"));
             }
         }
 
         return errMap;
     }
-    }
+}
