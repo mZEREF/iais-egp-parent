@@ -91,6 +91,11 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
      return getAuditTaskDataFillterDto(auditTaskDataDto,isCancelTask,needCancelReason,Boolean.TRUE);
     }
     public  AuditTaskDataFillterDto getAuditTaskDataFillterDto(AuditTaskDataDto auditTaskDataDto,Boolean isCancelTask,Boolean needCancelReason,Boolean isNeedInsp){
+        if (HcsaLicenceBeConstant.RESULT_LAST_COMPLIANCE_FULL_CODE.equals(auditTaskDataDto.getResultComplicance())){
+            auditTaskDataDto.setResultComplicance(HcsaLicenceBeConstant.RESULT_LAST_COMPLIANCE_FULL_NAME);
+        }else if(HcsaLicenceBeConstant.RESULT_LAST_COMPLIANCE_PARTIAL_CODE.equalsIgnoreCase(auditTaskDataDto.getResultComplicance())){
+            auditTaskDataDto.setResultComplicance(HcsaLicenceBeConstant.RESULT_LAST_COMPLIANCE_PARTIAL_NAME );
+        }
         AuditTaskDataFillterDto auditTaskDataFillterDto = MiscUtil.transferEntityDto(auditTaskDataDto,AuditTaskDataFillterDto.class);
         if(!isCancelTask)
             auditTaskDataFillterDto.setIsTcuNeeded(1);
@@ -115,6 +120,13 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         auditTaskDataFillterDto.setAuditRiskType(auditTaskDataDto.getAuditRiskType());
         auditTaskDataFillterDto.setLicenceDueDate(auditTaskDataDto.getLicenceDueDate());
         auditTaskDataFillterDto.setLicenceNo(auditTaskDataDto.getLicenceNo());
+
+        auditTaskDataFillterDto.setSvcCode(auditTaskDataDto.getSvcCode());
+        auditTaskDataFillterDto.setScore(auditTaskDataDto.getRiskScore());
+        auditTaskDataFillterDto.setRiskType(auditTaskDataDto.getRiskType());
+        auditTaskDataFillterDto.setLastInspEnd(Formatter.formatDateTime(auditTaskDataDto.getLastInspEndDate(),"dd/MM/yyyy"));
+        auditTaskDataFillterDto.setLastInspStart(Formatter.formatDateTime(auditTaskDataDto.getLastInspStartDate(),"dd/MM/yyyy"));
+
         if(isNeedInsp &&!StringUtil.isEmpty(auditTaskDataFillterDto.getInspectorId()) && !StringUtil.isEmpty(auditTaskDataFillterDto.getAuditId())){
             OrgUserDto user = applicationViewService.getUserById(auditTaskDataFillterDto.getInspectorId());
             auditTaskDataFillterDto.setInspector(user.getDisplayName());
@@ -172,41 +184,11 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     private List<AuditTaskDataFillterDto> inspectionFitter(SearchResult<AuditTaskDataDto> searchResult, AuditSystemPotentialDto dto) {
         List<AuditTaskDataDto> auditTaskDtos = searchResult.getRows();
         if(IaisCommonUtils.isEmpty(auditTaskDtos)) return  null;
-        if( !StringUtil.isEmpty(dto.getTypeOfRisk())){
-            if(ApplicationConsts. RISK_TYPE_FINANCIAL_KEY.equalsIgnoreCase(dto.getTypeOfRisk()) ||  ApplicationConsts.RISK_TYPE_LEADERSHIP_KEY.equalsIgnoreCase(dto.getTypeOfRisk()) ||
-            ApplicationConsts.RISK_TYPE_LEGISLATIVE_BREACHES_KEY.equalsIgnoreCase(dto.getTypeOfRisk()) ||  ApplicationConsts.RISK_TYPE_OVERALL_KEY.equalsIgnoreCase(dto.getTypeOfRisk())){
-                return  null;
-            }
-        }
         List<AuditTaskDataFillterDto> dtoList  = new ArrayList<>(auditTaskDtos.size());
-            Boolean isHaveSAndEndDate = StringUtil.isEmpty(dto.getLastInspectionStart()) && StringUtil.isEmpty(dto.getLastInspectionEnd());
-            for (AuditTaskDataDto temp : searchResult.getRows()) {
-                AuditFillterDto auditFillterDto =  fillUpCheckListGetAppClient. getAuditTaskDataDtoByAuditTaskDataDto(temp.getLicId()).getEntity();
-                AuditTaskDataFillterDto auditTaskDataFillterDto = getAuditTaskDataFillterDto(temp,Boolean.TRUE,Boolean.FALSE);
-                auditTaskDataFillterDto.setLastInspEnd(Formatter.formatDate(auditFillterDto.getLastEndDate()));
-                auditTaskDataFillterDto.setLastInspStart(Formatter.formatDate(auditFillterDto.getLastStartDate()));
-                auditTaskDataFillterDto.setResultComplicance(auditFillterDto.getCompliance());
-                auditTaskDataFillterDto.setRiskType(auditFillterDto.getRiskType());
-                auditTaskDataFillterDto.setScore(auditFillterDto.getRiskScore());
-                if(isHaveSAndEndDate && StringUtil.isEmpty(dto.getResultLastCompliance())){
-                    dtoList.add(auditTaskDataFillterDto);
-                }else if(isHaveSAndEndDate && !StringUtil.isEmpty(dto.getResultLastCompliance()) && doNcFitter(auditTaskDataFillterDto,dto.getResultLastCompliance())){
-                    dtoList.add(auditTaskDataFillterDto);
-                } else if(!isHaveSAndEndDate){
-                    if(getAduitTaskDtoByInspecitonDate(auditFillterDto.getLastEndDate(), auditFillterDto.getLastStartDate(), dto)){
-                        if(StringUtil.isEmpty(dto.getResultLastCompliance())){
-                            dtoList.add(auditTaskDataFillterDto);
-                        }else if(doNcFitter(auditTaskDataFillterDto,dto.getResultLastCompliance())){
-                            dtoList.add(auditTaskDataFillterDto);
-                        }
-                    }
-                }
-            }
-          Map<String,String> map = getAllServiceByAuditTaskDataFillterDtoList(auditTaskDtos);
-            for(AuditTaskDataFillterDto auditTaskDataFillterDto : dtoList){
-                auditTaskDataFillterDto.setSvcCode(map.get(auditTaskDataFillterDto.getSvcName()));
-            }
-        return getRiskFillter(dto,  removeDuplicates(dtoList));
+        for (AuditTaskDataDto temp : searchResult.getRows()) {
+            dtoList.add(getAuditTaskDataFillterDto(temp,Boolean.TRUE,Boolean.FALSE));
+        }
+        return removeDuplicates(dtoList);
     }
 
     private List<AuditTaskDataFillterDto> removeDuplicates(List<AuditTaskDataFillterDto> ncFdtoList){
@@ -229,112 +211,6 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         return ncFdtoList;
     }
 
-
-
-    private boolean doNcFitter(AuditTaskDataFillterDto temp, String resultLastCompliance) {
-        if (HcsaLicenceBeConstant.RESULT_LAST_COMPLIANCE_FULL_CODE.equals(resultLastCompliance) && HcsaLicenceBeConstant.RESULT_LAST_COMPLIANCE_FULL_NAME.equalsIgnoreCase(temp.getResultComplicance())) {
-            return true;
-        } else if (HcsaLicenceBeConstant.RESULT_LAST_COMPLIANCE_PARTIAL_CODE.equals(resultLastCompliance) && HcsaLicenceBeConstant.RESULT_LAST_COMPLIANCE_PARTIAL_NAME.equalsIgnoreCase(temp.getResultComplicance())){
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private Map<String,String> getAllServiceByAuditTaskDataFillterDtoList( List<AuditTaskDataDto> auditTaskDtos ){
-        Map<String,String> map = Maps.newHashMapWithExpectedSize(auditTaskDtos.size());
-        if( IaisCommonUtils.isEmpty(auditTaskDtos)) return map;
-        for(AuditTaskDataDto temp : auditTaskDtos ){
-            if(StringUtil.isEmpty(map.get(temp.getSvcName()))){
-                String svcCode = hcsaConfigClient.getServiceCodeByName(temp.getSvcName()).getEntity();
-                map.put(temp.getSvcName(),svcCode);
-            }
-        }
-        return map;
-    }
-
-    private List<AuditTaskDataFillterDto> getRiskFillter(AuditSystemPotentialDto dto,  List<AuditTaskDataFillterDto> AuditTaskDataFillterDtos) {
-        if (!StringUtil.isEmpty(dto.getTypeOfRisk())) {
-            AuditTaskDataFillterDtos = sortByScore(AuditTaskDataFillterDtos,dto.getTypeOfRisk());
-        }else {
-            AuditTaskDataFillterDtos.sort((AuditTaskDataFillterDto d1, AuditTaskDataFillterDto d2) -> d2.getScore().compareTo(d1.getScore()));
-        }
-        if(dto.getGenerateNum() != null && dto.getGenerateNum()>0)  {
-            return  getNumberList(dto,AuditTaskDataFillterDtos); //NOSONAR
-        }
-        return  AuditTaskDataFillterDtos;
-    }
-
-    private List<AuditTaskDataFillterDto> getNumberList(AuditSystemPotentialDto dto, List<AuditTaskDataFillterDto> dtoList) {
-        List<AuditTaskDataFillterDto> reuturnList = IaisCommonUtils.genNewArrayList();
-            int num = dto.getGenerateNum();
-            if (!IaisCommonUtils.isEmpty(dtoList)) {
-                if (num < dtoList.size()) {
-                    for (int i = 0; i < num; i++) {
-                        reuturnList.add(dtoList.get(i));
-                    }
-                    return reuturnList;
-                }
-            }
-        return dtoList;
-    }
-
-    private List<AuditTaskDataFillterDto> sortByScore(List< AuditTaskDataFillterDto> auditTaskDtos, String type) {
-        List<AuditTaskDataFillterDto> dtoList = IaisCommonUtils.genNewArrayList();
-        if (!IaisCommonUtils.isEmpty(auditTaskDtos)) {
-            for (AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDtos) {
-                if (type.equalsIgnoreCase( auditTaskDataFillterDto.getRiskType())){
-                    dtoList.add(auditTaskDataFillterDto);
-                }
-            }
-            if(!IaisCommonUtils.isEmpty(dtoList )){
-                dtoList.sort((AuditTaskDataFillterDto d1, AuditTaskDataFillterDto d2) -> d1.getScore().compareTo(d2.getScore()));
-            }
-            return dtoList;
-        }
-        return null;
-    }
-
-
-    private Boolean getAduitTaskDtoByInspecitonDate(Date endDate, Date startDate, AuditSystemPotentialDto dto) {
-        Date dtostartDate = null;
-        Date dtoEndDate = null;
-        if (!StringUtil.isEmpty(dto.getLastInspectionStart())) {
-            try {
-                dtostartDate = Formatter.parseDate(dto.getLastInspectionStart());
-            } catch (Exception e) {
-                log.debug(e.toString());
-                return Boolean.FALSE;
-            }
-        }
-        if (!StringUtil.isEmpty(dto.getLastInspectionEnd())) {
-            try {
-                dtoEndDate = Formatter.parseDate(dto.getLastInspectionEnd());
-            } catch (Exception e) {
-                log.debug(e.toString());
-                return Boolean.FALSE;
-            }
-        }
-        if (dtostartDate != null && dtoEndDate == null) {
-            if (startDate != null && dateCompareDate(dtostartDate,startDate)) {
-                return Boolean.TRUE;
-            }
-        } else if (dtostartDate == null && dtoEndDate != null) {
-            if (endDate != null &&  dateCompareDate(endDate,dtoEndDate)) {
-                return Boolean.TRUE;
-            }
-        } else {
-            if (startDate != null && endDate != null &&dtoEndDate != null && dtostartDate != null &&  dateCompareDate( endDate,dtoEndDate) &&  dateCompareDate(dtostartDate,startDate)) {
-                return Boolean.TRUE;
-            }
-        }
-
-        return Boolean.FALSE;
-    }
-
-    private  boolean dateCompareDate(Date date,Date date2){
-        return date2.compareTo(date) >= 0 ||  Formatter.formatDate(date).equalsIgnoreCase(Formatter.formatDate(date2)) ;
-    }
     private SearchResult<AuditTaskDataDto> getAuditSysParam(SearchParam searchParam) {
         return hcsaLicenceClient.searchSysAduit(searchParam).getEntity();
     }
@@ -365,7 +241,52 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         if (!StringUtil.isEmpty(dto.getPremisesType())) {
             searchParam.addFilter("premType", dto.getPremisesType(), true);
         }
+        if (!StringUtil.isEmpty(dto.getTypeOfRisk())){
+            searchParam.addFilter("riskType", dto.getTypeOfRisk(), true);
+        }
+
+        if(dto.getGenerateNum() != null){
+            searchParam.addFilter("number_generate", dto.getGenerateNum(), true);
+        }
+
+        if(!StringUtil.isEmpty(dto.getLastInspectionStart())){
+            try {
+                searchParam.addFilter("last_insp_start",Formatter.formatDateTime( Formatter.parseDate(dto.getLastInspectionStart()),"yyyy-MM-dd HH:mm:ss"), true);
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+            }
+
+        }
+        if(!StringUtil.isEmpty(dto.getLastInspectionEnd())){
+            try {
+            searchParam.addFilter("last_insp_end", Formatter.formatDateTime(Formatter.parseDate(dto.getLastInspectionEnd()),"yyyy-MM-dd HH:mm:ss"), true);
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+            }
+        }
+        if(!StringUtil.isEmpty(dto.getResultLastCompliance())){
+            searchParam.addFilter("resultComplicance", dto.getResultLastCompliance(), true);
+        }
         QueryHelp.setMainSql("inspectionQuery", "aduitSystemList", searchParam);
+        String sql = searchParam.getMainSql();
+     if (!StringUtil.isEmpty(dto.getTypeOfRisk())){
+      if("RT001".equalsIgnoreCase(dto.getTypeOfRisk())){
+          sql=  sql.replace("replaceSql","t8.risk_type_fir_ins_socre");
+      }else if("RT002".equalsIgnoreCase(dto.getTypeOfRisk())){
+          sql=sql.replace("replaceSql"," t8.risk_type_sec_ins_socre");
+      }else if("RT003".equalsIgnoreCase(dto.getTypeOfRisk())){
+          sql= sql.replace("replaceSql"," t8.risk_type_financial_score");
+      } else if("RT004".equalsIgnoreCase(dto.getTypeOfRisk())){
+         sql= sql.replace("replaceSql","t8.risk_type_leadership_score");
+      }else if("RT005".equalsIgnoreCase(dto.getTypeOfRisk())){
+         sql= sql.replace("replaceSql","t8.risk_type_legislative_breaches_score");
+      }else if("RT006".equalsIgnoreCase(dto.getTypeOfRisk())){
+        sql=  sql.replace("replaceSql","t8.risk_score");
+      }
+     }else {
+        sql= sql.replace("replaceSql","t8.risk_score");
+     }
+        searchParam.setMainSql(sql);
         return searchParam;
     }
 
