@@ -248,6 +248,7 @@ public class SelfAssessmentDelegator {
             if (!errorMap.isEmpty()) {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                WebValidationHelper.saveAuditTrailForNoUseResult(selfAssessmentList, errorMap);
             } else {
                 selfAssessmentService.saveAllSelfAssessment(selfAssessmentList);
 
