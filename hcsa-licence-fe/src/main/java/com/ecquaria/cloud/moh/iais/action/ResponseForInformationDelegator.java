@@ -173,6 +173,7 @@ public class ResponseForInformationDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         errorMap=validate(bpc.request,licPremisesReqForInfoDto);
         if (!errorMap.isEmpty()) {
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
             //

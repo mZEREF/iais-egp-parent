@@ -1561,7 +1561,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public void sendRfcLicenseeEmail(AppSubmissionDto appSubmissionDto) throws IOException, TemplateException {
+    public void sendRfcLicenseeEmail(AppSubmissionDto appSubmissionDto,List<String> emailList,String licenseeId) throws IOException, TemplateException {
         String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(appSubmissionDto.getLicenseeId()).getEntity();
@@ -1585,8 +1585,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         emailParam.setTemplateContent(emailMap);
         emailParam.setQueryCode(appSubmissionDto.getAppGrpNo());
         emailParam.setReqRefNum(appSubmissionDto.getAppGrpNo());
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP_GRP);
-        emailParam.setRefId(appSubmissionDto.getAppGrpId());
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+        emailParam.setRefId(licenseeId);
+        emailParam.setReceiptEmails(emailList);
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED).getEntity();
         map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
@@ -1608,7 +1609,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             emailParam.setSvcCodeList(svcCode);
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED_MSG);
             emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-            emailParam.setRefId(appSubmissionDto.getLicenceId());
+            emailParam.setRefId(licenseeId);
             notificationHelper.sendNotification(emailParam);
         }catch (Exception e){
             log.info(e.getMessage(),e);
@@ -1620,7 +1621,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public void sendRfcEmailToOfficer(AppSubmissionDto appSubmissionDto) throws IOException, TemplateException {
+    public void sendRfcEmailToOfficer(AppSubmissionDto appSubmissionDto,List<String> emailList) throws IOException, TemplateException {
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(appSubmissionDto.getLicenseeId()).getEntity();
         String applicantName = licenseeDto.getName();
@@ -1632,7 +1633,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         StringBuilder stringBuilder = new StringBuilder();
         if (!StringUtil.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())) {
             for (int i = 0; i < appSubmissionDto.getAppSvcRelatedInfoDtoList().size(); i++) {
-                stringBuilder.append("<p>   ").append(i + 1).append(". ").append(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(i).getServiceName()).append("</p>");
+                stringBuilder.append("<p class=\"line\">   ").append(i + 1).append(". ").append(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(i).getServiceName()).append("</p>");
             }
         }
         emailMap.put("ServiceNames", stringBuilder);
@@ -1645,6 +1646,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         emailParam.setReqRefNum(appSubmissionDto.getLicenceNo());
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
         emailParam.setRefId(appSubmissionDto.getLicenceId());
+        emailParam.setReceiptEmails(emailList);
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER).getEntity();
         map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
@@ -1654,27 +1656,27 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         //email
         notificationHelper.sendNotification(emailParam);
         //msg
-        try {
-            String svcName=appSubmissionDto.getServiceName();
-            if(svcName==null){
-                LicenceDto licenceDto= licenceClient.getLicBylicNo(appSubmissionDto.getLicenceNo()).getEntity();
-                svcName=licenceDto.getSvcName();
-            }
-            List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(svcName)).getEntity();
-            List<String> svcCode=IaisCommonUtils.genNewArrayList();
-            svcCode.add(svcDto.get(0).getSvcCode());
-            emailParam.setSvcCodeList(svcCode);
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_MSG);
-            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-            emailParam.setRefId(appSubmissionDto.getLicenceId());
-            notificationHelper.sendNotification(emailParam);
-        }catch (Exception e){
-            log.info(e.getMessage(),e);
-        }
+//        try {
+//            String svcName=appSubmissionDto.getServiceName();
+//            if(svcName==null){
+//                LicenceDto licenceDto= licenceClient.getLicBylicNo(appSubmissionDto.getLicenceNo()).getEntity();
+//                svcName=licenceDto.getSvcName();
+//            }
+//            List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(svcName)).getEntity();
+//            List<String> svcCode=IaisCommonUtils.genNewArrayList();
+//            svcCode.add(svcDto.get(0).getSvcCode());
+//            emailParam.setSvcCodeList(svcCode);
+//            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_MSG);
+//            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+//            emailParam.setRefId(appSubmissionDto.getLicenceId());
+//            notificationHelper.sendNotification(emailParam);
+//        }catch (Exception e){
+//            log.info(e.getMessage(),e);
+//        }
         //sms
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS);
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
-        notificationHelper.sendNotification(emailParam);
+//        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS);
+//        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+//        notificationHelper.sendNotification(emailParam);
 
     }
 

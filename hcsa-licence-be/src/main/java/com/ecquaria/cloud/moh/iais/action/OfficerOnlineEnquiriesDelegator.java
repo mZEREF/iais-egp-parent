@@ -779,7 +779,7 @@ public class OfficerOnlineEnquiriesDelegator {
 
                 }
                 if(!StringUtil.isEmpty(uenNo)){
-                    
+                    licCount=10;
                     List<LicenseeDto> licenseeDtos= organizationClient.getLicenseeDtoByUen(uenNo).getEntity();
                     if(licenseeDtos!=null) {
                         for (LicenseeDto licensee:licenseeDtos
@@ -1404,7 +1404,7 @@ public class OfficerOnlineEnquiriesDelegator {
 
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("uen_no"))){
-
+                    licCount=10;
                     List<LicenseeDto> licenseeDtos= organizationClient.getLicenseeDtoByUen((String) parm.getFilters().get("uen_no")).getEntity();
                     if(licenseeDtos!=null) {
                         for (LicenseeDto licensee:licenseeDtos

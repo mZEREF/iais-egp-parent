@@ -246,6 +246,7 @@ public class RequestForInformationDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         errorMap=validate(request);
         if (!errorMap.isEmpty()) {
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
             //
@@ -467,7 +468,11 @@ public class RequestForInformationDelegator {
                 }
             }
         }
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(reqInfoId);
         if (!errorMap.isEmpty()) {
+            LicenceDto licenceDto=new LicenceDto();
+            licenceDto.setLicenceNo(licPremisesReqForInfoDto.getLicenceNo());
+            WebValidationHelper.saveAuditTrailForNoUseResult(licenceDto,errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
             //
@@ -482,7 +487,6 @@ public class RequestForInformationDelegator {
             calendar.add(Calendar.DATE,systemParamConfig.getRfiDueDate());
             dueDate =calendar.getTime();
         }
-        LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(reqInfoId);
         licPremisesReqForInfoDto.setDueDateSubmission(dueDate);
         licPremisesReqForInfoDto.setStatus(status);
         requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
@@ -555,7 +559,11 @@ public class RequestForInformationDelegator {
                 }
             }
         }
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(reqInfoId);
         if (!errorMap.isEmpty()) {
+            LicenceDto licenceDto=new LicenceDto();
+            licenceDto.setLicenceNo(licPremisesReqForInfoDto.getLicenceNo());
+            WebValidationHelper.saveAuditTrailForNoUseResult(licenceDto,errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
             //
@@ -570,7 +578,6 @@ public class RequestForInformationDelegator {
             calendar.add(Calendar.DATE,systemParamConfig.getRfiDueDate());
             dueDate =calendar.getTime();
         }
-        LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(reqInfoId);
         licPremisesReqForInfoDto.setDueDateSubmission(dueDate);
         licPremisesReqForInfoDto.setStatus(status);
         requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);

@@ -779,9 +779,10 @@ public class RequestForChangeDelegator {
             //RFC Application - Send notification to admin officers when amendment application is submitted.
             String orgId = loginContext.getOrgId();
             List<String> adminEmailList = requestForChangeService.getAdminEmail(orgId);
-            //sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),adminEmailList,notifyMap,templateDto.getTemplateName());
-            requestForChangeService.sendRfcEmailToOfficer(tranferSub);
-            requestForChangeService.sendRfcLicenseeEmail(tranferSub);
+//            sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),adminEmailList,notifyMap,templateDto.getTemplateName());
+            requestForChangeService.sendRfcLicenseeEmail(tranferSub,emailTransfor,transfor);
+            requestForChangeService.sendRfcLicenseeEmail(tranferSub,emailTransfee,transfee);
+            requestForChangeService.sendRfcEmailToOfficer(tranferSub,adminEmailList);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

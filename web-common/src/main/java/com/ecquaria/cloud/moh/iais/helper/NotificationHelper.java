@@ -231,6 +231,7 @@ public class NotificationHelper {
 		String reqRefNum = emailParam.getReqRefNum();
 		String refIdType = emailParam.getRefIdType();
 		String refId = emailParam.getRefId();
+		List<String> receiptEmails=emailParam.getReceiptEmails();
 		HashMap<String, String> subjectParams = emailParam.getSubjectParams();
 		JobRemindMsgTrackingDto jrDto = emailParam.getJobRemindMsgTrackingDto();
 		String subject = emailParam.getSubject();
@@ -362,6 +363,9 @@ public class NotificationHelper {
 							emailDto.setBccList(bccEmail);
 						}
 					}
+					if(receiptEmails.size()!=0){
+						emailDto.setReceipts(receiptEmails);
+					}
 					//replace num
 					mesContext = MessageTemplateUtil.replaceNum(mesContext);
 					emailDto.setContent(mesContext);
@@ -464,7 +468,11 @@ public class NotificationHelper {
 		} else {
 			String licenceId = appNo;
 			LicenceDto licenceDto = hcsaLicenceClient.getLicDtoByIdCommon(licenceId).getEntity();
-			licenseeId = licenceDto.getLicenseeId();
+			if(licenceDto!=null) {
+				licenseeId = licenceDto.getLicenseeId();
+			}else {
+				licenseeId=appNo;
+			}
 		}
 		InterMessageDto interMessageDto = new InterMessageDto();
 		interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
@@ -568,6 +576,10 @@ public class NotificationHelper {
 						String licenseeId = licenceDto.getLicenseeId();
 						if(!StringUtil.isEmpty(licenseeId)) {
 							mobile = getMobileLicensee(roles, licenseeId, mobile);
+						}
+					}else {
+						if(!StringUtil.isEmpty(refId)) {
+							mobile = getMobileLicensee(roles, refId, mobile);
 						}
 					}
 					mobile = getMobileOfficer(roles, mobile);
