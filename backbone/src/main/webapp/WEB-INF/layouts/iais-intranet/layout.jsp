@@ -62,7 +62,6 @@
 	  <jsp:include page="user-info.jsp" flush="true"/>
 		<jsp:include page="left-menu.jsp" />
 	</nav>
-	<div class="sidebar-profile-details">Banner Alert</div>
 	<layout:insertAttribute name="body" ignore="true" />
 </div>
 <br class="clear"/>
