@@ -300,9 +300,17 @@
               $(this).find('div.personnel-qualification').removeClass('hidden');
               $(this).find('div.personnel-regnNo ').addClass('hidden');
               $(this).find('div.personnel-wrkExpYear').removeClass('hidden');
+          }else {
+              $(this).find('div.personnel-sel').addClass('hidden');
+              $(this).find('div.new-svc-personnel-form').removeClass('hidden');
+              $(this).find('div.personnel-designation').addClass('hidden');
+              $(this).find('div.personnel-name').removeClass('hidden');
+              $(this).find('div.personnel-qualification').removeClass('hidden');
+              $(this).find('div.personnel-regnNo ').addClass('hidden');
+              $(this).find('div.personnel-wrkExpYear').removeClass('hidden');
           }
       });
-  }
+  };
 
   var personnelSel = function(){
       $('.personnelSel').change(function () {
@@ -411,6 +419,9 @@
       <c:when test="${'TSB'== currentSvcCode}">
       absencePsnSel('Tissue Banking p1');
       </c:when>
+      <c:otherwise>
+      absencePsnSel('other service');
+      </c:otherwise>
       </c:choose>
   }
 
@@ -480,7 +491,7 @@ var spRemove = function(){
     }
 
     function notLoadingSpl() {
-      let val = $("input[name='name']").val();
+      var val = $("input[name='regnNo']").val();
       if(val!=""){
         $("input[name='name']").prop('readonly', true);
         $("input[name='name']").css('border-color', '#ededed');

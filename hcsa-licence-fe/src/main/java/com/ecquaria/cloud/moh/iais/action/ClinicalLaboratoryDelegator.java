@@ -1777,6 +1777,23 @@ public class ClinicalLaboratoryDelegator {
                         errorMap.put("wrkExpYear" + i, "GENERAL_ERR0002");
                     }
                 }
+            }else if(!AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)||!AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)){
+                String name = appSvcPersonnelDtos.get(i).getName();
+                if (StringUtil.isEmpty(name)) {
+                    errorMap.put("name" + i, errName);
+                }
+                String quaification = appSvcPersonnelDtos.get(i).getQualification();
+                if (StringUtil.isEmpty(quaification)) {
+                    errorMap.put("qualification" + i, errQualification);
+                }
+                String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
+                if (StringUtil.isEmpty(wrkExpYear)) {
+                    errorMap.put("wrkExpYear" + i, errWrkExpYear);
+                } else {
+                    if (!wrkExpYear.matches("^[0-9]*$")) {
+                        errorMap.put("wrkExpYear" + i, "GENERAL_ERR0002");
+                    }
+                }
             } else {
                 String personnelSel = appSvcPersonnelDtos.get(i).getPersonnelType();
                 if (StringUtils.isEmpty(personnelSel)) {
@@ -1792,8 +1809,7 @@ public class ClinicalLaboratoryDelegator {
                     if (StringUtil.isEmpty(profRegNo)) {
                         errorMap.put("regnNo" + i, errRegnNo);
                     }
-                }
-                if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)) {
+                } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)) {
                     String name = appSvcPersonnelDtos.get(i).getName();
                     String designation = appSvcPersonnelDtos.get(i).getDesignation();
                     String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
@@ -1815,9 +1831,7 @@ public class ClinicalLaboratoryDelegator {
                     if (StringUtil.isEmpty(qualification)) {
                         errorMap.put("qualification" + i, errQualification);
                     }
-                }
-
-                if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)) {
+                } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)) {
                     String name = appSvcPersonnelDtos.get(i).getName();
                     String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
                     String quaification = appSvcPersonnelDtos.get(i).getQualification();
@@ -1834,8 +1848,7 @@ public class ClinicalLaboratoryDelegator {
                     if (StringUtil.isEmpty(quaification)) {
                         errorMap.put("qualification" + i, errQualification);
                     }
-                }
-                if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)) {
+                } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)) {
                     String name = appSvcPersonnelDtos.get(i).getName();
                     if (StringUtil.isEmpty(name)) {
                         errorMap.put("name" + i, errName);
@@ -2626,6 +2639,10 @@ public class ClinicalLaboratoryDelegator {
                     professionalRegnNo = professionalRegnNos[i];
                     wrkExpYear = wrkExpYears[i];
                 } else if (AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)) {
+                    name = names[i];
+                    qualification = qualifications[i];
+                    wrkExpYear = wrkExpYears[i];
+                }else {
                     name = names[i];
                     qualification = qualifications[i];
                     wrkExpYear = wrkExpYears[i];

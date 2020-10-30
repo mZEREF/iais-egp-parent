@@ -4304,7 +4304,7 @@ public class NewApplicationDelegator {
         doPO(hcsaSvcPersonnelDtos, errorMap, appSvcPrincipalOfficersDtoList, serviceId, sB);
         log.info(sB.toString());
         List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
-        doAppSvcPersonnelDtoList(hcsaSvcPersonnelDtos, errorMap, appSvcPersonnelDtoList, serviceId, sB);
+        doAppSvcPersonnelDtoList(hcsaSvcPersonnelDtos, errorMap, appSvcPersonnelDtoList, serviceId, sB,dto.getServiceCode());
         log.info(sB.toString());
         List<AppSvcDocDto> appSvcDocDtoLit = dto.getAppSvcDocDtoLit();
         doSvcDocument(errorMap, appSvcDocDtoLit, serviceId, sB,uploadFileLimit,sysFileType);
@@ -4369,7 +4369,7 @@ public class NewApplicationDelegator {
         }
     }
 
-    private static void doAppSvcPersonnelDtoList(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map map, List<AppSvcPersonnelDto> appSvcPersonnelDtos, String serviceId, StringBuilder sB) {
+    private static void doAppSvcPersonnelDtoList(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map map, List<AppSvcPersonnelDto> appSvcPersonnelDtos, String serviceId, StringBuilder sB,String svcCode) {
         if (appSvcPersonnelDtos == null) {
             if (hcsaSvcPersonnelDtos != null) {
                 for (HcsaSvcPersonnelDto every : hcsaSvcPersonnelDtos) {
@@ -4384,7 +4384,6 @@ public class NewApplicationDelegator {
             return;
         }
 
-
         boolean flag = false;
         String errName = MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field");
         String errDesignation = MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field");
@@ -4393,33 +4392,23 @@ public class NewApplicationDelegator {
         String errQualification = MessageUtil.replaceMessage("GENERAL_ERR0006","Qualification","field");
         String errSelSvcPsnel = MessageUtil.replaceMessage("GENERAL_ERR0006","Select Service Personnel","field");
         for (int i = 0; i < appSvcPersonnelDtos.size(); i++) {
-            String personnelSel = appSvcPersonnelDtos.get(i).getPersonnelType();
-            if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)) {
-                String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
-                String name = appSvcPersonnelDtos.get(i).getName();
-                if (StringUtil.isEmpty(name)) {
-                    map.put("name" + i, errName);
-                    flag = true;
-                }
-                if (StringUtil.isEmpty(profRegNo)) {
-                    map.put("regnNo" + i, errRegnNo);
-                    flag = true;
-                }
-            }
-            if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)) {
-                String name = appSvcPersonnelDtos.get(i).getName();
+            if (AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)) {
                 String designation = appSvcPersonnelDtos.get(i).getDesignation();
-                String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
-                String qualification = appSvcPersonnelDtos.get(i).getQualification();
-
-                if (StringUtil.isEmpty(name)) {
-                    map.put("name" + i, errName);
-                    flag = true;
-                }
                 if (StringUtil.isEmpty(designation)) {
                     map.put("designation" + i, errDesignation);
                     flag = true;
                 }
+                String name = appSvcPersonnelDtos.get(i).getName();
+                if (StringUtil.isEmpty(name)) {
+                    map.put("name" + i, errName);
+                    flag = true;
+                }
+                String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
+                if (StringUtil.isEmpty(profRegNo)) {
+                    map.put("regnNo" + i, errRegnNo);
+                    flag = true;
+                }
+                String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
                 if (StringUtil.isEmpty(wrkExpYear)) {
                     map.put("wrkExpYear" + i, errWrkExpYear);
                     flag = true;
@@ -4429,13 +4418,28 @@ public class NewApplicationDelegator {
                         flag = true;
                     }
                 }
-                if (StringUtil.isEmpty(qualification)) {
+            } else if (AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)) {
+                String name = appSvcPersonnelDtos.get(i).getName();
+                if (StringUtil.isEmpty(name)) {
+                    map.put("name" + i, errName);
+                    flag = true;
+                }
+                String quaification = appSvcPersonnelDtos.get(i).getQualification();
+                if (StringUtil.isEmpty(quaification)) {
                     map.put("qualification" + i, errQualification);
                     flag = true;
                 }
-            }
-
-            if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)) {
+                String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
+                if (StringUtil.isEmpty(wrkExpYear)) {
+                    map.put("wrkExpYear" + i, errWrkExpYear);
+                    flag = true;
+                } else {
+                    if (!wrkExpYear.matches("^[0-9]*$")) {
+                        map.put("wrkExpYear" + i, "GENERAL_ERR0002");
+                        flag = true;
+                    }
+                }
+            }else if(!AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)||!AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)){
                 String name = appSvcPersonnelDtos.get(i).getName();
                 String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
                 String quaification = appSvcPersonnelDtos.get(i).getQualification();
@@ -4456,14 +4460,76 @@ public class NewApplicationDelegator {
                     map.put("quaification" + i, errQualification);
                     flag = true;
                 }
-            }
-            if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)) {
-                String name = appSvcPersonnelDtos.get(i).getName();
-                if (StringUtil.isEmpty(name)) {
-                    map.put("name" + i, errName);
-                    flag = true;
+            } else {
+                String personnelSel = appSvcPersonnelDtos.get(i).getPersonnelType();
+                if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)) {
+                    String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
+                    String name = appSvcPersonnelDtos.get(i).getName();
+                    if (StringUtil.isEmpty(name)) {
+                        map.put("name" + i, errName);
+                        flag = true;
+                    }
+                    if (StringUtil.isEmpty(profRegNo)) {
+                        map.put("regnNo" + i, errRegnNo);
+                        flag = true;
+                    }
+                } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)) {
+                    String name = appSvcPersonnelDtos.get(i).getName();
+                    String designation = appSvcPersonnelDtos.get(i).getDesignation();
+                    String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
+                    String qualification = appSvcPersonnelDtos.get(i).getQualification();
+
+                    if (StringUtil.isEmpty(name)) {
+                        map.put("name" + i, errName);
+                        flag = true;
+                    }
+                    if (StringUtil.isEmpty(designation)) {
+                        map.put("designation" + i, errDesignation);
+                        flag = true;
+                    }
+                    if (StringUtil.isEmpty(wrkExpYear)) {
+                        map.put("wrkExpYear" + i, errWrkExpYear);
+                        flag = true;
+                    } else {
+                        if (!wrkExpYear.matches("^[0-9]*$")) {
+                            map.put("wrkExpYear" + i, "GENERAL_ERR0002");
+                            flag = true;
+                        }
+                    }
+                    if (StringUtil.isEmpty(qualification)) {
+                        map.put("qualification" + i, errQualification);
+                        flag = true;
+                    }
+                } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)) {
+                    String name = appSvcPersonnelDtos.get(i).getName();
+                    String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
+                    String quaification = appSvcPersonnelDtos.get(i).getQualification();
+                    if (StringUtil.isEmpty(name)) {
+                        map.put("name" + i, errName);
+                        flag = true;
+                    }
+                    if (StringUtil.isEmpty(wrkExpYear)) {
+                        map.put("wrkExpYear" + i, errWrkExpYear);
+                        flag = true;
+                    } else {
+                        if (!wrkExpYear.matches("^[0-9]*$")) {
+                            map.put("wrkExpYear" + i, "GENERAL_ERR0002");
+                            flag = true;
+                        }
+                    }
+                    if (StringUtil.isEmpty(quaification)) {
+                        map.put("quaification" + i, errQualification);
+                        flag = true;
+                    }
+                } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)) {
+                    String name = appSvcPersonnelDtos.get(i).getName();
+                    if (StringUtil.isEmpty(name)) {
+                        map.put("name" + i, errName);
+                        flag = true;
+                    }
                 }
             }
+
             if (flag) {
                 sB.append(serviceId);
             }
