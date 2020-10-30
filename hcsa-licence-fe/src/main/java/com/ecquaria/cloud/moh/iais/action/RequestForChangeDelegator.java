@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -28,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -772,17 +774,16 @@ public class RequestForChangeDelegator {
             Map<String,Object> notifyMap = IaisCommonUtils.genNewHashMap();
             notifyMap.put("licensee",licenseeDto.getName());
             notifyMap.put("licence",licenceDto.getLicenceNo() + " " + licenceDto.getSvcName());
+            MsgTemplateDto templateDto = appSubmissionService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_TRANSFER_APPLICATION);
 
-            //sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),emailTransfor,notifyMap,templateDto.getTemplateName());
+            sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),emailTransfor,notifyMap,templateDto.getTemplateName());
             // Send notification to transferee when licence transfer application is submitted.
-            //sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),emailTransfee,notifyMap,templateDto.getTemplateName());
+            sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),emailTransfee,notifyMap,templateDto.getTemplateName());
             //RFC Application - Send notification to admin officers when amendment application is submitted.
+
             String orgId = loginContext.getOrgId();
             List<String> adminEmailList = requestForChangeService.getAdminEmail(orgId);
-//            sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),adminEmailList,notifyMap,templateDto.getTemplateName());
-            requestForChangeService.sendRfcLicenseeEmail(tranferSub,emailTransfor,transfor);
-            requestForChangeService.sendRfcLicenseeEmail(tranferSub,emailTransfee,transfee);
-            requestForChangeService.sendRfcEmailToOfficer(tranferSub,adminEmailList);
+            sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),adminEmailList,notifyMap,templateDto.getTemplateName());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
