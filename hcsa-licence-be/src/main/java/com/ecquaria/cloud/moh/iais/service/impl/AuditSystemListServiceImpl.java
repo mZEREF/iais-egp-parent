@@ -171,7 +171,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     }
 
     private   List<OrgUserDto> getOrgDtos( String workGroupId){
-        return organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+        return organizationClient. getUsersByWorkGroupNameNotAvailable(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
     }
     private Map<String,String> getAllWorkGrpIds(List<AuditTaskDataFillterDto> auditTaskDataDtos){
         List<String> svcNames = new ArrayList<>(auditTaskDataDtos.size());

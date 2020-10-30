@@ -66,6 +66,9 @@ public interface OrganizationClient {
     @GetMapping(path = "/iais-workgroup/orguseraccount/{workGroupId}/{status}", produces = { MediaType.APPLICATION_JSON_VALUE })
     FeignResponseEntity<List<OrgUserDto>> getUsersByWorkGroupName(@PathVariable(value = "workGroupId") String workGroupId, @PathVariable(name = "status") String status);
 
+    @GetMapping(path = "/iais-workgroup/orguseraccountnotvailable/{workGroupId}/{status}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    FeignResponseEntity<List<OrgUserDto>>  getUsersByWorkGroupNameNotAvailable(@PathVariable(value = "workGroupId") String workGroupId, @PathVariable(name = "status") String status);
+
     @GetMapping(path = "/iais-task/{taskId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<TaskDto> getTaskById(@PathVariable(name="taskId") String taskId);
 
