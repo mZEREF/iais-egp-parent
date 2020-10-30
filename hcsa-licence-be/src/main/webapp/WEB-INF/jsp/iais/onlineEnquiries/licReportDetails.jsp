@@ -866,16 +866,18 @@
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
-                                                    <tr id="engageRemarks" >
-                                                        <td class="col-xs-4">
-                                                            <p>&nbsp;Enforcement Remarks </p>
-                                                        </td>
-                                                        <td class="col-xs-4">
-                                                            <c:out value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/>
-                                                            <c:if test="${empty appPremisesRecommendationDto.engageEnforcementRemarks}">-</c:if>
-                                                        </td>
-                                                        <td class="col-xs-4"></td>
-                                                    </tr>
+                                                    <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">
+                                                        <tr id="engageRemarks" >
+                                                            <td class="col-xs-4">
+                                                                <p>&nbsp;Enforcement Remarks </p>
+                                                            </td>
+                                                            <td class="col-xs-4">
+                                                                <c:out value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/>
+                                                                <c:if test="${empty appPremisesRecommendationDto.engageEnforcementRemarks}">-</c:if>
+                                                            </td>
+                                                            <td class="col-xs-4"></td>
+                                                        </tr>
+                                                    </c:if>
                                                 </table>
                                             </div>
                                         </div>
