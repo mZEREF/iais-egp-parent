@@ -2,8 +2,10 @@ package com.ecquaria.cloud.moh.iais.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.entity.MessageCode;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.http.HttpHeaders;
 
 /**
@@ -13,6 +15,7 @@ import org.springframework.http.HttpHeaders;
  * @date 2019/11/25 14:23
  */
 public class ErrorMsgClientFallback implements ErrorMsgClient{
+    @Override
     public FeignResponseEntity<SearchResult<MessageCode>> retrieveErrorMsgs(SearchParam param){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -22,6 +25,14 @@ public class ErrorMsgClientFallback implements ErrorMsgClient{
 
     @Override
     public FeignResponseEntity<String> getValueByPropertiesKey(String propertiesKey) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<MsgTemplateDto>> getAlertMsgTemplate() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
