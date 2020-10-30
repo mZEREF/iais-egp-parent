@@ -673,9 +673,11 @@ public class MohIntranetUserDelegator {
                 }
             }
             //new
-            intranetUserService.createIntranetUsers(orgUserDtosNew);
-            for (OrgUserDto orgUserDto : orgUserDtosNew) {
-                saveEgpUser(orgUserDto);
+            if(!IaisCommonUtils.isEmpty(orgUserDtosNew)){
+                intranetUserService.createIntranetUsers(orgUserDtosNew);
+                for (OrgUserDto orgUserDto : orgUserDtosNew) {
+                    saveEgpUser(orgUserDto);
+                }
             }
             //update
             if (!IaisCommonUtils.isEmpty(orgUserDtosOld)) {
