@@ -177,7 +177,7 @@ public class HcsaChklConfigDelegator {
         String sectionDesc = ParamUtil.getString(request, "sectionDesc");
 
         if(StringUtils.isEmpty(section) || StringUtils.isEmpty(sectionDesc)){
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("sectionName", "ERR0009"));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("sectionName", "GENERAL_ERR0006"));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
