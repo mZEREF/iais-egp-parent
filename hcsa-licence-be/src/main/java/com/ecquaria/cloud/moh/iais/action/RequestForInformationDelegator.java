@@ -206,7 +206,7 @@ public class RequestForInformationDelegator {
         newRfiPageListDto.setDate(date);
         if(date==null){
             Calendar calendar=Calendar.getInstance();
-            calendar.add(Calendar.DATE, 7);
+            calendar.add(Calendar.DATE, systemParamConfig.getRfiDueDate());
             String dueDay=new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(calendar.getTime());
             newRfiPageListDto.setDate(dueDay);
         }
@@ -479,7 +479,7 @@ public class RequestForInformationDelegator {
             dueDate=Formatter.parseDate(date);
         }
         else {
-            calendar.add(Calendar.DATE,7);
+            calendar.add(Calendar.DATE,systemParamConfig.getRfiDueDate());
             dueDate =calendar.getTime();
         }
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(reqInfoId);
@@ -567,7 +567,7 @@ public class RequestForInformationDelegator {
             dueDate=Formatter.parseDate(date);
         }
         else {
-            calendar.add(Calendar.DATE,7);
+            calendar.add(Calendar.DATE,systemParamConfig.getRfiDueDate());
             dueDate =calendar.getTime();
         }
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(reqInfoId);
