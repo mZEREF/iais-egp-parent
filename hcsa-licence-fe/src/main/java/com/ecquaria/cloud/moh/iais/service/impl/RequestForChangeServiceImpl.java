@@ -757,7 +757,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             floorUnitList.add(appGrpPremisesDtoList.get(i).getFloorNo() + appGrpPremisesDtoList.get(i).getUnitNo());
                         }
 
-                        checkOperaionUnit(operationalUnitDtos,errorMap,"opFloorNo","opUnitNo",floorUnitList,"floorUnit");
+                        checkOperaionUnit(operationalUnitDtos,errorMap,"opFloorNo"+i,"opUnitNo"+i,floorUnitList,"floorUnit"+i);
 
                         String postalCode = appGrpPremisesDtoList.get(i).getPostalCode();
                         if (!StringUtil.isEmpty(postalCode)) {
@@ -1018,7 +1018,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             floorUnitList.add(appGrpPremisesDtoList.get(i).getConveyanceFloorNo() + appGrpPremisesDtoList.get(i).getConveyanceUnitNo());
                         }
 
-                        checkOperaionUnit(operationalUnitDtos,errorMap,"opConvFloorNo","opConvUnitNo",floorUnitList,"ConvFloorUnit");
+                        checkOperaionUnit(operationalUnitDtos,errorMap,"opConvFloorNo"+i,"opConvUnitNo"+i,floorUnitList,"ConvFloorUnit"+i);
 
                         String conveyancePostalCode = appGrpPremisesDtoList.get(i).getConveyancePostalCode();
                         if (StringUtil.isEmpty(conveyancePostalCode)) {
@@ -1131,7 +1131,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             floorUnitList.add(appGrpPremisesDtoList.get(i).getOffSiteFloorNo() + appGrpPremisesDtoList.get(i).getOffSiteUnitNo());
                         }
 
-                        checkOperaionUnit(operationalUnitDtos,errorMap,"opOffFloorNo","opOffUnitNo",floorUnitList,"offFloorUnit");
+                        checkOperaionUnit(operationalUnitDtos,errorMap,"opOffFloorNo"+i,"opOffUnitNo"+i,floorUnitList,"offFloorUnit"+i);
 
                         String offSitePostalCode = appGrpPremisesDtoList.get(i).getOffSitePostalCode();
                         if (!StringUtil.isEmpty(offSitePostalCode)) {
