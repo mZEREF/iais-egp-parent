@@ -65,7 +65,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             }
         }
         auditVad( request,errMap);
-        WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
+        WebValidationHelper.saveAuditTrailForNoUseResult(applicationViewDto.getApplicationDto(),errMap);
         return errMap;
     }
 
