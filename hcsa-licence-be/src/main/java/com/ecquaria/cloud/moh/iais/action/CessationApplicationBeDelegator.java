@@ -83,7 +83,6 @@ public class CessationApplicationBeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "specLicInfo", null);
         ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag",null);
         ParamUtil.setSessionAttr(bpc.request, "isGrpLic",null);
-        ParamUtil.setSessionAttr(bpc.request, "licIds", null);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -120,7 +119,6 @@ public class CessationApplicationBeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "size", size);
         ParamUtil.setSessionAttr(bpc.request, READINFO, null);
         ParamUtil.setSessionAttr(bpc.request, "isGrpLic",isGrpLicence);
-        ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable)licIds);
     }
 
     public void prepareData(BaseProcessClass bpc) {

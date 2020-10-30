@@ -426,6 +426,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE_MSG);
                     emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     emailParam.setRefId(licId);
+                    notificationHelper.sendNotification(emailParam);
                 } else {
                     Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                     LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();

@@ -102,7 +102,6 @@ public class CessationApplicationFeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "rfiPremiseId", null);
         ParamUtil.setSessionAttr(bpc.request, "rfiAppId", rfiAppId);
         ParamUtil.setSessionAttr(bpc.request, "rfiPremiseId", rfiPremiseId);
-        ParamUtil.setSessionAttr(bpc.request, "licIds", null);
         ParamUtil.setSessionAttr(bpc.request, "isGrpLic",null);
     }
 
