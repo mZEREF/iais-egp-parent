@@ -837,6 +837,9 @@ public class MasterCodeDelegator {
             //inactive all
             List<MasterCodeDto> masterCodeDtos = masterCodeService.inactiveMsterCode(masterCodeDto.getMasterCodeKey());
             syncMasterCodeList.addAll(masterCodeDtos);
+            String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
+            masterCodeDto.setCodeCategory(codeCategory);
+            masterCodeService.updateMasterCode(masterCodeDto);
         }else{
             //update old
             LocalDate oldFromDate = transferLocalDate(oldMasterCodeDto.getEffectiveFrom());
@@ -908,7 +911,7 @@ public class MasterCodeDelegator {
         masterCodeDto.setCodeDescription(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_DESCRIPTION_ED));
         masterCodeDto.setStatus(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_STATUS_ED));
         masterCodeDto.setRemarks(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_REMARKS_ED));
-        masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_ED)) ? null : ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_ED));
+        masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_ED)) ? null : ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_ED) * 1000);
         masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_FROM_ED)));
         masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_TO_ED)));
         masterCodeDto.setIsEditable(0);
@@ -923,7 +926,7 @@ public class MasterCodeDelegator {
         masterCodeDto.setFilterValue(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_FILTER_VALUE_CMC));
         masterCodeDto.setStatus(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_STATUS_CMC));
         masterCodeDto.setRemarks(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_REMARKS_CMC));
-        masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC)) ? null : ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC));
+        masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC)) ? null : ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC) * 1000);
         masterCodeDto.setVersion(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_CMC)) ? null : Float.parseFloat(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_CMC)));
         masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_FROM_CMC)));
         masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_TO_CMC)));
@@ -938,7 +941,7 @@ public class MasterCodeDelegator {
         masterCodeDto.setCodeDescription(ParamUtil.getString(request, "codeCategoryDescription"));
         masterCodeDto.setStatus(ParamUtil.getString(request, "codeCategoryStatus"));
         masterCodeDto.setRemarks(ParamUtil.getString(request, "codeCategoryRemarks"));
-        masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, "codeCategorySequence")) ? null : ParamUtil.getInt(request, "codeCategorySequence"));
+        masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, "codeCategorySequence")) ? null : ParamUtil.getInt(request, "codeCategorySequence") * 1000);
         masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, "categoryEsd")));
         masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, "categoryEed")));
         masterCodeDto.setIsEditable(0);

@@ -19,7 +19,7 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <th style="padding-bottom: 16px;">SN</th>
+                                <th style="padding-bottom: 18px;">SN</th>
                                 <iais:sortableHeader needSort="true" field="code_category" value="Master Code Category" style="width:15%" />
                                 <iais:sortableHeader needSort="true" field="code_value" value="Code Value" style="width:10%"/>
                                 <iais:sortableHeader needSort="true" field="code_category" value="Code Description" style="width:10%"/>
@@ -29,7 +29,7 @@
                                 <iais:sortableHeader needSort="true" field="effective_from" value="Effective Start Date"  style="width:13%"/>
                                 <iais:sortableHeader needSort="true" field="effective_to" value="Effective End Date"  style="width:13%"/>
                                 <iais:sortableHeader needSort="true" field="status" value="Status" style="width:6%"/>
-                                <th style="padding-bottom: 16px;">Action</th>
+                                <th style="padding-bottom: 18px;">Action</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -66,7 +66,7 @@
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Sequence</p>
-                                                <p>${masterCodeResult.sequence}</p>
+                                                <p><fmt:formatNumber type="number" value="${masterCodeResult.sequence  / 1000}" maxFractionDigits="2" pattern="0"/></p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Version</p>
