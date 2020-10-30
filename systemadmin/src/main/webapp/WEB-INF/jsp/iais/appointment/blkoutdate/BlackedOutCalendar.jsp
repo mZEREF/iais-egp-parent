@@ -100,13 +100,13 @@
                   <table class="table">
                     <thead>
                     <tr>
-                      <iais:sortableHeader needSort="false"   style="padding-bottom:15px" field="index" value="No."></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false"   style="padding-bottom:15px" field="year" value="Year"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"    field="index" value="No."></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"    field="year" value="Year"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="START_DATE" value="Blacked Out Date Start"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="END_DATE" value="Blacked Out Date End"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="[DESC]" value="Blacked Out Date Description"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false"   style="padding-bottom:15px" field="status" value="Status"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false"   style="padding-bottom:15px" field="action" value="Action"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"    field="status" value="Status"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"    field="action" value="Action"></iais:sortableHeader>
                     </tr>
                     </thead>
                     <tbody>

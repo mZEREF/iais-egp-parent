@@ -101,7 +101,7 @@
           <table class="table">
             <thead>
             <tr>
-              <iais:sortableHeader needSort="false" style="width:1%; padding-bottom:15px" field="" value="No."></iais:sortableHeader>
+              <iais:sortableHeader needSort="false" style="width:1%; " field="" value="No."></iais:sortableHeader>
               <td></td>
               <iais:sortableHeader  style="width:8%" needSort="true"   field="is_common" value="Common"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="type" value="Type"></iais:sortableHeader>
@@ -111,7 +111,7 @@
               <iais:sortableHeader  style="width:8%" needSort="true"   field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
               <iais:sortableHeader  needSort="true"   field="START_DATE" value="Effective Start Date"></iais:sortableHeader>
               <iais:sortableHeader  needSort="true"   field="END_DATE" value="Effective End Date"></iais:sortableHeader>
-              <iais:sortableHeader  needSort="false"  style="width:10%; padding-bottom:15px"  field="action" value="Action"></iais:sortableHeader>
+              <iais:sortableHeader  needSort="false"  style="width:10%; "  field="action" value="Action"></iais:sortableHeader>
 
             </tr>
             </thead>

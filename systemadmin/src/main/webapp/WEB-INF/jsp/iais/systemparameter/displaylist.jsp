@@ -93,14 +93,14 @@
                                     <table class="table">
                                         <thead>
                                         <tr>
-                                            <iais:sortableHeader needSort="false" style="width:5%; padding-bottom:15px" field="" value="No."></iais:sortableHeader>
-                                            <iais:sortableHeader needSort="true"  style="width:15%" field="domain_type" value="System Parameter Type"></iais:sortableHeader>
+                                            <iais:sortableHeader needSort="false" style="width:5%; " field="" value="No."></iais:sortableHeader>
+                                            <iais:sortableHeader needSort="true"  style="width:18%" field="domain_type" value="System Parameter Type"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true" style="width:10%"  field="module" value="Module"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true" style="width:30%"  field="description" value="Parameter Description"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true" style="width:10%"  field="param_type" value="Type of Value"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true" style="width:10%"  field="value" value="Value"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true" style="width:10%"  field="status" value="Status"></iais:sortableHeader>
-                                            <iais:sortableHeader needSort="false" style="width:10%; padding-bottom:15px"  field="action" value="Action"></iais:sortableHeader>
+                                            <iais:sortableHeader needSort="false" style="width:10%; "  field="action" value="Action"></iais:sortableHeader>
                                         </tr>
                                         </thead>
                                         <tbody style="text-align: left">
