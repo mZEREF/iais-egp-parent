@@ -5,10 +5,9 @@ import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
@@ -16,8 +15,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -29,9 +28,11 @@ import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.KpiAndReminderService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
+import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,9 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
 
     @Autowired
     MsgTemplateClient msgTemplateClient;
+
+    @Autowired
+    private IaisSystemClient iaisSystemClient;
 
     @Autowired
     ApplicationService applicationService;
@@ -144,66 +148,77 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                         log.info(StringUtil.changeForLog("systemParamConfig.getUnprocessedSystemAdmin():" +systemParamConfig.getUnprocessedSystemAdmin()));
 
                         if(days == remThreshold && remThreshold > 0){
-                            //judge is email sent
-                            JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(item.getId(),"unprocess officer").getEntity();
-                            if(jobRemindMsgTrackingDto == null){
-                                //send email to officer
+                            log.info(StringUtil.changeForLog("send email to officer:"));
                                 List<String> email = IaisCommonUtils.genNewArrayList();
                                 email.add(item.getUserEmail());
-                                sendEmail(item,applicationDto,email);
+                                String subject = StringUtil.changeForLog("Reminder for "+applicationDto.getApplicationNo()+" processing");
+                                MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_UNPROCESSED_TASK_1).getEntity();
+                                Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
+                                templateContent.put("officer", item.getUserName());
+                                templateContent.put("applicationNo", applicationDto.getApplicationNo());
+                                String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
+
+                                sendEmail(item,applicationDto,email,subject,mesContext);
                                 //record email sent
-                                JobRemindMsgTrackingDto createjob = new JobRemindMsgTrackingDto();
-                                List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
-                                createjob.setMsgKey("unprocess officer");
-                                createjob.setRefNo(item.getId());
-                                createjob.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                                list.add(createjob);
-                                systemBeLicClient.createJobRemindMsgTrackingDtos(list);
-                            }
+//                                JobRemindMsgTrackingDto createjob = new JobRemindMsgTrackingDto();
+//                                List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
+//                                createjob.setMsgKey("unprocess officer");
+//                                createjob.setRefNo(item.getId());
+//                                createjob.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+//                                list.add(createjob);
+//                                systemBeLicClient.createJobRemindMsgTrackingDtos(list);
                         }else if(days == (kpi + 1) && kpi > 0){
-                            //judge is email sent
-                            JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(item.getId(),"unprocess leader").getEntity();
-                            if(jobRemindMsgTrackingDto == null){
-                                //send email to leader and admin
+                            log.info(StringUtil.changeForLog("send email to leader:"));
                                 List<String> email = IaisCommonUtils.genNewArrayList();
                                 email.add(item.getLeaderEmailAddr());
-                                sendEmail(item,applicationDto,email);
+                                String subject = StringUtil.changeForLog("Reminder for "+applicationDto.getApplicationNo()+" processing for "+item.getUserName());
+                                MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_UNPROCESSED_TASK_2).getEntity();
+                                Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
+                                templateContent.put("officer", item.getUserName());
+                                templateContent.put("supervisor", item.getLeaderName());
+                                templateContent.put("applicationNo", applicationDto.getApplicationNo());
+                                String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
+
+                                sendEmail(item,applicationDto,email,subject,mesContext);
                                 //record email sent
-                                JobRemindMsgTrackingDto createjob = new JobRemindMsgTrackingDto();
-                                List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
-                                createjob.setMsgKey("unprocess leader");
-                                createjob.setRefNo(item.getId());
-                                createjob.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                                list.add(createjob);
-                                systemBeLicClient.createJobRemindMsgTrackingDtos(list);
-                            }
+//                                JobRemindMsgTrackingDto createjob = new JobRemindMsgTrackingDto();
+//                                List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
+//                                createjob.setMsgKey("unprocess leader");
+//                                createjob.setRefNo(item.getId());
+//                                createjob.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+//                                list.add(createjob);
+//                                systemBeLicClient.createJobRemindMsgTrackingDtos(list);
                         }else if(days == sysday){
-                            //judge is email sent
-                            JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(item.getId(),"unprocess leader").getEntity();
-                            if(jobRemindMsgTrackingDto == null){
-                                //send email to leader and admin
+                            log.info(StringUtil.changeForLog("send email to admin:"));
                                 List<String> email = IaisCommonUtils.genNewArrayList();
                                 List<OrgUserDto> systemAdmin = organizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
                                 if(!IaisCommonUtils.isEmpty(systemAdmin)){
                                     for (OrgUserDto orgUserDto:systemAdmin
                                          ) {
                                         email.add(orgUserDto.getEmail());
+                                        String subject = StringUtil.changeForLog("Reminder for "+applicationDto.getApplicationNo()+" processing for "+item.getLeaderName());
+                                        MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_UNPROCESSED_TASK_3).getEntity();
+                                        Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
+                                        templateContent.put("systemAdmin", orgUserDto.getDisplayName());
+                                        templateContent.put("officer", item.getUserName());
+                                        templateContent.put("applicationNo", applicationDto.getApplicationNo());
+                                        templateContent.put("days", systemParamConfig.getUnprocessedSystemAdmin());
+                                        String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
+                                        sendEmail(item,applicationDto,email,subject,mesContext);
                                     }
-                                    sendEmail(item,applicationDto,email);
                                     //record email sent
-                                    JobRemindMsgTrackingDto createjob = new JobRemindMsgTrackingDto();
-                                    List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
-                                    createjob.setMsgKey("unprocess SystemAdmin");
-                                    createjob.setRefNo(item.getId());
-                                    createjob.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                                    list.add(createjob);
-                                    systemBeLicClient.createJobRemindMsgTrackingDtos(list);
+//                                    JobRemindMsgTrackingDto createjob = new JobRemindMsgTrackingDto();
+//                                    List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
+//                                    createjob.setMsgKey("unprocess SystemAdmin");
+//                                    createjob.setRefNo(item.getId());
+//                                    createjob.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+//                                    list.add(createjob);
+//                                    systemBeLicClient.createJobRemindMsgTrackingDtos(list);
                                 }
 
-                            }
                         }
-
                     }
+
                 }catch (Exception e){
                     JobLogger.log(e);
                     log.error(e.getMessage(), e);
@@ -219,22 +234,23 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
 
     }
 
-    private void sendEmail(TaskEmailDto item, ApplicationDto application,List<String> emailAddr){
+    private void sendEmail(TaskEmailDto item, ApplicationDto application,List<String> emailAddr,String subject,String content){
         EmailDto email = new EmailDto();
-        switch (application.getApplicationType()){
-            case ApplicationConsts.APPLICATION_TYPE_APPEAL:
-                email.setSubject("Appeal Unprocessed Task Notification");
-                break;
-            case ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE:
-                email.setSubject("RFC Unprocessed Task Notification");
-                break;
-            default:
-                email.setSubject("Unprocessed Task Notification");
-                break;
-
-        }
+//        switch (application.getApplicationType()){
+//            case ApplicationConsts.APPLICATION_TYPE_APPEAL:
+//                email.setSubject("Appeal Unprocessed Task Notification");
+//                break;
+//            case ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE:
+//                email.setSubject("RFC Unprocessed Task Notification");
+//                break;
+//            default:
+//                email.setSubject("Unprocessed Task Notification");
+//                break;
+//
+//        }
+        email.setSubject(subject);
         email.setReqRefNum(item.getId());
-        email.setContent(application.getApplicationNo());
+        email.setContent(content);
         email.setSender(mailSender);
         email.setClientQueryCode(item.getId());
         email.setReceipts(emailAddr);
