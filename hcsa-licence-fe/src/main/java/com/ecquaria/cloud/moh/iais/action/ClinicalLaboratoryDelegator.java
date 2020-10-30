@@ -2687,12 +2687,18 @@ public class ClinicalLaboratoryDelegator {
     public static List<SelectOption> genPersonnelDesignSel(String currentSvcCod) {
         List<SelectOption> designation = IaisCommonUtils.genNewArrayList();
         List<SelectOption> commonDes = IaisCommonUtils.genNewArrayList();
-        commonDes.add(new SelectOption(MasterCodeUtil.getCodeDesc("DES005"),MasterCodeUtil.getCodeDesc("DES005")));
-        commonDes.add(new SelectOption(MasterCodeUtil.getCodeDesc("DES006"),MasterCodeUtil.getCodeDesc("DES006")));
-        commonDes.add(new SelectOption(MasterCodeUtil.getCodeDesc("DES007"),MasterCodeUtil.getCodeDesc("DES007")));
-        commonDes.add(new SelectOption(MasterCodeUtil.getCodeDesc("DES008"),MasterCodeUtil.getCodeDesc("DES008")));
-        commonDes.add(new SelectOption(MasterCodeUtil.getCodeDesc("DES009"),MasterCodeUtil.getCodeDesc("DES009")));
-        commonDes.add(new SelectOption(MasterCodeUtil.getCodeDesc("DES010"),MasterCodeUtil.getCodeDesc("DES010")));
+        String des005 = MasterCodeUtil.getCodeDesc("DES005");
+        String des006 = MasterCodeUtil.getCodeDesc("DES006");
+        String des007 = MasterCodeUtil.getCodeDesc("DES007");
+        String des008 = MasterCodeUtil.getCodeDesc("DES008");
+        String des009 = MasterCodeUtil.getCodeDesc("DES009");
+        String des010 = MasterCodeUtil.getCodeDesc("DES010");
+        commonDes.add(new SelectOption(des005,des005));
+        commonDes.add(new SelectOption(des006,des006));
+        commonDes.add(new SelectOption(des007,des007));
+        commonDes.add(new SelectOption(des008,des008));
+        commonDes.add(new SelectOption(des009,des009));
+        commonDes.add(new SelectOption(des010,des010));
         if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)) {
             SelectOption designationOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_DIAGNOSTIC_RADIOGRAPHER, ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_DIAGNOSTIC_RADIOGRAPHER);
             SelectOption designationOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_RADIATION_THERAPIST, ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_RADIATION_THERAPIST);
