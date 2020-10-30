@@ -811,7 +811,7 @@ public class MohIntranetUserDelegator {
                 }
             }
         } else {
-            errorMap.put("userId", "ERR0009");
+            errorMap.put("userId", MessageUtil.replaceMessage("GENERAL_ERR0006", "User ID","field"));
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);

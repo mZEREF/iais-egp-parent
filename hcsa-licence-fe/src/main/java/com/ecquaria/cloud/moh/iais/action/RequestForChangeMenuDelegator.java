@@ -684,6 +684,7 @@ public class RequestForChangeMenuDelegator {
                 }
             }
         }
+        PersonnelListDto oldPersonnelDto = getOldPersonnelDto(personnelEditDto);
         String replaceName = ParamUtil.getString(bpc.request, "replaceName");
         if (StringUtil.isEmpty(replaceName)) {
             ParamUtil.setRequestAttr(bpc.request, "replaceName", replaceName);
@@ -700,11 +701,33 @@ public class RequestForChangeMenuDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request, "psnTypes", psnTypes);
         ParamUtil.setSessionAttr(bpc.request, "personnelEditDto", personnelEditDto);
+        ParamUtil.setSessionAttr(bpc.request, "oldPersonnelDto", oldPersonnelDto);
         log.debug(StringUtil.changeForLog("the do doPersonnelList end ...."));
         List<SelectOption> idTypeSelectList = NewApplicationHelper.getIdTypeSelOp();
         ParamUtil.setRequestAttr(bpc.request, ClinicalLaboratoryDelegator.DROPWOWN_IDTYPESELECT, idTypeSelectList);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Personnel Amendment");
         log.debug(StringUtil.changeForLog("the do preparePersonnelEdit end ...."));
+    }
+
+    private PersonnelListDto getOldPersonnelDto(PersonnelListDto personnelListDto){
+        PersonnelListDto oldDto = new PersonnelListDto();
+        String idNo = personnelListDto.getIdNo();
+        String idType = personnelListDto.getIdType();
+        String salutation = personnelListDto.getSalutation();
+        String psnName = personnelListDto.getPsnName();
+        String designation = personnelListDto.getDesignation();
+        String mobileNo = personnelListDto.getMobileNo();
+        String officeTelNo = personnelListDto.getOfficeTelNo();
+        String emailAddr = personnelListDto.getEmailAddr();
+        oldDto.setIdNo(idNo);
+        oldDto.setIdType(idType);
+        oldDto.setPsnName(psnName);
+        oldDto.setSalutation(salutation);
+        oldDto.setDesignation(designation);
+        oldDto.setOfficeTelNo(officeTelNo);
+        oldDto.setMobileNo(mobileNo);
+        oldDto.setEmailAddr(emailAddr);
+        return oldDto ;
     }
 
     public void doPersonnelEdit(BaseProcessClass bpc) throws CloneNotSupportedException {
@@ -715,6 +738,7 @@ public class RequestForChangeMenuDelegator {
             return;
         }
         PersonnelListDto personnelEditDto = (PersonnelListDto) ParamUtil.getSessionAttr(bpc.request, "personnelEditDto");
+        PersonnelListDto oldPersonnelDto = (PersonnelListDto) ParamUtil.getSessionAttr(bpc.request, "oldPersonnelDto");
         PersonnelListDto newPerson = new PersonnelListDto();
         Map<String, String> errMap = valiant(bpc, personnelEditDto, newPerson);
         if (!errMap.isEmpty()) {
@@ -722,6 +746,13 @@ public class RequestForChangeMenuDelegator {
             return;
         }
         List<String> licenceIds = personnelEditDto.getLicenceIds();
+        //is edit
+        boolean edit = isEdit(personnelEditDto, oldPersonnelDto);
+        if(!edit){
+            ParamUtil.setRequestAttr(bpc.request, "action_type", "valid");
+            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "personnelAck");
+            return;
+        }
         if (IaisCommonUtils.isEmpty(licenceIds)) {
             ParamUtil.setRequestAttr(bpc.request, "action_type", "valid");
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "personnelAck");
@@ -811,6 +842,30 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, "AppSubmissionDto", appSubmissionDtos1.get(0));
         bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtos1);
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit end ...."));
+    }
+
+    private boolean isEdit(PersonnelListDto newDto,PersonnelListDto oldDto){
+        PersonnelListDto compareNewDto = new PersonnelListDto();
+        String idNo = newDto.getIdNo();
+        String idType = newDto.getIdType();
+        String salutation = newDto.getSalutation();
+        String psnName = newDto.getPsnName();
+        String designation = newDto.getDesignation();
+        String mobileNo = newDto.getMobileNo();
+        String officeTelNo = newDto.getOfficeTelNo();
+        String emailAddr = newDto.getEmailAddr();
+        compareNewDto.setIdNo(idNo);
+        compareNewDto.setIdType(idType);
+        compareNewDto.setPsnName(psnName);
+        compareNewDto.setSalutation(salutation);
+        compareNewDto.setDesignation(designation);
+        compareNewDto.setOfficeTelNo(officeTelNo);
+        compareNewDto.setMobileNo(mobileNo);
+        compareNewDto.setEmailAddr(emailAddr);
+        if (!compareNewDto.equals(oldDto)){
+            return true;
+        }else
+            return false;
     }
 
     private Map<String, String> valiant(BaseProcessClass bpc, PersonnelListDto personnelEditDto, PersonnelListDto newPerson) {
