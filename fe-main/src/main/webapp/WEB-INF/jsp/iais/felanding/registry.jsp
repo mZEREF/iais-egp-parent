@@ -12,7 +12,9 @@
 <%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="java.util.Date" %>
+<%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.Formatter" %>
+<%@ page import="com.ncs.secureconnect.sim.lite.SIMConfig" %>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" language="java"%>
 <%
   sop.webflow.rt.api.BaseProcessClass process =
@@ -71,7 +73,14 @@
                             <div class="updateService hidden">
                               <div class="form-check-gp">
                                 <p class="form-check-title">You may proceed with SingPass for licence application purposes and you will be allocated a UEN number on approval of your application.</p>
-                                <a class="btn btn-primary corpPass" href="javascript:void(0)" onclick="Utils.submit('mainForm','singpassLogin')" style="background: #1F92FF; color: white">Login using SingPass</a>
+                                <%String testMode = ConfigHelper.getString("moh.halp.login.test.mode", "prod");
+                                    if ("prod".equalsIgnoreCase(testMode)){%>
+                                      <a class="btn btn-primary corpPass" href="<%=SIMConfig.getInstance().getIdpSingpassInitiatedUrl()%>>" style="background: #1F92FF; color: white">Login using SingPass</a>
+                                    <%}else{%>
+                                      <a class="btn btn-primary corpPass" href="javascript:void(0)" onclick="Utils.submit('mainForm','singpassLogin')" style="background: #1F92FF; color: white">Login using SingPass</a>
+                                  }
+                                %>
+
                               </div>
                             </div>
                             <div class="updatePremise hidden">

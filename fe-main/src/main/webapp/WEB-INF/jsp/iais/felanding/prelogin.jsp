@@ -14,6 +14,7 @@
 <%@ page import="java.util.Date" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.Formatter" %>
 <%@ page import="com.ncs.secureconnect.sim.lite.SIMConfig" %>
+<%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" language="java"%>
 <%
   sop.webflow.rt.api.BaseProcessClass process =
@@ -72,7 +73,18 @@
                     </li>
                   </ul>
                 </div>
-                <div class="right-content login-btns"><a class="btn btn-primary" href="<%=SIMConfig.getInstance().getIdpCorpassInitiatedUrl()%>>" >LOGIN USING CorpPass</a>
+
+
+                <div class="right-content login-btns">
+                  <%String testMode = ConfigHelper.getString("moh.halp.login.test.mode", "prod");
+                    if ("prod".equalsIgnoreCase(testMode)){%>
+                  <a class="btn btn-primary" href="<%=SIMConfig.getInstance().getIdpCorpassInitiatedUrl()%>>" >LOGIN USING CorpPass</a>
+                  <%}else{%>
+                  <a class="btn btn-primary" href="javascript:void(0)" onclick="Utils.submit('mainForm','corppassLogin')">LOGIN USING CorpPass</a>
+                  }
+                  %>
+
+
                   <p class="text-center"><a href="javascript:void(0)" onclick="Utils.submit('mainForm','registry')">Don't have a CorpPass?</a></p>
                 </div>
               </div>
