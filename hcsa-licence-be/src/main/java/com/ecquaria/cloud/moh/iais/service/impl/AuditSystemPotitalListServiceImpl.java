@@ -2,11 +2,9 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditFillterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditSystemPotentialDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
@@ -23,10 +21,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemPotitalListService;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,10 +42,6 @@ import java.util.Map;
 public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalListService {
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
-    @Autowired
-    private HcsaConfigClient hcsaConfigClient;
-    @Autowired
-    private  FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     private ApplicationViewService applicationViewService;
     @Autowired
