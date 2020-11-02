@@ -34,16 +34,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -302,8 +303,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                         } else {
                             appStatus = appDto.getStatus();
                         }
-                        List<String> beforeStatus = MasterCodeUtil.getStatusBeforeIns();
-                        List<String> afterStatus = MasterCodeUtil.getStatusAfterIns();
+                        List<String> beforeStatus = TaskUtil.getStatusBeforeIns();
+                        List<String> afterStatus = TaskUtil.getStatusAfterIns();
                         taskDtos = getTasksByStatus(appStatus, beforeStatus, afterStatus);
                     }
                     actionButtonFlag = getActionButtonFlagByTasks(taskDtos);

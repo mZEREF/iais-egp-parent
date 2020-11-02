@@ -118,7 +118,7 @@ public class InspecTaskToLeaderBatchJob {
                             report = report + 1;
                         }
                         continue;
-                    //in ASO/PSO or SKIP Inspection
+                    //in ASO/PSO
                     } else if(StringUtil.isEmpty(appPremCorrId) && StringUtil.isEmpty(status)) {
                         continue;
                     }
