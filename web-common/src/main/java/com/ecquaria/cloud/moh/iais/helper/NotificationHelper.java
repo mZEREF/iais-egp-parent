@@ -643,6 +643,7 @@ public class NotificationHelper {
 		adminRoles.add(RoleConsts.USER_ROLE_INSPECTIOR);
 		adminRoles.add(RoleConsts.USER_ROLE_INSPECTION_LEAD);
 		adminRoles.add(RoleConsts.USER_ROLE_AUDIT_PLAN);
+		adminRoles.add(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN);
 		if (roles.contains(RECEIPT_ROLE_MOH_OFFICER)) {
 			passRoles.addAll(adminRoles);
 		} else {
@@ -720,6 +721,8 @@ public class NotificationHelper {
 				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_INSPECTIOR));
 			} else if (RECEIPT_ROLE_ASSIGNED_INSPECTOR_LEAD.equals(role) && userMap.get(RoleConsts.USER_ROLE_INSPECTION_LEAD) != null) {
 				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_INSPECTION_LEAD));
+			} else if (RECEIPT_ROLE_SYSTEM_ADMIN.equals(role) && userMap.get(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN) != null) {
+				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN));
 			}
 		}
 		if (IaisCommonUtils.isEmpty(userIds)) {
@@ -950,7 +953,7 @@ public class NotificationHelper {
 			if (userMap.get(his.getRoleId()) == null) {
 				userMap.put(his.getRoleId(), IaisCommonUtils.genNewArrayList());
 			}
-			if(!StringUtil.isEmpty(his.getProcessDecision())) {
+			if(!StringUtil.isEmpty(his.getProcessDecision())||RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(his.getRoleId())) {
 				userMap.get(his.getRoleId()).add(his.getActionby());
 			}
 		}
@@ -969,6 +972,8 @@ public class NotificationHelper {
 				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_INSPECTIOR));
 			} else if (RECEIPT_ROLE_ASSIGNED_INSPECTOR_LEAD.equals(role) && userMap.get(RoleConsts.USER_ROLE_INSPECTION_LEAD) != null) {
 				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_INSPECTION_LEAD));
+			} else if (RECEIPT_ROLE_SYSTEM_ADMIN.equals(role) && userMap.get(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN) != null) {
+				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN));
 			}
 		}
 
