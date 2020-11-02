@@ -296,7 +296,7 @@ public class InboxServiceImpl implements InboxService {
                 log.error(e.getMessage(),e);
             }
         }
-        if(result || "RECALLMSG002".equals(recallApplicationDto.getMessage())){
+        if(result || "RECALLMSG002".equals(recallApplicationDto.getMessage()) || "RECALLMSG003".equals(recallApplicationDto.getMessage())){
             appInboxClient.updateFeAppStatus(recallApplicationDto.getAppId(),ApplicationConsts.APPLICATION_STATUS_RECALLED);
         }
         return recallApplicationDto;
