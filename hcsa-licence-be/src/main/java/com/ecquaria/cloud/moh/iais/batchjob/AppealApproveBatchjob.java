@@ -502,8 +502,6 @@ public class AppealApproveBatchjob {
             appealLicenceDto.setExpiryDate(expiryDate);
             appPremiseMiscDtoList.add(appPremiseMiscDto);
             appealLicence.add(appealLicenceDto);
-        } else if(licenceDto != null) {
-            log.error(StringUtil.changeForLog("licAppCorrelationDtos=======> Licence Id = " + licenceDto.getId()));
         } else {
             log.error(StringUtil.changeForLog("licAppCorrelationDtos is null=======> Licence Id = "));
         }
