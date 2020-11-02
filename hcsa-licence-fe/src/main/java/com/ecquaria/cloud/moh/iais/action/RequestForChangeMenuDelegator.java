@@ -1394,6 +1394,10 @@ public class RequestForChangeMenuDelegator {
             for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1){
                 appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
             }
+        }else if(isSame&&b){
+            for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1){
+                appGrpPremisesDto.setSelfAssMtFlag(4);
+            }
         }
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         Double total = feeDto.getTotal();
@@ -1435,6 +1439,12 @@ public class RequestForChangeMenuDelegator {
                 appSubmissionService.setRiskToDto(appSubmissionDto);
                 if(isSame && b){
                     appSubmissionDtoByLicenceId.setAutoRfc(true);
+                    List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
+                    if(!StringUtil.isEmpty(appGrpPremisesDtos)){
+                        for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos){
+                            appGrpPremisesDto.setSelfAssMtFlag(4);
+                        }
+                    }
                 }else {
                     appSubmissionDtoByLicenceId.setAutoRfc(false);
                 }

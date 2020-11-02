@@ -567,25 +567,37 @@ public class WithOutRenewalDelegator {
                                 String address = appGrpPremisesDtoList.get(i).getAddress();
                                 String premisesIndexNo = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getPremisesIndexNo();
                                 boolean equals;
+                                boolean flag;
                                 if (groupLic) {
                                     AppGrpPremisesDto oldAppGrpPremisesDto = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(i);
                                     boolean b = NewApplicationDelegator.compareHciName(oldAppGrpPremisesDto, appGrpPremisesDtoList.get(i));
                                     amendmentFeeDto.setChangeInHCIName(!b);
                                     String olAddress = oldAppGrpPremisesDto.getAddress();
                                     equals = olAddress.equals(address);
+                                    if(equals&&b){
+                                        flag=true;
+                                    }else {
+                                        flag=false;
+                                    }
                                 } else {
                                     String oldAddress = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getAddress();
                                     equals = oldAddress.equals(address);
                                     boolean b = NewApplicationDelegator.compareHciName(appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0), appSubmissionDto.getAppGrpPremisesDtoList().get(i));
                                     amendmentFeeDto.setChangeInHCIName(!b);
+                                    if(equals&&b){
+                                        flag=true;
+                                    }else {
+                                        flag=false;
+                                    }
                                 }
                                 amendmentFeeDto.setChangeInLocation(!equals);
 
-                                if (equals) {
+                                if (flag) {
                                     List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
                                     if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
                                         for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                                             appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+                                            appGrpPremisesDto.setSelfAssMtFlag(4);
                                         }
                                     }
                                 }
@@ -611,7 +623,7 @@ public class WithOutRenewalDelegator {
                                     appSubmissionDtoByLicenceId.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
                                     appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
                                 }
-                                appSubmissionDtoByLicenceId.setAutoRfc(equals);
+                                appSubmissionDtoByLicenceId.setAutoRfc(flag);
                                 appEditSelectDto.setPremisesEdit(true);
                                 appEditSelectDto.setServiceEdit(false);
                                 appEditSelectDto.setDocEdit(false);

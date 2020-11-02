@@ -32,6 +32,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -79,6 +81,7 @@ import sop.servlet.webflow.HttpHandler;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -99,7 +102,6 @@ public class AppealServiceImpl implements AppealService {
     private static final String N = "N";
     private static final String APPEALING_FOR = "appealingFor";
     private static final String TYPE = "type";
-
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -111,6 +113,8 @@ public class AppealServiceImpl implements AppealService {
 
     @Value("${iais.email.sender}")
     private String mailSender;
+    @Value("${moh.halp.prs.enable}")
+    private String prsFlag;
     @Autowired
     private NotificationHelper notificationHelper;
 
@@ -469,6 +473,54 @@ public class AppealServiceImpl implements AppealService {
 
     }
 
+    @Override
+    public ProfessionalResponseDto prsFlag(String regNo) {
+        ProfessionalResponseDto professionalResponseDto;
+        if("Y".equals(prsFlag)){
+            ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
+            List<String> prgNos=new ArrayList<>(1);
+            prgNos.add(regNo);
+            professionalParameterDto.setRegNo(prgNos);
+            professionalParameterDto.setClientId("22222");
+            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmssSSS");
+            String format = simpleDateFormat.format(new Date());
+            professionalParameterDto.setTimestamp(format);
+            professionalParameterDto.setSignature("2222");
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getEntity();
+            if(!professionalResponseDtos.isEmpty()){
+                StringBuilder sb = new StringBuilder();
+                professionalResponseDto = professionalResponseDtos.get(0);
+                List<String> specialty = professionalResponseDto.getSpecialty();
+                List<String> qualification = professionalResponseDto.getQualification();
+                List<String> subspecialty = professionalResponseDto.getSubspecialty();
+                if(IaisCommonUtils.isEmpty(specialty)){
+                    return professionalResponseDto;
+                }
+                if (!IaisCommonUtils.isEmpty(qualification)) {
+                    String s = qualification.get(0);
+                    if(!StringUtil.isEmpty(s)){
+                        sb.append(s);
+                    }
+                }
+                if (!IaisCommonUtils.isEmpty(subspecialty)) {
+                    String s = subspecialty.get(0);
+                    if(!StringUtil.isEmpty(s)){
+                        sb.append(s);
+                    }
+                }
+                String s = sb.toString();
+                qualification.clear();
+                qualification.add(s);
+                log.debug(StringUtil.changeForLog("the prgNo is null ...."));
+                return professionalResponseDto;
+            }
+        }
+        return null;
+    }
+
 
     private List<AppSvcCgoDto> reAppSvcCgo(HttpServletRequest req) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
@@ -746,11 +798,16 @@ public class AppealServiceImpl implements AppealService {
         StringBuilder stringBuilder = new StringBuilder(appNo);
         String s = stringBuilder.append("-01").toString();
         List<AppGrpPremisesDto> premisesDtos = new ArrayList<>(1);
-        for (PremisesDto every : premisess) {
+      /*  for (PremisesDto every : premisess) {
             AppGrpPremisesDto appGrpPremisesDto = MiscUtil.transferEntityDto(every, AppGrpPremisesDto.class);
             appGrpPremisesDto.setOffTelNo(every.getHciContactNo());
             premisesDtos.add(appGrpPremisesDto);
             break;
+        }*/
+        if(!StringUtil.isEmpty(premisess)){
+            AppGrpPremisesDto appGrpPremisesDto = MiscUtil.transferEntityDto(premisess.get(0), AppGrpPremisesDto.class);
+            appGrpPremisesDto.setOffTelNo(premisess.get(0).getHciContactNo());
+            premisesDtos.add(appGrpPremisesDto);
         }
         //appealPageDto
         AppealPageDto appealDto = getAppealPageDto(request);
@@ -1025,7 +1082,7 @@ public class AppealServiceImpl implements AppealService {
         AppliSpecialDocDto appliSpecialDocDto = applicationClient.getAppliSpecialDocDtoByCorrId(appPremCorreId).getEntity();
         if (appliSpecialDocDto != null) {
             AppPremisesSpecialDocDto appPremisesSpecialDocDto =new AppPremisesSpecialDocDto();
-            appPremisesSpecialDocDto.setDocSize(Integer.parseInt(appliSpecialDocDto.getDocSize()));
+            appPremisesSpecialDocDto.setDocSize(Integer.valueOf(appliSpecialDocDto.getDocSize()));
             appPremisesSpecialDocDto.setFileRepoId(appliSpecialDocDto.getFileRepoId());
             appPremisesSpecialDocDto.setMd5Code(appliSpecialDocDto.getMd5Code());
             appPremisesSpecialDocDto.setDocName(appliSpecialDocDto.getDocName());

@@ -320,9 +320,9 @@
                               <tr>
                                 <td>${cgo.profRegNo}</td>
                                 <td style="text-align: left">
-                                  <nobr><p style="margin-bottom: 10%">${list.complaint1}</p></nobr>
-                                  <nobr><p style="margin-bottom: 10%">${list.complaint2}</p></nobr>
-                                  <nobr><p style="margin-bottom: 10%">${list.complaint3}</p></nobr>
+                                 <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</
+                                  <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
+                                  <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p
                                 </td>
                                 <td>${list.finaloutcome}</td>
                                 <td>${list.fineamount}</td>
@@ -359,9 +359,9 @@
                               <tr>
                                 <td>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}</td>
                                 <td style="text-align: left">
-                                  <nobr><p style="margin-bottom: 10%">${list.complaint1}</p></nobr>
-                                  <nobr><p style="margin-bottom: 10%">${list.complaint2}</p></nobr>
-                                  <nobr><p style="margin-bottom: 10%">${list.complaint3}</p></nobr>
+                                  <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</p>
+                                  <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
+                                 <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p>
                                 </td>
                                 <td>${list.finaloutcome}</td>
                                 <td>${list.fineamount}</td>
@@ -668,9 +668,9 @@
                                     <tr>
                                       <td>${appSvcPersonnelDtoList.profRegNo}</td>
                                       <td style="text-align: left">
-                                        <nobr><p style="margin-bottom: 10%">${list.complaint1}</p></nobr>
-                                        <nobr><p style="margin-bottom: 10%">${list.complaint2}</p></nobr>
-                                        <nobr><p style="margin-bottom: 10%">${list.complaint3}</p></nobr>
+                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</p>
+                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
+                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p>
                                       </td>
                                       <td>${list.finaloutcome}</td>
                                       <td>${list.fineamount}</td>
@@ -707,9 +707,9 @@
                                     <tr>
                                       <td>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}</td>
                                       <td style="text-align: left">
-                                        <nobr><p style="margin-bottom: 10%">${list.complaint1}</p></nobr>
-                                        <nobr><p style="margin-bottom: 10%">${list.complaint2}</p></nobr>
-                                        <nobr><p style="margin-bottom: 10%">${list.complaint3}</p></nobr>
+                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</p>
+                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
+                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p>
                                       </td>
                                       <td>${list.finaloutcome}</td>
                                       <td>${list.fineamount}</td>
@@ -1024,9 +1024,9 @@
                                     <tr>
                                       <td>${appSvcPersonnelDtoList.profRegNo}</td>
                                       <td style="text-align: left">
-                                        <nobr><p style="margin-bottom: 10%">${list.complaint1}</p></nobr>
-                                        <nobr><p style="margin-bottom: 10%">${list.complaint2}</p></nobr>
-                                        <nobr><p style="margin-bottom: 10%">${list.complaint3}</p></nobr>
+                                       <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</p>
+                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
+                                       <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p>
                                       </td>
                                       <td>${list.finaloutcome}</td>
                                       <td>${list.fineamount}</td>
@@ -1063,9 +1063,9 @@
                                     <tr>
                                       <td>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}</td>
                                       <td style="text-align: left">
-                                        <nobr><p style="margin-bottom: 10%">${list.complaint1}</p></nobr>
-                                        <nobr><p style="margin-bottom: 10%">${list.complaint2}</p></nobr>
-                                        <nobr><p style="margin-bottom: 10%">${list.complaint3}</p></nobr>
+                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</p>
+                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
+                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p>
                                       </td>
                                       <td>${list.finaloutcome}</td>
                                       <td>${list.fineamount}</td>

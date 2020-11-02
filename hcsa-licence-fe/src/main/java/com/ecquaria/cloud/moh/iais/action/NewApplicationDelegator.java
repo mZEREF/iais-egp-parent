@@ -1577,10 +1577,12 @@ public class NewApplicationDelegator {
                     ParamUtil.setRequestAttr(bpc.request, HCSASERVICEDTO, hcsaServiceDto);
                     ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
                 }
-
-                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
-                    requestForChangeService.svcDocToPresmise(appSubmissionDto);
+                if(appSubmissionDto!=null){
+                    if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+                        requestForChangeService.svcDocToPresmise(appSubmissionDto);
+                    }
                 }
+
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             }
         }
@@ -2047,6 +2049,7 @@ public class NewApplicationDelegator {
                 appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
                 for(AppGrpPremisesDto appGrpPremisesDto :  appSubmissionDto.getAppGrpPremisesDtoList()){
                     appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+                    appGrpPremisesDto.setSelfAssMtFlag(4);
                 }
                 appSubmissionDtos.add(appSubmissionDto);
                 autoSaveAppsubmission.addAll(appSubmissionDtos);
@@ -2507,6 +2510,7 @@ public class NewApplicationDelegator {
             appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.NO);
             for(AppGrpPremisesDto appGrpPremisesDto : appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList()){
                 appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+                appGrpPremisesDto.setSelfAssMtFlag(4);
             }
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
             appSubmissionDtoList.add(appSubmissionDtoByLicenceId);
@@ -2759,6 +2763,9 @@ public class NewApplicationDelegator {
         List<AppGrpPremisesDto> appGrpPremisesDtoList = changePerson.getAppGrpPremisesDtoList();
         for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
             appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+            if(!b){
+                appGrpPremisesDto.setSelfAssMtFlag(4);
+            }
         }
         changePerson.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         appSubmissionService.transform(changePerson, appSubmissionDto.getLicenseeId());
@@ -3176,7 +3183,7 @@ public class NewApplicationDelegator {
                 applicationClient.saveDraft(draftAppSubmissionDto);
             }
         }
-        if (!StringUtil.isEmpty(appSubmissionDto.getLicenceId())) {
+        if (!StringUtil.isEmpty(appSubmissionDto)&&!StringUtil.isEmpty(appSubmissionDto.getLicenceId())) {
             List<ApplicationSubDraftDto> entity = applicationClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
             for (ApplicationSubDraftDto applicationSubDraftDto : entity) {
                 if(!applicationSubDraftDto.getDraftNo().equals(draftNo)){

@@ -238,7 +238,8 @@
                                     </div>
                                     <div class="col-sm-5 col-md-7">
                                       <div class="">
-                                        <iais:input maxLength="20" type="text" name="professionRegoNo" value="${currentCgo.profRegNo}"></iais:input>
+                                        <input maxlength="20"  name="professionRegoNo" value="${currentCgo.profRegNo}" type="text" onblur="prs(this)">
+                                       <%-- <iais:input maxLength="20" type="text" name="professionRegoNo" value="${currentCgo.profRegNo}"></iais:input>--%>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_professionRegoNo${status.index}"></span>
                                       </div>
                                     </div>

@@ -11,14 +11,14 @@
 %>
 
 <%@include file="./dashboard.jsp" %>
+<%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <div class="container">
   <form id="mainForm" enctype="multipart/form-data"  class="__egovform" method="post" action=<%=process.runtime.continueURL()%> >
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
-    <input type="hidden" name="crud_action_type" value="">
+    <input type="hidden" name="crud_action_value" id="crud_action_value" value="">
+    <input type="hidden" name="crud_action_additional" id="crud_action_additional" value="">
+    <input type="hidden" name="crud_action_type" id="crud_action_type" value="">
     <input type="hidden" id="configFileSize" value="${configFileSize}"/>
-
   <div class="form-group">
     <div class="col-xs-12 col-md-10" style="margin-left: 2%">
       <label style="font-size: 25px">You are appealing for:</label>
@@ -214,7 +214,8 @@ $('#submit').click(function () {
     }
   var error = $('#error_litterFile_Show').html();
   if(error == undefined || error == ""){
-    SOP.Crud.cfxSubmit("mainForm", "submit","submit","");
+      Utils.submit('mainForm','submit','submit','','');
+   /* SOP.Crud.cfxSubmit("mainForm", "submit","submit","");*/
   }
 });
 
@@ -276,7 +277,8 @@ function clearFileFunction(){
 }
 
 $('#save').click(function () {
-    SOP.Crud.cfxSubmit("mainForm", "save","save","");
+    Utils.submit('mainForm','save','save','','');
+   /* SOP.Crud.cfxSubmit("mainForm", "save","save","");*/
 });
 
 $('#reasonSelect').change(function () {
@@ -329,9 +331,16 @@ function isCheck(obj) {
       $('#control--runtime--1').attr("hidden");
 
   }
-  $('#cancel').click(function () {
+  function prs(obj){
+    var val = $(obj).val();
+    $.getJSON("${pageContext.request.contextPath}/regNo-prs",{"regNo":val},function (date) {
 
-      SOP.Crud.cfxSubmit("mainForm", "cancel","cancel","");
+    });
+  };
+
+  $('#cancel').click(function () {
+      Utils.submit('mainForm','cancel','cancel','','');
+   /*   SOP.Crud.cfxSubmit("mainForm", "cancel","cancel","");*/
 
   });
 
@@ -344,7 +353,8 @@ function isCheck(obj) {
   }
 
   function jumpPage() {
-      SOP.Crud.cfxSubmit("mainForm", "cancel","cancel","");
+      Utils.submit('mainForm','cancel','cancel','','');
+     /* SOP.Crud.cfxSubmit("mainForm", "cancel","cancel","");*/
   }
 </script>
 
