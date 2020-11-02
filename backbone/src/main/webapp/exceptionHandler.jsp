@@ -13,6 +13,7 @@
 <%
   String resourcePath = EngineHelper.getResourcePath();
 %>
+<!DOCTYPE html>
 <html>
 <head>
   <title>Error</title>
