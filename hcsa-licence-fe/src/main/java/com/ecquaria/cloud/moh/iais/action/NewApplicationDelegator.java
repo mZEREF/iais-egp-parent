@@ -1573,12 +1573,14 @@ public class NewApplicationDelegator {
                             }
                             String premises = appGrpPremisesDto.getPremisesIndexNo();
                             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
-                            for (AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList){
-                                if (!appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(premises)){
-                                    appSvcLaboratoryDisciplinesDtoList.remove(appSvcLaboratoryDisciplinesDto);
+                            if(appSvcLaboratoryDisciplinesDtoList != null && appSvcLaboratoryDisciplinesDtoList.size() >0){
+                                for (AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList){
+                                    if (!appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(premises)){
+                                        appSvcLaboratoryDisciplinesDtoList.remove(appSvcLaboratoryDisciplinesDto);
+                                    }
                                 }
+                                appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
                             }
-                            appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
                         }
                     }
                     ParamUtil.setRequestAttr(bpc.request, HCSASERVICEDTO, hcsaServiceDto);
