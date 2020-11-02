@@ -18,4 +18,12 @@ public class AcraUenBeClientFallback implements AcraUenBeClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<GenerateUENDto> generateUen(GenerateUENDto generateUENDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

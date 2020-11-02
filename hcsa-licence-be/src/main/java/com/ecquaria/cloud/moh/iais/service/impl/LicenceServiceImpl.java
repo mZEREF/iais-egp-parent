@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IssuanceAddresses;
+import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IssuanceBasic;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -43,6 +44,7 @@ import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
+import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -64,6 +66,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -106,6 +110,9 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Autowired
     private EmailClient emailClient;
+
+    @Autowired
+    private AcraUenBeClient acraUenBeClient;
 
     @Autowired
     private AppPremisesCorrClient appPremisesCorrClient;
@@ -265,18 +272,70 @@ public class LicenceServiceImpl implements LicenceService {
             for (SuperLicDto superLicDto:item.getSuperLicDtos()
             ) {
                 LicenceDto licenceDto = superLicDto.getLicenceDto();
+                LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
                 GenerateUENDto generateUENDto = new GenerateUENDto();
-                int sequenceNumber = 0;
+                int sequenceNumber = 1;
                 String consumerId = "waiting";
                 String agencyReferenceNumber = "waiting";
                 generateUENDto.setSequenceNumber(sequenceNumber);
+                //basic
+                IssuanceBasic issuanceBasic = new IssuanceBasic();
                 generateUENDto.getBasic().setAgencyReferenceNumber(agencyReferenceNumber);
+                String uen = generateUen();
+                issuanceBasic.setUen(uen);
+                issuanceBasic.setIssuanceAgency("ACRA");
+                issuanceBasic.setEntityType("CL");
+                issuanceBasic.setEntityName(licenseeDto.getName());
+                Date now = new Date();
+                issuanceBasic.setUenIssueDate(Formatter.formatDateTime(now," YYYY-MM-DD"));
+                issuanceBasic.setRegistrationDate(Formatter.formatDateTime(now," YYYY-MM-DD"));
+                issuanceBasic.setTelephone(licenseeDto.getOfficeTelNo());
+                issuanceBasic.setEmail(licenseeDto.getEmilAddr());
+                generateUENDto.setBasic(issuanceBasic);
 
+                //address
                 IssuanceAddresses addresses = new IssuanceAddresses();
-//                addresses.setStandard();
+                addresses.setSequenceNumber(sequenceNumber);
+                addresses.setAgencyReferenceNumber(agencyReferenceNumber);
+                addresses.setStandard("D");
+                addresses.setPostalCode(Integer.parseInt(licenseeDto.getPostalCode()));
+                addresses.setHouseBlockNumber(licenseeDto.getBlkNo());
+                addresses.setStreetName(licenseeDto.getStreetName());
+                addresses.setBuildingName(licenseeDto.getBuildingName());
+                addresses.setLevelNumber(licenseeDto.getFloorNo());
+                addresses.setUnitNumber(licenseeDto.getUnitNo());
+                addresses.setIsInvalid(Boolean.TRUE);
+                List<IssuanceAddresses> addressesList = IaisCommonUtils.genNewArrayList();
+                addressesList.add(addresses);
+                generateUENDto.setAddresses(addressesList);
+                acraUenBeClient.generateUen(generateUENDto);
 
             }
         }
+    }
+
+    private String generateUen(){
+        int max=10,min=0;
+        List<Integer> retNum = new ArrayList<Integer>(9);
+        for(Integer i=0;i<9;i++){
+            Integer ran2 = (int) (Math.random()*(max-min)+min);
+            retNum.add(ran2);
+        }
+
+        List<Integer> uenIdx = Arrays.asList(4, 5, 6, 7, 8, 0, 1, 2, 3);
+        Integer chkSum = 0;
+        for (Integer i = 1; i < 10; i++) {
+            chkSum += retNum.get(uenIdx.get(i-1))*i;
+        }
+        chkSum = 11 - (chkSum % 11) - 1;
+        String sNo = "CDEGHKMNRWZ";
+        String lastAlphabet = sNo.substring(chkSum, chkSum + 1);
+        StringBuilder resBuilder = new StringBuilder();
+        for (Integer integer : retNum) {
+            resBuilder.append(integer);
+        }
+        resBuilder.append(lastAlphabet);
+        return resBuilder.toString();
     }
 
     private void sendUenEmail(EventBusLicenceGroupDtos eventBusLicenceGroupDtos){
@@ -341,8 +400,7 @@ public class LicenceServiceImpl implements LicenceService {
                         msgParam.setQueryCode(licenceDto.getLicenceNo());
                         msgParam.setReqRefNum(licenceDto.getLicenceNo());
                         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-                        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(licenseeIndividualDto.getFirstServiceCode()).getEntity();
-                        svcCodeList.add(svcDto.getSvcCode());
+                        svcCodeList.add(licenseeIndividualDto.getFirstServiceCode());
                         msgParam.setSvcCodeList(svcCodeList);
                         msgParam.setRefId(licenceDto.getId());
                         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
