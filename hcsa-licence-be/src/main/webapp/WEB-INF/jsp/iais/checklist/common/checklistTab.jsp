@@ -27,7 +27,7 @@
                                     <table class="table">
                                         <thead>
                                         <tr>
-                                            <th width="10%">Regulation Clause Number</th>
+                                            <th width="15%">Regulation Clause Number</th>
                                             <th width="40%">Regulations</th>
                                             <th width="40%">Checklist Item</th>
                                             <th width="10%">Risk Level</th>
