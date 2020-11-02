@@ -733,6 +733,7 @@
         let val = $('#ServiceType').val();
         if("SVTP001"==val){
             $('#selectCategoryId').attr("style","display:block");
+            $('#Subsumption').attr("style","display:none");
         } else if("SVTP002"==val){
             $('#Subsumption').attr("style","display:block");
             $('#Pre-requisite').attr("style","display:none");
@@ -753,9 +754,10 @@
 
     $('#ServiceType').change(function () {
 
-        let val = $('#ServiceType').val();
+        var val = $('#ServiceType').val();
         if("SVTP001"==val){
             $('#selectCategoryId').attr("style","display:block");
+            $('#Subsumption').attr("style","display:none");
         } else if("SVTP002"==val){
             $('#Subsumption').attr("style","display:block");
             $('#Pre-requisite').attr("style","display:none");

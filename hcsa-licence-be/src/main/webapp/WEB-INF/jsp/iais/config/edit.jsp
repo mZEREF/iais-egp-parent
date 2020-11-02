@@ -726,7 +726,10 @@
 
     $(document).ready(function(){
         let val = $("select[name='ServiceType']").val();
-        if("SVTP002"==val){
+        if("SVTP001"==val){
+            $('#selectCategoryId').attr("style","display:block");
+            $('#Subsumption').attr("style","display:none");
+        } else if("SVTP002"==val){
           $('#Subsumption').attr("style","display:style");
           $('#Pre-requisite').attr("style","display:none");
         }else if("SVTP003"==val){
@@ -735,6 +738,7 @@
         }else {
             $('#Subsumption').attr("style","display:none");
             $('#Pre-requisite').attr("style","display:none");
+            $('#selectCategoryId').attr("style","display:none");
         }
 
     });
@@ -754,9 +758,10 @@
 
 
     $('#ServiceType').change(function () {
-        let val = $('#ServiceType').val();
+        var val = $('#ServiceType').val();
         if("SVTP001"==val){
             $('#selectCategoryId').attr("style","display:block");
+            $('#Subsumption').attr("style","display:none");
         } else if("SVTP002"==val){
             $('#Subsumption').attr("style","display:block");
             $('#Pre-requisite').attr("style","display:none");
