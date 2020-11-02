@@ -435,7 +435,6 @@ public class UploadFileServiceImpl implements UploadFileService {
             String groupId = every.getId();
             for(AppGrpPremisesEntityDto appliGrpPremisesDto:appGrpPremises){
                 String grpPremisesDtoAppGrpId = appliGrpPremisesDto.getAppGrpId();
-                String grpPremisesDtoId = appliGrpPremisesDto.getId();
                 if(groupId.equals(grpPremisesDtoAppGrpId)){
                     appGrpPremisesDtos.add(appliGrpPremisesDto);
                     appliGrpPremisesIds.add(appliGrpPremisesDto.getId());
@@ -446,11 +445,11 @@ public class UploadFileServiceImpl implements UploadFileService {
                             appPremPhOpenPeriodDtoList.add(appPremPhOpenPeriodDto);
                         }
                     }
-                }
-                for(AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos){
-                    String premisesId = appPremisesOperationalUnitDto.getPremisesId();
-                    if(grpPremisesDtoId.equals(premisesId)){
-                        appPremisesOperationalUnitDtoList.add(appPremisesOperationalUnitDto);
+                    for(AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos){
+                        String premisesId = appPremisesOperationalUnitDto.getPremisesId();
+                        if(appliGrpPremisesDtoId.equals(premisesId)){
+                            appPremisesOperationalUnitDtoList.add(appPremisesOperationalUnitDto);
+                        }
                     }
                 }
             }
