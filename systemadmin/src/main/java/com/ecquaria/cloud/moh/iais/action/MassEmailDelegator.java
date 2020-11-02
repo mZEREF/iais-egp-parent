@@ -268,7 +268,8 @@ public class MassEmailDelegator {
             }
         }else{
             List<String> address = getEmail(bpc,"email");
-            if(repeatList(filelist)){
+            boolean isRepeat = repeatList(filelist);
+            if(isRepeat){
                 errMap.put("file", "There are repeated email address(es) provided");
             }
             if(!isErrEmail(filelist)){
