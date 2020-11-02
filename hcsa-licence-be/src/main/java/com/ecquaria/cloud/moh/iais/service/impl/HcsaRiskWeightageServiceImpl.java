@@ -199,7 +199,7 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
         String status = null;
         try {
             Date doeffDate = Formatter.parseDate(temp.getDoEffectiveDate());
-            if(wei.getEndDate().getTime()<System.currentTimeMillis()){
+            if(wei.getEndDate() != null && wei.getEndDate().getTime()<System.currentTimeMillis()){
                 status = "CMSTAT003";
             }else{
                 status = "CMSTAT001";
