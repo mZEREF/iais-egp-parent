@@ -11,11 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ResourceUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -114,7 +110,8 @@ public class LicencePrint {
                 ZipOutputStream out = new ZipOutputStream(bos);
                 for (int i = 0; i < pdfFileList.size(); i++) {
                     // ByteArrayInputStream in = new ByteArrayInputStream(outputStream.toByteArray());
-                    FileInputStream in = new FileInputStream(pdfFileList.get(i));
+                    InputStream in = java.nio.file.Files.newInputStream(pdfFileList.get(i).toPath());
+//                    FileInputStream in = new FileInputStream(pdfFileList.get(i));
                     out.putNextEntry(new ZipEntry(pdfFileList.get(i).getName()));
                     int len;
                     while ((len = in.read(buf)) > 0) {
