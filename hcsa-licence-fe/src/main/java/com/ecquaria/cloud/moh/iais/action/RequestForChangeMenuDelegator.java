@@ -1041,10 +1041,8 @@ public class RequestForChangeMenuDelegator {
                         errMap.put("mobileNo2", "GENERAL_ERR0007");
                     }
                 }
-                if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getSalutation())) {
-                    errMap.put("salutation2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Salutation", "field"));
-                }
-                if (psnTypes.contains("PO") && StringUtil.isEmpty(newPerson.getSalutation())) {
+                if ((psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getSalutation()))
+                    || (psnTypes.contains("PO") && StringUtil.isEmpty(newPerson.getSalutation()))) {
                     errMap.put("salutation2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Salutation", "field"));
                 }
                 if (StringUtil.isEmpty(newPerson.getPsnName())) {
