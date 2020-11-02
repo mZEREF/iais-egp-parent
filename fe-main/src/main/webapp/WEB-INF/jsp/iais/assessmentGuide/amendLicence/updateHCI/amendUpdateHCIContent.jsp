@@ -6,7 +6,7 @@
             <thead>
             <tr >
                 <th></th>
-                <iais:sortableHeader needSort="true"  field="NAME" value="Name"/>
+                <iais:sortableHeader needSort="true"  field="HCI_NAME" value="Name"/>
                 <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises Type"/>
                 <iais:sortableHeader needSort="true"  field="ADDRESS" value="Address"/>
                 <iais:sortableHeader needSort="true"  field="HCI_CONTACT_NO" value="Contact"/>
