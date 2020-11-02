@@ -43,8 +43,8 @@ public class ClientCheckNotResultPaymentHandler extends IJobHandler {
             ) {
                 try {
                     PaymentDto paymentDto= appGrpPaymentClient.getPaymentDtoByReqRefNo(appGrp.getGroupNo()).getEntity();
-                    paymentDto.setAuditTrailDto(auditTrailDto);
                     if(paymentDto!=null&&"success".equals(paymentDto.getPmtStatus())){
+                        paymentDto.setAuditTrailDto(auditTrailDto);
                         appGrp.setPmtRefNo(paymentDto.getReqRefNo());
                         appGrp.setPaymentDt(paymentDto.getTxnDt());
                         appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
