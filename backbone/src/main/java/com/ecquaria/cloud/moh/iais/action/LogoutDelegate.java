@@ -12,14 +12,13 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.sz.commons.util.Calculator;
+import java.util.Date;
+import javax.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.audit.SOPAuditLog;
 import sop.audit.SOPAuditLogConstants;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.Cookie;
-import java.util.Date;
 
 /**
  * LogoutDelegate
