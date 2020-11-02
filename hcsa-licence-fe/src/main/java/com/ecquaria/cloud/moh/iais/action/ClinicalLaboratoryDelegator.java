@@ -1783,7 +1783,10 @@ public class ClinicalLaboratoryDelegator {
                         errorMap.put("wrkExpYear" + i, "GENERAL_ERR0002");
                     }
                 }
-            }else if(!AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)||!AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)){
+            }else if(!AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)
+                    && !AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)
+                    && !AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode)
+                    && !AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)){
                 String name = appSvcPersonnelDtos.get(i).getName();
                 if (StringUtil.isEmpty(name)) {
                     errorMap.put("name" + i, errName);

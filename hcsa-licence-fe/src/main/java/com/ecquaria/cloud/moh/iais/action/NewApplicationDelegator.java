@@ -4442,7 +4442,10 @@ public class NewApplicationDelegator {
                         flag = true;
                     }
                 }
-            }else if(!AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)||!AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)){
+            }else if(!AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)
+                    && !AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)
+                    && !AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode)
+                    && !AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)){
                 String name = appSvcPersonnelDtos.get(i).getName();
                 String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
                 String quaification = appSvcPersonnelDtos.get(i).getQualification();
