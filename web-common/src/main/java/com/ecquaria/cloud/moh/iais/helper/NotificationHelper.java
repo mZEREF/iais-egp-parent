@@ -231,7 +231,6 @@ public class NotificationHelper {
 		String reqRefNum = emailParam.getReqRefNum();
 		String refIdType = emailParam.getRefIdType();
 		String refId = emailParam.getRefId();
-		List<String> receiptEmails=emailParam.getReceiptEmails();
 		HashMap<String, String> subjectParams = emailParam.getSubjectParams();
 		JobRemindMsgTrackingDto jrDto = emailParam.getJobRemindMsgTrackingDto();
 		String subject = emailParam.getSubject();
@@ -362,9 +361,6 @@ public class NotificationHelper {
 						if (!IaisCommonUtils.isEmpty(bccEmail)) {
 							emailDto.setBccList(bccEmail);
 						}
-					}
-					if(receiptEmails.size()!=0){
-						emailDto.setReceipts(receiptEmails);
 					}
 					//replace num
 					mesContext = MessageTemplateUtil.replaceNum(mesContext);

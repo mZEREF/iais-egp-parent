@@ -29,5 +29,4 @@ public class EmailParam {
     private List<String> svcCodeList;
     private HashMap<String, String> maskParams;
     private HashMap<String, String> subjectParams;
-    private List<String> receiptEmails;
 }
