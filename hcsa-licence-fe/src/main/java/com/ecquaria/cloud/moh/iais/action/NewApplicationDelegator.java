@@ -122,13 +122,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * egator
@@ -1573,12 +1567,9 @@ public class NewApplicationDelegator {
                             }
                             String premises = appGrpPremisesDto.getPremisesIndexNo();
                             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+                            List<String> premiseStr = IaisCommonUtils.genNewArrayList();
                             if(appSvcLaboratoryDisciplinesDtoList != null && appSvcLaboratoryDisciplinesDtoList.size() >0){
-                                for (AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList){
-                                    if (!appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(premises)){
-                                        appSvcLaboratoryDisciplinesDtoList.remove(appSvcLaboratoryDisciplinesDto);
-                                    }
-                                }
+                                appSvcLaboratoryDisciplinesDtoList.removeIf(appSvcLaboratoryDisciplinesDto -> appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(premises));
                                 appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
                             }
                         }
