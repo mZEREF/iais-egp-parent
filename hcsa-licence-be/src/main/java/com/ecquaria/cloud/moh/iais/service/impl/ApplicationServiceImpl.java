@@ -168,6 +168,34 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    public boolean isOtherApplicaitonSubmit(List<ApplicationDto> applicationDtoList,String appNo,String status, boolean updateStauts) {
+        if(IaisCommonUtils.isEmpty(applicationDtoList)|| StringUtil.isEmpty(appNo) || StringUtil.isEmpty(status)){
+            return  false;
+        }
+        boolean result = true;
+        Map<String,List<ApplicationDto>> applicationMap = tidyApplicationDto(applicationDtoList);
+        if(applicationMap!=null && applicationMap.size()>0){
+            for (Map.Entry<String,List<ApplicationDto>> entry : applicationMap.entrySet()){
+                String key = entry.getKey();
+                List<ApplicationDto> value = entry.getValue();
+                if(appNo.equals(key)){
+                    continue;
+                }else if(!containStatus(value,status)){
+                    result = false;
+                    break;
+                }
+
+            }
+            if(updateStauts){
+                for(ApplicationDto applicationDto : applicationDtoList){
+                    applicationDto.setStatus(status);
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
     public boolean isOtherApplicaitonSubmit(List<ApplicationDto> applicationDtoList,String appNo,String status1, String status2) {
         if(IaisCommonUtils.isEmpty(applicationDtoList)|| StringUtil.isEmpty(appNo) || StringUtil.isEmpty(status1) || StringUtil.isEmpty(status2)){
             return  false;

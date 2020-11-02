@@ -233,7 +233,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "oldApplicationNo", null);
         ParamUtil.setSessionAttr(bpc.request, "feAppealSpecialDocDto",null);
         ParamUtil.setSessionAttr(bpc.request,"Ao1Ao2Approve","N");
-        ParamUtil.setSessionAttr(bpc.request,"isChooseInspection",false);
+        ParamUtil.setSessionAttr(bpc.request,"isChooseInspection",Boolean.FALSE);
         ParamUtil.setSessionAttr(bpc.request,"chooseInspectionChecked","N");
         ParamUtil.setSessionAttr(bpc.request,"AppLastInsGroup",null);
         log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
@@ -2130,7 +2130,7 @@ public class HcsaApplicationDelegator {
            boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationNo,
                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
             boolean isAllSubmitAO3 = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationNo,
-                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,false);
             if(!(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(status))
                     || (isAllSubmitAO3 && (ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(status)))) {
                 if (isAllSubmit) {

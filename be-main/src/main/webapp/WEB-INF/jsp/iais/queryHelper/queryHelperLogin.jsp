@@ -8,7 +8,7 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
-<html>
+<!DOCTYPE html>
 <head>
     <title>Query Helper Login</title>
 </head>

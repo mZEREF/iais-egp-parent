@@ -24,6 +24,7 @@ import java.util.List;
 public interface ApplicationService {
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId);
     public boolean isOtherApplicaitonSubmit(List<ApplicationDto> applicationDtoList,String appNo,String status);
+    public boolean isOtherApplicaitonSubmit(List<ApplicationDto> applicationDtoList,String appNo,String status,boolean updateStatus);
     public boolean isOtherApplicaitonSubmit(List<ApplicationDto> applicationDtoList,String appNo,String status1, String status2);
     //
     public List<AppPremisesCorrelationDto> getAppPremisesCorrelationByAppGroupId(String appGroupId);
