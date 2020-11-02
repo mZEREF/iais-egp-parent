@@ -73,7 +73,7 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
                 String subject = "MOH HALP - Unsuccessful GIRO Deduction for " + appTypeShow + ", " + appGroupNo;
                 List<ApplicationDto> applicationDtos = applicationClient.getGroupAppsByNo(applicationGroupDto.getId()).getEntity();
                 sendEmailByAppGroup(map, subject, applicationGroupDto);
-                sendMessageByAppGroup(map, subject, applicationDtos);
+                sendMessageByAppGroup(map, subject, applicationDtos, appGroupNo);
             }
             //todo eic update appGroup
             ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
@@ -82,9 +82,11 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
         }
     }
 
-    private void sendMessageByAppGroup(Map<String, Object> map, String subject, List<ApplicationDto> applicationDtos) {
+    private void sendMessageByAppGroup(Map<String, Object> map, String subject, List<ApplicationDto> applicationDtos, String appGroupNo) {
         //todo msg url
-        String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName();
+        String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_GIRO_RETRIGGER + appGroupNo;
+        HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+        maskParams.put("appGrpNo", appGroupNo);
         map.put("systemLink", url);
         ApplicationDto appDto = applicationDtos.get(0);
         String appNo = appDto.getApplicationNo();
@@ -96,7 +98,6 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
         emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
         emailParam.setRefId(appNo);
         //todo
-        HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
         emailParam.setMaskParams(maskParams);
         List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
         for(ApplicationDto applicationDto : applicationDtos){
