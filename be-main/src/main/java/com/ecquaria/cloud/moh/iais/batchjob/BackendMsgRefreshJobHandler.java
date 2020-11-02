@@ -47,7 +47,6 @@ public class BackendMsgRefreshJobHandler extends IJobHandler {
             }
             logInfo("<====== End to refresh error msg ======>");
         }catch (Exception e){
-            log.error(e.getMessage(), e);
             JobLogger.log(e);
             return ReturnT.FAIL;
         }
