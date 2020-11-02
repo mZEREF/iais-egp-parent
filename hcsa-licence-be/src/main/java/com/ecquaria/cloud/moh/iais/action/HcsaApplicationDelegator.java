@@ -2512,14 +2512,14 @@ public class HcsaApplicationDelegator {
         //email
         notificationHelper.sendNotification(emailParam);
         //msg
-        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
-        List<String> svcCode=IaisCommonUtils.genNewArrayList();
-        svcCode.add(svcDto.getSvcCode());
-        emailParam.setSvcCodeList(svcCode);
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_MSG);
-        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-        emailParam.setRefId(applicationDto.getApplicationNo());
-        notificationHelper.sendNotification(emailParam);
+//        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+//        List<String> svcCode=IaisCommonUtils.genNewArrayList();
+//        svcCode.add(svcDto.getSvcCode());
+//        emailParam.setSvcCodeList(svcCode);
+//        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_MSG);
+//        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+//        emailParam.setRefId(applicationDto.getApplicationNo());
+//        notificationHelper.sendNotification(emailParam);
         //sms
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_SMS);
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
