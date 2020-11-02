@@ -78,20 +78,21 @@ public class LogoutDelegate {
                 cookie.setMaxAge(0);
             }
 
-            try {
-                auditTrailDto.setFunctionName(StringUtil.capitalize(loginContext.getUserDomain()) + " Logout");
-                AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
-
-                AuditTrailDto loginDto = bbAuditTrailClient.getLoginInfoBySessionId(sessionId).getEntity();
-                Date now = new Date();
-                if (loginDto != null) {
-                    Date before = Formatter.parseDateTime(loginDto.getActionTime());
-                    long duration = now.getTime() - before.getTime();
-                    int minutes = (int) Calculator.div(duration, 60000, 0);
-                    AuditTrailHelper.callSaveSessionDuration(sessionId, minutes);
+            if (auditTrailDto != null){
+                try {
+                    auditTrailDto.setFunctionName(StringUtil.capitalize(loginContext.getUserDomain()) + " Logout");
+                    AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
+                    AuditTrailDto loginDto = bbAuditTrailClient.getLoginInfoBySessionId(sessionId).getEntity();
+                    Date now = new Date();
+                    if (loginDto != null) {
+                        Date before = Formatter.parseDateTime(loginDto.getActionTime());
+                        long duration = now.getTime() - before.getTime();
+                        int minutes = (int) Calculator.div(duration, 60000, 0);
+                        AuditTrailHelper.callSaveSessionDuration(sessionId, minutes);
+                    }
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
                 }
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
             }
         }
     }
