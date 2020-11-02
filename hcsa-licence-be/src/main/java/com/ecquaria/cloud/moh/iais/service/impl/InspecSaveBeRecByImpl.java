@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 
+import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
@@ -135,6 +136,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                             }
                         } catch (IOException e) {
                             log.error(e.getMessage(), e);
+                            JobLogger.log(e.getMessage(), e);
                         }
                     }
                 }
@@ -156,6 +158,13 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             log.debug(StringUtil.changeForLog("reportFilePath:" + reportFilePath));
             log.debug(StringUtil.changeForLog("reportId:" + reportId));
 
+            JobLogger.log(StringUtil.changeForLog("realPath:" + realPath));
+            JobLogger.log(StringUtil.changeForLog("saveFileName:" + saveFileName));
+            JobLogger.log(StringUtil.changeForLog("zipEntryName:" + zipEntry.getName()));
+            JobLogger.log(StringUtil.changeForLog("zipFileName:" + zipFile.getName()));
+            JobLogger.log(StringUtil.changeForLog("reportFilePath:" + reportFilePath));
+            JobLogger.log(StringUtil.changeForLog("reportId:" + reportId));
+
             File uploadRecFile = MiscUtil.generateFile(realPath, saveFileName);
             try(OutputStream os = Files.newOutputStream(uploadRecFile.toPath());
                 BufferedOutputStream bos = new BufferedOutputStream(os);
@@ -172,6 +181,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
             }catch (IOException e){
                 log.error(e.getMessage(), e);
+                JobLogger.log(e.getMessage(), e);
             }
             return reportId;
         } else {
@@ -189,6 +199,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         String eventRefNo = generateIdClient.getSeqId().getEntity();
         log.info(StringUtil.changeForLog("submissionId:" + submissionId));
         log.info(StringUtil.changeForLog("eventRefNo:" + eventRefNo));
+        JobLogger.log(StringUtil.changeForLog("submissionId:" + submissionId));
+        JobLogger.log(StringUtil.changeForLog("eventRefNo:" + eventRefNo));
         //file is backupsRec
         if(file.isDirectory()){
             File[] files = file.listFiles();
@@ -218,6 +230,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             strAppCorrIds.append(s);
         }
         log.info(StringUtil.changeForLog("appIds:" + strAppIds.toString()));
+        JobLogger.log(StringUtil.changeForLog("appIds:" + strAppIds.toString()));
         Map<String, String> appNoCorrMap = IaisCommonUtils.genNewHashMap();
         if(!IaisCommonUtils.isEmpty(appIds)){
             Set<String> appIdSet = new HashSet<>(appIds);
@@ -228,6 +241,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 appNoCorrMap.put(applicationDto.getApplicationNo(), appPremisesCorrelationDto.getId());
             }
             log.info(StringUtil.changeForLog("appPremCorrIds:" + strAppCorrIds.toString()));
+            JobLogger.log(StringUtil.changeForLog("appPremCorrIds:" + strAppCorrIds.toString()));
         }
         if(!IaisCommonUtils.isEmpty(appPremCorrIds)){
             EventInspRecItemNcDto eventInspRecItemNcDto = new EventInspRecItemNcDto();
@@ -285,17 +299,21 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                     //file3 is not Directory, need save
                     String fileReportId = file2.getName();
                     log.info(StringUtil.changeForLog("fileReportId:" + fileReportId));
+                    JobLogger.log(StringUtil.changeForLog("fileReportId:" + fileReportId));
                     List<FileRepoDto> fileList = IaisCommonUtils.genNewArrayList();
                     FileRepoDto fileRepoDto = new FileRepoDto();
                     fileRepoDto.setId(fileReportId);
                     fileRepoDto.setAuditTrailDto(intranet);
                     fileRepoDto.setFileName(file3.getName());
                     log.info(StringUtil.changeForLog("saveDtoFileName:" + file3.getName()));
+                    JobLogger.log(StringUtil.changeForLog("saveDtoFileName:" + file3.getName()));
                     String relativePath = file3.getPath().replaceFirst(sharedPath, "");
                     //remove file name
                     String subRelativePath = relativePath.substring(0, relativePath.lastIndexOf(File.separator));
                     log.info(StringUtil.changeForLog("relativePath:" + relativePath));
                     log.info(StringUtil.changeForLog("subRelativePath:" + subRelativePath));
+                    JobLogger.log(StringUtil.changeForLog("relativePath:" + relativePath));
+                    JobLogger.log(StringUtil.changeForLog("subRelativePath:" + subRelativePath));
                     fileRepoDto.setRelativePath(subRelativePath);
                     fileList.add(fileRepoDto);
                     if(!IaisCommonUtils.isEmpty(fileList)) {
@@ -312,6 +330,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             }
         } catch(Exception e) {
             log.error(e.getMessage(),e);
+            JobLogger.log(e.getMessage(),e);
         }
     }
 }
