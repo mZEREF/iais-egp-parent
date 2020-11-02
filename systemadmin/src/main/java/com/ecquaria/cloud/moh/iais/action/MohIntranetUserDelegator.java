@@ -1131,7 +1131,7 @@ public class MohIntranetUserDelegator {
         List<String> errors = IaisCommonUtils.genNewArrayList();
         String userId = orgUserDto.getUserId();
         if (!StringUtil.isEmpty(userId)) {
-            if (!userId.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(.{1,64})$")) {
+            if (!userId.matches("^[A-Za-z0-9]+$")) {
                 String error = "Please enter alphanumeric character.";
                 errors.add(error);
             }
