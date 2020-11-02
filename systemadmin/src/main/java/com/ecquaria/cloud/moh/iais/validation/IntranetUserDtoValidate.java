@@ -38,7 +38,7 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
         String officeNo = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_OFFICETELNO);
         //userId
         if (!StringUtil.isEmpty(userId)) {
-            if (!userId.matches("^[A-Za-z0-9]+$")) {
+            if (!userId.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(.{1,64})$")) {
                 errorMap.put("userId", "USER_ERR003");
             } else {
                 OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
