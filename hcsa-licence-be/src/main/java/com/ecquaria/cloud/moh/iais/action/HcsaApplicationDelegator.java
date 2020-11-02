@@ -1994,7 +1994,9 @@ public class HcsaApplicationDelegator {
                     if(isAo1Ao2Approve){
                         doAo1Ao2Approve(broadcastOrganizationDto,broadcastApplicationDto,applicationDto,taskDto);
                     }
-                    if(isAllSubmit){
+                    boolean needUpdateGroupStatus = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
+                            ApplicationConsts.APPLICATION_STATUS_APPROVED,ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                    if(needUpdateGroupStatus || applicationDto.isFastTracking()){
                         //update application Group status
                         ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                         broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
@@ -2003,14 +2005,16 @@ public class HcsaApplicationDelegator {
                         applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                         broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
 
-                        //update current application status in db search result
-                        updateCurrentApplicationStatus(saveApplicationDtoList,applicationDto.getId(),appStatus,licenseeId);
-                        //get and set return fee
-                        saveApplicationDtoList = hcsaConfigClient.returnFee(saveApplicationDtoList).getEntity();
-                        //save return fee
-                        saveRejectReturnFee(saveApplicationDtoList,broadcastApplicationDto);
-                        //clearApprovedHclCodeByExistRejectApp
-                        applicationViewService.clearApprovedHclCodeByExistRejectApp(saveApplicationDtoList,applicationGroupDto.getAppType());
+                        if(needUpdateGroupStatus){
+                            //update current application status in db search result
+                            updateCurrentApplicationStatus(saveApplicationDtoList,applicationDto.getId(),appStatus,licenseeId);
+                            //get and set return fee
+                            saveApplicationDtoList = hcsaConfigClient.returnFee(saveApplicationDtoList).getEntity();
+                            //save return fee
+                            saveRejectReturnFee(saveApplicationDtoList,broadcastApplicationDto);
+                            //clearApprovedHclCodeByExistRejectApp
+                            applicationViewService.clearApprovedHclCodeByExistRejectApp(saveApplicationDtoList,applicationGroupDto.getAppType());
+                        }
                     }
                 }
             }else{
@@ -2137,7 +2141,9 @@ public class HcsaApplicationDelegator {
                    String roleId = RoleConsts.USER_ROLE_AO3;
                    updateCurrentApplicationStatus(applicationDtoList, appId, status);
                    List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+                   log.info(StringUtil.changeForLog("ao2AppList size() : " + ao2AppList.size()));
                    List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+                   log.info(StringUtil.changeForLog("ao3AppList size() : " + ao3AppList.size()));
                    List<ApplicationDto> creatTaskApplicationList = ao2AppList;
                    if (IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)) {
                        creatTaskApplicationList = ao3AppList;
@@ -2145,6 +2151,8 @@ public class HcsaApplicationDelegator {
                        stageId = HcsaConsts.ROUTING_STAGE_AO2;
                        roleId = RoleConsts.USER_ROLE_AO2;
                    }
+                   log.info(StringUtil.changeForLog("stageId : " + stageId));
+                   log.info(StringUtil.changeForLog("roleId : " + roleId));
                    // send the task to Ao2  or Ao3
                    TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
                            stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId());
