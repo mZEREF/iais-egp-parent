@@ -121,7 +121,8 @@ public final class FileUtils {
 
     public static void copyFilesToOtherPosition(String src, String dst) throws IOException {
         File file = new File(src);
-        if (file == null){
+        if (!file.exists()){
+            log.info("don't have file");
             return;
         }
 

@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.sz.commons.util.Calculator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +30,6 @@ import java.util.Date;
 @Slf4j
 @Delegator("iaisLogoutDelegate")
 public class LogoutDelegate {
-    @Autowired
-    private SubmissionClient client;
     @Autowired
     private BbAuditTrailClient bbAuditTrailClient;
 

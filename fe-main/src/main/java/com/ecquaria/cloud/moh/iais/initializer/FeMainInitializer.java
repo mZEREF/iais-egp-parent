@@ -40,8 +40,6 @@ public class FeMainInitializer {
             File resource = new File(resourcePath);
             String srcPath = resource.getParentFile() + separator + "enviroment-files";
 
-            log.info("=====>>>>>>>>srcPath" + srcPath + separator + runtimeEnv);
-            log.info("=====>>>>>>>>resourcePath" + resourcePath);
             FileUtils.copyFilesToOtherPosition(srcPath + separator + runtimeEnv, resourcePath);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
