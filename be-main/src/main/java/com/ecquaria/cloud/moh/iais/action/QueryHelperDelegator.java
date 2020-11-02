@@ -18,7 +18,7 @@ import java.util.Date;
 @Delegator("queryHelperDelegator")
 @Slf4j
 public class QueryHelperDelegator {
-    private final String PasswordCode = "WOWAFKLKJHGF";
+    private final String MIMA = "WOWAFKLKJHGF";
     public void start(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("queryHelperDelegator do cleanSession start ...."));
     }
@@ -45,7 +45,7 @@ public class QueryHelperDelegator {
         calendar.setTime(new Date());
         int day = calendar.get(Calendar.DATE);
         String dayStr = day < 10 ? "0" + day : day + "";
-        String currentPassword = PasswordCode + dayStr;
+        String currentPassword = MIMA + dayStr;
         return currentPassword;
     }
 }
