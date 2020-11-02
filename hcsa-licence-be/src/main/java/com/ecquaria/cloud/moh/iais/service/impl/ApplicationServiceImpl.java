@@ -61,6 +61,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -496,25 +498,66 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
         }
         String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
-        MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
+        MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI).getEntity();
+        Date now = new Date();
+        int rfiDueDate = systemParamConfig.getRfiDueDate();
+        LocalDate tatTime = LocalDate.now().plusDays(rfiDueDate);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(Formatter.DATE);
+        String tatTimeStr = tatTime.format(dtf);
+        String remarks = "<br/>Sections Allowed for Change : "+editSelect;
         Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
-        map.put("APPLICANT_NAME",licenseeDto.getName());
-        map.put("APPLICATION_NUMBER",StringUtil.viewHtml(applicationNo));
-        map.put("DETAILS","");
-        map.put("COMMENTS",StringUtil.viewHtml(externalRemarks));
-        map.put("EDITSELECT",editSelect);
-        map.put("A_HREF",url);
-        map.put("MOH_NAME",AppConsts.MOH_AGENCY_NAME);
+        map.put("ApplicantName",licenseeDto.getName());
+        map.put("ApplicationType",MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        map.put("ApplicationNumber",StringUtil.viewHtml(applicationNo));
+        map.put("ApplicationDate",Formatter.formatDateTime(now, Formatter.DATE));
+        map.put("Remarks",remarks);
+        map.put("systemLink",url);
+        map.put("TATtime",tatTimeStr);
+        map.put("email",systemParamConfig.getSystemAddressOne());
+        map.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        map.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
+        //replace num
+        templateMessageByContent = MessageTemplateUtil.replaceNum(templateMessageByContent);
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         boolean isSend = !ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType) && !ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType) && !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType);
+        String subject = "MOH IAIS - Request for information for your "+ MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()) + ", " + StringUtil.viewHtml(applicationNo);
         if(hcsaServiceDto!=null && isSend){
-            InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION+applicationNo,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
+            InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(subject,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
                     messageNo,hcsaServiceDto.getSvcCode()+"@",templateMessageByContent, applicationViewDto.getApplicationGroupDto().getLicenseeId(),IaisEGPHelper.getCurrentAuditTrailDto());
             HashMap<String,String> mapParam = IaisCommonUtils.genNewHashMap();
             mapParam.put("appNo",applicationDto.getApplicationNo());
             interMessageDto.setMaskParams(mapParam);
             inboxMsgService.saveInterMessage(interMessageDto);
+            //send email
+            EmailParam emailParam = new EmailParam();
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
+            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+            map.put("systemLink",loginUrl);
+            emailParam.setTemplateContent(map);
+            emailParam.setQueryCode(applicationNo);
+            emailParam.setReqRefNum(applicationNo);
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+            emailParam.setRefId(applicationNo);
+            emailParam.setSubject(subject);
+            log.info(StringUtil.changeForLog("send rfi application email start"));
+            notificationHelper.sendNotification(emailParam);
+            log.info(StringUtil.changeForLog("send rfi application email end"));
+            //send sms
+            EmailParam smsParam = new EmailParam();
+            Map<String,Object> smsMap = IaisCommonUtils.genNewHashMap();
+            smsMap.put("ApplicationType",MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+            smsMap.put("ApplicationNumber",StringUtil.viewHtml(applicationNo));
+            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_SMS);
+            smsParam.setTemplateContent(smsMap);
+            smsParam.setSubject(subject);
+            smsParam.setQueryCode(applicationNo);
+            smsParam.setReqRefNum(applicationNo);
+            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+            smsParam.setRefId(applicationNo);
+            log.info(StringUtil.changeForLog("send rfi application sms start"));
+            notificationHelper.sendNotification(smsParam);
+            log.info(StringUtil.changeForLog("send rfi application sms end"));
         }
     }
 
