@@ -414,8 +414,9 @@ public class MassEmailDelegator {
 
                         if (cell != null) {
                             System.out.print(cell + "\t");
-                            if(!StringUtil.isEmpty(cell.toString())){
-                                list.add(cell.toString());
+                            String cellString = cell.toString();
+                            if(!StringUtil.isEmpty(cellString)){
+                                list.add(cellString);
                             }
                         }
                     }
