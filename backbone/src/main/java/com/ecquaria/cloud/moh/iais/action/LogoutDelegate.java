@@ -55,6 +55,7 @@ public class LogoutDelegate {
                 String curDomain = loginContext.getUserDomain();
                 auditTrailDto.setOperationType(AppConsts.USER_DOMAIN_INTERNET.equalsIgnoreCase(curDomain) ?
                         AuditTrailConsts.OPERATION_TYPE_INTERNET : AuditTrailConsts.OPERATION_TYPE_INTRANET);
+                auditTrailDto.setFunctionName(StringUtil.capitalize(loginContext.getUserDomain()) + " Logout");
             }
 
             if(!StringUtil.isEmpty(userid) && !StringUtil.isEmpty(userdomain)){
@@ -78,21 +79,18 @@ public class LogoutDelegate {
                 cookie.setMaxAge(0);
             }
 
-            if (auditTrailDto != null){
-                try {
-                    auditTrailDto.setFunctionName(StringUtil.capitalize(loginContext.getUserDomain()) + " Logout");
-                    AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
-                    AuditTrailDto loginDto = bbAuditTrailClient.getLoginInfoBySessionId(sessionId).getEntity();
-                    Date now = new Date();
-                    if (loginDto != null) {
-                        Date before = Formatter.parseDateTime(loginDto.getActionTime());
-                        long duration = now.getTime() - before.getTime();
-                        int minutes = (int) Calculator.div(duration, 60000, 0);
-                        AuditTrailHelper.callSaveSessionDuration(sessionId, minutes);
-                    }
-                } catch (Exception e) {
-                    log.error(e.getMessage(), e);
+            try {
+                AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
+                AuditTrailDto loginDto = bbAuditTrailClient.getLoginInfoBySessionId(sessionId).getEntity();
+                Date now = new Date();
+                if (loginDto != null) {
+                    Date before = Formatter.parseDateTime(loginDto.getActionTime());
+                    long duration = now.getTime() - before.getTime();
+                    int minutes = (int) Calculator.div(duration, 60000, 0);
+                    AuditTrailHelper.callSaveSessionDuration(sessionId, minutes);
                 }
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
             }
         }
     }
