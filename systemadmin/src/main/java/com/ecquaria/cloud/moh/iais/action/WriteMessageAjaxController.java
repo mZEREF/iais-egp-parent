@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,8 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author zhilin
@@ -88,7 +87,7 @@ public class WriteMessageAjaxController {
     }
 
     private String setHtmlValue(List<AttachmentDto> attachmentDtoList){
-        String data = "";
+        StringBuilder data = new StringBuilder();
         if(!IaisCommonUtils.isEmpty(attachmentDtoList)){
             for(AttachmentDto temp : attachmentDtoList){
                 StringBuilder box = new StringBuilder();
@@ -102,11 +101,10 @@ public class WriteMessageAjaxController {
                         .append("')\"><em class=\"fa fa-times\"></em></button></p>")
                         .append("<input hidden name='fileSize' value='")
                         .append(temp.getDocSize())
-                        .append("'/>")
-                        .append("\n");
-                data += box.toString();
+                        .append("'/>\n");
+                data.append(box.toString());
             }
         }
-        return data;
+        return data.toString();
     }
 }
