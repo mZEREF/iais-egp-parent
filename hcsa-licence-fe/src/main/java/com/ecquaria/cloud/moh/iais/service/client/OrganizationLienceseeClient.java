@@ -58,6 +58,9 @@ public interface OrganizationLienceseeClient {
     @PostMapping(value = "/iais-orgUserRole/getAdminEmailAdd",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getAdminEmailAdd(@RequestParam("orgId") String orgId);
 
+    @PostMapping(value = "/iais-orgUserRole/getAdminOfficerEmailAdd",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getAdminOfficerEmailAdd(@RequestParam("orgId") String orgId);
+
     @GetMapping(path = "/iais-internet-user/user-account-orgid", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<FeUserDto>> getAccountByOrgId(@RequestParam(value = "orgId")String orgId);
 

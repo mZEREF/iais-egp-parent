@@ -92,6 +92,13 @@ public class OrganizationLienceseeClientFallback
     }
 
     @Override
+    public FeignResponseEntity<List<String>> getAdminOfficerEmailAdd(String orgId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;    }
+
+    @Override
     public FeignResponseEntity<List<FeUserDto>> getAccountByOrgId(String orgId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

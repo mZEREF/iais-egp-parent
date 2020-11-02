@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -1621,11 +1622,19 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public void sendRfcEmailToOfficer(AppSubmissionDto appSubmissionDto,List<String> emailList) throws IOException, TemplateException {
+    public void sendRfcEmailToOfficer(AppSubmissionDto appSubmissionDto,String orgId) throws IOException, TemplateException {
+        List<String> email = organizationLienceseeClient.getAdminOfficerEmailAdd(orgId).getEntity();
+        List<FeUserDto> feUserDtos= organizationLienceseeClient.getAccountByOrgId(orgId).getEntity();
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(appSubmissionDto.getLicenseeId()).getEntity();
         String applicantName = licenseeDto.getName();
         emailMap.put("officer_name", "");
+        for (FeUserDto f:feUserDtos
+             ) {
+            if(f.getUserRole().equals(RoleConsts.USER_ROLE_ASO)){
+                emailMap.put("officer_name", f.getDisplayName());
+            }
+        }
         emailMap.put("ServiceLicenceName", appSubmissionDto.getServiceName());
         emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
         emailMap.put("Licensee", applicantName);
@@ -1646,15 +1655,29 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         emailParam.setReqRefNum(appSubmissionDto.getLicenceNo());
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
         emailParam.setRefId(appSubmissionDto.getLicenceId());
-        emailParam.setReceiptEmails(emailList);
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER).getEntity();
         map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
         map.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
         String subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
+        String content = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(), map);
         emailParam.setSubject(subject);
         //email
-        notificationHelper.sendNotification(emailParam);
+        EmailDto emailDto=new EmailDto();
+        emailDto.setContent(content);
+        emailDto.setSubject(subject);
+        emailDto.setSender(mailSender);
+        emailDto.setClientQueryCode(appSubmissionDto.getLicenceNo());
+        emailDto.setReceipts(email);
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        try {
+            feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization());
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+        //notificationHelper.sendNotification(emailParam);
         //msg
 //        try {
 //            String svcName=appSubmissionDto.getServiceName();
