@@ -1066,9 +1066,8 @@ public class BackendInboxDelegator {
                     ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
             boolean isAllSubmitAO3 = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList, appNo,
                     ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
-            if (!(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(status))
-                    || (isAllSubmitAO3 && (ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(status)))) {
-                if (isAllSubmit) {
+            if (isAllSubmit && (!(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(status))
+                    || (isAllSubmitAO3 && (ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(status))))) {
                     String stageId = HcsaConsts.ROUTING_STAGE_AO3;
                     String roleId = RoleConsts.USER_ROLE_AO3;
                     updateCurrentApplicationStatus(applicationDtoList, appId, status);
@@ -1088,7 +1087,6 @@ public class BackendInboxDelegator {
                     List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
                     broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
                     broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
-                }
             }
         }
     }
