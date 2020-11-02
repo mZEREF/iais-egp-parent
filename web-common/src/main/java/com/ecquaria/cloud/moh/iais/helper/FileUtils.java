@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
@@ -131,11 +132,10 @@ public final class FileUtils {
             for (File f : files){
                 String srcName = f.getName();
                 File dstFile = new File(dst + srcName);
-                if (dstFile.exists()){
-                    dstFile.delete();
+                MiscUtil.deleteFile(dstFile);
+                if (dstFile.createNewFile()){
+                    org.apache.commons.io.FileUtils.copyFile(f, dstFile);
                 }
-                dstFile.createNewFile();
-                org.apache.commons.io.FileUtils.copyFile(f, dstFile);
             }
         }
     }
