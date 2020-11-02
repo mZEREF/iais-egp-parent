@@ -227,11 +227,11 @@ public class ReCessationApplicationBeDelegator {
         appCessationDto.setOtherReason(otherReason);
         appCessHciDto.setOtherReason(otherReason);
         if ("yes".equals(patRadio)){
-            appCessationDto.setPatNeedTrans(true);
-            appCessHciDto.setPatNeedTrans(true);
+            appCessationDto.setPatNeedTrans(Boolean.TRUE);
+            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
         }else {
-            appCessationDto.setPatNeedTrans(false);
-            appCessHciDto.setPatNeedTrans(false);
+            appCessationDto.setPatNeedTrans(Boolean.FALSE);
+            appCessHciDto.setPatNeedTrans(Boolean.FALSE);
         }
         appCessationDto.setPatientSelect(patientSelect);
         appCessHciDto.setPatientSelect(patientSelect);

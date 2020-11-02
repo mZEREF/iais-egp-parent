@@ -2216,7 +2216,7 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private void sendInboxMessage(ApplicationViewDto applicationViewDto,String serviceId,Map<String, Object> map,String subject,String messageTemplateId) throws IOException, TemplateException {
+    private void sendInboxMessage(ApplicationViewDto applicationViewDto,String serviceId,Map<String, Object> map,String subject,String messageTemplateId) {
         EmailParam messageParam = new EmailParam();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);

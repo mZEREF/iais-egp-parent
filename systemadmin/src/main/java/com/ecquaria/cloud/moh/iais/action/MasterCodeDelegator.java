@@ -305,9 +305,10 @@ public class MasterCodeDelegator {
                     searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
                 }
             } else {
-                ParamUtil.setRequestAttr(request, "ERR_EED", MessageUtil.getMessageDesc("EMM_ERR004"));
+                String errStr = MessageUtil.getMessageDesc("EMM_ERR004");
+                ParamUtil.setRequestAttr(request, "ERR_EED", errStr);
                 Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-                errorMap.put("MC_SEARCH_APP_ERR",MessageUtil.getMessageDesc("EMM_ERR004"));
+                errorMap.put("MC_SEARCH_APP_ERR",errStr);
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             }
         } else {
@@ -849,7 +850,7 @@ public class MasterCodeDelegator {
             LocalDate nowDate = LocalDate.now();
             //new master code can effect
             boolean newIsEffect = isEffect(newFromDate,newToDate,nowDate);
-            boolean newCodeActive = AppConsts.COMMON_STATUS_ACTIVE.equals(masterCodeDto.getStatus()) && newIsEffect;
+            boolean newCodeActive = newIsEffect && AppConsts.COMMON_STATUS_ACTIVE.equals(masterCodeDto.getStatus());
             boolean oldCodeExpired;
             if(AppConsts.COMMON_STATUS_ACTIVE.equals(oldMasterCodeDto.getStatus())){
                 boolean oldIsEffect = isEffect(oldFromDate,oldToDate,nowDate);

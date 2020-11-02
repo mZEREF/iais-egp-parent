@@ -124,11 +124,12 @@ public class LicencePrint {
                     in.close();
                 }
                 out.close();
-                bos.close();
 //                bytes = FileUtils.readFileToByteArray(pdfFile);
                 bpc.request.setAttribute("pdf", bos.toByteArray());
             } catch (Exception e) {
                 log.info(e.getMessage(),e);
+            }finally {
+                bos.close();
             }
         }
     }

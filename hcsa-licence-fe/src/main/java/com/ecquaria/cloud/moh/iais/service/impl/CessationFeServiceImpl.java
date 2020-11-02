@@ -53,6 +53,10 @@ import java.util.Map;
 @Slf4j
 public class CessationFeServiceImpl implements CessationFeService {
 
+    private final static String SERVICE_LICENCE_NAME = "ServiceLicenceName";
+    private final static String CESSATION_DATE = "CessationDate";
+    private final static String APPLICATION_DATE = "ApplicationDate";
+
     @Autowired
     private LicenceClient licenceClient;
     @Autowired
@@ -343,22 +347,22 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     emailMap.put("ApplicationNumber", applicationNo);
                     StringBuilder svcNameLicNo = new StringBuilder();
-                    svcNameLicNo.append(svcName).append(" ").append(licenceNo);
+                    svcNameLicNo.append(svcName).append(' ').append(licenceNo);
                     if(!IaisCommonUtils.isEmpty(specLicIds)){
                        for(String specLicId :specLicIds){
                            svcNameLicNo.append("<br/>");
                            LicenceDto specLicDto = licenceClient.getLicBylicId(specLicId).getEntity();
                            String svcName1 = specLicDto.getSvcName();
                            String licenceNo1 = specLicDto.getLicenceNo();
-                           svcNameLicNo.append(svcName1).append(" ").append(licenceNo1);
+                           svcNameLicNo.append(svcName1).append(' ').append(licenceNo1);
                        }
                     }
-                    emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
-                    emailMap.put("CessationDate", DateFormatUtils.format(effectiveDate,"dd-MM-yyyy"));
-                    emailMap.put("ApplicationDate", DateFormatUtils.format(new Date(),"dd-MM-yyyy"));
-                    emailMap.put("ServiceLicenceName", svcName);
-                    emailMap.put("CessationDate", Formatter.formatDateTime(effectiveDate));
-                    emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
+                    emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
+                    emailMap.put(CESSATION_DATE, DateFormatUtils.format(effectiveDate,"dd-MM-yyyy"));
+                    emailMap.put(APPLICATION_DATE, DateFormatUtils.format(new Date(),"dd-MM-yyyy"));
+                    emailMap.put(SERVICE_LICENCE_NAME, svcName);
+                    emailMap.put(CESSATION_DATE, Formatter.formatDateTime(effectiveDate));
+                    emailMap.put(APPLICATION_DATE, Formatter.formatDate(new Date()));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("systemLink", loginUrl);
                     emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
@@ -434,19 +438,19 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     StringBuilder svcNameLicNo = new StringBuilder();
-                    svcNameLicNo.append(svcName).append(" ").append(licenceNo);
+                    svcNameLicNo.append(svcName).append(' ').append(licenceNo);
                     if(!IaisCommonUtils.isEmpty(specLicIds)){
                         for(String specLicId :specLicIds){
                             svcNameLicNo.append("<br/>");
                             LicenceDto specLicDto = licenceClient.getLicBylicId(specLicId).getEntity();
                             String svcName1 = specLicDto.getSvcName();
                             String licenceNo1 = specLicDto.getLicenceNo();
-                            svcNameLicNo.append(svcName1).append(" ").append(licenceNo1);
+                            svcNameLicNo.append(svcName1).append(' ').append(licenceNo1);
                         }
                     }
-                    emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
+                    emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
                     emailMap.put("ApplicationNumber", applicationNo);
-                    emailMap.put("CessationDate", DateFormatUtils.format(effectiveDate,"dd-MM-yyyy"));
+                    emailMap.put(CESSATION_DATE, DateFormatUtils.format(effectiveDate,"dd-MM-yyyy"));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
                     emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
