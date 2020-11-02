@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -233,7 +234,7 @@ public class ConfigServiceDelegator {
 
         List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = IaisCommonUtils.genNewArrayList();
         List<HcsaServiceSubTypeDto> list=IaisCommonUtils.genNewArrayList();
-        if("SVTP002".equals(serviceType)){
+        if(ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED.equals(serviceType)){
             if(subsumption!=null){
                 for(String str:subsumption){
                     if(!"".equals(str)){
@@ -245,7 +246,7 @@ public class ConfigServiceDelegator {
                 }
             }
 
-        } else if (preRequisite != null && "SVTP003".equals(serviceType)) {
+        } else if (preRequisite != null && ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(serviceType)) {
             for(String str : preRequisite){
                 if(!"".equals(str)){
                     HcsaServiceSubTypeDto hcsaServiceSubTypeDto=new HcsaServiceSubTypeDto();
@@ -537,6 +538,39 @@ public class ConfigServiceDelegator {
             List<HcsaSvcSpecificStageWorkloadDto> workloadDtos=IaisCommonUtils.genNewArrayList();
             List<HcsaSvcStageWorkingGroupDto> workingGroupDtos=IaisCommonUtils.genNewArrayList();
             List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos=IaisCommonUtils.genNewArrayList();
+           /* if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(every) ||
+                    ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(every)){
+                HcsaConfigPageDto hcsaConfigPageDto = new HcsaConfigPageDto();
+                //audi ins ,post ins
+                HcsaSvcSpecificStageWorkloadDto workloadDto=new HcsaSvcSpecificStageWorkloadDto();
+                workloadDto.setStageId("14848A70-820B-EA11-BE7D-000C29F371DC");
+                workloadDto.setAppType(every);
+                workloadDto.setManhourCount(1);
+                workloadDto.setCanApprove("0");
+                workloadDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                workloadDto.setIsMandatory("true");
+                HcsaSvcSpeRoutingSchemeDto routingSchemeDto=new HcsaSvcSpeRoutingSchemeDto();
+                routingSchemeDto.setStageId("14848A70-820B-EA11-BE7D-000C29F371DC");
+                routingSchemeDto.setSchemeType("common");
+                routingSchemeDto.setAppType(every);
+                routingSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                routingSchemeDto.setIsMandatory("true");
+                HcsaSvcStageWorkingGroupDto workingGroupDto=new HcsaSvcStageWorkingGroupDto();
+                workingGroupDto.setStageId("14848A70-820B-EA11-BE7D-000C29F371DC");
+                workingGroupDto.setSchemeType("common");
+                workingGroupDto.setType(every);
+                workingGroupDto.setOrder(1);
+                workingGroupDto.setIsMandatory("true");
+                HcsaSvcCateWrkgrpCorrelationDto svcCateWrkgrpCorrelationDto = hashMap.get("14848A70-820B-EA11-BE7D-000C29F371DC"+1);
+                if(svcCateWrkgrpCorrelationDto!=null){
+                    workingGroupDto.setStageWorkGroupId(svcCateWrkgrpCorrelationDto.getWrkGrpId());
+                }
+            }*/
+            boolean flag=false;
+            if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(every) ||
+                    ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(every)){
+                flag=true;
+            }
             for (HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto : hcsaSvcRoutingStageDtos) {
                 HcsaConfigPageDto hcsaConfigPageDto = new HcsaConfigPageDto();
                 HcsaSvcSpecificStageWorkloadDto hcsaSvcSpecificStageWorkloadDto = new HcsaSvcSpecificStageWorkloadDto();
@@ -544,15 +578,49 @@ public class ConfigServiceDelegator {
                 HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
                 String stageCode = hcsaSvcRoutingStageDto.getStageCode();
                 String id = hcsaSvcRoutingStageDto.getId();
+              /*  if(flag&&"INS".equals(stageCode)){
+                    hcsaSvcSpecificStageWorkloadDto.setStageId(id);
+                    hcsaSvcSpecificStageWorkloadDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    hcsaSvcSpecificStageWorkloadDto.setAppType(every);
+                    hcsaSvcSpecificStageWorkloadDto.setManhourCount(1);
+                    hcsaSvcSpecificStageWorkloadDto.setIsMandatory("true");
+                    hcsaSvcSpecificStageWorkloadDto.setCanApprove("0");
+                    hcsaSvcSpeRoutingSchemeDto.setIsMandatory("true");
+                    hcsaSvcSpeRoutingSchemeDto.setAppType(every);
+                    hcsaSvcSpeRoutingSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    hcsaSvcSpeRoutingSchemeDto.setStageId(id);
+                    hcsaSvcSpeRoutingSchemeDto.setSchemeType("common");
+                    hcsaSvcStageWorkingGroupDto.setIsMandatory("true");
+                    hcsaSvcStageWorkingGroupDto.setType(every);
+                    hcsaSvcStageWorkingGroupDto.setOrder(1);
+                    hcsaSvcStageWorkingGroupDto.setStageId(id);
+                    HcsaSvcCateWrkgrpCorrelationDto svcCateWrkgrpCorrelationDto = hashMap.get(id+1);
+                    if(svcCateWrkgrpCorrelationDto!=null){
+                        hcsaSvcStageWorkingGroupDto.setStageWorkGroupId(svcCateWrkgrpCorrelationDto.getWrkGrpId());
+                        hcsaConfigPageDto.setWorkingGroupId(svcCateWrkgrpCorrelationDto.getWrkGrpId());
+                    }
+                    workingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
+                    hcsaSvcSpeRoutingSchemeDtos.add(hcsaSvcSpeRoutingSchemeDto);
+                    workloadDtos.add(hcsaSvcSpecificStageWorkloadDto);
+                }else if(flag&&!"INS".equals(stageCode)){
+
+
+                }*/
                 String routingScheme = request.getParameter("RoutingScheme" + stageCode+every);
                 String workloadManhours = request.getParameter("WorkloadManhours" + stageCode+every);
                 String workloadId = request.getParameter("workloadId" + stageCode+every);
-                String workingGroupId = request.getParameter("workingGroup" + stageCode+every);
                 String stageId = request.getParameter("stageId" + stageCode+every);
                 String workstageId = request.getParameter("workstageId" + stageCode+every);
                 String isMandatory=  request.getParameter("isMandatory"+ stageCode+every);
                 //todo can approve ao1 ao2
                 String canApprove = request.getParameter("canApprove" + stageCode + every);
+                if(flag&&"INS".equals(stageCode)){
+                    routingScheme="common";
+                    workloadManhours="1";
+                    isMandatory="mandatory";
+                }else if(flag&&!"INS".equals(stageCode)){
+                    isMandatory="optional";
+                }
                 if (!StringUtil.isEmpty(workloadManhours)) {
                     hcsaSvcSpecificStageWorkloadDto.setStringManhourCount(workloadManhours);
                     hcsaConfigPageDto.setManhours(workloadManhours);

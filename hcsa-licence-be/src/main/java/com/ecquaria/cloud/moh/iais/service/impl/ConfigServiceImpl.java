@@ -565,7 +565,9 @@ public class ConfigServiceImpl implements ConfigService {
                 if("12848A70-820B-EA11-BE7D-000C29F371DC".equals(stageId)||"17848A70-820B-EA11-BE7D-000C29F371DC".equals(stageId)){
                     if("SVTP001".equals(svcType)||"SVTP003".equals(svcType)){
                         if(!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(k)&&
-                                !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(k)){
+                                !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(k)&&
+                                !ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(k)&&
+                                !ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(k)){
                             if (StringUtil.isEmpty(schemeType)) {
                                 errorMap.put("schemeType"+k+ i, MessageUtil.replaceMessage("GENERAL_ERR0006","Service Routing Scheme","field"));
                                 errorMap.put(k,"error");
@@ -594,7 +596,9 @@ public class ConfigServiceImpl implements ConfigService {
                 if("12848A70-820B-EA11-BE7D-000C29F371DC".equals(stageId)||"17848A70-820B-EA11-BE7D-000C29F371DC".equals(stageId)){
                     if("SVTP001".equals(svcType)||"SVTP003".equals(svcType)){
                         if(!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(k)&&
-                                !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(k)){
+                                !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(k)&&
+                        !ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(k)&&
+                                !ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(k)){
                             if (StringUtil.isEmpty(stringManhourCount)) {
                                 errorMap.put("manhourCount"+k+ i, MessageUtil.replaceMessage("GENERAL_ERR0006","Service Routing Scheme","field"));
                                 errorMap.put(k,"error");
@@ -997,6 +1001,9 @@ public class ConfigServiceImpl implements ConfigService {
        /* list.add(ApplicationConsts.APPLICATION_TYPE_SUSPENSION) ;*/
         list.add(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         list.add(ApplicationConsts.APPLICATION_TYPE_APPEAL);
+        //post audit insApplicationConsts
+        list.add(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK);
+        list.add(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION);
         return list;
     }
 
