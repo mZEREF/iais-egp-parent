@@ -52,13 +52,19 @@
                                     <c:otherwise>
                                         <c:forEach var="pool" items="${apptViewDtos}" varStatus="status">
                                             <tr>
-                                                <td class="form-check" >
-                                                    <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
-                                                           name="appIds" value="${pool.viewCorrId}" onclick="javascript:controlCease()"  >
-                                                    <label class="form-check-label" for="licence${status.index + 1}"><span
-                                                            class="check-square"></span>
-                                                    </label>
-                                                </td>
+                                                <c:if test="${pool.canReschedule}">
+                                                    <td class="form-check" >
+                                                        <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
+                                                               name="appIds" value="${pool.viewCorrId}" onclick="javascript:controlCease()"  >
+                                                        <label class="form-check-label" for="licence${status.index + 1}"><span
+                                                                class="check-square"></span>
+                                                        </label>
+                                                    </td>
+                                                </c:if>
+                                                <c:if test="${!pool.canReschedule}">
+                                                    <td >
+                                                    </td>
+                                                </c:if>
                                                 <td class="row_no"><c:out value="${status.index + 1}"/></td>
                                                 <td><c:out value="${pool.address}"/></td>
                                                 <td>

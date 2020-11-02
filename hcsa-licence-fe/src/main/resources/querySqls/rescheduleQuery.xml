@@ -58,7 +58,9 @@
                   when '' then null
                   else ', '+T3.POSTAL_CODE end
               ) AS ADDRESS,
-                T4.LICENSEE_ID,appRec.RECOM_IN_DATE
+                T4.LICENSEE_ID,
+                appRec.RECOM_IN_DATE ,
+                insAppt.RESCHEDULE_COUNT
 
             FROM APPLICATION_GROUP T4
              LEFT JOIN APP_GRP_PREMISES T3 ON T4.ID = T3.APP_GRP_ID
@@ -69,9 +71,7 @@
 
             WHERE 1=1
             AND appRec.RECOM_IN_DATE is not null
-            <#if appStatus_reschedule??>AND ${appStatus_reschedule}</#if>
-            <#if RESCHEDULE_COUNT??>AND ${RESCHEDULE_COUNT}</#if>
-            <#if RECOM_IN_DATE??>AND ${RECOM_IN_DATE}</#if>
+
             <#if licenseeId??>AND T4.licensee_id = :licenseeId</#if>
             ]]>
     </sql>

@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -14,7 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQuery
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -25,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AppointmentUtil;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -107,17 +105,19 @@ public class ClientReschedulingDelegator {
         String licenseeId = loginContext.getLicenseeId();
         SearchParam rescheduleParam = IaisEGPHelper.getSearchParam(bpc.request, true,rescheduleParameter);
         StringBuilder stringBuilder=new StringBuilder();
+        List<String> appStatus=IaisCommonUtils.genNewArrayList();
         for (String appSt: AppointmentUtil.getNoReschdulingAppStatus()
              ) {
+            appStatus.add(appSt);
             stringBuilder.append(appSt).append("','");
         }
-        rescheduleParam.addParam("appStatus_reschedule", "(app.status not in('"+stringBuilder.toString()+"'))");
-        rescheduleParam.addParam("RESCHEDULE_COUNT", "(insAppt.RESCHEDULE_COUNT <"+systemParamConfig.getRescheduleMaxCount()+")");
+        //rescheduleParam.addParam("appStatus_reschedule", "(app.status not in('"+stringBuilder.toString()+"'))");
+        //rescheduleParam.addParam("RESCHEDULE_COUNT", "(insAppt.RESCHEDULE_COUNT <"+systemParamConfig.getRescheduleMaxCount()+")");
         Date dateRange;
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE,systemParamConfig.getRescheduleDateRange());
         dateRange =calendar.getTime();
-        rescheduleParam.addParam("RECOM_IN_DATE", "( appRec.RECOM_IN_DATE >= convert(datetime,'"+ Formatter.formatDateTime(dateRange, SystemAdminBaseConstants.DATE_FORMAT)+"') )");
+        //rescheduleParam.addParam("RECOM_IN_DATE", "( appRec.RECOM_IN_DATE >= convert(datetime,'"+ Formatter.formatDateTime(dateRange, SystemAdminBaseConstants.DATE_FORMAT)+"') )");
         rescheduleParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("rescheduleQuery", "queryApptGrpPremises", rescheduleParam);
 
@@ -150,6 +150,11 @@ public class ClientReschedulingDelegator {
                     }else {
                         apptViewDtos.get(viewCorrId).getSvcIds().add(reschApptGrpPremsQueryDto.getSvcId());
                         svcIds=apptViewDtos.get(viewCorrId).getSvcIds();
+                    }
+                    if (reschApptGrpPremsQueryDto.getRecomInDate().compareTo(dateRange)>=0 && appStatus.contains(reschApptGrpPremsQueryDto.getApplicationStatus())&&reschApptGrpPremsQueryDto.getRescheduleCount()<systemParamConfig.getRescheduleMaxCount()){
+                        apptViewDto.setCanReschedule(Boolean.TRUE);
+                    }else {
+                        apptViewDto.setCanReschedule(Boolean.FALSE);
                     }
                     apptViewDto.setSvcIds(svcIds);
                     apptViewDto.setVehicleNo(reschApptGrpPremsQueryDto.getVehicleNo());
@@ -188,7 +193,8 @@ public class ClientReschedulingDelegator {
     public void doSort(BaseProcessClass bpc)  {
         SearchResultHelper.doSort(bpc.request,rescheduleParameter);
     }
-    public void doPage(BaseProcessClass bpc)  {SearchResultHelper.doPage(bpc.request,rescheduleParameter);
+    public void doPage(BaseProcessClass bpc)  {
+        SearchResultHelper.doPage(bpc.request,rescheduleParameter);
     }
 
     public void doReschedule(BaseProcessClass bpc)  {
