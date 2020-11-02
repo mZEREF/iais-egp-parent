@@ -699,7 +699,9 @@
 <input type="hidden" id="txnReq" name="txnReq" value='${txnReq}'>
 <input type="hidden" id="keyId" name="keyId" value='${API_KEY}'>
 <input type="hidden" id="hmac" name="hmac" value='${HMAC}'>
-<div id="anotherSection"> <fieldset> <div id="ajaxResponse"></div>
+<div id="anotherSection">
+    <legend>Billing address</legend>
+    <fieldset> <div id="ajaxResponse"></div>
 </fieldset>
 </div>
 <input type="button" value="checkout" onclick="payLoad()">

@@ -91,8 +91,6 @@ public class PaymentStripeProxy extends PaymentProxy {
 		try {
 			RequestOptions requestOptions=PaymentBaiduriProxyUtil.getStripeService().authentication();
 			PaymentBaiduriProxyUtil.getStripeService().connectedAccounts("acct_1Gnz03BQeqajk1lG");
-			String url=fields.get("vpc_ReturnURL");
-			log.info("url-->"+url);
 			SessionCreateParams createParams =
 					SessionCreateParams.builder()
 							.addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)

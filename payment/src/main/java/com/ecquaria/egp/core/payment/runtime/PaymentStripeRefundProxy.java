@@ -104,8 +104,10 @@ public class PaymentStripeRefundProxy extends PaymentProxy {
 			Refund refund;
 
 			try {
-				refund=PaymentBaiduriProxyUtil.getStripeService().createRefund(checkoutSession.getPaymentIntent(), (long) amount2);
-				paymentRequestDto.setQueryCode(refund.getId());
+				if(checkoutSession!=null){
+					refund=PaymentBaiduriProxyUtil.getStripeService().createRefund(checkoutSession.getPaymentIntent(), (long) amount2);
+					paymentRequestDto.setQueryCode(refund.getId());
+				}
 			} catch (StripeException e) {
 				log.info(e.getMessage(),e);
 				paymentRequestDto.setQueryCode(UUID.randomUUID().toString());

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.SoapiS2S;
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,19 +31,19 @@ public class PaymentController {
             "/s2sTxnEnd", method = RequestMethod.POST)
     public ResponseEntity<Void> receiveS2STxnEnd(@RequestBody String txnRes,
                                                  HttpServletRequest request) {
-        log.debug("MERCHANT APP : in receiveS2STxnEnd :" + txnRes);//jsonmessage received as string
+        log.debug(StringUtil.changeForLog("MERCHANT APP : in receiveS2STxnEnd :" + txnRes));//jsonmessage received as string
         try {
             String generatedHmac = generateSignature(txnRes, GatewayConfig.eNetsSecretKey );//generate mac
             String macFromGW = request.getHeader("hmac");
-            log.info ("MERCHANT APP : header hmac received :" +
-                    macFromGW);//
-            log.info("MERCHANT APP : header hmac generated :" +
-                    generatedHmac);
+            log.info (StringUtil.changeForLog("MERCHANT APP : header hmac received :" +
+                    macFromGW));//
+            log.info(StringUtil.changeForLog("MERCHANT APP : header hmac generated :" +
+                    generatedHmac));
             if(generatedHmac.equalsIgnoreCase(macFromGW)){
 //parse message
                 ObjectMapper mapper = new ObjectMapper();
                 SoapiS2S txnResObj = mapper.readValue(txnRes, SoapiS2S.class);
-                log.info("MERCHANT APP : in receiveS2STxnEnd :" + txnResObj);
+                log.info(StringUtil.changeForLog("MERCHANT APP : in receiveS2STxnEnd :" + txnResObj));
                 //Please handle success or failure response code
             }
             else{
