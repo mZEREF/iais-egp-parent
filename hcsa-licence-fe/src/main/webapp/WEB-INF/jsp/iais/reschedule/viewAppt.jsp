@@ -26,18 +26,13 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <th class="form-check">
-                                    <c:if test="${!empty apptViewDtos}">
-                                        <input class="form-check-input licenceCheck" type="checkbox" name="userUids" id="checkboxAll" onchange="javascirpt:checkAll();"/>
-                                        <label class="form-check-label" for="checkboxAll">
-                                            <span class="check-square"></span>
-                                        </label>
-                                    </c:if>
+                                <th class="form-check" >
+
                                 </th>
-                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="ADDRESS" value="Premises"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false" field="" value="Service(s)"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="RECOM_IN_DATE" value="Date and Time of Inspection"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false" field="" value="S/N" ></iais:sortableHeader>
+                                <iais:sortableHeader needSort="true"  field="T3.BLK_NO" value="Premises"  isFE="true"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false" field="" value="Service(s)" ></iais:sortableHeader>
+                                <iais:sortableHeader needSort="true"  field="appRec.RECOM_IN_DATE" isFE="true"  value="Date and Time of Inspection"></iais:sortableHeader>
                             </tr>
                             </thead>
                             <tbody>
@@ -144,12 +139,13 @@
 
     }
     function sortRecords(sortFieldName, sortType) {
-        showWaiting();
-        $('input[name="pageJumpNoTextchangePage"]').val(1);
-        SOP.Crud.cfxSubmit("mainForm", "sort", sortFieldName, sortType);
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        $("[name='crud_action_type']").val("sort");
+        $("#mainForm").submit();
     }
     function jumpToPagechangePage(){
-        showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "page")
+        $("[name='crud_action_type']").val("page");
+        $("#mainForm").submit();
     }
 </script>

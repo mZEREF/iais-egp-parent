@@ -67,7 +67,7 @@ public class ClientReschedulingDelegator {
             .clz(ReschApptGrpPremsQueryDto.class)
             .searchAttr("SearchParam")
             .resultAttr("SearchResult")
-            .sortField("ADDRESS").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(SysParamUtil.getDefaultPageSize()).build();
+            .sortField("appRec.RECOM_IN_DATE").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(SysParamUtil.getDefaultPageSize()).build();
 
     @Autowired
     SystemParamConfig systemParamConfig;
