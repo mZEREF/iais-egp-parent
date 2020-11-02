@@ -51,7 +51,7 @@ public class HcsaApplicationUploadFileValidate implements CustomizeValidator {
     private String getFileType(String type){
         String[] fileTypelist = type.split(",");
         if(fileTypelist.length >5) {
-            StringBuffer stringBiff = new StringBuffer();
+            StringBuilder stringBiff = new StringBuilder();
             stringBiff.append("<br/>");
             for(int indexlist = 0;indexlist <fileTypelist.length; indexlist++){
                 if(indexlist== 0){
