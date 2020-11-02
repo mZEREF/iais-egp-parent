@@ -753,7 +753,6 @@
 
 
     $('#ServiceType').change(function () {
-
         var val = $('#ServiceType').val();
         if("SVTP001"==val){
             $('#selectCategoryId').attr("style","display:block");
