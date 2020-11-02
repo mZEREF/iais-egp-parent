@@ -175,6 +175,7 @@ public class ApptInspectionDateDelegator {
         apptInspectionDateDto.setProcessDec(processDec);
         apptInspectionDateDto = getValidateValue(apptInspectionDateDto, bpc);
         if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue)) {
+            apptInspectionDateDto.setSysInspDateFlag(AppConsts.FALSE);
             ParamUtil.setRequestAttr(bpc.request, "apptBackShow", InspectionConstants.SWITCH_ACTION_BACK);
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
         } else {

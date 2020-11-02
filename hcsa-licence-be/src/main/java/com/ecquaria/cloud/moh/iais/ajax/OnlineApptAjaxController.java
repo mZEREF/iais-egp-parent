@@ -142,11 +142,11 @@ public class OnlineApptAjaxController {
                                 for(ApptRequestDto apptRequestDto : apptRequestDtos){
                                     inspectionDateMap.put(apptRequestDto.getApptRefNo(), apptRequestDto.getUserClandars());
                                 }
+                                apptInspectionDateDto.setSysInspDateFlag(AppConsts.TRUE);
                             }
                             apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
                             map.put("buttonFlag", AppConsts.TRUE);
                             map.put("inspDateList", apptInspectionDateDto.getInspectionDate());
-                            apptInspectionDateDto.setSysInspDateFlag(AppConsts.TRUE);
                         }
                     } catch (Exception e){
                         log.error(e.getMessage(), e);
@@ -208,6 +208,7 @@ public class OnlineApptAjaxController {
                 appointmentUserDtos = getOnePersonBySomeService(appointmentUserDtos);
                 specificApptDto.setUsers(appointmentUserDtos);
                 apptInspectionDateDto.setSpecificApptDto(specificApptDto);
+                apptInspectionDateDto.setSysSpecDateFlag(AppConsts.TRUE);
                 ParamUtil.setSessionAttr(request, "apptInspectionDateDto", apptInspectionDateDto);
             }
         }

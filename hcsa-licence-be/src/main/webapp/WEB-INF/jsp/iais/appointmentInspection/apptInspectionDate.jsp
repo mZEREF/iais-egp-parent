@@ -32,6 +32,7 @@
     <input type="hidden" id="actionValue" name="actionValue" value="">
     <input type="hidden" id="processDec" name="processDec" value="">
     <input type="hidden" id="sysInspDateFlag" name="sysInspDateFlag" value="${apptInspectionDateDto.sysInspDateFlag}">
+    <input type="hidden" id="sysSpecDateFlag" name="sysSpecDateFlag" value="${apptInspectionDateDto.sysSpecDateFlag}">
     <input type="hidden" id="apptBackShow" name="apptBackShow" value="${apptBackShow}">
     <div class="main-content">
       <div class="row">
@@ -159,7 +160,8 @@
                                 </div>
                               </c:if>
                               <iais:action>
-                                <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
+                                <button id="apptSpecInspDate" class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
+                                <button id="disApptSpecInspDate" class="btn btn-primary disabled" style="float:right" type="button">Assign Specific Date</button>
                                 <span style="float:right">&nbsp;</span>
                                 <button id="disApptSysInspDate" class="btn btn-primary disabled" disabled style="float:right" type="button">Allow System to Propose Dates</button>
                                 <button id="apptSysInspDate" class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateConfirm()">Allow System to Propose Dates</button>
@@ -190,6 +192,7 @@
 <script type="text/javascript">
     $(document).ready(function() {
         var sysInspDateFlag = $("#sysInspDateFlag").val();
+        var sysSpecDateFlag = $("#sysSpecDateFlag").val();
         if('true' == sysInspDateFlag){
             $("#disApptSysInspDate").hide();
             $("#apptSysInspDate").show();
@@ -198,6 +201,13 @@
             $("#disApptSysInspDate").show();
             $("#apptSysInspDate").hide();
             $("#apptThreeInspDate").hide();
+        }
+        if('true' == sysSpecDateFlag){
+            $("#disApptSpecInspDate").hide();
+            $("#apptSpecInspDate").show();
+        } else {
+            $("#disApptSpecInspDate").show();
+            $("#apptSpecInspDate").hide();
         }
         var apptBackShow = $("#apptBackShow").val();
         if('back' == apptBackShow){
@@ -212,6 +222,8 @@
                         $("#disApptSysInspDate").hide();
                         $("#apptSysInspDate").show();
                         $("#apptThreeInspDate").show();
+                        $("#disApptSpecInspDate").hide();
+                        $("#apptSpecInspDate").show();
                         var html = '<div class="row">' +
                             '<div class="col-md-6">' +
                             '<ul>';
@@ -227,6 +239,8 @@
                         $("#disApptSysInspDate").show();
                         $("#apptSysInspDate").hide();
                         $("#apptThreeInspDate").hide();
+                        $("#disApptSpecInspDate").show();
+                        $("#apptSpecInspDate").hide();
                     }
                 }
             )
@@ -273,6 +287,8 @@
                         $("#disApptSysInspDate").hide();
                         $("#apptSysInspDate").show();
                         $("#apptThreeInspDate").show();
+                        $("#disApptSpecInspDate").hide();
+                        $("#apptSpecInspDate").show();
                         var html = '<div class="row">' +
                             '<div class="col-md-6">' +
                             '<ul>';
@@ -288,6 +304,8 @@
                         $("#disApptSysInspDate").show();
                         $("#apptSysInspDate").hide();
                         $("#apptThreeInspDate").hide();
+                        $("#disApptSpecInspDate").show();
+                        $("#apptSpecInspDate").hide();
                     }
                 }
             )
