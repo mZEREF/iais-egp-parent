@@ -129,15 +129,21 @@
 </div>
 <script>
     function create() {
-        SOP.Crud.cfxSubmit("mainForm", "create");
+        $("[name='crud_action_type']").val("create");
+        var mainPoolForm = document.getElementById('mainForm');
+        mainPoolForm.submit();
     }
 
     function edit(id) {
         console.log(id);
-        SOP.Crud.cfxSubmit("mainForm", "edit" , id);
+        $("[name='crud_action_type']").val("edit");
+        var mainPoolForm = document.getElementById('mainForm');
+        mainPoolForm.submit();
     }
     $("#back").click(function () {
-        SOP.Crud.cfxSubmit("mainForm", "back");
+        $("[name='crud_action_type']").val("back");
+        var mainPoolForm = document.getElementById('mainForm');
+        mainPoolForm.submit();
     })
     function doActive(id,targetStatus){
         $.post(
