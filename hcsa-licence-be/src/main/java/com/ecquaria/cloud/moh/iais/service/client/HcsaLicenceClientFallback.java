@@ -494,16 +494,33 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
 
     @Override
     public FeignResponseEntity<List<LicInspectionGroupDto>> getLicInsGrpByIds(List<String> insGrpIds) {
-        return null;
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
     }
 
     @Override
     public FeignResponseEntity<String> testLicence(List<LicInspectionGroupDto> licInspectionGroupDtos) {
-        return null;
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
     }
 
     @Override
     public FeignResponseEntity<List<LicenceDto>> getLicDtosWithApproved() {
-        return null;
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<LicenceAppRiskInfoDto>> saveLicenceAppRiskInfoDtosByLicIds(List<LicenceDto> licenceDtos) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
     }
 }
