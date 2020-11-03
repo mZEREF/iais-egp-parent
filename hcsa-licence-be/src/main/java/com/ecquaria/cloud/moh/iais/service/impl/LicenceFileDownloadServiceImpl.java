@@ -440,16 +440,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }catch (Exception e){
                         log.error("getHcsaRiskScoreDtoByHcsaRiskScoreDto is error ",e);
                     }
-
-
                 }
             }
         }
-
-
-
-
-
 
         applicationListDto.setAuditTrailDto(intranet);
         List<ApplicationDto> updateTaskList=IaisCommonUtils.genNewArrayList();
@@ -466,6 +459,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         applicationNewAndRequstDto.setRequestForInfList(requestForInfList);
         applicationNewAndRequstDto.setUpdateTaskList(updateTaskList);
         applicationNewAndRequstDto.setCessionOrWith(cessionOrwith);
+        applicationNewAndRequstDto.setEventNo(l);
+        applicationNewAndRequstDto.setZipFileName(processFileTrackDto.getFileName());
         applicationListDto.setApplicationNewAndRequstDto(applicationNewAndRequstDto);
         processFileTrackDto.setStatus("PFT003");
         applicationListDto.setProcessFileTrackDto(processFileTrackDto);
@@ -486,7 +481,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     *
     * save file to fileRepro*/
     private void saveFileRepo(String fileNames,String groupPath,String submissionId,Long l){
-        boolean aBoolean=false;
         File file =new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileNames+File.separator+groupPath+File.separator+"folder"+File.separator+groupPath+File.separator+"files");
         if(!file.exists()){
             file.mkdirs();
@@ -661,10 +655,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
             broadcastOrganizationDto.setAuditTrailDto(intranet);
             broadcastApplicationDto.setAuditTrailDto(intranet);
-            String evenRefNum = String.valueOf(System.currentTimeMillis());
-            broadcastOrganizationDto.setEventRefNo(evenRefNum);
-            broadcastApplicationDto.setEventRefNo(evenRefNum);
-
+            broadcastOrganizationDto.setEventRefNo(eventRefNum);
+            broadcastApplicationDto.setEventRefNo(eventRefNum);
             List<TaskDto> onSubmitTaskList = IaisCommonUtils.genNewArrayList();
             List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = IaisCommonUtils.genNewArrayList();
             if(taskHistoryDto!=null){
@@ -717,7 +709,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
 
     }
-
+    public void  removeFile(String eventRefNum ,String submissionId){
+        List<Submission> submissionList = eventClient.getSubmission(submissionId).getEntity();
+    }
 
     private void  moveFile(File file){
         String name = file.getName();
@@ -742,7 +736,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         MiscUtil.deleteFile(file);
 
     }
-
 
 
     private void requeOrNew(List<ApplicationDto> requestForInforList, List<ApplicationGroupDto> applicationGroup,List<ApplicationDto> dtoList,List<ApplicationDto> updateTaskList) {

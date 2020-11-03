@@ -29,8 +29,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class UploadDelegator {
     @Autowired
     private UploadFileService uploadFileService;
-    @Autowired
-    private ApplicationClient applicationClient;
     /*
     * start step
     * */

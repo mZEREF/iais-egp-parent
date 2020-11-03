@@ -275,25 +275,21 @@
       <div class="serviceNumberfields">
         <c:forEach items="${serviceDoc}" var="doc" varStatus="sta">
           <div class="form-group">
-            <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label">Name of Info Field</label>
+            <div class="col-xs-12 col-md-12">
+              <label class="col-xs-12 col-md-5 control-label" style="margin-right: 2%">Name of Info Field</label>
               <input type="hidden" value="${doc.id}" name="commDocId">
-              <div class="col-xs-12 col-md-3">
+              <div class="col-xs-12 col-md-2">
                 <input  type="text" name="descriptionServiceDoc" maxlength="255" value="${doc.docDesc}">
               </div>
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
-                <input type="hidden" name="serviceDocMandatory"<c:choose><c:when test="${doc.isMandatory}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose>>
-                <input class="form-check-input" <c:if test="${doc.isMandatory}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocMandatory">
-                <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
+                  <input type="hidden" name="serviceDocMandatory"<c:choose><c:when test="${doc.isMandatory}"> value="1"</c:when><c:otherwise>value="0"</c:otherwise></c:choose>>
+                  <input style="white-space: nowrap" class="form-check-input" <c:if test="${doc.isMandatory}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocMandatory">
+                  <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>Mandatory ?</label>
               </div>
-              <div class="col-xs-12 col-md-12">
-               <%-- <label style="margin-left: 0%" class="col-xs-12 col-md-7 control-label">Will the doc be duplicated for individual premises?</label>
-                <div class="col-xs-12 col-md-2">
-                  <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" <c:if test="${individualPremises==0}">checked</c:if> value="0">&nbsp;&nbsp;<span style="font-size: 16px">No</span>
-                </div>
-                <div class="col-xs-12 col-md-2">
-                  <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" <c:if test="${individualPremises==1}">checked</c:if> value="1">&nbsp;&nbsp;<span style="font-size: 16px">Yes</span>
-                </div>--%>
+              <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
+                  <input type="hidden" name="serviceDocPremises" <c:choose><c:when test="${doc.dupForPrem=='1'}">value="1"</c:when><c:otherwise>value="0"</c:otherwise></c:choose>>
+                  <input style="white-space: nowrap" class="form-check-input" <c:if test="${doc.dupForPrem=='1'}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocPremises">
+                  <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
               </div>
               <div class="col-xs-12 col-md-4">
                 <span class="error-msg" name="iaisErrorMsg" id="error_serviceDoc${sta.index}"></span>
@@ -316,16 +312,21 @@
       <div class="Numberfields">
         <c:forEach items="${comDoc}" var="doc" varStatus="sta">
           <div class="form-group">
-            <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label">Name of Info Field</label>
+            <div class="col-xs-12 col-md-12">
+              <label class="col-xs-12 col-md-5 control-label" style="margin-right: 2%">Name of Info Field</label>
               <input type="hidden" value="${doc.id}" name="commDocId">
-              <div class="col-xs-12 col-md-3">
+              <div class="col-xs-12 col-md-2">
                 <input  type="text" name="descriptionCommDoc" maxlength="255" value="${doc.docDesc}">
               </div>
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
                 <input type="hidden" name="commDocMandatory"<c:choose><c:when test="${doc.isMandatory}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose>>
                 <input class="form-check-input" <c:if test="${doc.isMandatory}">checked</c:if>  type="checkbox" onclick="checkboxOnclick(this)" name="descriptionCommDocMandatory">
-                <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
+                <label class="form-check-label" ><span class="check-square"></span>Mandatory ?</label>
+              </div>
+              <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
+                <input type="hidden" name="commDocPremises" <c:choose><c:when test="${doc.dupForPrem=='1'}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose> >
+                <input style="white-space: nowrap" class="form-check-input" <c:if test="${doc.dupForPrem=='1'}">checked</c:if>   type="checkbox" onclick="checkboxOnclick(this)" name="descriptionCommDocPremises">
+                <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
               </div>
               <div class="col-xs-12 col-md-6">
               </div>
@@ -335,18 +336,6 @@
             </div>
           </div>
         </c:forEach>
-      </div>
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label">Will the doc be duplicated for individual premises?</label>
-          <div class="col-xs-12 col-md-2">
-            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" <c:if test="${individualPremises==0}">checked</c:if> value="0">&nbsp;&nbsp;<span style="font-size: 16px">No</span>
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" <c:if test="${individualPremises==1}">checked</c:if> value="1">&nbsp;&nbsp;<span style="font-size: 16px">Yes</span>
-          </div>
-        </div>
       </div>
 
       <div class="form-group">
@@ -946,16 +935,21 @@
         if(number-number1>0){
             for(var i=0;i<number-number1;i++){
                 $(this).closest("div.form-group").next(".Numberfields").append(" <div class=\"form-group\">\n" +
-                    "            <div class=\"col-xs-12 col-md-9\">\n" +
+                    "            <div class=\"col-xs-12 col-md-12\">\n" +
                     "           <input type=\"hidden\" value=\"\" name=\"commDocId\">\n" +
-                    "              <label class=\"col-xs-12 col-md-7 control-label\">Name of Info Field</label>\n" +
-                    "              <div class=\"col-xs-12 col-md-3\">\n" +
+                    "              <label class=\"col-xs-12 col-md-5 control-label\" style=\"margin-right: 2%\">Name of Info Field</label>\n" +
+                    "              <div class=\"col-xs-12 col-md-2\">\n" +
                     "                <input  type=\"text\" name=\"descriptionCommDoc\" maxlength=\"255\">\n" +
                     "              </div>\n" +
                     "              <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">\n" +
                     "                <input type=\"hidden\" name=\"commDocMandatory\" value=\"0\">\n" +
-                    "                <input class=\"form-check-input\"  type=\"checkbox\" onclick=\"checkboxOnclick(this)\" name=\"descriptionCommDocMandatory\">\n" +
-                    "                <label class=\"form-check-label\" ><span class=\"check-square\"></span>Mandatory</label>\n" +
+                    "                <input  style=\"white-space: nowrap\" class=\"form-check-input\"  type=\"checkbox\" onclick=\"checkboxOnclick(this)\" name=\"descriptionCommDocMandatory\">\n" +
+                    "                <label  style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>Mandatory</label>\n" +
+                    "              </div>\n" +
+                    "              <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">\n" +
+                    "                <input type=\"hidden\" name=\"commDocPremises\" value=\"0\">\n" +
+                    "                <input  style=\"white-space: nowrap\" class=\"form-check-input\"  type=\"checkbox\" onclick=\"checkboxOnclick(this)\" name=\"descriptionCommDocPremises\">\n" +
+                    "                <label  style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>Mandatory</label>\n" +
                     "              </div>\n" +
                     "            </div>\n" +
                     "          </div>");
@@ -976,16 +970,21 @@
         if(number-number1>0){
             for(var i=0;i<number-number1;i++){
                 $(this).closest("div.form-group").next(".serviceNumberfields").append(" <div class=\"form-group\">\n" +
-                    "            <div class=\"col-xs-12 col-md-9\">\n" +
+                    "            <div class=\"col-xs-12 col-md-12\">\n" +
                     "           <input type=\"hidden\" value=\"\" name=\"serviceDocId\">\n" +
-                    "              <label class=\"col-xs-12 col-md-7 control-label\">Name of Info Field</label>\n" +
-                    "              <div class=\"col-xs-12 col-md-3\">\n" +
+                    "              <label class=\"col-xs-12 col-md-5 control-label\" style=\"margin-right: 2%\">Name of Info Field</label>\n" +
+                    "              <div class=\"col-xs-12 col-md-2\">\n" +
                     "                <input  type=\"text\" name=\"descriptionServiceDoc\" maxlength=\"255\">\n" +
                     "              </div>\n" +
                     "              <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">\n" +
                     "                <input type=\"hidden\" name=\"serviceDocMandatory\" value=\"0\">\n" +
-                    "                <input class=\"form-check-input\"  type=\"checkbox\" onclick=\"serviceCheckboxOnclick(this)\" name=\"descriptionServiceDocMandatory\">\n" +
-                    "                <label class=\"form-check-label\" ><span class=\"check-square\"></span>Mandatory</label>\n" +
+                    "                <input style=\"white-space: nowrap\" class=\"form-check-input\"  type=\"checkbox\" onclick=\"serviceCheckboxOnclick(this)\" name=\"descriptionServiceDocMandatory\">\n" +
+                    "                <label style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>Mandatory ?</label>\n" +
+                    "              </div>\n" +
+                    "              <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">\n" +
+                    "                <input type=\"hidden\" name=\"serviceDocPremises\" value=\"0\">\n" +
+                    "                <input style=\"white-space: nowrap\" class=\"form-check-input\"  type=\"checkbox\" onclick=\"serviceCheckboxOnclick(this)\" name=\"descriptionServiceDocPremises\">\n" +
+                    "                <label style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>To duplicate for individual premises ?</label>\n" +
                     "              </div>\n" +
                     "            </div>\n" +
                     "          </div>");

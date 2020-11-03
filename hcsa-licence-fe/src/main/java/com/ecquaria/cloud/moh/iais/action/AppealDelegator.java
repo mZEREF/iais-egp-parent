@@ -153,9 +153,9 @@ public class AppealDelegator {
 
     @RequestMapping(value = "/regNo-prs",method = RequestMethod.GET)
     @ResponseBody
-    public String prsFlag(@RequestParam("regNo") String regNo){
+    public ProfessionalResponseDto prsFlag(@RequestParam("regNo") String regNo){
         ProfessionalResponseDto professionalResponseDto= appealService.prsFlag(regNo);
-        return null;
+        return professionalResponseDto;
     }
 
 

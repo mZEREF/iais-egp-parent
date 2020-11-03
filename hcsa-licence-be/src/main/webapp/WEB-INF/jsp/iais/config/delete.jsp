@@ -218,16 +218,21 @@
       <div class="serviceNumberfields">
         <c:forEach items="${serviceDoc}" var="doc">
           <div class="form-group">
-            <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label">Name of Info Field</label>
+            <div class="col-xs-12 col-md-12">
+              <label class="col-xs-12 col-md-5 control-label" style="margin-right: 2%">Name of Info Field</label>
               <input type="hidden" value="${doc.id}" name="serviceDocId">
-              <div class="col-xs-12 col-md-3">
+              <div class="col-xs-12 col-md-2">
                 <input  type="text" name="descriptionServiceDoc" disabled maxlength="255" value="${doc.docTitle}">
               </div>
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
                 <input type="hidden" name="serviceDocMandatory"<c:choose><c:when test="${doc.isMandatory}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose>>
-                <input class="form-check-input" disabled <c:if test="${doc.isMandatory}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocMandatory">
-                <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
+                <input style="white-space: nowrap" class="form-check-input" disabled <c:if test="${doc.isMandatory}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocMandatory">
+                <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>Mandatory</label>
+              </div>
+              <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
+                <input type="hidden" name="serviceDocPremises" <c:choose><c:when test="${doc.dupForPrem=='1'}">value="1"</c:when><c:otherwise>value="0"</c:otherwise></c:choose>>
+                <input style="white-space: nowrap" class="form-check-input" disabled <c:if test="${doc.dupForPrem=='1'}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocPremises">
+                <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
               </div>
             </div>
           </div>
@@ -245,16 +250,21 @@
       <div class="Numberfields">
         <c:forEach items="${comDoc}" var="doc">
           <div class="form-group">
-            <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label">Name of Info Field</label>
+            <div class="col-xs-12 col-md-12">
+              <label class="col-xs-12 col-md-5 control-label" style="margin-right: 2%">Name of Info Field</label>
               <input type="hidden" value="${doc.id}" name="commDocId">
-              <div class="col-xs-12 col-md-3">
+              <div class="col-xs-12 col-md-2">
                 <input  type="text" name="descriptionCommDoc" disabled maxlength="255" value="${doc.docTitle}">
               </div>
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
                 <input type="hidden" name="commDocMandatory"<c:choose><c:when test="${doc.isMandatory}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose>>
                 <input class="form-check-input" disabled <c:if test="${doc.isMandatory}">checked</c:if>  type="checkbox" onclick="checkboxOnclick(this)" name="descriptionCommDocMandatory">
                 <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
+              </div>
+              <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
+                <input type="hidden" name="commDocPremises" <c:choose><c:when test="${doc.dupForPrem=='1'}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose> >
+                <input style="white-space: nowrap" disabled class="form-check-input" <c:if test="${doc.dupForPrem=='1'}">checked</c:if>   type="checkbox" onclick="checkboxOnclick(this)" name="descriptionCommDocPremises">
+                <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
               </div>
             </div>
           </div>

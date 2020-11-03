@@ -331,12 +331,6 @@ function isCheck(obj) {
       $('#control--runtime--1').attr("hidden");
 
   }
-  function prs(obj){
-    var val = $(obj).val();
-    $.getJSON("${pageContext.request.contextPath}/regNo-prs",{"regNo":val},function (date) {
-
-    });
-  };
 
   $('#cancel').click(function () {
       Utils.submit('mainForm','cancel','cancel','','');

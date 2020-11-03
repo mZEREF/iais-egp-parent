@@ -427,27 +427,32 @@ public class CessationApplicationFeDelegator {
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect) && StringUtil.isEmpty(patRegNo)) {
                 errorMap.put(i + PATREGNO + j, MessageUtil.replaceMessage(ERROR, "Professional Regn No.", "field"));
             }else if(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect) && !StringUtil.isEmpty(patRegNo)){
-                if("Y".equals(prsFlag)){
-                    ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
-                    List<String> prgNos = IaisCommonUtils.genNewArrayList();
-                    prgNos.add(patRegNo);
-                    professionalParameterDto.setRegNo(prgNos);
-                    professionalParameterDto.setClientId("22222");
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-                    String format = simpleDateFormat.format(new Date());
-                    professionalParameterDto.setTimestamp(format);
-                    professionalParameterDto.setSignature("2222");
-                    HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                    HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                    List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                            signature2.date(), signature2.authorization()).getEntity();
-                    if(!IaisCommonUtils.isEmpty(professionalResponseDtos)){
-                        List<String> specialty = professionalResponseDtos.get(0).getSpecialty();
-                        if(IaisCommonUtils.isEmpty(specialty)){
-                            errorMap.put(i + PATREGNO + j, "GENERAL_ERR0042");
+                try {
+                    if("Y".equals(prsFlag)){
+                        ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
+                        List<String> prgNos = IaisCommonUtils.genNewArrayList();
+                        prgNos.add(patRegNo);
+                        professionalParameterDto.setRegNo(prgNos);
+                        professionalParameterDto.setClientId("22222");
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                        String format = simpleDateFormat.format(new Date());
+                        professionalParameterDto.setTimestamp(format);
+                        professionalParameterDto.setSignature("2222");
+                        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                        List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
+                                signature2.date(), signature2.authorization()).getEntity();
+                        if(!IaisCommonUtils.isEmpty(professionalResponseDtos)){
+                            List<String> specialty = professionalResponseDtos.get(0).getSpecialty();
+                            if(IaisCommonUtils.isEmpty(specialty)){
+                                errorMap.put(i + PATREGNO + j, "GENERAL_ERR0042");
+                            }
                         }
                     }
+                }catch (Exception e){
+                    bpc.request.setAttribute("PRS_SERVICE_DOWN","PRS_SERVICE_DOWN");
                 }
+
 
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patientSelect) && StringUtil.isEmpty(patOthers)) {

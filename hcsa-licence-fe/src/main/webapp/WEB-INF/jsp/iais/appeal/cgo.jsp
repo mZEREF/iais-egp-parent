@@ -369,6 +369,23 @@
     </div>
   </div>
 </div>
+<div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <div class="row">
+          <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem;">PRS  mock server down</span></div>
+        </div>
+      </div>
+      <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+        <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancel()">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
     $(document).ready(function () {
         $('.hideen-div').addClass('hidden');
@@ -430,7 +447,7 @@
                 i++;
             }
         });
-    }
+    };
 
     $('.addListBtn').click(function () {
         /*var assignContent = $('.assignContent:last').html();
@@ -480,7 +497,7 @@
             $('#isEditHiddenVal').val('1');
             $('#edit-content').addClass('hidden');
         });
-    }
+    };
 
     var changePsnItem = function () {
         $('.assign-psn-item').each(function (k,v) {
@@ -489,4 +506,51 @@
 
     }
 
+    function prs(obj){
+        var val = $(obj).val();
+        $.getJSON("${pageContext.request.contextPath}/regNo-prs",{"regNo":val},function (data) {
+            if(data.regno==null){
+                $('#PRS_SERVICE_DOWN').modal('show');
+            }else {
+                loading(data,obj);
+            }
+
+        });
+    };
+    const loading = function (data,obj) {
+        const qualification = data.qualification[0];
+        const specialty = data.specialty[0];
+        const $CurrentPsnEle = $(obj).closest('table.assignContent');
+        if (specialty == 'Pathology') {
+            $CurrentPsnEle.find("input[name='specialty'] option[text =specialty]").val("selected", "selected");
+            $CurrentPsnEle.find("select[name='specialty']").val(specialty);
+            $CurrentPsnEle.find(".specialtyDiv .current").text(specialty);
+            $CurrentPsnEle.find("input[name='specialtyOther']").addClass('hidden');
+        } else if (specialty == 'Haematology') {
+            $CurrentPsnEle.find("input[name='specialty'] option[text =specialty]").val("selected", "selected");
+            $CurrentPsnEle.find("select[name='specialty']").val(specialty);
+            $CurrentPsnEle.find(".specialtyDiv .current").text(specialty);
+            $CurrentPsnEle.find("input[name='specialtyOther']").addClass('hidden');
+        }else if (specialty == 'Diagnostic Radiology') {
+            $CurrentPsnEle.find("input[name='specialty'] option[text =specialty]").val("selected", "selected");
+            $CurrentPsnEle.find("select[name='specialty']").val(specialty);
+            $CurrentPsnEle.find(".specialtyDiv .current").text(specialty);
+            $CurrentPsnEle.find("input[name='specialtyOther']").addClass('hidden');
+        }else if (specialty == 'Nuclear Medicine') {
+            $CurrentPsnEle.find("input[name='specialty'] option[text =specialty]").val("selected", "selected");
+            $CurrentPsnEle.find("select[name='specialty']").val(specialty);
+            $CurrentPsnEle.find(".specialtyDiv .current").text(specialty);
+            $CurrentPsnEle.find("input[name='specialtyOther']").addClass('hidden');
+        } else {
+            $CurrentPsnEle.find("input[name='specialty'] option[text =specialty]").val("selected", "selected");
+            $CurrentPsnEle.find("select[name='specialty']").val('other');
+            $CurrentPsnEle.find(".specialtyDiv .current").text("Others");
+            $CurrentPsnEle.find("input[name='specialtyOther']").removeClass('hidden');
+            $CurrentPsnEle.find("input[name='specialtyOther']").val(specialty);
+        }
+        $CurrentPsnEle.find('input[name="qualification"]').val(qualification);
+    };
+    function cancel() {
+        $('#PRS_SERVICE_DOWN').modal('hide');
+    }
 </script>

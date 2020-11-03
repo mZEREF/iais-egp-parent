@@ -465,9 +465,9 @@ public class ConfigServiceDelegator {
         String numberDocument = request.getParameter("NumberDocument");
         String[] descriptionServiceDocs = request.getParameterValues("descriptionServiceDoc");
         String[] serviceDocMandatories = request.getParameterValues("serviceDocMandatory");
+        String[] serviceDocPremises = request.getParameterValues("serviceDocPremises");
         String numberfields = request.getParameter("Numberfields");
-        String individualPremises = request.getParameter("individualPremises");
-        request.setAttribute("individualPremises",individualPremises);
+
         request.setAttribute("serviceDocSize",numberDocument);
         if(descriptionServiceDocs!=null){
             for(int i=0;i<descriptionServiceDocs.length;i++){
@@ -482,6 +482,11 @@ public class ConfigServiceDelegator {
                     hcsaSvcDocConfigDto.setIsMandatory(Boolean.FALSE);
                 }else if("1".equals(serviceDocMandatories[i])){
                     hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
+                }
+                if("0".equals(serviceDocPremises[i])){
+                    hcsaSvcDocConfigDto.setDupForPrem("0");
+                }else if("1".equals(serviceDocPremises[i])){
+                    hcsaSvcDocConfigDto.setDupForPrem("1");
                 }
                 hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);
                 hcsaSvcDocConfig.add(hcsaSvcDocConfigDto);
@@ -500,6 +505,7 @@ public class ConfigServiceDelegator {
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtoList=IaisCommonUtils.genNewArrayList();
         String[] commDocMandatory = request.getParameterValues("commDocMandatory");
         String[] commDocIds = request.getParameterValues("commDocId");
+        String[] commDocPremises = request.getParameterValues("commDocPremises");
         if(descriptionCommDocs!=null){
             for(int i=0;i<descriptionCommDocs.length;i++){
                 HcsaSvcDocConfigDto hcsaSvcDocConfigDto=new HcsaSvcDocConfigDto();
@@ -512,7 +518,11 @@ public class ConfigServiceDelegator {
                 }else if("1".equals(commDocMandatory[i])){
                     hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
                 }
-                hcsaSvcDocConfigDto.setDupForPrem(individualPremises);
+                if("0".equals(commDocPremises[i])){
+                    hcsaSvcDocConfigDto.setDupForPrem("0");
+                }else if("1".equals(commDocPremises[i])){
+                    hcsaSvcDocConfigDto.setDupForPrem("1");
+                }
                 if(!StringUtil.isEmpty(commDocIds[i])){
                     hcsaSvcDocConfigDto.setId(commDocIds[i]);
                 }

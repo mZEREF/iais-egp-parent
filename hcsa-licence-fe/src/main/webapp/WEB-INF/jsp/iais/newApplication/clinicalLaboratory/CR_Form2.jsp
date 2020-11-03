@@ -571,12 +571,33 @@
         </div>
     </div>
 </div>
-
+<div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem;">PRS  mock server down</span></div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancel()">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
 <script>
     var init;
     $(document).ready(function () {
         //init start
         init = 0;
+        if($('#PRS_SERVICE_DOWN_INPUT').val()=='PRS_SERVICE_DOWN'){
+            $('#PRS_SERVICE_DOWN').modal('show');
+        }
+
         $('.hideen-div').addClass('hidden');
         //init font-size
         $('.cgo-header').css('font-size', "18px");
@@ -686,7 +707,7 @@
                 $specialtyEle.find('input[name="specialtyOther"]').addClass('hidden');
             }
         });
-    }
+    };
 
 
     $('.addListBtn').click(function () {
@@ -750,6 +771,10 @@
             'data': jsonData,
             'type': 'GET',
             'success': function (data) {
+                if(data.regno==null){
+                    $('#PRS_SERVICE_DOWN').modal('show');
+                    return;
+                }
                 if (data.name == null) {
                     return;
                 }
@@ -810,14 +835,14 @@
             $contentEle.find('select[name="assignSelect"] option[value="newOfficer"]').prop('selected', true);
             $('#isEditHiddenVal').val('1');
         });
-    }
+    };
 
     var changePsnItem = function () {
         $('.assign-psn-item').each(function (k, v) {
             $(this).html(k + 1);
         });
 
-    }
+    };
     var removeCgo = function () {
         $('.removeBtn').click(function () {
             var assignContentLength = $('table.assignContent').length - 1;
@@ -834,5 +859,8 @@
             }
         });
 
+    }
+    function cancel() {
+        $('#PRS_SERVICE_DOWN').modal('hide');
     }
 </script>

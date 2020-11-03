@@ -115,9 +115,18 @@ public class AppealServiceImpl implements AppealService {
     private String mailSender;
     @Value("${moh.halp.prs.enable}")
     private String prsFlag;
+    @Value("${iais.system.appeal.late.renewal.fee}")
+    private String renewalFee;
+    @Value("${iais.system.appeal.additional.cgo}")
+    private String additionalCgo;
+    @Value("${iais.system.appeal.longer.licence.period}")
+    private String licencePeriod;
+    @Value("${iais.system.appeal.others}")
+    private String appealOthers;
+    @Value("${iais.system.appeal.restricted.name}")
+    private String restrictedName;
     @Autowired
     private NotificationHelper notificationHelper;
-
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
@@ -475,50 +484,55 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public ProfessionalResponseDto prsFlag(String regNo) {
-        ProfessionalResponseDto professionalResponseDto;
-        if("Y".equals(prsFlag)){
-            ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
-            List<String> prgNos=new ArrayList<>(1);
-            prgNos.add(regNo);
-            professionalParameterDto.setRegNo(prgNos);
-            professionalParameterDto.setClientId("22222");
-            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmssSSS");
-            String format = simpleDateFormat.format(new Date());
-            professionalParameterDto.setTimestamp(format);
-            professionalParameterDto.setSignature("2222");
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
-            if(!professionalResponseDtos.isEmpty()){
-                StringBuilder sb = new StringBuilder();
-                professionalResponseDto = professionalResponseDtos.get(0);
-                List<String> specialty = professionalResponseDto.getSpecialty();
-                List<String> qualification = professionalResponseDto.getQualification();
-                List<String> subspecialty = professionalResponseDto.getSubspecialty();
-                if(IaisCommonUtils.isEmpty(specialty)){
+        ProfessionalResponseDto professionalResponseDto=new ProfessionalResponseDto();
+        try {
+            if("Y".equals(prsFlag)){
+                ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
+                List<String> prgNos=new ArrayList<>(1);
+                prgNos.add(regNo);
+                professionalParameterDto.setRegNo(prgNos);
+                professionalParameterDto.setClientId("22222");
+                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                String format = simpleDateFormat.format(new Date());
+                professionalParameterDto.setTimestamp(format);
+                professionalParameterDto.setSignature("2222");
+                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
+                        signature2.date(), signature2.authorization()).getEntity();
+                if(!professionalResponseDtos.isEmpty()){
+                    StringBuilder sb = new StringBuilder();
+                    professionalResponseDto = professionalResponseDtos.get(0);
+                    List<String> specialty = professionalResponseDto.getSpecialty();
+                    List<String> qualification = professionalResponseDto.getQualification();
+                    List<String> subspecialty = professionalResponseDto.getSubspecialty();
+                    if(IaisCommonUtils.isEmpty(specialty)){
+                        return professionalResponseDto;
+                    }
+                    if (!IaisCommonUtils.isEmpty(qualification)) {
+                        String s = qualification.get(0);
+                        if(!StringUtil.isEmpty(s)){
+                            sb.append(s);
+                        }
+                    }
+                    if (!IaisCommonUtils.isEmpty(subspecialty)) {
+                        String s = subspecialty.get(0);
+                        if(!StringUtil.isEmpty(s)){
+                            sb.append(s);
+                        }
+                    }
+                    String s = sb.toString();
+                    qualification.clear();
+                    qualification.add(s);
+                    log.debug(StringUtil.changeForLog("the prgNo is null ...."));
                     return professionalResponseDto;
                 }
-                if (!IaisCommonUtils.isEmpty(qualification)) {
-                    String s = qualification.get(0);
-                    if(!StringUtil.isEmpty(s)){
-                        sb.append(s);
-                    }
-                }
-                if (!IaisCommonUtils.isEmpty(subspecialty)) {
-                    String s = subspecialty.get(0);
-                    if(!StringUtil.isEmpty(s)){
-                        sb.append(s);
-                    }
-                }
-                String s = sb.toString();
-                qualification.clear();
-                qualification.add(s);
-                log.debug(StringUtil.changeForLog("the prgNo is null ...."));
-                return professionalResponseDto;
             }
+            return professionalResponseDto;
+        }catch (Exception e){
+            return professionalResponseDto;
         }
-        return null;
+
     }
 
 
