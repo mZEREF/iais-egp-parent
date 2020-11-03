@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/dostart" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohRetriggerGiroPayment" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="dostart" x="40" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepreview" x="170" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepreview_OnStepProcess_0" name="prepreview_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prePayment" x="500" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prePayment_OnStepProcess_0" name="prePayment_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="jumpBank" x="640" y="220">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="jumpBlank_OnStepProcess_0" name="jumpBlank_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doPayment" x="910" y="440">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doPayment_OnStepProcess_0" name="doPayment_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preAck" x="1050" y="550">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preAck_OnStepProcess_0" name="preAck_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="previewPage" stageIndicator="" x="380" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="paymentPage" stageIndicator="" x="620" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="bank" stageIndicator="" x="770" y="440">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ackPage" stageIndicator="" x="1050" y="650">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doPayment" linkstyle="Direct" name="" sourceName="/Pages/WebPage/bank" style="oblique">
+   <position>{(790,460)(930,460)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepreview" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/dostart" style="rectanular">
+   <position>{(60,120)(190,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prePayment" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/previewPage" style="rectanular">
+   <position>{(400,120)(520,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/paymentPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prePayment" style="rectanular">
+   <position>{(520,120)(640,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/jumpBank" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/paymentPage" style="rectanular">
+   <position>{(640,120)(660,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doPayment" style="rectanular">
+   <position>{(930,460)(1060,460)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/paymentPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(1060,460)(640,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preAck" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(1060,460)(1070,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ackPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preAck" style="rectanular">
+   <position>{(1070,570)(1070,670)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/paymentPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(670,360)(593,361)(640,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/bank" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(670,360)(671,423)(790,460)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/jumpBank" style="rectanular">
+   <position>{(660,240)(670,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepreview" style="rectanular">
+   <position>{(190,120)(310,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/previewPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(310,120)(400,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preAck" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(310,120)(1070,570)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="switch" name="Switch1" x="1040" y="440">
+   <Description/>
+   <SwitchCase component="/Pages/WebPage/paymentPage" value="&quot;prepayment&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preAck" value="&quot;preack&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="isValid" name="Switch2" x="650" y="340">
+   <Description/>
+   <SwitchCase component="/Pages/WebPage/paymentPage" value="&quot;topayment&quot;"/>
+   <SwitchCase component="/Pages/WebPage/bank" value="&quot;tobank&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="switch" name="Switch3" x="290" y="100">
+   <Description/>
+   <SwitchCase component="/Pages/WebPage/previewPage" value="&quot;topreview&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preAck" value="&quot;preack&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>
