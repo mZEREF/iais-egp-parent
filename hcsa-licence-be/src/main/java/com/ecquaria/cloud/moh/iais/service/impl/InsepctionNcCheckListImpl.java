@@ -774,6 +774,8 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     }
     @Override
     public List<NcAnswerDto> getNcAnswerDtoList(String appPremCorrId){
+        log.info(StringUtil.changeForLog("==>>" +appPremCorrId));
+
         List<NcAnswerDto> serviceNcDtoList = getServiceNcDtoList(appPremCorrId);
         List<NcAnswerDto> commonNcDtoList = getCommonNcDtoList(appPremCorrId);
         List<NcAnswerDto> ncAnswerDtoList = IaisCommonUtils.genNewArrayList();
@@ -789,6 +791,8 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
         //adhoc
         getAdhocNcItem(appPremCorrId,ncAnswerDtoList);
+        log.info("=======>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        log.info(StringUtil.changeForLog("ncAnswerDtoList config" + JsonUtil.parseToJson(ncAnswerDtoList)));
         return ncAnswerDtoList;
 
     }
@@ -796,10 +800,14 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     private List<NcAnswerDto> getCommonNcDtoList(String appPremCorrId) {
         List<NcAnswerDto> ncAnswerDtoList = IaisCommonUtils.genNewArrayList();
         List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklList(appPremCorrId).getEntity();
+        log.info(StringUtil.changeForLog("AppPremisesPreInspectChklDto config" + JsonUtil.parseToJson(chkList)));
+
         List<AppPremisesPreInspectChklDto> commonChklList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(chkList)){
             for(AppPremisesPreInspectChklDto temp:chkList){
                 ChecklistConfigDto dto = hcsaChklClient.getChecklistConfigById(temp.getChkLstConfId()).getEntity();
+                log.info(StringUtil.changeForLog("ChecklistConfigDto config" + JsonUtil.parseToJson(dto)));
+
                 if(dto!=null&&dto.isCommon()){
                     commonChklList.add(temp);
                 }
@@ -840,10 +848,12 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     private List<NcAnswerDto> getServiceNcDtoList(String appPremCorrId) {
         List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklList(appPremCorrId).getEntity();
+        log.info(StringUtil.changeForLog("AppPremisesPreInspectChklDto config" + JsonUtil.parseToJson(chkList)));
         List<AppPremisesPreInspectChklDto> serviceChklList = IaisCommonUtils.genNewArrayList();
         if(chkList!=null&&!chkList.isEmpty()){
             for(AppPremisesPreInspectChklDto temp:chkList){
                 ChecklistConfigDto dto = hcsaChklClient.getChecklistConfigById(temp.getChkLstConfId()).getEntity();
+                log.info(StringUtil.changeForLog("checklist config" + JsonUtil.parseToJson(dto)));
                 if(dto!=null&&!dto.isCommon()){
                     serviceChklList.add(temp);
                 }

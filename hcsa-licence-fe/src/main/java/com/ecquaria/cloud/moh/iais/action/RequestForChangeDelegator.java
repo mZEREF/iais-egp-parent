@@ -514,10 +514,12 @@ public class RequestForChangeDelegator {
                     appSubmissionDto.setAppGroupMiscDtos(appGroupMiscDtoList);
 
                     AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
-                    try {
-                        requestForChangeService.sendRfcEmailToOfficer( tranferSub, "Change in Management of Licensee");
-                    } catch (Exception e) {
-                        log.info(e.getMessage(),e);
+                    if(licenseeDto!=null){
+                        try {
+                            requestForChangeService.sendRfcEmailToOfficer( tranferSub, "Change in Management of Licensee");
+                        } catch (Exception e) {
+                            log.info(e.getMessage(),e);
+                        }
                     }
                     ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
                     ParamUtil.setSessionAttr(bpc.request, "ackPageAppSubmissionDto", null);
