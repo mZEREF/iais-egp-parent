@@ -1596,9 +1596,6 @@ public class LicenceViewServiceDelegator {
             oldAppSvcDocDtoLit.clear();
             appSvcDocDtoLit.addAll(appSvcDocDtoSet);
             oldAppSvcDocDtoLit.addAll(oldAppSvcDocDtoSet);
-        }else if(appSvcDocDtoLit==null&&oldAppSvcDocDtoLit==null){
-            appSvcDocDtoLit=new ArrayList<>(1);
-            oldAppSvcDocDtoLit=new ArrayList<>(1);
         }
     }
 
