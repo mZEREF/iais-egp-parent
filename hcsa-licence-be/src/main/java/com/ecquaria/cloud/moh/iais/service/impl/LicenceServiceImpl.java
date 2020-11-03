@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IssuanceAddresses;
@@ -258,6 +259,7 @@ public class LicenceServiceImpl implements LicenceService {
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
+            saveLicenceAppRiskInfoDtos(eventBusLicenceGroupDtos.getLicenceGroupDtos(),eventBusLicenceGroupDtos.getAuditTrailDto());
             hcsaLicenceClient.updateEicTrackStatus(trackDto);
         }else{
             log.error(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
@@ -265,7 +267,25 @@ public class LicenceServiceImpl implements LicenceService {
 
         return eventBusLicenceGroupDtos;
     }
-
+    private void saveLicenceAppRiskInfoDtos( List<LicenceGroupDto> licenceGroupDtos,AuditTrailDto auditTrailDto){
+        log.info("----- create save-lic-app-risk-by-licdtos ");
+        if( !IaisCommonUtils.isEmpty(licenceGroupDtos)){
+            for(LicenceGroupDto licenceGroupDto : licenceGroupDtos){
+                try{
+                    List<SuperLicDto>  superLicDtos = licenceGroupDto.getSuperLicDtos();
+                    List<LicenceDto> licenceDtos = IaisCommonUtils.genNewArrayList();
+                    for(SuperLicDto superLicDto : superLicDtos){
+                        superLicDto.getLicenceDto().setAuditTrailDto(auditTrailDto);
+                        licenceDtos.add(superLicDto.getLicenceDto());
+                    }
+                    hcsaLicenceClient.saveLicenceAppRiskInfoDtosByLicIds(licenceDtos);
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }
+        }
+        log.info("----- create save-lic-app-risk-by-licdtos end ");
+    }
     private void saveNewAcra(EventBusLicenceGroupDtos eventBusLicenceGroupDtos){
         log.info(StringUtil.changeForLog("save New Acra"));
         for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()

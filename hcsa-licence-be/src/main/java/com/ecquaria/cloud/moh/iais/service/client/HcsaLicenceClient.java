@@ -208,4 +208,7 @@ public interface HcsaLicenceClient {
 
     @GetMapping(value = "/hcsa-licence/find-lic-effDateApproved",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity <List<LicenceDto>> getLicDtosWithApproved();
+
+    @PostMapping(value = "/hcsa-licence/save-lic-app-risk-by-licdtos",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenceAppRiskInfoDto>> saveLicenceAppRiskInfoDtosByLicIds(@RequestBody List<LicenceDto> licenceDtos);
 }
