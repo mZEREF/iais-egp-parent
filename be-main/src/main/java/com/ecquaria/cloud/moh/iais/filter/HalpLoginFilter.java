@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.filter;
 
+import com.ecquaria.cloud.helper.ConfigHelper;
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.action.BackendLoginDelegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -14,8 +16,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,14 +28,12 @@ import org.springframework.stereotype.Component;
 @WebFilter(urlPatterns = "/*", filterName = "adLoginFilter")
 @Slf4j
 public class HalpLoginFilter implements Filter {
-    @Value("${halp.fakelogin.flag}")
-    private boolean fakeLogin;
-    @Autowired
-    private BackendLoginDelegator blDelegate;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
+        BackendLoginDelegator blDelegate = SpringContextHelper.getContext().getBean(BackendLoginDelegator.class);
+        boolean fakeLogin = ConfigHelper.getBoolean("halp.fakelogin.flag");
         if ((servletRequest instanceof HttpServletRequest) && !fakeLogin) {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request,
