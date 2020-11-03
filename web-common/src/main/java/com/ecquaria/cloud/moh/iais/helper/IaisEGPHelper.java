@@ -136,6 +136,19 @@ public final class IaisEGPHelper extends EGPHelper {
             ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,
     };
 
+    private static final String PRS_CLIENT_ID             = "a0900db88fa94ee49d8566fd3ca414f3";
+
+    /**
+     * @author: Shicheng on 2020/11/03 13:49
+     * @description: encryption Prs the signature
+     */
+    public static String getPrsSignature(String timeStamp) {
+        String signature = PRS_CLIENT_ID + "_" + timeStamp;
+        //todo encryption
+        String encSignature = "" + signature;
+        return encSignature;
+    }
+
     /**
      * @author: Shicheng on 2020/6/9 10:20
      * @description: get Application status By Role Id (For Supervisor Pool and Reassign)
