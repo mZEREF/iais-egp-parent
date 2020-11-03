@@ -191,20 +191,19 @@ public class AuditTrailDelegator {
             for (AuditTrailQueryDto i : atList){
                 int domain = i.getDomain();
                 int loginType = i.getLoginType();
-                String domainDesc = i.getDomainDesc();
                 String nricNum = i.getNricNumber();
                 String uenId = i.getUenId();
                 String mohUserId = i.getMohUserId();
                 String entityId = i.getEntityId();
 
                 AuditTrailExcelDto etExcel = new AuditTrailExcelDto();
-                etExcel.setOperation(domainDesc);
                 if (AuditTrailConsts.OPERATION_TYPE_BATCH_JOB == domain){
                     etExcel.setBatchjobId(entityId);
                     etExcel.setCreateBy(nricNum);
                 }else if (AuditTrailConsts.OPERATION_TYPE_INTRANET == domain){
                     etExcel.setMohUserId(mohUserId);
                     etExcel.setCreateBy(mohUserId);
+                    etExcel.setAdId(mohUserId);
                 }else if (AuditTrailConsts.OPERATION_TYPE_INTERNET == domain){
                     if (AuditTrailConsts.LOGIN_TYPE_SING_PASS == loginType){
                         etExcel.setSingpassId(nricNum);
@@ -216,7 +215,8 @@ public class AuditTrailDelegator {
 
                     etExcel.setCreateBy(nricNum);
                 }
-
+                etExcel.setOperation(i.getOperationDesc());
+                etExcel.setOperationType(i.getDomainDesc());
                 etExcel.setActionTime(i.getActionTime());
                 etExcel.setClientIp(i.getClientIp());
                 etExcel.setUserAgent(i.getUserAgent());
@@ -228,6 +228,7 @@ public class AuditTrailDelegator {
                 etExcel.setFunctionName(i.getFunctionName());
                 etExcel.setProgrammeName(i.getProgrammeName());
                 etExcel.setDataActivities(i.getOperationDesc());
+                etExcel.setCreateDate(i.getActionTime());
                 etList.add(etExcel);
             }
             File file = ExcelWriter.writerToExcel(etList, AuditTrailExcelDto.class, "Audit Trail Logging");

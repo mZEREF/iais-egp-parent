@@ -5,8 +5,10 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.submission.client.App;
 import com.ecquaria.sz.commons.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -27,7 +29,7 @@ import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
+import java.util.concurrent.ExecutorService;
 
 
 /**
@@ -234,8 +236,9 @@ public final class ExcelWriter {
                     String str;
                     if (objectType == Date.class){
                         //Set to text format to avoid errors caused by date modification in different systems
+                        String format = annotation.format();
+                        str = DateUtil.formatDateTime((Date) val, format);
                         cell.setCellStyle(CellStyleHelper.getTextStyle());
-                        str = DateUtil.formatDateTime((Date) val, AppConsts.DEFAULT_DATE_TIME_FORMAT_SEC);
                     }else {
                         str = getValue(val);
                     }
