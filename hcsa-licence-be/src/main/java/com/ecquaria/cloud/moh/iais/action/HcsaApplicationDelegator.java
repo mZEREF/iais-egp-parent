@@ -2141,9 +2141,17 @@ public class HcsaApplicationDelegator {
                    String roleId = RoleConsts.USER_ROLE_AO3;
                    updateCurrentApplicationStatus(applicationDtoList, appId, status);
                    List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
-                   log.info(StringUtil.changeForLog("ao2AppList size() : " + ao2AppList.size()));
+                   if(IaisCommonUtils.isEmpty(ao2AppList)){
+                       log.info(StringUtil.changeForLog("ao2AppList is null"));
+                   }else{
+                       log.info(StringUtil.changeForLog("ao2AppList size() : " + ao2AppList.size()));
+                   }
                    List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
-                   log.info(StringUtil.changeForLog("ao3AppList size() : " + ao3AppList.size()));
+                    if(IaisCommonUtils.isEmpty(ao3AppList)){
+                        log.info(StringUtil.changeForLog("ao3AppList is null"));
+                    }else{
+                        log.info(StringUtil.changeForLog("ao3AppList size() : " + ao3AppList.size()));
+                    }
                    List<ApplicationDto> creatTaskApplicationList = ao2AppList;
                    if (IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)) {
                        creatTaskApplicationList = ao3AppList;
