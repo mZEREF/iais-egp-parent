@@ -738,7 +738,11 @@ public class RequestForChangeDelegator {
             error.put("uenError",MessageUtil.replaceMessage("GENERAL_ERR0006","UEN of Licence to transfer licence to","field"));
 
         }else{
-            feEicGatewayClient.getUenInfo(uen);
+            try{
+                feEicGatewayClient.getUenInfo(uen);
+            }catch (Exception e){
+             log.error(StringUtil.changeForLog("The gent uen info throw exception"+e.getMessage()));
+            }
         }
         if(StringUtil.isEmpty(email)){
             error.put("emailError","GENERAL_ERR0039");
