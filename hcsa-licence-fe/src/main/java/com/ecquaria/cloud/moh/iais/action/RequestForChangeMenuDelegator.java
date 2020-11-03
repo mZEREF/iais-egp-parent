@@ -826,6 +826,12 @@ public class RequestForChangeMenuDelegator {
                 appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
                 appSubmissionDtos1.add(appSubmissionDto2);
             } else {
+                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+                if(!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)){
+                    for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+                        appGrpPremisesDto.setSelfAssMtFlag(4);
+                    }
+                }
                 appSubmissionDto.setAuditTrailDto(currentAuditTrailDto);
                 AppSubmissionDto appSubmissionDto1 = setPersonnelDate(appSubmissionDto, personnelEditDto);
                 appSubmissionDto.setAutoRfc(true);

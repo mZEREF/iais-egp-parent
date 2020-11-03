@@ -899,6 +899,12 @@ public class WithOutRenewalDelegator {
             String autoGrpNo = saveutoAppSubmissionDto.get(0).getAppGrpNo();
             for(AppSubmissionDto appSubmissionDto : autoAppSubmissionDtos){
                 appSubmissionDto.setAppGrpNo(autoGrpNo);
+                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+                if(!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)){
+                    for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+                        appGrpPremisesDto.setSelfAssMtFlag(4);
+                    }
+                }
             }
             autoAppSubmissionListDto.setEventRefNo(auto.toString());
             autoAppSubmissionListDto.setAppSubmissionDtos(saveutoAppSubmissionDto);
