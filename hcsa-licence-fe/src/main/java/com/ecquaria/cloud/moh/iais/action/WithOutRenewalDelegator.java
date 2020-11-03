@@ -906,6 +906,8 @@ public class WithOutRenewalDelegator {
                     }
                 }
             }
+            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_RENEW, AuditTrailConsts.FUNCTION_RENEW);
+            autoAppSubmissionListDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
             autoAppSubmissionListDto.setEventRefNo(auto.toString());
             autoAppSubmissionListDto.setAppSubmissionDtos(saveutoAppSubmissionDto);
             eventBusHelper.submitAsyncRequest(autoAppSubmissionListDto, autoSubmissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
@@ -917,6 +919,7 @@ public class WithOutRenewalDelegator {
         }
         List<AppSubmissionDto> appSubmissionDtos3 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos1);
         appSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos3);
+        appSubmissionListDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
         appSubmissionListDto.setEventRefNo(l.toString());
         eventBusHelper.submitAsyncRequest(appSubmissionListDto, submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, l.toString(), bpc.process);

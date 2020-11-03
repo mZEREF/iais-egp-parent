@@ -809,12 +809,6 @@
             //get data from page
             $contentEle.find('select[name="assignSelect"] option[value="newOfficer"]').prop('selected', true);
             $('#isEditHiddenVal').val('1');
-            $contentEle.find('input[name="qualification"]').prop('readonly', true);
-            $contentEle.find('input[name="qualification"]').css('border-color', '#ededed');
-            $contentEle.find('input[name="qualification"]').css('color', '#999');
-            $("input[name='specialty']").css('border-color', '#ededed');
-            $("input[name='specialty']").css('color', '#999');
-            $(".specialty").addClass('disabled');
         });
     }
 

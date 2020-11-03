@@ -360,9 +360,9 @@ public class CessationBeServiceImpl implements CessationBeService {
                     emailMap.clear();
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.LICENCE_STATUS_CEASED}).get(0).getText());
-                    emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
+                    emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
                     emailMap.put("ApplicationNumber", licenceNo);
-                    emailMap.put("CessationDate", DateFormatUtils.format(effectiveDate,"dd-MM-yyyy"));
+                    emailMap.put(CESSATION_DATE, DateFormatUtils.format(effectiveDate,"dd-MM-yyyy"));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
                     emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
@@ -409,9 +409,9 @@ public class CessationBeServiceImpl implements CessationBeService {
                             svcNameLicNo.append(svcName1).append(" : ").append(licenceNo1);
                         }
                     }
-                    emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
+                    emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
                     emailMap.put("ApplicationNumber", applicationNo);
-                    emailMap.put("CessationDate", DateFormatUtils.format(effectiveDate,"dd-MM-yyyy"));
+                    emailMap.put(CESSATION_DATE, DateFormatUtils.format(effectiveDate,"dd-MM-yyyy"));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
                     emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
@@ -445,9 +445,9 @@ public class CessationBeServiceImpl implements CessationBeService {
                     //lic email
                     emailMap.clear();
                     emailMap.put("ApplicantName", applicantName);
-                    emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
+                    emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
                     emailMap.put("LicenceNumber", licenceNo);
-                    emailMap.put("CessationDate", DateFormatUtils.format(new Date(),"dd-MM-yyyy"));
+                    emailMap.put(CESSATION_DATE, DateFormatUtils.format(new Date(),"dd-MM-yyyy"));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
                     emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
@@ -460,7 +460,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                     emailParam.setRefId(licId);
                     map.clear();
                     InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE);
-                    map.put("ServiceLicenceName", svcNameLicNo.toString());
+                    map.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
                     map.put("LicenceNumber", licenceNo);
                     subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
                     emailParam.setSubject(subject);
