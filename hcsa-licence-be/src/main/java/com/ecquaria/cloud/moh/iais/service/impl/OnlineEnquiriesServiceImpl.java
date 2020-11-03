@@ -51,11 +51,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformati
 import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.DisciplinaryRecordResponseDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.RegistrationDetailDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
@@ -71,18 +76,22 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.sz.commons.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -136,6 +145,18 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     private LicenceViewService licenceViewService;
     @Autowired
     AcraUenBeClient acraUenBeClient;
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
+
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
 
     @Override
     @SearchTrack(catalog = "ReqForInfoQuery", key = "licenseeQuery")
@@ -314,6 +335,24 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     @Override
     public PersonnelsDto getProfessionalInformationByKeyPersonnelId(String psnId) {
         return hcsaLicenceClient.getProfessionalInformationByKeyPersonnelId(psnId).getEntity();
+    }
+
+    @Override
+    public RegistrationDetailDto getRegnDetailListByRegnNo(String regnNo) {
+        ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
+        professionalParameterDto.setRegNo(Collections.singletonList(regnNo));
+        professionalParameterDto.setClientId("22222");
+        professionalParameterDto.setTimestamp(DateUtil.formatDateTime(new Date(), "yyyyMMddHHmmssSSS"));
+        professionalParameterDto.setSignature("2222");
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        List<DisciplinaryRecordResponseDto> list = beEicGatewayClient.getDisciplinaryRecord(professionalParameterDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
+
+        RegistrationDetailDto detail = new RegistrationDetailDto();
+
+
+        return detail;
     }
 
     @Override

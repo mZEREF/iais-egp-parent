@@ -66,7 +66,7 @@ public class PostInspectionBatchJob {
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         Map<String, List<String>> map = hcsaLicenceClient.getPostInspectionMap().getEntity();
         log.debug(StringUtil.changeForLog("=============map size================" + map.size()));
-        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail();
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         map.forEach((insGrpId, licIds) -> {
             List<String> insGrpIds = IaisCommonUtils.genNewArrayList();
             List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();

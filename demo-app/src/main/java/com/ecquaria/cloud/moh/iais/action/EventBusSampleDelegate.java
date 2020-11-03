@@ -41,7 +41,7 @@ public class EventBusSampleDelegate {
         orgDto.setUenNo(String.valueOf(System.currentTimeMillis()));
         orgDto.setStatus("Active");
         orgDto.setEventRefNo(orgDto.getUenNo());
-        orgDto.setAuditTrailDto(AuditTrailHelper.getBatchJobAuditTrail());
+        orgDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
         String submissionId = sampleClient.getSeqId().getEntity();
         SubmitResp submitResp = eventBusHelper.submitAsyncRequest(orgDto, submissionId, EventBusConsts.SERVICE_NAME_DEMO,
                 EventBusConsts.OPERATION_DEMO_CREATE_ORG, orgDto.getEventRefNo(), bpc.process);

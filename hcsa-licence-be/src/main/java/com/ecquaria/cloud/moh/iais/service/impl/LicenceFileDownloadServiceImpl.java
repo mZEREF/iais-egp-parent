@@ -388,7 +388,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private Boolean fileToDto(String str,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,ProcessFileTrackDto processFileTrackDto,
                               String submissionId,Long l)
            {
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
+        AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
 
 
@@ -618,7 +618,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
 
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
+        AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
         List<ApplicationDto> listNewApplicationDto =IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> requestForInfList  =IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> updateTaskList  =IaisCommonUtils.genNewArrayList();

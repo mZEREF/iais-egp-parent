@@ -146,12 +146,8 @@ public class AuditTrailHelper {
         return IaisEGPHelper.getCurrentAuditTrailDto();
     }
 
-    public static AuditTrailDto getBatchJobAuditTrail(){
-        AuditTrailDto batchJobAt;
-        if ((batchJobAt = getCurrentAuditTrailDto()) == null){
-            batchJobAt = new AuditTrailDto();
-        }
-
+    private static AuditTrailDto getBatchJobAuditTrail(){
+        AuditTrailDto batchJobAt = new AuditTrailDto();
         batchJobAt.setNricNumber("System");
         batchJobAt.setMohUserId("System");
         batchJobAt.setMohUserGuid(AppConsts.USER_ID_SYSTEM);

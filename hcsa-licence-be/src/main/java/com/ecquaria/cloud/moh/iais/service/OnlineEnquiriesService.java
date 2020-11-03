@@ -10,6 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComplianceHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.EnquiryInspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.dto.RegistrationDetailDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -33,5 +35,7 @@ public interface OnlineEnquiriesService {
     List<String> getLicIdsByappIds(List<String> appIds);
     List<ComplianceHistoryDto> complianceHistoryDtosByLicId(List<ComplianceHistoryDto> complianceHistoryDtos, String licenceId, Set<String> appIds);
     PersonnelsDto getProfessionalInformationByKeyPersonnelId(String psnId);
+
+    RegistrationDetailDto getRegnDetailListByRegnNo(String regnNo);
 
 }

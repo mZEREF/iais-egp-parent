@@ -151,7 +151,7 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
 
     private void createTask(int report, int leadTask, int allApp, List<AppInspectionStatusDto> appInspectionStatusDtos) {
         int all = report + leadTask;
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
+        AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
         if(all == allApp){
             for(AppInspectionStatusDto appInspStatusDto : appInspectionStatusDtos){
                 if (appInspStatusDto == null || StringUtil.isEmpty(appInspStatusDto.getAppPremCorreId())) {

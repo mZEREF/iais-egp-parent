@@ -80,7 +80,7 @@ public class KpiColourByWorkDaysJobHandler extends IJobHandler {
                 }
             }
             List<TaskDto> taskDtos = organizationClient.getKpiTaskByStatus().getEntity();
-            AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
+            AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
             if (!IaisCommonUtils.isEmpty(taskDtos)) {
                 for(TaskDto taskDto : taskDtos){
                     try {

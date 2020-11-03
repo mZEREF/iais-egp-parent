@@ -80,7 +80,7 @@ public class MohSkipInspApptBatchJob {
     public void mohSkipInspApptStep(BaseProcessClass bpc){
         logAbout("Skip Online Appointment Inspection Date");
         List<TaskDto> taskDtos = organizationClient.getActiveTaskByUrl(TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE).getEntity();
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
+        AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
         if(!IaisCommonUtils.isEmpty(taskDtos)){
             List<AppPremInspCorrelationDto> appPremInspCorrelationDtos = IaisCommonUtils.genNewArrayList();
             try{

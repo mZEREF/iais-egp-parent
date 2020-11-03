@@ -117,7 +117,7 @@ public class LicenceExpiredBatchJob {
 
     private void updateLicenceStatus(List<LicenceDto> licenceDtos, Date date) {
         List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
-        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail();
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         for (LicenceDto licenceDto : licenceDtos) {
             licenceDto.setAuditTrailDto(auditTrailDto);
             String licId = licenceDto.getId();
@@ -200,7 +200,7 @@ public class LicenceExpiredBatchJob {
 
     private void updateLicenceStatusEffect(List<LicenceDto> licenceDtos, Date date) {
         List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
-        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail();
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         for (LicenceDto licenceDto : licenceDtos) {
             try {
                 licenceDto.setAuditTrailDto(auditTrailDto);
@@ -274,7 +274,7 @@ public class LicenceExpiredBatchJob {
     }
 
     private void updateLicenceStatusApproved(List<LicenceDto> licenceDtos) {
-        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail();
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         for (LicenceDto licenceDto : licenceDtos) {
             licenceDto.setAuditTrailDto(auditTrailDto);
             String licId = licenceDto.getId();

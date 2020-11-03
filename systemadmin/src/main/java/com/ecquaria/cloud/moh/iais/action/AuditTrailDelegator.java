@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailExcelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -185,7 +186,51 @@ public class AuditTrailDelegator {
         }
 
         try {
-            File file = ExcelWriter.writerToExcel(searchResult.getRows(), AuditTrailQueryDto.class, "Audit Trail Logging");
+            List<AuditTrailExcelDto> etList = IaisCommonUtils.genNewArrayList();
+            List<AuditTrailQueryDto> atList = searchResult.getRows();
+            for (AuditTrailQueryDto i : atList){
+                int domain = i.getDomain();
+                int loginType = i.getLoginType();
+                String domainDesc = i.getDomainDesc();
+                String nricNum = i.getNricNumber();
+                String uenId = i.getUenId();
+                String mohUserId = i.getMohUserId();
+                String entityId = i.getEntityId();
+
+                AuditTrailExcelDto etExcel = new AuditTrailExcelDto();
+                etExcel.setOperation(domainDesc);
+                if (AuditTrailConsts.OPERATION_TYPE_BATCH_JOB == domain){
+                    etExcel.setBatchjobId(entityId);
+                    etExcel.setCreateBy(nricNum);
+                }else if (AuditTrailConsts.OPERATION_TYPE_INTRANET == domain){
+                    etExcel.setMohUserId(mohUserId);
+                    etExcel.setCreateBy(mohUserId);
+                }else if (AuditTrailConsts.OPERATION_TYPE_INTERNET == domain){
+                    if (AuditTrailConsts.LOGIN_TYPE_SING_PASS == loginType){
+                        etExcel.setSingpassId(nricNum);
+                    }else if (AuditTrailConsts.LOGIN_TYPE_CORP_PASS == loginType){
+                        etExcel.setCorppassId(nricNum);
+                        etExcel.setCorppassNric(nricNum);
+                        etExcel.setUen(uenId);
+                    }
+
+                    etExcel.setCreateBy(nricNum);
+                }
+
+                etExcel.setActionTime(i.getActionTime());
+                etExcel.setClientIp(i.getClientIp());
+                etExcel.setUserAgent(i.getUserAgent());
+                etExcel.setSessionId(i.getSessionId());
+                etExcel.setTotalSessionDuration(i.getTotalSessionDuration());
+                etExcel.setApplicationId(i.getAppNum());
+                etExcel.setLicenseNum(i.getLicenseNum());
+                etExcel.setModule(i.getModule());
+                etExcel.setFunctionName(i.getFunctionName());
+                etExcel.setProgrammeName(i.getProgrammeName());
+                etExcel.setDataActivities(i.getOperationDesc());
+                etList.add(etExcel);
+            }
+            File file = ExcelWriter.writerToExcel(etList, AuditTrailExcelDto.class, "Audit Trail Logging");
             FileUtils.writeFileResponseContent(response, file);
             FileUtils.deleteTempFile(file);
         } catch (Exception e) {

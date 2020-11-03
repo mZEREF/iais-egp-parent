@@ -177,7 +177,7 @@ public class AppealApproveBatchjob {
                   appealApplicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_LICENCE_GENERATED);
                   appealApplicationGroupDtos.add(appealApplicationGroupDto);
                   //event bus
-                  AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail();
+                  AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
                   //licence
                   if(!IaisCommonUtils.isEmpty(appealLicence)){
                       AppealLicenceDto appealLicenceDto = new AppealLicenceDto();
@@ -396,7 +396,7 @@ public class AppealApproveBatchjob {
                                           List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,
                                           AppealApproveDto appealApproveDto, List<ApplicationGroupDto> appealApplicationGroupDtos) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is start ..."));
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
+        AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
         AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
         ApplicationDto appealApplication = appealApproveDto.getAppealApplicationDto();
         AppGrpPremisesEntityDto appGrpPremisesDto = appealApproveDto.getAppGrpPremisesEntityDto();

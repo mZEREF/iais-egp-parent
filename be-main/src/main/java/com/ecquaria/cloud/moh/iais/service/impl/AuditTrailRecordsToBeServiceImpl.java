@@ -237,7 +237,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
     }
     private Boolean fileToDto(String str,ProcessFileTrackDto processFileTrackDto,String submissionId){
         AuditTrailEntityEventDto auditTrailEntityEventDto = JsonUtil.parseToObject(str, AuditTrailEntityEventDto.class);
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
+        AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
         auditTrailEntityEventDto.setAuditTrailDto(intranet);
         //eventbus
 //        auditTrailEntityEventDto.setEventRefNo(processFileTrackDto.getRefId());
@@ -256,7 +256,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
     private void changeStatus( ProcessFileTrackDto processFileTrackDto){
         /*  applicationClient.updateStatus().getEntity();*/
         processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
-        AuditTrailDto batchJobDto = AuditTrailHelper.getBatchJobAuditTrail();
+        AuditTrailDto batchJobDto = AuditTrailHelper.getCurrentAuditTrailDto();
         processFileTrackDto.setAuditTrailDto(batchJobDto);
         processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_COMPLETE);
         systemClient.updateProcessFileTrack(processFileTrackDto);

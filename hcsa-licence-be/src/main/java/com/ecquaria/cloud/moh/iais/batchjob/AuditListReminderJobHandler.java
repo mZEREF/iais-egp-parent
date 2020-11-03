@@ -94,7 +94,7 @@ public class AuditListReminderJobHandler extends IJobHandler {
 
 
     private void saveJobRemindMsgTrackingDto(String emailKey,String msgKey){
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobAuditTrail();
+        AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
         JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
         jobRemindMsgTrackingDto.setRefNo(emailKey);
         jobRemindMsgTrackingDto.setMsgKey(msgKey);

@@ -39,7 +39,7 @@ public class UploadDelegatorJob extends IJobHandler {
             //Parse the
             AuditTrailHelper.setupBatchJobAuditTrail(this);
             List<ApplicationListFileDto> parse = uploadFileService.parse(data);
-            AuditTrailDto intenet = AuditTrailHelper.getBatchJobAuditTrail();
+            AuditTrailDto intenet = AuditTrailHelper.getCurrentAuditTrailDto();
             for(ApplicationListFileDto applicationListFileDto :parse){
                 applicationListFileDto.setAuditTrailDto(intenet);
                 Map<String,List<String>> map=new HashMap();

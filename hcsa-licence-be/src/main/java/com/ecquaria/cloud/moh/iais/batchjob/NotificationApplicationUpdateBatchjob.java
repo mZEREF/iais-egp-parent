@@ -78,7 +78,7 @@ public class NotificationApplicationUpdateBatchjob {
                     }
                     newNotificateApplicationDto.setAmendApplicationDtos(newAmendApplicationDtos);
                 }
-                AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail();
+                AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
                 newNotificateApplicationDto.setAuditTrailDto(auditTrailDto);
                 appGroupMiscService.saveNotificateApplicationDto(newNotificateApplicationDto);
             }

@@ -947,7 +947,7 @@ public class InsRepServiceImpl implements InsRepService {
         log.info("post inspection call back start ===================>>>>>");
         log.info(StringUtil.changeForLog("post inspection start eventRefNum ===================>>>>>"+eventRefNum));
         List<ApplicationDto> postInspectionApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
-        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail();
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         //appGrp --------app -------task    submissionId   operation yiyang    update licPremise
         List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(postInspectionApps)) {

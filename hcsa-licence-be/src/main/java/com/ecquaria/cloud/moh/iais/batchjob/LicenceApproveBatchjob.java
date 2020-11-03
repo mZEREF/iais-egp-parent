@@ -172,7 +172,7 @@ public class LicenceApproveBatchjob {
 
     public void jobExecute() {
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is start ..."));
-        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail();
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         int day = systemParamConfig.getLicGenDay();
         //get can Generate Licence
         GenerateLicenceDto generateLicenceDto = new GenerateLicenceDto();
@@ -2149,7 +2149,7 @@ public class LicenceApproveBatchjob {
         List<Map<String, String>> fail = IaisCommonUtils.genNewArrayList();
         toDoResult(licenceGroupDtos, generalGenerateResult, groupGenerateResult, success, fail, applicationGroupDto);
         if (success.size() > 0) {
-            AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobAuditTrail();
+            AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
             EventBusLicenceGroupDtos eventBusLicenceGroupDtos = new EventBusLicenceGroupDtos();
             String evenRefNum = String.valueOf(System.currentTimeMillis());
             eventBusLicenceGroupDtos.setEventRefNo(evenRefNum);
