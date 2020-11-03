@@ -320,7 +320,7 @@ public class CessationFeServiceImpl implements CessationFeService {
             String applicationNo = applicationDto.getApplicationNo();
             List<AppCessLicDto> appCessDtosByLicIds = getAppCessDtosByLicIds(licIds);
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
-            String licenceNo = appCessLicDto.getLicenceNo();
+            String licenceNo = licenceDto.getLicenceNo();
             String svcName = appCessLicDto.getSvcName();
             AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(appId).getEntity();
             String hciCode = appGrpPremisesDto.getHciCode();
@@ -360,9 +360,6 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
                     emailMap.put(CESSATION_DATE, DateFormatUtils.format(effectiveDate,"dd-MM-yyyy"));
                     emailMap.put(APPLICATION_DATE, DateFormatUtils.format(new Date(),"dd-MM-yyyy"));
-                    emailMap.put(SERVICE_LICENCE_NAME, svcName);
-                    emailMap.put(CESSATION_DATE, Formatter.formatDateTime(effectiveDate));
-                    emailMap.put(APPLICATION_DATE, Formatter.formatDate(new Date()));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("systemLink", loginUrl);
                     emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
@@ -399,9 +396,9 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.clear();
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.LICENCE_STATUS_CEASED}).get(0).getText());
-                    emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
+                    emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
                     emailMap.put("ApplicationNumber", licenceNo);
-                    emailMap.put("CessationDate", DateFormatUtils.format(effectiveDate,"dd-MM-yyyy"));
+                    emailMap.put(CESSATION_DATE, DateFormatUtils.format(effectiveDate,"dd-MM-yyyy"));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
                     emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
@@ -485,9 +482,9 @@ public class CessationFeServiceImpl implements CessationFeService {
                     //lic email
                     emailMap.clear();
                     emailMap.put("ApplicantName", applicantName);
-                    emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
+                    emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
                     emailMap.put("LicenceNumber", licenceNo);
-                    emailMap.put("CessationDate", DateFormatUtils.format(new Date(),"dd-MM-yyyy"));
+                    emailMap.put(CESSATION_DATE, DateFormatUtils.format(new Date(),"dd-MM-yyyy"));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
                     emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
@@ -500,7 +497,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailParam.setRefId(licId);
                     map.clear();
                     msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE).getEntity();
-                    map.put("ServiceLicenceName", svcNameLicNo.toString());
+                    map.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
                     map.put("LicenceNumber", licenceNo);
                     subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
                     emailParam.setSubject(subject);

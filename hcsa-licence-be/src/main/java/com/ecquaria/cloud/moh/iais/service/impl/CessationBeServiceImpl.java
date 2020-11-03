@@ -275,8 +275,8 @@ public class CessationBeServiceImpl implements CessationBeService {
             String premiseId = appCessationDto.getPremiseId();
             String licId = appCessationDto.getLicId();
             List<String> specIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
-            LicenceDto entity = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
-            String licenseeId = entity.getLicenseeId();
+            LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
+            String licenseeId = licenceDto.getLicenseeId();
             licIds.clear();
             licIds.add(licId);
             String appId = appIdPremisesMap.get(premiseId);
@@ -299,7 +299,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                     }
                 }
             }
-            String licenceNo = appCessLicDto.getLicenceNo();
+            String licenceNo = licenceDto.getLicenceNo();
             String svcName = appCessLicDto.getSvcName();
             Date effectiveDate = appCessationDto.getEffectiveDate();
             try {
@@ -325,8 +325,6 @@ public class CessationBeServiceImpl implements CessationBeService {
                     emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
                     emailMap.put(CESSATION_DATE, DateFormatUtils.format(effectiveDate,"dd-MM-yyyy"));
                     emailMap.put("ApplicationDate", DateFormatUtils.format(new Date(),"dd-MM-yyyy"));
-                    emailMap.put(SERVICE_LICENCE_NAME, svcName);
-                    emailMap.put(CESSATION_DATE, Formatter.formatDateTime(effectiveDate));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("systemLink", loginUrl);
                     emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
