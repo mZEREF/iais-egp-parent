@@ -907,6 +907,12 @@ public class MohIntranetUserDelegator {
         String officeNo = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_OFFICETELNO);
         String remarks = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_REMARKS);
         String organization = ParamUtil.getRequestString(bpc.request, "organization");
+        String available = ParamUtil.getRequestString(bpc.request, "available");
+        if (StringUtil.isEmpty(available)) {
+            orgUserDto.setAvailable(Boolean.FALSE);
+        } else {
+            orgUserDto.setAvailable(Boolean.TRUE);
+        }
 
         orgUserDto.setOrganization(organization);
         orgUserDto.setFirstName(firstName);
