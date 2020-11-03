@@ -287,6 +287,7 @@ public class CessationApplicationBeDelegator {
                         String patTransTo = appCessHciDto.getPatTransTo();
                         String patRegNo = appCessHciDto.getPatRegNo();
                         String patNoRemarks = appCessHciDto.getPatNoRemarks();
+                        String patOthers = appCessHciDto.getPatOthers();
                         String readInfo = appCessHciDto.getReadInfo();
 
                         AppCessationDto appCessationDto = new AppCessationDto();
@@ -298,6 +299,7 @@ public class CessationApplicationBeDelegator {
                         appCessationDto.setPatTransType(patTransType);
                         appCessationDto.setPatTransTo(patTransTo);
                         appCessationDto.setPatRegNo(patRegNo);
+                        appCessationDto.setPatOthers(patOthers);
                         appCessationDto.setPatNoRemarks(patNoRemarks);
                         appCessationDto.setPremiseId(whichTodo);
                         appCessationDto.setReadInfo(readInfo);
