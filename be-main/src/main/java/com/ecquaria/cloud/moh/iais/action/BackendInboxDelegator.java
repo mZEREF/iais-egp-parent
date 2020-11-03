@@ -999,7 +999,7 @@ public class BackendInboxDelegator {
                     doAo1Ao2Approve(broadcastOrganizationDto,broadcastApplicationDto,applicationDto,applicationDtoIds,taskDto);
                 }
 
-                if(isAllSubmit){
+                if(isAllSubmit || applicationDto.isFastTracking()){
                     //update application Group status
                     ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                     broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
