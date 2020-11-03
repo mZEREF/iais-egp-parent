@@ -200,6 +200,8 @@ public class UploadFileServiceImpl implements UploadFileService {
         if (!outFolder.endsWith(File.separator)) {
             outFolder += File.separator;
         }
+        File zipFile =new File(sharedOutPath);
+        MiscUtil.checkDirs(zipFile);
         try (OutputStream outputStream = Files.newOutputStream(Paths.get(outFolder + l + AppServicesConsts.ZIP_NAME));
                 CheckedOutputStream cos=new CheckedOutputStream(outputStream,new CRC32());
                ZipOutputStream zos=new ZipOutputStream(cos)) {
@@ -251,7 +253,6 @@ public class UploadFileServiceImpl implements UploadFileService {
             outFolder += File.separator;
         }
         File zipFile =new File(sharedOutPath);
-        MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
            File[] files = zipFile.listFiles((dir, name) -> {
                if (name.endsWith(fileNamesss+".zip")) {
