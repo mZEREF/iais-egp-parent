@@ -35,7 +35,6 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -512,9 +511,10 @@ public class RequestForChangeDelegator {
                     appSubmissionDto.setAppGroupMiscDtos(appGroupMiscDtoList);
 
                     AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
-                    LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-                    if(licenseeDto!=null){
-                        sendRFCNotification(loginContext,licenceDto,licenseeDto,appSubmissionDto.getLicenseeId(),newLicenseeId,tranferSub);
+                    try {
+                        requestForChangeService.sendRfcEmailToOfficer( tranferSub, "Change in Management of Licensee");
+                    } catch (Exception e) {
+                        log.info(e.getMessage(),e);
                     }
                     ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
                     ParamUtil.setSessionAttr(bpc.request, "ackPageAppSubmissionDto", null);
@@ -764,30 +764,7 @@ public class RequestForChangeDelegator {
         return error;
     }
 
-    private void sendRFCNotification(LoginContext loginContext, LicenceDto licenceDto, LicenseeDto licenseeDto, String transfor, String transfee, AppSubmissionDto tranferSub){
-        try {
-            //Send notification to transferor when licence transfer application is submitted.
-            List<String> emailTransfor = IaisEGPHelper.getLicenseeEmailAddrs(transfor);
-            List<String> emailTransfee = IaisEGPHelper.getLicenseeEmailAddrs(transfee);
-            Map<String,Object> notifyMap = IaisCommonUtils.genNewHashMap();
-            notifyMap.put("licensee",licenseeDto.getName());
-            notifyMap.put("licence",licenceDto.getLicenceNo() + " " + licenceDto.getSvcName());
-            //MsgTemplateDto templateDto = appSubmissionService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_TRANSFER_APPLICATION);
 
-            //sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),emailTransfor,notifyMap,templateDto.getTemplateName());
-            // Send notification to transferee when licence transfer application is submitted.
-            //sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),emailTransfee,notifyMap,templateDto.getTemplateName());
-            //RFC Application - Send notification to admin officers when amendment application is submitted.
-
-            String orgId = loginContext.getOrgId();
-            //List<String> adminEmailList = requestForChangeService.getAdminEmail(orgId);
-            //sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),adminEmailList,notifyMap,templateDto.getTemplateName());
-            requestForChangeService.sendRfcEmailToOfficer(tranferSub,orgId);
-
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-    }
 
     private void sendEmail(String appId, String templateHtml, List<String> emailAddr, Map<String,Object> map, String subject){
         EmailDto email = new EmailDto();

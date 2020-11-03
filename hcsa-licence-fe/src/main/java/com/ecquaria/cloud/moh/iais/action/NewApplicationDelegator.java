@@ -2039,7 +2039,9 @@ public class NewApplicationDelegator {
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> autoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> notAutoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
+        String description="";
         if (grpPremiseIsChange || docIsChange) {
+            description="Change in administrative information";
             appSubmissionDto.setOneLicDoRenew(true);
             if(appSubmissionDto.isGroupLic()){
                 List<AppGrpPremisesDto> appGrpPremisesDtos = groupLicecePresmiseChange(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
@@ -2079,7 +2081,7 @@ public class NewApplicationDelegator {
         appSubmissionListDto1.setEventRefNo(l1.toString());
         boolean appGrpMisc = false;
         if (serviceIsChange) {
-
+            description="Change of licence personnel particulars";
             List<AppSubmissionDto> personAppSubmissionList = personContact(bpc, appSubmissionDto, oldAppSubmissionDto);
             //sync other application
 
@@ -2139,6 +2141,11 @@ public class NewApplicationDelegator {
 
         }
 
+        try {
+            requestForChangeService.sendRfcEmailToOfficer( appSubmissionDto, description);
+        } catch (Exception e) {
+            log.info(e.getMessage(),e);
+        }
         String auto = generateIdClient.getSeqId().getEntity();
         String notAuto = generateIdClient.getSeqId().getEntity();
         AppSubmissionListDto autoAppSubmissionListDto = new AppSubmissionListDto();
