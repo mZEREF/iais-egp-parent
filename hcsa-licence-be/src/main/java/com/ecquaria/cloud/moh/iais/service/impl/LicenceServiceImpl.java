@@ -361,7 +361,7 @@ public class LicenceServiceImpl implements LicenceService {
                         log.info(StringUtil.changeForLog("HCI_Address = " + address));
                         templateContent.put("UEN_No", "uen no");
                         templateContent.put("Applicant", licenseeDto.getName());
-                        templateContent.put("ServiceName", MasterCodeUtil.getCodeDesc(licenseeIndividualDto.getFirstServiceCode()));
+                        templateContent.put("ServiceName", licenceDto.getSvcName());
                         templateContent.put("LicenceNo", licenceDto.getLicenceNo());
                         Calendar c = Calendar.getInstance();
                         c.add(Calendar.DAY_OF_MONTH, systemParamConfig.getIssueUenGraceDay());
