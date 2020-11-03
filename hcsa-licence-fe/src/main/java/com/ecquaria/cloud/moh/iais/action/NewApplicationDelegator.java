@@ -3964,8 +3964,7 @@ public class NewApplicationDelegator {
                     String onsitePbHolDayEndHH = ParamUtil.getString(request, onsitePbHolDayEndHHName);
                     String onsitePbHolDayEndMM = ParamUtil.getString(request, onsitePbHolDayEndMMName);
                     appPremPhOpenPeriod.setPhDateStr(onsitePubHoliday);
-                    Date phDate = DateUtil.parseDate(onsitePubHoliday, Formatter.DATE);
-                    appPremPhOpenPeriod.setPhDate(phDate);
+                    appPremPhOpenPeriod.setPhDate(onsitePubHoliday);
                     appPremPhOpenPeriod.setOnsiteStartFromHH(onsitePbHolDayStartHH);
                     appPremPhOpenPeriod.setOnsiteStartFromMM(onsitePbHolDayStartMM);
                     appPremPhOpenPeriod.setOnsiteEndToHH(onsitePbHolDayEndHH);
@@ -4018,8 +4017,7 @@ public class NewApplicationDelegator {
                     String convPbHolDayEndHH = ParamUtil.getString(request, convPbHolDayEndHHName);
                     String convPbHolDayEndMM = ParamUtil.getString(request, convPbHolDayEndMMName);
                     appPremPhOpenPeriod.setPhDateStr(convPubHoliday);
-                    Date phDate = DateUtil.parseDate(convPubHoliday, Formatter.DATE);
-                    appPremPhOpenPeriod.setPhDate(phDate);
+                    appPremPhOpenPeriod.setPhDate(convPubHoliday);
                     appPremPhOpenPeriod.setConvStartFromHH(convPbHolDayStartHH);
                     appPremPhOpenPeriod.setConvStartFromMM(convPbHolDayStartMM);
                     appPremPhOpenPeriod.setConvEndToHH(convPbHolDayEndHH);
@@ -4071,8 +4069,7 @@ public class NewApplicationDelegator {
                     String offSitePbHolDayEndHH = ParamUtil.getString(request, offSitePbHolDayEndHHName);
                     String offSitePbHolDayEndMM = ParamUtil.getString(request, offSitePbHolDayEndMMName);
                     appPremPhOpenPeriod.setPhDateStr(offSitePubHoliday);
-                    Date phDate = DateUtil.parseDate(offSitePubHoliday, Formatter.DATE);
-                    appPremPhOpenPeriod.setPhDate(phDate);
+                    appPremPhOpenPeriod.setPhDate(offSitePubHoliday);
                     appPremPhOpenPeriod.setOffSiteStartFromHH(offSitePbHolDayStartHH);
                     appPremPhOpenPeriod.setOffSiteStartFromMM(offSitePbHolDayStartMM);
                     appPremPhOpenPeriod.setOffSiteEndToHH(offSitePbHolDayEndHH);

@@ -830,7 +830,7 @@ public class NewApplicationHelper {
         if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriods)){
             for(AppPremPhOpenPeriodDto appPremPhOpenPeriod:appPremPhOpenPeriods){
                 if(appPremPhOpenPeriod.getPhDate() != null){
-                    appPremPhOpenPeriod.setPhDateStr(Formatter.formatDate(appPremPhOpenPeriod.getPhDate()));
+                    appPremPhOpenPeriod.setPhDateStr(appPremPhOpenPeriod.getPhDate());
                 }
                 Time start = appPremPhOpenPeriod.getStartFrom();
                 Time end = appPremPhOpenPeriod.getEndTo();

@@ -700,15 +700,16 @@ public class LicenceViewServiceDelegator {
             for (AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList) {
                 Time startFrom = appPremPhOpenPeriodDto.getStartFrom();
                 Time endTo = appPremPhOpenPeriodDto.getEndTo();
-                Date phDate = appPremPhOpenPeriodDto.getPhDate();
+                String phDate = appPremPhOpenPeriodDto.getPhDate();
                 if(phDate==null){
                     continue;
                 }
-                for (PublicHolidayDto publicHolidayDto : publicHolidayDtos) {
+                //todo:ph task start
+                /*for (PublicHolidayDto publicHolidayDto : publicHolidayDtos) {
                     if (publicHolidayDto.getFromDate().compareTo(phDate) == 0) {
                         appPremPhOpenPeriodDto.setDayName(publicHolidayDto.getDescription());
                     }
-                }
+                }*/
                 if (startFrom != null && endTo != null) {
                     String string = startFrom.toString();
                     String string1 = endTo.toString();

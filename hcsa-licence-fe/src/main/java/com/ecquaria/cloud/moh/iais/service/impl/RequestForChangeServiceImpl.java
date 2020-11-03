@@ -574,7 +574,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 String convStartFromMM = appPremPhOpenPeriodDto.getOnsiteStartFromMM();
                                 String onsiteEndToHH = appPremPhOpenPeriodDto.getOnsiteEndToHH();
                                 String onsiteEndToMM = appPremPhOpenPeriodDto.getOnsiteEndToMM();
-                                Date phDate = appPremPhOpenPeriodDto.getPhDate();
+                                String phDate = appPremPhOpenPeriodDto.getPhDate();
                                 if (!StringUtil.isEmpty(phDate)) {
                                     if (StringUtil.isEmpty(convStartFromHH) || StringUtil.isEmpty(convStartFromMM)) {
                                         errorMap.put("onsiteStartToMM" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holidays Operating Hours (Start)", "field"));
@@ -865,7 +865,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 String convEndToMM = appPremPhOpenPeriodDto.getConvEndToMM();
                                 String convStartFromHH = appPremPhOpenPeriodDto.getConvStartFromHH();
                                 String convStartFromMM = appPremPhOpenPeriodDto.getConvStartFromMM();
-                                Date phDate = appPremPhOpenPeriodDto.getPhDate();
+                                String phDate = appPremPhOpenPeriodDto.getPhDate();
                                 if (!StringUtil.isEmpty(phDate)) {
                                     if (StringUtil.isEmpty(convEndToHH) || StringUtil.isEmpty(convEndToMM)) {
                                         errorMap.put("convEndToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holidays Operating Hours (End) ", "field"));
@@ -1200,7 +1200,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 String offSiteEndToMM = appPremPhOpenPeriodDto.getOffSiteEndToMM();
                                 String offSiteStartFromHH = appPremPhOpenPeriodDto.getOffSiteStartFromHH();
                                 String offSiteStartFromMM = appPremPhOpenPeriodDto.getOffSiteStartFromMM();
-                                Date phDate = appPremPhOpenPeriodDto.getPhDate();
+                                String phDate = appPremPhOpenPeriodDto.getPhDate();
                                 if (!StringUtil.isEmpty(phDate)) {
                                     if (StringUtil.isEmpty(offSiteEndToHH) || StringUtil.isEmpty(offSiteEndToMM)) {
                                         errorMap.put("offSiteEndToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holidays Operating Hours (End) ", "field"));
