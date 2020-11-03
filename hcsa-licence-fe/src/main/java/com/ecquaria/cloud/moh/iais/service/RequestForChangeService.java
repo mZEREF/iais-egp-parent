@@ -102,7 +102,6 @@ public interface RequestForChangeService {
      void svcDocToPresmise(AppSubmissionDto appSubmissionDto);
     void premisesDocToSvcDoc( AppSubmissionDto appSubmissionDtoByLicenceId);
     void sendRfcSubmittedEmail(AppSubmissionDto appSubmissionDto, String pmtMethod) throws IOException, TemplateException;
-    void sendRfcLicenseeEmail(AppSubmissionDto appSubmissionDto,List<String> emailList,String licenseeId) throws IOException, TemplateException;
     void sendRfcEmailToOfficer(AppSubmissionDto appSubmissionDto,String orgId) throws IOException, TemplateException;
     List<FeUserDto> getFeUserDtoByLicenseeId(String licenseeId);
     }

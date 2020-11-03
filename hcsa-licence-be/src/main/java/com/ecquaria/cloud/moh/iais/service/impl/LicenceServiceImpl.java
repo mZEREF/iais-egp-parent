@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEnt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.GenerateLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
@@ -474,7 +475,12 @@ public class LicenceServiceImpl implements LicenceService {
                                 sendRenewalAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,MohName,inspectionRecommendation);
                             }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
                                 try {
-                                    sendRfcApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList);
+                                    ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+                                    if(applicationGroupDto.getNewLicenseeId()!=null){
+                                        sendRfcApproveLicenseeEmail(applicationGroupDto,applicationDto,licenceNo,svcCodeList);
+                                    }else {
+                                        sendRfcApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList);
+                                    }
                                 } catch (IOException e) {
                                     log.info(e.getMessage(),e);
                                 }
@@ -486,6 +492,62 @@ public class LicenceServiceImpl implements LicenceService {
         }
     }
 
+
+    private void sendRfcApproveLicenseeEmail(ApplicationGroupDto applicationGroupDto,  ApplicationDto applicationDto,String licenceNo,
+                                             List<String> svcCodeList)  {
+        String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
+        LicenseeDto newLicenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getNewLicenseeId()).getEntity();
+        String applicantName = licenseeDto.getName();
+        emailMap.put("name_transferee", newLicenseeDto.getName());
+        emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
+        emailMap.put("ApplicationNumber", applicationDto.getApplicationNo());
+        emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
+        emailMap.put("ExistingLicensee", applicantName);
+        emailMap.put("transferee_licensee", newLicenseeDto.getName());
+        emailMap.put("LicenceNumber", licenceNo);
+        //emailMap.put("Hypelink", loginUrl);
+        emailMap.put("HCSA_Regulations", "");
+        emailMap.put("systemLink", loginUrl);
+        emailMap.put("email", systemParamConfig.getSystemAddressOne());
+        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED);
+        emailParam.setTemplateContent(emailMap);
+        emailParam.setQueryCode(applicationDto.getApplicationNo());
+        emailParam.setReqRefNum(applicationDto.getApplicationNo());
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+        emailParam.setRefId(applicationGroupDto.getNewLicenseeId());
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED).getEntity();
+        map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
+        map.put("ApplicationNumber", applicationDto.getApplicationNo());
+        String subject = null;
+        try {
+            subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
+        } catch (IOException | TemplateException e) {
+            log.info(e.getMessage(),e);
+        }
+        emailParam.setSubject(subject);
+        //email
+        notificationHelper.sendNotification(emailParam);
+        //msg
+        try {
+            emailParam.setSvcCodeList(svcCodeList);
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED_MSG);
+            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            emailParam.setRefId(applicationGroupDto.getNewLicenseeId());
+            notificationHelper.sendNotification(emailParam);
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+        }
+        //sms
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED_SMS);
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        notificationHelper.sendNotification(emailParam);
+    }
 
     public void sendRfcApproveNotification(String applicantName,
                                            String applicationTypeShow,

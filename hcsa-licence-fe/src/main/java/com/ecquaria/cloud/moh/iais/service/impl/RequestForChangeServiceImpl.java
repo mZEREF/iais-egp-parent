@@ -1560,64 +1560,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         notificationHelper.sendNotification(emailParam);
     }
 
-    @Override
-    public void sendRfcLicenseeEmail(AppSubmissionDto appSubmissionDto,List<String> emailList,String licenseeId) throws IOException, TemplateException {
-        String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
-        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-        LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(appSubmissionDto.getLicenseeId()).getEntity();
-        LicenseeDto newLicenseeDto = organizationLienceseeClient.getLicenseeById(appSubmissionDto.getNewLicenseeId()).getEntity();
-        String applicantName = licenseeDto.getName();
-        emailMap.put("name_transferee", newLicenseeDto.getName());
-        emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
-        emailMap.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
-        emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
-        emailMap.put("ExistingLicensee", applicantName);
-        emailMap.put("transferee_licensee", newLicenseeDto.getName());
-        emailMap.put("LicenceNumber", appSubmissionDto.getLicenceNo());
-        //emailMap.put("Hypelink", loginUrl);
-        emailMap.put("HCSA_Regulations", "");
-        emailMap.put("systemLink", loginUrl);
-        emailMap.put("email", systemParamConfig.getSystemAddressOne());
-        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
-        EmailParam emailParam = new EmailParam();
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED);
-        emailParam.setTemplateContent(emailMap);
-        emailParam.setQueryCode(appSubmissionDto.getAppGrpNo());
-        emailParam.setReqRefNum(appSubmissionDto.getAppGrpNo());
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
-        emailParam.setRefId(licenseeId);
-        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED).getEntity();
-        map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
-        map.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
-        String subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
-        emailParam.setSubject(subject);
-        //email
-        notificationHelper.sendNotification(emailParam);
-        //msg
-        try {
-            String svcName=appSubmissionDto.getServiceName();
-            if(svcName==null){
-                LicenceDto licenceDto= licenceClient.getLicBylicNo(appSubmissionDto.getLicenceNo()).getEntity();
-                svcName=licenceDto.getSvcName();
-            }
-            List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(svcName)).getEntity();
-            List<String> svcCode=IaisCommonUtils.genNewArrayList();
-            svcCode.add(svcDto.get(0).getSvcCode());
-            emailParam.setSvcCodeList(svcCode);
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED_MSG);
-            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-            emailParam.setRefId(licenseeId);
-            notificationHelper.sendNotification(emailParam);
-        }catch (Exception e){
-            log.info(e.getMessage(),e);
-        }
-        //sms
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED_SMS);
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-        notificationHelper.sendNotification(emailParam);
-    }
 
     @Override
     public void sendRfcEmailToOfficer(AppSubmissionDto appSubmissionDto,String orgId) throws IOException, TemplateException {
