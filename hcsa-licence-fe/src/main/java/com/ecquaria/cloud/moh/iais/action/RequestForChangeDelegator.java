@@ -45,8 +45,16 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,14 +64,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /****
  *
@@ -88,6 +88,9 @@ public class RequestForChangeDelegator {
 
     @Autowired
     private SystemParamConfig systemParamConfig;
+
+    @Autowired
+    private FeEicGatewayClient feEicGatewayClient;
     /**
      *
      * @param bpc
@@ -734,6 +737,8 @@ public class RequestForChangeDelegator {
         if(StringUtil.isEmpty(uen) || uen.length() > 10){
             error.put("uenError",MessageUtil.replaceMessage("GENERAL_ERR0006","UEN of Licence to transfer licence to","field"));
 
+        }else{
+            feEicGatewayClient.getUenInfo(uen);
         }
         if(StringUtil.isEmpty(email)){
             error.put("emailError","GENERAL_ERR0039");
