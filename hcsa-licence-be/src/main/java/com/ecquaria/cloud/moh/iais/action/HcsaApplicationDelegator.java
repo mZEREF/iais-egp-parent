@@ -1815,18 +1815,6 @@ public class HcsaApplicationDelegator {
                     String oldAppId = premiseMiscDto.getRelateRecId();
                     String appGrpId = applicationDto.getAppGrpId();
                     List<ApplicationDto> applicationDtos = applicationClient.getAppDtosByAppGrpId(appGrpId).getEntity();
-                    LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-                    if(licenseeDto != null) {
-                        LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
-                        if (licenseeEntityDto != null) {
-                            String entityType = licenseeEntityDto.getEntityType();
-                            if (AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)) {
-                                applicationDto.setIsCharity(Boolean.TRUE);
-                            } else {
-                                applicationDto.setIsCharity(Boolean.FALSE);
-                            }
-                        }
-                    }
                     for(ApplicationDto applicationDto1 : applicationDtos){
                         if(applicationDto1.getApplicationNo().equals(applicationDto.getApplicationNo())){
                             applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
@@ -1834,6 +1822,18 @@ public class HcsaApplicationDelegator {
                     }
                     ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
                     if (oldApplication != null){
+                        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+                        if(licenseeDto != null) {
+                            LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
+                            if (licenseeEntityDto != null) {
+                                String entityType = licenseeEntityDto.getEntityType();
+                                if (AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)) {
+                                    oldApplication.setIsCharity(Boolean.TRUE);
+                                } else {
+                                    oldApplication.setIsCharity(Boolean.FALSE);
+                                }
+                            }
+                        }
                         String oldAppNo = oldApplication.getApplicationNo();
                         oldApplication.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW);
                         List<ApplicationDto> applicationDtosReturn = IaisCommonUtils.genNewArrayList();
