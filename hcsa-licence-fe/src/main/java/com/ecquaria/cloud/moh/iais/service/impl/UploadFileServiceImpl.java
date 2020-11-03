@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -213,6 +214,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             log.info("----------------end zipFile ---------------------");
         } catch (IOException e) {
             log.error(e.getMessage(),e);
+            throw new IaisRuntimeException(e);
         }
         return l+"";
     }
@@ -239,6 +241,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                 zos.closeEntry();
             }catch (Exception e){
                 log.error(e.getMessage(),e);
+                throw new IaisRuntimeException(e);
             }
         }
 
@@ -288,6 +291,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                    }
                } catch (IOException e) {
                    log.error(e.getMessage(),e);
+                   throw new IaisRuntimeException(e);
                }
            }
         }
