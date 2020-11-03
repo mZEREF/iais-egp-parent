@@ -2,9 +2,12 @@ package com.ecquaria.cloud.moh.iais.helper.excel;
 
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.sz.commons.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -225,15 +228,18 @@ public final class ExcelWriter {
                         sheet.setColumnHidden(index, true);
                     }
 
-                    if (objectType == Date.class){
-                        //Set to text format to avoid errors caused by date modification in different systems
-                        cell.setCellStyle(CellStyleHelper.getTextStyle());
-                    }
-
                     Object val = sourceClz.getDeclaredMethod("get" +
                             StringUtils.capitalize(field.getName())).invoke(t);
 
-                    cell.setCellValue(setValue(val));
+                    String str;
+                    if (objectType == Date.class){
+                        //Set to text format to avoid errors caused by date modification in different systems
+                        cell.setCellStyle(CellStyleHelper.getTextStyle());
+                        str = DateUtil.formatDateTime((Date) val, AppConsts.DEFAULT_DATE_TIME_FORMAT_SEC);
+                    }else {
+                        str = getValue(val);
+                    }
+                    cell.setCellValue(str);
                 }
             }
 
@@ -241,7 +247,7 @@ public final class ExcelWriter {
 
     }
 
-    private static String setValue(final Object obj) {
+    private static String getValue(final Object obj) {
         return obj == null ? "" : obj.toString();
     }
 
