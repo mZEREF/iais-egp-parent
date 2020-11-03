@@ -106,11 +106,12 @@ public class LicencePrint {
             }
 
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            InputStream in = null;
             try {
                 ZipOutputStream out = new ZipOutputStream(bos);
                 for (int i = 0; i < pdfFileList.size(); i++) {
                     // ByteArrayInputStream in = new ByteArrayInputStream(outputStream.toByteArray());
-                    InputStream in = java.nio.file.Files.newInputStream(pdfFileList.get(i).toPath());
+                    in = java.nio.file.Files.newInputStream(pdfFileList.get(i).toPath());
 //                    FileInputStream in = new FileInputStream(pdfFileList.get(i));
                     out.putNextEntry(new ZipEntry(pdfFileList.get(i).getName()));
                     int len;
@@ -118,7 +119,6 @@ public class LicencePrint {
                         out.write(buf, 0, len);
                     }
                     out.closeEntry();
-                    in.close();
                 }
                 out.close();
 //                bytes = FileUtils.readFileToByteArray(pdfFile);
@@ -126,6 +126,9 @@ public class LicencePrint {
             } catch (Exception e) {
                 log.info(e.getMessage(),e);
             }finally {
+                if (in != null){
+                    in.close();
+                }
                 bos.close();
             }
         }
