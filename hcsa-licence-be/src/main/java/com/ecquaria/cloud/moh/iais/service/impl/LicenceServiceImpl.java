@@ -299,7 +299,7 @@ public class LicenceServiceImpl implements LicenceService {
                 addresses.setSequenceNumber(sequenceNumber);
                 addresses.setAgencyReferenceNumber(agencyReferenceNumber);
                 addresses.setStandard("D");
-                addresses.setPostalCode(Integer.parseInt(licenseeDto.getPostalCode()));
+                addresses.setPostalCode(Integer.valueOf(licenseeDto.getPostalCode()));
                 addresses.setHouseBlockNumber(licenseeDto.getBlkNo());
                 addresses.setStreetName(licenseeDto.getStreetName());
                 addresses.setBuildingName(licenseeDto.getBuildingName());
