@@ -53,4 +53,5 @@ public interface ServiceConfigService {
     void paymentUpDateByGrpNo(ApplicationGroupDto appGrp);
 
     HcsaServiceDto getActiveHcsaServiceDtoByName(String svcName);
+    void updateAppGrpPmtStatus(ApplicationGroupDto appGrp);
 }

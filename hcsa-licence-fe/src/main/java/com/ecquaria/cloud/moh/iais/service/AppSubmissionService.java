@@ -81,4 +81,5 @@ public interface AppSubmissionService {
     AppSvcDocDto getMaxVersionSvcComDoc(String appGrpId, String configDocId);
     AppGrpPrimaryDocDto getMaxVersionPrimarySpecDoc(String appGrpId,String configDocId,String appNo);
     AppSvcDocDto getMaxVersionSvcSpecDoc(String appGrpId, String configDocId,String appNo);
+    AppSubmissionDto getAppSubmissionDtoByAppGrpNo(String appGrpNo);
 }

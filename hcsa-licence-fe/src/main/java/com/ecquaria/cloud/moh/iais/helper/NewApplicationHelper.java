@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
+import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
+import com.ecquaria.cloud.moh.iais.api.services.GatewayStripeAPI;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
@@ -43,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
+import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -1745,26 +1748,30 @@ public class NewApplicationHelper {
     public static void setDocInfo(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos, List<AppSvcDocDto> appSvcDocDtos, List<HcsaSvcDocConfigDto> primaryDocConfig, List<HcsaSvcDocConfigDto> svcDocConfig){
         if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos)){
             for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
-                for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:primaryDocConfig){
-                    String docConfigId = appGrpPrimaryDocDto.getSvcComDocId();
-                    if(!StringUtil.isEmpty(docConfigId) && docConfigId.equals(hcsaSvcDocConfigDto.getId())){
-                        appGrpPrimaryDocDto.setSvcComDocName(hcsaSvcDocConfigDto.getDocTitle());
-                        break;
+                if(!IaisCommonUtils.isEmpty(primaryDocConfig)){
+                    for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:primaryDocConfig){
+                        String docConfigId = appGrpPrimaryDocDto.getSvcComDocId();
+                        if(!StringUtil.isEmpty(docConfigId) && docConfigId.equals(hcsaSvcDocConfigDto.getId())){
+                            appGrpPrimaryDocDto.setSvcComDocName(hcsaSvcDocConfigDto.getDocTitle());
+                            break;
+                        }
                     }
                 }
             }
         }
         if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
             for(AppSvcDocDto appSvcDocDto:appSvcDocDtos){
-                for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:svcDocConfig){
-                    String docConfigId = appSvcDocDto.getSvcDocId();
-                    if(!StringUtil.isEmpty(docConfigId) && docConfigId.equals(hcsaSvcDocConfigDto.getId())){
-                        appSvcDocDto.setUpFileName(hcsaSvcDocConfigDto.getDocTitle());
-                        if(AppConsts.NO.equals(hcsaSvcDocConfigDto.getDupForPrem())){
-                            appSvcDocDto.setPremisesVal("");
-                            appSvcDocDto.setPremisesType("");
+                if(!IaisCommonUtils.isEmpty(svcDocConfig)){
+                    for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:svcDocConfig){
+                        String docConfigId = appSvcDocDto.getSvcDocId();
+                        if(!StringUtil.isEmpty(docConfigId) && docConfigId.equals(hcsaSvcDocConfigDto.getId())){
+                            appSvcDocDto.setUpFileName(hcsaSvcDocConfigDto.getDocTitle());
+                            if(AppConsts.NO.equals(hcsaSvcDocConfigDto.getDupForPrem())){
+                                appSvcDocDto.setPremisesVal("");
+                                appSvcDocDto.setPremisesType("");
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
             }
@@ -2178,6 +2185,21 @@ public class NewApplicationHelper {
             WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         }
 
+    }
+
+    public static String genBankUrl(HttpServletRequest request,String payMethod,Map<String, String> fieldMap,PmtReturnUrlDto pmtReturnUrlDto) throws Exception {
+        String url = "";
+        switch (payMethod){
+            case ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT:
+                url= GatewayStripeAPI.create_partner_trade_by_buyer_url(fieldMap, request, pmtReturnUrlDto.getCreditRetUrl());break;
+            case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
+                url= GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, request, pmtReturnUrlDto.getNetsRetUrl());break;
+            case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
+                url= GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, request, pmtReturnUrlDto.getPayNowRetUrl());break;
+            default:
+                url= GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, request, pmtReturnUrlDto.getOtherRetUrl());
+        }
+        return url;
     }
 
     //=============================================================================

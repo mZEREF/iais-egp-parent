@@ -104,4 +104,5 @@ public interface RequestForChangeService {
     void sendRfcSubmittedEmail(AppSubmissionDto appSubmissionDto, String pmtMethod) throws IOException, TemplateException;
     void sendRfcEmailToOfficer(AppSubmissionDto appSubmissionDto,String orgId) throws IOException, TemplateException;
     List<FeUserDto> getFeUserDtoByLicenseeId(String licenseeId);
+    LicenceDto getLicenceDtoByLicNo(String licenceNo);
     }

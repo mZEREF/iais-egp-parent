@@ -1036,6 +1036,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return applicationClient.getMaxVersionSvcSpecDoc(appGrpId,configDocId,appNo).getEntity();
     }
 
+    @Override
+    public AppSubmissionDto getAppSubmissionDtoByAppGrpNo(String appGrpNo) {
+        return applicationClient.getAppSubmissionDtoByAppGrpNo(appGrpNo).getEntity();
+    }
+
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             return appSvcRelatedInfoDtos.get(0);

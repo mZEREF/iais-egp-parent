@@ -1492,7 +1492,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         return organizationLienceseeClient.getFeUserDtoByLicenseeId(licenseeId).getEntity();
     }
 
-
+    @Override
+    public LicenceDto getLicenceDtoByLicNo(String licenceNo) {
+        return licenceClient.getLicenceDtoByLicNo(licenceNo).getEntity();
+    }
 
     @Override
     public void sendRfcSubmittedEmail(AppSubmissionDto appSubmissionDto, String pmtMethod) throws IOException, TemplateException {

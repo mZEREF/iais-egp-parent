@@ -43,7 +43,8 @@ public class GatewayStripeConfig {
 	
 	//"http://192.168.6.80:8088/egp/process/EGOV/PaymentGatewayService?";
 	public static final String common_gateway_service_url = properties.getProperty("stripe.payment.gateway.service.url");
-	
+
+	public static final String retrigger_giro_paymeny_return_rul = properties.getProperty("stripe.payment.retrigger.giro.pmt.return.url");
 	
 	//"D:\\alipay_log_" + System.currentTimeMillis() + ".txt";
 	public static final String log_path = properties.getProperty("stripe.payment.log.path");

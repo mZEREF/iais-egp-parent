@@ -312,4 +312,10 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     public HcsaServiceDto getActiveHcsaServiceDtoByName(String svcName) {
         return appConfigClient.getActiveHcsaServiceDtoByName(svcName).getEntity();
     }
+
+    @Override
+    public void updateAppGrpPmtStatus(ApplicationGroupDto appGrp) {
+        appGrp.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        applicationClient.doPaymentUpDate(appGrp);
+    }
 }

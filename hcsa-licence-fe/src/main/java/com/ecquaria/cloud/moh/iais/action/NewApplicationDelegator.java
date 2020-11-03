@@ -5,8 +5,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConfig;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayStripeConfig;
-import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
-import com.ecquaria.cloud.moh.iais.api.services.GatewayStripeAPI;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -79,6 +77,7 @@ import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.AppSelectSvcDto;
 import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
@@ -122,7 +121,13 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * egator
@@ -3081,23 +3086,13 @@ public class NewApplicationDelegator {
             fieldMap.put(GatewayConstants.AMOUNT_KEY, amount);
             fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
             fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDto.getAppGrpNo()+"_"+System.currentTimeMillis());
+            PmtReturnUrlDto pmtReturnUrlDto = new PmtReturnUrlDto();
+            pmtReturnUrlDto.setCreditRetUrl(GatewayStripeConfig.return_url);
+            pmtReturnUrlDto.setPayNowRetUrl(GatewayConfig.return_url);
+            pmtReturnUrlDto.setNetsRetUrl(GatewayConfig.return_url);
+            pmtReturnUrlDto.setOtherRetUrl(GatewayConfig.return_url);
             try {
-                String url="";
-                //String html="";
-                switch (payMethod){
-                    case ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT:
-                        //html = GatewayStripeAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, GatewayStripeConfig.return_url);
-                        url= GatewayStripeAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, GatewayStripeConfig.return_url);break;
-                    case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
-                        url= GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, GatewayConfig.return_url);break;
-                        //html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, GatewayConfig.return_url);break;
-                    case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
-                        url= GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, GatewayConfig.return_url);break;
-                        //html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, GatewayConfig.return_url);break;
-                    default:
-                        url= GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, GatewayConfig.return_url);
-                        //html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, GatewayConfig.return_url);break;
-                }
+                String url = NewApplicationHelper.genBankUrl(bpc.request,payMethod,fieldMap,pmtReturnUrlDto);
                 bpc.response.sendRedirect(url);
                 //ParamUtil.setRequestAttr(bpc.request, "jumpHtml", html);
             } catch (Exception e) {

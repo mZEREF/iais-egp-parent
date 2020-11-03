@@ -139,4 +139,7 @@ public interface LicenceClient {
 
     @GetMapping(value = "/hcsa-licence/licenceById/{licId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto> getLicDtoById(@PathVariable("licId") String licenceId);
+
+    @GetMapping(value = "/hcsa-licence/licence-licenceNo",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicenceDto> getLicenceDtoByLicNo(@RequestParam("licenceNo") String licenceNo);
 }
