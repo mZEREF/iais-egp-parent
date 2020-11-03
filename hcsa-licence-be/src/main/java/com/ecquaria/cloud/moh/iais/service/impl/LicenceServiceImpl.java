@@ -375,11 +375,12 @@ public class LicenceServiceImpl implements LicenceService {
                     if(licenseeIndividualDto.getUenMailFlag() == 0){
                         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
 
-                        templateContent.put("HCI_Name", "hciName");
+                        templateContent.put("HCI_Name", licenseeDto.getName());
                         String address = MiscUtil.getAddress(licenseeDto.getBlkNo(),licenseeDto.getStreetName(),licenseeDto.getBuildingName(),licenseeDto.getFloorNo(),licenseeDto.getUnitNo(),licenseeDto.getPostalCode());
                         templateContent.put("HCI_Address", address);
                         log.info(StringUtil.changeForLog("HCI_Address = " + address));
-                        templateContent.put("UEN_No", "uen no");
+                        OrganizationDto organizationDto = organizationClient.getOrganizationById(licenseeDto.getOrganizationId()).getEntity();
+                        templateContent.put("UEN_No", organizationDto.getUenNo());
                         templateContent.put("Applicant", licenseeDto.getName());
                         templateContent.put("ServiceName", licenceDto.getSvcName());
                         templateContent.put("LicenceNo", licenceDto.getLicenceNo());
