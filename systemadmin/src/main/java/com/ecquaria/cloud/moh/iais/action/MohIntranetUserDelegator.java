@@ -66,8 +66,8 @@ public class MohIntranetUserDelegator {
         ParamUtil.setSessionAttr(bpc.request, "roleMap", null);
         ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", null);
         ParamUtil.setSessionAttr(bpc.request, "userFileSize", null);
-        SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request,IntranetUserConstant.SEARCH_PARAM,OrgUserQueryDto.class.getName(),
-                IntranetUserConstant.INTRANET_USER_SORT_COLUMN,SearchParam.ASCENDING,false);
+        SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, IntranetUserConstant.SEARCH_PARAM, OrgUserQueryDto.class.getName(),
+                IntranetUserConstant.INTRANET_USER_SORT_COLUMN, SearchParam.ASCENDING, false);
         QueryHelp.setMainSql("systemAdmin", "IntranetUserQuery", searchParam);
         SearchResult searchResult = intranetUserService.doQuery(searchParam);
         if (!StringUtil.isEmpty(searchResult)) {
@@ -166,13 +166,13 @@ public class MohIntranetUserDelegator {
             return;
         }
         String id = "";
-        try{
+        try {
             id = ParamUtil.getMaskedString(bpc.request, "maskUserId");
-        }catch (MaskAttackException e){
+        } catch (MaskAttackException e) {
             log.error(e.getMessage(), e);
-            try{
-                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
-            } catch (IOException ioe){
+            try {
+                bpc.response.sendRedirect("https://" + bpc.request.getServerName() + "/hcsa-licence-web/CsrfErrorPage.jsp");
+            } catch (IOException ioe) {
                 log.error(ioe.getMessage(), ioe);
                 return;
             }
@@ -217,7 +217,6 @@ public class MohIntranetUserDelegator {
     }
 
 
-
     public void doDelete(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String id = ParamUtil.getMaskedString(bpc.request, "maskUserId");
@@ -239,13 +238,13 @@ public class MohIntranetUserDelegator {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String userAccId = ParamUtil.getRequestString(bpc.request, "userAccId");
         if (request != null) {
-            try{
+            try {
                 userAccId = ParamUtil.getMaskedString(bpc.request, "maskUserId");
-            }catch (MaskAttackException e){
+            } catch (MaskAttackException e) {
                 log.error(e.getMessage(), e);
-                try{
-                    bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
-                } catch (IOException ioe){
+                try {
+                    bpc.response.sendRedirect("https://" + bpc.request.getServerName() + "/hcsa-licence-web/CsrfErrorPage.jsp");
+                } catch (IOException ioe) {
                     log.error(ioe.getMessage(), ioe);
                     return;
                 }
@@ -306,9 +305,9 @@ public class MohIntranetUserDelegator {
         ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", assignRoleOptionFull);//Professional Screening  - Nursing Home
         ParamUtil.setRequestAttr(bpc.request, "alreadyAssignRoles", roleIds);
         ParamUtil.setRequestAttr(bpc.request, "alreadyAssignRoleIds", assignRoleIds);
-        ParamUtil.setSessionAttr(bpc.request, "psoGroupOptions", (Serializable)psoGroupOptions);
+        ParamUtil.setSessionAttr(bpc.request, "psoGroupOptions", (Serializable) psoGroupOptions);
         ParamUtil.setSessionAttr(bpc.request, "ao1GroupOptions", (Serializable) ao1GroupOptions);
-        ParamUtil.setSessionAttr(bpc.request, "insGroupOptions", (Serializable)insGroupOptions);
+        ParamUtil.setSessionAttr(bpc.request, "insGroupOptions", (Serializable) insGroupOptions);
         ParamUtil.setSessionAttr(bpc.request, "roleMap", (Serializable) roleMap);
         //key = Professional Screening  - Nursing Home  value = AO1
         ParamUtil.setSessionAttr(bpc.request, "roleNameGroupId", (Serializable) roleNameGroupId);
@@ -344,74 +343,74 @@ public class MohIntranetUserDelegator {
         String assignRolePso = ParamUtil.getString(bpc.request, "assignRolePso");
         String assignRolePsoLead = ParamUtil.getString(bpc.request, "assignRolePsoLead");
         //AO1
-        if(!StringUtil.isEmpty(assignRoleAo1)){
+        if (!StringUtil.isEmpty(assignRoleAo1)) {
             String ao1GroupSelect = ParamUtil.getString(bpc.request, "ao1GroupSelect");
-            if(!StringUtil.isEmpty(ao1GroupSelect)){
+            if (!StringUtil.isEmpty(ao1GroupSelect)) {
                 String roleId = roleMap.get(assignRoleAo1);
                 assignRoles.add(roleId);
                 groupIds.add(ao1GroupSelect);
             }
         }
         //AO1Leader
-        if(!StringUtil.isEmpty(assignRoleAo1Lead)){
+        if (!StringUtil.isEmpty(assignRoleAo1Lead)) {
             String ao1GroupLeadSelect = ParamUtil.getString(bpc.request, "ao1GroupLeadSelect");
-            if(!StringUtil.isEmpty(ao1GroupLeadSelect)){
+            if (!StringUtil.isEmpty(ao1GroupLeadSelect)) {
                 String roleId = roleMap.get(assignRoleAo1Lead);
                 assignRoles.add(roleId);
                 groupIds.add(ao1GroupLeadSelect);
             }
         }
         //ins
-        if(!StringUtil.isEmpty(assignRoleIns)){
+        if (!StringUtil.isEmpty(assignRoleIns)) {
             String insGroupSelect = ParamUtil.getString(bpc.request, "insGroupSelect");
-            if(!StringUtil.isEmpty(insGroupSelect)){
+            if (!StringUtil.isEmpty(insGroupSelect)) {
                 String roleId = roleMap.get(assignRoleIns);
                 assignRoles.add(roleId);
                 groupIds.add(insGroupSelect);
             }
         }
         //insLead
-        if(!StringUtil.isEmpty(assignRoleInsLead)){
+        if (!StringUtil.isEmpty(assignRoleInsLead)) {
             String insGroupLeadSelect = ParamUtil.getString(bpc.request, "insGroupLeadSelect");
-            if(!StringUtil.isEmpty(insGroupLeadSelect)){
+            if (!StringUtil.isEmpty(insGroupLeadSelect)) {
                 String roleId = roleMap.get(assignRoleInsLead);
                 assignRoles.add(roleId);
                 groupIds.add(insGroupLeadSelect);
             }
         }
         //pso
-        if(!StringUtil.isEmpty(assignRolePso)){
+        if (!StringUtil.isEmpty(assignRolePso)) {
             String psoGroupSelect = ParamUtil.getString(bpc.request, "psoGroupSelect");
-            if(!StringUtil.isEmpty(psoGroupSelect)){
+            if (!StringUtil.isEmpty(psoGroupSelect)) {
                 String roleId = roleMap.get(assignRolePso);
                 assignRoles.add(roleId);
                 groupIds.add(psoGroupSelect);
             }
         }
         //psoLead
-        if(!StringUtil.isEmpty(assignRolePsoLead)){
+        if (!StringUtil.isEmpty(assignRolePsoLead)) {
             String psoGroupLeadSelect = ParamUtil.getString(bpc.request, "psoGroupLeadSelect");
-            if(!StringUtil.isEmpty(psoGroupLeadSelect)){
+            if (!StringUtil.isEmpty(psoGroupLeadSelect)) {
                 String roleId = roleMap.get(assignRolePsoLead);
                 assignRoles.add(roleId);
                 groupIds.add(psoGroupLeadSelect);
             }
         }
         //others
-        if(assignRoleOthers!=null){
-            for(String assignRole : assignRoleOthers){
+        if (assignRoleOthers != null) {
+            for (String assignRole : assignRoleOthers) {
                 String roleId = roleMap.get(assignRole);
                 assignRoles.add(roleId);
-                if(RoleConsts.USER_ROLE_AO2.equals(roleId)||RoleConsts.USER_ROLE_AO2_LEAD.equals(roleId)){
-                    String groupName = "Level 2 Approval" ;
+                if (RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO2_LEAD.equals(roleId)) {
+                    String groupName = "Level 2 Approval";
                     String groupId = roleNameGroupId.get(groupName);
                     groupIds.add(groupId);
-                }else if(RoleConsts.USER_ROLE_AO3.equals(roleId)||RoleConsts.USER_ROLE_AO3_LEAD.equals(roleId)){
-                    String groupName = "Level 3 Approval" ;
+                } else if (RoleConsts.USER_ROLE_AO3.equals(roleId) || RoleConsts.USER_ROLE_AO3_LEAD.equals(roleId)) {
+                    String groupName = "Level 3 Approval";
                     String groupId = roleNameGroupId.get(groupName);
                     groupIds.add(groupId);
-                }else if(RoleConsts.USER_ROLE_ASO.equals(roleId)||RoleConsts.USER_ROLE_ASO_LEAD.equals(roleId)){
-                    String groupName = "Admin Screening officer" ;
+                } else if (RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_ASO_LEAD.equals(roleId)) {
+                    String groupName = "Admin Screening officer";
                     String groupId = roleNameGroupId.get(groupName);
                     groupIds.add(groupId);
                 }
@@ -440,7 +439,7 @@ public class MohIntranetUserDelegator {
 
             //add group
             List<UserGroupCorrelationDto> userGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
-            for(String groupId : groupIds){
+            for (String groupId : groupIds) {
                 UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
                 userGroupCorrelationDto.setUserId(userAccId);
                 userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -449,7 +448,7 @@ public class MohIntranetUserDelegator {
                 userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
                 userGroupCorrelationDtos.add(userGroupCorrelationDto);
             }
-            if(!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)){
+            if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
                 intranetUserService.addUserGroupId(userGroupCorrelationDtos);
             }
         }
@@ -492,32 +491,6 @@ public class MohIntranetUserDelegator {
         List<OrgUserDto> orgUserDtos = (List<OrgUserDto>) ParamUtil.getSessionAttr(bpc.request, "orgUserDtos");
         //do valiant
         List<OrgUserUpLoadDto> orgUserUpLoadDtos = IaisCommonUtils.genNewArrayList();
-//        List<String> userIds = IaisCommonUtils.genNewArrayList();
-//        String dup = "Duplication of record(s)";
-//        List<String> msgDup = IaisCommonUtils.genNewArrayList();
-//        msgDup.add(dup);
-//        for (OrgUserDto orgUserDto : orgUserDtos) {
-//            OrgUserUpLoadDto orgUserUpLoadDto = new OrgUserUpLoadDto();
-//            List<String> valiant = valiantDto(orgUserDto);
-//            String userId = orgUserDto.getUserId();
-//            if (!IaisCommonUtils.isEmpty(valiant)) {
-//                if (StringUtil.isEmpty(userId)) {
-//                    orgUserUpLoadDto.setUserId("-");
-//                } else {
-//                    orgUserUpLoadDto.setUserId(userId);
-//                }
-//                orgUserUpLoadDto.setMsg(valiant);
-//                orgUserUpLoadDtos.add(orgUserUpLoadDto);
-//            }
-//            if (userIds.contains(userId)) {
-//                orgUserUpLoadDto.setUserId(userId);
-//                orgUserUpLoadDto.setMsg(msgDup);
-//                orgUserUpLoadDtos.add(orgUserUpLoadDto);
-//            } else {
-//                userIds.add(userId);
-//            }
-//        }
-        //1 you mei you chong fu de
         List<OrgUserDto> existUsersNew = IaisCommonUtils.genNewArrayList();
         List<OrgUserDto> existUsersOld = IaisCommonUtils.genNewArrayList();
         for (OrgUserDto orgUserDto : orgUserDtos) {
@@ -565,10 +538,6 @@ public class MohIntranetUserDelegator {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
         }
-//        if (!IaisCommonUtils.isEmpty(orgUserUpLoadDtos)) {
-//            ParamUtil.setRequestAttr(bpc.request, "orgUserUpLoadDtos", orgUserUpLoadDtos);
-//            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-//        }
         if (!IaisCommonUtils.isEmpty(existUsersNew)) {
             ParamUtil.setRequestAttr(bpc.request, "existUsersNew", existUsersNew);
             ParamUtil.setRequestAttr(bpc.request, "existUsersOld", existUsersOld);
@@ -673,7 +642,7 @@ public class MohIntranetUserDelegator {
                 }
             }
             //new
-            if(!IaisCommonUtils.isEmpty(orgUserDtosNew)){
+            if (!IaisCommonUtils.isEmpty(orgUserDtosNew)) {
                 intranetUserService.createIntranetUsers(orgUserDtosNew);
                 for (OrgUserDto orgUserDto : orgUserDtosNew) {
                     saveEgpUser(orgUserDto);
@@ -813,7 +782,7 @@ public class MohIntranetUserDelegator {
                 }
             }
         } else {
-            errorMap.put("userId", MessageUtil.replaceMessage("GENERAL_ERR0006", "User ID","field"));
+            errorMap.put("userId", MessageUtil.replaceMessage("GENERAL_ERR0006", "User ID", "field"));
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
@@ -835,8 +804,8 @@ public class MohIntranetUserDelegator {
         ParamUtil.setRequestAttr(request, "searchStatus", status);
         ParamUtil.setRequestAttr(request, "privilege", privilege);
         ParamUtil.setRequestAttr(request, "role", role);
-        SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request,IntranetUserConstant.SEARCH_PARAM,OrgUserQueryDto.class.getName(),
-                IntranetUserConstant.INTRANET_USER_SORT_COLUMN,SearchParam.ASCENDING,true);
+        SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, IntranetUserConstant.SEARCH_PARAM, OrgUserQueryDto.class.getName(),
+                IntranetUserConstant.INTRANET_USER_SORT_COLUMN, SearchParam.ASCENDING, true);
         if (!StringUtil.isEmpty(userId)) {
             searchParam.addFilter("userId", userId, true);
         }
@@ -863,13 +832,13 @@ public class MohIntranetUserDelegator {
     public void doSorting(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, IntranetUserConstant.SEARCH_PARAM);
-        HalpSearchResultHelper.doSort(request,searchParam);
+        HalpSearchResultHelper.doSort(request, searchParam);
     }
 
     public void doPaging(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, IntranetUserConstant.SEARCH_PARAM);
-        HalpSearchResultHelper.doPage(request,searchParam);
+        HalpSearchResultHelper.doPage(request, searchParam);
     }
 
     /*utils*/
@@ -894,7 +863,12 @@ public class MohIntranetUserDelegator {
         String officeNo = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_OFFICETELNO);
         String remarks = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_REMARKS);
         String organization = ParamUtil.getRequestString(request, "organization");
-
+        String available = ParamUtil.getRequestString(request, "available");
+        if (StringUtil.isEmpty(available)) {
+            orgUserDto.setAvailable(Boolean.FALSE);
+        } else {
+            orgUserDto.setAvailable(Boolean.TRUE);
+        }
         orgUserDto.setUserId(userId);
         orgUserDto.setFirstName(firstName);
         orgUserDto.setLastName(lastName);
@@ -911,7 +885,7 @@ public class MohIntranetUserDelegator {
         orgUserDto.setRemarks(remarks);
         orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
         orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
-        orgUserDto.setAvailable(Boolean.FALSE);
+
         return orgUserDto;
     }
 
@@ -1045,6 +1019,7 @@ public class MohIntranetUserDelegator {
         List list = root.elements();
         List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < list.size(); i++) {
+            OrgUserDto orgUserDto = new OrgUserDto();
             try {
                 Element element = (Element) list.get(i);
                 String userId = element.element("userId").getText();
@@ -1063,7 +1038,6 @@ public class MohIntranetUserDelegator {
                 String officeNo = element.element("officeNo").getText();
                 String email = element.element("email").getText();
                 String remarks = element.element("remarks").getText();
-                OrgUserDto orgUserDto = new OrgUserDto();
                 if (!StringUtil.isEmpty(userId)) {
                     orgUserDto.setUserId(userId);
                 }
@@ -1120,6 +1094,8 @@ public class MohIntranetUserDelegator {
                 orgUserDto.setAvailable(Boolean.FALSE);
                 orgUserDtos.add(orgUserDto);
             } catch (Exception e) {
+                orgUserDto.setXmlError("error");
+                orgUserDtos.add(orgUserDto);
                 log.error(e.getMessage(), e);
                 continue;
             }
@@ -1129,6 +1105,11 @@ public class MohIntranetUserDelegator {
 
     private List<String> valiantDto(OrgUserDto orgUserDto) {
         List<String> errors = IaisCommonUtils.genNewArrayList();
+        String xmlError = orgUserDto.getXmlError();
+        if (!StringUtil.isEmpty(xmlError)) {
+            errors.add("Please upload correct format.");
+            return errors;
+        }
         String userId = orgUserDto.getUserId();
         if (!StringUtil.isEmpty(userId)) {
             if (!userId.matches("^[A-Za-z0-9]+$")) {
@@ -1217,25 +1198,25 @@ public class MohIntranetUserDelegator {
         log.debug(StringUtil.changeForLog("the importUserRole start ...."));
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CommonsMultipartFile sessionFile = (CommonsMultipartFile) request.getFile("userRoleUpload");
-        int userFileSize = (int)ParamUtil.getSessionAttr(bpc.request, "userFileSize");
+        int userFileSize = (int) ParamUtil.getSessionAttr(bpc.request, "userFileSize");
         File file = File.createTempFile("temp", "xml");
         File xmlFile = inputStreamToFile(sessionFile.getInputStream(), file);
         //validate xml file
         List<EgpUserRoleDto> egpUserRoleDtos = IaisCommonUtils.genNewArrayList();
         Map<String, String> fileErrorMap = intranetUserService.importRoleXmlValidation(xmlFile, userFileSize, sessionFile, egpUserRoleDtos);
-        if(fileErrorMap != null && fileErrorMap.size() > 0){
-            if(fileErrorMap.containsKey("userRoleUploadError")){
-                ParamUtil.setRequestAttr(bpc.request,"ackSuccessFlag", "");
+        if (fileErrorMap != null && fileErrorMap.size() > 0) {
+            if (fileErrorMap.containsKey("userRoleUploadError")) {
+                ParamUtil.setRequestAttr(bpc.request, "ackSuccessFlag", "");
             } else {
-                ParamUtil.setRequestAttr(bpc.request,"ackSuccessFlag", AppConsts.FAIL);
+                ParamUtil.setRequestAttr(bpc.request, "ackSuccessFlag", AppConsts.FAIL);
             }
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(fileErrorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         } else {
             egpUserRoleDtos = intranetUserService.importRoleXml(xmlFile);
-            ParamUtil.setRequestAttr(bpc.request,"ackSuccessFlag", AppConsts.SUCCESS);
+            ParamUtil.setRequestAttr(bpc.request, "ackSuccessFlag", AppConsts.SUCCESS);
         }
-        ParamUtil.setRequestAttr(bpc.request,"egpUserRoleDtos", egpUserRoleDtos);
+        ParamUtil.setRequestAttr(bpc.request, "egpUserRoleDtos", egpUserRoleDtos);
     }
 
     /**
@@ -1273,7 +1254,7 @@ public class MohIntranetUserDelegator {
     private List<SelectOption> getRoleOption() {
         List<Role> rolesByDomain = intranetUserService.getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();
-        for(Role role : rolesByDomain){
+        for (Role role : rolesByDomain) {
             String roleName = role.getName();
             String roleId = role.getId();
             SelectOption so = new SelectOption(roleId, roleName);
