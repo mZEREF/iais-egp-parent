@@ -303,6 +303,7 @@ public class CessationFeServiceImpl implements CessationFeService {
         List<AppCessatonConfirmDto> appCessationDtosConfirms = IaisCommonUtils.genNewArrayList();
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+        List<String> svcCode = IaisCommonUtils.genNewArrayList();
         AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         for (int i = 0; i < appCessationDtos.size(); i++) {
             AppCessationDto appCessationDto = appCessationDtos.get(i);
@@ -322,6 +323,7 @@ public class CessationFeServiceImpl implements CessationFeService {
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
             String licenceNo = licenceDto.getLicenceNo();
             String svcName = appCessLicDto.getSvcName();
+            svcCode.add(svcName);
             AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(appId).getEntity();
             String hciCode = appGrpPremisesDto.getHciCode();
             String hciName = null;
@@ -355,6 +357,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                            String svcName1 = specLicDto.getSvcName();
                            String licenceNo1 = specLicDto.getLicenceNo();
                            svcNameLicNo.append(svcName1).append(" : ").append(licenceNo1);
+                           svcCode.add(svcName1);
                        }
                     }
                     emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
@@ -380,9 +383,6 @@ public class CessationFeServiceImpl implements CessationFeService {
                     //email
                     notificationHelper.sendNotification(emailParam);
                     //msg
-                    HcsaServiceDto svcDto = appConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
-                    List<String> svcCode = IaisCommonUtils.genNewArrayList();
-                    svcCode.add(svcDto.getSvcCode());
                     emailParam.setSvcCodeList(svcCode);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_MSG);
                     emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
@@ -422,7 +422,6 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
                     notificationHelper.sendNotification(emailParam);
                     //msg
-                    svcCode.add(svcDto.getSvcCode());
                     emailParam.setSvcCodeList(svcCode);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE_MSG);
                     emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
@@ -443,6 +442,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                             String svcName1 = specLicDto.getSvcName();
                             String licenceNo1 = specLicDto.getLicenceNo();
                             svcNameLicNo.append(svcName1).append(" : ").append(licenceNo1);
+                            svcCode.add(svcName1);
                         }
                     }
                     emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
@@ -467,9 +467,6 @@ public class CessationFeServiceImpl implements CessationFeService {
                     //email
                     notificationHelper.sendNotification(emailParam);
                     //msg
-                    HcsaServiceDto svcDto = appConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
-                    List<String> svcCode = IaisCommonUtils.genNewArrayList();
-                    svcCode.add(svcDto.getSvcCode());
                     emailParam.setSvcCodeList(svcCode);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_MSG);
                     emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
@@ -508,7 +505,6 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
                     notificationHelper.sendNotification(emailParam);
                     //msg
-                    svcCode.add(svcDto.getSvcCode());
                     emailParam.setSvcCodeList(svcCode);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
                     emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
