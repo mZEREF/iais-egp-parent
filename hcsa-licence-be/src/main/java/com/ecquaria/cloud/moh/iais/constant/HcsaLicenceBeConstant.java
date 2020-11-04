@@ -31,4 +31,7 @@ public class HcsaLicenceBeConstant {
     public static final String RISK_NEED_BACK_BUTTON = "backButtonNeed";
     public static final String RISK_NEED_BACK_BUTTON_YES = "Y";
     public static final String RISK_NEED_BACK_BUTTON_NO = "N";
+    public static final String  SEARCH_PRAM_FOR_AUDIT_LIST_RESULT = "auditTaskDataDtos";
+    public static final String  SEARCH_PRAM_FOR_AUDIT_LIST = "auditTaskDataDtos_pram";
+    public static final String  SEARCH_PRAM_FOR_AUDIT_LIST_TRUE_RESULT = "auditTaskDataDtosResult";
 }

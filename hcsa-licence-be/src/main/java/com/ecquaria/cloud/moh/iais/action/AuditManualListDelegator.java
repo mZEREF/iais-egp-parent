@@ -150,7 +150,7 @@ public class AuditManualListDelegator {
         String riskType = ParamUtil.getString(request, "riskType");
         String svcNameSelect = ParamUtil.getStringsToString(request, "svcName");
         String svcNameCodeSelect = ParamUtil.getStringsToString(request, "hclSCode");
-        AuditSystemPotentialDto dto = new AuditSystemPotentialDto();
+        AuditSystemPotentialDto dto = auditSystemPotitalListService.initDtoForSearch();
         List<String> serviceNmaeList = IaisCommonUtils.genNewArrayList();
         if(serviceNames != null && serviceNames.length >0){
             serviceNmaeList.addAll(Arrays.asList(serviceNames));

@@ -16,4 +16,5 @@ public interface AuditSystemPotitalListService {
     List<AuditTaskDataFillterDto> getSystemPotentailAdultCancelList();
     List<AuditTaskDataFillterDto> getCanInactiveAudit();
     void inActiveAudit(AuditTaskDataFillterDto auditTaskDataFillterDto,AuditTrailDto intranet);
+    AuditSystemPotentialDto initDtoForSearch();
 }

@@ -46,9 +46,21 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     private ApplicationViewService applicationViewService;
     @Autowired
     private SystemParamConfig systemParamConfig;
+
+    @Override
+    public AuditSystemPotentialDto initDtoForSearch() {
+        AuditSystemPotentialDto dto = new AuditSystemPotentialDto();
+        SearchParam searchParam = new SearchParam(AuditTaskDataDto.class.getName());
+        dto.setPageNo(1);
+        dto.setPageSize(10);
+        searchParam.setSort("risk_score", SearchParam.DESCENDING);
+        dto.setSearchParam(searchParam);
+        return dto;
+    }
+
     @Override
     public List<AuditTaskDataFillterDto> getSystemPotentailAdultList() {
-        AuditSystemPotentialDto dto = new AuditSystemPotentialDto();
+        AuditSystemPotentialDto dto = initDtoForSearch();
         dto.setIsTcuNeeded(1);
         SearchParam searchParam = getSearchParamFrom(dto, null);
         SearchResult<AuditTaskDataDto> searchResult = getAuditSysParam(searchParam);
@@ -173,6 +185,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     }
 
     private List<AuditTaskDataFillterDto> inspectionFitter(SearchResult<AuditTaskDataDto> searchResult, AuditSystemPotentialDto dto) {
+        dto.setSearchResult(searchResult);
         List<AuditTaskDataDto> auditTaskDtos = searchResult.getRows();
         if(IaisCommonUtils.isEmpty(auditTaskDtos)) return  null;
         List<AuditTaskDataFillterDto> dtoList  = new ArrayList<>(auditTaskDtos.size());
@@ -212,7 +225,9 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         return searchParam;
     }
     public SearchParam getSearchParamFrom(AuditSystemPotentialDto dto, String insql) {
-        SearchParam searchParam = new SearchParam(AuditTaskDataDto.class.getName());
+        SearchParam searchParam = dto.getSearchParam();
+        searchParam.setPageNo(dto.getPageNo());
+        searchParam.setPageSize(dto.getPageSize());
         if(dto.getIsTcuNeeded() != null){
             searchParam.addFilter("isTcuNeeded", dto.getIsTcuNeeded(), true);
             searchParam.addFilter("aduitInspectionMonthBeforeTcu",getDayByAduitInspectionMonthBeforeTcu(systemParamConfig.getAuditInspectionMonthBeforeTcu()), true);
@@ -260,23 +275,32 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         }
         QueryHelp.setMainSql("inspectionQuery", "aduitSystemList", searchParam);
         String sql = searchParam.getMainSql();
+        String sort = "risk_score";
      if (!StringUtil.isEmpty(dto.getTypeOfRisk())){
       if("RT001".equalsIgnoreCase(dto.getTypeOfRisk())){
           sql=  sql.replace("replaceSql","t8.risk_type_fir_ins_socre");
+          sort = "risk_type_fir_ins_socre";
       }else if("RT002".equalsIgnoreCase(dto.getTypeOfRisk())){
           sql=sql.replace("replaceSql"," t8.risk_type_sec_ins_socre");
+          sort="risk_type_sec_ins_socre";
       }else if("RT003".equalsIgnoreCase(dto.getTypeOfRisk())){
           sql= sql.replace("replaceSql"," t8.risk_type_financial_score");
+          sort="risk_type_financial_score";
       } else if("RT004".equalsIgnoreCase(dto.getTypeOfRisk())){
          sql= sql.replace("replaceSql","t8.risk_type_leadership_score");
+          sort="risk_type_leadership_score";
       }else if("RT005".equalsIgnoreCase(dto.getTypeOfRisk())){
          sql= sql.replace("replaceSql","t8.risk_type_legislative_breaches_score");
+          sort="risk_type_legislative_breaches_score";
       }else if("RT006".equalsIgnoreCase(dto.getTypeOfRisk())){
         sql=  sql.replace("replaceSql","t8.risk_score");
+          sort="risk_score";
       }
      }else {
         sql= sql.replace("replaceSql","t8.risk_score");
+         sort="risk_score";
      }
+        searchParam.setSort(sort,SearchParam.DESCENDING);
         searchParam.setMainSql(sql);
         return searchParam;
     }

@@ -72,4 +72,9 @@ public class INTRANET___MohAduitSystemList___1 extends BaseProcessClass {
 		// 		actionButton->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "actionButton", this);
 	}
+
+	public void doPage_OnStepProcess_0() throws Exception {
+		// 		doPage->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doPage", this);
+	}
 }
