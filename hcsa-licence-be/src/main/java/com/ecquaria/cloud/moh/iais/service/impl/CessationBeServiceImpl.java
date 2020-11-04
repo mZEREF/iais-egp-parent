@@ -312,14 +312,14 @@ public class CessationBeServiceImpl implements CessationBeService {
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     emailMap.put("ApplicationNumber", applicationNo);
                     StringBuilder svcNameLicNo = new StringBuilder();
-                    svcNameLicNo.append(svcName).append(' ').append(licenceNo);
+                    svcNameLicNo.append(svcName).append(" : ").append(licenceNo);
                     if(!IaisCommonUtils.isEmpty(specIds)){
                         for(String specLicId :specIds){
                             svcNameLicNo.append("<br/>");
                             LicenceDto specLicDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
                             String svcName1 = specLicDto.getSvcName();
                             String licenceNo1 = specLicDto.getLicenceNo();
-                            svcNameLicNo.append(svcName1).append(' ').append(licenceNo1);
+                            svcNameLicNo.append(svcName1).append(" : ").append(licenceNo1);
                         }
                     }
                     emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());

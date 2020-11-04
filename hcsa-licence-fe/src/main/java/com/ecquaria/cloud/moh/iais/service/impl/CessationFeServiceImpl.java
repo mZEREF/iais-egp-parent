@@ -347,14 +347,14 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     emailMap.put("ApplicationNumber", applicationNo);
                     StringBuilder svcNameLicNo = new StringBuilder();
-                    svcNameLicNo.append(svcName).append(' ').append(licenceNo);
+                    svcNameLicNo.append(svcName).append(" : ").append(licenceNo);
                     if(!IaisCommonUtils.isEmpty(specLicIds)){
                        for(String specLicId :specLicIds){
                            svcNameLicNo.append("<br/>");
                            LicenceDto specLicDto = licenceClient.getLicBylicId(specLicId).getEntity();
                            String svcName1 = specLicDto.getSvcName();
                            String licenceNo1 = specLicDto.getLicenceNo();
-                           svcNameLicNo.append(svcName1).append(' ').append(licenceNo1);
+                           svcNameLicNo.append(svcName1).append(" : ").append(licenceNo1);
                        }
                     }
                     emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
@@ -435,14 +435,14 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     StringBuilder svcNameLicNo = new StringBuilder();
-                    svcNameLicNo.append(svcName).append(' ').append(licenceNo);
+                    svcNameLicNo.append(svcName).append(" : ").append(licenceNo);
                     if(!IaisCommonUtils.isEmpty(specLicIds)){
                         for(String specLicId :specLicIds){
                             svcNameLicNo.append("<br/>");
                             LicenceDto specLicDto = licenceClient.getLicBylicId(specLicId).getEntity();
                             String svcName1 = specLicDto.getSvcName();
                             String licenceNo1 = specLicDto.getLicenceNo();
-                            svcNameLicNo.append(svcName1).append(' ').append(licenceNo1);
+                            svcNameLicNo.append(svcName1).append(" : ").append(licenceNo1);
                         }
                     }
                     emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
