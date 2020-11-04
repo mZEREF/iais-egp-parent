@@ -652,8 +652,11 @@ public class MohIntranetUserDelegator {
             if (!IaisCommonUtils.isEmpty(orgUserDtosOld)) {
                 for (OrgUserDto orgUserDto : orgUserDtos) {
                     orgUserDto.setAuditTrailDto(auditTrailDto);
-                    intranetUserService.updateOrgUser(orgUserDto);
-                    editEgpUser(orgUserDto);
+                    String id = orgUserDto.getId();
+                    if(!StringUtil.isEmpty(id)){
+                        intranetUserService.updateOrgUser(orgUserDto);
+                        editEgpUser(orgUserDto);
+                    }
                 }
             }
             List<OrgUserUpLoadDto> orgUserUpLoadDtos = IaisCommonUtils.genNewArrayList();
