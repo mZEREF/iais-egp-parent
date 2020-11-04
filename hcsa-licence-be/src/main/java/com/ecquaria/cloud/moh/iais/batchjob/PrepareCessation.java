@@ -35,6 +35,7 @@ public class PrepareCessation {
     }
 
     public void doBatchJob(BaseProcessClass bpc) {
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         log.debug(StringUtil.changeForLog("The prepareCeaastion is do ..."));
         jobExecute();
     }

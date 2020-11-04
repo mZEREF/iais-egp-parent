@@ -216,7 +216,7 @@ public class ChecklistDataSyncHandler extends IJobHandler {
     public ReturnT<String> execute(String s) throws Exception {
         try {
 
-
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             log.info("=>>>>>>ChecklistDataSyncHandler Start>>>>>>>");
             log.info("=>>>>>>compareSyncRegulation Start>>>>>>>");
             compareSyncRegulation();

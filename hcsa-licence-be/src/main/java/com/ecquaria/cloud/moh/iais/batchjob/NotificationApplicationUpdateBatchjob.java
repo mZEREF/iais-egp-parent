@@ -34,6 +34,7 @@ public class NotificationApplicationUpdateBatchjob {
     private LicenceService licenceService;
 
     public void doBatchJob(BaseProcessClass bpc) {
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         jobExecute();
     }
     public void jobExecute(){

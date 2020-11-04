@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ public class DeleteAppDraftJob {
 
     public void doBatchJob(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("delete app draft job start ..."));
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         String draftValidity = MasterCodeUtil.getCodeDesc("MS006");
 
         log.info(StringUtil.changeForLog("draft validity:"+draftValidity));

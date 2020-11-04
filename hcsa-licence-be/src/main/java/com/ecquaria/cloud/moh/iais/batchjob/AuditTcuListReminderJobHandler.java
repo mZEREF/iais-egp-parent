@@ -48,6 +48,7 @@ public class AuditTcuListReminderJobHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) {
         logAbout("AuditTcuListReminderJob");
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         try{
               if(isSendEmail(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_TCU_REMIND,"AuditTcuListReminderJob") && isHaveTcuAudited(auditSystemPotitalListService.getSystemPotentailAdultList())){
                   auditSystemListService.sendMailForAuditPlaner(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_TCU_REMIND);

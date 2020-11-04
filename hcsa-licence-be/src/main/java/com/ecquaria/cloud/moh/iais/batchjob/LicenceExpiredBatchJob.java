@@ -73,6 +73,7 @@ public class LicenceExpiredBatchJob {
     }
 
     public void doBatchJob(BaseProcessClass bpc) {
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         jobExecute();
     }
 

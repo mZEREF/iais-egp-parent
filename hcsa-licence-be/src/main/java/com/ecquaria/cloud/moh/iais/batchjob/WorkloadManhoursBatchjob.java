@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.WorkloadManhoursService;
 import java.util.List;
@@ -33,6 +34,7 @@ public class WorkloadManhoursBatchjob {
     private WorkloadManhoursService workloadManhoursService;
     public void doBatchJob(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("The workloadEffert is  start..." ));
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         String appGroupId = "EF7874FA-CF0D-4B27-B79B-06296CDF56E5";
         ApplicationDto applicationDto = applicationViewService.getApplicaitonByAppNo(appGroupId);
         String serviceId = applicationDto.getServiceId();

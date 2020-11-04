@@ -59,6 +59,7 @@ public class PostInspectionBatchJob {
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("The postInspection is start ..."));
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
     }
 
     public void doBatchJob(BaseProcessClass bpc) {

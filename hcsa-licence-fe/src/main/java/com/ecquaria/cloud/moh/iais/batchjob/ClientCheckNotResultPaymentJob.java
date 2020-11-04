@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AppGrpPaymentClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class ClientCheckNotResultPaymentJob {
 
 
     public void start(BaseProcessClass bpc){
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
     }
 

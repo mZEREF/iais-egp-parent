@@ -113,6 +113,7 @@ public class AppealApproveBatchjob {
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
     public void doBatchJob(BaseProcessClass bpc) throws Exception {
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         jobExecute();
     }
     public void jobExecute() throws Exception {

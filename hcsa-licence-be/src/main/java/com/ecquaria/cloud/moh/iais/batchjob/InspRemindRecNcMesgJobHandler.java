@@ -92,6 +92,7 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         try {
+            AuditTrailHelper.setupBatchJobAuditTrail(this);
             logAbout("Remind Applicant Rectify N/C Do");
             List<ApplicationDto> applicationDtos = applicationClient.getApplicationByStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION).getEntity();
             if(IaisCommonUtils.isEmpty(applicationDtos)){
