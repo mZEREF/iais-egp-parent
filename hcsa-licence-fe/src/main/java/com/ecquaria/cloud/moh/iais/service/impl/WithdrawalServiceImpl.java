@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -37,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.submission.client.App;
 import com.ecquaria.egp.core.application.sender.SMSSender;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -146,7 +148,13 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                         LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(h.getLicenseeId()).getEntity();
                         String applicantName = licenseeDto.getName();
                         msgInfoMap.put("Applicant", applicantName);
-                        msgInfoMap.put("paymentStatus","0");
+                        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(h.getApplicationNo())
+                                || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(h.getApplicationNo())){
+                            msgInfoMap.put("paymentStatus","0");
+                            msgInfoMap.put("returnMount","100");
+                        }else{
+                            msgInfoMap.put("paymentStatus","1");
+                        }
                         msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date(),"dd/MM/yyyy"));
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
                         try {
