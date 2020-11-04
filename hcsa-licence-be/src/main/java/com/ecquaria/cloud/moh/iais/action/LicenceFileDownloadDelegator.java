@@ -41,7 +41,7 @@ public class LicenceFileDownloadDelegator {
 
     public  void prepareData(BaseProcessClass bpc) throws Exception {
          logAbout("preparetionData");
-
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         licenceFileDownloadService.initPath();
 
         licenceFileDownloadService.decompression();

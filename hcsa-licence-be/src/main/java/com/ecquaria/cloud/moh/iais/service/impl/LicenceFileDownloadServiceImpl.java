@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
@@ -417,7 +418,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 }
             }
         }catch (Exception e){
-            log.info("gobalRiskAccpetDtos is error");
+            log.error("gobalRiskAccpetDtos is error",e);
         }
 
         List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
@@ -461,6 +462,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         applicationNewAndRequstDto.setCessionOrWith(cessionOrwith);
         applicationNewAndRequstDto.setEventNo(l);
         applicationNewAndRequstDto.setZipFileName(processFileTrackDto.getFileName());
+        applicationNewAndRequstDto.setAuditTrailDto(intranet);
         applicationListDto.setApplicationNewAndRequstDto(applicationNewAndRequstDto);
         processFileTrackDto.setStatus("PFT003");
         applicationListDto.setProcessFileTrackDto(processFileTrackDto);
@@ -597,7 +599,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-        appPremisesRoutingHistoryDto.setActionby(auditTrailDto.getMohUserGuid());
+        appPremisesRoutingHistoryDto.setActionby(auditTrailDto == null ?
+                AppConsts.USER_ID_SYSTEM : auditTrailDto.getMohUserGuid());
         appPremisesRoutingHistoryDto.setRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN);
         appPremisesRoutingHistoryDto.setAuditTrailDto(auditTrailDto);
         return appPremisesRoutingHistoryDto;
@@ -612,7 +615,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
 
-        AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
+        AuditTrailDto intranet =new AuditTrailDto();
         List<ApplicationDto> listNewApplicationDto =IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> requestForInfList  =IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> updateTaskList  =IaisCommonUtils.genNewArrayList();
@@ -629,6 +632,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             if(dto!=null){
                 ApplicationNewAndRequstDto applicationNewAndRequstDto = dto.getApplicationNewAndRequstDto();
                 if(applicationNewAndRequstDto!=null){
+                  intranet=applicationNewAndRequstDto.getAuditTrailDto();
                   listNewApplicationDto = applicationNewAndRequstDto.getListNewApplicationDto();
                   requestForInfList = applicationNewAndRequstDto.getRequestForInfList();
                   cessionOrwith=applicationNewAndRequstDto.getCessionOrWith();

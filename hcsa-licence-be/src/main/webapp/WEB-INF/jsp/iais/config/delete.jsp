@@ -490,8 +490,8 @@
                 <a class="btn  btn-secondary view"   >outdent</a>
               </div>
               <div class="col-xs-12 col-md-2 up">
-                <a class="btn  btn-secondary up view" onclick="up(this)">UP</a>
-                <a class="btn  btn-secondary down view" onclick="down(this)">DOWN</a>
+                <a class="btn  btn-secondary up view" style="margin-bottom: 10%;width:60%;" onclick="up(this)">UP</a>
+                <a class="btn  btn-secondary down view" style="margin-bottom: 10%;width:60%;" onclick="down(this)">DOWN</a>
               </div>
               <div class="col-xs-12 col-md-2">
                 <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
@@ -512,8 +512,8 @@
                   <a class="btn  btn-secondary view"  >outdent</a>
                 </div>
                 <div class="col-xs-12 col-md-2 up">
-                  <a class="btn  btn-secondary up view" onclick="up(this)">UP</a>
-                  <a class="btn  btn-secondary down view" onclick="down(this)">DOWN</a>
+                  <a class="btn  btn-secondary up view" style="margin-bottom: 10%;width:60%;" onclick="up(this)">UP</a>
+                  <a class="btn  btn-secondary down view" style="margin-bottom: 10%;width:60%;" onclick="down(this)">DOWN</a>
                 </div>
                 <div class="col-xs-12 col-md-2">
                   <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
@@ -534,8 +534,8 @@
                     <a class="btn  btn-secondary view"   >outdent</a>
                   </div>
                   <div class="col-xs-12 col-md-2 up">
-                    <a class="btn  btn-secondary up view" onclick="up(this)">UP</a>
-                    <a class="btn  btn-secondary down view" onclick="down(this)">DOWN</a>
+                    <a class="btn  btn-secondary up view" style="margin-bottom: 10%;width:60%;" onclick="up(this)">UP</a>
+                    <a class="btn  btn-secondary down view" style="margin-bottom: 10%;width:60%;" onclick="down(this)">DOWN</a>
                   </div>
                   <div class="col-xs-12 col-md-2">
                     <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>

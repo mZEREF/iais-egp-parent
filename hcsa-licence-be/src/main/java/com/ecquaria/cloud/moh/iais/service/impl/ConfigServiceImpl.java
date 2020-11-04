@@ -193,7 +193,6 @@ public class ConfigServiceImpl implements ConfigService {
             request.setAttribute("errorMap", errorMap);
             return;
         }
-
         String effectiveDate = hcsaServiceDto.getEffectiveDate();
         Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(effectiveDate);
         String format = new SimpleDateFormat("yyyy-MM-dd").format(parse);
@@ -210,7 +209,7 @@ public class ConfigServiceImpl implements ConfigService {
         request.setAttribute("option","added");
         request.setAttribute("serviceName",hcsaServiceDto.getSvcName());
         try {
-            sendEmail(request);
+          /*  sendEmail(request);*/
         } catch (Exception e) {
          log.error(e.getMessage(),e);
         }
@@ -300,8 +299,22 @@ public class ConfigServiceImpl implements ConfigService {
                  hcsaServiceDto.setVersion(i.toString());
                  String effectiveDate = hcsaServiceDto.getEffectiveDate();
                  Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(effectiveDate);
-                 String format = new SimpleDateFormat("yyyy-MM-dd").format(parse);
-                 hcsaServiceDto.setEffectiveDate(format);
+                 if(hcsaServiceDto.isServiceIsUsed()){
+                     if(new Date().after(parse)){
+
+                     }else {
+
+                     }
+                     Calendar calendar=Calendar.getInstance();
+                     calendar.setTime(new Date());
+                     calendar.add(Calendar.DAY_OF_MONTH,1);
+                     String format = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+                     hcsaServiceDto.setEffectiveDate(format);
+                 }else {
+
+                     String format = new SimpleDateFormat("yyyy-MM-dd").format(parse);
+                     hcsaServiceDto.setEffectiveDate(format);
+                 }
                  hcsaServiceDto.setId(null);
                  hcsaServiceConfigDto= hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto).getEntity();
                  HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -375,7 +388,7 @@ public class ConfigServiceImpl implements ConfigService {
             request.setAttribute("option","deleted");
             request.setAttribute("serviceName",hcsaServiceDto.getSvcName());
             try {
-                sendEmail(request);
+             /*   sendEmail(request);*/
             } catch (Exception e) {
               log.error(e.getMessage(),e);
             }
@@ -469,6 +482,26 @@ public class ConfigServiceImpl implements ConfigService {
                     }
                 }
             }
+        }
+        if(serviceIsUsed){
+            Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(effectiveDate);
+            if(parse.before(new Date())){
+                if(!StringUtil.isEmpty(endDate)){
+                    Calendar calendar=Calendar.getInstance();
+                    calendar.setTime(endDate);
+                    calendar.add(Calendar.DAY_OF_MONTH,1);
+                    if(calendar.getTime().before(new Date())){
+                        errorMap.put("effectiveEndDate",  MessageUtil.replaceMessage("GENERAL_ERR0026","Effective End Date","field"));
+                    }
+                }
+            }else {
+                if(!StringUtil.isEmpty(endDate)){
+                  if(parse.before(endDate)){
+                      errorMap.put("effectiveEndDate","The end time cannot be earlier than the start time");
+                  }
+                }
+            }
+
         }
         if(!StringUtil.isEmpty(endDate)){
             Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(effectiveDate);

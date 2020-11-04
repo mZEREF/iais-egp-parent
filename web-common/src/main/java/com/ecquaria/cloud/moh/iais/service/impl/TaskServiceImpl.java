@@ -559,7 +559,8 @@ public class TaskServiceImpl implements TaskService {
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-        appPremisesRoutingHistoryDto.setActionby(auditTrailDto.getMohUserGuid());
+        appPremisesRoutingHistoryDto.setActionby(auditTrailDto == null ?
+                AppConsts.USER_ID_SYSTEM : auditTrailDto.getMohUserGuid());
         appPremisesRoutingHistoryDto.setRoleId(roleId);
         appPremisesRoutingHistoryDto.setAuditTrailDto(auditTrailDto);
         return appPremisesRoutingHistoryDto;

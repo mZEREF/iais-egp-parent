@@ -38,21 +38,32 @@
           <label style="font-size: 25px">Reason For Appeal<span class="mandatory"> *</span></label>
           <select id="reasonSelect" name="reasonSelect" style="margin-left: 2%">
             <option value="">Please Select</option>
-          <c:if test="${type=='application'}"><c:if test="${applicationAPPROVED=='APPROVED'}">
-            <option value="MS001" <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option></c:if>
-          </c:if>
-          <c:if test="${lateFee==true}">
-            <option value="MS002" <c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option>
-          </c:if>
-            <c:if test="${maxCGOnumber==true}">
-              <c:if test="${type=='application'}">
-                <option value="MS003" <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option>
+            <c:if test="${rejectEqDay==true}">
+              <c:if test="${type=='application'}"><c:if test="${applicationAPPROVED=='APPROVED'}">
+                <option value="MS001" <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option></c:if>
               </c:if>
             </c:if>
-
-          <c:if test="${type=='application'}"><option value="MS008" <c:if test="${appPremiseMiscDto.reason=='MS008'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option></c:if>
-          <c:if test="${type=='licence'}"> <option value="MS004" <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option></c:if>
-             <option value="MS007" <c:if test="${appPremiseMiscDto.reason=='MS007'}">selected="selected"</c:if>>Others</option>
+            <c:if test="${feeEqDay==true}">
+              <c:if test="${lateFee==true}">
+                <option value="MS002" <c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option>
+              </c:if>
+            </c:if>
+            <c:if test="${cgoEqDay==true}">
+              <c:if test="${maxCGOnumber==true}">
+                <c:if test="${type=='application'}">
+                  <option value="MS003" <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option>
+                </c:if>
+              </c:if>
+            </c:if>
+            <c:if test="${nameEqDay==true}">
+              <c:if test="${type=='application'}"><option value="MS008" <c:if test="${appPremiseMiscDto.reason=='MS008'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option></c:if>
+            </c:if>
+            <c:if test="${periodEqDay==true}">
+              <c:if test="${type=='licence'}"> <option value="MS004" <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option></c:if>
+            </c:if>
+            <c:if test="${otherEqDay==true}">
+              <option value="MS007" <c:if test="${appPremiseMiscDto.reason=='MS007'}">selected="selected"</c:if>>Others</option>
+            </c:if>
              <%--<option value="MS006" <c:if test="${appPremiseMiscDto.reason=='MS006'}">selected="selected"</c:if>>Appeal against revocation</option>--%>
           </select>
 

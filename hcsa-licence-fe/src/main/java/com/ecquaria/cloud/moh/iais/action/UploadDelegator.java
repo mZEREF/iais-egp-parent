@@ -40,7 +40,18 @@ public class UploadDelegator {
 
     public void preparetionData (BaseProcessClass bpc){
         logAbout("preparetionData");
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         //get all data of need Carry from DB
+        start();
+
+    }
+
+    public void jobStart(){
+        start();
+    }
+    /**********************************/
+
+    private void start(){
         String data = uploadFileService.getData();
         log.info("------------------- getData  end --------------");
         //Parse the
@@ -79,11 +90,7 @@ public class UploadDelegator {
 
 
         }
-
     }
-
-    /**********************************/
-
     private  void logAbout(String methodName){
        log.debug(StringUtil.changeForLog("****The***** " +methodName +" ******Start ****"));
     }

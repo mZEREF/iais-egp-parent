@@ -137,6 +137,12 @@ public class AppealDelegator {
         bpc.getSession().removeAttribute("rfiApplication");
         bpc.getSession().removeAttribute("rfi");
         bpc.getSession().removeAttribute("applicationAPPROVED");
+        bpc.getSession().removeAttribute("cgoEqDay");
+        bpc.getSession().removeAttribute("nameEqDay");
+        bpc.getSession().removeAttribute("otherEqDay");
+        bpc.getSession().removeAttribute("feeEqDay");
+        bpc.getSession().removeAttribute("rejectEqDay");
+        bpc.getSession().removeAttribute("periodEqDay");
         //set upload file config
         setFileConfig(bpc.request);
         log.info("end**************start************");

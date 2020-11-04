@@ -84,6 +84,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -115,16 +116,10 @@ public class AppealServiceImpl implements AppealService {
     private String mailSender;
     @Value("${moh.halp.prs.enable}")
     private String prsFlag;
-    @Value("${iais.system.appeal.late.renewal.fee}")
-    private String renewalFee;
-    @Value("${iais.system.appeal.additional.cgo}")
-    private String additionalCgo;
-    @Value("${iais.system.appeal.longer.licence.period}")
-    private String licencePeriod;
-    @Value("${iais.system.appeal.others}")
-    private String appealOthers;
-    @Value("${iais.system.appeal.restricted.name}")
-    private String restrictedName;
+
+    @Autowired
+    private SystemParamConfig systemParamConfig;
+
     @Autowired
     private NotificationHelper notificationHelper;
     @Autowired
@@ -143,8 +138,6 @@ public class AppealServiceImpl implements AppealService {
     private FeEicGatewayClient feEicGatewayClient;
     @Autowired
     private RequestForChangeService requestForChangeService;
-    @Autowired
-    private SystemParamConfig systemParamConfig;
     @Autowired
     private OrganizationLienceseeClient organizationLienceseeClient;
     @Autowired
@@ -372,6 +365,16 @@ public class AppealServiceImpl implements AppealService {
     private void typeApplicationOrLicence(HttpServletRequest request, String type, String appealingFor) {
         if (LICENCE.equals(type)) {
             LicenceDto licenceDto = licenceClient.getLicDtoById(appealingFor).getEntity();
+            Date createdAt = licenceDto.getCreatedAt();
+            Calendar calendar=Calendar.getInstance();
+            calendar.setTime(createdAt);
+            calendar.add(Calendar.DAY_OF_MONTH,Integer.valueOf(systemParamConfig.getLicencePeriod()));
+            boolean periodEqDay = calendar.getTime().after(new Date());
+            request.getSession().setAttribute("periodEqDay",periodEqDay);
+            calendar.setTime(createdAt);
+            calendar.add(Calendar.DAY_OF_MONTH,Integer.valueOf(systemParamConfig.getAppealOthers()));
+            boolean otherEqDay = calendar.getTime().after(new Date());
+            request.getSession().setAttribute("otherEqDay",otherEqDay);
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
             List<PremisesListQueryDto> premisesListQueryDtos = licenceClient.getPremisesByLicneceId(appealingFor).getEntity();
@@ -397,21 +400,48 @@ public class AppealServiceImpl implements AppealService {
             request.getSession().setAttribute("appealNo", licenceDto.getLicenceNo());
         } else if (APPLICATION.equals(type)) {
             ApplicationDto applicationDto = applicationClient.getApplicationById(appealingFor).getEntity();
-            boolean maxCGOnumber = isMaxCGOnumber(applicationDto);
-            if (!maxCGOnumber) {
-                request.getSession().setAttribute("maxCGOnumber", !maxCGOnumber);
-            }
-            AppFeeDetailsDto appFeeDetailsDto =
-                    applicationClient.getAppFeeDetailsDtoByApplicationNo(applicationDto.getApplicationNo()).getEntity();
-            if (appFeeDetailsDto != null) {
-                try {
-                    if (appFeeDetailsDto.getLaterFee() > 0.0) {
-                        request.getSession().setAttribute("lateFee", Boolean.TRUE);
-                    }
-                } catch (Exception e) {
-                    log.error(e.getMessage() + "------", e);
+            Calendar calendar=Calendar.getInstance();
+            Date createAt = applicationDto.getCreateAt();
+            calendar.setTime(createAt);
+            calendar.add(Calendar.DAY_OF_MONTH,Integer.valueOf(systemParamConfig.getAdditionalCgo()));
+            boolean cgoEqDay = calendar.getTime().after(new Date());
+            request.getSession().setAttribute("cgoEqDay",cgoEqDay);
+            calendar.setTime(createAt);
+            calendar.add(Calendar.DAY_OF_MONTH,Integer.valueOf(systemParamConfig.getRestrictedName()));
+            boolean nameEqDay = calendar.getTime().after(new Date());
+            request.getSession().setAttribute("nameEqDay",nameEqDay);
+            calendar.setTime(createAt);
+            calendar.add(Calendar.DAY_OF_MONTH,Integer.valueOf(systemParamConfig.getAppealOthers()));
+            boolean otherEqDay = calendar.getTime().after(new Date());
+            request.getSession().setAttribute("otherEqDay",otherEqDay);
+            calendar.setTime(createAt);
+            calendar.add(Calendar.DAY_OF_MONTH,Integer.valueOf(systemParamConfig.getRenewalFee()));
+            boolean feeEqDay = calendar.getTime().after(new Date());
+            request.getSession().setAttribute("feeEqDay",feeEqDay);
+            calendar.setTime(createAt);
+            calendar.add(Calendar.DAY_OF_MONTH,Integer.valueOf(systemParamConfig.getAgainstRejection()));
+            boolean rejectEqDay = calendar.getTime().after(new Date());
+            request.getSession().setAttribute("rejectEqDay",rejectEqDay);
+            if(cgoEqDay){
+                boolean maxCGOnumber = isMaxCGOnumber(applicationDto);
+                if (!maxCGOnumber) {
+                    request.getSession().setAttribute("maxCGOnumber", !maxCGOnumber);
                 }
             }
+            if(feeEqDay){
+                AppFeeDetailsDto appFeeDetailsDto =
+                        applicationClient.getAppFeeDetailsDtoByApplicationNo(applicationDto.getApplicationNo()).getEntity();
+                if (appFeeDetailsDto != null) {
+                    try {
+                        if (appFeeDetailsDto.getLaterFee() > 0.0) {
+                            request.getSession().setAttribute("lateFee", Boolean.TRUE);
+                        }
+                    } catch (Exception e) {
+                        log.error(e.getMessage() + "------", e);
+                    }
+                }
+            }
+
             String serviceId = applicationDto.getServiceId();
             String id = applicationDto.getId();
             if (id != null) {
