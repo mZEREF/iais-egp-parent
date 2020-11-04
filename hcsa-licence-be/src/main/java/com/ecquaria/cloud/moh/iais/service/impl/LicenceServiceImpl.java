@@ -529,9 +529,13 @@ public class LicenceServiceImpl implements LicenceService {
         emailMap.put("transferee_licensee", newLicenseeDto.getName());
         emailMap.put("LicenceNumber", licenceNo);
         //emailMap.put("Hypelink", loginUrl);
-        emailMap.put("HCSA_Regulations", "");
+        emailMap.put("isSpecial", "N");
+        emailMap.put("createHyperlink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_CREATE_LINK));
+        emailMap.put("HCSA_Regulations", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_REGULATIONS_LINK));
+        emailMap.put("Number", systemPhoneNumber);
+        emailMap.put("email_1", systemAddressOne);
+        emailMap.put("email_2", systemAddressTwo);
         emailMap.put("systemLink", loginUrl);
-        emailMap.put("email", systemParamConfig.getSystemAddressOne());
         emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
         emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
         EmailParam emailParam = new EmailParam();
