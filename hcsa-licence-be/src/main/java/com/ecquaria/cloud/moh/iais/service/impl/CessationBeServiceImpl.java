@@ -270,7 +270,7 @@ public class CessationBeServiceImpl implements CessationBeService {
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         List<AppCessatonConfirmDto> appCessationDtosConfirms = IaisCommonUtils.genNewArrayList();
-        List<String> svcCode = IaisCommonUtils.genNewArrayList();
+        List<String> svcCodes = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < appCessationDtos.size(); i++) {
             AppCessationDto appCessationDto = appCessationDtos.get(i);
             String premiseId = appCessationDto.getPremiseId();
@@ -302,7 +302,8 @@ public class CessationBeServiceImpl implements CessationBeService {
             }
             String licenceNo = licenceDto.getLicenceNo();
             String svcName = appCessLicDto.getSvcName();
-            svcCode.add(svcName);
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
+            svcCodes.add(hcsaServiceDto.getSvcCode());
             Date effectiveDate = appCessationDto.getEffectiveDate();
             try {
                 if (effectiveDate.after(new Date())) {
@@ -322,7 +323,8 @@ public class CessationBeServiceImpl implements CessationBeService {
                             String svcName1 = specLicDto.getSvcName();
                             String licenceNo1 = specLicDto.getLicenceNo();
                             svcNameLicNo.append(svcName1).append(" : ").append(licenceNo1);
-                            svcCode.add(svcName1);
+                            HcsaServiceDto hcsaServiceDto1 = HcsaServiceCacheHelper.getServiceByServiceName(svcName1);
+                            svcCodes.add(hcsaServiceDto1.getSvcCode());
                         }
                     }
                     emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
@@ -348,7 +350,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                     //email
                     notificationHelper.sendNotification(emailParam);
                     //msg
-                    emailParam.setSvcCodeList(svcCode);
+                    emailParam.setSvcCodeList(svcCodes);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_MSG);
                     emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     notificationHelper.sendNotification(emailParam);
@@ -375,7 +377,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                     emailParam.setRefId(licId);
                     map.clear();
                     InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE);
-                    map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.LICENCE_STATUS_CEASED}).get(0).getText());
+                    map.put("ApplicationType", svcName);
                     map.put("ApplicationNumber", licenceNo);
                     subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
                     emailParam.setSubject(subject);
@@ -386,7 +388,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
                     notificationHelper.sendNotification(emailParam);
                     //msg
-                    emailParam.setSvcCodeList(svcCode);
+                    emailParam.setSvcCodeList(svcCodes);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE_MSG);
                     emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     emailParam.setRefId(licId);
@@ -406,7 +408,8 @@ public class CessationBeServiceImpl implements CessationBeService {
                             String svcName1 = specLicDto.getSvcName();
                             String licenceNo1 = specLicDto.getLicenceNo();
                             svcNameLicNo.append(svcName1).append(" : ").append(licenceNo1);
-                            svcCode.add(svcName1);
+                            HcsaServiceDto hcsaServiceDto1 = HcsaServiceCacheHelper.getServiceByServiceName(svcName1);
+                            svcCodes.add(hcsaServiceDto1.getSvcCode());
                         }
                     }
                     emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
@@ -431,7 +434,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                     //email
                     notificationHelper.sendNotification(emailParam);
                     //msg
-                    emailParam.setSvcCodeList(svcCode);
+                    emailParam.setSvcCodeList(svcCodes);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_MSG);
                     emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     notificationHelper.sendNotification(emailParam);
@@ -457,7 +460,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                     emailParam.setRefId(licId);
                     map.clear();
                     InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE);
-                    map.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
+                    map.put(SERVICE_LICENCE_NAME, svcName);
                     map.put("LicenceNumber", licenceNo);
                     subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
                     emailParam.setSubject(subject);
@@ -468,7 +471,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
                     notificationHelper.sendNotification(emailParam);
                     //msg
-                    emailParam.setSvcCodeList(svcCode);
+                    emailParam.setSvcCodeList(svcCodes);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
                     emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     emailParam.setRefId(licId);

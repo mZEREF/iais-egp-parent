@@ -1877,9 +1877,17 @@ public class HcsaApplicationDelegator {
         applicationDto.setStatus(appStatus);
         //cessation
         if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)&&ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
-            applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NEED);
-            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
-            applicationDto.setNeedNewLicNo(true);
+            boolean grpLic = applicationDto.isGrpLic();
+            if(grpLic){
+                applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NEED);
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
+                applicationDto.setNeedNewLicNo(true);
+            }else {
+                applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NOT);
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE);
+                applicationDto.setNeedNewLicNo(false);
+            }
+
         }
         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)&&ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
