@@ -435,7 +435,7 @@ public class BlastManagementDelegator {
         if(distribution == null){
             getDistribution(bpc,blastManagementDto.getMode());
             Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-            errMap.put("distribution",MessageUtil.getMessageDesc("ESB_ERR001"));
+            errMap.put("distribution",MessageUtil.replaceMessage("GENERAL_ERR0006","Use a distribution list","field"));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
 
