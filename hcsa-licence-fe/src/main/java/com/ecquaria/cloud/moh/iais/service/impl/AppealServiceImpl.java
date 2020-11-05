@@ -891,7 +891,8 @@ public class AppealServiceImpl implements AppealService {
                 HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
                 String gatewayUrl = env.getProperty("iais.inter.gateway.url");
                 Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
-                params.put("appNo", appNo);
+                appNo=entity1.getApplicationNo();
+                params.put("appNo", entity1.getApplicationNo());
                 hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
                         MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
@@ -1075,13 +1076,14 @@ public class AppealServiceImpl implements AppealService {
             applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
             applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
             s = rfiApplication.getApplicationNo();
+            appNo=s;
             rfiApplication.setStatus(ApplicationConsts.APPLICATION_STATUS_DELETED);
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             String gatewayUrl = env.getProperty("iais.inter.gateway.url");
             List<AppPremisesRoutingHistoryDto> hisList;
             Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
-            params.put("appNo", appNo);
+            params.put("appNo", s);
             hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
                     MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
