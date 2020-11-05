@@ -57,7 +57,7 @@ public interface InspectionPreTaskService {
       * @return: void
       * @Descripation: routing back
       */
-    void routingBack(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, LoginContext loginContext, List<PremCheckItem> premCheckItems) throws IOException, TemplateException;
+    void routingBack(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, LoginContext loginContext, List<PremCheckItem> premCheckItems, ApplicationViewDto applicationViewDto) throws IOException, TemplateException;
 
 
     /**

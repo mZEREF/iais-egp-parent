@@ -71,6 +71,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -255,9 +257,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     @Override
-    public void routingBack(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, LoginContext loginContext, List<PremCheckItem> premCheckItems) throws IOException, TemplateException {
+    public void routingBack(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, LoginContext loginContext, List<PremCheckItem> premCheckItems, ApplicationViewDto applicationViewDto) throws IOException, TemplateException {
         String reMarks = inspectionPreTaskDto.getReMarks();
-        ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
         String licenseeId = applicationGroupDto.getLicenseeId();
@@ -337,21 +338,56 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                         "&selfDeclAction=rfi";
                 maskParams.put("selfDeclApplicationNumber", taskDto.getApplicationNo());
             }
+            Date now = new Date();
+            if(applicationViewDto.getApplicationGroupDto() != null && applicationViewDto.getApplicationGroupDto().getSubmitDt() != null){
+                now = applicationViewDto.getApplicationGroupDto().getSubmitDt();
+            }
+            String editSelect = "";
+            //judge premises amend or licence amend
+            AppEditSelectDto appEditSelectDto = applicationViewDto.getAppEditSelectDto();
+            if(appEditSelectDto != null){
+                if(appEditSelectDto.isPremisesEdit()){
+                    editSelect = editSelect + "Premises";
+                }
+                if(appEditSelectDto.isDocEdit()){
+                    editSelect = editSelect +(StringUtil.isEmpty(editSelect)?"":", ") +"Primary Documents";
+                }
+                if(appEditSelectDto.isServiceEdit()){
+                    editSelect = editSelect + (StringUtil.isEmpty(editSelect)?"":", ") +"Service Related Information - " + applicationViewDto.getServiceType();
+                }
+                if(appEditSelectDto.isPoEdit()){
+                    editSelect = editSelect +(StringUtil.isEmpty(editSelect)?"":", ") + "PO";
+                }
+                if(appEditSelectDto.isDpoEdit()){
+                    editSelect = editSelect +(StringUtil.isEmpty(editSelect)?"":", ") + "DPO";
+                }
+                if(appEditSelectDto.isMedAlertEdit()){
+                    editSelect = editSelect +(StringUtil.isEmpty(editSelect)?"":", ") + "medAlert";
+                }
+            }
+            String remarks = "<br/>Sections Allowed for Change : "+editSelect;
+            int rfiDueDate = systemParamConfig.getRfiDueDate();
+            LocalDate tatTime = LocalDate.now().plusDays(rfiDueDate);
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern(Formatter.DATE);
+            String tatTimeStr = tatTime.format(dtf);
             Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
-            map.put("APPLICANT_NAME",licenseeDto.getName());
-            map.put("APPLICATION_NUMBER",StringUtil.viewHtml(applicationNo));
-            map.put("DETAILS","");
-            map.put("COMMENTS",StringUtil.viewHtml(preInspecComments));
-            map.put("EDITSELECT","");
-            map.put("A_HREF",url);
-            map.put("MOH_NAME",AppConsts.MOH_AGENCY_NAME);
+            map.put("ApplicantName",licenseeDto.getName());
+            map.put("ApplicationType",MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+            map.put("ApplicationNumber",StringUtil.viewHtml(applicationNo));
+            map.put("ApplicationDate",Formatter.formatDateTime(now, Formatter.DATE));
+            map.put("Remarks",remarks);
+            map.put("systemLink",url);
+            map.put("TATtime",tatTimeStr);
+            map.put("email",systemParamConfig.getSystemAddressOne());
+            map.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+            map.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
             List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
             String serviceId = applicationDto.getServiceId();
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
             String serviceCode = hcsaServiceDto.getSvcCode();
             serviceCodes.add(serviceCode);
             EmailParam emailParam = new EmailParam();
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RFI);
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
             emailParam.setMaskParams(maskParams);
             emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
             emailParam.setQueryCode(applicationNo);

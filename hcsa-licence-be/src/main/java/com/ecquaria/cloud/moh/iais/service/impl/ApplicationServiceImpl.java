@@ -541,6 +541,9 @@ public class ApplicationServiceImpl implements ApplicationService {
         String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
         MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI).getEntity();
         Date now = new Date();
+        if(applicationViewDto.getApplicationGroupDto() != null && applicationViewDto.getApplicationGroupDto().getSubmitDt() != null){
+            now = applicationViewDto.getApplicationGroupDto().getSubmitDt();
+        }
         int rfiDueDate = systemParamConfig.getRfiDueDate();
         LocalDate tatTime = LocalDate.now().plusDays(rfiDueDate);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern(Formatter.DATE);
