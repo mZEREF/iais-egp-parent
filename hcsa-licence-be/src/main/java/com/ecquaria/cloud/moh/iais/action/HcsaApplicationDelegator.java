@@ -2066,7 +2066,8 @@ public class HcsaApplicationDelegator {
                     ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
                     Integer isByGIRO = applicationGroupDto.getIsByGiro();
                     String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-                    if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(withdrawApplicationDto.getStatus())){
+                    if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(withdrawApplicationDto.getStatus())
+                            ||ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(withdrawApplicationDto.getStatus())){
                         applicationService.closeTaskWhenWhAppApprove(withdrawApplicationDto.getId());
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                         msgInfoMap.put("Applicant", licenseeDto.getName());
