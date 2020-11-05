@@ -58,8 +58,6 @@ public class BackendLoginDelegator {
             }else {
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
             }
-        } else if (fakeLogin) {
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
         } else {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
 
