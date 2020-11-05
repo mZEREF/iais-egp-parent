@@ -52,6 +52,9 @@ public interface TaskOrganizationClient {
     @GetMapping(path = "/iais-task/tasks-notify-all",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskEmailDto>> getEmailNotifyList();
 
+    @GetMapping(path = "/iais-task/tasks-notify-leader/{taskId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<OrgUserDto>> getEmailNotifyLeader(@PathVariable(name = "taskId") String taskId);
+
     @PostMapping(value = "/iais-task/allWorkGroupMembers", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity <Map<String, List<String>>> getAllWorkGroupMembers(@RequestBody List<String> groupId);
 

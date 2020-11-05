@@ -502,6 +502,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<OrgUserDto> getEmailNotifyLeader(String taskId){
+        return taskOrganizationClient.getEmailNotifyLeader(taskId).getEntity();
+    }
+
+    @Override
     public List<String> getDistincTaskRefNumByCurrentGroup(String wrkGroupId) {
         List<TaskDto> commPoolByGroupWordId =  getCommPoolByGroupWordId(wrkGroupId);
         List<String> taskRefNumList = IaisCommonUtils.genNewArrayList();
