@@ -148,6 +148,7 @@ public class WithOutRenewalDelegator {
         log.info("**** the non auto renwal  start ******");
         String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
         //init session
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_RENEW, AuditTrailConsts.FUNCTION_RENEW);
         ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, null);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, "totalStr", null);
@@ -898,7 +899,9 @@ public class WithOutRenewalDelegator {
                     }
                 }
             }
-            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_RENEW, AuditTrailConsts.FUNCTION_RENEW);
+            AuditTrailDto at = AuditTrailHelper.getCurrentAuditTrailDto();
+            at.setModule(AuditTrailConsts.MODULE_RENEW);
+            at.setFunctionName(AuditTrailConsts.FUNCTION_RENEW);
             autoAppSubmissionListDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
             autoAppSubmissionListDto.setEventRefNo(auto.toString());
             autoAppSubmissionListDto.setAppSubmissionDtos(saveutoAppSubmissionDto);
