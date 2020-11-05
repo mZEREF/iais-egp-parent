@@ -46,6 +46,6 @@ public interface AppointmentBeMainClient {
     @PostMapping(value = "/iais-appointment/appt-nonava/daylist", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<Integer, Integer>> getWorkAndNonMap(@RequestBody List<Date> dates);
 
-    @PutMapping(path = "/temp-req-cancelation/{hours}")
+    @PutMapping(path = "/iais-appointment/temp-req-cancelation/{hours}")
     FeignResponseEntity<Void> cancelTemp(@PathVariable("hours") int hours);
 }
