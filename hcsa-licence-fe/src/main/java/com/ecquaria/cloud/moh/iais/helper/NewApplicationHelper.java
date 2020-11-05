@@ -2098,14 +2098,13 @@ public class NewApplicationHelper {
         return specialtyAttr;
     }
 
-    public static void setPhName(List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos,List<SelectOption> publicHolidayList){
+    public static void setPhName(List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos){
         if (!IaisCommonUtils.isEmpty(appPremPhOpenPeriodDtos)) {
             for (AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodDtos) {
                 String dayName = appPremPhOpenPeriodDto.getDayName();
-                String phDateStr = appPremPhOpenPeriodDto.getPhDateStr();
-                if (StringUtil.isEmpty(dayName) && !StringUtil.isEmpty(phDateStr)) {
-                    dayName = NewApplicationHelper.getPhName(publicHolidayList, phDateStr);
-                    appPremPhOpenPeriodDto.setDayName(dayName);
+                String phDate = appPremPhOpenPeriodDto.getPhDate();
+                if (StringUtil.isEmpty(dayName) && !StringUtil.isEmpty(phDate)) {
+                    appPremPhOpenPeriodDto.setDayName(MasterCodeUtil.getCodeDesc(phDate));
                 }
             }
         }

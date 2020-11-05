@@ -1502,13 +1502,12 @@ public class NewApplicationDelegator {
 
                             }
                             List<AppGrpPremisesDto> newPremisesDtos = IaisCommonUtils.genNewArrayList();
-                            List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
                             for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
                                 if (premHci.equals(NewApplicationHelper.getPremHci(appGrpPremisesDto))) {
                                     NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                                     List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
                                     //set ph name
-                                    NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos, publicHolidayList);
+                                    NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos);
                                     newPremisesDtos.add(appGrpPremisesDto);
                                     break;
                                 }
@@ -1561,13 +1560,7 @@ public class NewApplicationDelegator {
                             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
                             if(appPremPhOpenPeriodList!=null){
                                 for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList){
-                                    String phDateStr = appPremPhOpenPeriodDto.getPhDateStr();
-                                    for(SelectOption selectOption : publicHolidayList){
-                                        if(selectOption.getValue().equals(phDateStr)){
-                                            appPremPhOpenPeriodDto.setDayName(selectOption.getText());
-                                            break;
-                                        }
-                                    }
+                                    appPremPhOpenPeriodDto.setDayName(MasterCodeUtil.getCodeDesc(appPremPhOpenPeriodDto.getPhDate()));
                                 }
                             }
                             String premises = appGrpPremisesDto.getPremisesIndexNo();
@@ -3969,8 +3962,7 @@ public class NewApplicationDelegator {
                     appPremPhOpenPeriod.setOnsiteStartFromMM(onsitePbHolDayStartMM);
                     appPremPhOpenPeriod.setOnsiteEndToHH(onsitePbHolDayEndHH);
                     appPremPhOpenPeriod.setOnsiteEndToMM(onsitePbHolDayEndMM);
-                    String phName = NewApplicationHelper.getPhName(publicHolidayDtos, onsitePubHoliday);
-                    appPremPhOpenPeriod.setDayName(phName);
+                    appPremPhOpenPeriod.setDayName(MasterCodeUtil.getCodeDesc(onsitePubHoliday));
                     if (!StringUtil.isEmpty(onsitePubHoliday) || !StringUtil.isEmpty(onsitePbHolDayStartHH) || !StringUtil.isEmpty(onsitePbHolDayStartMM)
                             || !StringUtil.isEmpty(onsitePbHolDayEndHH) || !StringUtil.isEmpty(onsitePbHolDayEndMM)) {
                         appPremPhOpenPeriods.add(appPremPhOpenPeriod);
@@ -4022,8 +4014,7 @@ public class NewApplicationDelegator {
                     appPremPhOpenPeriod.setConvStartFromMM(convPbHolDayStartMM);
                     appPremPhOpenPeriod.setConvEndToHH(convPbHolDayEndHH);
                     appPremPhOpenPeriod.setConvEndToMM(convPbHolDayEndMM);
-                    String phName = NewApplicationHelper.getPhName(publicHolidayDtos, convPubHoliday);
-                    appPremPhOpenPeriod.setDayName(phName);
+                    appPremPhOpenPeriod.setDayName(MasterCodeUtil.getCodeDesc(convPubHoliday));
                     if (!StringUtil.isEmpty(convPubHoliday) || !StringUtil.isEmpty(convPbHolDayStartHH) || !StringUtil.isEmpty(convPbHolDayStartMM)
                             || !StringUtil.isEmpty(convPbHolDayEndHH) || !StringUtil.isEmpty(convPbHolDayEndMM)) {
                         appPremPhOpenPeriods.add(appPremPhOpenPeriod);
@@ -4074,8 +4065,7 @@ public class NewApplicationDelegator {
                     appPremPhOpenPeriod.setOffSiteStartFromMM(offSitePbHolDayStartMM);
                     appPremPhOpenPeriod.setOffSiteEndToHH(offSitePbHolDayEndHH);
                     appPremPhOpenPeriod.setOffSiteEndToMM(offSitePbHolDayEndMM);
-                    String phName = NewApplicationHelper.getPhName(publicHolidayDtos, offSitePubHoliday);
-                    appPremPhOpenPeriod.setDayName(phName);
+                    appPremPhOpenPeriod.setDayName(MasterCodeUtil.getCodeDesc(offSitePubHoliday));
                     if (!StringUtil.isEmpty(offSitePubHoliday) || !StringUtil.isEmpty(offSitePbHolDayStartHH) || !StringUtil.isEmpty(offSitePbHolDayStartMM)
                             || !StringUtil.isEmpty(offSitePbHolDayEndHH) || !StringUtil.isEmpty(offSitePbHolDayEndMM)) {
                         appPremPhOpenPeriods.add(appPremPhOpenPeriod);
@@ -5291,13 +5281,12 @@ public class NewApplicationDelegator {
 
             //set premises info
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-            List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
             if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
                 for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                     appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                     List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
                     //set ph name
-                    NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos,publicHolidayList);
+                    NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos);
                     appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
                 }
             }

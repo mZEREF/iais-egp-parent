@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
@@ -90,13 +89,12 @@ public class RetriggerGiroPaymentDelegator {
         appSubmissionDto.setAppEditSelectDto(new AppEditSelectDto());
 
         //set premises info
-        List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
         if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                 appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                 List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
                 //set ph name
-                NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos,publicHolidayList);
+                NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos);
                 appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
             }
         }

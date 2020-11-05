@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
@@ -20,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -240,22 +238,7 @@ public class NewApplicationAjaxController {
 
         //onsite ph
         String premName = currentLength;
-
-        List<SelectOption> publicHolidayList = IaisCommonUtils.genNewArrayList();
-        List<PublicHolidayDto> publicHolidayDtoList = IaisCommonUtils.genNewArrayList();
-
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        try {
-            publicHolidayDtoList = feEicGatewayClient.getpublicHoliday(signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-        publicHolidayDtoList.stream().forEach(pb -> {
-            publicHolidayList.add(new SelectOption(Formatter.formatDate(pb.getFromDate()), pb.getDescription()));
-        });
-
+        List<SelectOption> publicHolidayList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
         Map<String, String> publicHoliday = IaisCommonUtils.genNewHashMap();
         publicHoliday.put("class", "onSitePubHoliday");
         publicHoliday.put("id", premName + "onSitePubHoliday0");
@@ -621,21 +604,7 @@ public class NewApplicationAjaxController {
 
         String sql = SqlMap.INSTANCE.getSql("premises", "premises-ph").getSqlStr();
 
-        List<SelectOption> publicHolidayList = IaisCommonUtils.genNewArrayList();
-        List<PublicHolidayDto> publicHolidayDtoList = IaisCommonUtils.genNewArrayList();
-
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        try {
-            publicHolidayDtoList = feEicGatewayClient.getpublicHoliday(signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-        publicHolidayDtoList.stream().forEach(pb -> {
-            publicHolidayList.add(new SelectOption(Formatter.formatDate(pb.getFromDate()), pb.getDescription()));
-        });
-
+        List<SelectOption> publicHolidayList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
         Map<String, String> phSelectAttr = IaisCommonUtils.genNewHashMap();
 
         phSelectAttr.put("class", type + "PubHoliday");
@@ -909,8 +878,7 @@ public class NewApplicationAjaxController {
         if (appGrpPremisesDto != null) {
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
             if (!IaisCommonUtils.isEmpty(appPremPhOpenPeriodDtos)) {
-                List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
-                NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos, publicHolidayList);
+                NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos);
             }
 
             List<AppPremisesOperationalUnitDto> operationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();

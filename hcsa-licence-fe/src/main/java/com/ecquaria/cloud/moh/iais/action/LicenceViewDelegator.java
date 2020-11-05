@@ -99,7 +99,7 @@ public class LicenceViewDelegator {
                         NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
                         //set ph name
-                        NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos,publicHolidayList);
+                        NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos);
                     }
                 }
                 if(appSvcRelatedInfoDto != null){

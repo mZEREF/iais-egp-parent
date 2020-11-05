@@ -455,13 +455,7 @@ public class WithOutRenewalDelegator {
                     List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
                     if(appPremPhOpenPeriodList !=null){
                         for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList){
-                            String phDateStr = appPremPhOpenPeriodDto.getPhDateStr();
-                            for(SelectOption selectOption : publicHolidayList){
-                                if(selectOption.getValue().equals(phDateStr)){
-                                    appPremPhOpenPeriodDto.setDayName(selectOption.getText());
-                                    break;
-                                }
-                            }
+                            appPremPhOpenPeriodDto.setDayName(MasterCodeUtil.getCodeDesc(appPremPhOpenPeriodDto.getPhDate()));
                         }
                     }
                 }

@@ -433,7 +433,7 @@
                                     <iais:row>
                                         <iais:field value="Select Public Holiday" width="12"/>
                                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
-                                            <iais:select cssClass="onSitePubHoliday" name="${premValue}onSitePubHoliday${phStat.index}" options="publicHolidaySelect" value="${ph.phDateStr}" firstOption="Please Select"></iais:select>
+                                            <iais:select cssClass="onSitePubHoliday" name="${premValue}onSitePubHoliday${phStat.index}" codeCategory="CATE_ID_PUBLIC_HOLIDAY" value="${ph.phDateStr}" firstOption="Please Select"></iais:select>
                                             <span class="error-msg" name="iaisErrorMsg" id="error_onsitephDate${premValue}${phStat.index}"></span>
                                         </iais:value>
 
@@ -491,7 +491,7 @@
                                 <iais:row>
                                     <iais:field value="Select Public Holiday" width="12"/>
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
-                                        <iais:select name="${premValue}onSitePubHoliday0" options="publicHolidaySelect" value="${ph.phDateStr}" cssClass="onSitePubHoliday" firstOption="Please Select"></iais:select>
+                                        <iais:select name="${premValue}onSitePubHoliday0" codeCategory="CATE_ID_PUBLIC_HOLIDAY" value="${ph.phDateStr}" cssClass="onSitePubHoliday" firstOption="Please Select"></iais:select>
                                         <span  class="error-msg"  name="iaisErrorMsg" id="error_onsitephDate${premValue}${phStat.index}"></span>
                                     </iais:value>
                                 </iais:row>
@@ -693,7 +693,7 @@
                                     <iais:row>
                                         <iais:field value="Select Public Holiday" width="12"/>
                                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
-                                            <iais:select name="${premValue}conveyancePubHoliday${phStat.index}" options="publicHolidaySelect" value="${ph.phDateStr}" cssClass="conveyancePubHoliday" firstOption="Please Select"></iais:select>
+                                            <iais:select name="${premValue}conveyancePubHoliday${phStat.index}" codeCategory="CATE_ID_PUBLIC_HOLIDAY" value="${ph.phDateStr}" cssClass="conveyancePubHoliday" firstOption="Please Select"></iais:select>
                                             <span  class="error-msg"  name="iaisErrorMsg" id="error_convphDate${premValue}${phStat.index}"></span>
                                         </iais:value>
                                         <c:if test="${!phStat.first}">
@@ -750,7 +750,7 @@
                                 <iais:row>
                                     <iais:field value="Select Public Holiday" width="12"/>
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
-                                        <iais:select cssClass="conveyancePubHoliday" name="${premValue}conveyancePubHoliday0" options="publicHolidaySelect" value="${ph.phDateStr}" firstOption="Please Select"></iais:select>
+                                        <iais:select cssClass="conveyancePubHoliday" name="${premValue}conveyancePubHoliday0" codeCategory="CATE_ID_PUBLIC_HOLIDAY" value="${ph.phDateStr}" firstOption="Please Select"></iais:select>
                                         <span  class="error-msg"  name="iaisErrorMsg" id="error_convphDate${premValue}${phStat.index}"></span>
                                     </iais:value>
                                 </iais:row>
@@ -947,7 +947,7 @@
                                     <iais:row>
                                         <iais:field value="Select Public Holiday" width="12"/>
                                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
-                                            <iais:select name="${premValue}offSitePubHoliday${phStat.index}" options="publicHolidaySelect" value="${ph.phDateStr}" cssClass="offSitePubHoliday" firstOption="Please Select"></iais:select>
+                                            <iais:select name="${premValue}offSitePubHoliday${phStat.index}" codeCategory="CATE_ID_PUBLIC_HOLIDAY" value="${ph.phDateStr}" cssClass="offSitePubHoliday" firstOption="Please Select"></iais:select>
                                             <span  class="error-msg"  name="iaisErrorMsg" id="error_offSitephDate${premValue}${phStat.index}"></span>
                                         </iais:value>
                                         <c:if test="${!phStat.first}">
@@ -1004,7 +1004,7 @@
                                 <iais:row>
                                     <iais:field value="Select Public Holiday" width="12"/>
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
-                                        <iais:select cssClass="offSitePubHoliday" name="${premValue}offSitePubHoliday0" options="publicHolidaySelect" value="${ph.phDateStr}" firstOption="Please Select"></iais:select>
+                                        <iais:select cssClass="offSitePubHoliday" name="${premValue}offSitePubHoliday0" codeCategory="CATE_ID_PUBLIC_HOLIDAY" value="${ph.phDateStr}" firstOption="Please Select"></iais:select>
                                         <span  class="error-msg"  name="iaisErrorMsg" id="error_offSitephDate${premValue}${phStat.index}"></span>
                                     </iais:value>
                                 </iais:row>

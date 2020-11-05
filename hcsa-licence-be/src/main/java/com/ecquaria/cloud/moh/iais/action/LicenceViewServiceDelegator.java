@@ -46,6 +46,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
@@ -704,12 +705,7 @@ public class LicenceViewServiceDelegator {
                 if(phDate==null){
                     continue;
                 }
-                //todo:ph task start
-                /*for (PublicHolidayDto publicHolidayDto : publicHolidayDtos) {
-                    if (publicHolidayDto.getFromDate().compareTo(phDate) == 0) {
-                        appPremPhOpenPeriodDto.setDayName(publicHolidayDto.getDescription());
-                    }
-                }*/
+                appPremPhOpenPeriodDto.setDayName(MasterCodeUtil.getCodeDesc(appPremPhOpenPeriodDto.getPhDate()));
                 if (startFrom != null && endTo != null) {
                     String string = startFrom.toString();
                     String string1 = endTo.toString();
