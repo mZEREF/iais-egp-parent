@@ -493,6 +493,76 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    public void appealRfiAndEmail(ApplicationViewDto applicationViewDto,ApplicationDto applicationDto,String appealingFor,String appealType, HashMap<String, String> maskParams)throws Exception{
+        MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI).getEntity();
+        Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
+        String applicationNo = applicationDto.getApplicationNo();
+        String applicantName = "";
+        String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ MessageConstants.MESSAGE_CALL_BACK_URL_Appeal+appealingFor+"&type="+appealType;
+        int rfiDueDate = systemParamConfig.getRfiDueDate();
+        LocalDate tatTime = LocalDate.now().plusDays(rfiDueDate);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(Formatter.DATE);
+        String tatTimeStr = tatTime.format(dtf);
+        ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+        if(applicationGroupDto != null){
+            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+            if(orgUserDto != null){
+                applicantName = orgUserDto.getDisplayName();
+            }
+        }
+        String messageNo = inboxMsgService.getMessageNo();
+        map.put("ApplicantName",applicantName);
+        map.put("ApplicationType",MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        map.put("ApplicationNumber",StringUtil.viewHtml(applicationNo));
+        map.put("ApplicationDate",Formatter.formatDateTime( new Date(), Formatter.DATE));
+        map.put("Remarks","");
+        map.put("systemLink",url);
+        map.put("TATtime",tatTimeStr);
+        map.put("email",systemParamConfig.getSystemAddressOne());
+        map.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        map.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
+        templateMessageByContent = MessageTemplateUtil.replaceNum(templateMessageByContent);
+        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
+
+        String subject = "MOH IAIS - Request for information for your "+ MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()) + ", " + StringUtil.viewHtml(applicationNo);
+        if(hcsaServiceDto!=null ){
+            InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(subject,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
+                    messageNo,hcsaServiceDto.getSvcCode()+"@",templateMessageByContent, applicationViewDto.getApplicationGroupDto().getLicenseeId(),IaisEGPHelper.getCurrentAuditTrailDto());
+            interMessageDto.setMaskParams(maskParams);
+            inboxMsgService.saveInterMessage(interMessageDto);
+            //send email
+            EmailParam emailParam = new EmailParam();
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
+            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+            map.put("systemLink",loginUrl);
+            emailParam.setTemplateContent(map);
+            emailParam.setQueryCode(applicationNo);
+            emailParam.setReqRefNum(applicationNo);
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+            emailParam.setRefId(applicationNo);
+            emailParam.setSubject(subject);
+            log.info(StringUtil.changeForLog("send rfi application email start"));
+            notificationHelper.sendNotification(emailParam);
+            log.info(StringUtil.changeForLog("send rfi application email end"));
+            //send sms
+            EmailParam smsParam = new EmailParam();
+            Map<String,Object> smsMap = IaisCommonUtils.genNewHashMap();
+            smsMap.put("ApplicationType",MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+            smsMap.put("ApplicationNumber",StringUtil.viewHtml(applicationNo));
+            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_SMS);
+            smsParam.setTemplateContent(smsMap);
+            smsParam.setSubject(subject);
+            smsParam.setQueryCode(applicationNo);
+            smsParam.setReqRefNum(applicationNo);
+            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+            smsParam.setRefId(applicationNo);
+            log.info(StringUtil.changeForLog("send rfi application sms start"));
+            notificationHelper.sendNotification(smsParam);
+            log.info(StringUtil.changeForLog("send rfi application sms end"));
+        }
+    }
+    @Override
     public void applicationRfiAndEmail(ApplicationViewDto applicationViewDto, ApplicationDto applicationDto, String licenseeId, LicenseeDto licenseeDto,
                                        LoginContext loginContext, String externalRemarks) throws IOException, TemplateException {
         String applicantName = "";

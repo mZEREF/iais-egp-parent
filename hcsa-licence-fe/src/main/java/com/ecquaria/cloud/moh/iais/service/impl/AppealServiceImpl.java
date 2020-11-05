@@ -1030,13 +1030,13 @@ public class AppealServiceImpl implements AppealService {
 
         AppliSpecialDocDto appliSpecialDocDto = new AppliSpecialDocDto();
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        appliSpecialDocDto.setSubmitBy(loginContext.getLicenseeId());
+        appliSpecialDocDto.setSubmitBy(loginContext.getUserId());
 
         //group
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo);
         //info
         applicationGroupDto.setLicenseeId(entity.getLicenseeId());
-        applicationGroupDto.setSubmitBy(loginContext.getLicenseeId());
+        applicationGroupDto.setSubmitBy(loginContext.getUserId());
         ApplicationDto applicationDto1 = new ApplicationDto();
         applicationDto1.setApplicationType(ApplicationConsts.APPLICATION_TYPE_APPEAL);
         applicationDto1.setApplicationNo(s);

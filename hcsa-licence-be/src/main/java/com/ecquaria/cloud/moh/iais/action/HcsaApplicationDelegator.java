@@ -1334,7 +1334,10 @@ public class HcsaApplicationDelegator {
                     HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                     maskParams.put("appealingFor",appealingFor);
                     String appealType = (String)ParamUtil.getSessionAttr(bpc.request, "type");
+/*
                     sendAppealMessage(appealingFor,licenseeId,maskParams,serviceId,appealType,applicationDto.getApplicationNo());
+*/
+                    applicationService.appealRfiAndEmail(applicationViewDto,applicationDto,appealingFor,appealType,maskParams);
                 }
             }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
                 HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
