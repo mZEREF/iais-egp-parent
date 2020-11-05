@@ -56,11 +56,10 @@
     function queryValidate(){
         var sql = $('#querySql').val();
         var flag = true;
-        console.log('sql : ' + sql);
         if(sql == null || sql == undefined || sql == ''){
-            console.log('queryValidate sql : ' + sql);
             flag = false;
         }
+        return flag;
     }
 
     function showWaiting() {
