@@ -1138,7 +1138,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         map.put("phoneNo", phoneNo);
         try{
             EmailParam emailParam = new EmailParam();
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST_EMAIL);
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST);
             emailParam.setTemplateContent(map);
             emailParam.setQueryCode(appNo);
             emailParam.setReqRefNum(appNo);
@@ -1146,7 +1146,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             emailParam.setRefId(appNo);
             notificationHelper.sendNotification(emailParam);
             EmailParam smsParam = new EmailParam();
-            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST_SMS);
+            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST);
             smsParam.setSubject("MOH HALP - Select Inspection Appointment Date");
             smsParam.setQueryCode(appNo);
             smsParam.setReqRefNum(appNo);
@@ -1171,7 +1171,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         }
         map.put("systemLink", url);
         EmailParam emailParam = new EmailParam();
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST_MSG);
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST);
         emailParam.setTemplateContent(map);
         emailParam.setQueryCode(appNo);
         emailParam.setReqRefNum(appNo);
