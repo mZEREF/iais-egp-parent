@@ -779,7 +779,6 @@ public class ClinicalLaboratoryDelegator {
                     if(!StringUtil.isEmpty(profRegNo)){
                         List<String> prgNos = IaisCommonUtils.genNewArrayList();
                         prgNos.add(profRegNo);
-                        try {
                             if("Y".equals(prsFlag)){
                                 ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
                                 professionalParameterDto.setRegNo(prgNos);
@@ -790,16 +789,18 @@ public class ClinicalLaboratoryDelegator {
                                 professionalParameterDto.setSignature("2222");
                                 HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
                                 HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                                List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                                        signature2.date(), signature2.authorization()).getEntity();
-                                String name = professionalResponseDtos.get(0).getName();
-                                if(StringUtil.isEmpty(name)){
-                                    errList.put("professionRegoNo"+i,"GENERAL_ERR0042");
+                                try {
+                                    List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
+                                            signature2.date(), signature2.authorization()).getEntity();
+                                    String name = professionalResponseDtos.get(0).getName();
+                                    if(StringUtil.isEmpty(name)){
+                                        errList.put("professionRegoNo"+i,"GENERAL_ERR0042");
+                                    }
+                                }catch (Throwable e){
+                                    bpc.request.setAttribute("PRS_SERVICE_DOWN","PRS_SERVICE_DOWN");
                                 }
+
                             }
-                        }catch (Exception e){
-                            bpc.request.setAttribute("PRS_SERVICE_DOWN","PRS_SERVICE_DOWN");
-                        }
 
                     }
                 }
@@ -1442,7 +1443,7 @@ public class ClinicalLaboratoryDelegator {
                     if(!StringUtil.isEmpty(profRegNo)){
                         List<String> prgNos = IaisCommonUtils.genNewArrayList();
                         prgNos.add(profRegNo);
-                        try {
+
                             if("Y".equals(prsFlag)){
                                 ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
                                 professionalParameterDto.setRegNo(prgNos);
@@ -1453,20 +1454,23 @@ public class ClinicalLaboratoryDelegator {
                                 professionalParameterDto.setSignature("2222");
                                 HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
                                 HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                                List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                                        signature2.date(), signature2.authorization()).getEntity();
-                                String name = professionalResponseDtos.get(0).getName();
-                                if(StringUtil.isEmpty(name)){
-                                    errorMap.put("regnNo" + i,"Professional Regn No. is not correct.");
+                                try {
+                                    List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
+                                            signature2.date(), signature2.authorization()).getEntity();
+                                    String name = professionalResponseDtos.get(0).getName();
+                                    if(StringUtil.isEmpty(name)){
+                                        errorMap.put("regnNo" + i,"Professional Regn No. is not correct.");
 //                            appSvcCgoDto.setSubSpeciality(null);
 //                            appSvcCgoDto.setSpeciality(null);
-                                }else {
-                                    appSvcPersonnelDto.setName(name);
+                                    }else {
+                                        appSvcPersonnelDto.setName(name);
+                                    }
+                                }catch (Throwable e){
+                                    bpc.request.setAttribute("PRS_SERVICE_DOWN","PRS_SERVICE_DOWN");
                                 }
+
                             }
-                        }catch (Exception e){
-                            bpc.request.setAttribute("PRS_SERVICE_DOWN","PRS_SERVICE_DOWN");
-                        }
+
 
                     }
                 }

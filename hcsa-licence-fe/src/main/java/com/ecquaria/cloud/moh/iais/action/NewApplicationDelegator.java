@@ -1971,7 +1971,12 @@ public class NewApplicationDelegator {
                                 }
                                 if (0.0 == amount) {
                                     appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-                                    appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                                    if(isAutoRfc){
+                                        appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                                    }else {
+                                        appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                                    }
+
                                 } else {
                                     appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
                                 }
@@ -2014,8 +2019,14 @@ public class NewApplicationDelegator {
         //set Risk Score
         appSubmissionService.setRiskToDto(appSubmissionDto);
         if (0.0 == amount) {
-            appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-            appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+            if(isAutoRfc){
+                appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+            }else {
+                appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+            }
+
         } else {
             appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
         }
@@ -2046,14 +2057,18 @@ public class NewApplicationDelegator {
                 appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
                 for(AppGrpPremisesDto appGrpPremisesDto :  appSubmissionDto.getAppGrpPremisesDtoList()){
                     appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
-                    appGrpPremisesDto.setSelfAssMtFlag(4);
                 }
                 appSubmissionDtos.add(appSubmissionDto);
                 autoSaveAppsubmission.addAll(appSubmissionDtos);
             } else {
                 appSubmissionDto.setIsNeedNewLicNo(AppConsts.YES);
                 for(AppGrpPremisesDto appGrpPremisesDto :  appSubmissionDto.getAppGrpPremisesDtoList()){
-                    appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+                    if(0.0==amount){
+                        appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+                    }else {
+                        appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
+                    }
+
                 }
                 appSubmissionDtos.add(appSubmissionDto);
                 notAutoSaveAppsubmission.addAll(appSubmissionDtos);
@@ -2186,6 +2201,10 @@ public class NewApplicationDelegator {
         if (!autoSaveAppsubmission.isEmpty()) {
             for (AppSubmissionDto appSubmissionDto1 : autoSaveAppsubmission) {
                 NewApplicationHelper.syncPsnData(appSubmissionDto1, personMap);
+                List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto1.getAppGrpPremisesDtoList();
+                for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1){
+                    appGrpPremisesDto.setSelfAssMtFlag(4);
+                }
             }
             //set missing data
             AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
@@ -3526,10 +3545,21 @@ public class NewApplicationDelegator {
         }
         return result;
     }
+    private List<AppPremisesOperationalUnitDto> copyAppPremisesOperationalUnitDto(List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos){
+
+        List<AppPremisesOperationalUnitDto> list=IaisCommonUtils.genNewArrayList();
+        for(AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos){
+            AppPremisesOperationalUnitDto operationalUnitDto=new AppPremisesOperationalUnitDto();
+            operationalUnitDto.setFloorNo(appPremisesOperationalUnitDto.getFloorNo());
+            operationalUnitDto.setUnitNo(appPremisesOperationalUnitDto.getUnitNo());
+            operationalUnitDto.setPremisesId(appPremisesOperationalUnitDto.getPremisesId());
+            list.add(operationalUnitDto);
+        }
+        return list;
+    }
 
     private boolean compareAndSendEmail(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
         boolean isAuto = true;
-
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
         if (appEditSelectDto != null) {
             if (appEditSelectDto.isPremisesEdit()) {
@@ -3540,6 +3570,25 @@ public class NewApplicationDelegator {
                     }
                     //send eamil
 
+                }
+                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+                List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+                List<AppPremisesOperationalUnitDto> premisesOperationalUnitDtos=IaisCommonUtils.genNewArrayList();
+                List<AppPremisesOperationalUnitDto> oldPremisesOperationalUnitDtos=IaisCommonUtils.genNewArrayList();
+                for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+                    List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
+                    if(appPremisesOperationalUnitDtos!=null){
+                        premisesOperationalUnitDtos.addAll(appPremisesOperationalUnitDtos);
+                    }
+                }
+                for(AppGrpPremisesDto appGrpPremisesDto : oldAppSubmissionDtoAppGrpPremisesDtoList){
+                    List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
+                    if(appPremisesOperationalUnitDtos!=null){
+                        oldPremisesOperationalUnitDtos.addAll(appPremisesOperationalUnitDtos);
+                    }
+                }
+                if(!premisesOperationalUnitDtos.equals(oldPremisesOperationalUnitDtos)){
+                    isAuto=false;
                 }
             }
 
