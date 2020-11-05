@@ -736,7 +736,7 @@ public class RequestForChangeDelegator {
         }else{
             try{
                 feEicGatewayClient.getUenInfo(uen);
-            }catch (Exception e){
+            }catch (Throwable e){
              log.error(StringUtil.changeForLog("The gent uen info throw exception"+e.getMessage()));
             }
         }
