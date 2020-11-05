@@ -323,8 +323,6 @@ public class NewApplicationDelegator {
     public void preparePremises(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do preparePremises start ...."));
         NewApplicationHelper.setTimeList(bpc.request);
-        List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
-        ParamUtil.setSessionAttr(bpc.request, "publicHolidaySelect", (Serializable) publicHolidayList);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         //get svcCode to get svcId
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
@@ -1553,7 +1551,6 @@ public class NewApplicationDelegator {
                     appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
                     String svcId = appSvcRelatedInfoDto.getServiceId();
                     HcsaServiceDto hcsaServiceDto = serviceConfigService.getHcsaServiceDtoById(svcId);
-                    List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
                     List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
                     if(appGrpPremisesDtoList!=null){
                         for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
@@ -3818,7 +3815,6 @@ public class NewApplicationDelegator {
         String[] offSiteEndHHS = ParamUtil.getStrings(request, "offSiteEndHH");
         String[] offSiteEndMMS = ParamUtil.getStrings(request, "offSiteEndMM");
 
-        List<SelectOption> publicHolidayDtos = (List<SelectOption>) ParamUtil.getSessionAttr(request, "publicHolidaySelect");
         //every prem's ph length
         String[] phLength = ParamUtil.getStrings(request, "phLength");
         String[] premValue = ParamUtil.getStrings(request, "premValue");

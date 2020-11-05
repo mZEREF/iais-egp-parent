@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
@@ -93,7 +92,6 @@ public class LicenceViewDelegator {
                 if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                     appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
                 }
-                List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
                 if(!IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())){
                     for(AppGrpPremisesDto appGrpPremisesDto:appSubmissionDto.getAppGrpPremisesDtoList()){
                         NewApplicationHelper.setWrkTime(appGrpPremisesDto);

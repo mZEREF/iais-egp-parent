@@ -279,8 +279,6 @@ public class RequestForChangeMenuDelegator {
     public void preparePremisesEdit(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the do preparePremisesEdit start ...."));
         NewApplicationHelper.setTimeList(bpc.request);
-        List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
-        ParamUtil.setSessionAttr(bpc.request, "publicHolidaySelect", (Serializable) publicHolidayList);
 
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
