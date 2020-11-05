@@ -151,16 +151,6 @@ public class NotificationHelper {
 	@Autowired
 	private SystemParamConfig systemParamConfig;
 
-	/*private static List<String> licenceEmailString =  Arrays.asList(
-		ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,
-		ApplicationConsts.PERSONNEL_PSN_TYPE_PO,
-		ApplicationConsts.PERSONNEL_PSN_TYPE_DPO,
-		ApplicationConsts.PERSONNEL_PSN_TYPE_MAP,
-		ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL,
-		ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE,
-		ApplicationConsts.PERSONNEL_PSN_TYPE_AP
-			);*/
-
 	@Bean(name = "emailAsyncExecutor")
 	public Executor asyncExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -242,14 +232,9 @@ public class NotificationHelper {
 				+ " ref Id is " + StringUtil.nullToEmptyStr(refId)
 				+ "templateId is "+ templateId+ " thread name is " + Thread.currentThread().getName()));
 		MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId).getEntity();
-		if(StringUtil.isEmpty(refIdType)){
-			if(MessageConstants.TEMPLETE_DELIVERY_MODE_SMS.equals(msgTemplateDto.getDeliveryMode())){
-				refIdType = "SMS";
-			}
-		}
-		if (MESSAGE_TYPE_NOTIFICATION.equals(refIdType) ||
-				MESSAGE_TYPE_ANNONUCEMENT.equals(refIdType) ||
-				MESSAGE_TYPE_ACTION_REQUIRED.equals(refIdType)) {
+		String deliveryMode = msgTemplateDto.getDeliveryMode();
+
+		if (MessageConstants.TEMPLETE_DELIVERY_MODE_MSG.equals(deliveryMode)) {
 			if (AppConsts.COMMON_STATUS_IACTIVE.equals(msgTemplateDto.getStatus())) {
 				return;
 			}
@@ -319,7 +304,7 @@ public class NotificationHelper {
 					subject = replaceText(subject, subjectParams);
 				}
 
-				if (!StringUtil.isEmpty(refIdType) && refIdType.contains("SMS")) {
+				if (MessageConstants.TEMPLETE_DELIVERY_MODE_SMS.equals(deliveryMode)) {
 					int smsFlag = systemParamConfig.getEgpSmsNotifications();
 					if (0 == smsFlag) {
 						return;
@@ -331,7 +316,7 @@ public class NotificationHelper {
 						jobList.add(jrDto);
 						iaisSystemClient.createJobRemindMsgTracking(jobList);
 					}
-				} else {
+				} else if(MessageConstants.TEMPLETE_DELIVERY_MODE_EMAIL.equals(deliveryMode)) {
 					int emailFlag = systemParamConfig.getEgpEmailNotifications();
 					if (0 == emailFlag) {
 						log.info("please turn on email param.......");
