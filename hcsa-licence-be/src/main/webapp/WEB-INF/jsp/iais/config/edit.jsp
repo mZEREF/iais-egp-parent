@@ -296,6 +296,11 @@
                 <input style="white-space: nowrap" class="form-check-input" <c:if test="${doc.dupForPrem=='1'}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocPremises">
                 <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
               </div>
+              <div class="col-xs-12 col-md-5" style="margin-right: 2%">
+              </div>
+              <div class="col-xs-12 col-md-4">
+                <span class="error-msg" name="iaisErrorMsg" id="error_commonDoc${sta.index}"></span>
+              </div>
             </div>
           </div>
         </c:forEach>
@@ -331,7 +336,7 @@
                 <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
               </div>
             </div>
-            <div class="col-xs-12 col-md-6">
+            <div class="col-xs-12 col-md-5" style="margin-right: 2%">
             </div>
             <div class="col-xs-12 col-md-4">
               <span class="error-msg" name="iaisErrorMsg" id="error_commonDoc${sta.index}"></span>
@@ -951,12 +956,12 @@
                     "              <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">\n" +
                     "                <input type=\"hidden\" name=\"commDocMandatory\" value=\"0\">\n" +
                     "                <input  style=\"white-space: nowrap\" class=\"form-check-input\"  type=\"checkbox\" onclick=\"checkboxOnclick(this)\" name=\"descriptionCommDocMandatory\">\n" +
-                    "                <label  style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>Mandatory</label>\n" +
+                    "                <label  style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>Mandatory ?</label>\n" +
                     "              </div>\n" +
                     "              <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">\n" +
                     "                <input type=\"hidden\" name=\"commDocPremises\" value=\"0\">\n" +
                     "                <input  style=\"white-space: nowrap\" class=\"form-check-input\"  type=\"checkbox\" onclick=\"checkboxOnclick(this)\" name=\"descriptionCommDocPremises\">\n" +
-                    "                <label  style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>Mandatory</label>\n" +
+                    "                <label  style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>To duplicate for individual premises ?</label>\n" +
                     "              </div>\n" +
                     "            </div>\n" +
                     "          </div>");

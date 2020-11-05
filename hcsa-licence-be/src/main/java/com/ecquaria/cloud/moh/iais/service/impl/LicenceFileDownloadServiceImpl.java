@@ -200,7 +200,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         log.info(StringUtil.changeForLog(requestForInfList.toString()+"***requestForInfList***"));
 
                     /*    sendTask(listApplicationDto,requestForInfList,submissionId);*/
-                        moveFile(fil);
+                     /*   moveFile(fil);*/
                         //save success
                     }catch (Exception e){
                         //save bad
@@ -417,8 +417,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     applicationGroupDto.setIsPreInspection(0);
                 }
             }
-        }catch (Exception e){
-            log.error("gobalRiskAccpetDtos is error",e);
+        }catch (Throwable e){
+            log.error("------gobalRiskAccpetDtos is error",e);
         }
 
         List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
@@ -438,8 +438,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         appPremisesCorrelationDto.setRiskScore(entity.getRiskScore());
                         appPremisesCorrelationDto.setRiskCalcDate(new Date());
                         log.info(StringUtil.changeForLog(" getHcsaRiskScoreDtoByHcsaRiskScoreDto ok" + entity.getRiskScore()));
-                    }catch (Exception e){
-                        log.error("getHcsaRiskScoreDtoByHcsaRiskScoreDto is error ",e);
+                    }catch (Throwable e){
+                        log.error("--------getHcsaRiskScoreDtoByHcsaRiskScoreDto is error ",e);
                     }
                 }
             }
@@ -463,6 +463,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         applicationNewAndRequstDto.setEventNo(l);
         applicationNewAndRequstDto.setZipFileName(processFileTrackDto.getFileName());
         applicationNewAndRequstDto.setAuditTrailDto(intranet);
+        applicationNewAndRequstDto.setProcessFileTrackDto(processFileTrackDto);
         applicationListDto.setApplicationNewAndRequstDto(applicationNewAndRequstDto);
         processFileTrackDto.setStatus("PFT003");
         applicationListDto.setProcessFileTrackDto(processFileTrackDto);
@@ -616,6 +617,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
 
         AuditTrailDto intranet =new AuditTrailDto();
+        ApplicationNewAndRequstDto applicationNewAndRequstDto=new ApplicationNewAndRequstDto();
         List<ApplicationDto> listNewApplicationDto =IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> requestForInfList  =IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> updateTaskList  =IaisCommonUtils.genNewArrayList();
@@ -630,7 +632,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                }
             }
             if(dto!=null){
-                ApplicationNewAndRequstDto applicationNewAndRequstDto = dto.getApplicationNewAndRequstDto();
+                 applicationNewAndRequstDto = dto.getApplicationNewAndRequstDto();
                 if(applicationNewAndRequstDto!=null){
                   intranet=applicationNewAndRequstDto.getAuditTrailDto();
                   listNewApplicationDto = applicationNewAndRequstDto.getListNewApplicationDto();
@@ -658,6 +660,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
             BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
             broadcastOrganizationDto.setAuditTrailDto(intranet);
+            broadcastOrganizationDto.setApplicationNewAndRequstDto(applicationNewAndRequstDto);
+
             broadcastApplicationDto.setAuditTrailDto(intranet);
             broadcastOrganizationDto.setEventRefNo(eventRefNum);
             broadcastApplicationDto.setEventRefNo(eventRefNum);
@@ -715,6 +719,31 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
     public void  removeFile(String eventRefNum ,String submissionId){
         List<Submission> submissionList = eventClient.getSubmission(submissionId).getEntity();
+        log.info(StringUtil.changeForLog(submissionList .size() +"remove file submissionList .size()"));
+        BroadcastOrganizationDto broadcastOrganizationDto =null;
+        for(Submission submission : submissionList){
+            if(EventBusConsts.SERVICE_NAME_ROUNTINGTASK.equals(submission.getSubmissionIdentity().getService())){
+                broadcastOrganizationDto = JsonUtil.parseToObject(submission.getData(), BroadcastOrganizationDto.class);
+                break;
+            }
+        }
+        if(broadcastOrganizationDto!=null){
+            ApplicationNewAndRequstDto applicationNewAndRequstDto = broadcastOrganizationDto.getApplicationNewAndRequstDto();
+            String zipFileName = applicationNewAndRequstDto.getZipFileName();
+            log.info(StringUtil.changeForLog(JsonUtil.parseToJson(applicationNewAndRequstDto)+"---applicationNewAndRequstDto-----"));
+            String inFolder = inSharedPath;
+            if (!inFolder.endsWith(File.separator)) {
+                inFolder += File.separator;
+            }
+            File file =new File(inFolder+zipFileName);
+            log.info("start remove file start");
+            moveFile(file);
+            log.info("update file track start");
+            ProcessFileTrackDto processFileTrackDto = applicationNewAndRequstDto.getProcessFileTrackDto();
+            processFileTrackDto.setStatus("PFT005");
+            applicationClient.updateProcessFileTrack(processFileTrackDto);
+        }
+
     }
 
     private void  moveFile(File file){
