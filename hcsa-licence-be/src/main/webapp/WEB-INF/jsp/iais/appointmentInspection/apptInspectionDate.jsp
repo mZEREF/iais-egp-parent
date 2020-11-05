@@ -218,12 +218,18 @@
                     dismissWaiting();
                     var ajaxFlag = data.buttonFlag;
                     var inspDateList = data.inspDateList;
+                    var specButtonFlag = data.specButtonFlag;
+                    if('true' == ajaxFlag){
+                        $("#disApptSpecInspDate").hide();
+                        $("#apptSpecInspDate").show();
+                    } else {
+                        $("#disApptSpecInspDate").show();
+                        $("#apptSpecInspDate").hide();
+                    }
                     if('true' == ajaxFlag){
                         $("#disApptSysInspDate").hide();
                         $("#apptSysInspDate").show();
                         $("#apptThreeInspDate").show();
-                        $("#disApptSpecInspDate").hide();
-                        $("#apptSpecInspDate").show();
                         var html = '<div class="row">' +
                             '<div class="col-md-6">' +
                             '<ul>';
@@ -239,8 +245,7 @@
                         $("#disApptSysInspDate").show();
                         $("#apptSysInspDate").hide();
                         $("#apptThreeInspDate").hide();
-                        $("#disApptSpecInspDate").show();
-                        $("#apptSpecInspDate").hide();
+
                     }
                 }
             )
@@ -283,12 +288,18 @@
                     dismissWaiting();
                     var ajaxFlag = data.buttonFlag;
                     var inspDateList = data.inspDateList;
+                    var specButtonFlag = data.specButtonFlag;
+                    if('true' == ajaxFlag){
+                        $("#disApptSpecInspDate").hide();
+                        $("#apptSpecInspDate").show();
+                    } else {
+                        $("#disApptSpecInspDate").show();
+                        $("#apptSpecInspDate").hide();
+                    }
                     if('true' == ajaxFlag){
                         $("#disApptSysInspDate").hide();
                         $("#apptSysInspDate").show();
                         $("#apptThreeInspDate").show();
-                        $("#disApptSpecInspDate").hide();
-                        $("#apptSpecInspDate").show();
                         var html = '<div class="row">' +
                             '<div class="col-md-6">' +
                             '<ul>';
@@ -304,8 +315,6 @@
                         $("#disApptSysInspDate").show();
                         $("#apptSysInspDate").hide();
                         $("#apptThreeInspDate").hide();
-                        $("#disApptSpecInspDate").show();
-                        $("#apptSpecInspDate").hide();
                     }
                 }
             )

@@ -137,16 +137,21 @@ public class OnlineApptAjaxController {
                         //Has it been blown up
                         if(headers != null && StringUtil.isEmpty(headers.get("fusing"))) {
                             List<ApptRequestDto> apptRequestDtos = result.getEntity();
-                            Map<String, List<ApptUserCalendarDto>> inspectionDateMap = new LinkedHashMap<>(apptRequestDtos.size());
                             if(!IaisCommonUtils.isEmpty(apptRequestDtos)){
+                                Map<String, List<ApptUserCalendarDto>> inspectionDateMap = new LinkedHashMap<>(apptRequestDtos.size());
                                 for(ApptRequestDto apptRequestDto : apptRequestDtos){
                                     inspectionDateMap.put(apptRequestDto.getApptRefNo(), apptRequestDto.getUserClandars());
                                 }
                                 apptInspectionDateDto.setSysInspDateFlag(AppConsts.TRUE);
+                                apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
+                                map.put("buttonFlag", AppConsts.TRUE);
+                                map.put("specButtonFlag", AppConsts.TRUE);
+                                map.put("inspDateList", apptInspectionDateDto.getInspectionDate());
+                            } else {
+                                map.put("buttonFlag", AppConsts.FALSE);
+                                map.put("specButtonFlag", AppConsts.TRUE);
+                                map.put("inspDateList", null);
                             }
-                            apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
-                            map.put("buttonFlag", AppConsts.TRUE);
-                            map.put("inspDateList", apptInspectionDateDto.getInspectionDate());
                         }
                     } catch (Exception e){
                         log.error(e.getMessage(), e);
@@ -209,6 +214,7 @@ public class OnlineApptAjaxController {
                 specificApptDto.setUsers(appointmentUserDtos);
                 apptInspectionDateDto.setSpecificApptDto(specificApptDto);
                 apptInspectionDateDto.setSysSpecDateFlag(AppConsts.TRUE);
+                map.put("specButtonFlag", AppConsts.TRUE);
                 ParamUtil.setSessionAttr(request, "apptInspectionDateDto", apptInspectionDateDto);
             }
         }
