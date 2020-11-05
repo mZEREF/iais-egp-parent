@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.QueryHelperResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -75,4 +76,6 @@ public interface HcsaConfigMainClient {
     @PostMapping(value = "/hcsa-routing/stage-can-approve",produces = MediaType.APPLICATION_JSON_VALUE,consumes =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageDto(@RequestBody HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto);
 
+    @GetMapping(value = "/hcsa-config/doQuery/{sql}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<QueryHelperResultDto> doQuery(@PathVariable("sql") String sql);
 }

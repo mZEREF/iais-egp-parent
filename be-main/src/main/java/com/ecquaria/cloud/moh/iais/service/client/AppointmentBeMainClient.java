@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 
+import com.ecquaria.cloud.moh.iais.common.dto.QueryHelperResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonAvailabilityDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
@@ -48,4 +49,7 @@ public interface AppointmentBeMainClient {
 
     @PutMapping(path = "/iais-appointment/temp-req-cancelation/{hours}")
     FeignResponseEntity<Void> cancelTemp(@PathVariable("hours") int hours);
+
+    @GetMapping(value = "/iais-appointment/doQuery/{sql}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<QueryHelperResultDto> doQuery(@PathVariable("sql") String sql);
 }

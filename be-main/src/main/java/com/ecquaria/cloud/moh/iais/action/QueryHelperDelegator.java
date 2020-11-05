@@ -1,13 +1,17 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * HcsaApplicationDelegator
@@ -37,7 +41,17 @@ public class QueryHelperDelegator {
     }
 
     public void prepareQuery(BaseProcessClass bpc){
-
+        List<SelectOption> moduleNameList = IaisCommonUtils.genNewArrayList();
+        moduleNameList.add(new SelectOption("email-sms","email-sms"));
+        moduleNameList.add(new SelectOption("event-bus","event-bus"));
+        moduleNameList.add(new SelectOption("hsca-application-be","hsca-application-be"));
+        moduleNameList.add(new SelectOption("audit-trail","audit-trail"));
+        moduleNameList.add(new SelectOption("iais-appointment","iais-appointment"));
+        moduleNameList.add(new SelectOption("hcsa-licence-be","hcsa-licence-be"));
+        moduleNameList.add(new SelectOption("organization-be","organization-be"));
+        moduleNameList.add(new SelectOption("hcsa-config","hcsa-config"));
+        moduleNameList.add(new SelectOption("system-admin","system-admin"));
+        ParamUtil.setSessionAttr(bpc.request, "moduleNameDropdown", (Serializable)moduleNameList);
     }
 
     private String getCurrentPassword(){

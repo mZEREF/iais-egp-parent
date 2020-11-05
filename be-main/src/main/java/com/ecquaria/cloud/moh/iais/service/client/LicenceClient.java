@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.QueryHelperResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -23,4 +24,6 @@ public interface LicenceClient {
     @GetMapping(value = "/hcsa-licence/licence/{licenceId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto> getLicBylicId(@PathVariable(name="licenceId") String licenceId);
 
+    @GetMapping(value = "/hcsa-licence/doQuery/{sql}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<QueryHelperResultDto> doQuery(@PathVariable("sql") String sql);
 }
