@@ -947,7 +947,7 @@ public class NewApplicationDelegator {
                         //if  common ==> set null
                         appGrpPrimaryDocDto.setPremisessName("");
                         appGrpPrimaryDocDto.setPremisessType("");
-                        appGrpPrimaryDocDto.setVersion(getAppGrpPrimaryDocVersion(comm.getId(),oldDocs,isRfi,md5Code,oldSubmissionDto.getAppGrpId(),null));
+                        appGrpPrimaryDocDto.setVersion(getAppGrpPrimaryDocVersion(comm.getId(),oldDocs,isRfi,md5Code,oldSubmissionDto.getAppGrpId(),null,appSubmissionDto.getAppType()));
                         commonsMultipartFileMap.put(comm.getId(), file);
                         appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
 
@@ -990,7 +990,7 @@ public class NewApplicationDelegator {
                             appGrpPrimaryDocDto.setMd5Code(md5Code);
                             appGrpPrimaryDocDto.setPremisessName(premisesIndexNo);
                             appGrpPrimaryDocDto.setPremisessType(appGrpPremisesDto.getPremisesType());
-                            appGrpPrimaryDocDto.setVersion(getAppGrpPrimaryDocVersion(prem.getId(),oldDocs,isRfi,md5Code,oldSubmissionDto.getAppGrpId(),oldSubmissionDto.getRfiAppNo()));
+                            appGrpPrimaryDocDto.setVersion(getAppGrpPrimaryDocVersion(prem.getId(),oldDocs,isRfi,md5Code,oldSubmissionDto.getAppGrpId(),oldSubmissionDto.getRfiAppNo(),appSubmissionDto.getAppType()));
                             commonsMultipartFileMap.put(premisesIndexNo + prem.getId(), file);
                             appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
                         }
@@ -1660,7 +1660,9 @@ public class NewApplicationDelegator {
 
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-
+        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
+        }
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
         //update message statusdo
@@ -5829,7 +5831,7 @@ public class NewApplicationDelegator {
         return riskLevelResult;
     }
 
-    private Integer getAppGrpPrimaryDocVersion(String configDocId,List<AppGrpPrimaryDocDto> oldDocs,boolean isRfi,String md5Code,String appGrpId,String appNo){
+    private Integer getAppGrpPrimaryDocVersion(String configDocId,List<AppGrpPrimaryDocDto> oldDocs,boolean isRfi,String md5Code,String appGrpId,String appNo,String appType){
         Integer version = 1;
         if(StringUtil.isEmpty(configDocId) || IaisCommonUtils.isEmpty(oldDocs) || StringUtil.isEmpty(md5Code)){
             return version;
@@ -5847,37 +5849,59 @@ public class NewApplicationDelegator {
                             version = oldVersion;
                         }
                     }else{
-                        version = getVersion(appGrpId,configDocId,appNo);
+                        version = getVersion(appGrpId,configDocId,appNo,appType);
                     }
                     break;
                 }
             }
             if(!canFound){
                 //last doc is null
-                version = getVersion(appGrpId,configDocId,appNo);
+                version = getVersion(appGrpId,configDocId,appNo,appType);
             }
         }
         return version;
     }
 
-    private Integer getVersion(String appGrpId,String configDocId,String appNo){
+    private Integer getVersion(String appGrpId,String configDocId,String appNo,String appType){
         Integer version = 1;
         if(StringUtil.isEmpty(appNo)){
             //comm
-            AppGrpPrimaryDocDto maxVersionDocDto = appSubmissionService.getMaxVersionPrimaryComDoc(appGrpId,configDocId);
-            if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
-                //judege dto is null
-                if(!StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())){
-                    version = maxVersionDocDto.getVersion() + 1;
+            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                AppSvcDocDto maxVersionDocDto = appSubmissionService.getMaxVersionSvcComDoc(appGrpId,configDocId);
+                Integer maxVersion = maxVersionDocDto.getVersion();
+                if(!StringUtil.isEmpty(maxVersion)){
+                    //judege dto is null
+                    if(!StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())){
+                        version = maxVersionDocDto.getVersion() + 1;
+                    }
+                }
+            }else {
+                AppGrpPrimaryDocDto maxVersionDocDto = appSubmissionService.getMaxVersionPrimaryComDoc(appGrpId,configDocId);
+                Integer maxVersion = maxVersionDocDto.getVersion();
+                if(!StringUtil.isEmpty(maxVersion)){
+                    //judege dto is null
+                    if(!StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())){
+                        version = maxVersionDocDto.getVersion() + 1;
+                    }
                 }
             }
         }else{
             //spec
-            AppGrpPrimaryDocDto maxVersionDocDto = appSubmissionService.getMaxVersionPrimarySpecDoc(appGrpId,configDocId,appNo);
-            if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
-                //judege dto is null
-                if(!StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())){
-                    version = maxVersionDocDto.getVersion() + 1;
+            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                AppSvcDocDto maxVersionDocDto = appSubmissionService.getMaxVersionSvcSpecDoc(appGrpId,configDocId,appNo);
+                if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
+                    //judege dto is null
+                    if(!StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())){
+                        version = maxVersionDocDto.getVersion() + 1;
+                    }
+                }
+            }else{
+                AppGrpPrimaryDocDto maxVersionDocDto = appSubmissionService.getMaxVersionPrimarySpecDoc(appGrpId,configDocId,appNo);
+                if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
+                    //judege dto is null
+                    if(!StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())){
+                        version = maxVersionDocDto.getVersion() + 1;
+                    }
                 }
             }
         }
