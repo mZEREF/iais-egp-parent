@@ -599,7 +599,7 @@ public class LicenceServiceImpl implements LicenceService {
         emailParam.setRefId(applicationNo);
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT).getEntity();
-        map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationTypeShow}).get(0).getText());
+        map.put("ApplicationType", applicationTypeShow);
         map.put("ApplicationNumber", applicationNo);
         String subject = null;
         try {
