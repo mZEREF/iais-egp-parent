@@ -58,7 +58,9 @@ public class BackendLoginDelegator {
             }else {
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
             }
-        }else {
+        } else if (fakeLogin) {
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
+        } else {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
 
         }
@@ -69,14 +71,16 @@ public class BackendLoginDelegator {
     }
 
     public void doLogin(BaseProcessClass bpc) throws InvalidKeySpecException, NoSuchAlgorithmException {
-        HttpServletRequest request = bpc.request;
-        JwtVerify verifier = new JwtVerify();
-        String jwtt = (String) request.getAttribute("encryptJwtt");
-        Jws<Claims> claimsFromToken = verifier.parseVerifyJWT(jwtt, base64encodedPub + "\r\n");
-        Claims claims = claimsFromToken.getBody();
-        String userId = (String) claims.get("userid");
+        if (fakeLogin) {
+            HttpServletRequest request = bpc.request;
+            JwtVerify verifier = new JwtVerify();
+            String jwtt = (String) request.getAttribute("encryptJwtt");
+            Jws<Claims> claimsFromToken = verifier.parseVerifyJWT(jwtt, base64encodedPub + "\r\n");
+            Claims claims = claimsFromToken.getBody();
+            String userId = (String) claims.get("userid");
 
-        doLogin(userId, bpc.request);
+            doLogin(userId, bpc.request);
+        }
     }
 
     public void doLogin(String userId, HttpServletRequest request) {
