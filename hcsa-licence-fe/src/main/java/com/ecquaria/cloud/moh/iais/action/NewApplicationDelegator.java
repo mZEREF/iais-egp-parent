@@ -3040,8 +3040,14 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         try {
             if(appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
-                AppSubmissionDto ackPageAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
-                if(ackPageAppSubmissionDto==null){
+                AppSubmissionDto ackPageAppSubmissionDto;
+                try {
+                    ackPageAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
+                    if(ackPageAppSubmissionDto==null){
+                        ackPageAppSubmissionDto=appSubmissionDto;
+                    }
+                }catch (Exception e){
+                    log.info(e.getMessage(),e);
                     ackPageAppSubmissionDto=appSubmissionDto;
                 }
                 requestForChangeService.sendRfcSubmittedEmail(ackPageAppSubmissionDto, payMethod);

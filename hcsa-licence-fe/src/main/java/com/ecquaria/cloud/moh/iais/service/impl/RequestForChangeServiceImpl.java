@@ -1506,16 +1506,21 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(appSubmissionDto.getLicenseeId()).getEntity();
         String applicantName = licenseeDto.getName();
-         if (pmtMethod.equals(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO)) {
-            emailMap.put("GIRO_PAY", "true");
-            emailMap.put("GIRO_account_number", "");
-            emailMap.put("usual_text_for_GIRO_deduction", appSubmissionDto.getLateFeeStr());
-        } else {
-            emailMap.put("Online_PAY", "true");
+        if(pmtMethod==null){
+            emailMap.remove("GIRO_PAY");
+            emailMap.remove("Online_PAY");
+        }else {
+            if (pmtMethod.equals(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO)) {
+                emailMap.put("GIRO_PAY", "true");
+                emailMap.put("GIRO_account_number", "");
+                emailMap.put("usual_text_for_GIRO_deduction", appSubmissionDto.getLateFeeStr());
+            } else {
+                emailMap.put("Online_PAY", "true");
+            }
         }
-         if("0.0".equals(appSubmissionDto.getAmountStr())){
-             emailMap.put("GIRO_PAY", "false");
-             emailMap.put("Online_PAY", "false");
+         if("$0.0".equals(appSubmissionDto.getAmountStr())){
+             emailMap.remove("GIRO_PAY");
+             emailMap.remove("Online_PAY");
          }
 
         emailMap.put("Payment_Amount", appSubmissionDto.getAmountStr());
