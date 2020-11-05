@@ -78,7 +78,7 @@
                 <div class="right-content login-btns">
                   <%String testMode = ConfigHelper.getString("moh.halp.login.test.mode", "prod");
                     if ("prod".equalsIgnoreCase(testMode)){%>
-                  <a class="btn btn-primary" href="<%=SIMConfig.getInstance().getIdpCorpassInitiatedUrl()%>>" >LOGIN USING CorpPass</a>
+                  <a class="btn btn-primary" href="<%=SIMConfig.getInstance().getIdpCorpassInitiatedUrl()%>" >LOGIN USING CorpPass</a>
                   <%}else{%>
                   <a class="btn btn-primary" href="javascript:void(0)" onclick="Utils.submit('mainForm','corppassLogin')">LOGIN USING CorpPass</a>
                   <%} %>

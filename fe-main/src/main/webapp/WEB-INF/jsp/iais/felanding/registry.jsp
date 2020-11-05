@@ -75,7 +75,7 @@
                                 <p class="form-check-title">You may proceed with SingPass for licence application purposes and you will be allocated a UEN number on approval of your application.</p>
                                 <%String testMode = ConfigHelper.getString("moh.halp.login.test.mode", "prod");
                                     if ("prod".equalsIgnoreCase(testMode)){%>
-                                      <a class="btn btn-primary corpPass" href="<%=SIMConfig.getInstance().getIdpSingpassInitiatedUrl()%>>" style="background: #1F92FF; color: white">Login using SingPass</a>
+                                      <a class="btn btn-primary corpPass" href="<%=SIMConfig.getInstance().getIdpSingpassInitiatedUrl()%>" style="background: #1F92FF; color: white">Login using SingPass</a>
                                     <%}else{%>
                                       <a class="btn btn-primary corpPass" href="javascript:void(0)" onclick="Utils.submit('mainForm','singpassLogin')" style="background: #1F92FF; color: white">Login using SingPass</a>
                                 <%  }
