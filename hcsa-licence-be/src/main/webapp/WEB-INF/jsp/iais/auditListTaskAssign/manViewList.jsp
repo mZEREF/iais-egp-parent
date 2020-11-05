@@ -22,6 +22,7 @@
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
                         <h2>Search Results - HCIs and Services</h2>
+                        <iais:pagination param="auditTaskDataDtos_pram" result="auditTaskDataDtosResult"/>
                         <div class="table-gp">
                             <table class="table">
                                 <thead>
@@ -93,5 +94,7 @@
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm","doback");
     }
-
+    function jumpToPagechangePage() {
+        SOP.Crud.cfxSubmit("mainForm", "changePage");
+    }
 </script>

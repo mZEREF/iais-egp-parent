@@ -59,6 +59,8 @@ public class AuditManualListDelegator {
         ParamUtil.setSessionAttr(request,"ISTUC",Boolean.FALSE);
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, null);
         ParamUtil.setSessionAttr(request,"modulename",AuditTrailConsts.FUNCTION_MANUAL_AUDIT_LIST);
+        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST,null);
+        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_TRUE_RESULT,null);
     }
     public void pre(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
@@ -94,7 +96,7 @@ public class AuditManualListDelegator {
     public void confirm(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the confirm start ...."));
         HttpServletRequest request = bpc.request;
-        List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,"auditTaskDataDtos");
+        List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT);
         auditSystemListService.doSubmit(auditTaskDataDtos);
         ParamUtil.setRequestAttr(request,SUBMIT_MESSAGE_SUCCESS,MessageUtil.getMessageDesc("AUDIT_ACK001"));
         ParamUtil.setRequestAttr(request,MAIN_URL,"MohAuditManualList");
@@ -119,7 +121,7 @@ public class AuditManualListDelegator {
     public void cancel(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
-        List<AuditTaskDataFillterDto> auditTaskDataDtos = (List<AuditTaskDataFillterDto>) ParamUtil.getSessionAttr(request, "auditTaskDataDtos");
+        List<AuditTaskDataFillterDto> auditTaskDataDtos = (List<AuditTaskDataFillterDto>) ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT);
         AuditCancelTaskValidate auditCancelTaskValidate = new AuditCancelTaskValidate();
         Map<String, String> errorMap = auditCancelTaskValidate.validate(request);
         if(errorMap != null && errorMap.size()>0){
@@ -183,13 +185,40 @@ public class AuditManualListDelegator {
                     ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());
                 }
             }
-            ParamUtil.setSessionAttr(request,"auditTaskDataDtos",(Serializable) auditTaskDataDtos);
+            ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT,(Serializable) auditTaskDataDtos);
+            ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST,dto.getSearchParam());
+            ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_TRUE_RESULT,dto.getSearchResult());
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         } else {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         }
 
+    }
+
+    public void doPage(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the doPage start ...."));
+        HttpServletRequest request = bpc.request;
+        String pageNo = ParamUtil.getString(request, "pageJumpNoTextchangePage");
+        String pageSize = ParamUtil.getString(request, "pageJumpNoPageSize");
+        AuditSystemPotentialDto dto = ( AuditSystemPotentialDto)   ParamUtil.getSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME);
+        if (!StringUtil.isEmpty(pageNo)) {
+            dto.setPageNo(Integer.parseInt(pageNo));
+        }
+        if (!StringUtil.isEmpty(pageSize)) {
+            dto.setPageSize(Integer.parseInt(pageSize));
+        }
+        ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME,dto);
+        List<AuditTaskDataFillterDto> auditTaskDataDtos = auditSystemPotitalListService.getSystemPotentailAdultList(dto);
+        auditTaskDataDtos =  auditSystemListService.getInspectors(auditTaskDataDtos);
+        if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){
+            for(AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDataDtos ){
+                ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());
+            }
+        }
+        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT, (Serializable) auditTaskDataDtos);
+        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST,dto.getSearchParam());
+        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_TRUE_RESULT,dto.getSearchResult());
     }
 
     public void next(BaseProcessClass bpc) {
@@ -201,7 +230,7 @@ public class AuditManualListDelegator {
     public void nextToViewTaskList(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
-        List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,"auditTaskDataDtos");
+        List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT);
         String dochange =  (String)  ParamUtil.getSessionAttr(request,"dochange");
         if(StringUtil.isEmpty(dochange)){
             if(getSelectedList(request,auditTaskDataDtos)){
@@ -230,7 +259,7 @@ public class AuditManualListDelegator {
                     auditTaskDataDtos.get(i).setAddAuditList(false);
                 }
             }
-            ParamUtil.setSessionAttr(request,"auditTaskDataDtos",(Serializable) auditTaskDataDtos);
+            ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT,(Serializable) auditTaskDataDtos);
             ParamUtil.setSessionAttr(request,"isSelectedAudit",noSelectedAudit);
             return  noSelectedAudit;
         }
@@ -242,7 +271,7 @@ public class AuditManualListDelegator {
         return dto;
     }
     private void getListData(HttpServletRequest request) {
-        List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,"auditTaskDataDtos");
+        List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT);
         if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){
             for(int i = 0;i<auditTaskDataDtos.size();i++){
                 if(auditTaskDataDtos.get(i).isAddAuditList()){
@@ -256,9 +285,11 @@ public class AuditManualListDelegator {
                     String inspectorName = LicenceUtil.getSelectOptionTextFromSelectOptions(auditTaskDataDtos.get(i).getInspectors(),inspectorId);
                     String forad = ParamUtil.getString(request,i+"selectForAd");
                     String number = ParamUtil.getString(request,i+"number");
-                    auditTaskDataDtos.get(i).setAuditType(auditType);
-                    auditTaskDataDtos.get(i).setInspectorId(inspectorId);
-                    auditTaskDataDtos.get(i).setInspector(inspectorName);
+                    if(!auditTaskDataDtos.get(i).isAudited()){
+                        auditTaskDataDtos.get(i).setAuditType(auditType);
+                        auditTaskDataDtos.get(i).setInspectorId(inspectorId);
+                        auditTaskDataDtos.get(i).setInspector(inspectorName);
+                    }
                     if(!StringUtil.isEmpty(forad)){
                         auditTaskDataDtos.get(i).setSelectedForAudit(true);
                     }else{
@@ -272,7 +303,7 @@ public class AuditManualListDelegator {
                 }
             }
         }
-        ParamUtil.setSessionAttr(request,"auditTaskDataDtos",(Serializable) auditTaskDataDtos);
+        ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT,(Serializable) auditTaskDataDtos);
     }
 
 }

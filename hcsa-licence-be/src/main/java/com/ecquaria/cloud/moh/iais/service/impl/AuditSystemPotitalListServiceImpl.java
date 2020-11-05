@@ -74,7 +74,22 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         }
         return  null;
     }
-
+    @Override
+    public List<AuditTaskDataFillterDto> getSystemPotentailAdultListForAuditTcu( AuditSystemPotentialDto dto) {
+        dto.setIsTcuNeeded(1);
+        SearchParam searchParam = getSearchParamFrom(dto, null);
+        SearchResult<AuditTaskDataDto> searchResult = getAuditSysParam(searchParam);
+        dto.setSearchResult(searchResult);
+        if(searchResult != null && searchResult.getRows() != null){
+            List<AuditTaskDataDto> auditTaskDataDtos = searchResult.getRows();
+            List<AuditTaskDataFillterDto> auditTaskDataFillterDtos = new ArrayList<>(auditTaskDataDtos.size());
+            for(AuditTaskDataDto auditTaskDataDto : auditTaskDataDtos){
+                auditTaskDataFillterDtos.add(getAuditTaskDataFillterDto(auditTaskDataDto,Boolean.FALSE,Boolean.FALSE));
+            }
+            return removeDuplicates(auditTaskDataFillterDtos);
+        }
+        return  null;
+    }
     @Override
     public List<AuditTaskDataFillterDto> getSystemPotentailAdultCancelList() {
         SearchParam searchParam = getAduitCancelSearchParamFrom();

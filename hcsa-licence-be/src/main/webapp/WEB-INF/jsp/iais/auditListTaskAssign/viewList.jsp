@@ -30,7 +30,9 @@
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
                         <h2>${modulename}</h2>
-                        <iais:pagination param="auditTaskDataDtos_pram" result="auditTaskDataDtosResult"/>
+                        <c:if test="${modulename != 'Manual Audit List'}">
+                            <iais:pagination param="auditTaskDataDtos_pram" result="auditTaskDataDtosResult"/>
+                        </c:if>
                         <div class="table-gp">
                             <table class="table">
                                 <thead>

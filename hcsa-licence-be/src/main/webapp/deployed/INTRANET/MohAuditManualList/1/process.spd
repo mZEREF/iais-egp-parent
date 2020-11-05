@@ -79,6 +79,13 @@
     <JavaCode defClass="" executor="" methodName="step3_OnStepProcess_0" name="step3_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doPage" x="590" y="200">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doPage_OnStepProcess_0" name="doPage_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="generatepage" stageIndicator="" x="310" y="100">
@@ -228,6 +235,12 @@
   <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
    <position>{(1050,500)(1190,458)(1190,258)(860,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch4" style="rectanular">
+   <position>{(720,120)(610,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/manualList" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doPage" style="rectanular">
+   <position>{(610,220)(640,120)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/next" componentIfTrue="/Steps/AutomaticStep/pre" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond1" operator="!=" rightOperand="isValid" x="480" y="100">
@@ -268,6 +281,7 @@
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/Step3" value="&quot;donext&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/pre" value="&quot;doback&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doPage" value="&quot;changePage&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

@@ -69,4 +69,8 @@ public class INTRANET___MohAuditManualList___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "nextToViewTaskList", this);
 	}
 
+	public void doPage_OnStepProcess_0() throws Exception {
+		// 		doPage->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "doPage", this);
+	}
 }

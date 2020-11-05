@@ -43,12 +43,17 @@ public class INTRANET___MohAduitTcuList___1 extends BaseProcessClass {
 
 	public void step7_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "cancel", this);
-	// 		Step7->OnStepProcess
+	// 		cancalTaskSave->OnStepProcess
 	}
 
 	public void init_OnStepProcess_0() throws Exception {
 	// 		init->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "init", this);
+	}
+
+	public void doPage_OnStepProcess_0() throws Exception {
+		// 		doPage->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "doPage", this);
 	}
 
 }

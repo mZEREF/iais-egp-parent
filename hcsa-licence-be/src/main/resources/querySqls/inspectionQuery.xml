@@ -259,10 +259,19 @@
 
     <sql key="aduitChangeStatusList"  remarks="query get aduitList for inactive finish audit">
         <![CDATA[
+                  SELECT
+                  id,hclcode,hclName,address,licId,serviceName,postalCode,
+                 premisesType,AUDIT_TYPE,AUDIT_RISK_TYPE,lic_premises_audit_id,
+                 INSPECTOR_ID,TCU_DATE,IS_TCU_NEEDED,REMARKS,INS_GRP_ID,
+                 lic_prem_insp_grp_correlation_id,licensee_id,licenceDueDate,
+                 licence_no,svc_code,financial_score,leadership_score,legislative_breaches_score,
+                 fir_ins_socre,sec_ins_socre,risk_score,risk_type,
+                 last_insp_start,last_insp_end,RESULT_COMPLICANCE
+                FROM (
              SELECT
                t3.ID as id,t3.LICENCE_ID as licId,t3.PREMISES_ID,t3.IS_POST_INSP_NEEDED,t3.TCU_DATE,t3.IS_TCU_NEEDED,
                t4.LICENCE_NO as licence_no,t4.SVC_NAME as serviceName,t4.START_DATE,t4.EXPIRY_DATE as licenceDueDate,t4.IS_GRP_LIC,t4.ORIGIN_LICENCE_ID,t4.IS_MIGRATED,t4.MIGRATED_DT,
-               t4.IS_FEE_RETRO_NEEDED,t4.VERSION,t4.LICENSEE_ID as licensee_id,t4.END_DATE,
+               t4.IS_FEE_RETRO_NEEDED,t4.VERSION as licence_version,t4.LICENSEE_ID as licensee_id,t4.END_DATE,
                t5.HCI_CODE as  hclcode,t5.HCI_NAME as hclName,t5.HCI_CONTACT_NO,t5.SCDF_REF_NO,t5.CERT_ISSUED_DT,t5.VEHICLE_NO,t5.PREMISES_TYPE as premisesType,t5.POSTAL_CODE  as postalCode,
                t5.ADDR_TYPE,t5.BLK_NO,t5.FLOOR_NO,t5.UNIT_NO,t5.STREET_NAME,t5.BUILDING_NAME,t5.VERSION,t5.STATUS,t5.ORGANIZATION_ID,
                t5.WRK_TIME_FROM,t5.WRK_TIME_TO,t5.IS_LOCATE_WITH_OTHERS,
@@ -281,7 +290,11 @@
                t1.ID as lic_premises_audit_id,t1.AUDIT_TYPE,t1.AUDIT_RISK_TYPE,t1.REMARKS,t1.IS_IN_RISK_SCORE,t1.INCLUDE_RISK_TYPE,t1.STATUS as audit_status,
                t2.INSPECTOR_ID,
                t6.ID as lic_prem_insp_grp_correlation_id,t6.INS_GRP_ID,t6.STATUS as lic_prem_insp_grp_correlation_status,
-               t7.PREFER_END_DATE ,t7.PREFER_START_DATE,t7.STATUS as lic_inspection_group_status
+               t7.PREFER_END_DATE ,t7.PREFER_START_DATE,t7.STATUS as lic_inspection_group_status,
+               t8.SVC_CODE as svc_code,t8.risk_type_financial_score as financial_score,t8.risk_type_leadership_score as leadership_score,
+               t8.risk_type_legislative_breaches_score as legislative_breaches_score,t8.risk_type_fir_ins_socre as fir_ins_socre,
+               t8.risk_type_sec_ins_socre as sec_ins_socre,t8.risk_score as risk_score,t8.risk_type as risk_type,
+               t8.last_insp_start as last_insp_start,t8.last_insp_end as last_insp_end,t8.RESULT_COMPLICANCE as RESULT_COMPLICANCE
                FROM lic_premises t3
                LEFT JOIN (Select * FROM lic_premises_audit  WHERE STATUS = 'CMSTAT001' OR STATUS = 'AUTACPS001') t1
                on t1.LIC_PREM_ID = t3.ID
@@ -297,16 +310,26 @@
                t1.LIC_PREM_ID = t6.LIC_PREM_ID
                left join  (select * FROM lic_inspection_group WHERE lic_inspection_group.STATUS ='CMSTAT001') t7
                on  t6.INS_GRP_ID = t7.ID
-               WHERE   t4.STATUS = 'LICEST001' AND (t1.STATUS = 'CMSTAT001' OR t1.STATUS = 'AUTACPS001')
+               left join  (SELECT * FROM hcsal.dbo.licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LICENCE_ID = t3.LICENCE_ID
+               WHERE   t4.STATUS = 'LICEST001' AND (t1.STATUS = 'CMSTAT001' OR t1.STATUS = 'AUTACPS001') )    tableall
         ]]>
     </sql>
 
     <sql key="aduitCancelTaskList"  remarks="query aduit cancel task">
         <![CDATA[
+                SELECT
+                  id,hclcode,hclName,address,licId,serviceName,postalCode,
+                 premisesType,AUDIT_TYPE,AUDIT_RISK_TYPE,lic_premises_audit_id,
+                 INSPECTOR_ID,TCU_DATE,IS_TCU_NEEDED,REMARKS,INS_GRP_ID,
+                 lic_prem_insp_grp_correlation_id,licensee_id,licenceDueDate,
+                 licence_no,svc_code,financial_score,leadership_score,legislative_breaches_score,
+                 fir_ins_socre,sec_ins_socre,risk_score,risk_type,
+                 last_insp_start,last_insp_end,RESULT_COMPLICANCE
+                FROM (
              SELECT
                t3.ID as id,t3.LICENCE_ID as licId,t3.PREMISES_ID,t3.IS_POST_INSP_NEEDED,t3.TCU_DATE,t3.IS_TCU_NEEDED,
                t4.LICENCE_NO as licence_no,t4.SVC_NAME as serviceName,t4.START_DATE,t4.EXPIRY_DATE as licenceDueDate,t4.IS_GRP_LIC,t4.ORIGIN_LICENCE_ID,t4.IS_MIGRATED,t4.MIGRATED_DT,
-               t4.IS_FEE_RETRO_NEEDED,t4.VERSION,t4.LICENSEE_ID as licensee_id,t4.END_DATE,
+               t4.IS_FEE_RETRO_NEEDED,t4.VERSION as licence_version,t4.LICENSEE_ID as licensee_id,t4.END_DATE,
                t5.HCI_CODE as  hclcode,t5.HCI_NAME as hclName,t5.HCI_CONTACT_NO,t5.SCDF_REF_NO,t5.CERT_ISSUED_DT,t5.VEHICLE_NO,t5.PREMISES_TYPE as premisesType,t5.POSTAL_CODE  as postalCode,
                t5.ADDR_TYPE,t5.BLK_NO,t5.FLOOR_NO,t5.UNIT_NO,t5.STREET_NAME,t5.BUILDING_NAME,t5.VERSION,t5.STATUS,t5.ORGANIZATION_ID,
                t5.WRK_TIME_FROM,t5.WRK_TIME_TO,t5.IS_LOCATE_WITH_OTHERS,
@@ -325,7 +348,11 @@
                t1.ID as lic_premises_audit_id,t1.AUDIT_TYPE,t1.AUDIT_RISK_TYPE,t1.REMARKS,t1.IS_IN_RISK_SCORE,t1.INCLUDE_RISK_TYPE,t1.STATUS as audit_status,
                t2.INSPECTOR_ID,
                t6.ID as lic_prem_insp_grp_correlation_id,t6.INS_GRP_ID,t6.STATUS as lic_prem_insp_grp_correlation_status,
-               t7.PREFER_END_DATE ,t7.PREFER_START_DATE,t7.STATUS as lic_inspection_group_status
+               t7.PREFER_END_DATE ,t7.PREFER_START_DATE,t7.STATUS as lic_inspection_group_status,
+               t8.SVC_CODE as svc_code,t8.risk_type_financial_score as financial_score,t8.risk_type_leadership_score as leadership_score,
+               t8.risk_type_legislative_breaches_score as legislative_breaches_score,t8.risk_type_fir_ins_socre as fir_ins_socre,
+               t8.risk_type_sec_ins_socre as sec_ins_socre,t8.risk_score as risk_score,t8.risk_type as risk_type,
+               t8.last_insp_start as last_insp_start,t8.last_insp_end as last_insp_end,t8.RESULT_COMPLICANCE as RESULT_COMPLICANCE
                FROM lic_premises t3
                LEFT JOIN (Select * FROM lic_premises_audit  WHERE  STATUS = 'AUTACPS001') t1
                on t1.LIC_PREM_ID = t3.ID
@@ -341,7 +368,8 @@
                t1.LIC_PREM_ID = t6.LIC_PREM_ID
                left join  (select * FROM lic_inspection_group WHERE lic_inspection_group.STATUS ='CMSTAT001') t7
                on  t6.INS_GRP_ID = t7.ID
-               WHERE   t4.STATUS = 'LICEST001' AND  t1.STATUS = 'AUTACPS001'
+               left join  (SELECT * FROM hcsal.dbo.licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LICENCE_ID = t3.LICENCE_ID
+               WHERE   t4.STATUS = 'LICEST001' AND  t1.STATUS = 'AUTACPS001' ) tableall
         ]]>
     </sql>
     <sql key="commonPoolAjax"  remarks="get Application By App Group in Common Pool">
