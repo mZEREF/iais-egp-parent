@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SelfAssMtEmailDto;
@@ -23,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -51,6 +53,7 @@ import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloud.moh.iais.util.EicUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -114,6 +117,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     private AppealApplicaionService appealApplicaionService;
     @Autowired
     private AppealClient appealClient;
+    @Autowired
+    private OrganizationClient organizationClient;
 
     @Value("${spring.application.name}")
     private String currentApp;
@@ -490,6 +495,14 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public void applicationRfiAndEmail(ApplicationViewDto applicationViewDto, ApplicationDto applicationDto, String licenseeId, LicenseeDto licenseeDto,
                                        LoginContext loginContext, String externalRemarks) throws IOException, TemplateException {
+        String applicantName = "";
+        ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+        if(applicationGroupDto != null){
+            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+            if(orgUserDto != null){
+                applicantName = orgUserDto.getDisplayName();
+            }
+        }
         //send message to FE user.
         String messageNo = inboxMsgService.getMessageNo();
         String applicationType = applicationDto.getApplicationType();
@@ -534,7 +547,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         String tatTimeStr = tatTime.format(dtf);
         String remarks = "<br/>Sections Allowed for Change : "+editSelect;
         Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
-        map.put("ApplicantName",licenseeDto.getName());
+        map.put("ApplicantName",applicantName);
         map.put("ApplicationType",MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
         map.put("ApplicationNumber",StringUtil.viewHtml(applicationNo));
         map.put("ApplicationDate",Formatter.formatDateTime(now, Formatter.DATE));
