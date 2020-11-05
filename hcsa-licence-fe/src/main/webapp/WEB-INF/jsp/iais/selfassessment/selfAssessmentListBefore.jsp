@@ -105,7 +105,7 @@
             }
 
             submitAllDataButtonId.onclick = (function () {
-                SOP.Crud.cfxSubmit("mainForm", "submitAllSelfAssessment");
+                Utils.submit("mainForm", "submitAllSelfAssessment")
             });
 
 
