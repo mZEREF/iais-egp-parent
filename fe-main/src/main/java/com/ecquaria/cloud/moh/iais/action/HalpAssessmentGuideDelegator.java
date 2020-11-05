@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.assessmentGuide.GuideConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MasterCodeConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -1719,6 +1718,7 @@ public class HalpAssessmentGuideDelegator {
                 stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
             }
             if("delete".equals(isNeedDelete)){
+                bpc.request.setAttribute("isDelete","1");
                 for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                     inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }

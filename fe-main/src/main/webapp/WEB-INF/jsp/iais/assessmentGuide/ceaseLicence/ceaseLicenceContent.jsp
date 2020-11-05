@@ -69,7 +69,7 @@
         </table>
     </div>
     <c:if test="${!empty ceaseLicenceSearchResult.rows}">
-        <button type="button" class="btn btn-primary CeaseBtn "  <c:if test="${empty ceasedErrResult}">disabled</c:if> onclick="ceaseSubmit()">NEXT</button>
+        <button type="button" class="btn btn-primary CeaseBtn "  <c:if test="${empty ceasedErrResult && empty isDelete}">disabled</c:if> onclick="ceaseSubmit()">NEXT</button>
     </c:if>
 </div>
 <script type="text/javascript">
