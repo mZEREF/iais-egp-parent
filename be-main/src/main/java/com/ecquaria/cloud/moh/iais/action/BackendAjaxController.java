@@ -234,10 +234,12 @@ public class BackendAjaxController {
         for (String item:applications
              ) {
             ApplicationDto applicationDto = inspectionTaskMainClient.getApplicationDtoByAppNo(item).getEntity();
-            HcsaSvcRoutingStageDto canApproveStageDto = getCanApproveStageDto(applicationDto.getApplicationType(), applicationDto.getStatus(), applicationDto.getServiceId());
-            boolean canApprove = checkCanApproveStage(canApproveStageDto);
-            if(canApprove){
-                approveCheck = 1;
+            if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(applicationDto.getStatus()) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(applicationDto.getStatus())){
+                HcsaSvcRoutingStageDto canApproveStageDto = getCanApproveStageDto(applicationDto.getApplicationType(), applicationDto.getStatus(), applicationDto.getServiceId());
+                boolean canApprove = checkCanApproveStage(canApproveStageDto);
+                if(canApprove){
+                    approveCheck = 1;
+                }
             }
         }
         Map<String, Object> map = new HashMap<>();
