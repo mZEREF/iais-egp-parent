@@ -37,4 +37,9 @@ public class INTRANET___QueryHelper___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "prepareLogin", this);
 	}
 
+	public void doQuery_OnStepProcess_0() throws Exception {
+	// 		doQuery->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doQuery", this);
+	}
+
 }

@@ -46,8 +46,9 @@
         if(queryValidate()){
             var sql = $('#querySql').val();
             var moduleNameDropdown = $('#moduleNameDropdown').val();
-            console.log('submitButton sql : ' + sql);
-            alert('moduleNameDropdown : ' + moduleNameDropdown);
+            // showWaiting();
+            document.getElementById("mainForm").submit();
+            $("#submitButton").attr("disabled", true);
         }else{
             alert('sql is null');
         }
@@ -68,10 +69,6 @@
             css: {width: '25%', border: '1px solid #aaa'},
             overlayCSS: {opacity: 0.2}
         });
-    }
-
-    function dismissWaiting() {
-        $.unblockUI();
     }
 </script>
 </html>

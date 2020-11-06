@@ -30,6 +30,13 @@
     <JavaCode defClass="" executor="" methodName="prepareQuery_OnStepProcess_0" name="prepareQuery_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doQuery" x="620" y="560">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doQuery_OnStepProcess_0" name="doQuery_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="loginPage" stageIndicator="" x="380" y="190">
@@ -67,6 +74,12 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareLogin" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(420,390)(595,380)(589,305)(589,286)(587,240)(400,110)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doQuery" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/queryViewPage" style="rectanular">
+   <position>{(400,600)(640,580)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareQuery" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doQuery" style="rectanular">
+   <position>{(640,580)(400,490)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>

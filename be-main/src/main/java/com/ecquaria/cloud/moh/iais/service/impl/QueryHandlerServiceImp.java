@@ -5,9 +5,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.QueryHandlerService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class QueryHandlerServiceImp implements QueryHandlerService {
     @Autowired
     EmailClient emailClient;

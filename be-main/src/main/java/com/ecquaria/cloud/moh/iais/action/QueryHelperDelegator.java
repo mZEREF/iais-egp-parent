@@ -1,11 +1,14 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.QueryHelperResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.service.QueryHandlerService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.Serializable;
@@ -22,6 +25,10 @@ import java.util.List;
 @Delegator("queryHelperDelegator")
 @Slf4j
 public class QueryHelperDelegator {
+    
+    @Autowired
+    private QueryHandlerService queryHandlerService;
+    
     private final String MIMA = "WOWAFKLKJHGF";
     public void start(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("queryHelperDelegator do cleanSession start ...."));
@@ -29,6 +36,13 @@ public class QueryHelperDelegator {
 
     public void prepareLogin(BaseProcessClass bpc){
 
+    }
+
+    public void doQuery(BaseProcessClass bpc){
+        String querySql = ParamUtil.getString(bpc.request,"querySql");
+        String moduleNameDropdown = ParamUtil.getString(bpc.request,"moduleNameDropdown");
+        QueryHelperResultDto queryHelperResultDto = queryHandlerService.getQueryHelperResultDtoList(querySql, moduleNameDropdown);
+        ParamUtil.setRequestAttr(bpc.request,"QueryHelperResultDto",queryHelperResultDto);
     }
 
     public void doLogin(BaseProcessClass bpc){
