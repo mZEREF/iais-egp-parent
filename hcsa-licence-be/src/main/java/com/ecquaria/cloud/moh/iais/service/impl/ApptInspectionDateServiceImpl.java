@@ -175,6 +175,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             corrAppMap = filterCancelAppByCorr(appPremisesCorrelationDtos, applicationDto.getStatus());
             premCorrIds = getCorrIdsByCorrIdFromPremises(corrAppMap);
             apptInspectionDateDto.setRefNo(premCorrIds);
+            apptInspectionDateDto.setRefShowNo(appPremCorrShowIds);
             //get Other Tasks From The Same Premises
             taskDtoList = getAllTaskFromSamePremises(premCorrIds);
             //The All Tasks is go to inspection or (some of them jump over Inspection and some of them go to inspection)
@@ -188,6 +189,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             corrAppMap.put(taskDto.getRefNo(), applicationDto);
             corrAppShowMap.put(taskDto.getRefNo(), applicationDto);
             apptInspectionDateDto.setRefNo(premCorrIds);
+            apptInspectionDateDto.setRefShowNo(appPremCorrShowIds);
             taskDtoList = IaisCommonUtils.genNewArrayList();
             List<TaskDto> taskDtos = organizationClient.getTasksByRefNo(taskDto.getRefNo()).getEntity();
             for(TaskDto tDto : taskDtos){
@@ -290,8 +292,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         boolean fastFlag = applicationDto.isFastTracking();
         String actionButtonFlag = AppConsts.SUCCESS;
         if(!fastFlag) {
-            if (!IaisCommonUtils.isEmpty(apptInspectionDateDto.getRefNo())) {
-                for (String appPremCorrId : apptInspectionDateDto.getRefNo()) {
+            if (!IaisCommonUtils.isEmpty(apptInspectionDateDto.getRefShowNo())) {
+                for (String appPremCorrId : apptInspectionDateDto.getRefShowNo()) {
                     List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremCorrId).getEntity();
                     if(IaisCommonUtils.isEmpty(taskDtos)){
                         //the task wait other app or wait batch job
