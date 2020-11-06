@@ -36,6 +36,6 @@ public interface AuditTrailMainBeClient {
 	@PutMapping(path = "/iais-audit-trail/session-duration")
 	FeignResponseEntity<Void> updateSessionDuration(@RequestParam("sessionId") String sessionId, @RequestParam("perioid") int period);
 
-	@GetMapping(value = "/iais-audit-trail/doQuery/{sql}",produces = MediaType.APPLICATION_JSON_VALUE)
-	FeignResponseEntity<QueryHelperResultDto> doQuery(@PathVariable("sql") String sql);
+	@GetMapping(value = "/iais-audit-trail/doQuery",produces = MediaType.APPLICATION_JSON_VALUE)
+	FeignResponseEntity<QueryHelperResultDto> doQuery(@RequestParam("sql") String sql);
 }

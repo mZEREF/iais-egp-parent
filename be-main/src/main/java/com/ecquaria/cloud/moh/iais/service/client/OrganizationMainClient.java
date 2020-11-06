@@ -98,6 +98,6 @@ public interface OrganizationMainClient {
     @GetMapping(value = "/iais-task/stage-task-status",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getTaskByAppNoStatus(@RequestParam("appNo") String appNo, @RequestParam("taskStatus") String taskStatus, @RequestParam("processUrl") String processUrl);
 
-    @GetMapping(value = "/organization/doQuery/{sql}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<QueryHelperResultDto> doQuery(@PathVariable("sql") String sql);
+    @GetMapping(value = "/organization/doQuery",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<QueryHelperResultDto> doQuery(@RequestParam("sql") String sql);
 }

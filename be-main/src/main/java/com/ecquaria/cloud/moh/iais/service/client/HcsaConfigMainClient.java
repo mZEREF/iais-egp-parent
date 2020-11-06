@@ -76,6 +76,6 @@ public interface HcsaConfigMainClient {
     @PostMapping(value = "/hcsa-routing/stage-can-approve",produces = MediaType.APPLICATION_JSON_VALUE,consumes =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageDto(@RequestBody HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto);
 
-    @GetMapping(value = "/hcsa-config/doQuery/{sql}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<QueryHelperResultDto> doQuery(@PathVariable("sql") String sql);
+    @GetMapping(value = "/hcsa-config/doQuery",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<QueryHelperResultDto> doQuery(@RequestParam("sql") String sql);
 }
