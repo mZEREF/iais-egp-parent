@@ -472,7 +472,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         log.info("update be application status");
 
         eventBusHelper.submitAsyncRequest(applicationListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION,applicationListDto.getEventRefNo(),null);
+                EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION,l.toString(),null);
 
         return Boolean.TRUE;
 
@@ -525,7 +525,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
             }
             if(flag){
-                eventDto.setEventRefNo(groupPath);
+                eventDto.setEventRefNo(l.toString());
                 eventDto.setAuditTrailDto(intranet);
                 eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
                         EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION, l.toString(), null);
@@ -622,6 +622,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         List<ApplicationDto> requestForInfList  =IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> updateTaskList  =IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> cessionOrwith=IaisCommonUtils.genNewArrayList();
+        Long eventNo=System.currentTimeMillis();
             List<Submission> submissionList = eventClient.getSubmission(submissionId).getEntity();
             ApplicationListFileDto dto = null;
             log.info(StringUtil.changeForLog(submissionList .size() +"submissionList .size()"));
@@ -633,6 +634,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }
             if(dto!=null){
                  applicationNewAndRequstDto = dto.getApplicationNewAndRequstDto();
+                eventNo = applicationNewAndRequstDto.getEventNo();
                 if(applicationNewAndRequstDto!=null){
                   intranet=applicationNewAndRequstDto.getAuditTrailDto();
                   listNewApplicationDto = applicationNewAndRequstDto.getListNewApplicationDto();
@@ -663,8 +665,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             broadcastOrganizationDto.setApplicationNewAndRequstDto(applicationNewAndRequstDto);
 
             broadcastApplicationDto.setAuditTrailDto(intranet);
-            broadcastOrganizationDto.setEventRefNo(eventRefNum);
-            broadcastApplicationDto.setEventRefNo(eventRefNum);
+            broadcastOrganizationDto.setEventRefNo(eventNo.toString());
+            broadcastApplicationDto.setEventRefNo(eventNo.toString());
             List<TaskDto> onSubmitTaskList = IaisCommonUtils.genNewArrayList();
             List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = IaisCommonUtils.genNewArrayList();
             if(taskHistoryDto!=null){

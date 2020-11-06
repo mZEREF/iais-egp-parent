@@ -190,7 +190,7 @@ public class AppealServiceImpl implements AppealService {
                 try {
                     String fileToRepo = serviceConfigService.saveFileToRepo(selectedFile);
                     appPremisesSpecialDocDto.setFileRepoId(fileToRepo);
-                    appPremisesSpecialDocDto.setSubmitBy(licenseeId);
+                    appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
                     req.getSession().setAttribute("appPremisesSpecialDocDto", appPremisesSpecialDocDto);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
@@ -839,9 +839,10 @@ public class AppealServiceImpl implements AppealService {
         AuditTrailHelper.auditFunctionWithLicNo(AuditTrailConsts.MODULE_APPEAL,AuditTrailConsts.FUNCTION_APPEAL,licenceDto.getLicenceNo());
         List<PremisesDto> premisess = licenceClient.getPremisesDto(licenceDto.getId()).getEntity();
         String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo);
         applicationGroupDto.setLicenseeId(licenseeId);
-        applicationGroupDto.setSubmitBy(licenseeId);
+        applicationGroupDto.setSubmitBy(loginContext.getUserId());
         StringBuilder stringBuilder = new StringBuilder(appNo);
         String s = stringBuilder.append("-01").toString();
         List<AppGrpPremisesDto> premisesDtos = new ArrayList<>(1);
