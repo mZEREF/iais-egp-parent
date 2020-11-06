@@ -245,6 +245,9 @@ public class LicenceServiceImpl implements LicenceService {
     public EventBusLicenceGroupDtos createFESuperLicDto(String eventRefNum,String submissionId) {
         EventBusLicenceGroupDtos eventBusLicenceGroupDtos =  getEventBusLicenceGroupDtosByRefNo(eventRefNum);
         if(eventBusLicenceGroupDtos!=null){
+            EicRequestTrackingDto trackDto = licEicClient.getPendingRecordByReferenceNumber(eventRefNum).getEntity();
+            eicCallFeSuperLic(eventBusLicenceGroupDtos);
+            trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
             //send approve notification
             try{
                 //save new acra info
@@ -256,9 +259,6 @@ public class LicenceServiceImpl implements LicenceService {
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
-            EicRequestTrackingDto trackDto = licEicClient.getPendingRecordByReferenceNumber(eventRefNum).getEntity();
-            eicCallFeSuperLic(eventBusLicenceGroupDtos);
-            trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
             saveLicenceAppRiskInfoDtos(eventBusLicenceGroupDtos.getLicenceGroupDtos(),eventBusLicenceGroupDtos.getAuditTrailDto());
             hcsaLicenceClient.updateEicTrackStatus(trackDto);
         }else{
