@@ -128,7 +128,8 @@ public final class FileUtils {
         }
 
         File[] files = file.listFiles();
-        if (files != null && file.length() > 0){
+        if (files != null && files.length > 0){
+            log.info("Start to copy ===>");
             for (File f : files){
                 String srcName = f.getName();
                 File dstFile = new File(dst + srcName);
