@@ -142,10 +142,13 @@ public class InspectionPreDelegator {
         if(inspectionPreTaskDto == null){
             inspectionPreTaskDto = new InspectionPreTaskDto();
         }
-        //get application info show
-        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
-        //set Application RFI Info
-        applicationViewDto = inspectionPreTaskService.setApplicationRfiInfo(applicationViewDto);
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
+        if(applicationViewDto == null) {
+            //get application info show
+            applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
+            //set Application RFI Info
+            applicationViewDto = inspectionPreTaskService.setApplicationRfiInfo(applicationViewDto);
+        }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appStatus = applicationDto.getStatus();
         inspectionPreTaskDto.setAppStatus(appStatus);

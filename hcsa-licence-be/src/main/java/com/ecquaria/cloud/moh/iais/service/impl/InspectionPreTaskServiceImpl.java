@@ -345,7 +345,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             String editSelect = "";
             //judge premises amend or licence amend
             AppEditSelectDto appEditSelectDto = applicationViewDto.getAppEditSelectDto();
-            if(appEditSelectDto != null){
+            if(appEditSelectDto != null && !StringUtil.isEmpty(appRfiDecision)){
                 if(appEditSelectDto.isPremisesEdit()){
                     editSelect = editSelect + "Premises";
                 }
