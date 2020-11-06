@@ -11,13 +11,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.SoapiS2S;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
-import com.ecquaria.egp.core.payment.PaymentTransaction;
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ecq.commons.helper.StringHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
@@ -94,10 +96,12 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String keyId=GatewayConfig.eNetsKeyId;
 		String secretKey=GatewayConfig.eNetsSecretKey ;
 		String s2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+bpc.request.getContextPath()+"/s2sTxnEnd";
-		String b2sUrl=fields.get("vpc_ReturnURL").substring(0,fields.get("vpc_ReturnURL").indexOf('?'));
+		String b2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/paycallback";
 		//String b2sUrlPram="\""+fields.get("vpc_ReturnURL")+"\"";
-		String b2sUrlPram="\"sessionId="+fields.get("vpc_ReturnURL").substring(fields.get("vpc_ReturnURL").indexOf('=')+1)+"\"";
-		String txnRep="{\"ss\":\"1\",\"msg\":{\"netsMid\":\""+umId+"\",\"tid\":\"\",\"submissionMode\":\"B\",\"txnAmount\":\""+amoOo+"\",\"merchantTxnRef\":\""+merchantTxnRef+"\",\"merchantTxnDtm\":\""+merchantTxnDtm+"\",\"paymentType\":\"SALE\",\"currencyCode\":\"SGD\",\"paymentMode\":\"\",\"merchantTimeZone\":\"+8:00\",\"b2sTxnEndURL\":\""+b2sUrl+"\",\"b2sTxnEndURLParam\":"+b2sUrlPram+",\"s2sTxnEndURL\":\""+s2sUrl+"\",\"s2sTxnEndURLParam\":\"\",\"clientType\":\"W\",\"supMsg\":\"\",\"netsMidIndicator\":\"U\",\"ipAddress\":\"192.168.7.85\",\"language\":\"en\"}}" ;
+		String b2sUrlPram="";
+		String sessionId=fields.get("vpc_ReturnURL").substring(fields.get("vpc_ReturnURL").indexOf('=')+1);
+		//RedisCacheHelper
+		String txnRep="{\"ss\":\"1\",\"msg\":{\"netsMid\":\""+umId+"\",\"tid\":\"\",\"submissionMode\":\"B\",\"txnAmount\":\""+amoOo+"\",\"merchantTxnRef\":\""+merchantTxnRef+"\",\"merchantTxnDtm\":\""+merchantTxnDtm+"\",\"paymentType\":\"SALE\",\"currencyCode\":\"SGD\",\"paymentMode\":\"\",\"merchantTimeZone\":\"+8:00\",\"b2sTxnEndURL\":\""+b2sUrl+"\",\"b2sTxnEndURLParam\":\""+b2sUrlPram+"\",\"s2sTxnEndURL\":\""+s2sUrl+"\",\"s2sTxnEndURLParam\":\"\",\"clientType\":\"W\",\"supMsg\":\"\",\"netsMidIndicator\":\"U\",\"ipAddress\":\"192.168.7.85\",\"language\":\"en\"}}" ;
 
 		String hmac= null;
 		try {
@@ -108,8 +112,9 @@ public class PaymentNetsProxy extends PaymentProxy {
 		ParamUtil.setSessionAttr(bpc.request,"txnReq",txnRep);
 		ParamUtil.setSessionAttr(bpc.request,"API_KEY",keyId);
 		ParamUtil.setSessionAttr(bpc.request,"HMAC",hmac);
+		ParamUtil.setSessionAttr(bpc.request,"sessionNetsId",sessionId);
 
-
+		log.info(StringUtil.changeForLog("==========>getSessionID:"+bpc.getSession().getId()));
 		paymentRequestDto.setQueryCode(UUID.randomUUID().toString());
 		if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(reqNo)) {
 			paymentRequestDto.setReturnUrl(returnUrl);
@@ -130,12 +135,6 @@ public class PaymentNetsProxy extends PaymentProxy {
 
 
 			RedirectUtil.redirect(bud.toString(), bpc.request, bpc.response);
-			setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
-		} catch (UnsupportedEncodingException e) {
-			log.info(e.getMessage(),e);
-			log.debug(e.getMessage());
-
-			throw new PaymentException(e);
 		} catch (IOException e) {
 			log.info(e.getMessage(),e);
 			log.debug(e.getMessage());
@@ -165,11 +164,32 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String gwNo = fields.get("vpc_TransactionNo");
 		setGatewayRefNo(gwNo);
 		HttpServletRequest request = bpc.request;
-		String txnReq= (String) ParamUtil.getSessionAttr(request,"txnReq");
-
+		String txnRes= (String) ParamUtil.getSessionAttr(request,"message");
+		String generatedHmac = null;//generate mac
+		SoapiS2S txnResObj =null;
+		try {
+			generatedHmac = generateSignature(txnRes, GatewayConfig.eNetsSecretKey );
+		} catch (Exception e) {
+			log.info(e.getMessage(),e);
+		}
+		String macFromGW = request.getHeader("hmac");
+		log.info (StringUtil.changeForLog("MERCHANT APP : header hmac received :" +
+				macFromGW));//
+		log.info(StringUtil.changeForLog("MERCHANT APP : header hmac generated :" +
+				generatedHmac));
+		if(generatedHmac.equalsIgnoreCase(macFromGW)) {
+//parse message
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				txnResObj = mapper.readValue(txnRes, SoapiS2S.class);
+			} catch (JsonProcessingException e) {
+				log.info(e.getMessage(),e);
+			}
+		}
 		String response = "payment success";
 		setPaymentResponse(response);
 
+		//if(txnResObj.getMsg().get)
 		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
 		String invoiceNo = "1234567";//"Send";
 

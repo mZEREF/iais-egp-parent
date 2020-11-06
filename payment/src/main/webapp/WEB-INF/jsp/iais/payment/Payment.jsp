@@ -1,34 +1,19 @@
-<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils" %>
+<%@ page import="com.ecquaria.cloud.RedirectUtil" %>
+
 <%
-    /*
-      You can customize this default file:
-      /D:/Users/ecquaria/Desktop/eclipse/plugins/com.ecquaria.eclipse.sit_6.1.1/WebPage.jsp.default
-    */
 
-//handle to the Engine APIs
-    sop.webflow.rt.api.BaseProcessClass process =
-            (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+    String sessionId= (String) ParamUtil.getSessionAttr(request,"sessionNetsId");
+    String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+"/payment-web/process/EGPCLOUD/PaymentCallBack";
+    Map<String, String> fields = IaisCommonUtils.genNewHashMap();
+    fields.put("sessionId",sessionId);
+    StringBuilder bud = new StringBuilder();
+    bud.append(url).append("?sessionId=").append(sessionId);
+
+//    RedirectUtil.redirect(bud.toString(), request, response);
+
 %>
-
-<webui:setAttribute name="header-ext">
-    <%
-        /* You can add additional content (SCRIPT, STYLE elements)
-         * which need to be placed inside HEAD element here.
-         */
-    %>
-</webui:setAttribute>
-
-<webui:setAttribute name="title">
-    <%
-        /* You can set your page title here. */
-    %>
-
-    <%=process.runtime.getCurrentComponentName()%>
-
-</webui:setAttribute>
-
-<form method="post" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <h1>Pay Success</h1>
-    <a href="https://egp.sit.inter.iais.com/hcsaapplication/eservice/INTERNET/MohNewApplication/1/doPayment?result=success">back</a>
-</form>
+<%=sessionId%>

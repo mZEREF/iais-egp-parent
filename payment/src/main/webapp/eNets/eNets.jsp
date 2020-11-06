@@ -705,16 +705,15 @@
         <div id="ajaxResponse"></div>
 </fieldset>
 </div>
-<input type="button" value="checkout" onclick="payLoad()">
-
-<%--<script>--%>
-<%--    window.onload=function () {--%>
-<%--        var txnReq = $('#txnReq').val();--%>
-<%--        var keyId = $('#keyId').val();--%>
-<%--        var hmac = $('#hmac').val();--%>
-<%--        sendPayLoad(txnReq,hmac ,keyId );--%>
-<%--    }--%>
-<%--</script>--%>
+<%--<input type="button" value="checkout" onclick="payLoad()">--%>
+<script>
+    window.onload=function () {
+        var txnReq = $('#txnReq').val();
+        var keyId = $('#keyId').val();
+        var hmac = $('#hmac').val();
+        sendPayLoad(txnReq,hmac ,keyId );
+    }
+</script>
 </body>
 </html>
 <script>

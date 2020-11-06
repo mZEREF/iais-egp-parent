@@ -69,6 +69,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 		if (StringHelper.isEmpty(bigsURL)) {
 			throw new PaymentException("stripe.url is not set.");
 		}
+		log.info(StringUtil.changeForLog("==========>getSessionID:"+bpc.getSession().getId()));
 
 		Map<String, String> fields = null;
 		try {
@@ -174,6 +175,8 @@ public class PaymentStripeProxy extends PaymentProxy {
 		PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(refNo).getEntity();
 
 		Map<String, String> fields = getResponseFieldsMap(bpc);
+		log.info(StringUtil.changeForLog("==========>getSessionID:"+bpc.getSession().getId()));
+		log.info(StringUtil.changeForLog("==========>getCHECKOUT_SESSION_ID:"+ParamUtil.getSessionAttr(bpc.request,"CHECKOUT_SESSION_ID")));
 
 		String gwNo = fields.get("vpc_TransactionNo");
 		setGatewayRefNo(gwNo);
