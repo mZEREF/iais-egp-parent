@@ -2875,7 +2875,7 @@ public class HcsaApplicationDelegator {
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
             String originLicenceId = applicationDto.getOriginLicenceId();
             if(!StringUtil.isEmpty(originLicenceId)){
-                AppLastInsGroup appLastInsGroup = applicationClient.getAppLastInsGroup(applicationDto.getId(), originLicenceId).getEntity();
+                AppLastInsGroup appLastInsGroup = applicationClient.getAppLastInsGroup(applicationViewDto).getEntity();
                 boolean recomTypeLastIns = appLastInsGroup.isRecomTypeLastIns();
                 flag = recomTypeLastIns;
                 boolean saveRecomTypeForLastIns = appLastInsGroup.isSaveRecomTypeForLastIns();

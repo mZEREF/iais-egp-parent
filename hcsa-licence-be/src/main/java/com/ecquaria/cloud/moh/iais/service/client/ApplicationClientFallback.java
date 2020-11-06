@@ -780,7 +780,7 @@ public class ApplicationClientFallback implements ApplicationClient{
     }
 
     @Override
-    public FeignResponseEntity<AppLastInsGroup> getAppLastInsGroup(String appId, String oldLicId) {
+    public FeignResponseEntity<AppLastInsGroup> getAppLastInsGroup(ApplicationViewDto applicationViewDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

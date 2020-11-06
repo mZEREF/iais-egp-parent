@@ -312,8 +312,8 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-application-group-be/app-group-one/{appGroupNo}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationGroupDto> getAppGrpByNo(@PathVariable("appGroupNo") String appGroupNo);
 
-    @GetMapping(value = "/iais-application-be/get-can-last-insdata-report",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppLastInsGroup> getAppLastInsGroup(@RequestParam("appId") String appId, @RequestParam("oldLicId") String oldLicId);
+    @PostMapping (value = "/iais-application-be/get-can-last-insdata-report",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppLastInsGroup> getAppLastInsGroup(@RequestBody ApplicationViewDto applicationViewDto);
 
     @GetMapping(value = "/iais-application-be/save-last-insdata-report")
     FeignResponseEntity<String> saveLastInsForSixMonthToRenew(@RequestParam("appId") String appId, @RequestParam("oldAppId") String oldAppId);
