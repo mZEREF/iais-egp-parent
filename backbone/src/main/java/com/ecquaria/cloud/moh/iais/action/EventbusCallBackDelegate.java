@@ -76,6 +76,7 @@ public class EventbusCallBackDelegate {
                         submissionId, operation, "");
                 for (Map.Entry<String, List<ServiceStatus>> ent : map.entrySet()) {
                     for (ServiceStatus status : ent.getValue()) {
+                        log.info("Come into Compensation ======>");
                         submissionClient.submitCompensation(AppConsts.REST_PROTOCOL_TYPE
                                 + RestApiUrlConsts.EVENT_BUS,
                                 submissionId, status.getServiceName(), operation);
