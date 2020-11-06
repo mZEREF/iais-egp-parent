@@ -55,7 +55,7 @@ public class QueryHelperDelegator {
     }
 
     private String getCurrentPassword(){
-        Calendar calendar = Calendar.getInstance();//日历对象
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         int day = calendar.get(Calendar.DATE);
         String dayStr = day < 10 ? "0" + day : day + "";
