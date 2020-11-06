@@ -44,7 +44,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Slf4j
 public class PaymentNetsProxy extends PaymentProxy {
@@ -97,7 +96,8 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String secretKey=GatewayConfig.eNetsSecretKey ;
 		String s2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+bpc.request.getContextPath()+"/s2sTxnEnd";
 		String b2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/paycallback";
-		//String b2sUrlPram="\""+fields.get("vpc_ReturnURL")+"\"";
+//		String b2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/paycallback?refNo="+reqNo;
+//		String b2sUrlPram="\""+fields.get("vpc_ReturnURL")+"\"";
 		String b2sUrlPram="";
 		String sessionId=fields.get("vpc_ReturnURL").substring(fields.get("vpc_ReturnURL").indexOf('=')+1);
 		//RedisCacheHelper
@@ -115,7 +115,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		ParamUtil.setSessionAttr(bpc.request,"sessionNetsId",sessionId);
 
 		log.info(StringUtil.changeForLog("==========>getSessionID:"+bpc.getSession().getId()));
-		paymentRequestDto.setQueryCode(UUID.randomUUID().toString());
+		paymentRequestDto.setQueryCode(sessionId);
 		if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(reqNo)) {
 			paymentRequestDto.setReturnUrl(returnUrl);
 			double amount = Double.parseDouble(amo)/100;
