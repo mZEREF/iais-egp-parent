@@ -58,8 +58,6 @@ import org.xbill.DNS.Master;
 @Slf4j
 public class WithdrawalServiceImpl implements WithdrawalService {
 
-    @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
 
     @Autowired
     private SystemAdminClient systemAdminClient;
@@ -67,8 +65,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     @Autowired
     private MsgTemplateClient msgTemplateClient;
 
-    @Autowired
-    private LicEicClient licEicClient;
 
     @Autowired
     private ApplicationClient applicationClient;
@@ -80,10 +76,10 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     private OrganizationLienceseeClient organizationLienceseeClient;
 
     @Autowired
-    private FeMessageClient feMessageClient;
+    private AppConfigClient appConfigClient;
 
     @Autowired
-    private AppConfigClient appConfigClient;
+    private HcsaConfigFeClient hcsaConfigFeClient;
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
@@ -105,9 +101,12 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     @Value("${iais.email.sender}")
     private String mailSender;
 
-    public static final String TEMPLATE_WITHDRAWAL_EMAIL         = "0DC58FEB-CF98-EA11-BE7A-000C29D29DB0";
-    public static final String TEMPLATE_WITHDRAWAL_SMS         = "0DC58FEB-CF98-EA11-BE7A-000C29D29DB0";
-    public static final String TEMPLATE_WITHDRAWAL_MESSAGE         = "0DC58FEB-CF98-EA11-BE7A-000C29D29DB0";
+    @Value("${iais.system.one.address}")
+    private String systemAddressOne;
+
+    private static final String TEMPLATE_WITHDRAWAL_EMAIL         = "0DC58FEB-CF98-EA11-BE7A-000C29D29DB0";
+    private static final String TEMPLATE_WITHDRAWAL_SMS           = "0A7AA342-B01D-EB11-8B7C-000C29FD17F9";
+    private static final String TEMPLATE_WITHDRAWAL_MESSAGE       = "FF312463-B01D-EB11-8B7C-000C29FD17F9";
 
     @Override
     public void saveWithdrawn(List<WithdrawnDto> withdrawnDtoList) {
@@ -129,12 +128,14 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                         applicationDto.setStatus(appStatus);
                     }
                 }
+
             }
             applicationClient.updateApplicationList(applicationDtoList);
             h.setNewApplicationId(applicationDtoList.get(0).getId());
             applicationClient.saveApps(newAppSubmissionDto).getEntity();
         });
         List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
+        List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(withdrawnList)){
             withdrawnDtoList.forEach(h -> {
                 AppSubmissionDto appSubmissionDto = applicationClient.gainSubmissionDto(h.getApplicationNo()).getEntity();
@@ -142,27 +143,30 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                     ApplicationDto applicationDto = applicationClient.getApplicationById(h.getApplicationId()).getEntity();
                     String serviceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceId();
                     if (!StringUtil.isEmpty(serviceId)){
+                        applicationDtoList.add(applicationDto);
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                         msgInfoMap.put("ApplicationNumber", h.getApplicationNo());
                         msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
                         LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(h.getLicenseeId()).getEntity();
+                        List<ApplicationDto> applicationDtoList2 = hcsaConfigFeClient.returnFee(applicationDtoList).getEntity();
                         String applicantName = licenseeDto.getName();
                         msgInfoMap.put("Applicant", applicantName);
-                        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(h.getApplicationNo())
-                                || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(h.getApplicationNo())){
+                        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())
+                                || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())){
                             msgInfoMap.put("paymentStatus","0");
-                            msgInfoMap.put("returnMount","100");
+                            msgInfoMap.put("returnMount",applicationDtoList2.get(0).getReturnFee());
                         }else{
                             msgInfoMap.put("paymentStatus","1");
                         }
-                        msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date(),"dd/MM/yyyy"));
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+                        msgInfoMap.put("emailAddress",systemAddressOne);
+                        msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date(),"dd/MM/yyyy"));
                         try {
                             EmailParam emailParam = sendNotification(msgInfoMap,applicationDto);
                             notificationHelper.sendNotification(emailParam);
-                            EmailParam emailParamSms = sendSms(msgInfoMap,applicationDto,emailParam.getSubject());
+                            EmailParam emailParamSms = sendSms(msgInfoMap,applicationDto);
                             notificationHelper.sendNotification(emailParamSms);
-                            sendInboxMessage(applicationDto,serviceId,msgInfoMap,emailParam.getSubject());
+                            sendInboxMessage(applicationDto,serviceId,msgInfoMap);
                         } catch (Exception e) {
                             log.error(e.getMessage(), e);
                         }
@@ -187,7 +191,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 log.error(e.getMessage(), e);
             }
         });
-        List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
+        cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
     }
 
     private void transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) throws Exception {
@@ -248,8 +252,14 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         return withdrawApplicationDtoList;
     }
 
-    private EmailParam sendSms(Map<String, Object> msgInfoMap, ApplicationDto applicationDto,String subject){
+    private EmailParam sendSms(Map<String, Object> msgInfoMap, ApplicationDto applicationDto) throws IOException, TemplateException {
+        log.info(StringUtil.changeForLog("***************** send withdraw application sms  *****************"));
         EmailParam emailParam = new EmailParam();
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(TEMPLATE_WITHDRAWAL_SMS).getEntity();
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        map.put("ApplicationNumber", applicationDto.getApplicationNo());
+        String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
         emailParam.setTemplateId(TEMPLATE_WITHDRAWAL_SMS);
         emailParam.setTemplateContent(msgInfoMap);
         emailParam.setQueryCode(applicationDto.getApplicationNo());
@@ -260,8 +270,14 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         return emailParam;
     }
 
-    private void sendInboxMessage(ApplicationDto applicationDto,String serviceId,Map<String, Object> map,String subject){
+    private void sendInboxMessage(ApplicationDto applicationDto,String serviceId,Map<String, Object> map) throws IOException, TemplateException {
+        log.info(StringUtil.changeForLog("***************** send withdraw application message  *****************"));
         EmailParam messageParam = new EmailParam();
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(TEMPLATE_WITHDRAWAL_MESSAGE).getEntity();
+        Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+        subMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        subMap.put("ApplicationNumber", applicationDto.getApplicationNo());
+        String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),subMap);
         HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
         if(serviceDto != null){
@@ -275,7 +291,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         messageParam.setRefId(applicationDto.getApplicationNo());
         messageParam.setSubject(subject);
         messageParam.setSvcCodeList(svcCodeList);
-        log.info(StringUtil.changeForLog("send withdraw Application message"));
         notificationHelper.sendNotification(messageParam);
     }
 
