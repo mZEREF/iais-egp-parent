@@ -792,6 +792,7 @@ public class NewApplicationDelegator {
                                     }
                                 }
                             }
+                            appSvcRelatedInfoDto.setAppSvcDocDtoLit(newAppSvcDocDtos);
                         }
 
                     }
