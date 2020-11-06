@@ -429,7 +429,10 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                 if(RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_PSO.equals(taskDto.getRoleId())) {
                     apSo = apSo + 1;
                 } else if(RoleConsts.USER_ROLE_INSPECTIOR.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(taskDto.getRoleId())) {
-                    insp = insp + 1;
+                    //filter common pool
+                    if(!StringUtil.isEmpty(taskDto.getUserId())) {
+                        insp = insp + 1;
+                    }
                 } else if(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) ||
                         RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) ||
                         RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId())) {
