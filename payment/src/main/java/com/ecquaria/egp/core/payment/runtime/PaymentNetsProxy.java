@@ -11,14 +11,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.dto.SoapiS2S;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ecq.commons.helper.StringHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +30,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -164,33 +163,33 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String gwNo = fields.get("vpc_TransactionNo");
 		setGatewayRefNo(gwNo);
 		HttpServletRequest request = bpc.request;
+		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
 		String txnRes= (String) ParamUtil.getSessionAttr(request,"message");
-		String generatedHmac = null;//generate mac
-		SoapiS2S txnResObj =null;
+		String header= (String) ParamUtil.getSessionAttr(request,"header");
+		String generatedHmac=(String)ParamUtil.getSessionAttr(request,"HMAC");
 		try {
-			generatedHmac = generateSignature(txnRes, GatewayConfig.eNetsSecretKey );
-		} catch (Exception e) {
-			log.info(e.getMessage(),e);
-		}
-		String macFromGW = request.getHeader("hmac");
-		log.info (StringUtil.changeForLog("MERCHANT APP : header hmac received :" +
-				macFromGW));//
-		log.info(StringUtil.changeForLog("MERCHANT APP : header hmac generated :" +
-				generatedHmac));
-		if(generatedHmac.equalsIgnoreCase(macFromGW)) {
-//parse message
-			ObjectMapper mapper = new ObjectMapper();
-			try {
-				txnResObj = mapper.readValue(txnRes, SoapiS2S.class);
-			} catch (JsonProcessingException e) {
-				log.info(e.getMessage(),e);
+			txnRes = URLDecoder.decode(txnRes + "", "UTF-8");
+			if(generatedHmac.equalsIgnoreCase(header)){
+				ObjectMapper mapper = new ObjectMapper();
+				Soapi txnResObj = mapper.readValue(txnRes, Soapi.class);
+				log.info("MERCHANT APP : in receiveb2sTxnEnd :" + txnResObj);
+				if("0".equals(txnResObj.getMsg().getNetsTxnStatus())){
+					status=PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
+				}
+//please handle the success or failure response code.
 			}
+			else{
+				log.error("signature not matched.");
+//handle exception flow
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
+
 		String response = "payment success";
 		setPaymentResponse(response);
 
 		//if(txnResObj.getMsg().get)
-		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
 		String invoiceNo = "1234567";//"Send";
 
 //		if(receiveS2STxnEnd(txnReq,request).getStatusCodeValue()==200){

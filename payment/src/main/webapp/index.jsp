@@ -12,8 +12,13 @@
     fields.put("sessionId",sessionId);
     StringBuilder bud = new StringBuilder();
     bud.append(url).append("?sessionId=").append(sessionId);
-    String txnRes=ParamUtil.getRequestString(request,"message");
+    String header = request.getParameter("hmac");
+    System.out.println("MerchantApp:b2sTxnEndUrl : hmac: " + header);
+    Object message = request.getParameter("message");//contains TxnRes message
+    System.out.println("MerchantApp:b2sTxnEndUrl : data, message: " + message);
+    String txnRes = String.valueOf(message);
     ParamUtil.setSessionAttr(request,"message",txnRes);
+    ParamUtil.setSessionAttr(request,"header",header);
     RedirectUtil.redirect(bud.toString(), request, response);
 
 %>
