@@ -30,7 +30,37 @@
                 </iais:row>
             </div>
             <div class="tab-content">
-
+                <c:if test="${empty QueryHelperResultDto}">
+                    <tr>
+                        <td colspan="5" align="center">
+                            <iais:message key="GENERAL_ACK018"
+                                          escape="true"/>
+                        </td>
+                    </tr>
+                </c:if>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <c:forEach items="${QueryHelperResultDto.columnNameList}"
+                                   var="columnName">
+                            <th width="20%"><c:out value="${columnName}"></c:out></th>
+                        </c:forEach>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach items="${QueryHelperResultDto.searchResult}"
+                               var="resultList">
+                        <tr>
+                            <c:forEach items="${resultList}"
+                                       var="result">
+                                <td width="20%">
+                                    <p><c:out value="${result}"></c:out></p>
+                                </td>
+                            </c:forEach>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
             </div>
         </form>
 
