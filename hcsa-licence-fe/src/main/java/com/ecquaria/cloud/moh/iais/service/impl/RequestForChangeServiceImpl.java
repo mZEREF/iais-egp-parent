@@ -807,16 +807,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         //0065116
                         String isOtherLic = appGrpPremisesDto.getLocateWithOthers();
                         //new
-                        if (newTypeFlag || (rfi && clickEdit)) {
-                            if (hciFlag && AppConsts.YES.equals(isOtherLic)) {
-                                String premisesHci = hciName + NewApplicationHelper.getPremKey(appGrpPremisesDto);
-                                CheckCoLocationDto checkCoLocationDto = new CheckCoLocationDto();
-                                checkCoLocationDto.setLicenseeId(licenseeId);
-                                checkCoLocationDto.setAppGrpPremisesDto(appGrpPremisesDto);
-                                Boolean flag = licenceClient.getOtherLicseePremises(checkCoLocationDto).getEntity();
-                                if (flag) {
-                                    needAppendMsg = true;
-                                }
+                        if (hciFlag && AppConsts.YES.equals(isOtherLic)) {
+                            CheckCoLocationDto checkCoLocationDto = new CheckCoLocationDto();
+                            checkCoLocationDto.setLicenseeId(licenseeId);
+                            checkCoLocationDto.setAppGrpPremisesDto(appGrpPremisesDto);
+                            Boolean flag = licenceClient.getOtherLicseePremises(checkCoLocationDto).getEntity();
+                            if (flag) {
+                                needAppendMsg = true;
                             }
                         }
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
@@ -1066,16 +1063,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                         }
                         //65116
-                        if (newTypeFlag || (rfi && clickEdit)) {
-                            if (hciFlag) {
-                                String premisesHci = appGrpPremisesDto.getConveyanceVehicleNo() + NewApplicationHelper.getPremKey(appGrpPremisesDto);
-                                CheckCoLocationDto checkCoLocationDto = new CheckCoLocationDto();
-                                checkCoLocationDto.setLicenseeId(licenseeId);
-                                checkCoLocationDto.setAppGrpPremisesDto(appGrpPremisesDto);
-                                Boolean flag = licenceClient.getOtherLicseePremises(checkCoLocationDto).getEntity();
-                                if (flag) {
-                                    needAppendMsg = true;
-                                }
+                        if (hciFlag) {
+                            CheckCoLocationDto checkCoLocationDto = new CheckCoLocationDto();
+                            checkCoLocationDto.setLicenseeId(licenseeId);
+                            checkCoLocationDto.setAppGrpPremisesDto(appGrpPremisesDto);
+                            Boolean flag = licenceClient.getOtherLicseePremises(checkCoLocationDto).getEntity();
+                            if (flag) {
+                                needAppendMsg = true;
                             }
                         }
                     } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premiseType)) {
@@ -1325,16 +1319,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                         }
                         //65116
-                        if (newTypeFlag || (rfi && clickEdit)) {
-                            if (hciFlag) {
-                                String premisesHci = NewApplicationHelper.getPremKey(appGrpPremisesDto);
-                                CheckCoLocationDto checkCoLocationDto = new CheckCoLocationDto();
-                                checkCoLocationDto.setLicenseeId(licenseeId);
-                                checkCoLocationDto.setAppGrpPremisesDto(appGrpPremisesDto);
-                                Boolean flag = licenceClient.getOtherLicseePremises(checkCoLocationDto).getEntity();
-                                if (flag) {
-                                    needAppendMsg = true;
-                                }
+                        if (hciFlag) {
+                            CheckCoLocationDto checkCoLocationDto = new CheckCoLocationDto();
+                            checkCoLocationDto.setLicenseeId(licenseeId);
+                            checkCoLocationDto.setAppGrpPremisesDto(appGrpPremisesDto);
+                            Boolean flag = licenceClient.getOtherLicseePremises(checkCoLocationDto).getEntity();
+                            if (flag) {
+                                needAppendMsg = true;
                             }
                         }
                     }
