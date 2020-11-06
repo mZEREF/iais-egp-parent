@@ -90,14 +90,7 @@ public class InsReportDelegator {
             InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
             insRepDto.setInspectors(inspectorUser.getInspectors());
         }
-        AppPremisesRecommendationDto accRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPECTYPE).getEntity();
-        if (accRecommendationDto != null) {
-            String recomDecision = accRecommendationDto.getRecomDecision();
-            if (InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION.equals(recomDecision)) {
-                accRecommendationDto.setRecommendation(InspectionReportConstants.APPROVEDLTC);
-                ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, accRecommendationDto);
-            }
-        }
+
         String appStatus = applicationViewDto.getApplicationDto().getStatus();
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
@@ -108,6 +101,13 @@ public class InsReportDelegator {
         if(StringUtil.isEmpty(recommendation)){
             String periodDefault = insRepService.getPeriodDefault(applicationViewDto,taskDto);
             appPremisesRecommendationDto.setPeriod(periodDefault);
+        }
+        AppPremisesRecommendationDto accRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPECTYPE).getEntity();
+        if (accRecommendationDto != null) {
+            String recomDecision = accRecommendationDto.getRecomDecision();
+            if (InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION.equals(recomDecision)) {
+                appPremisesRecommendationDto.setRecommendation(InspectionReportConstants.APPROVEDLTC);
+            }
         }
         String riskLevelForSave = appPremisesRecommendationDto.getRiskLevel();
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
