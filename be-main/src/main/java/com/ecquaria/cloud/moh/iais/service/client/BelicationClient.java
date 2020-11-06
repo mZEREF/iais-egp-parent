@@ -83,6 +83,6 @@ public interface BelicationClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<AdhocChecklistItemDto>> saveAdhocItems(@RequestBody List<AdhocChecklistItemDto> itemDtoList);
 
-    @GetMapping(value = "/iais-application-be/doQuery/{sql}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<QueryHelperResultDto> doQuery(@PathVariable("sql") String sql);
+    @GetMapping(value = "/iais-application-be/doQuery",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<QueryHelperResultDto> doQuery(@RequestParam("sql") String sql);
 }
