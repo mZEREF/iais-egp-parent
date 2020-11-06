@@ -575,8 +575,8 @@ public class InspectReviseNcEmailDelegator {
             mapTemplate.put("ApplicationDate", applicationViewDto.getSubmissionDate());
             mapTemplate.put("systemLink", loginUrl);
             mapTemplate.put("HCI_CODE", applicationViewDto.getHciCode());
-            mapTemplate.put("HCI_NAME",StringUtil.viewHtml(applicationViewDto.getHciName()));
-            mapTemplate.put("Address", StringUtil.viewHtml(applicationViewDto.getHciAddress()));
+            mapTemplate.put("HCI_NAME",applicationViewDto.getHciName());
+            mapTemplate.put("Address", applicationViewDto.getHciAddress());
             mapTemplate.put("HCI_Postal_Code", applicationViewDto.getHciPostalCode());
             mapTemplate.put("LicenseeName", licenseeDto.getName());
             AppPremisesRecommendationDto appPreRecommentdationDtoInspectionDate =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(correlationId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
