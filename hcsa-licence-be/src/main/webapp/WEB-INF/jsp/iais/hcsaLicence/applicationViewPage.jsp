@@ -110,6 +110,27 @@
                                                         </iais:row>
                                                     </div>
                                                     <%--</div>--%>
+                                                    <%--Choose to inspect for 6 months--%>
+                                                    <c:if test="${(applicationViewDto.applicationDto.status == 'APST007' || applicationViewDto.applicationDto.status == 'APST012') && isChooseInspection}">
+                                                        <div id="chooseInspectionBox">
+                                                            <iais:row>
+                                                                <label class="col-xs-0 col-md-4 control-label">
+                                                                    To use recent inspection report?<a onclick="doVerifyFileGo('${AppLastInsGroup.fileReportIdForViewLastReport}')">(View Report)</a>
+                                                                </label>
+                                                                <iais:value width="10">
+                                                                    <p>
+                                                                        <input class="form-check-input" id="chooseInspection"
+                                                                               type="checkbox" name="chooseInspection" aria-invalid="false" <c:if test="${chooseInspectionChecked == 'Y'}">checked</c:if> value="Y">
+                                                                        <label class="form-check-label" for="chooseInspection"><span class="check-square"></span></label>
+                                                                        <c:if test="${!empty AppLastInsGroup.fileReportIdForViewLastReport}">
+                                                                            <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo&fileRo=<iais:mask name="fileRo"  value="${AppLastInsGroup.fileReportIdForViewLastReport}"/>&fileRepoName=${AppLastInsGroup.reportName}"
+                                                                               title="Download" class="downloadFile"><span id="${AppLastInsGroup.fileReportIdForViewLastReport}Down">trueDown</span></a>
+                                                                        </c:if>
+                                                                    </p>
+                                                                </iais:value>
+                                                            </iais:row>
+                                                        </div>
+                                                    </c:if>
                                                     <div id="processingDecision">
                                                         <iais:row>
                                                             <iais:field value="Processing Decision" required="true"/>
@@ -134,7 +155,6 @@
                                                             </iais:row>
                                                         </div>
                                                     </c:if>
-
                                                     <%-- DMS approval and reject --%>
                                                     <c:if test="${applicationViewDto.applicationDto.status == 'APST014'}">
                                                         <div id="decision">
@@ -184,28 +204,6 @@
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
-                                                    <%--Choose to inspect for 6 months--%>
-                                                    <c:if test="${(applicationViewDto.applicationDto.status == 'APST007' || applicationViewDto.applicationDto.status == 'APST012') && isChooseInspection}">
-                                                        <div id="chooseInspectionBox">
-                                                            <iais:row>
-                                                                <iais:field value="To use recent inspection report? (View Report)" required="false"/>
-                                                                <iais:value width="10">
-                                                                    <p>
-                                                                        <input class="form-check-input" id="chooseInspection"
-                                                                               type="checkbox" name="chooseInspection" aria-invalid="false" <c:if test="${chooseInspectionChecked == 'Y'}">checked</c:if> value="Y">
-                                                                        <label class="form-check-label" for="chooseInspection"><span class="check-square"></span></label>
-                                                                        <c:if test="${!empty AppLastInsGroup.fileReportIdForViewLastReport}">
-                                                                            <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo&fileRo=<iais:mask name="fileRo"  value="${AppLastInsGroup.fileReportIdForViewLastReport}"/>&fileRepoName=${AppLastInsGroup.reportName}"
-                                                                               title="Download" class="downloadFile"><span id="${AppLastInsGroup.fileReportIdForViewLastReport}Down">trueDown</span></a>
-                                                                            <a  onclick="doVerifyFileGo('${AppLastInsGroup.fileReportIdForViewLastReport}')"><c:out
-                                                                                    value="${AppLastInsGroup.reportName}"></c:out>
-                                                                            </a>
-                                                                        </c:if>
-                                                                    </p>
-                                                                </iais:value>
-                                                            </iais:row>
-                                                        </div>
-                                                    </c:if>
 
                                                     <div id="comments" class="hidden">
                                                         <%String commentsValue = request.getParameter("comments");%>

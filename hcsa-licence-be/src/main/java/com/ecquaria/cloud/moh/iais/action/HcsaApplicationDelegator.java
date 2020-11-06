@@ -2024,7 +2024,7 @@ public class HcsaApplicationDelegator {
                             //save return fee
                             saveRejectReturnFee(saveApplicationDtoList,broadcastApplicationDto);
                             //clearApprovedHclCodeByExistRejectApp
-                            applicationViewService.clearApprovedHclCodeByExistRejectApp(saveApplicationDtoList,applicationGroupDto.getAppType());
+                            applicationViewService.clearApprovedHclCodeByExistRejectApp(saveApplicationDtoList,applicationGroupDto.getAppType(),broadcastApplicationDto.getApplicationDto());
                         }
                     }
                 }
@@ -2859,7 +2859,6 @@ public class HcsaApplicationDelegator {
 
         //cessation
         setCessation(bpc.request,applicationViewDto,correlationId);
-
         //set choose inspection
         setChooseInspectionValue(bpc.request,applicationViewDto);
     }

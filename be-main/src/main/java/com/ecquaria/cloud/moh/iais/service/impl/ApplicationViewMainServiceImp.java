@@ -367,7 +367,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
     }
 
     @Override
-    public void clearApprovedHclCodeByExistRejectApp(List<ApplicationDto> saveApplicationDtoList, String appGroupType) {
+    public void clearApprovedHclCodeByExistRejectApp(List<ApplicationDto> saveApplicationDtoList, String appGroupType,ApplicationDto applicationDtoMain) {
         log.info("-----------clearApprovedHclCodeByExistRejectApp start------");
         if(saveApplicationDtoList.size() > 1 && ( ApplicationConsts.APPLICATION_TYPE_RENEWAL.equalsIgnoreCase(appGroupType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(appGroupType))){
             int size = saveApplicationDtoList.size();
@@ -383,6 +383,13 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
             if(appovedNum.size() > 0 && rejectNum.size() >0){
                 //clear approve hclcode
                 appovedNum.get(0).setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                // set main appoved true
+                for(ApplicationDto applicationDto : appovedNum){
+                    applicationDto.setNeedNewLicNo(true);
+                    if(applicationDtoMain.getId().equalsIgnoreCase(applicationDto.getId())){
+                        applicationDtoMain.setNeedNewLicNo(true);
+                    }
+                }
                 applicationClient.clearHclcodeByAppIds(appovedNum);
             }
         }

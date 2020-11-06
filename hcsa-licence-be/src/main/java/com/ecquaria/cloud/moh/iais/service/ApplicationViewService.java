@@ -40,5 +40,5 @@ public interface ApplicationViewService {
 
     ApplicationViewDto getApplicationViewDtoByCorrId(String appCorId);
 
-    void clearApprovedHclCodeByExistRejectApp( List<ApplicationDto> saveApplicationDtoList,String appGroupType);
+    void clearApprovedHclCodeByExistRejectApp( List<ApplicationDto> saveApplicationDtoList,String appGroupType,ApplicationDto applicationDtoMain);
 }

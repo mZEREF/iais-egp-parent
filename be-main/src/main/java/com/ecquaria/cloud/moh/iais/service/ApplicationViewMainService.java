@@ -46,5 +46,5 @@ public interface ApplicationViewMainService {
 
     List<HcsaSvcRoutingStageDto> getStage(String serviceId, String stageId, String appType);
 
-    void clearApprovedHclCodeByExistRejectApp( List<ApplicationDto> saveApplicationDtoList,String appGroupType);
+    void clearApprovedHclCodeByExistRejectApp( List<ApplicationDto> saveApplicationDtoList,String appGroupType,ApplicationDto applicationDtoMain);
 }

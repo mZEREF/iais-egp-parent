@@ -1020,7 +1020,7 @@ public class BackendInboxDelegator {
                     //save return fee
                     saveRejectReturnFee(saveApplicationDtoList,broadcastApplicationDto);
                     //clearApprovedHclCodeByExistRejectApp
-                    applicationViewService.clearApprovedHclCodeByExistRejectApp(saveApplicationDtoList,applicationGroupDto.getAppType());
+                    applicationViewService.clearApprovedHclCodeByExistRejectApp(saveApplicationDtoList,applicationGroupDto.getAppType(), broadcastApplicationDto.getApplicationDto());
                 }
             }
         }
