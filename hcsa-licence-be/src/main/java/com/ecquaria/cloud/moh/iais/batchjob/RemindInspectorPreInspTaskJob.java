@@ -149,6 +149,27 @@ public class RemindInspectorPreInspTaskJob {
     }
 
     private void sendEmailAndSmsByTask(Map<String, Object> templateMap, TaskDto taskDto) {
+        String userId = taskDto.getUserId();
+        String workGrpId = taskDto.getWkGrpId();
+        //send sms
+        List<String> leads = organizationClient.getInspectionLead(workGrpId).getEntity();
+        if (!StringUtil.isEmpty(userId)) {//NOSONAR
+            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
+            if (orgUserDto != null) {
+                sendSms(orgUserDto, taskDto);
+            }
+        }
+        if (!IaisCommonUtils.isEmpty(leads)) {//NOSONAR
+            for (String lead : leads) {
+                if (!StringUtil.isEmpty(lead) && !lead.equals(userId)) {//NOSONAR
+                    OrgUserDto orgUserDtoLead = organizationClient.retrieveOrgUserAccountById(lead).getEntity();
+                    if (orgUserDtoLead != null) {
+                        sendSms(orgUserDtoLead, taskDto);
+                    }
+                }
+            }
+        }
+        //send email
         MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_REMIND_INSPECTOR_PRE_INSP_READY).getEntity();
         if(msgTemplateDto == null){
             return;
@@ -158,23 +179,18 @@ public class RemindInspectorPreInspTaskJob {
             JobLogger.log(StringUtil.changeForLog("msgTemplateDto is INACTIVE......."));
         } else {
             if (msgTemplateDto != null) {
-                String userId = taskDto.getUserId();
-                String workGrpId = taskDto.getWkGrpId();
-                List<String> leads = organizationClient.getInspectionLead(workGrpId).getEntity();
                 if (!StringUtil.isEmpty(userId)) {//NOSONAR
                     OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
                     if (orgUserDto != null) {
                         sendEmail(orgUserDto, msgTemplateDto, taskDto, templateMap);
-                        sendSms(orgUserDto, taskDto);
                     }
                 }
                 if (!IaisCommonUtils.isEmpty(leads)) {//NOSONAR
                     for (String lead : leads) {
                         if (!StringUtil.isEmpty(lead) && !lead.equals(userId)) {//NOSONAR
-                            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(lead).getEntity();
-                            if (orgUserDto != null) {
-                                sendEmail(orgUserDto, msgTemplateDto, taskDto, templateMap);
-                                sendSms(orgUserDto, taskDto);
+                            OrgUserDto orgUserDtoLead = organizationClient.retrieveOrgUserAccountById(lead).getEntity();
+                            if (orgUserDtoLead != null) {
+                                sendEmail(orgUserDtoLead, msgTemplateDto, taskDto, templateMap);
                             }
                         }
                     }
