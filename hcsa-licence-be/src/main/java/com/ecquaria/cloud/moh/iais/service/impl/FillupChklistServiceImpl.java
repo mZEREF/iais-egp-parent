@@ -1763,9 +1763,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     public void saveAdhocDto(AdhocCheckListConifgDto adhocCheckListConifgDto) {
         if(adhocCheckListConifgDto != null){
             if(adhocCheckListConifgDto.getVersion() != null){
-                adhocCheckListConifgDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                 adhocCheckListConifgDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                applicationClient.updateAppAdhocConfig(adhocCheckListConifgDto);
                 adhocCheckListConifgDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 adhocCheckListConifgDto.setOldId(adhocCheckListConifgDto.getId());
                 adhocCheckListConifgDto.setId(null);

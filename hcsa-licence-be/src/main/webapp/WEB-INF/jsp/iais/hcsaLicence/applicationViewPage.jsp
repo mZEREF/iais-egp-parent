@@ -629,22 +629,26 @@
     function check(){
         var selectValue = $("[name='nextStage']").val();
         if (selectValue == "PROCVER") {
+            $("#chooseInspectionBox").addClass('show');
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
             $('#comments').addClass('hidden');
         } else if (selectValue == "PROCRB") {
+            $("#chooseInspectionBox").addClass('hidden');
             $('#rollBackDropdown').removeClass('hidden');
             $('#routeBackReviewBox').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#comments').addClass('hidden');
         } else if (selectValue == "PROCRFI") {
+            $("#chooseInspectionBox").addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
             $('#comments').removeClass('hidden');
             // showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
         } else {
+            $("#chooseInspectionBox").addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
@@ -680,13 +684,16 @@
     $("[name='nextStage']").change(function selectChange() {
         var selectValue = $("[name='nextStage']").val();
         if (selectValue == "PROCVER") {
+            $("#chooseInspectionBox").addClass('show');
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
             $('#comments').addClass('hidden');
             $('#appealRecommendationFalse').addClass('hidden');
             $('#appealRecommendationTrue').removeClass('hidden');
+
         } else if (selectValue == "PROCRB") {
+            $("#chooseInspectionBox").addClass('hidden');
             $('#rollBackDropdown').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#routeBackReviewBox').removeClass('hidden');
@@ -694,6 +701,7 @@
             $('#appealRecommendationFalse').addClass('hidden');
             $('#appealRecommendationTrue').removeClass('hidden');
         } else if (selectValue == "PROCRFI") {
+            $("#chooseInspectionBox").addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
@@ -704,6 +712,7 @@
             $('#recommendationFieldTrue').addClass('hidden');
             $('#recommendationFieldFalse').removeClass('hidden');
         } else {
+            $("#chooseInspectionBox").addClass('hidden');
             $('#comments').addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');

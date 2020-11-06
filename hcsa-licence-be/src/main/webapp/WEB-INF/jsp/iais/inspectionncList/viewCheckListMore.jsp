@@ -135,6 +135,7 @@
         }
     }
     function doSaveDraftCheckList(){
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "saveDraft");
     }
 </script>

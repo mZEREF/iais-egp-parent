@@ -71,10 +71,12 @@
 </div>
 <script type="text/javascript">
     function doBack(){
+        showWaiting();
         // save
         SOP.Crud.cfxSubmit("mainForm", "delete");
     }
     function doEditAhoc(){
+        showWaiting();
         //
         SOP.Crud.cfxSubmit("mainForm", "add");
     }
