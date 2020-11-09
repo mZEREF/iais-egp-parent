@@ -183,7 +183,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 //handle exception flow
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			log.info(ex.getMessage(),ex);
 		}
 
 		String response = "payment success";
