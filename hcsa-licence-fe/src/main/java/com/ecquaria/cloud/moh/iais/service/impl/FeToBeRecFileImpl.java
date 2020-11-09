@@ -57,7 +57,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     private String sharedPath;
     @Value("${iais.sharedfolder.rectification.out}")
     private String sharedOutPath;
-    private String fileFormat = ".text";
+    private String fileFormat = ".zip";
     private String backups;
 
     @Value("${iais.hmac.keyId}")
@@ -133,8 +133,8 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             String fileId = appPremPreInspectionNcDocDto.getFileRepoId();
             byte[] fileByte = fileRepoClient.getFileFormDataBase(fileId).getEntity();
 
-            File backupsFile = new File(backups + fileId, appPremPreInspectionNcDocDto.getDocName());
-            File groupBackPath = new File(backups + fileId);
+            File backupsFile = new File(backups + "backupsRec" + File.separator + fileId, appPremPreInspectionNcDocDto.getDocName());
+            File groupBackPath = new File(backups + "backupsRec" + File.separator + fileId);
             if(!groupBackPath.exists()){
                 groupBackPath.mkdirs();
             }
@@ -179,7 +179,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
              CheckedOutputStream cos = new CheckedOutputStream(is, new CRC32());
              ZipOutputStream zos = new ZipOutputStream(cos);){
 
-            File file = new File(backups + File.separator + "backupsRec" + File.separator + fileId);
+            File file = new File(backups + "backupsRec" + File.separator + fileId);
             MiscUtil.checkDirs(file);
             zipFile(zos, file, "backupsRec");
         } catch (IOException e) {
@@ -247,6 +247,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                         boolean createFlag = curFile.createNewFile();
                         if (!createFlag) {
                             log.error("Create file fail");
+                            JobLogger.log("Create file fail");
                         }
                     }
                     boolean reNameFlag = file.renameTo(curFile);
@@ -275,18 +276,15 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     private void deleteFile(){
         File file = new File(backups);
         if(file.isDirectory()){
-            File[] files = file.listFiles((dir, name) -> {
-                if (name.endsWith(fileFormat)) {
-                    return true;
-                }
-                return false;
-            });
+            File[] files = file.listFiles();
             for(File f:files){
                 if(f.exists()){
-                    boolean fileStatus = f.delete();
-                    if(!fileStatus){
-                        log.debug(StringUtil.changeForLog(file.getName() + "delete false"));
-                        JobLogger.log(StringUtil.changeForLog(file.getName() + "delete false"));
+                    if(!f.getName().endsWith(fileFormat)) {
+                        boolean fileStatus = f.delete();
+                        if (!fileStatus) {
+                            log.debug(StringUtil.changeForLog(f.getName() + ": delete false"));
+                            JobLogger.log(StringUtil.changeForLog(f.getName() + ": delete false"));
+                        }
                     }
                 }
             }
@@ -294,7 +292,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     }
 
     public String saveFileName(String fileName ,String filePath, String appId){
-        ProcessFileTrackDto processFileTrackDto =new ProcessFileTrackDto();
+        ProcessFileTrackDto processFileTrackDto = new ProcessFileTrackDto();
         processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION);
         processFileTrackDto.setFileName(fileName);
         processFileTrackDto.setFilePath(filePath);
