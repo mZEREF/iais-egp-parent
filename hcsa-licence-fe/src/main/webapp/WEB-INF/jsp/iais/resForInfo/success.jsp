@@ -46,7 +46,9 @@
 </form>
 <script type="text/javascript">
     function doDone(){
-        SOP.Crud.cfxSubmit("mainForm");
+        showWaiting();
+        $("#mainForm").submit();
+        dismissWaiting();
     }
 
 </script>

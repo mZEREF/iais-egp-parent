@@ -148,13 +148,15 @@
 <script type="text/javascript">
     function doBack() {
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "back");
+        $("[name='crud_action_type']").val("back");
+        $("#mainForm").submit();
         dismissWaiting();
     }
 
     function doSubmit(reqInfoId) {
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "submit");
+        $("[name='crud_action_type']").val("submit");
+        $("#mainForm").submit();
         dismissWaiting();
     }
 
