@@ -608,7 +608,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
         }
         String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
-        MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI).getEntity();
+        MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APP_RFI_MSG).getEntity();
         Date now = new Date();
         if(applicationViewDto.getApplicationGroupDto() != null && applicationViewDto.getApplicationGroupDto().getSubmitDt() != null){
             now = applicationViewDto.getApplicationGroupDto().getSubmitDt();
@@ -644,7 +644,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             inboxMsgService.saveInterMessage(interMessageDto);
             //send email
             EmailParam emailParam = new EmailParam();
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APP_RFI_EMAIL);
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
             map.put("systemLink",loginUrl);
             emailParam.setTemplateContent(map);
@@ -661,7 +661,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             Map<String,Object> smsMap = IaisCommonUtils.genNewHashMap();
             smsMap.put("ApplicationType",MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
             smsMap.put("ApplicationNumber",StringUtil.viewHtml(applicationNo));
-            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_SMS);
+            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APP_RFI_SMS);
             smsParam.setTemplateContent(smsMap);
             smsParam.setSubject(subject);
             smsParam.setQueryCode(applicationNo);
