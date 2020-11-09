@@ -48,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -93,12 +94,7 @@ import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -190,6 +186,10 @@ public class NewApplicationDelegator {
 
     @Autowired
     private CessationFeService cessationFeService;
+
+    @Autowired
+    private OrganizationLienceseeClient organizationLienceseeClient;
+
     @Autowired
     private CessationClient cessationClient;
 
@@ -3284,6 +3284,7 @@ public class NewApplicationDelegator {
         if (msgTemplateDto != null) {
             Double amount = appSubmissionDto.getAmount();
             String licenseeId = appSubmissionDto.getLicenseeId();
+            LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeDtoById(licenseeId).getEntity();
             List<ApplicationDto> applicationDtos = appSubmissionDto.getApplicationDtos();
             List<String> applicationNos = new ArrayList<String>();
             if (!IaisCommonUtils.isEmpty(applicationDtos)) {
@@ -3297,6 +3298,7 @@ public class NewApplicationDelegator {
             String appGrpNo = appSubmissionDto.getAppGrpNo();
             String subject = " " + msgTemplateDto.getTemplateName() + " " + appGrpNo;
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+            map.put("Applicant", licenseeDto.getName());
             map.put("applications", applicationNos);
             map.put("paymentType", paymentMethod);
             map.put("pmtRefNo", pmtRefNo);
@@ -3371,6 +3373,7 @@ public class NewApplicationDelegator {
         String GIROAccountNumber = "xxxxxxxx";
         Double amount = appSubmissionDto.getAmount();
         String licenseeId = appSubmissionDto.getLicenseeId();
+        LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeDtoById(licenseeId).getEntity();
         List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         List<String> serviceNames = IaisCommonUtils.genNewArrayList();
         String appGrpNo = appSubmissionDto.getAppGrpNo();
@@ -3384,6 +3387,7 @@ public class NewApplicationDelegator {
         String appType = appSubmissionDto.getAppType();
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+            map.put("Applicant", licenseeDto.getName());
             map.put("serviceNames", serviceNames);
             map.put("paymentAmount", Formatter.formatNumber(amount));
             map.put("GIROAccountNumber", GIROAccountNumber);
@@ -3448,6 +3452,7 @@ public class NewApplicationDelegator {
         if (msgTemplateDto != null) {
             Double amount = appSubmissionDto.getAmount();
             String licenseeId = appSubmissionDto.getLicenseeId();
+            LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeDtoById(licenseeId).getEntity();
             List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
             List<String> serviceNames = new ArrayList<String>();
             for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
@@ -3459,6 +3464,7 @@ public class NewApplicationDelegator {
             String appGrpNo = appSubmissionDto.getAppGrpNo();
             String subject = " " + msgTemplateDto.getTemplateName() + " " + appGrpNo;
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+            map.put("Applicant", licenseeDto.getName());
             map.put("serviceNames", serviceNames);
             map.put("paymentAmount", Formatter.formatNumber(amount));
             map.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);

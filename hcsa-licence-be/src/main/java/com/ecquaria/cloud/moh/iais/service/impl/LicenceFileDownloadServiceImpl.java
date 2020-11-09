@@ -2,52 +2,37 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationNewAndRequstDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.BroadcastService;
-import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.EventClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
 import java.io.BufferedInputStream;
@@ -69,6 +54,9 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -82,6 +70,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadService {
+
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
     @Value("${iais.sharedfolder.application.in}")
@@ -115,6 +104,25 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private GenerateIdClient generateIdClient;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
+
+    @Autowired
+    private ApplicationGroupService applicationGroupService;
+
+    @Autowired
+    private InspectionAssignTaskService inspectionAssignTaskService;
+
+    @Autowired
+    private ApplicationViewService applicationViewService;
+
+    @Autowired
+    private SystemParamConfig systemParamConfig;
+
+    @Autowired
+    private MsgTemplateClient msgTemplateClient;
+
+    @Autowired
+    private NotificationHelper notificationHelper;
+
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
     @Value("${spring.application.name}")
@@ -248,7 +256,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         return organizationClient.getTasksByRefNo(refNo).getEntity();
 
     }
-
     @Override
     public void initPath() {
 
@@ -719,6 +726,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
 
     }
+
     public void  removeFile(String eventRefNum ,String submissionId){
         List<Submission> submissionList = eventClient.getSubmission(submissionId).getEntity();
         log.info(StringUtil.changeForLog(submissionList .size() +"remove file submissionList .size()"));
@@ -744,8 +752,63 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             ProcessFileTrackDto processFileTrackDto = applicationNewAndRequstDto.getProcessFileTrackDto();
             processFileTrackDto.setStatus("PFT005");
             applicationClient.updateProcessFileTrack(processFileTrackDto);
+            /**
+             * Send Email
+             */
+            List<ApplicationDto> applicationDtoList = applicationNewAndRequstDto.getCessionOrWith();
+            if (applicationDtoList != null && applicationDtoList.size() > 0){
+                applicationDtoList.forEach(h -> {
+                    String applicationNo = h.getApplicationNo();
+                    String applicationGrpId = h.getAppGrpId();
+                    String applicationType = h.getApplicationType();
+                    String serviceId = h.getServiceId();
+                    ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationGrpId);
+                    AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(h.getAppPremisesCorrelationId());
+                    AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremisesCorrelationDto.getNewCorrelationId());
+                    LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
+                    String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
+                    String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+                    if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
+                        Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+                        msgInfoMap.put("systemLink",loginUrl);
+                        msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType));
+                        msgInfoMap.put("ApplicationNumber", applicationNo);
+                        msgInfoMap.put("HCIName",appGrpPremisesDto.getHciName());
+                        msgInfoMap.put("Address",appGrpPremisesDto.getAddress());
+                        msgInfoMap.put("licenseeName",licenseeDto.getName());
+                        msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date()));
+                        msgInfoMap.put("S_LName",serviceName);
+                        msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+                        try {
+                            sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL,msgInfoMap,h);
+                            sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_MESSAGE,msgInfoMap,h);
+                            sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_SMS,msgInfoMap,h);
+                        } catch (IOException | TemplateException e) {
+                            log.error(e.getMessage(), e);
+                        }
+                    }
+                });
+            }
+
         }
 
+    }
+
+    private void sendEmail(String templateId, Map<String, Object> msgInfoMap, ApplicationDto applicationDto) throws IOException, TemplateException {
+        EmailParam emailParam = new EmailParam();
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(templateId).getEntity();
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        map.put("ApplicationNumber", applicationDto.getApplicationNo());
+        String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
+        emailParam.setTemplateContent(msgInfoMap);
+        emailParam.setTemplateId(templateId);
+        emailParam.setReqRefNum(applicationDto.getApplicationNo());
+        emailParam.setQueryCode(applicationDto.getApplicationNo());
+        emailParam.setRefId(applicationDto.getApplicationNo());
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+        emailParam.setSubject(subject);
+        notificationHelper.sendNotification(emailParam);
     }
 
     private void  moveFile(File file){

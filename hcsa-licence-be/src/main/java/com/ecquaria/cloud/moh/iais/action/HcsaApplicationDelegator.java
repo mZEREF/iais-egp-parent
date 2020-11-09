@@ -2087,14 +2087,13 @@ public class HcsaApplicationDelegator {
                         /**
                          *  Send SMS when withdrawal Application Approve
                          */
-                        Map<String, Object> smsInfoMap = IaisCommonUtils.genNewHashMap();
                         sendSMS(applicationViewDto,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS,msgInfoMap);
                     }else{
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                         msgInfoMap.put("ApplicationNumber", applicationNo);
                         msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType));
                         msgInfoMap.put("Applicant", licenseeDto.getName());
-                        msgInfoMap.put("ApplicationDate",applicationViewDto.getSubmissionDate());
+                        msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date()));
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
                         sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_EMAIL,msgInfoMap,applicationViewDto.getApplicationDto());
                         sendInboxMessage(applicationViewDto,serviceId,msgInfoMap,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_MESSAGE);
