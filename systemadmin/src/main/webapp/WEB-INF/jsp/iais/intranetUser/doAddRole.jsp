@@ -10,6 +10,7 @@
 <form class="form-horizontal" style="margin-left: 1%;margin-right:1%;width: 100%" method="post" id="ChangeStatusForm"
       action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+    <input type="hidden" id="maskRoleId" name="maskRoleId" value="">
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <br><br><br><br><br><br>
         <h2>Role Management</h2>
@@ -132,15 +133,16 @@
         <iais:section title="" id="removeRole">
             <iais:row>
                 <iais:field value="Remove Role"/>
-                <iais:value width="5">
-                    <c:forEach items="${alreadyAssignRoles}" var="role" varStatus="status">
+                <iais:value width="7">
+                    <c:forEach items="${roleNameAndIdMap}" var="role">
                         <div class="form-check">
                             <input class="form-check-input" id="removeRoleId" type="checkbox" name="removeRole"
-                                   value="${alreadyAssignRoleIds[status.index]}">
+                                   value="<iais:mask name="maskRoleId" value="${role.value}"/>">
                             <label class="form-check-label" for="removeRoleId"><span
                                     class="check-square"></span></label>
-                            <span style="font-size: 18px">${role}</span>
+                            <span style="font-size: 18px">${role.key}</span>
                         </div>
+                        <br/>
                     </c:forEach>
                 </iais:value>
             </iais:row>

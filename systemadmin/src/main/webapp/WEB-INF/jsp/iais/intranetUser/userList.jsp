@@ -52,9 +52,7 @@
                                 <tr>
                                     <td>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox"
-                                                   value="<iais:mask name="maskUserId" value="${user.id}"/>"
-                                                   name="userUid"
+                                            <input class="form-check-input" type="checkbox" value="<iais:mask name="maskUserId" value="${user.id}"/>" name="userUid"
                                                    id="userUid<iais:mask name="maskUserId" value="${user.id}"/>">
                                             <label class="form-check-label"
                                                    for="userUid<iais:mask name="maskUserId" value="${user.id}"/>"><span

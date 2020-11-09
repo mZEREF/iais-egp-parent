@@ -13,10 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -40,7 +37,10 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author weilu
@@ -266,20 +266,16 @@ public class MohIntranetUserDelegator {
         }
         // already assign role
         List<OrgUserRoleDto> orgUserRoleDtos = intranetUserService.retrieveRolesByuserAccId(userAccId);
-        Set<String> roleIds = IaisCommonUtils.genNewHashSet();
-        List<String> assignRoleIds = IaisCommonUtils.genNewArrayList();
+        Map<String,String> roleNameAndIdMap = IaisCommonUtils.genNewHashMap();
+        List<String> alreadyAssignRoleOptionFull = IaisCommonUtils.genNewArrayList();
         if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
             for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
                 String roleId = orgUserRoleDto.getRoleName();
+                String roleNameFull = roleMap1.get(roleId);
                 String assignRoleId = orgUserRoleDto.getId();
-                roleIds.add(roleId);
-                assignRoleIds.add(assignRoleId);
+                alreadyAssignRoleOptionFull.add(roleNameFull);
+                roleNameAndIdMap.put(roleNameFull,assignRoleId);
             }
-        }
-        List<String> alreadyAssignRoleOptionFull = IaisCommonUtils.genNewArrayList();
-        for (String roleId : roleIds) {
-            String roleNameFull = roleMap1.get(roleId);
-            alreadyAssignRoleOptionFull.add(roleNameFull);
         }
 
         List<WorkingGroupDto> workingGroups = intranetUserService.getWorkingGroups();
@@ -303,8 +299,7 @@ public class MohIntranetUserDelegator {
         }
         assignRoleOptionFull.removeAll(alreadyAssignRoleOptionFull);
         ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", assignRoleOptionFull);//Professional Screening  - Nursing Home
-        ParamUtil.setRequestAttr(bpc.request, "alreadyAssignRoles", roleIds);
-        ParamUtil.setRequestAttr(bpc.request, "alreadyAssignRoleIds", assignRoleIds);
+        ParamUtil.setRequestAttr(bpc.request, "roleNameAndIdMap", roleNameAndIdMap);
         ParamUtil.setSessionAttr(bpc.request, "psoGroupOptions", (Serializable) psoGroupOptions);
         ParamUtil.setSessionAttr(bpc.request, "ao1GroupOptions", (Serializable) ao1GroupOptions);
         ParamUtil.setSessionAttr(bpc.request, "insGroupOptions", (Serializable) insGroupOptions);
@@ -455,7 +450,8 @@ public class MohIntranetUserDelegator {
         if (removeRoles != null) {
             List<String> removeRoleIds = IaisCommonUtils.genNewArrayList();
             for (String removeRole : removeRoles) {
-                removeRoleIds.add(removeRole);
+                String maskRoleId = MaskUtil.unMaskValue("maskRoleId", removeRole);
+                removeRoleIds.add(maskRoleId);
             }
             List<String> removeRoleNames = IaisCommonUtils.genNewArrayList();
             List<OrgUserRoleDto> orgUserRoleDtos = intranetUserService.getOrgUserRoleDtoById(removeRoleIds);
