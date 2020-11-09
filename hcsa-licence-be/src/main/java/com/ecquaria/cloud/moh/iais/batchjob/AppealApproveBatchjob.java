@@ -8,8 +8,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
@@ -28,6 +28,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
@@ -35,9 +37,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -47,6 +49,7 @@ import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -54,6 +57,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
+import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +95,8 @@ public class AppealApproveBatchjob {
     private OrganizationClient organizationClient;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
+    @Autowired
+    CessationClient cessationClient;
     @Autowired
     private EmailClient emailClient;
     @Value("${iais.email.sender}")
@@ -529,6 +535,19 @@ public class AppealApproveBatchjob {
         String licenseeId = applicationGroupDto.getLicenseeId();
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
 
+        List<AppPremiseMiscDto> premiseMiscDtoList = cessationClient.getAppPremiseMiscDtoListByAppId(applicationDto.getId()).getEntity();
+        String appType = "Licence";
+        if(premiseMiscDtoList != null){
+            AppPremiseMiscDto premiseMiscDto = premiseMiscDtoList.get(0);
+            String oldAppId = premiseMiscDto.getRelateRecId();
+            ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
+            appType =  MasterCodeUtil.getCodeDesc(oldApplication.getApplicationType());
+        }
+        if(StringUtil.isEmpty(appType)){
+            appType = "Licence";
+        }
+
+
         if(ApplicationConsts.APPEAL_REASON_APPLICATION_REJECTION.equals(reason)){
 
         }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE.equals(reason)){
@@ -552,10 +571,11 @@ public class AppealApproveBatchjob {
             paymentMethodName = "other";
         }
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
-        templateContent.put("ApplicantName", licenseeDto.getName());
-        templateContent.put("ApplicationType",  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+        templateContent.put("ApplicantName", orgUserDto.getDisplayName());
+        templateContent.put("ApplicationType",  appType);
         templateContent.put("ApplicationNo", applicationDto.getApplicationNo());
-        templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+        templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date(),"dd/MM/yyyy"));
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
         templateContent.put("newSystem", loginUrl);
 
@@ -588,11 +608,21 @@ public class AppealApproveBatchjob {
 //            templateContent.put("content", appPremiseMiscDto.getOtherReason());
         }
 
-        String subject = "MOH IAIS - Appeal for "+ MasterCodeUtil.getCodeDesc(appPremiseMiscDto.getAppealType())+", "+applicationDto.getApplicationNo()+" is approved";
+        MsgTemplateDto emailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_APPROVE_EMAIL).getEntity();
+        MsgTemplateDto smsTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_APPROVE_SMS).getEntity();
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_APPROVE_MSG).getEntity();
+        Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+        subMap.put("ApplicationType", appType);
+        subMap.put("ApplicationNo", applicationDto.getApplicationNo());
+        String emailSubject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
+        String smsSubject = MsgUtil.getTemplateMessageByContent(smsTemplateDto.getTemplateName(),subMap);
+        String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),subMap);
+
+
         EmailParam emailParam = new EmailParam();
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_APPROVE_EMAIL);
         emailParam.setTemplateContent(templateContent);
-        emailParam.setSubject(subject);
+        emailParam.setSubject(emailSubject);
         emailParam.setQueryCode(applicationDto.getApplicationNo());
         emailParam.setReqRefNum(applicationDto.getApplicationNo());
         emailParam.setRefId(applicationDto.getApplicationNo());
@@ -601,7 +631,7 @@ public class AppealApproveBatchjob {
         notificationHelper.sendNotification(emailParam);
         EmailParam smsParam = new EmailParam();
         smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_APPROVE_SMS);
-        smsParam.setSubject(subject);
+        smsParam.setSubject(smsSubject);
         smsParam.setTemplateContent(templateContent);
         smsParam.setQueryCode(applicationDto.getApplicationNo());
         smsParam.setReqRefNum(applicationDto.getApplicationNo());
@@ -612,7 +642,7 @@ public class AppealApproveBatchjob {
         EmailParam msgParam = new EmailParam();
         msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_APPROVE_MSG);
         msgParam.setTemplateContent(templateContent);
-        msgParam.setSubject(subject);
+        msgParam.setSubject(msgSubject);
         msgParam.setQueryCode(applicationDto.getApplicationNo());
         msgParam.setReqRefNum(applicationDto.getApplicationNo());
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();

@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -96,9 +95,6 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
         AuditTrailHelper.setupBatchJobAuditTrail(this);
         List<TaskEmailDto> taskEmailDtoList = IaisCommonUtils.genNewArrayList();
         taskEmailDtoList = taskService.getEmailNotifyList();
-
-        //get email template
-        InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(EMAILMPLATEID);
 
         int count = 0;
         if(taskEmailDtoList != null) {

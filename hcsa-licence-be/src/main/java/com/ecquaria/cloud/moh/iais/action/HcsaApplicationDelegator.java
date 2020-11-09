@@ -2680,15 +2680,30 @@ public class HcsaApplicationDelegator {
     }
 
 
-    private  void  sendAppealReject(String licenseeId, ApplicationDto applicationDto){
+    private  void  sendAppealReject(String licenseeId, ApplicationDto applicationDto) throws IOException, TemplateException {
         log.info("start send email sms and msg");
         log.info(StringUtil.changeForLog("appNo: " + applicationDto.getApplicationNo()));
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
-        templateContent.put("ApplicantName", licenseeDto.getName());
-        templateContent.put("ApplicationType",  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        ApplicationGroupDto applicationGroupDto =  applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+
+        List<AppPremiseMiscDto> premiseMiscDtoList = cessationClient.getAppPremiseMiscDtoListByAppId(applicationDto.getId()).getEntity();
+        String appType = "Licence";
+        if(premiseMiscDtoList != null){
+            AppPremiseMiscDto premiseMiscDto = premiseMiscDtoList.get(0);
+            String oldAppId = premiseMiscDto.getRelateRecId();
+            ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
+            appType =  MasterCodeUtil.getCodeDesc(oldApplication.getApplicationType());
+        }
+        if(StringUtil.isEmpty(appType)){
+            appType = "Licence";
+        }
+
+        templateContent.put("ApplicantName", orgUserDto.getDisplayName());
+        templateContent.put("ApplicationType",  appType);
         templateContent.put("ApplicationNo", applicationDto.getApplicationNo());
-        templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+        templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date(),"dd/MM/yyyy"));
 
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
 
@@ -2704,11 +2719,22 @@ public class HcsaApplicationDelegator {
 
         templateContent.put("content", MasterCodeUtil.getCodeKeyByCodeValue(reason));
         templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
-        String subject = "MOH IAIS – Appeal for "+ MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType())+", "+applicationDto.getApplicationNo()+" is rejected";
+
+
+        MsgTemplateDto emailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_EMAIL).getEntity();
+        MsgTemplateDto smsTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_SMS).getEntity();
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_MSG).getEntity();
+        Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+        subMap.put("ApplicationType", appType);
+        subMap.put("ApplicationNo", applicationDto.getApplicationNo());
+        String emailSubject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
+        String smsSubject = MsgUtil.getTemplateMessageByContent(smsTemplateDto.getTemplateName(),subMap);
+        String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),subMap);
+
         EmailParam emailParam = new EmailParam();
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_EMAIL);
         emailParam.setTemplateContent(templateContent);
-        emailParam.setSubject(subject);
+        emailParam.setSubject(emailSubject);
         emailParam.setQueryCode(applicationDto.getApplicationNo());
         emailParam.setReqRefNum(applicationDto.getApplicationNo());
         emailParam.setRefId(applicationDto.getApplicationNo());
@@ -2717,7 +2743,7 @@ public class HcsaApplicationDelegator {
         notificationHelper.sendNotification(emailParam);
         EmailParam smsParam = new EmailParam();
         smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_SMS);
-        smsParam.setSubject(subject);
+        smsParam.setSubject(smsSubject);
         smsParam.setTemplateContent(templateContent);
         smsParam.setQueryCode(applicationDto.getApplicationNo());
         smsParam.setReqRefNum(applicationDto.getApplicationNo());
@@ -2728,7 +2754,7 @@ public class HcsaApplicationDelegator {
         EmailParam msgParam = new EmailParam();
         msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_MSG);
         msgParam.setTemplateContent(templateContent);
-        msgParam.setSubject(subject);
+        msgParam.setSubject(msgSubject);
         msgParam.setQueryCode(applicationDto.getApplicationNo());
         msgParam.setReqRefNum(applicationDto.getApplicationNo());
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
