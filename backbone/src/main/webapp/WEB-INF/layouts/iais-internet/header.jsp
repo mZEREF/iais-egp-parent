@@ -12,7 +12,18 @@
 <%
     }
 %>
-
+<section class="logo">
+    <div class="container" style="width: 100% !important; max-width: 100% !important; padding-left: 30px;">
+        <div class="row">
+            <div class="logo-ssg">
+                <a href="https://www.gov.sg/" target="_blank" rel="noreferrer" style="color:#484848; text-decoration: none">
+                    <img src="data:image/png;base64,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">
+                    <span>A Singapore Government Agency Website</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
 <header>
     <div class="container">
         <div class="row">
