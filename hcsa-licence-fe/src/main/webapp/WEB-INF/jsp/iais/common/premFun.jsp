@@ -91,9 +91,14 @@
                     var data = {};
                     fillForm('onSite',data,$premContent);
                     setAddress('onSite',data,$premContent);
-                    initPhForm('onSite',$premContent);
+                    //initPhForm('onSite',$premContent);
                     //remove placeHolder disabled style
                     $premContent.find('input[name="onSiteFireSafetyCertIssuedDate"]').removeClass('disabled-placeHolder');
+                    var $phDivEle = $premContent.find('.new-premise-form-on-site ');
+                    //remove ph
+                    $phDivEle.find('div.pubHolidayContent').remove();
+                    //gen new ph
+                    genPhHtml($premContent,$phDivEle);
                 }else if ("conveyanceSel" == thisId) {
                     $premContent.find('.new-premise-form-conv').removeClass('hidden');
                     $premContent.find('.new-premise-form-on-site').addClass('hidden');
@@ -101,7 +106,12 @@
                     var data = {};
                     fillForm('conveyance',data,$premContent);
                     setAddress('conveyance',data,$premContent);
-                    initPhForm('conveyance',$premContent);
+                    // initPhForm('conveyance',$premContent);
+                    var $phDivEle = $premContent.find('.new-premise-form-conv');
+                    //remove ph
+                    $phDivEle.find('div.pubHolidayContent').remove();
+                    //gen new ph
+                    genPhHtml($premContent,$phDivEle);
                 }else if('offSiteSel' == thisId){
                     $premContent.find('.new-premise-form-conv').addClass('hidden');
                     $premContent.find('.new-premise-form-on-site').addClass('hidden');
@@ -109,7 +119,12 @@
                     var data = {};
                     fillForm('offSite',data,$premContent);
                     setAddress('offSite',data,$premContent);
-                    initPhForm('offSite',$premContent);
+                    // initPhForm('offSite',$premContent);
+                    var $phDivEle = $premContent.find('.new-premise-form-off-site');
+                    //remove ph
+                    $phDivEle.find('div.pubHolidayContent').remove();
+                    //gen new ph
+                    genPhHtml($premContent,$phDivEle);
                 }
             }else if("-1" == premSelectVal){
                 $premContent.find('.new-premise-form-conv').addClass('hidden');
@@ -412,6 +427,60 @@
                 'error':function () {
                 }
             });
+        });
+    }
+
+    var genPhHtml = function ($premContentEle,$contentDivEle) {
+        var name = $premContentEle.find('.premTypeValue').val();
+        var premVal = $premContentEle.find('input[name="premValue"]').val();
+        var type = '';
+        if('ONSITE' == name){
+            name = premVal+'onSite';
+            type = 'onSite';
+        }else if('CONVEYANCE' == name){
+            name = premVal+"conveyance";
+            type = 'conveyance';
+        }else if('OFFSITE' == name){
+            name = premVal+"offSite";
+            type = 'offSite';
+        }
+
+        var jsonData={
+            'type':type,
+            'premVal': name,
+            'phLength': 0
+        };
+        $.ajax({
+            'url':'${pageContext.request.contextPath}/public-holiday-html',
+            'dataType':'text',
+            'data':jsonData,
+            'type':'GET',
+            'success':function (data) {
+                if(data == null){
+                    return;
+                }
+                <!--use ph mark point -->
+                $contentDivEle.find('div.phFormMarkPoint').addClass('pubHolidayContent');
+                <!--add html -->
+                $contentDivEle.find('div.pubHolidayContent:last').after(data);
+                <!--init ph mark point -->
+                $contentDivEle.find('div.phFormMarkPoint').removeClass('pubHolidayContent');
+                <!--change hidden length value -->
+                var length = $contentDivEle.find('div.pubHolidayContent').length;
+                $premContentEle.find('.phLength').val(length);
+
+                //remove del
+                $contentDivEle.find('.removePhBtn').remove();
+
+                $("div.premSelect->ul").mCustomScrollbar({
+                        advanced:{
+                            updateOnContentResize: true
+                        }
+                    }
+                );
+            },
+            'error':function () {
+            }
         });
     }
 
