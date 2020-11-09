@@ -2133,7 +2133,7 @@ public class HcsaApplicationDelegator {
             boolean isAllSubmitAO3 = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationNo,
                     ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,false);
             if((!(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(status))
-                    || (isAllSubmitAO3 && (ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(status)))) && isAllSubmit) {
+                    || isAllSubmit && (isAllSubmitAO3 && (ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(status))))) {
                    String stageId = HcsaConsts.ROUTING_STAGE_AO3;
                    String roleId = RoleConsts.USER_ROLE_AO3;
                    updateCurrentApplicationStatus(applicationDtoList, appId, status);
@@ -2141,13 +2141,13 @@ public class HcsaApplicationDelegator {
                    if(IaisCommonUtils.isEmpty(ao2AppList)){
                        log.info(StringUtil.changeForLog("ao2AppList is null"));
                    }else{
-                       log.info(StringUtil.changeForLog("ao2AppList size() : " + ao2AppList.size()));
+                       log.info(StringUtil.changeForLog("ao2AppList size() not null "));
                    }
                    List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
                     if(IaisCommonUtils.isEmpty(ao3AppList)){
                         log.info(StringUtil.changeForLog("ao3AppList is null"));
                     }else{
-                        log.info(StringUtil.changeForLog("ao3AppList size() : " + ao3AppList.size()));
+                        log.info(StringUtil.changeForLog("ao3AppList size() not null "));
                     }
                    List<ApplicationDto> creatTaskApplicationList = ao2AppList;
                    if (IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)) {
