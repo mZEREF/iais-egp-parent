@@ -38,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
@@ -329,6 +330,7 @@ public class LicenceServiceImpl implements LicenceService {
                 List<IssuanceAddresses> addressesList = IaisCommonUtils.genNewArrayList();
                 addressesList.add(addresses);
                 generateUENDto.setAddresses(addressesList);
+                log.info(StringUtil.changeForLog("generateUenDto : " + JsonUtil.parseToJson(generateUENDto)));
                 acraUenBeClient.generateUen(generateUENDto);
 
             }
