@@ -247,7 +247,8 @@ public class MassEmailDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         MultipartFile file = mulReq.getFile("selectedFile");
         String mode = mulReq.getParameter("mode");
-        List<String> filelist = getAllData(file);
+        List<String> filelist = IaisCommonUtils.genNewArrayList();
+        filelist = getAllData(file);
         if(SMS.equals(mode)){
             List<String> address = getEmail(bpc,"mobile");
             if(repeatList(filelist)){
@@ -276,11 +277,15 @@ public class MassEmailDelegator {
             if(isRepeat){
                 errMap.put("file", "There are repeated email address(es) provided");
             }
-            if(!isErrEmail(filelist)){
+            if(filelist != null && !isEmail(filelist)){
                 errMap.put("file", MessageUtil.getMessageDesc("GENERAL_ERR0014"));
             }
             if(address != null){
-                filelist.addAll(address);
+                if(filelist != null ) {
+                    filelist.addAll(address);
+                }else{
+                    filelist = address;
+                }
             }
             if(filelist != null ){
                 if(repeatList(filelist) && StringUtil.isEmpty(errMap.get("file"))){
@@ -306,7 +311,7 @@ public class MassEmailDelegator {
 
     }
 
-    private boolean isErrEmail(List<String> list){
+    private boolean isEmail(List<String> list){
         for (String item:list
         ) {
             if(!ValidationUtils.isEmail(item)){
