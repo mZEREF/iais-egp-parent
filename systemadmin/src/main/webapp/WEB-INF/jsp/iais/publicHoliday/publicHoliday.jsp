@@ -26,10 +26,11 @@
                         <div class="row">
                             <div class="form-horizontal">
                                 <div class="form-group">
-                                    <label class="col-md-3 control-label">Year</label>
+                                    <label class="col-md-3 control-label" >Year <span class="mandatory">*</span></label>
                                     <div class="col-md-3 searchdiv">
                                         <iais:select id="year" name="year" options="yearOption" cssClass="yearOption" firstOption="Please Select"
-                                                     value="${year}"></iais:select>
+                                                     value="${year}" ></iais:select>
+                                        <span id="yearErr" class="error-msg">${yearErr}</span>
                                     </div>
                                     <label class="col-md-3 control-label">Non-working Date</label>
                                     <div class="col-md-3">
@@ -41,8 +42,8 @@
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Holiday Description</label>
                                     <div class="col-md-3">
-                                        <input id="description" name="description" type="text" maxlength="255"
-                                               value="${description}">
+                                        <iais:select id="phCode" name="phCode" codeCategory="CATE_ID_PUBLIC_HOLIDAY" cssClass="yearOption" firstOption="Please Select"
+                                                     value="${phCode}"></iais:select>
                                     </div>
                                     <label class="col-md-3 control-label">Status</label>
                                     <div class="col-md-3 searchdiv">
@@ -96,7 +97,7 @@
                                                     <td><c:out value="${(status.index + 1) + (holidaySearchParam.pageNo - 1) * holidaySearchParam.pageSize}"/></td>
                                                     <td><c:out value="${item.year}"/></td>
                                                     <td><c:out value="${item.nonWorking}"/></td>
-                                                    <td><c:out value="${item.description}"/></td>
+                                                    <td><iais:code code="${item.phCode}"></iais:code></td>
                                                     <td><iais:code code="${item.status}"></iais:code></td>
                                                     <td><a class="editHoliday" data-holiday="<iais:mask name="holidayId" value="${item.id}"/>">Edit</a></td>
                                                 </tr>

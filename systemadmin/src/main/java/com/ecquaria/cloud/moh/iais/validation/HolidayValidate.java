@@ -51,14 +51,14 @@ public class HolidayValidate implements CustomizeValidator {
             }
 
         }
-        if(StringUtil.isEmpty(publicHolidayDto.getDescription())){
+        if(StringUtil.isEmpty(publicHolidayDto.getPhCode())){
             errMap.put("description",  MessageUtil.replaceMessage("GENERAL_ERR0006","Holiday Description","field"));
         }
-        if(!StringUtil.isEmpty(publicHolidayDto.getDescription()) && !(origal != null && publicHolidayDto.getDescription().equals(origal.getDescription()))   ){
+        if(!StringUtil.isEmpty(publicHolidayDto.getPhCode()) && !(origal != null && publicHolidayDto.getPhCode().equals(origal.getPhCode()))   ){
             Calendar c = Calendar.getInstance();
             c.setTime(publicHolidayDto.getFromDate());
             int year = c.get(Calendar.YEAR);
-            PublicHolidayDto publicHolidayDtoDis = publicHolidayService.publicHolidayByDis(publicHolidayDto.getDescription(),year);
+            PublicHolidayDto publicHolidayDtoDis = publicHolidayService.publicHolidayByDis(publicHolidayDto.getPhCode(),year);
             if(publicHolidayDtoDis != null){
                 errMap.put("description", MessageUtil.getMessageDesc("OAPPT_ERR007"));
             }

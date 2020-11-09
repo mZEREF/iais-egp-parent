@@ -37,12 +37,11 @@
 
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" >Holiday Description</label>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <textarea id="description" name="description" type="text" name="description" maxlength="255"  style="width: 100%;height: 150px">${holiday.description}</textarea>
-                                    <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
-                            </iais:value>
+                            <div class="col-xs-8 col-sm-6 col-md-5">
+                            <iais:select id="phCode" name="phCode" codeCategory="CATE_ID_PUBLIC_HOLIDAY" cssClass="yearOption"
+                                         value="${holiday.phCode}"></iais:select>
+                            <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
+                            </div>
                         </div>
 
                         <div class="form-group">

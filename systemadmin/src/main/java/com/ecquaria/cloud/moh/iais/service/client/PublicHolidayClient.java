@@ -42,7 +42,7 @@ public interface PublicHolidayClient {
     FeignResponseEntity<PublicHolidayDto> getPublicHolidayBydate(@RequestParam("date") String date);
 
     @GetMapping(value = "/iais-publicHoliday/getPublicHolidayByDis", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<PublicHolidayDto> getPublicHolidayByDis(@RequestParam("dis") String dis,@RequestParam("year") int year);
+    FeignResponseEntity<PublicHolidayDto> getPublicHolidayByDis(@RequestParam("phCode") String phCode,@RequestParam("year") int year);
 
     @PostMapping(value = "/iais-publicHoliday/doDelete", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> doDelete(@RequestBody List<String> id);

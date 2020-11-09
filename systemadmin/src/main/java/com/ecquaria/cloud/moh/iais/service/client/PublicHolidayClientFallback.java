@@ -67,7 +67,7 @@ public class PublicHolidayClientFallback implements PublicHolidayClient{
     }
 
     @Override
-    public FeignResponseEntity<PublicHolidayDto> getPublicHolidayByDis(String dis, int year) {
+    public FeignResponseEntity<PublicHolidayDto> getPublicHolidayByDis(String phCode, int year) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

@@ -353,10 +353,10 @@
     <sql key="getHolidayList"  remarks="Get public holiday">
         <![CDATA[
             select
-            id,FROM_DATE,TO_DATE,DESCRIPTION,STATUS
+            id,FROM_DATE,TO_DATE,PH_CODE,STATUS
             from public_holiday
             WHERE  1 = 1
-            <#if description??> AND DESCRIPTION like :description</#if>
+            <#if phCode??> AND PH_CODE = :phCode</#if>
             <#if nonWorking??> AND (FROM_DATE between :nonWorking and :nonWorking)</#if>
             <#if status??> AND STATUS = :status</#if>
             <#if year??> AND FROM_DATE like :year</#if>

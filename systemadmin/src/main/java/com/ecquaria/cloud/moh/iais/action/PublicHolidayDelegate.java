@@ -147,7 +147,7 @@ public class PublicHolidayDelegate {
         }else{
             PublicHolidayDto publicHolidayDto = new PublicHolidayDto();
             publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            publicHolidayDto.setDescription(ParamUtil.getRequestString(bpc.request,"description"));
+            publicHolidayDto.setPhCode(ParamUtil.getRequestString(bpc.request,"phCode"));
             String holidayId = ParamUtil.getRequestString(bpc.request,"holidayId");
             publicHolidayDto.setId(holidayId);
             Date fromDate = Formatter.parseDate(ParamUtil.getString(bpc.request, "sub_date"));
@@ -223,7 +223,7 @@ public class PublicHolidayDelegate {
                     String[] end = list.get(count).split(":");
                     count = count + 6;
                     String[] name = list.get(count).split(":");
-                    publicHolidayDto.setDescription(name[1]);
+                    publicHolidayDto.setPhCode(getPublicCode(name[1]));
                     publicHolidayDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     count ++;
@@ -268,6 +268,16 @@ public class PublicHolidayDelegate {
 
     }
 
+    private String getPublicCode(String text){
+        List<SelectOption> list = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
+        Map<String, String> phCodeMap = IaisCommonUtils.genNewHashMap();
+        for (SelectOption item:list
+             ) {
+            phCodeMap.put(item.getText(),item.getValue());
+        }
+        return phCodeMap.get(text);
+    }
+
     /**
      * doCreate
      * @param bpc
@@ -302,46 +312,61 @@ public class PublicHolidayDelegate {
      * @param bpc
      */
     public void doSearch(BaseProcessClass bpc){
-        SearchParam holidaySearchParam = getSearchParam(bpc.request,true);
-        String description = ParamUtil.getString(bpc.request,"description");
         String year = ParamUtil.getString(bpc.request,"year");
-        String nonWorking = ParamUtil.getString(bpc.request,"nonWorking");
-        String status = ParamUtil.getString(bpc.request,"searchStatus");
-        if(!StringUtil.isEmpty(description)){
-            holidaySearchParam.addFilter("description", "%" + description + "%",true);
-            ParamUtil.setSessionAttr(bpc.request,"description",description);
-        }else{
-            holidaySearchParam.removeFilter("description");
-            ParamUtil.setSessionAttr(bpc.request,"description",null);
-        }
-        if(!StringUtil.isEmpty(year)){
-            holidaySearchParam.addFilter("year", "%" + year + "%",true);
-            ParamUtil.setSessionAttr(bpc.request,"year",year);
-        }else{
-            holidaySearchParam.removeFilter("year");
+        String action = ParamUtil.getString(bpc.request,"crud_action_type");
+
+        if(StringUtil.isEmpty(year) && "search".equals(action)){
+            String yearErr = MessageUtil.replaceMessage("GENERAL_ERR0006","Year","field");
+            ParamUtil.setRequestAttr(bpc.request,"yearErr",yearErr);
+            SearchParam holidaySearchParam = getSearchParam(bpc.request,true);
             ParamUtil.setSessionAttr(bpc.request,"year",null);
-        }
-        if(!StringUtil.isEmpty(nonWorking)){
-            try {
-                Date work = Formatter.parseDate(nonWorking);
-                String workString = Formatter.formatDateTime(work,"yyyy-MM-dd");
-                holidaySearchParam.addFilter("nonWorking", workString,true);
-                ParamUtil.setSessionAttr(bpc.request,"nonWorking",nonWorking);
-            }catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-        }else{
-            holidaySearchParam.removeFilter("nonWorking");
+            ParamUtil.setSessionAttr(bpc.request,"phCode",null);
             ParamUtil.setSessionAttr(bpc.request,"nonWorking",null);
-        }
-        if(!StringUtil.isEmpty(status)){
-            holidaySearchParam.addFilter("status",  status,true);
-            ParamUtil.setSessionAttr(bpc.request,"searchStatus",status);
-        }else{
-            holidaySearchParam.removeFilter("searchStatus");
             ParamUtil.setSessionAttr(bpc.request,"searchStatus",null);
+            ParamUtil.setSessionAttr(bpc.request,"holidaySearchParam",holidaySearchParam);
+        }else{
+            ParamUtil.setRequestAttr(bpc.request,"yearErr",null);
+
+            SearchParam holidaySearchParam = getSearchParam(bpc.request,true);
+            String phCode = ParamUtil.getString(bpc.request,"phCode");
+            String nonWorking = ParamUtil.getString(bpc.request,"nonWorking");
+            String status = ParamUtil.getString(bpc.request,"searchStatus");
+            if(!StringUtil.isEmpty(phCode)){
+                holidaySearchParam.addFilter("phCode", "%" + phCode + "%",true);
+                ParamUtil.setSessionAttr(bpc.request,"phCode",phCode);
+            }else{
+                holidaySearchParam.removeFilter("phCode");
+                ParamUtil.setSessionAttr(bpc.request,"phCode",null);
+            }
+            if(!StringUtil.isEmpty(year)){
+                holidaySearchParam.addFilter("year", "%" + year + "%",true);
+                ParamUtil.setSessionAttr(bpc.request,"year",year);
+            }else{
+                holidaySearchParam.removeFilter("year");
+                ParamUtil.setSessionAttr(bpc.request,"year",null);
+            }
+            if(!StringUtil.isEmpty(nonWorking)){
+                try {
+                    Date work = Formatter.parseDate(nonWorking);
+                    String workString = Formatter.formatDateTime(work,"yyyy-MM-dd");
+                    holidaySearchParam.addFilter("nonWorking", workString,true);
+                    ParamUtil.setSessionAttr(bpc.request,"nonWorking",nonWorking);
+                }catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+            }else{
+                holidaySearchParam.removeFilter("nonWorking");
+                ParamUtil.setSessionAttr(bpc.request,"nonWorking",null);
+            }
+            if(!StringUtil.isEmpty(status)){
+                holidaySearchParam.addFilter("status",  status,true);
+                ParamUtil.setSessionAttr(bpc.request,"searchStatus",status);
+            }else{
+                holidaySearchParam.removeFilter("searchStatus");
+                ParamUtil.setSessionAttr(bpc.request,"searchStatus",null);
+            }
+            ParamUtil.setSessionAttr(bpc.request,"holidaySearchParam",holidaySearchParam);
         }
-        ParamUtil.setSessionAttr(bpc.request,"holidaySearchParam",holidaySearchParam);
     }
 
     public void searchPage(BaseProcessClass bpc){
@@ -374,7 +399,7 @@ public class PublicHolidayDelegate {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IntranetUserConstant.TRUE);
         }else{
             PublicHolidayDto publicHolidayDto = new PublicHolidayDto();
-            publicHolidayDto.setDescription(ParamUtil.getRequestString(bpc.request,"description"));
+            publicHolidayDto.setPhCode(ParamUtil.getRequestString(bpc.request,"phCode"));
             Date fromDate = Formatter.parseDate(ParamUtil.getString(bpc.request, "sub_date"));
             publicHolidayDto.setFromDate(fromDate);
             publicHolidayDto.setStatus(ParamUtil.getString(bpc.request, "status"));

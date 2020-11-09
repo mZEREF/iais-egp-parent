@@ -67,8 +67,8 @@ public class PublicHolidayServiceImpl implements PublicHolidayService {
         return publicHolidayClient.getPublicHolidayBydate(Formatter.formatDateTime(date)).getEntity();
     }
     @Override
-    public PublicHolidayDto publicHolidayByDis(String discription, int year){
-        return publicHolidayClient.getPublicHolidayByDis(discription,year).getEntity();
+    public PublicHolidayDto publicHolidayByDis(String phCode, int year){
+        return publicHolidayClient.getPublicHolidayByDis(phCode,year).getEntity();
     }
 
     @Override
