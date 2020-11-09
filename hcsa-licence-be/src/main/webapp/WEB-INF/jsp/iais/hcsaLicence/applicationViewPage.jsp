@@ -629,7 +629,7 @@
     function check(){
         var selectValue = $("[name='nextStage']").val();
         if (selectValue == "PROCVER") {
-            $("#chooseInspectionBox").addClass('show');
+            $("#chooseInspectionBox").removeClass('hidden');
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
@@ -681,10 +681,11 @@
 
 
 
+
     $("[name='nextStage']").change(function selectChange() {
         var selectValue = $("[name='nextStage']").val();
         if (selectValue == "PROCVER") {
-            $("#chooseInspectionBox").addClass('show');
+            $("#chooseInspectionBox").removeClass('hidden');
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
