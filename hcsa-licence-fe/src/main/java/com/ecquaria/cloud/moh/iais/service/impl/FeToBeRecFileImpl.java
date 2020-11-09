@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
@@ -92,6 +93,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         }
         this.backups = outFolder;
         log.info(StringUtil.changeForLog("backups = " + outFolder));
+        JobLogger.log(StringUtil.changeForLog("backups = " + outFolder));
     }
 
     @Override
@@ -105,6 +107,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                     deleteFile();
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
+                    JobLogger.log(e.getMessage(), e);
                     continue;
                 }
             }
@@ -176,7 +179,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
              CheckedOutputStream cos = new CheckedOutputStream(is, new CRC32());
              ZipOutputStream zos = new ZipOutputStream(cos);){
 
-            File file = new File(backups + File.separator + fileId);
+            File file = new File(backups + File.separator + "backupsRec" + File.separator + fileId);
             MiscUtil.checkDirs(file);
             zipFile(zos, file, "backupsRec");
         } catch (IOException e) {
@@ -188,29 +191,33 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     private void zipFile(ZipOutputStream zos, File file, String curFileName)  {
         if(file.isDirectory()){
             log.info(StringUtil.changeForLog("putNextEntry filePath = " + file.getPath()));
-            String filePath = file.getPath().substring(file.getPath().indexOf(curFileName));
+            JobLogger.log(StringUtil.changeForLog("putNextEntry filePath = " + file.getPath()));
+            String filePath = file.getPath().substring(file.getPath().lastIndexOf(curFileName));
             log.info(StringUtil.changeForLog("putNextEntry filePath = " + filePath));
+            JobLogger.log(StringUtil.changeForLog("putNextEntry filePath = " + filePath));
             try {
                 zos.putNextEntry(new ZipEntry(filePath + File.separator));
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
+                JobLogger.log(e.getMessage(), e);
             }
             for(File f: Objects.requireNonNull(file.listFiles())){
                 zipFile(zos, f, curFileName);
             }
         } else {
             try(BufferedInputStream bis = new BufferedInputStream(Files.newInputStream(file.toPath()))) {
-            String filePath = file.getPath().substring(file.getPath().indexOf(curFileName));
-            zos.putNextEntry(new ZipEntry(filePath));
-            int count ;
-            byte [] b = new byte[1024];
-            count = bis.read(b);
-            while(count != -1){
-                zos.write(b,0, count);
+                String filePath = file.getPath().substring(file.getPath().lastIndexOf(curFileName));
+                zos.putNextEntry(new ZipEntry(filePath));
+                int count ;
+                byte [] b = new byte[1024];
                 count = bis.read(b);
-            }
+                while(count != -1){
+                    zos.write(b,0, count);
+                    count = bis.read(b);
+                }
             }catch (IOException e){
                 log.error(e.getMessage(), e);
+                JobLogger.log(e.getMessage(), e);
             }
         }
     }
@@ -249,14 +256,17 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                             boolean fileDelStatus = new File(backups + s + ".zip").delete();
                             if(!fileDelStatus){
                                 log.debug(StringUtil.changeForLog(file.getName() + "delete false"));
+                                JobLogger.log(StringUtil.changeForLog(file.getName() + "delete false"));
                             }
                             break;
                         }
                     } else {
                         log.debug(StringUtil.changeForLog("file rename fail!!!"));
+                        JobLogger.log(StringUtil.changeForLog("file rename fail!!!"));
                     }
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
+                    JobLogger.log(e.getMessage(), e);
                 }
             }
         }
@@ -276,6 +286,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                     boolean fileStatus = f.delete();
                     if(!fileStatus){
                         log.debug(StringUtil.changeForLog(file.getName() + "delete false"));
+                        JobLogger.log(StringUtil.changeForLog(file.getName() + "delete false"));
                     }
                 }
             }
