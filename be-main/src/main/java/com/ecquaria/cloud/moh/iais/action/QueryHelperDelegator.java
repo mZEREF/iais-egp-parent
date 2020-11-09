@@ -42,6 +42,8 @@ public class QueryHelperDelegator {
     public void doQuery(BaseProcessClass bpc){
         String querySql = ParamUtil.getString(bpc.request,"querySql");
         String moduleNameDropdown = ParamUtil.getString(bpc.request,"moduleNameDropdown");
+        log.info("------querySql : " + querySql);
+        log.info("------moduleNameDropdown : " + moduleNameDropdown);
         if(!StringUtil.isEmpty(querySql)){
             ParamUtil.setRequestAttr(bpc.request,"querySql",querySql);
         }
@@ -51,8 +53,10 @@ public class QueryHelperDelegator {
         QueryHelperResultDto queryHelperResultDto = queryHandlerService.getQueryHelperResultDtoList(querySql, moduleNameDropdown);
         if(queryHelperResultDto != null){
             ParamUtil.setRequestAttr(bpc.request,"queryResult","Y");
+            log.info("------queryResult size(): " + queryHelperResultDto.getSearchResult().size());
         }else{
             ParamUtil.setRequestAttr(bpc.request,"queryResult","N");
+            log.info("------queryResult : null");
         }
         ParamUtil.setRequestAttr(bpc.request,"QueryHelperResultDto",queryHelperResultDto);
     }
