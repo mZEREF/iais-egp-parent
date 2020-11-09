@@ -393,11 +393,17 @@ public class InspecEmailDelegator {
             taskDto1.setApplicationNo(applicationViewDto.getApplicationDto().getApplicationNo());
             taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             taskDto1.setRefNo(taskDto.getRefNo());
-            taskDto1.setTaskType(taskDto.getTaskType());
             taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
             taskDto1.setRoleId(RoleConsts.USER_ROLE_AO1);
-            taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
-            taskDto1.setUserId(taskService.getUserIdForWorkGroup(taskDto1.getWkGrpId()).getUserId());
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1=hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
+            taskDto1.setWkGrpId(hcsaSvcStageWorkingGroupDto1.getGroupId());
+            if (hcsaSvcStageWorkingGroupDto1.getSchemeType().equals(TaskConsts.TASK_SCHEME_TYPE_COMMON)){
+                taskDto1.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
+                taskDto1.setUserId(null);
+            }else {
+                taskDto1.setTaskType(taskDto.getTaskType());
+                taskDto1.setUserId(taskService.getUserIdForWorkGroup(taskDto1.getWkGrpId()).getUserId());
+            }
             List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
             taskService.createTasks(taskDtos);
             createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,taskDto,userId,inspectionEmailTemplateDto.getRemarks());
