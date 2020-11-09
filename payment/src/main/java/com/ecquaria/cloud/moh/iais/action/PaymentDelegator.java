@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
@@ -30,13 +29,16 @@ public class PaymentDelegator {
         log.info(StringUtil.changeForLog("==========>getSessionID:"+bpc.getSession().getId()));
         HttpServletRequest request=bpc.request;
 
-        String sessionId=  ParamUtil.getRequestString(bpc.request,"refNo");
-        PaymentRequestDto paymentRequestDto=paymentClient.getPaymentRequestDtoByReqRefNo(sessionId).getEntity();
-        String url= AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/payment-web/process/EGPCLOUD/PaymentCallBack";
+        String sessionId= (String) ParamUtil.getSessionAttr(request,"sessionNetsId");
+        String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+"/payment-web/process/EGPCLOUD/PaymentCallBack";
         StringBuilder bud = new StringBuilder();
-        bud.append(url).append("?sessionId=").append(paymentRequestDto.getQueryCode());
-        String txnRes=ParamUtil.getRequestString(request,"message");
-        ParamUtil.setSessionAttr(request,"message",txnRes);
+        bud.append(url).append("?sessionId=").append(sessionId);
+        String header =  ParamUtil.getRequestString(request,"hmac");
+        System.out.println("MerchantApp:b2sTxnEndUrl : hmac: " + header);
+        String message =  ParamUtil.getRequestString(request,"message");//contains TxnRes message
+        System.out.println("MerchantApp:b2sTxnEndUrl : data, message: " + message);
+        ParamUtil.setSessionAttr(request,"message",message);
+        ParamUtil.setSessionAttr(request,"header",header);
 
         try {
             RedirectUtil.redirect(bud.toString(), bpc.request, bpc.response);
