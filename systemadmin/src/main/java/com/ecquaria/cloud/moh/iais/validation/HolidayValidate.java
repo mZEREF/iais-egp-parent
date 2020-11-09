@@ -31,9 +31,6 @@ public class HolidayValidate implements CustomizeValidator {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         PublicHolidayDto publicHolidayDto = (PublicHolidayDto) ParamUtil.getSessionAttr(request, "holiday");
         PublicHolidayDto origal = new PublicHolidayDto();
-        if(publicHolidayDto.getId() != null){
-            origal = publicHolidayService.getHolidayById(publicHolidayDto.getId());
-        }
         String from = Formatter.formatDateTime(publicHolidayDto.getFromDate(), "ddMMyyyy");
         if(from == null || from.isEmpty()){
             errMap.put("sub_date", MessageUtil.replaceMessage("GENERAL_ERR0006","Non-working Date","field"));
