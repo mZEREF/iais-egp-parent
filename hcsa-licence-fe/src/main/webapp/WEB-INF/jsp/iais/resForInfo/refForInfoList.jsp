@@ -78,7 +78,9 @@
 <script type="text/javascript">
 
     function doView(reqInfoId) {
-        SOP.Crud.cfxSubmit("mainForm", "detail",reqInfoId);
+        showWaiting();
+        $("[name='crud_action_value']").val(reqInfoId);
+        $("#mainForm").submit();
     }
 
 </script>
