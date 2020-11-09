@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Calendar;
 import java.util.Map;
 
 /**
@@ -43,25 +42,14 @@ public class HolidayValidate implements CustomizeValidator {
             if(AppConsts.TRUE.equals(res)) {
                 errMap.put("sub_date", MessageUtil.getMessageDesc("OAPPT_ACK009"));
             }
-            if(!(origal != null && publicHolidayDto.getFromDate().equals(origal.getFromDate()))){
-                PublicHolidayDto publicHolidayDtoDate = publicHolidayService.publicHoliday(publicHolidayDto.getFromDate());
-                if(publicHolidayDtoDate != null){
-                    errMap.put("sub_date", MessageUtil.getMessageDesc("OAPPT_ERR007"));
-                }
+            PublicHolidayDto publicHolidayDtoDate = publicHolidayService.publicHoliday(publicHolidayDto.getFromDate());
+            if(publicHolidayDtoDate != null){
+                errMap.put("sub_date", MessageUtil.getMessageDesc("OAPPT_ERR007"));
             }
 
         }
         if(StringUtil.isEmpty(publicHolidayDto.getPhCode())){
             errMap.put("phCode",  MessageUtil.replaceMessage("GENERAL_ERR0006","Holiday Description","field"));
-        }
-        if(!StringUtil.isEmpty(publicHolidayDto.getPhCode()) && !(origal != null && publicHolidayDto.getPhCode().equals(origal.getPhCode()))   ){
-            Calendar c = Calendar.getInstance();
-            c.setTime(publicHolidayDto.getFromDate());
-            int year = c.get(Calendar.YEAR);
-            PublicHolidayDto publicHolidayDtoDis = publicHolidayService.publicHolidayByDis(publicHolidayDto.getPhCode(),year);
-            if(publicHolidayDtoDis != null){
-                errMap.put("phCode", MessageUtil.getMessageDesc("OAPPT_ACK009"));
-            }
         }
         if(StringUtil.isEmpty(publicHolidayDto.getStatus())){
             errMap.put("status",  MessageUtil.replaceMessage("GENERAL_ERR0006","Status","field"));
