@@ -58,6 +58,9 @@ html {
 
 body {
   font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+  -ms-text-size-adjust:100%;
+  -webkit-text-size-adjust:100%
 }
 
 html {
@@ -358,9 +361,9 @@ ul.service-list li span {
 header {
   padding-top: 15px;
   padding-bottom: 15px;
-  -webkit-box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.25);
-  -moz-box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.25);
-  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.25);
+  -webkit-box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.25);
   position: relative;
   z-index: 100;
 }
@@ -4330,20 +4333,20 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
   text-align: right;
 }
 .withdraw-addmore {
-background-color: #F8F8F8;
-border-radius: 14px;
-padding: 20px;
-margin-bottom: 10px;
-border:1px solid #d1d1d1;
+  background-color: #F8F8F8;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 10px;
+  border:1px solid #d1d1d1;
 }
 .withdraw-content-box {
-background-color: #e7f6fd;
-border-radius: 14px;
-padding: 20px;
-margin-bottom: 10px;
+  background-color: #e7f6fd;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 10px;
 }
 .withdraw-info-gp {
-  margin-top: 10px; 
+  margin-top: 10px;
 }
 .withdraw-info-gp .withdraw-info-row .withdraw-info {
   width: calc(95% - 80px);
@@ -4363,7 +4366,7 @@ margin-bottom: 10px;
   font-size: 30px;
   width: 6px;
   height: 6px;
- /* background-color: #333333;*/
+  /* background-color: #333333;*/
   border-radius: 3px;
   position: absolute;
   top: 0px;
@@ -4382,19 +4385,19 @@ margin-bottom: 10px;
 
 .cesform-box .tablebox {
   width: 100%;
-display: inline-block;
-vertical-align: top;
-padding: 30px;
-margin-bottom: 20px;
-background: #fafafa;
-border-radius: 18px;
+  display: inline-block;
+  vertical-align: top;
+  padding: 30px;
+  margin-bottom: 20px;
+  background: #fafafa;
+  border-radius: 18px;
 
 }
 .cesform-box .tablebox .topheader {
-   border-bottom: 1px solid #d1d1d1;
-   margin-bottom: 30px;
+  border-bottom: 1px solid #d1d1d1;
+  margin-bottom: 30px;
 }
- .cesform-box .tablebox h4 {
+.cesform-box .tablebox h4 {
   position: relative;
   padding-left: 0px;
   font-size: 22px;
@@ -4404,29 +4407,29 @@ border-radius: 18px;
 .cesform-box .tablebox p {
   position: relative;
   padding-left: 0px;
-  font-size: 18px; 
+  font-size: 18px;
 }
 
-.cesform-box { 
-border-radius: 18px;
-border:2px dotted #d1d1d1;
-padding: 20px;
-margin-bottom: 10px; 
+.cesform-box {
+  border-radius: 18px;
+  border:2px dotted #d1d1d1;
+  padding: 20px;
+  margin-bottom: 10px;
 }
 .cesform-box:last-child  {
   margin-bottom: 0px;
-} 
+}
 .license-info-box {
-  margin-top: 10px; 
+  margin-top: 10px;
 }
 .cesform-box .license-info {
   width: 100%;
-display: inline-block;
-vertical-align: top;
-padding: 20px;
-margin-bottom: 20px;
-background: #fafafa;
-border-radius: 18px;
+  display: inline-block;
+  vertical-align: top;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: #fafafa;
+  border-radius: 18px;
 
 }
 .cesform-box .license-info h4 {
@@ -4447,7 +4450,7 @@ border-radius: 18px;
   font-size: 30px;
   width: 6px;
   height: 6px;
- /* background-color: #333333;*/
+  /* background-color: #333333;*/
   border-radius: 3px;
   position: absolute;
   top: 0px;
@@ -4460,7 +4463,7 @@ border-radius: 18px;
   font-size: 30px;
   width: 6px;
   height: 6px;
- /* background-color: #333333;*/
+  /* background-color: #333333;*/
   border-radius: 3px;
   position: absolute;
   top: 0px;
@@ -4480,12 +4483,12 @@ border-radius: 18px;
 
 /**********************/
 .fa.fa-trash-o {
-    font-size: 1.6rem;
-    margin-right: 5px;
+  font-size: 1.6rem;
+  margin-right: 5px;
 }
 .fa.fa-plus-circle {
-    font-size: 2.6rem;
-    margin-right: 5px;
+  font-size: 2.6rem;
+  margin-right: 5px;
 }
 .prelogin {
   padding-top: 80px;
@@ -5570,3 +5573,21 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
 }
 
 /*# sourceMappingURL=cpl_style.css.map */
+
+:focus {
+  outline: 2px solid #cc0000;
+}
+
+.logo-ssg {
+  padding-left: 40px;
+}
+section.logo {
+  background: #F0F0F0;
+}
+section.logo .logo-ssg span {
+  font-size: 10px;
+  font-family: Arial,Helvetica,sans-serif;
+}
+section.logo img {
+  height: 27px;
+}
