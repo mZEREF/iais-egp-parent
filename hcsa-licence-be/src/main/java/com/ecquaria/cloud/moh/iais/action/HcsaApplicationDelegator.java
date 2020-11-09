@@ -1114,10 +1114,13 @@ public class HcsaApplicationDelegator {
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
             renewalSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
         }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
-            //send email Appeal - Send SMS to licensee when appeal application is approved
-            Map<String,Object> notifyMap=IaisCommonUtils.genNewHashMap();
+            //send email Appeal - Send SMS to licensee when appeal application is reject
+            try {
+                sendAppealReject(licenseeId,applicationDto);
+            }catch (Exception e){
+                log.error(e.getMessage()+"error",e);
+            }
         }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
-            //Send notification to transferor when licence transfer application is rejected
             LicenceDto result = null;
             String originLicenceId = applicationViewDto.getApplicationDto().getOriginLicenceId();
             if(!StringUtil.isEmpty(originLicenceId)) {
@@ -1168,14 +1171,6 @@ public class HcsaApplicationDelegator {
             }
         }
 
-        try {
-            if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
-                sendAppealReject(licenseeId,applicationDto);
-            }
-
-        }catch (Exception e){
-            log.error(e.getMessage()+"error",e);
-        }
     }
 
     private void newAppSendNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto,List<String> svcCodeList){
