@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
@@ -293,7 +294,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             log.error(e.getMessage(),e);
         }
         publicHolidayDtoList.stream().forEach(pb -> {
-            publicHolidayList.add(new SelectOption(Formatter.formatDate(pb.getFromDate()),pb.getDescription()));
+            publicHolidayList.add(new SelectOption(Formatter.formatDate(pb.getFromDate()),
+                    MasterCodeUtil.getCodeDesc(pb.getPhCode())));
         });
         return publicHolidayList;
     }
