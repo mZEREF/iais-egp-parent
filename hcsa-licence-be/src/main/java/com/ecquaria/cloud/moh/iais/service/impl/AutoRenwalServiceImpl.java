@@ -219,6 +219,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         if(!b){
             return;
         }
+        saveMailJob(id,"IS_NO_AUTO"+time);
         String serviceName = licenceDto.getSvcName();
         String serviceCode = hcsaConfigClient.getServiceCodeByName(serviceName).getEntity();
         List<String> serviceCodeList = IaisCommonUtils.genNewArrayList();
@@ -347,7 +348,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 }
             }
         }
-        saveMailJob(id,"IS_NO_AUTO"+time);
+
         List<String> list = useLicenceIdFindHciNameAndAddress(id);
             for(String every:list){
             String address = every.substring(every.indexOf('/')+1);

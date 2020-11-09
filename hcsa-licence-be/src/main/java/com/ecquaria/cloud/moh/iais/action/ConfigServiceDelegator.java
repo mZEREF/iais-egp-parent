@@ -183,8 +183,8 @@ public class ConfigServiceDelegator {
         String displayDescription = request.getParameter("displayDescription");
         String serviceCode = request.getParameter("serviceCode");
         String serviceType = request.getParameter("ServiceType");
-        String oldEffectiveDate = request.getParameter("oldEffectiveDate");
-        String oldEndDate = request.getParameter("oldEndDate");
+        String maxVersionEffectiveDate = request.getParameter("maxVersionEffectiveDate");
+        String maxVersionEndDate = request.getParameter("maxVersionEndDate");
         String serviceIsUse = request.getParameter("serviceIsUse");
         String[] premisesTypes = request.getParameterValues("PremisesType");
         String version = request.getParameter("version");
@@ -573,7 +573,15 @@ public class ConfigServiceDelegator {
                     routingScheme="common";
                     workloadManhours="1";
                     isMandatory="mandatory";
-                }else if(flag&&!"INS".equals(stageCode)){
+                }else if(flag&&"AO3".equals(stageCode)){
+                    routingScheme="round";
+                    workloadManhours="1";
+                    isMandatory="mandatory";
+                }else if(flag&&"AO2".equals(stageCode)){
+                    routingScheme="round";
+                    workloadManhours="1";
+                    isMandatory="mandatory";
+                }else if(flag&&!"AO2".equals(stageCode)&&!"INS".equals(stageCode)&&!"AO3".equals(stageCode)){
                     isMandatory="optional";
                 }
                 if (!StringUtil.isEmpty(workloadManhours)) {
@@ -699,11 +707,11 @@ public class ConfigServiceDelegator {
         hcsaServiceDto.setCategoryId(selectCategoryId);
         hcsaServiceDto.setSvcName(serviceName);
         hcsaServiceDto.setSvcCode(serviceCode);
-        hcsaServiceDto.setOldEffectiveDate(oldEffectiveDate);
-        if(!StringUtil.isEmpty(oldEndDate)){
+        hcsaServiceDto.setMaxVersionEffectiveDate(maxVersionEffectiveDate);
+        if(!StringUtil.isEmpty(maxVersionEndDate)){
             try {
-                Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(oldEndDate);
-                hcsaServiceDto.setOldEndDate(parse);
+                Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(maxVersionEndDate);
+                hcsaServiceDto.setMaxVersionEndDate(parse);
             }catch (Exception e){
 
             }

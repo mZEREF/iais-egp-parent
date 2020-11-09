@@ -115,6 +115,7 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do start start ...."));
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
         premiseFilterParameter.setPageSize(SysParamUtil.getDefaultPageSize());
+        premiseFilterParameter.setPageNo(1);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_PREMISES_LIST);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
@@ -213,7 +214,8 @@ public class RequestForChangeMenuDelegator {
         QueryHelp.setMainSql("applicationPersonnelQuery", "queryPremises", searchParam);
         SearchResult<PremisesListQueryDto> searchResult = requestForChangeService.searchPreInfo(searchParam);
         if (!StringUtil.isEmpty(searchResult)) {
-            ParamUtil.setSessionAttr(bpc.request, "PremisesSearchParam", searchParam);
+
+            ParamUtil.setRequestAttr(bpc.request, "PremisesSearchParam", searchParam);
             ParamUtil.setRequestAttr(bpc.request, "PremisesSearchResult", searchResult);
         }
         List<PremisesListQueryDto> rows = searchResult.getRows();
@@ -228,11 +230,11 @@ public class RequestForChangeMenuDelegator {
         if (rows.isEmpty()) {
             bpc.request.setAttribute("GENERAL_ACK018", MessageUtil.getMessageDesc("GENERAL_ACK018"));
         }
-        ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, (Serializable) rows);
+        ParamUtil.setRequestAttr(bpc.request, RfcConst.PREMISESLISTDTOS, (Serializable) rows);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Premises List");
         List<SelectOption> list = new ArrayList<>();
         setSelectOption(list);
-        ParamUtil.setSessionAttr(bpc.request, "applicationType", (Serializable) list);
+        ParamUtil.setRequestAttr(bpc.request, "applicationType", (Serializable) list);
         log.debug(StringUtil.changeForLog("the do preparePremisesList end ...."));
     }
 

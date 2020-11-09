@@ -1005,7 +1005,7 @@ public class NewApplicationAjaxController {
                 }
 
             }
-            return professionalResponseDto;
+            return null;
     }
 
 

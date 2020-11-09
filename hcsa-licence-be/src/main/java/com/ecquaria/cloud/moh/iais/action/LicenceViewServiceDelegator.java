@@ -1124,9 +1124,9 @@ public class LicenceViewServiceDelegator {
                 }
             }
         }
-        appGrpPrimaryDocDtos = new ArrayList<>(list);
         //oldAppGrpPrimaryDocDtos = new ArrayList<>(list1);
-        appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
+        appSubmissionDto.setAppGrpPrimaryDocDtos(list);
+        oldAppSubmissionDto.setAppGrpPrimaryDocDtos(list1);
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
@@ -1157,9 +1157,9 @@ public class LicenceViewServiceDelegator {
                 }
             }
         }
-        appSvcDocDtoLit = new ArrayList<>(list2);
         //oldAppSvcDocDtoLit = new ArrayList<>(list3);
-        appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoLit);
+        appSvcRelatedInfoDto.setAppSvcDocDtoLit(list2);
+        oldAppSvcRelatedInfoDto.setAppSvcDocDtoLit(list3);
         List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         List<AppSvcCgoDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
        if (IaisCommonUtils.isEmpty(appSvcCgoDtoList) && !IaisCommonUtils.isEmpty(oldAppSvcCgoDtoList)) {

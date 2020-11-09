@@ -298,20 +298,40 @@ public class ConfigServiceImpl implements ConfigService {
                  Integer i = (int) Double.parseDouble(hcsaServiceDto1.getVersion()) + 1;
                  hcsaServiceDto.setVersion(i.toString());
                  String effectiveDate = hcsaServiceDto.getEffectiveDate();
+                 Date endDate = hcsaServiceDto.getEndDate();
                  Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(effectiveDate);
                  if(hcsaServiceDto.isServiceIsUsed()){
-                     if(new Date().after(parse)){
-
+                     if(endDate!=null){
+                         if(new Date().after(endDate)){
+                             Calendar calendar=Calendar.getInstance();
+                             calendar.setTime(new Date());
+                             calendar.add(Calendar.DAY_OF_MONTH,1);
+                             String format = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+                             hcsaServiceDto.setEffectiveDate(format);
+                         }else {
+                             Calendar calendar=Calendar.getInstance();
+                             calendar.setTime(endDate);
+                             calendar.add(Calendar.DAY_OF_MONTH,1);
+                             String format = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+                             hcsaServiceDto.setEffectiveDate(format);
+                         }
                      }else {
-
+                         if(new Date().after(parse)){
+                             Calendar calendar=Calendar.getInstance();
+                             calendar.setTime(new Date());
+                             calendar.add(Calendar.DAY_OF_MONTH,1);
+                             String format = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+                             hcsaServiceDto.setEffectiveDate(format);
+                         }else {
+                             Calendar calendar=Calendar.getInstance();
+                             calendar.setTime(parse);
+                             calendar.add(Calendar.DAY_OF_MONTH,1);
+                             String format = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+                             hcsaServiceDto.setEffectiveDate(format);
+                         }
                      }
-                     Calendar calendar=Calendar.getInstance();
-                     calendar.setTime(new Date());
-                     calendar.add(Calendar.DAY_OF_MONTH,1);
-                     String format = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
-                     hcsaServiceDto.setEffectiveDate(format);
-                 }else {
 
+                 }else {
                      String format = new SimpleDateFormat("yyyy-MM-dd").format(parse);
                      hcsaServiceDto.setEffectiveDate(format);
                  }
@@ -465,7 +485,8 @@ public class ConfigServiceImpl implements ConfigService {
         String effectiveDate = hcsaServiceDto.getEffectiveDate();
         Date endDate = hcsaServiceDto.getEndDate();
         boolean serviceIsUsed = hcsaServiceDto.isServiceIsUsed();
-        Date oldEndDate = hcsaServiceDto.getOldEndDate();
+        Date maxVersionEndDate = hcsaServiceDto.getMaxVersionEndDate();
+        String maxVersionEffectiveDate = hcsaServiceDto.getMaxVersionEffectiveDate();
         if (StringUtil.isEmpty(effectiveDate)) {
             errorMap.put("effectiveDate", MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field"));
         }else if(!serviceIsUsed){
@@ -473,35 +494,21 @@ public class ConfigServiceImpl implements ConfigService {
             if(parse.before(new Date())){
                 errorMap.put("effectiveDate","RSM_ERR012");
             }else {
-                if(!StringUtil.isEmpty(oldEndDate)){
+                if(!StringUtil.isEmpty(endDate)){
                     Calendar calendar=Calendar.getInstance();
-                    calendar.setTime(oldEndDate);
+                    calendar.setTime(maxVersionEndDate);
                     calendar.add(Calendar.DAY_OF_MONTH,1);
-                    if(calendar.getTime().after(parse)){
-                        errorMap.put("effectiveDate","The start time cannot be earlier than the end time of the previous version");
+                    if(!calendar.getTime().before(parse)){
+                        errorMap.put("effectiveDate","The start time cannot be earlier than the max version service end time ");
                     }
                 }
             }
-        }
-        if(serviceIsUsed){
-            Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(effectiveDate);
-            if(parse.before(new Date())){
-                if(!StringUtil.isEmpty(endDate)){
-                    Calendar calendar=Calendar.getInstance();
-                    calendar.setTime(endDate);
-                    calendar.add(Calendar.DAY_OF_MONTH,1);
-                    if(calendar.getTime().before(new Date())){
-                        errorMap.put("effectiveEndDate",  MessageUtil.replaceMessage("GENERAL_ERR0026","Effective End Date","field"));
-                    }
-                }
-            }else {
-                if(!StringUtil.isEmpty(endDate)){
-                  if(parse.before(endDate)){
-                      errorMap.put("effectiveEndDate","The end time cannot be earlier than the start time");
-                  }
+        }else {
+            if(!StringUtil.isEmpty(endDate)){
+                if(!endDate.before(maxVersionEndDate)){
+                    errorMap.put("effectiveEndDate","The end time cannot be earlier than the max version service start time");
                 }
             }
-
         }
         if(!StringUtil.isEmpty(endDate)){
             Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(effectiveDate);
@@ -952,10 +959,6 @@ public class ConfigServiceImpl implements ConfigService {
             hcsaServiceDto.setServiceIsUsed(false);
         }
         setAttribute(request,hcsaServiceDto);
-        Object individualPremises = request.getAttribute("individualPremises");
-        if(individualPremises==null){
-           request.setAttribute("individualPremises","0");
-        }
     }
 
 
