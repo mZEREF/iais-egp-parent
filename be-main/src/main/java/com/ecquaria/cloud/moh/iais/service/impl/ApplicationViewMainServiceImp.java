@@ -385,9 +385,11 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
                 appovedNum.get(0).setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 // set main appoved true
                 for(ApplicationDto applicationDto : appovedNum){
-                    applicationDto.setNeedNewLicNo(true);
-                    if(applicationDtoMain.getId().equalsIgnoreCase(applicationDto.getId())){
-                        applicationDtoMain.setNeedNewLicNo(true);
+                    if("0".equalsIgnoreCase(String.valueOf(applicationDto.getSecondaryFloorNoChange()))) {
+                        applicationDto.setNeedNewLicNo(true);
+                        if(applicationDtoMain.getId().equalsIgnoreCase(applicationDto.getId())) {
+                            applicationDtoMain.setNeedNewLicNo(true);
+                        }
                     }
                 }
                 applicationClient.clearHclcodeByAppIds(appovedNum);
