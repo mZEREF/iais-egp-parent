@@ -19,9 +19,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
@@ -60,6 +62,7 @@ import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
@@ -125,6 +128,8 @@ public class InspectReviseNcEmailDelegator {
     private SystemParamConfig systemParamConfig;
     @Autowired
     private AppointmentClient appointmentClient;
+    @Autowired
+    ApplicationClient applicationClient;
     @Autowired
     InspectionTaskClient inspectionTaskClient;
     private static final String ADCHK_DTO="adchklDto";
@@ -298,7 +303,7 @@ public class InspectReviseNcEmailDelegator {
             taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
             taskDto1.setUserId(appPremisesRoutingHistoryDto.getActionby());
-            List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
+            List<TaskDto> taskDtos = prepareTaskList(taskDto1,applicationViewDto.getApplicationDto());
             taskService.createTasks(taskDtos);
             taskDto1.setWkGrpId(taskDto.getWkGrpId());
             createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,taskDto1, userId,inspectionEmailTemplateDto.getRemarks());
@@ -678,11 +683,36 @@ public class InspectReviseNcEmailDelegator {
         appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
         return appPremisesRoutingHistoryDto;
     }
-    private List<TaskDto> prepareTaskList(TaskDto taskDto, HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto)  {
+
+
+    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
+        log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos start ...."));
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
+        log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos stageId -->:"+stageId));
+        for(ApplicationDto applicationDto : applicationDtos){
+            AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+            hcsaSvcStageWorkingGroupDto.setStageId(stageId);
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+            hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
+            if(appGrpPremisesEntityDto != null){
+                hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
+            }else{
+                log.error(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos this APP do not have the premise :"+applicationDto.getApplicationNo()));
+            }
+            hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
+        }
+        log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos end ...."));
+        return hcsaSvcStageWorkingGroupDtos;
+    }
+
+    private List<TaskDto> prepareTaskList(TaskDto taskDto, ApplicationDto applicationDto)  {
         List<TaskDto> list = IaisCommonUtils.genNewArrayList();
-        List<HcsaSvcStageWorkingGroupDto> listhcsaSvcStageWorkingGroupDto = hcsaConfigClient.getSvcWorkGroup(hcsaSvcStageWorkingGroupDto).getEntity();
-        Integer count = listhcsaSvcStageWorkingGroupDto.get(0).getCount();
-        taskDto.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
+        List<ApplicationDto> applicationDtos= IaisCommonUtils.genNewArrayList();
+        applicationDtos.add(applicationDto);
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
+        hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+        Integer count = hcsaSvcStageWorkingGroupDtos.get(0).getCount();
 
         taskDto.setId(null);
         if (StringUtil.isEmpty(taskDto.getUserId())) {
