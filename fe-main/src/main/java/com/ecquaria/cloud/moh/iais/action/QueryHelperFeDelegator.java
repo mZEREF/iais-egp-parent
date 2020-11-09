@@ -76,7 +76,6 @@ public class QueryHelperFeDelegator {
         moduleNameList.add(new SelectOption("event-bus","event-bus"));
         moduleNameList.add(new SelectOption("hsca-application-fe","hsca-application-fe"));
         moduleNameList.add(new SelectOption("audit-trail","audit-trail"));
-        moduleNameList.add(new SelectOption("iais-appointment","iais-appointment"));
         moduleNameList.add(new SelectOption("hcsa-licence-fe","hcsa-licence-fe"));
         moduleNameList.add(new SelectOption("organization-fe","organization-fe"));
         moduleNameList.add(new SelectOption("hcsa-config","hcsa-config"));
