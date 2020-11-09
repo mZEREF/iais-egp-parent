@@ -73,12 +73,6 @@
   <SynchronousLink destinationName="/Pages/WebPage/rfiListPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preRfi" style="oblique">
    <position>{(270,120)(420,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/rfiListPage" style="oblique">
-   <position>{(420,120)(570,120)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preDetail" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(570,120)(720,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/detailRfi" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preDetail" style="oblique">
    <position>{(720,120)(840,120)}</position>
   </SynchronousLink>
@@ -104,13 +98,16 @@
    <position>{(1020,120)(1150,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/successPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(1045,60)(1290,120)}</position>
+   <position>{(1020,30)(1290,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSubmit" style="oblique">
-   <position>{(1150,120)(1045,60)}</position>
+   <position>{(1150,120)(1020,30)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preDetail" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(1045,60)(720,120)}</position>
+   <position>{(1020,30)(720,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preDetail" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/rfiListPage" style="rectanular">
+   <position>{(420,120)(720,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -119,10 +116,6 @@
   </Condition>
  </Conditions>
  <Switches>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preDetail" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="550" y="100">
-   <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/preDetail" value="&quot;detail&quot;"/>
-  </Switch>
   <Switch defClass="" defaultComponent="/Merges/Merge/Merge1" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="1000" y="100">
    <Description/>
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;back&quot;"/>
