@@ -641,8 +641,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }
             if(dto!=null){
                  applicationNewAndRequstDto = dto.getApplicationNewAndRequstDto();
-                eventNo = applicationNewAndRequstDto.getEventNo();
                 if(applicationNewAndRequstDto!=null){
+                  eventNo = applicationNewAndRequstDto.getEventNo();
                   intranet=applicationNewAndRequstDto.getAuditTrailDto();
                   listNewApplicationDto = applicationNewAndRequstDto.getListNewApplicationDto();
                   requestForInfList = applicationNewAndRequstDto.getRequestForInfList();

@@ -516,6 +516,7 @@ public class ConfigServiceImpl implements ConfigService {
                 errorMap.put("effectiveEndDate", "EMM_ERR004");
             }
         }
+        String service_category_error = MessageUtil.replaceMessage("GENERAL_ERR0006", "Service Category", "field");
 
         if (StringUtil.isEmpty(svcCode)) {
             errorMap.put("svcCode", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Code","field"));
@@ -543,12 +544,12 @@ public class ConfigServiceImpl implements ConfigService {
             }
             String categoryId = hcsaServiceDto.getCategoryId();
             if(StringUtil.isEmpty(categoryId)){
-                errorMap.put("serviceCategory",MessageUtil.replaceMessage("GENERAL_ERR0006","Service Category","field"));
+                errorMap.put("serviceCategory",service_category_error);
             }
         }else if("SVTP001".equals(svcType)){
             String categoryId = hcsaServiceDto.getCategoryId();
             if(StringUtil.isEmpty(categoryId)){
-                errorMap.put("serviceCategory",MessageUtil.replaceMessage("GENERAL_ERR0006","Service Category","field"));
+                errorMap.put("serviceCategory",service_category_error);
             }
         }
         List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = hcsaServiceConfigDto.getHcsaSvcSpePremisesTypeDtos();
@@ -685,8 +686,8 @@ public class ConfigServiceImpl implements ConfigService {
         }
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = (List<HcsaSvcDocConfigDto>)request.getAttribute("serviceDoc");
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtoList = ( List<HcsaSvcDocConfigDto>)request.getAttribute("comDoc");
+        String Name_of_Info_Field = MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of Info Field", "field");
         if(hcsaSvcDocConfigDtos!=null){
-            String Name_of_Info_Field = MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of Info Field", "field");
             for(int i = 0; i < hcsaSvcDocConfigDtos.size(); i++){
                 String docTitle = hcsaSvcDocConfigDtos.get(i).getDocTitle();
                 if(StringUtil.isEmpty(docTitle)){
@@ -695,7 +696,6 @@ public class ConfigServiceImpl implements ConfigService {
             }
         }
         if(hcsaSvcDocConfigDtoList!=null){
-            String Name_of_Info_Field = MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of Info Field", "field");
             for(int i = 0;i<hcsaSvcDocConfigDtoList.size();i++){
                 String docTitle = hcsaSvcDocConfigDtoList.get(i).getDocTitle();
                 if(StringUtil.isEmpty(docTitle)){
