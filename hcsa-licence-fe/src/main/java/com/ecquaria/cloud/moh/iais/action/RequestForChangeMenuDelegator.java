@@ -492,6 +492,10 @@ public class RequestForChangeMenuDelegator {
         }
 */
         if (errorMap.size() > 0) {
+            String hciNameUsed = errorMap.get("hciNameUsed");
+            if (!StringUtil.isEmpty(hciNameUsed)) {
+                ParamUtil.setRequestAttr(bpc.request, "newAppPopUpMsg", hciNameUsed);
+            }
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
             return;
