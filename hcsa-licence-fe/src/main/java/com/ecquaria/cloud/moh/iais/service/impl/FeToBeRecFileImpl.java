@@ -184,6 +184,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             zipFile(zos, file, "backupsRec");
         } catch (IOException e) {
             log.error(e.getMessage(), e);
+            JobLogger.log(e.getMessage(), e);
         }
         return l+"";
     }
@@ -280,7 +281,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             for(File f:files){
                 if(f.exists()){
                     if(!f.getName().endsWith(fileFormat)) {
-                        boolean fileStatus = f.delete();
+                        boolean fileStatus = deleteDir(f);
                         if (!fileStatus) {
                             log.debug(StringUtil.changeForLog(f.getName() + ": delete false"));
                             JobLogger.log(StringUtil.changeForLog(f.getName() + ": delete false"));
@@ -289,6 +290,19 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                 }
             }
         }
+    }
+
+    private static boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            File[] files = dir.listFiles();
+            for(File f:files){
+                boolean success = deleteDir(f);
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        return dir.delete();
     }
 
     public String saveFileName(String fileName ,String filePath, String appId){
