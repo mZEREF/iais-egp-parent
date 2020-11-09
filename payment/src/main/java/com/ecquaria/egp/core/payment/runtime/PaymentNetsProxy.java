@@ -168,11 +168,11 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String header= (String) ParamUtil.getSessionAttr(request,"header");
 		String generatedHmac=(String)ParamUtil.getSessionAttr(request,"HMAC");
 		try {
-			txnRes = URLDecoder.decode(txnRes + "", "UTF-8");
+			txnRes = URLDecoder.decode(txnRes + "", StandardCharsets.UTF_8.name());
 			if(generatedHmac.equalsIgnoreCase(header)){
 				ObjectMapper mapper = new ObjectMapper();
 				Soapi txnResObj = mapper.readValue(txnRes, Soapi.class);
-				log.info("MERCHANT APP : in receiveb2sTxnEnd :" + txnResObj);
+				log.info(StringUtil.changeForLog("MERCHANT APP : in receiveb2sTxnEnd :" + txnResObj));
 				if("0".equals(txnResObj.getMsg().getNetsTxnStatus())){
 					status=PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
 				}
