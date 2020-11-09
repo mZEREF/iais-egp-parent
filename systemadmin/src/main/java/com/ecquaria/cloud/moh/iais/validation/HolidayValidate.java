@@ -52,7 +52,7 @@ public class HolidayValidate implements CustomizeValidator {
 
         }
         if(StringUtil.isEmpty(publicHolidayDto.getPhCode())){
-            errMap.put("description",  MessageUtil.replaceMessage("GENERAL_ERR0006","Holiday Description","field"));
+            errMap.put("phCode",  MessageUtil.replaceMessage("GENERAL_ERR0006","Holiday Description","field"));
         }
         if(!StringUtil.isEmpty(publicHolidayDto.getPhCode()) && !(origal != null && publicHolidayDto.getPhCode().equals(origal.getPhCode()))   ){
             Calendar c = Calendar.getInstance();
@@ -60,7 +60,7 @@ public class HolidayValidate implements CustomizeValidator {
             int year = c.get(Calendar.YEAR);
             PublicHolidayDto publicHolidayDtoDis = publicHolidayService.publicHolidayByDis(publicHolidayDto.getPhCode(),year);
             if(publicHolidayDtoDis != null){
-                errMap.put("description", MessageUtil.getMessageDesc("OAPPT_ERR007"));
+                errMap.put("phCode", MessageUtil.getMessageDesc("OAPPT_ACK009"));
             }
         }
         if(StringUtil.isEmpty(publicHolidayDto.getStatus())){
