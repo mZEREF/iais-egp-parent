@@ -170,7 +170,7 @@
                         <div class="row">
                             <div class="col-xs-11 col-md-11">
                                 <div class="text-right">
-                                    <a class="btn btn-primary btn-approve"
+                                    <a class="btn btn-primary btn-support"
                                        onclick="javascript:approve()">Support</a>
                                     <a class="btn btn-primary btn-approve"
                                        onclick="javascript:aoApprove('ao2approve')">Approve</a>
