@@ -5574,9 +5574,9 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
 
 /*# sourceMappingURL=cpl_style.css.map */
 
-:focus {
-  outline: 2px solid #cc0000;
-}
+/*:focus {*/
+/*  outline: 2px solid #cc0000;*/
+/*}*/
 
 .logo-ssg {
   padding-left: 40px;
