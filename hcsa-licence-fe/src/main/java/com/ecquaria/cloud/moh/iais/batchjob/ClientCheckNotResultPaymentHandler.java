@@ -11,7 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AppGrpPaymentClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,7 +29,7 @@ import java.util.List;
 @Slf4j
 public class ClientCheckNotResultPaymentHandler extends IJobHandler {
     @Autowired
-    ApplicationClient applicationClient;
+    ApplicationFeClient applicationFeClient;
     @Autowired
     AppGrpPaymentClient appGrpPaymentClient;
     @Override
@@ -37,7 +37,7 @@ public class ClientCheckNotResultPaymentHandler extends IJobHandler {
         try {
             AuditTrailHelper.setupBatchJobAuditTrail(this);
             log.debug(StringUtil.changeForLog("the do job start ...."));
-            List<ApplicationGroupDto> applicationGroupDtoList= applicationClient.getAppGrpDtoPaying().getEntity();
+            List<ApplicationGroupDto> applicationGroupDtoList= applicationFeClient.getAppGrpDtoPaying().getEntity();
             AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
             for (ApplicationGroupDto appGrp :applicationGroupDtoList
             ) {
@@ -48,7 +48,7 @@ public class ClientCheckNotResultPaymentHandler extends IJobHandler {
                         appGrp.setPmtRefNo(paymentDto.getReqRefNo());
                         appGrp.setPaymentDt(paymentDto.getTxnDt());
                         appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-                        applicationClient.doPaymentUpDate(appGrp).getEntity();
+                        applicationFeClient.doPaymentUpDate(appGrp).getEntity();
                     }
                 }catch (Exception e){
                     log.info(e.getMessage(),e);

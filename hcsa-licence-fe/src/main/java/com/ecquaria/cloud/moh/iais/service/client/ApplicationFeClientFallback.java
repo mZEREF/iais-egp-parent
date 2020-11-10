@@ -44,7 +44,7 @@ import java.util.Map;
  * @author Wenkang
  * @date 2019/11/26 14:29
  */
-public class ApplicationClientFallback implements ApplicationClient {
+public class ApplicationFeClientFallback implements ApplicationFeClient {
     @Override
     public FeignResponseEntity<AppPremisesCorrelationDto> getCorrelationByAppNo(String appNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();

@@ -52,7 +52,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
@@ -90,7 +90,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Autowired
     private LicenceClient licenceClient;
     @Autowired
-    private ApplicationClient applicationClient;
+    private ApplicationFeClient applicationFeClient;
     @Autowired
     private SystemAdminClient systemAdminClient;
     @Autowired
@@ -134,7 +134,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     public AppSubmissionDto submitChange(AppSubmissionDto appSubmissionDto) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         //save appGrp and app
-        appSubmissionDto = applicationClient.saveAppsForRequestForChange(appSubmissionDto).getEntity();
+        appSubmissionDto = applicationFeClient.saveAppsForRequestForChange(appSubmissionDto).getEntity();
 //asynchronous save the other data.
         //eventBus(appSubmissionDto, process);
         return appSubmissionDto;
@@ -143,7 +143,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Override
     public List<ApplicationDto> getAppByLicIdAndExcludeNew(String licenceId) {
-        List<ApplicationDto> applicationDtos = applicationClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
+        List<ApplicationDto> applicationDtos = applicationFeClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
         List<ApplicationDto> newApplicationDtos = IaisCommonUtils.genNewArrayList();
         for (ApplicationDto applicationDto : applicationDtos) {
             if (!ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus()) &&
@@ -164,7 +164,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     public Boolean isAllCanRfc(List<String> licIds) {
         List<ApplicationDto> newApplicationDtos = IaisCommonUtils.genNewArrayList();
         for (String licId : licIds) {
-            List<ApplicationDto> applicationDtos = applicationClient.getAppByLicIdAndExcludeNew(licId).getEntity();
+            List<ApplicationDto> applicationDtos = applicationFeClient.getAppByLicIdAndExcludeNew(licId).getEntity();
             List<String> appFinalStatus = IaisCommonUtils.getAppFinalStatus();
             appFinalStatus.remove("APST005");
             for (ApplicationDto applicationDto : applicationDtos) {
@@ -233,7 +233,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Override
     public List<AppSubmissionDto> saveAppsBySubmissionDtos(List<AppSubmissionDto> appSubmissionDtos) {
-        return applicationClient.saveAppsForRequestForChangeByList(appSubmissionDtos).getEntity();
+        return applicationFeClient.saveAppsForRequestForChangeByList(appSubmissionDtos).getEntity();
     }
 
     @Override
@@ -452,7 +452,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Override
     public List<AppSubmissionDto> saveAppsForRequestForGoupAndAppChangeByList(List<AppSubmissionDto> appSubmissionDtos) {
-        List<AppSubmissionDto> entity = applicationClient.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos).getEntity();
+        List<AppSubmissionDto> entity = applicationFeClient.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos).getEntity();
 
         return entity;
     }
@@ -484,7 +484,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     public Boolean isOtherOperation(String licenceId) {
 
-        return applicationClient.isLiscenceAppealOrCessation(licenceId).getEntity();
+        return applicationFeClient.isLiscenceAppealOrCessation(licenceId).getEntity();
     }
 
     @Override
@@ -691,7 +691,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             if (StringUtil.isEmpty(licenseeId)) {
                                 licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
                             }
-                            List<AppGrpPremisesDto> entity = applicationClient.getAppGrpPremisesDtoByHciName(hciName, licenseeId).getEntity();
+                            List<AppGrpPremisesDto> entity = applicationFeClient.getAppGrpPremisesDtoByHciName(hciName, licenseeId).getEntity();
                             if (!entity.isEmpty()) {
                                 errorMap.put("hciNameUsed", "NEW_ACK011");
                             }

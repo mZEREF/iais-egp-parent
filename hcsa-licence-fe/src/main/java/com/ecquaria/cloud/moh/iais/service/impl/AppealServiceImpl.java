@@ -58,7 +58,7 @@ import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
@@ -123,7 +123,7 @@ public class AppealServiceImpl implements AppealService {
     @Autowired
     private NotificationHelper notificationHelper;
     @Autowired
-    private ApplicationClient applicationClient;
+    private ApplicationFeClient applicationFeClient;
     @Autowired
     private SystemAdminClient systemAdminClient;
     @Autowired
@@ -217,7 +217,7 @@ public class AppealServiceImpl implements AppealService {
         String s = JsonUtil.parseToJson(appealPageDto);
         AppPremiseMiscDto appPremiseMiscDto = new AppPremiseMiscDto();
         if (!StringUtil.isEmpty(saveDraftId)) {
-            AppSubmissionDto entity = applicationClient.draftNumberGet(saveDraftId).getEntity();
+            AppSubmissionDto entity = applicationFeClient.draftNumberGet(saveDraftId).getEntity();
             if (entity != null) {
                 entity.setAmountStr(s);
                 entity.setAppGrpId(groupId);
@@ -235,7 +235,7 @@ public class AppealServiceImpl implements AppealService {
                 if(errorMsg==null){
                     req.setAttribute("saveDraftSuccess", "success");
                     entity.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    applicationClient.saveDraft(entity).getEntity();
+                    applicationFeClient.saveDraft(entity).getEntity();
                 }
 
 
@@ -276,7 +276,7 @@ public class AppealServiceImpl implements AppealService {
         Object errorMsg = req.getAttribute("errorMsg");
         if(errorMsg==null){
             req.setAttribute("saveDraftSuccess", "success");
-            AppSubmissionDto entity = applicationClient.saveDraft(appSubmissionDto).getEntity();
+            AppSubmissionDto entity = applicationFeClient.saveDraft(appSubmissionDto).getEntity();
             String draftNo = entity.getDraftNo();
             req.getSession().setAttribute("saveDraftNo", draftNo);
         }
@@ -297,7 +297,7 @@ public class AppealServiceImpl implements AppealService {
     public void getMessage(HttpServletRequest request) {
         String draftNumber = ParamUtil.getMaskedString(request, "DraftNumber");
         if (draftNumber != null) {
-            AppSubmissionDto appSubmissionDto = applicationClient.draftNumberGet(draftNumber).getEntity();
+            AppSubmissionDto appSubmissionDto = applicationFeClient.draftNumberGet(draftNumber).getEntity();
             String serviceName = appSubmissionDto.getServiceName();
             String amountStr = appSubmissionDto.getAmountStr();
             try {
@@ -355,7 +355,7 @@ public class AppealServiceImpl implements AppealService {
     }
 
     private AppPremiseMiscDto initRfi(HttpServletRequest request, String appealingFor) {
-        AppPremiseMiscDto entity = applicationClient.getAppPremiseMiscDtoByAppId(appealingFor).getEntity();
+        AppPremiseMiscDto entity = applicationFeClient.getAppPremiseMiscDtoByAppId(appealingFor).getEntity();
         if (entity != null) {
             requetForInformationGetMessage(request, entity);
         }
@@ -399,7 +399,7 @@ public class AppealServiceImpl implements AppealService {
             request.getSession().setAttribute("licenceNo", licenceNo);
             request.getSession().setAttribute("appealNo", licenceDto.getLicenceNo());
         } else if (APPLICATION.equals(type)) {
-            ApplicationDto applicationDto = applicationClient.getApplicationById(appealingFor).getEntity();
+            ApplicationDto applicationDto = applicationFeClient.getApplicationById(appealingFor).getEntity();
             Calendar calendar=Calendar.getInstance();
             Date createAt = applicationDto.getCreateAt();
             calendar.setTime(createAt);
@@ -430,7 +430,7 @@ public class AppealServiceImpl implements AppealService {
             }
             if(feeEqDay){
                 AppFeeDetailsDto appFeeDetailsDto =
-                        applicationClient.getAppFeeDetailsDtoByApplicationNo(applicationDto.getApplicationNo()).getEntity();
+                        applicationFeClient.getAppFeeDetailsDtoByApplicationNo(applicationDto.getApplicationNo()).getEntity();
                 if (appFeeDetailsDto != null) {
                     try {
                         if (appFeeDetailsDto.getLaterFee() > 0.0) {
@@ -445,7 +445,7 @@ public class AppealServiceImpl implements AppealService {
             String serviceId = applicationDto.getServiceId();
             String id = applicationDto.getId();
             if (id != null) {
-                AppInsRepDto entity = applicationClient.getHciNameAndAddress(id).getEntity();
+                AppInsRepDto entity = applicationFeClient.getHciNameAndAddress(id).getEntity();
                 String hciName = entity.getHciName();
                 String hciAddres = entity.getHciAddress();
                 List<String> hciNames = IaisCommonUtils.genNewArrayList();
@@ -487,7 +487,7 @@ public class AppealServiceImpl implements AppealService {
             LicenceDto licenceDto = licenceClient.getLicBylicId(appealingFor).getEntity();
             WebValidationHelper.saveAuditTrailForNoUseResult(licenceDto,errorMap);
         }else if(APPLICATION.equals(type)){
-            ApplicationDto applicationDto = applicationClient.getApplicationById(appealingFor).getEntity();
+            ApplicationDto applicationDto = applicationFeClient.getApplicationById(appealingFor).getEntity();
             WebValidationHelper.saveAuditTrailForNoUseResult(applicationDto,errorMap);
         }else {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
@@ -498,8 +498,8 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public void inbox(HttpServletRequest request, String appNo) {
-        AppPremisesCorrelationDto entity1 = applicationClient.getCorrelationByAppNo(appNo).getEntity();
-        AppPremiseMiscDto entity2 = applicationClient.getAppPremisesMisc(entity1.getId()).getEntity();
+        AppPremisesCorrelationDto entity1 = applicationFeClient.getCorrelationByAppNo(appNo).getEntity();
+        AppPremiseMiscDto entity2 = applicationFeClient.getAppPremisesMisc(entity1.getId()).getEntity();
         String appealType = entity2.getAppealType();
         requetForInformationGetMessage(request, entity2);
         if("APPEAL001".equals(appealType)){
@@ -871,7 +871,7 @@ public class AppealServiceImpl implements AppealService {
                 AppPremisesSpecialDocDto appPremisesSpecialDocDto = appealDto.getAppPremisesSpecialDocDto();
                 String grpId = entity1.getAppGrpId();
                 if(appPremisesSpecialDocDto!=null){
-                    List<AppliSpecialDocDto> appliSpecialDocDtos = applicationClient.getAppliSpecialDocDtoByGroupId(grpId).getEntity();
+                    List<AppliSpecialDocDto> appliSpecialDocDtos = applicationFeClient.getAppliSpecialDocDtoByGroupId(grpId).getEntity();
                     if(!appliSpecialDocDtos.isEmpty()){
                         AppliSpecialDocDto appliSpecialDocDto1 = appliSpecialDocDtos.get(appliSpecialDocDtos.size() - 1);
                         if(!appliSpecialDocDto1.getMd5Code().equals(appPremisesSpecialDocDto.getMd5Code())){
@@ -915,7 +915,7 @@ public class AppealServiceImpl implements AppealService {
                 s = entity1.getApplicationNo();
                 entity1.setStatus(ApplicationConsts.APPLICATION_STATUS_DELETED);
                 request.getSession().setAttribute("rfiApplication", entity1);
-                applicationClient.updateApplication(entity1);
+                applicationFeClient.updateApplication(entity1);
             }
             HcsaServiceDto hcsaServiceDto = appConfigClient.getActiveHcsaServiceDtoByName(licenceDto.getSvcName()).getEntity();
             applicationDto.setServiceId(hcsaServiceDto.getId());
@@ -945,7 +945,7 @@ public class AppealServiceImpl implements AppealService {
         appealDto.setAppGrpPremisesDtos(premisesDtos);
         AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         appealDto.setAuditTrailDto(currentAuditTrailDto);
-        appealDto = applicationClient.submitAppeal(appealDto).getEntity();
+        appealDto = applicationFeClient.submitAppeal(appealDto).getEntity();
         ApplicationGroupDto applicationGroupDto1 = appealDto.getApplicationGroupDto();
         String groupId = applicationGroupDto1.getId();
         request.setAttribute("groupId", groupId);
@@ -1011,11 +1011,11 @@ public class AppealServiceImpl implements AppealService {
     }
 
     private String applicationPresmies(HttpServletRequest request, String applicationId) {
-        ApplicationDto applicationDto = applicationClient.getApplicationById(applicationId).getEntity();
+        ApplicationDto applicationDto = applicationFeClient.getApplicationById(applicationId).getEntity();
         String grpId = applicationDto.getAppGrpId();
         AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_APPEAL,AuditTrailConsts.FUNCTION_APPEAL,applicationDto.getApplicationNo());
         String rfi = (String) request.getSession().getAttribute("rfi");
-        ApplicationGroupDto entity = applicationClient.getApplicationGroup(grpId).getEntity();
+        ApplicationGroupDto entity = applicationFeClient.getApplicationGroup(grpId).getEntity();
         String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
         StringBuilder stringBuilder = new StringBuilder(appNo);
         String s = stringBuilder.append("-01").toString();
@@ -1059,7 +1059,7 @@ public class AppealServiceImpl implements AppealService {
             AppPremisesSpecialDocDto appPremisesSpecialDocDto = appealDto.getAppPremisesSpecialDocDto();
             ApplicationDto rfiApplication = (ApplicationDto) ParamUtil.getSessionAttr(request,"rfiApplication");
             if(appPremisesSpecialDocDto!=null){
-                List<AppliSpecialDocDto> appliSpecialDocDtos = applicationClient.getAppliSpecialDocDtoByGroupId(rfiApplication.getAppGrpId()).getEntity();
+                List<AppliSpecialDocDto> appliSpecialDocDtos = applicationFeClient.getAppliSpecialDocDtoByGroupId(rfiApplication.getAppGrpId()).getEntity();
                 if(!appliSpecialDocDtos.isEmpty()){
                     AppliSpecialDocDto appliSpecialDocDto1 = appliSpecialDocDtos.get(appliSpecialDocDtos.size() - 1);
                     if(!appliSpecialDocDto1.getMd5Code().equals(appPremisesSpecialDocDto.getMd5Code())){
@@ -1102,7 +1102,7 @@ public class AppealServiceImpl implements AppealService {
                     }
                 }
             }
-            applicationClient.updateApplication(rfiApplication);
+            applicationFeClient.updateApplication(rfiApplication);
             ParamUtil.setSessionAttr(request,"rfiApplication",rfiApplication);
         }
 
@@ -1110,7 +1110,7 @@ public class AppealServiceImpl implements AppealService {
             appealDto.setAppSvcCgoDto(appSvcCgoDtos);
 
         }
-        AppealPageDto appealPageDto = applicationClient.submitAppeal(appealDto).getEntity();
+        AppealPageDto appealPageDto = applicationFeClient.submitAppeal(appealDto).getEntity();
         ApplicationGroupDto applicationGroupDto1 = appealPageDto.getApplicationGroupDto();
         String groupId = applicationGroupDto1.getId();
         request.setAttribute("groupId", groupId);
@@ -1129,7 +1129,7 @@ public class AppealServiceImpl implements AppealService {
     private void requetForInformationGetMessage(HttpServletRequest request, AppPremiseMiscDto appPremiseMiscDto) {
         String reason = appPremiseMiscDto.getReason();
         String appPremCorreId = appPremiseMiscDto.getAppPremCorreId();
-        AppliSpecialDocDto appliSpecialDocDto = applicationClient.getAppliSpecialDocDtoByCorrId(appPremCorreId).getEntity();
+        AppliSpecialDocDto appliSpecialDocDto = applicationFeClient.getAppliSpecialDocDtoByCorrId(appPremCorreId).getEntity();
         if (appliSpecialDocDto != null) {
             AppPremisesSpecialDocDto appPremisesSpecialDocDto =new AppPremisesSpecialDocDto();
             appPremisesSpecialDocDto.setDocSize(Integer.valueOf(appliSpecialDocDto.getDocSize()));
@@ -1144,11 +1144,11 @@ public class AppealServiceImpl implements AppealService {
             request.getSession().setAttribute("appPremisesSpecialDocDto", appPremisesSpecialDocDto);
         }
         request.setAttribute("appPremiseMiscDto", appPremiseMiscDto);
-        ApplicationDto entity = applicationClient.getApplicationByCorrId(appPremCorreId).getEntity();
+        ApplicationDto entity = applicationFeClient.getApplicationByCorrId(appPremCorreId).getEntity();
         if (entity != null) {
             if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)) {
                 String appGrpId = entity.getAppGrpId();
-                List<AppSvcCgoDto> appSvcCgoDtos = applicationClient.getAppGrpPersonnelByGrpId(appGrpId).getEntity();
+                List<AppSvcCgoDto> appSvcCgoDtos = applicationFeClient.getAppGrpPersonnelByGrpId(appGrpId).getEntity();
                 if(appSvcCgoDtos!=null){
                     for(AppSvcCgoDto appSvcCgoDto : appSvcCgoDtos){
                         appSvcCgoDto.setAssignSelect("newOfficer");
@@ -1372,7 +1372,7 @@ public class AppealServiceImpl implements AppealService {
     private boolean isMaxCGOnumber(ApplicationDto applicationDto) {
         String serviceId = applicationDto.getServiceId();
 
-        List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationClient.getAppSvcKeyPersonnel(applicationDto).getEntity();
+        List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationFeClient.getAppSvcKeyPersonnel(applicationDto).getEntity();
         HcsaSvcPersonnelDto hcsaSvcPersonnelDto = appConfigClient.getHcsaSvcPersonnelDtoByServiceId(serviceId).getEntity();
         if (hcsaSvcPersonnelDto != null) {
             int maximumCount = hcsaSvcPersonnelDto.getMaximumCount();

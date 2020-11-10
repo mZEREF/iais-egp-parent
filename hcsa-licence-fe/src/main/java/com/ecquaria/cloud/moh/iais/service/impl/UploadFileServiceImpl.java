@@ -38,7 +38,7 @@ import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepositoryClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -92,7 +92,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     private String secSecretKey;
 
     @Autowired
-    private ApplicationClient applicationClient;
+    private ApplicationFeClient applicationFeClient;
     @Autowired
     private FeEicGatewayClient eicGatewayClient;
     @Autowired
@@ -145,7 +145,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Override
     public String getData() {
         List<String> list=new ArrayList<>();
-        String entity = applicationClient.fileAll(list).getEntity();
+        String entity = applicationFeClient.fileAll(list).getEntity();
         return entity;
     }
 
@@ -161,7 +161,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             }
 
             map.put("groupIds",groupIds);
-            applicationClient.updateStatus(map).getEntity();
+            applicationFeClient.updateStatus(map).getEntity();
 
 
         return "";

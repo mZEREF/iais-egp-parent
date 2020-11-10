@@ -56,8 +56,8 @@ import java.util.Map;
  * @date 2019/11/26 14:28
  */
 @FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
-        fallback = ApplicationClientFallback.class)
-public interface ApplicationClient  {
+        fallback = ApplicationFeClientFallback.class)
+public interface ApplicationFeClient {
     @GetMapping(value = "/iais-application/correlation/application-number",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremisesCorrelationDto> getCorrelationByAppNo(@RequestParam("appNo") String appNo);
 

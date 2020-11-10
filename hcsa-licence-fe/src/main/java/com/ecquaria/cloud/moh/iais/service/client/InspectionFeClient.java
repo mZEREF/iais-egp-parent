@@ -22,7 +22,7 @@ import java.util.List;
  * @date 2020/2/18 11:26
  **/
 @FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
-        fallback = ApplicationClientFallback.class)
+        fallback = ApplicationFeClientFallback.class)
 public interface InspectionFeClient {
 
     @PostMapping(value = "/iais-appt-inspec-fe", consumes = MediaType.APPLICATION_JSON_VALUE)

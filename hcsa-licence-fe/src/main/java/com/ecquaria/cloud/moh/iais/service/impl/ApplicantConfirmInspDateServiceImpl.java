@@ -44,7 +44,7 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicantConfirmInspDateService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
@@ -75,7 +75,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     private InspectionFeClient inspectionFeClient;
 
     @Autowired
-    private ApplicationClient applicationClient;
+    private ApplicationFeClient applicationFeClient;
 
     @Autowired
     private LicenceClient licenceClient;
@@ -124,7 +124,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
         if(!StringUtil.isEmpty(appPremCorrId)) {
             //get All CorrDto From Same Premises
-            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getLastAppPremisesCorrelationDtoByCorreId(appPremCorrId).getEntity();
+            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationFeClient.getLastAppPremisesCorrelationDtoByCorreId(appPremCorrId).getEntity();
             //set All TaskRefNo (AppPremCorrIds)
             List<ApplicationDto> applicationDtos = getApplicationBySamePremCorrId(appPremisesCorrelationDtos, apptFeConfirmDateDto, appStatus);
             apptFeConfirmDateDto.setApplicationDtos(applicationDtos);
@@ -164,7 +164,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){//NOSONAR
             for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
                 if(appPremisesCorrelationDto != null && !StringUtil.isEmpty(appPremisesCorrelationDto.getId())){
-                    ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(appPremisesCorrelationDto.getId()).getEntity();
+                    ApplicationDto applicationDto = applicationFeClient.getApplicationByCorreId(appPremisesCorrelationDto.getId()).getEntity();
                     if(!StringUtil.isEmpty(appStatus) && applicationDto != null) {
                         if (appStatus.equals(applicationDto.getStatus())) {
                             taskRefNo.add(appPremisesCorrelationDto.getId());
@@ -405,7 +405,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             AppPremisesInspecApptDto appPremisesInspecApptDto = apptFeConfirmDateDto.getAppPremisesInspecApptDtoList().get(0);
             List<AppointmentUserDto> appointmentUserDtos = getUserCalendarDtosByMap(apptFeConfirmDateDto.getApptInspDateMap());
             String appGroupId = apptFeConfirmDateDto.getApplicationDtos().get(0).getAppGrpId();
-            ApplicationGroupDto applicationGroupDto = applicationClient.getApplicationGroup(appGroupId).getEntity();
+            ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(appGroupId).getEntity();
 
             AppointmentDto appointmentDto = new AppointmentDto();
             appointmentDto.setUsers(appointmentUserDtos);
@@ -606,7 +606,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     @Override
     public String getAppPremCorrIdByAppNo(String applicationNo) {
-        String appPremCorrId = applicationClient.getCorrelationByAppNo(applicationNo).getEntity().getId();
+        String appPremCorrId = applicationFeClient.getCorrelationByAppNo(applicationNo).getEntity().getId();
         return appPremCorrId;
     }
 
@@ -640,7 +640,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         for(ApplicationDto applicationDto : applicationDtos) {
             applicationDto.setStatus(status);
             applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            applicationDto = applicationClient.updateApplication(applicationDto).getEntity();
+            applicationDto = applicationFeClient.updateApplication(applicationDto).getEntity();
             applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         }
         apptInspectionDateDto.setApplicationDtos(applicationDtos);
@@ -738,7 +738,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     private String getApplicationByCorrId(String appPremCorrId) {
         String appNo = "";
         if(!StringUtil.isEmpty(appPremCorrId)){
-            ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(appPremCorrId).getEntity();
+            ApplicationDto applicationDto = applicationFeClient.getApplicationByCorreId(appPremCorrId).getEntity();
             appNo = applicationDto.getApplicationNo();
         }
         return appNo;
@@ -819,7 +819,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     private void sendEmailRequestNewDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
         try{
             String appPremCorrId = apptFeConfirmDateDto.getAppPremCorrId();
-            ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(appPremCorrId).getEntity();
+            ApplicationDto applicationDto = applicationFeClient.getApplicationByCorreId(appPremCorrId).getEntity();
             String appType = applicationDto.getApplicationType();
             String appNo = applicationDto.getApplicationNo();
             String appGroupId = applicationDto.getAppGrpId();
@@ -832,7 +832,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             }
             List<String> appGroupIds = IaisCommonUtils.genNewArrayList();
             appGroupIds.add(appGroupId);
-            List<ApplicationGroupDto> applicationGroupDtos = applicationClient.getApplicationGroupsByIds(appGroupIds).getEntity();
+            List<ApplicationGroupDto> applicationGroupDtos = applicationFeClient.getApplicationGroupsByIds(appGroupIds).getEntity();
             Date submitDate = new Date();
             if(!IaisCommonUtils.isEmpty(applicationGroupDtos)){
                 ApplicationGroupDto applicationGroupDto = applicationGroupDtos.get(0);
@@ -843,7 +843,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 }
             }
             String submitDtStr = Formatter.formatDateTime(submitDate, "dd/MM/yyyy HH:mm:ss");
-            AppGrpPremisesDto appGrpPremisesDto = applicationClient.getAppGrpPremisesByCorrId(appPremCorrId).getEntity();
+            AppGrpPremisesDto appGrpPremisesDto = applicationFeClient.getAppGrpPremisesByCorrId(appPremCorrId).getEntity();
             String hciName = appGrpPremisesDto.getHciName();
             if(StringUtil.isEmpty(hciName)){
                 hciName = "";
@@ -928,7 +928,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
         //get All CorrDto From Same Premises
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getLastAppPremisesCorrelationDtoByCorreId(appPremCorrId).getEntity();
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationFeClient.getLastAppPremisesCorrelationDtoByCorreId(appPremCorrId).getEntity();
         //set All TaskRefNo (AppPremCorrIds)
         List<ApplicationDto> applicationDtos = getApplicationBySamePremCorrId(appPremisesCorrelationDtos, apptFeConfirmDateDto, appStatus);
         apptFeConfirmDateDto.setApplicationDtos(applicationDtos);

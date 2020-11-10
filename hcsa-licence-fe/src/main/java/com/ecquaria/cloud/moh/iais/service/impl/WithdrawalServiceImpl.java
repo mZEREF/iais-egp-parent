@@ -3,14 +3,8 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
@@ -24,22 +18,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
-import com.ecquaria.cloud.submission.client.App;
-import com.ecquaria.egp.core.application.sender.SMSSender;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import java.io.IOException;
@@ -52,7 +40,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.xbill.DNS.Master;
 
 @Service
 @Slf4j
@@ -67,7 +54,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
 
     @Autowired
-    private ApplicationClient applicationClient;
+    private ApplicationFeClient applicationFeClient;
 
     @Autowired
     private CessationClient cessationClient;
@@ -113,10 +100,10 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         withdrawnDtoList.forEach(h -> {
             String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity();
             String licenseeId = h.getLicenseeId();
-            AppSubmissionDto appSubmissionDto = applicationClient.gainSubmissionDto(h.getApplicationNo()).getEntity();
+            AppSubmissionDto appSubmissionDto = applicationFeClient.gainSubmissionDto(h.getApplicationNo()).getEntity();
             transform(appSubmissionDto,licenseeId);
             appSubmissionDto.setAppGrpNo(grpNo);
-            AppSubmissionDto newAppSubmissionDto = applicationClient.saveSubmision(appSubmissionDto).getEntity();
+            AppSubmissionDto newAppSubmissionDto = applicationFeClient.saveSubmision(appSubmissionDto).getEntity();
             List<ApplicationDto> applicationDtoList = newAppSubmissionDto.getApplicationDtos();
             for (ApplicationDto applicationDto:applicationDtoList
                  ) {
@@ -130,17 +117,17 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 }
 
             }
-            applicationClient.updateApplicationList(applicationDtoList);
+            applicationFeClient.updateApplicationList(applicationDtoList);
             h.setNewApplicationId(applicationDtoList.get(0).getId());
-            applicationClient.saveApps(newAppSubmissionDto).getEntity();
+            applicationFeClient.saveApps(newAppSubmissionDto).getEntity();
         });
         List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
         List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(withdrawnList)){
             withdrawnDtoList.forEach(h -> {
-                AppSubmissionDto appSubmissionDto = applicationClient.gainSubmissionDto(h.getApplicationNo()).getEntity();
+                AppSubmissionDto appSubmissionDto = applicationFeClient.gainSubmissionDto(h.getApplicationNo()).getEntity();
                 if (appSubmissionDto != null){
-                    ApplicationDto applicationDto = applicationClient.getApplicationById(h.getApplicationId()).getEntity();
+                    ApplicationDto applicationDto = applicationFeClient.getApplicationById(h.getApplicationId()).getEntity();
                     String serviceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceId();
                     if (!StringUtil.isEmpty(serviceId)){
                         applicationDtoList.add(applicationDto);
@@ -180,11 +167,11 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     public void saveRfiWithdrawn(List<WithdrawnDto> withdrawnDtoList) {
         withdrawnDtoList.forEach(h -> {
             String appId = h.getNewApplicationId();
-            ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
+            ApplicationDto applicationDto = applicationFeClient.getApplicationById(appId).getEntity();
             String originLicenceId = applicationDto.getOriginLicenceId();
             List<String> licIds = IaisCommonUtils.genNewArrayList();
             licIds.add(originLicenceId);
-            AppSubmissionDto appSubmissionDto = applicationClient.getAppSubmissionDtoByAppNo(applicationDto.getApplicationNo()).getEntity();
+            AppSubmissionDto appSubmissionDto = applicationFeClient.getAppSubmissionDtoByAppNo(applicationDto.getApplicationNo()).getEntity();
             try {
                 transformRfi(appSubmissionDto, h.getLicenseeId(), applicationDto);
             } catch (Exception e) {
@@ -201,7 +188,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         Double amount = 0.0;
         AuditTrailDto internet = AuditTrailHelper.getCurrentAuditTrailDto();
         appSubmissionDto.setAppGrpId(applicationDto.getAppGrpId());
-        ApplicationGroupDto entity1 = applicationClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
+        ApplicationGroupDto entity1 = applicationFeClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
         appSubmissionDto.setFromBe(false);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
         appSubmissionDto.setAppGrpNo(entity1.getGroupNo());
@@ -238,17 +225,17 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         }
         appSubmissionRequestInformationDto.setRfiStatus(applicationDto.getStatus());
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
-        applicationClient.saveRfcWithdrawSubmission(appSubmissionRequestInformationDto).getEntity();
+        applicationFeClient.saveRfcWithdrawSubmission(appSubmissionRequestInformationDto).getEntity();
     }
 
     @Override
     public WithdrawnDto getWithdrawAppInfo(String appNo) {
-        return applicationClient.getWithdrawAppInfo(appNo).getEntity();
+        return applicationFeClient.getWithdrawAppInfo(appNo).getEntity();
     }
 
     @Override
     public List<WithdrawApplicationDto> getCanWithdrawAppList(List<String[]> appTandS,String licenseeId) {
-        List<WithdrawApplicationDto> withdrawApplicationDtoList = applicationClient.getApplicationByAppTypesAndStatus(appTandS,licenseeId).getEntity();
+        List<WithdrawApplicationDto> withdrawApplicationDtoList = applicationFeClient.getApplicationByAppTypesAndStatus(appTandS,licenseeId).getEntity();
         return withdrawApplicationDtoList;
     }
 

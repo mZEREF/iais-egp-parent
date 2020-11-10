@@ -64,7 +64,7 @@ public class CessationFeServiceImpl implements CessationFeService {
     @Autowired
     private SystemAdminClient systemAdminClient;
     @Autowired
-    private ApplicationClient applicationClient;
+    private ApplicationFeClient applicationFeClient;
     @Value("${iais.email.sender}")
     private String mailSender;
     @Autowired
@@ -244,11 +244,11 @@ public class CessationFeServiceImpl implements CessationFeService {
     public void saveRfiCessations(List<AppCessationDto> appCessationDtos, LoginContext loginContext, String rfiAppId) throws Exception {
         String licenseeId = loginContext.getLicenseeId();
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
-        ApplicationDto applicationDto = applicationClient.getApplicationById(rfiAppId).getEntity();
+        ApplicationDto applicationDto = applicationFeClient.getApplicationById(rfiAppId).getEntity();
         String originLicenceId = applicationDto.getOriginLicenceId();
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         licIds.add(originLicenceId);
-        AppSubmissionDto appSubmissionDto = applicationClient.getAppSubmissionDtoByAppNo(applicationDto.getApplicationNo()).getEntity();
+        AppSubmissionDto appSubmissionDto = applicationFeClient.getAppSubmissionDtoByAppNo(applicationDto.getApplicationNo()).getEntity();
         String appId = transformRfi(appSubmissionDto, licenseeId, applicationDto);
         AppCessMiscDto appCessMiscDto = setMiscData(appCessationDtos.get(0), appId);
         appCessMiscDtos.add(appCessMiscDto);
@@ -315,7 +315,7 @@ public class CessationFeServiceImpl implements CessationFeService {
             licIds.clear();
             licIds.add(licId);
             String appId = appIdPremisesMap.get(premiseId);
-            ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
+            ApplicationDto applicationDto = applicationFeClient.getApplicationById(appId).getEntity();
             applicationDto.setAuditTrailDto(currentAuditTrailDto);
             applicationDtos.add(applicationDto);
             String applicationNo = applicationDto.getApplicationNo();
@@ -547,7 +547,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                 applicationDto.setStatus(appStatus);
             }
         }
-        applicationClient.updateApplicationList(applicationDtos);
+        applicationFeClient.updateApplicationList(applicationDtos);
         String serviceId = applicationDtos.get(0).getServiceId();
         String appStatus = getStageId(serviceId, ApplicationConsts.APPLICATION_TYPE_CESSATION);
         List<String> licNos = IaisCommonUtils.genNewArrayList();
@@ -614,7 +614,7 @@ public class CessationFeServiceImpl implements CessationFeService {
 
     @Override
     public List<AppCessLicDto> initRfiData(String appId, String premiseId) {
-        ApplicationDto entity = applicationClient.getApplicationById(appId).getEntity();
+        ApplicationDto entity = applicationFeClient.getApplicationById(appId).getEntity();
         String originLicenceId = entity.getOriginLicenceId();
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         licIds.add(originLicenceId);
@@ -680,8 +680,8 @@ public class CessationFeServiceImpl implements CessationFeService {
         appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
         setRiskToDto(appSubmissionDto);
 
-        AppSubmissionDto entity = applicationClient.saveSubmision(appSubmissionDto).getEntity();
-        AppSubmissionDto appSubmissionDtoSave = applicationClient.saveApps(entity).getEntity();
+        AppSubmissionDto entity = applicationFeClient.saveSubmision(appSubmissionDto).getEntity();
+        AppSubmissionDto appSubmissionDtoSave = applicationFeClient.saveApps(entity).getEntity();
         List<ApplicationDto> applicationDtos = appSubmissionDtoSave.getApplicationDtos();
         List<String> hciCodes = IaisCommonUtils.genNewArrayList();
         for (String premiseId : premiseIds) {
@@ -704,7 +704,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                 applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
                 applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NEED);
             }
-            applicationClient.updateApplicationDto(applicationDto);
+            applicationFeClient.updateApplicationDto(applicationDto);
         }
 
         for (ApplicationDto applicationDto : applicationDtos) {
@@ -730,7 +730,7 @@ public class CessationFeServiceImpl implements CessationFeService {
         Double amount = 0.0;
         AuditTrailDto internet = AuditTrailHelper.getCurrentAuditTrailDto();
         appSubmissionDto.setAppGrpId(applicationDto.getAppGrpId());
-        ApplicationGroupDto entity1 = applicationClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
+        ApplicationGroupDto entity1 = applicationFeClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
         appSubmissionDto.setFromBe(false);
         appSubmissionDto.setAppGrpNo(entity1.getGroupNo());
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
@@ -767,7 +767,7 @@ public class CessationFeServiceImpl implements CessationFeService {
         setRiskToDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setRfiStatus(applicationDto.getStatus());
-        AppSubmissionDto appSubmissionDto1 = applicationClient.saveRfcCessationSubmision(appSubmissionRequestInformationDto).getEntity();
+        AppSubmissionDto appSubmissionDto1 = applicationFeClient.saveRfcCessationSubmision(appSubmissionRequestInformationDto).getEntity();
         String appId = appSubmissionDto1.getApplicationDtos().get(0).getId();
         return appId;
     }

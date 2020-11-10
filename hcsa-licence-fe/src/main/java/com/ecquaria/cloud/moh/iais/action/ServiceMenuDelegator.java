@@ -36,7 +36,7 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -107,7 +107,7 @@ public class ServiceMenuDelegator {
     @Autowired
     private LicenceViewService licenceViewService;
     @Autowired
-    private ApplicationClient applicationClient;
+    private ApplicationFeClient applicationFeClient;
     @Autowired
     private AppSubmissionService appSubmissionService;
     @Autowired
@@ -663,7 +663,7 @@ public class ServiceMenuDelegator {
                 List<String> list=new ArrayList<>(1);
                 list.add(draftNo);
                 log.info(StringUtil.changeForLog("delete draft start ..."));
-                applicationClient.deleteDraftNUmber(list);
+                applicationFeClient.deleteDraftNUmber(list);
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
                 bpc.request.getSession().setAttribute("DraftNumber", attribute);
@@ -812,7 +812,7 @@ public class ServiceMenuDelegator {
                         List<String> list=new ArrayList<>(1);
                         list.add(draftNo);
                         log.info(StringUtil.changeForLog("delete draft start ..."));
-                        applicationClient.deleteDraftNUmber(list);
+                        applicationFeClient.deleteDraftNUmber(list);
                         bpc.request.getSession().setAttribute("DraftNumber", null);
                     }else if("resume".equals(crud_action_value)){
                         bpc.request.getSession().setAttribute("DraftNumber", attribute);
@@ -898,7 +898,7 @@ public class ServiceMenuDelegator {
                     List<String> list=new ArrayList<>(1);
                     list.add(draftNo);
                     log.info(StringUtil.changeForLog("delete draft start ..."));
-                    applicationClient.deleteDraftNUmber(list);
+                    applicationFeClient.deleteDraftNUmber(list);
                     bpc.request.getSession().setAttribute("DraftNumber", null);
                 }else if("resume".equals(crud_action_value)){
                     bpc.request.getSession().setAttribute("DraftNumber", attribute);
@@ -948,7 +948,7 @@ public class ServiceMenuDelegator {
                 List<String> list=new ArrayList<>(1);
                 list.add(draftNo);
                 log.info(StringUtil.changeForLog("delete draft start ..."));
-                applicationClient.deleteDraftNUmber(list);
+                applicationFeClient.deleteDraftNUmber(list);
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
                 bpc.request.getSession().setAttribute("DraftNumber", attribute);
@@ -969,7 +969,7 @@ public class ServiceMenuDelegator {
                 List<String> list=new ArrayList<>(1);
                 list.add(draftNo);
                 log.info(StringUtil.changeForLog("delete draft start ..."));
-                applicationClient.deleteDraftNUmber(list);
+                applicationFeClient.deleteDraftNUmber(list);
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
                 bpc.request.getSession().setAttribute("DraftNumber", attribute);
@@ -1048,7 +1048,7 @@ public class ServiceMenuDelegator {
                 List<String> list=new ArrayList<>(1);
                 list.add(draftNo);
                 log.info(StringUtil.changeForLog("delete draft start ..."));
-                applicationClient.deleteDraftNUmber(list);
+                applicationFeClient.deleteDraftNUmber(list);
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
                 bpc.request.getSession().setAttribute("DraftNumber", attribute);
@@ -1068,7 +1068,7 @@ public class ServiceMenuDelegator {
                 List<String> list=new ArrayList<>(1);
                 list.add(draftNo);
                 log.info(StringUtil.changeForLog("delete draft start ..."));
-                applicationClient.deleteDraftNUmber(list);
+                applicationFeClient.deleteDraftNUmber(list);
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
                 bpc.request.getSession().setAttribute("DraftNumber", attribute);
@@ -1224,7 +1224,7 @@ public class ServiceMenuDelegator {
             map.put("serviceCodesList", serviceCodeList);
             map.put("appType", ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
             map.put("licenseeId",licenseeId);
-            String entity = applicationClient.selectDarft(map).getEntity();
+            String entity = applicationFeClient.selectDarft(map).getEntity();
             String new_ack001 = MessageUtil.getMessageDesc("NEW_ACK001");
             bpc.request.setAttribute("new_ack001",new_ack001);
             bpc.request.setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, entity);

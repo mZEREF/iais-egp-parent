@@ -7,7 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.SubmitInspectionDate;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,19 +26,19 @@ import java.util.stream.Collectors;
 public class SubmitInspectionDateImpl implements SubmitInspectionDate {
 
     @Autowired
-    private ApplicationClient applicationClient;
+    private ApplicationFeClient applicationFeClient;
 
     @Autowired
     private AppConfigClient appConfigClient;
 
     @Override
     public ApplicationGroupDto getApplicationGroupByGroupId(String groupId) {
-        return applicationClient.getApplicationGroup(groupId).getEntity();
+        return applicationFeClient.getApplicationGroup(groupId).getEntity();
     }
 
     @Override
     public List<ApplicationDto> listApplicationByGroupId(String groupId) {
-        return applicationClient.listApplicationByGroupId(groupId).getEntity();
+        return applicationFeClient.listApplicationByGroupId(groupId).getEntity();
     }
 
     @Override
@@ -97,6 +97,6 @@ public class SubmitInspectionDateImpl implements SubmitInspectionDate {
         applicationGroupDto.setId(groupId);
         applicationGroupDto.setPrefInspStartDate(sDate);
         applicationGroupDto.setPrefInspEndDate(eDate);
-        applicationClient.doUpDate(applicationGroupDto);
+        applicationFeClient.doUpDate(applicationGroupDto);
     }
 }

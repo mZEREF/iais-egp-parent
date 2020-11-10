@@ -7,7 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
@@ -72,9 +72,9 @@ public final class FeSelfChecklistHelper {
     }
 
     public static List<SelfAssessment> receiveSelfAssessmentDataByCorrId(String corrId){
-        ApplicationClient applicationClient = SpringContextHelper.getContext().getBean(ApplicationClient.class);
-        if (applicationClient != null){
-            return applicationClient.receiveSelfAssessmentDataByCorrId(corrId).getEntity();
+        ApplicationFeClient applicationFeClient = SpringContextHelper.getContext().getBean(ApplicationFeClient.class);
+        if (applicationFeClient != null){
+            return applicationFeClient.receiveSelfAssessmentDataByCorrId(corrId).getEntity();
         }
         return Collections.EMPTY_LIST;
     }

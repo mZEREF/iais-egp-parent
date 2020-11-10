@@ -19,7 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.RiskSupportService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class RiskSupportServiceImpl implements RiskSupportService {
     @Autowired
     LicenceClient licenceClient;
     @Autowired
-    ApplicationClient applicationClient;
+    ApplicationFeClient applicationFeClient;
     @Autowired
     AppConfigClient appConfigClient;
 
@@ -79,10 +79,10 @@ public class RiskSupportServiceImpl implements RiskSupportService {
         if (licCorrDtoList != null && !licCorrDtoList.isEmpty()) {
             for (LicAppCorrelationDto licAppCorr : licCorrDtoList) {
                 String appId = licAppCorr.getApplicationId();
-                List<AppPremisesCorrelationDto> appPremCorrList = applicationClient.listAppPremisesCorrelation(appId).getEntity();
+                List<AppPremisesCorrelationDto> appPremCorrList = applicationFeClient.listAppPremisesCorrelation(appId).getEntity();
                 if (appPremCorrList != null && !appPremCorrList.isEmpty()) {
                     for (AppPremisesCorrelationDto appprem : appPremCorrList) {
-                        AppPremisesRecommendationDto appPremCorrDto = applicationClient.getAppPremRecordByIdAndType(appprem.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+                        AppPremisesRecommendationDto appPremCorrDto = applicationFeClient.getAppPremRecordByIdAndType(appprem.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
                         if(appPremCorrDto!=null){
                             appPremisesRecommendationDtoList.add(appPremCorrDto);
                             info.setAppId(appId);

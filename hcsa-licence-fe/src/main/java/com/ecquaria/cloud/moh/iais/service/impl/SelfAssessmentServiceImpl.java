@@ -41,7 +41,7 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -69,7 +69,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     @Autowired
-    private ApplicationClient applicationClient;
+    private ApplicationFeClient applicationFeClient;
 
     @Autowired
     private AppConfigClient appConfigClient;
@@ -114,7 +114,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         List<SelfAssessment> selfAssessmentList = IaisCommonUtils.genNewArrayList();
 
         // (S) Group , (M) application
-        List<ApplicationDto> appList = applicationClient.listApplicationByGroupId(groupId).getEntity();
+        List<ApplicationDto> appList = applicationFeClient.listApplicationByGroupId(groupId).getEntity();
         if (IaisCommonUtils.isEmpty(appList)) {
             return selfAssessmentList;
         }
@@ -145,11 +145,11 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 continue;
             }
 
-            List<AppPremisesCorrelationDto>  correlationList = applicationClient.listAppPremisesCorrelation(appId).getEntity();
+            List<AppPremisesCorrelationDto>  correlationList = applicationFeClient.listAppPremisesCorrelation(appId).getEntity();
             for (AppPremisesCorrelationDto correlationDto : correlationList) {
                 String corrId = correlationDto.getId();
                 String appGrpPremId = correlationDto.getAppGrpPremId();
-                AppGrpPremisesEntityDto appGrpPremises = applicationClient.getAppGrpPremise(appGrpPremId).getEntity();
+                AppGrpPremisesEntityDto appGrpPremises = applicationFeClient.getAppGrpPremise(appGrpPremId).getEntity();
                 String address = MiscUtil.getAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(),
                         appGrpPremises.getBuildingName(), appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode());
 
@@ -200,7 +200,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     private List<String> getServiceSubTypeName(String correlationId){
         List<String> serviceSubtypeName = IaisCommonUtils.genNewArrayList();
-        List<AppSvcPremisesScopeDto> scopeList = applicationClient.getAppSvcPremisesScopeListByCorreId(correlationId).getEntity();
+        List<AppSvcPremisesScopeDto> scopeList = applicationFeClient.getAppSvcPremisesScopeListByCorreId(correlationId).getEntity();
         for (AppSvcPremisesScopeDto premise : scopeList){
             boolean isSubService = premise.isSubsumedType();
             if (!isSubService){
@@ -216,14 +216,14 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     @Override
     public List<SelfAssessment> receiveSubmittedSelfAssessmentDataByGroupId(String groupId) {
         List<SelfAssessment> viewData = IaisCommonUtils.genNewArrayList();
-        List<ApplicationDto> appList = applicationClient.listApplicationByGroupId(groupId).getEntity();
+        List<ApplicationDto> appList = applicationFeClient.listApplicationByGroupId(groupId).getEntity();
         if (IaisCommonUtils.isEmpty(appList)) {
             return viewData;
         }
 
         for(ApplicationDto app : appList){
            String appId = app.getId();
-            List<AppPremisesCorrelationDto>  correlationList = applicationClient.listAppPremisesCorrelation(appId).getEntity();
+            List<AppPremisesCorrelationDto>  correlationList = applicationFeClient.listAppPremisesCorrelation(appId).getEntity();
             for (AppPremisesCorrelationDto correlationDto : correlationList) {
                 String corrId = correlationDto.getId();
                 List<SelfAssessment> dataByCorrId = receiveSelfAssessmentRfiByCorrId(corrId);
@@ -253,7 +253,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName() + "/main-web/";
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
         for (String s : correlationIds){
-            ApplicationDto applicationDto = applicationClient.getApplicationByCorrId(s).getEntity();
+            ApplicationDto applicationDto = applicationFeClient.getApplicationByCorrId(s).getEntity();
             if (Optional.ofNullable(applicationDto).isPresent()){
                     String appNo = applicationDto.getApplicationNo();
                     String originAppType = applicationDto.getApplicationType();
@@ -398,7 +398,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             selfAssessmentList.get(0).setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         }
 
-        FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> result =  applicationClient.saveAllSelfAssessment(selfAssessmentList);
+        FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> result =  applicationFeClient.saveAllSelfAssessment(selfAssessmentList);
         if (result.getStatusCode() == HttpStatus.SC_OK){
             FeSelfAssessmentSyncDataDto syncDataDto = new FeSelfAssessmentSyncDataDto();
             syncDataDto.setAppNoList(selfAssessmentList.stream().map(SelfAssessment::getApplicationNumber).collect(Collectors.toList()));
@@ -439,7 +439,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Override
     public Boolean hasSubmittedSelfAssMtByGroupId(String groupId) {
-        FeignResponseEntity<Integer> result = applicationClient.getApplicationSelfAssMtStatusByGroupId(groupId);
+        FeignResponseEntity<Integer> result = applicationFeClient.getApplicationSelfAssMtStatusByGroupId(groupId);
         if (HttpStatus.SC_OK == result.getStatusCode()){
             int status = result.getEntity().intValue();
             if (ApplicationConsts.SUBMITTED_SELF_ASSESSMENT == status){
@@ -451,7 +451,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Override
     public Boolean hasSubmittedSelfAssMtRfiByCorrId(String corrId) {
-        ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(corrId).getEntity();
+        ApplicationDto applicationDto = applicationFeClient.getApplicationByCorreId(corrId).getEntity();
         if (applicationDto == null){
             log.info(StringUtil.changeForLog("applicationDto is null" + applicationDto));
             return Boolean.TRUE;
@@ -465,9 +465,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         log.info(StringUtil.changeForLog("changePendingSelfAssMtStatus =====>>" + value + "isGroupId" + isGroupId));
         List<ApplicationDto> appList;
         if (isGroupId){
-            appList = applicationClient.listApplicationByGroupId(value).getEntity();
+            appList = applicationFeClient.listApplicationByGroupId(value).getEntity();
         }else {
-            appList = applicationClient.getPremisesApplicationsByCorreId(value).getEntity();
+            appList = applicationFeClient.getPremisesApplicationsByCorreId(value).getEntity();
         }
 
         if (IaisCommonUtils.isEmpty(appList)) {
@@ -483,11 +483,11 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             app.setSelfAssMtFlag(ApplicationConsts.SUBMITTED_SELF_ASSESSMENT);
         }
 
-        applicationClient.updateApplicationList(appList);
+        applicationFeClient.updateApplicationList(appList);
     }
 
     @Override
     public AppPremisesCorrelationDto getCorrelationByAppNo(String appNo) {
-        return applicationClient.getCorrelationByAppNo(appNo).getEntity();
+        return applicationFeClient.getCorrelationByAppNo(appNo).getEntity();
     }
 }

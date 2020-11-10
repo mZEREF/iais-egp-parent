@@ -24,7 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.InspecUserRecUploadService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
@@ -47,7 +47,7 @@ import java.util.List;
 public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
 
     @Autowired
-    private ApplicationClient applicationClient;
+    private ApplicationFeClient applicationFeClient;
 
     @Autowired
     private LicFeInboxClient licFeInboxClient;
@@ -83,7 +83,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
     public List<ChecklistItemDto> getQuesAndClause(String appNo) {
         List<ChecklistItemDto> checklistItemDtos = IaisCommonUtils.genNewArrayList();
         if(!(StringUtil.isEmpty(appNo))){
-            List<String> itemIds = applicationClient.getItemIdsByAppNo(appNo).getEntity();
+            List<String> itemIds = applicationFeClient.getItemIdsByAppNo(appNo).getEntity();
             checklistItemDtos = getCheckDtosByItemIds(itemIds);
         }
         return checklistItemDtos;
@@ -98,14 +98,14 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
             appNcDocDto.setSubmitBy(loginContext.getUserId());
             appNcDocDto.setSubmitDt(new Date());
         }
-        appNcDocDtoList = applicationClient.saveAppNcDoc(appNcDocDtoList).getEntity();
+        appNcDocDtoList = applicationFeClient.saveAppNcDoc(appNcDocDtoList).getEntity();
         inspecUserRecUploadDto.setAppPremPreInspectionNcDocDtos(appNcDocDtoList);
 
         //update nc item
         AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = inspecUserRecUploadDto.getAppPremisesPreInspectionNcItemDto();
         appPremisesPreInspectionNcItemDto.setFeRemarks(inspecUserRecUploadDto.getUploadRemarks());
         appPremisesPreInspectionNcItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appPremisesPreInspectionNcItemDto = applicationClient.updateAppPreItemNc(appPremisesPreInspectionNcItemDto).getEntity();
+        appPremisesPreInspectionNcItemDto = applicationFeClient.updateAppPreItemNc(appPremisesPreInspectionNcItemDto).getEntity();
 
         inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
         inspecUserRecUploadDto.setFileDelCelIds(null);
@@ -147,10 +147,10 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         String appPremCorrId = inspecUserRecUploadDtos.get(0).getAppPremPreInspectionNcDto().getAppPremCorrId();
         //update application
-        ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(appPremCorrId).getEntity();
+        ApplicationDto applicationDto = applicationFeClient.getApplicationByCorreId(appPremCorrId).getEntity();
         applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION);
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        applicationClient.updateApplication(applicationDto).getEntity();
+        applicationFeClient.updateApplication(applicationDto).getEntity();
 
         for(InspecUserRecUploadDto inspecUserRecUploadDto : inspecUserRecUploadDtos){
             inspecUserRecUploadDto.setButtonFlag(AppConsts.SUCCESS);
@@ -158,7 +158,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
             AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = inspecUserRecUploadDto.getAppPremisesPreInspectionNcItemDto();
             appPremisesPreInspectionNcItemDto.setFeRectifiedFlag(1);
             appPremisesPreInspectionNcItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            appPremisesPreInspectionNcItemDto = applicationClient.updateAppPreItemNc(appPremisesPreInspectionNcItemDto).getEntity();
+            appPremisesPreInspectionNcItemDto = applicationFeClient.updateAppPreItemNc(appPremisesPreInspectionNcItemDto).getEntity();
 
             //set premises nc
             List<AppPremPreInspectionNcDto> appPremPreInspectionNcDtos = IaisCommonUtils.genNewArrayList();
@@ -189,7 +189,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
 
     @Override
     public ApplicationDto getApplicationByCorrId(String appPremCorrId) {
-        return applicationClient.getApplicationByCorreId(appPremCorrId).getEntity();
+        return applicationFeClient.getApplicationByCorreId(appPremCorrId).getEntity();
     }
 
     @Override
@@ -232,7 +232,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
     @Override
     public List<InspecUserRecUploadDto> getNcItemData(int version, String appPremCorrId, List<ChecklistItemDto> checklistItemDtos) {
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = IaisCommonUtils.genNewArrayList();
-        AppPremPreInspectionNcDto appPremPreInspectionNcDto = applicationClient.getAppPremPreInsNcDtoByAppCorrId(appPremCorrId).getEntity();
+        AppPremPreInspectionNcDto appPremPreInspectionNcDto = applicationFeClient.getAppPremPreInsNcDtoByAppCorrId(appPremCorrId).getEntity();
         String oldNcId = appPremPreInspectionNcDto.getId();
         List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = inspectionFeClient.getNcItemDtoListByAppPremNcId(oldNcId).getEntity();
         String curVersionStr = appPremPreInspectionNcDto.getVersion();
@@ -243,13 +243,13 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
             //create new AppPremPreInspectionNcDto
             appPremPreInspectionNcDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             appPremPreInspectionNcDto.setAuditTrailDto(auditTrailDto);
-            appPremPreInspectionNcDto = applicationClient.updateAppPremPreNc(appPremPreInspectionNcDto).getEntity();
+            appPremPreInspectionNcDto = applicationFeClient.updateAppPremPreNc(appPremPreInspectionNcDto).getEntity();
 
             appPremPreInspectionNcDto.setId(null);
             appPremPreInspectionNcDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             appPremPreInspectionNcDto.setVersion(version + "");
             appPremPreInspectionNcDto.setAuditTrailDto(auditTrailDto);
-            appPremPreInspectionNcDto = applicationClient.saveAppPremPreNc(appPremPreInspectionNcDto).getEntity();
+            appPremPreInspectionNcDto = applicationFeClient.saveAppPremPreNc(appPremPreInspectionNcDto).getEntity();
 
             //create new AppPremisesPreInspectionNcItemDto
             List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = IaisCommonUtils.genNewArrayList();
@@ -259,7 +259,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                     appPremisesPreInspectionNcItemDto.setId(null);
                     appPremisesPreInspectionNcItemDto.setFeRectifiedFlag(0);
                     appPremisesPreInspectionNcItemDto.setAuditTrailDto(auditTrailDto);
-                    appPremisesPreInspectionNcItemDto = applicationClient.createAppNcItemDto(appPremisesPreInspectionNcItemDto).getEntity();
+                    appPremisesPreInspectionNcItemDto = applicationFeClient.createAppNcItemDto(appPremisesPreInspectionNcItemDto).getEntity();
                     appPremisesPreInspectionNcItemDtoList.add(appPremisesPreInspectionNcItemDto);
                 }
             }
@@ -315,7 +315,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                         inspecUserRecUploadDto.setAppPremPreInspectionNcDto(appPremPreInspectionNcDto);
                         //get fileReport
                         List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos =
-                                applicationClient.getNcDocListByItemId(appPremisesPreInspectionNcItemDto.getId()).getEntity();
+                                applicationFeClient.getNcDocListByItemId(appPremisesPreInspectionNcItemDto.getId()).getEntity();
                         if(!IaisCommonUtils.isEmpty(appPremPreInspectionNcDocDtos)){
                             List<String> fileReportIds = IaisCommonUtils.genNewArrayList();
                             for(AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto : appPremPreInspectionNcDocDtos){

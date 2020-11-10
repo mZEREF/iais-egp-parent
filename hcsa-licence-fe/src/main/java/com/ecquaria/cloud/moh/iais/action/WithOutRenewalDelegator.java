@@ -65,7 +65,7 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.validation.PaymentValidate;
@@ -133,7 +133,7 @@ public class WithOutRenewalDelegator {
     @Autowired
     private OrganizationLienceseeClient organizationLienceseeClient;
     @Autowired
-    private ApplicationClient applicationClient;
+    private ApplicationFeClient applicationFeClient;
 
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
@@ -1114,12 +1114,12 @@ public class WithOutRenewalDelegator {
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
             if(!StringUtil.isEmpty(appSubmissionDto.getLicenceId())){
-                List<ApplicationSubDraftDto> entity = applicationClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
+                List<ApplicationSubDraftDto> entity = applicationFeClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
                 for(ApplicationSubDraftDto applicationSubDraftDto : entity){
                     String draftJson = applicationSubDraftDto.getDraftJson();
                     AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
                     appSubmissionDto1.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                    applicationClient.saveDraft(appSubmissionDto1);
+                    applicationFeClient.saveDraft(appSubmissionDto1);
                 }
             }
         }

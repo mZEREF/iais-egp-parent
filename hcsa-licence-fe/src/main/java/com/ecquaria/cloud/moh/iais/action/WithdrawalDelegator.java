@@ -21,7 +21,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +55,7 @@ public class WithdrawalDelegator {
     private ServiceConfigService serviceConfigService;
 
     @Autowired
-    private ApplicationClient applicationClient;
+    private ApplicationFeClient applicationFeClient;
 
     private LoginContext loginContext = null;
 
@@ -209,7 +209,7 @@ public class WithdrawalDelegator {
                     withdrawnDto = new WithdrawnDto();
                 }
                 String appNo = withdrawAppNos[i];
-                ApplicationDto applicationDto = applicationClient.getApplicationDtoByAppNo(appNo).getEntity();
+                ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
                 String appId = applicationDto.getId();
                 CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
                 if(!StringUtil.isEmpty(appId)){

@@ -29,7 +29,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
@@ -68,7 +68,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Autowired
     private SystemAdminClient systemAdminClient;
     @Autowired
-    private ApplicationClient applicationClient;
+    private ApplicationFeClient applicationFeClient;
     @Autowired
     private LicenceClient licenceClient;
     @Value("${iais.syncFileTracking.shared.path}")
@@ -192,12 +192,12 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Override
     public void updatePaymentStatus(ApplicationGroupDto appGrp) {
         appGrp.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        applicationClient.doPaymentUpDate(appGrp);
+        applicationFeClient.doPaymentUpDate(appGrp);
     }
 
     @Override
     public AppSubmissionDto getAppSubmissionDtoDraft(String draftNo) {
-        return applicationClient.draftNumberGet(draftNo).getEntity();
+        return applicationFeClient.draftNumberGet(draftNo).getEntity();
     }
 
     @Override
@@ -307,7 +307,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public void paymentUpDateByGrpNo(ApplicationGroupDto appGrp) {
-        applicationClient.paymentUpDateByGrpNo(appGrp);
+        applicationFeClient.paymentUpDateByGrpNo(appGrp);
     }
 
     @Override
@@ -318,6 +318,6 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Override
     public void updateAppGrpPmtStatus(ApplicationGroupDto appGrp) {
         appGrp.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        applicationClient.doPaymentUpDate(appGrp);
+        applicationFeClient.doPaymentUpDate(appGrp);
     }
 }

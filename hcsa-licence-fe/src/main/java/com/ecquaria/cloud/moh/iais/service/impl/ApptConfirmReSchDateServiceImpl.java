@@ -33,7 +33,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ApptConfirmReSchDateService;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +62,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
     private InspectionFeClient inspectionFeClient;
 
     @Autowired
-    private ApplicationClient applicationClient;
+    private ApplicationFeClient applicationFeClient;
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
@@ -90,14 +90,14 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
 
     @Override
     public String getAppPremCorrIdByAppId(String appId) {
-        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.listAppPremisesCorrelation(appId).getEntity().get(0);
+        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationFeClient.listAppPremisesCorrelation(appId).getEntity().get(0);
         String appPremCorrId = appPremisesCorrelationDto.getId();
         return appPremCorrId;
     }
 
     @Override
     public ApplicationDto getApplicationDtoByAppNo(String applicationNo) {
-        ApplicationDto applicationDto = applicationClient.getApplicationDtoByAppNo(applicationNo).getEntity();
+        ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(applicationNo).getEntity();
         return applicationDto;
     }
 
@@ -108,7 +108,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         ProcessReSchedulingDto processReSchedulingDto = new ProcessReSchedulingDto();
         if(!StringUtil.isEmpty(appPremCorrId)) {
             //get All CorrDto From Same Premises
-            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getLastAppPremisesCorrelationDtoByCorreId(appPremCorrId).getEntity();
+            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationFeClient.getLastAppPremisesCorrelationDtoByCorreId(appPremCorrId).getEntity();
             //set All TaskRefNo (AppPremCorrIds)
             List<ApplicationDto> applicationDtos = getApplicationBySamePremCorrId(appPremisesCorrelationDtos, processReSchedulingDto, appStatus);
             //set appNo and appPremCorrId map
@@ -163,7 +163,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){//NOSONAR
             for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
                 if(appPremisesCorrelationDto != null && !StringUtil.isEmpty(appPremisesCorrelationDto.getId())){
-                    ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(appPremisesCorrelationDto.getId()).getEntity();
+                    ApplicationDto applicationDto = applicationFeClient.getApplicationByCorreId(appPremisesCorrelationDto.getId()).getEntity();
                     if(!StringUtil.isEmpty(appStatus) && applicationDto != null) {
                         if (appStatus.equals(applicationDto.getStatus())) {
                             taskRefNo.add(appPremisesCorrelationDto.getId());
@@ -251,7 +251,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 
         ApplicationDto applicationDto = processReSchedulingDto.getApplicationDto();
-        ApplicationGroupDto applicationGroupDto = applicationClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
+        ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
         String appStatus = applicationDto.getStatus();
         if(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_APPLICANT.equals(appStatus)){
             try{
@@ -356,7 +356,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         for(ApplicationDto applicationDto : applicationDtos) {
             applicationDto.setStatus(status);
             applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            applicationDto = applicationClient.updateApplication(applicationDto).getEntity();
+            applicationDto = applicationFeClient.updateApplication(applicationDto).getEntity();
             applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         }
         processReSchedulingDto.setApplicationDtos(applicationDtos);
@@ -460,7 +460,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
     private String getApplicationByCorrId(String appPremCorrId) {
         String appNo = "";
         if(!StringUtil.isEmpty(appPremCorrId)){
-            ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(appPremCorrId).getEntity();
+            ApplicationDto applicationDto = applicationFeClient.getApplicationByCorreId(appPremCorrId).getEntity();
             appNo = applicationDto.getApplicationNo();
         }
         return appNo;
@@ -485,13 +485,13 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
 
     @Override
     public void updateAppStatusCommPool(List<ApptViewDto> apptViewDtos) {
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=applicationClient.appPremCorrDtosByApptViewDtos(apptViewDtos).getEntity();
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos= applicationFeClient.appPremCorrDtosByApptViewDtos(apptViewDtos).getEntity();
 
         for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
         ) {
             String appId=appPremisesCorrelationDto.getApplicationId();
             String appCorrId=appPremisesCorrelationDto.getId();
-            ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
+            ApplicationDto applicationDto= applicationFeClient.getApplicationById(appId).getEntity();
             ProcessReSchedulingDto processReSchedulingDto;
             processReSchedulingDto = getApptComPolSystemDateByCorrId(appCorrId);
             for (ApptViewDto appt:apptViewDtos
@@ -516,12 +516,12 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         ProcessReSchedulingDto processReSchedulingDto = new ProcessReSchedulingDto();
         //get All CorrDto From Same Premises
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getLastAppPremisesCorrelationDtoByCorreId(appPremCorrId).getEntity();
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationFeClient.getLastAppPremisesCorrelationDtoByCorreId(appPremCorrId).getEntity();
         //set All TaskRefNo (AppPremCorrIds)
         List<String> taskRefNo = getTaskRefNoList(appPremisesCorrelationDtos);
         processReSchedulingDto.setTaskRefNo(taskRefNo);
         if(!StringUtil.isEmpty(appPremCorrId)) {
-            List<ApplicationDto> applicationDtos = applicationClient.getPremisesApplicationsByCorreId(appPremCorrId).getEntity();
+            List<ApplicationDto> applicationDtos = applicationFeClient.getPremisesApplicationsByCorreId(appPremCorrId).getEntity();
             //set appNo and appPremCorrId map
             processReSchedulingDto = setAppNoAndAppPremCorrIdMap(applicationDtos, processReSchedulingDto);
             processReSchedulingDto.setApplicationDtos(applicationDtos);

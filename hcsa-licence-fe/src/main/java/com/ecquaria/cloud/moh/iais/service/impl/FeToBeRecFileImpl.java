@@ -20,7 +20,7 @@ import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.FeToBeRecFileService;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.sz.commons.util.FileUtil;
@@ -71,7 +71,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     private String secSecretKey;
 
     @Autowired
-    private ApplicationClient applicationClient;
+    private ApplicationFeClient applicationFeClient;
 
     @Autowired
     private FeEicGatewayClient eicGatewayClient;
@@ -116,7 +116,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
 
     @Override
     public Map<String, String> getDocFile() {
-        Map<String, List<AppPremPreInspectionNcDocDto>> fileReportIds = applicationClient.recFileId().getEntity();
+        Map<String, List<AppPremPreInspectionNcDocDto>> fileReportIds = applicationFeClient.recFileId().getEntity();
         Map<String, String> appIdNcItemIdMap = IaisCommonUtils.genNewHashMap();
         if(fileReportIds != null) {
             for (Map.Entry<String, List<AppPremPreInspectionNcDocDto>> entry : fileReportIds.entrySet()) {
@@ -332,10 +332,10 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             eicRequestTrackingDtos.add(eicRequestTrackingDto);
             appEicClient.updateStatus(eicRequestTrackingDtos);
             if(AppConsts.SUCCESS.equals(s)) {
-                ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
+                ApplicationDto applicationDto = applicationFeClient.getApplicationById(appId).getEntity();
                 applicationDto.setAuditTrailDto(internet);
                 applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_BE_CREATE_TASK);
-                applicationClient.updateApplication(applicationDto);
+                applicationFeClient.updateApplication(applicationDto);
             }
         }catch (Exception e){
             log.error(e.getMessage(), e);

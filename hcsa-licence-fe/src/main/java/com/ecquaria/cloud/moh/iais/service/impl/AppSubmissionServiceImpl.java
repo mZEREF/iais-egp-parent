@@ -52,7 +52,7 @@ import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
@@ -83,7 +83,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     //String submission = RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.HCSA_APP_SUBMISSION;
 
     @Autowired
-    private ApplicationClient applicationClient;
+    private ApplicationFeClient applicationFeClient;
     @Autowired
     private AppConfigClient appConfigClient;
     @Autowired
@@ -119,7 +119,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appSubmissionDto= applicationClient.saveSubmision(appSubmissionDto).getEntity();
+        appSubmissionDto= applicationFeClient.saveSubmision(appSubmissionDto).getEntity();
         //asynchronous save the other data.
         eventBus(appSubmissionDto, process);
         return appSubmissionDto;
@@ -228,13 +228,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public List<ApplicationDto> listApplicationByGroupId(String groupId) {
-        return applicationClient.listApplicationByGroupId(groupId).getEntity();
+        return applicationFeClient.listApplicationByGroupId(groupId).getEntity();
     }
 
     @Override
     public AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        return applicationClient.saveDraft(appSubmissionDto).getEntity();
+        return applicationFeClient.saveDraft(appSubmissionDto).getEntity();
     }
 
     @Override
@@ -683,12 +683,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public AppSubmissionDto getAppSubmissionDtoByAppNo(String appNo) {
-        return applicationClient.getAppSubmissionDtoByAppNo(appNo).getEntity();
+        return applicationFeClient.getAppSubmissionDtoByAppNo(appNo).getEntity();
     }
 
     @Override
     public AppSubmissionDto getAppSubmissionDto(String appNo) {
-        return applicationClient.getAppSubmissionDto(appNo).getEntity();
+        return applicationFeClient.getAppSubmissionDto(appNo).getEntity();
     }
 
     private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList,String serviceCode){
@@ -747,7 +747,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public AppSubmissionDto submitRequestChange(AppSubmissionDto appSubmissionDto, Process process) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appSubmissionDto = applicationClient.saveAppsForRequestForChange(appSubmissionDto).getEntity();
+        appSubmissionDto = applicationFeClient.saveAppsForRequestForChange(appSubmissionDto).getEntity();
         //eventBus(appSubmissionDto, process);
         return appSubmissionDto;
     }
@@ -755,7 +755,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public AppSubmissionDto submitRenew(AppSubmissionDto appSubmissionDto) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appSubmissionDto = applicationClient.saveAppsForRenew(appSubmissionDto).getEntity();
+        appSubmissionDto = applicationFeClient.saveAppsForRenew(appSubmissionDto).getEntity();
         return appSubmissionDto;
     }
 
@@ -817,7 +817,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public ApplicationGroupDto createApplicationDataByWithOutRenewal(RenewDto renewDto) {
-        return applicationClient.createApplicationDataByWithOutRenewal(renewDto).getEntity();
+        return applicationFeClient.createApplicationDataByWithOutRenewal(renewDto).getEntity();
     }
 
     @Override
@@ -825,14 +825,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<ApplicationDto> applicationDtos = listApplicationByGroupId(appGroupId);
         for(ApplicationDto application : applicationDtos){
             application.setStatus(stuts);
-            applicationClient.updateApplication(application);
+            applicationFeClient.updateApplication(application);
         }
     }
 
     @Override
     public boolean checkRenewalStatus(String licenceId) {
         boolean flag = true;
-        List<ApplicationDto> apps = applicationClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
+        List<ApplicationDto> apps = applicationFeClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
         for(ApplicationDto app : apps){
             if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(app.getApplicationType())
                     && !(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(app.getStatus()))){
@@ -883,8 +883,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public void saveAppsubmission(AppSubmissionDto appSubmissionDto) {
-        AppSubmissionDto entity = applicationClient.saveSubmision(appSubmissionDto).getEntity();
-        applicationClient.saveApps(entity).getEntity();
+        AppSubmissionDto entity = applicationFeClient.saveSubmision(appSubmissionDto).getEntity();
+        applicationFeClient.saveApps(entity).getEntity();
     }
 
     @Override
@@ -902,15 +902,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public void saveAppGrpMisc(AppGroupMiscDto appGroupMiscDto) {
-        applicationClient.saveAppGroupMiscDto(appGroupMiscDto);
+        applicationFeClient.saveAppGroupMiscDto(appGroupMiscDto);
     }
 
     @Override
     public List<AppSubmissionDto> getAppSubmissionDtoByGroupNo(String groupNo) {
-        List<ApplicationDto> applicationDtos = applicationClient.getApplicationsByGroupNo(groupNo).getEntity();
+        List<ApplicationDto> applicationDtos = applicationFeClient.getApplicationsByGroupNo(groupNo).getEntity();
         List<AppSubmissionDto> appSubmissionDtos =IaisCommonUtils.genNewArrayList();
         for(ApplicationDto applicationDto : applicationDtos){
-            AppSubmissionDto appSubmissionDto = applicationClient.getAppSubmissionDtoByAppNo(applicationDto.getApplicationNo()).getEntity();
+            AppSubmissionDto appSubmissionDto = applicationFeClient.getAppSubmissionDtoByAppNo(applicationDto.getApplicationNo()).getEntity();
             appSubmissionDtos.add(appSubmissionDto);
         }
         return appSubmissionDtos;
@@ -918,23 +918,23 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public void deleteOverdueDraft(String draftValidity) {
-        applicationClient.deleteOverdueDraft(draftValidity);
+        applicationFeClient.deleteOverdueDraft(draftValidity);
     }
 
     @Override
     public List<AppGrpPremisesDto> getAppGrpPremisesDto(String appNo) {
-        List<AppGrpPremisesDto> entity = applicationClient.getAppGrpPremisesDtoByAppGroId(appNo).getEntity();
+        List<AppGrpPremisesDto> entity = applicationFeClient.getAppGrpPremisesDtoByAppGroId(appNo).getEntity();
         return entity;
     }
 
     @Override
     public AppFeeDetailsDto saveAppFeeDetails(AppFeeDetailsDto appFeeDetailsDto) {
-        return   applicationClient.saveAppFeeDetails(appFeeDetailsDto).getEntity();
+        return   applicationFeClient.saveAppFeeDetails(appFeeDetailsDto).getEntity();
     }
 
     @Override
     public ApplicationDto getMaxVersionApp(String appNo) {
-        return applicationClient.getApplicationDtoByVersion(appNo).getEntity();
+        return applicationFeClient.getApplicationDtoByVersion(appNo).getEntity();
     }
 
     @Override
@@ -960,7 +960,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String svcNameStr = JsonUtil.parseToJson(svcNames);
             String svcIdStr = JsonUtil.parseToJson(svcIds);
             List<PremisesDto> premisesDtos = licenceClient.getPremisesByLicseeIdAndSvcName(licenseeId,svcNameStr).getEntity();
-            List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = applicationClient.getPendAppPremises(licenseeId,svcIdStr).getEntity();
+            List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = applicationFeClient.getPendAppPremises(licenseeId,svcIdStr).getEntity();
             if(!IaisCommonUtils.isEmpty(premisesDtos)){
                 for(PremisesDto premisesHciDto:premisesDtos){
                     result.addAll(NewApplicationHelper.genPremisesHciList(premisesHciDto));
@@ -985,7 +985,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 svcIds.add(hcsaServiceDto.getId());
             }
             String svcIdStr = JsonUtil.parseToJson(svcIds);
-            appGrpPremisesEntityDtos = applicationClient.getPendAppPremises(licenseeId,svcIdStr).getEntity();
+            appGrpPremisesEntityDtos = applicationFeClient.getPendAppPremises(licenseeId,svcIdStr).getEntity();
         }
         return appGrpPremisesEntityDtos;
     }
@@ -1018,32 +1018,32 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public AppGrpPremisesEntityDto getPremisesByAppNo(String appNo) {
-        return applicationClient.getPremisesByAppNo(appNo).getEntity();
+        return applicationFeClient.getPremisesByAppNo(appNo).getEntity();
     }
 
     @Override
     public AppGrpPrimaryDocDto getMaxVersionPrimaryComDoc(String appGrpId, String configDocId) {
-        return applicationClient.getMaxVersionPrimaryComDoc(appGrpId,configDocId).getEntity();
+        return applicationFeClient.getMaxVersionPrimaryComDoc(appGrpId,configDocId).getEntity();
     }
 
     @Override
     public AppSvcDocDto getMaxVersionSvcComDoc(String appGrpId, String configDocId) {
-        return applicationClient.getMaxVersionSvcComDoc(appGrpId,configDocId).getEntity();
+        return applicationFeClient.getMaxVersionSvcComDoc(appGrpId,configDocId).getEntity();
     }
 
     @Override
     public AppGrpPrimaryDocDto getMaxVersionPrimarySpecDoc(String appGrpId, String configDocId, String appNo) {
-        return applicationClient.getMaxVersionPrimarySpecDoc(appGrpId,configDocId,appNo).getEntity();
+        return applicationFeClient.getMaxVersionPrimarySpecDoc(appGrpId,configDocId,appNo).getEntity();
     }
 
     @Override
     public AppSvcDocDto getMaxVersionSvcSpecDoc(String appGrpId, String configDocId, String appNo) {
-        return applicationClient.getMaxVersionSvcSpecDoc(appGrpId,configDocId,appNo).getEntity();
+        return applicationFeClient.getMaxVersionSvcSpecDoc(appGrpId,configDocId,appNo).getEntity();
     }
 
     @Override
     public AppSubmissionDto getAppSubmissionDtoByAppGrpNo(String appGrpNo) {
-        return applicationClient.getAppSubmissionDtoByAppGrpNo(appGrpNo).getEntity();
+        return applicationFeClient.getAppSubmissionDtoByAppGrpNo(appGrpNo).getEntity();
     }
 
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
