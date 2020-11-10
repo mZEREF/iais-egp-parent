@@ -36,7 +36,7 @@
                     <li class="site-fontsizer-cont"><a class="decrease-font fontsizer" onclick="zoomin();">A-</a></li>
                     <li class="site-fontsizer-cont"><a class="decrease-font fontsizer" onclick="zoomout();">A+</a></li>
                 </ul>
-                <div class="gcse-search" style="width: 50%;"></div>
+                <div class="gcse-search" style="width:50%;float:right;"></div>
                 <div class="visible-xs visible-sm visible-md"><a class="menu-icon" href="javascript:;"><span class="icon-bar"></span></a></div>
             </div>
         </div>
