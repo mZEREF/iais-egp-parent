@@ -1445,7 +1445,8 @@ public class NewApplicationDelegator {
                     List<AppCessLicDto> appCessDtosByLicIds = cessationFeService.getAppCessDtosByLicIds(licIds);
                     AppCessMiscDto appCessMiscDto = cessationClient.getAppMiscDtoByAppId(applicationDto.getId()).getEntity();
                     if (!IaisCommonUtils.isEmpty(appCessDtosByLicIds)) {
-                        AppCessHciDto appCessHciDto = new AppCessHciDto();
+                        List<AppCessHciDto> appCessHciDtos = appCessDtosByLicIds.get(0).getAppCessHciDtos();
+                        AppCessHciDto appCessHciDto = appCessHciDtos.get(0);
                         Date effectiveDate = appCessMiscDto.getEffectiveDate();
                         String reason = appCessMiscDto.getReason();
                         String otherReason = appCessMiscDto.getOtherReason();
@@ -1469,12 +1470,6 @@ public class NewApplicationDelegator {
                             appCessHciDto.setPatNoRemarks(remarks);
                             appCessHciDto.setPatNeedTrans(Boolean.FALSE);
                         }
-                        List<AppCessHciDto> appCessHciDtos = appCessDtosByLicIds.get(0).getAppCessHciDtos();
-                        AppCessHciDto appCessHciDto1 = appCessHciDtos.get(0);
-                        appCessHciDtos.clear();
-                        appCessHciDto.setHciCode(appCessHciDto1.getHciCode());
-                        appCessHciDto.setPatHciName(appCessHciDto1.getPatHciName());
-                        appCessHciDto.setHciAddress(appCessHciDto1.getHciAddress());
                         appCessHciDtos.add(appCessHciDto);
                     }
                     List<SelectOption> reasonOption = getReasonOption();

@@ -40,10 +40,13 @@
                                                 <label style="font-size: 16px">Effective Date</label>
                                             </div>
                                             <div class="col-md-5">
-                                                <span style="font-size: 16px"><fmt:formatDate value="${appCessHci.effectiveDate}" pattern="dd/MM/yyyy"/></span>
-                                                <span style="font-size: 16px;float:right"><a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
-                                                                                             data-html="true"
-                                                                                             data-original-title="<p>The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">
+                                                <span style="font-size: 16px"><fmt:formatDate
+                                                        value="${appCessHci.effectiveDate}"
+                                                        pattern="dd/MM/yyyy"/></span>
+                                                <span style="font-size: 16px;float:right"><a
+                                                        class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
+                                                        data-html="true"
+                                                        data-original-title="<p>The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">
                                                                 i</a></span>
                                             </div>
                                         </div>
@@ -204,13 +207,13 @@
                 </div>
             </c:forEach>
         </div>
-<%--        <div class="row">--%>
-<%--            <div>--%>
-<%--                    <span style="padding-right: 10%" class="components">--%>
-<%--                        <a onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>--%>
-<%--                    </span>--%>
-<%--            </div>--%>
-<%--        </div>--%>
+        <%--        <div class="row">--%>
+        <%--            <div>--%>
+        <%--                    <span style="padding-right: 10%" class="components">--%>
+        <%--                        <a onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>--%>
+        <%--                    </span>--%>
+        <%--            </div>--%>
+        <%--        </div>--%>
         <br/>
     </div>
 </div>
