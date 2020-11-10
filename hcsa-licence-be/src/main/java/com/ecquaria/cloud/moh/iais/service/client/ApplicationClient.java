@@ -271,7 +271,7 @@ public interface ApplicationClient {
     FeignResponseEntity<AppGrpPremisesEntityDto> getAppGrpPremise(@PathVariable(name = "appPreId")String appPreId);
 
     @GetMapping(value = "/iais-application-be/get-returnfee-appNo")
-    FeignResponseEntity<AppReturnFeeDto> getReturnFeeByAppNo(@PathVariable(name = "appNo")String appNo);
+    FeignResponseEntity<AppReturnFeeDto> getReturnFeeByAppNo(@RequestParam(name = "appNo")String appNo,@RequestParam("returnType") String returnType);
 
     @GetMapping(value = "/iais-application-be/get-returnfee-status")
     FeignResponseEntity<List<AppReturnFeeDto>> getAppReturnFeeByStatus(@RequestParam("status") String status);

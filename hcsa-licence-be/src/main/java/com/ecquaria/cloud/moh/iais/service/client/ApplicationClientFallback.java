@@ -653,7 +653,7 @@ public class ApplicationClientFallback implements ApplicationClient{
     }
 
     @Override
-    public FeignResponseEntity<AppReturnFeeDto> getReturnFeeByAppNo(String appNo) {
+    public FeignResponseEntity<AppReturnFeeDto> getReturnFeeByAppNo(String appNo, String returnType) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

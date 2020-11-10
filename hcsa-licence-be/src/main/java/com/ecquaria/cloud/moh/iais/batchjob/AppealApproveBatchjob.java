@@ -24,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -531,9 +530,8 @@ public class AppealApproveBatchjob {
     public void  sendAllEmailApproved(ApplicationDto applicationDto,String reason,LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto,AppPremiseMiscDto appPremiseMiscDto) throws IOException, TemplateException {
         String paymentMethodName = "";
         log.info("start send email sms and msg");
+        String relateRecId = appPremiseMiscDto.getRelateRecId();
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
-        String licenseeId = applicationGroupDto.getLicenseeId();
-        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
 
         List<AppPremiseMiscDto> premiseMiscDtoList = cessationClient.getAppPremiseMiscDtoListByAppId(applicationDto.getId()).getEntity();
         String appType = "Licence";
@@ -552,9 +550,11 @@ public class AppealApproveBatchjob {
 
         }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE.equals(reason)){
             //return fee
-            if (ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS.equals(applicationGroupDto.getPmtStatus())) {
+            ApplicationDto entity = applicationClient.getApplicationById(relateRecId).getEntity();
+            ApplicationGroupDto entity1 = applicationClient.getAppById(entity.getAppGrpId()).getEntity();
+            if (ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS.equals(entity1.getPmtStatus())) {
                 paymentMethodName = "onlinePayment";
-            }else if (ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(applicationGroupDto.getPmtStatus())) {
+            }else if (ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(entity1.getPmtStatus())) {
                 paymentMethodName = "GIRO";
             }
         }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)){
@@ -570,6 +570,7 @@ public class AppealApproveBatchjob {
         }else{
             paymentMethodName = "other";
         }
+        log.info(StringUtil.changeForLog("paymentMethodName :" +paymentMethodName));
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
         OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
         templateContent.put("ApplicantName", orgUserDto.getDisplayName());
@@ -581,17 +582,17 @@ public class AppealApproveBatchjob {
 
         templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
         templateContent.put("paymentMethod", paymentMethodName);
-        if ("onlinePayment".equals(paymentMethodName)) {
-            AppReturnFeeDto appReturnFeeDto = applicationClient.getReturnFeeByAppNo(applicationDto.getApplicationNo()).getEntity();
+        if("onlinePayment".equals(paymentMethodName)){
+            AppReturnFeeDto appReturnFeeDto = applicationClient.getReturnFeeByAppNo(applicationDto.getApplicationNo(),ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL).getEntity();
             templateContent.put("returnAmount", Formatter.formatterMoney(appReturnFeeDto.getReturnAmount()));
             templateContent.put("paymentMode", paymentMethodName);
             templateContent.put("adminFee", "100");
 
-        } else if ("GIRO".equals(paymentMethodName)) {
-            AppReturnFeeDto appReturnFeeDto = applicationClient.getReturnFeeByAppNo(applicationDto.getApplicationNo()).getEntity();
+        } else if("GIRO".equals(paymentMethodName)){
+            AppReturnFeeDto appReturnFeeDto = applicationClient.getReturnFeeByAppNo(applicationDto.getApplicationNo(),ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL).getEntity();
             templateContent.put("returnAmount", Formatter.formatterMoney(appReturnFeeDto.getReturnAmount()));
             templateContent.put("adminFee", "100");
-        }else if ("applicable".equals(paymentMethodName)) {
+        }else if("applicable".equals(paymentMethodName)){
             Date expiryDate;
             try {
                 LicenceDto appealLicenceDto = (LicenceDto) CopyUtil.copyMutableObject(licenceDto);
@@ -607,6 +608,8 @@ public class AppealApproveBatchjob {
         }else{
 //            templateContent.put("content", appPremiseMiscDto.getOtherReason());
         }
+
+        log.info(StringUtil.changeForLog("templateContent :" +JsonUtil.parseToJson(templateContent)));
 
         MsgTemplateDto emailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_APPROVE_EMAIL).getEntity();
         MsgTemplateDto smsTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_APPROVE_SMS).getEntity();
@@ -627,8 +630,9 @@ public class AppealApproveBatchjob {
         emailParam.setReqRefNum(applicationDto.getApplicationNo());
         emailParam.setRefId(applicationDto.getApplicationNo());
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-
         notificationHelper.sendNotification(emailParam);
+        log.info("appeal approve email");
+
         EmailParam smsParam = new EmailParam();
         smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_APPROVE_SMS);
         smsParam.setSubject(smsSubject);
@@ -638,6 +642,7 @@ public class AppealApproveBatchjob {
         smsParam.setRefId(applicationDto.getApplicationNo());
         smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
         notificationHelper.sendNotification(smsParam);
+        log.info("appeal approve sms");
 
         EmailParam msgParam = new EmailParam();
         msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_APPROVE_MSG);
@@ -652,7 +657,7 @@ public class AppealApproveBatchjob {
         msgParam.setRefId(applicationDto.getApplicationNo());
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         notificationHelper.sendNotification(msgParam);
-        log.info("end send email sms and msg");
+        log.info("appeal approve msg");
 
 
 
