@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -80,6 +81,11 @@ public class NonWorkingDayAjaxController {
                     nonWorkingDateDto.setPm(false);
                 }
 
+                if(!nonWorkingDateDto.isAm() && !nonWorkingDateDto.isPm()){
+                    nonWorkingDateDto.setStatus(IntranetUserConstant.COMMON_STATUS_IACTIVE);
+                }else{
+                    nonWorkingDateDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+                }
                 ApptNonWorkingDateDto apptNonWorkingDateDto = appointmentService.updateNonWorkingDate(nonWorkingDateDto);
                 nonWorkingDateListByWorkGroupId.add(apptNonWorkingDateDto);
                 ParamUtil.setSessionAttr(request, NON_WKR_DAY_LIST_ATTR, (Serializable) nonWorkingDateListByWorkGroupId);
