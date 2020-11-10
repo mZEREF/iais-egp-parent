@@ -30,11 +30,7 @@ public class MultipleSelectTag extends DivTagSupport {
     @Override
     protected void init() {
         setId(null);
-        try {
-            setName(null);
-        } catch (JspException e) {
-            log.info(e.getMessage(),e);
-        }
+        name = null;//NOSONAR
         setCssClass("");
         setStyle("");
         setSelectValue("");
