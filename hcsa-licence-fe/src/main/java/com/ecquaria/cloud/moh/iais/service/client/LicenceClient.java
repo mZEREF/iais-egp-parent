@@ -142,4 +142,7 @@ public interface LicenceClient {
 
     @GetMapping(value = "/hcsa-licence/licence-licenceNo",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto> getLicenceDtoByLicNo(@RequestParam("licenceNo") String licenceNo);
+
+    @GetMapping(value = "/hcsa-licence/existing-on-site-licence",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Boolean> existingOnSiteLicence(@RequestParam("svcName") String svcName, @RequestParam("licenseeId") String licenseeId);
 }
