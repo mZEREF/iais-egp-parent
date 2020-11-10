@@ -37,7 +37,7 @@ public class HolidayValidate implements CustomizeValidator {
         }else{
             String res = publicHolidayService.getPublicHolidayInCalender(from);
             if(AppConsts.TRUE.equals(res)) {
-                errMap.put("sub_date", MessageUtil.getMessageDesc("OAPPT_ACK009"));
+                errMap.put("sub_date", MessageUtil.getMessageDesc("OAPPT_ACK011"));
             }
             PublicHolidayDto publicHolidayDtoDate = publicHolidayService.publicHoliday(publicHolidayDto.getFromDate());
             if(publicHolidayDtoDate != null){
