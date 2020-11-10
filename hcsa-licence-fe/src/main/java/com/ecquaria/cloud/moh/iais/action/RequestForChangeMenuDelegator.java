@@ -230,7 +230,7 @@ public class RequestForChangeMenuDelegator {
         if (rows.isEmpty()) {
             bpc.request.setAttribute("GENERAL_ACK018", MessageUtil.getMessageDesc("GENERAL_ACK018"));
         }
-        ParamUtil.setRequestAttr(bpc.request, RfcConst.PREMISESLISTDTOS, (Serializable) rows);
+        ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, (Serializable) rows);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Premises List");
         List<SelectOption> list = new ArrayList<>();
         setSelectOption(list);
@@ -285,15 +285,16 @@ public class RequestForChangeMenuDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         appEditSelectDto.setPremisesEdit(true);
-        if(appSubmissionDto != null){
-            appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
-        }
-        PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
-        if (!StringUtil.isEmpty(licenseeId)) {
-            appSubmissionDto.setLicenseeId(licenseeId);
+        if(appSubmissionDto != null){
+            appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
+            if (!StringUtil.isEmpty(licenseeId)) {
+                appSubmissionDto.setLicenseeId(licenseeId);
+            }
         }
+        PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
+
         List<AppGrpPremisesDto> reloadPremisesDtoList = IaisCommonUtils.genNewArrayList();
         AppGrpPremisesDto appGrpPremisesDto = null;
         Object rfi = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
