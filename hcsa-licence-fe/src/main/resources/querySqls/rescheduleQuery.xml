@@ -71,7 +71,7 @@
 
             WHERE 1=1
             AND appRec.RECOM_IN_DATE is not null
-
+            AND insAppt.RESCHEDULE_COUNT is not null
             <#if licenseeId??>AND T4.licensee_id = :licenseeId</#if>
             ]]>
     </sql>
