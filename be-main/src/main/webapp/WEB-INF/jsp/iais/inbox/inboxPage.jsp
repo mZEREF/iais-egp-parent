@@ -233,6 +233,9 @@
     function tagConfirmCallbacksupport(){
         $('#support').modal('hide');
     }
+    function tagConfirmCallbackapproveAo(){
+        $('#approveAo').modal('hide');
+    }
     function submit(action) {
         showWaiting();
         $("[name='SearchSwitchType']").val(action);
