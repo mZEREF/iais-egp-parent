@@ -54,6 +54,7 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
             List<ApplicationGroupDto> applicationGroupDtos = IaisCommonUtils.genNewArrayList();
             for(String appGroupNo : appGroupList){
                 ApplicationGroupDto applicationGroupDto = applicationClient.getAppGrpByNo(appGroupNo).getEntity();
+                //todo status before insp, after insp
                 applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER);
                 applicationClient.updateApplication(applicationGroupDto);
                 applicationGroupDtos.add(applicationGroupDto);
@@ -119,7 +120,7 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
         String appGrpId = applicationGroupDto.getId();
         try{
             EmailParam emailParam = new EmailParam();
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_GIRO_RETRIGGERS);
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_GIRO_RETRIGGERS_EMAIL);
             emailParam.setTemplateContent(map);
             emailParam.setQueryCode(appGrpId);
             emailParam.setReqRefNum(appGrpId);
@@ -128,7 +129,7 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
             emailParam.setSubject(subject);
             notificationHelper.sendNotification(emailParam);
             EmailParam smsParam = new EmailParam();
-            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_GIRO_RETRIGGERS);
+            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_GIRO_RETRIGGERS_SMS);
             smsParam.setQueryCode(appGrpId);
             smsParam.setReqRefNum(appGrpId);
             smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP_GRP);
