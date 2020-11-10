@@ -45,15 +45,16 @@ public class ApptNonAvailabilityValidate implements CustomizeValidator {
             return null;
         }
         if(apptNonAvailabilityDateDto.getBlockOutStart().after(apptNonAvailabilityDateDto.getBlockOutEnd())){
-            errMap.put("nonAvaDate", "APPT_ERROR0002");
+            errMap.put("nonAvaDate", "OAPPT_ERR008");
             return errMap;
         }
         if(!IaisCommonUtils.isEmpty(inspectionDate)) {
             for (Date date : nonAvaDate) {
+                String nonDate = sdf2.format(date);
                 for (String inspDate : inspectionDate) {
-                    String nonDate = sdf2.format(date);
                     if (nonDate.equals(inspDate)) {
-                        errMap.put("nonAvaDate", "APPT_ERROR0001");
+                        errMap.put("nonAvaDate", "OAPPT_ERR004");
+                        return errMap;
                     }
                 }
             }
