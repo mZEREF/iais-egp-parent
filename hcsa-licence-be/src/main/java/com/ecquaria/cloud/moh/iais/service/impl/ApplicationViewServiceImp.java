@@ -3,15 +3,17 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
@@ -21,21 +23,21 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.LicenceService;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 @Service
@@ -43,6 +45,8 @@ import java.util.List;
 public class ApplicationViewServiceImp implements ApplicationViewService {
     @Autowired
     private ApplicationClient applicationClient;
+    @Autowired
+    private AppPremisesCorrClient appPremisesCorrClient;
     @Autowired
     private OrganizationClient organizationClient;
     @Autowired
@@ -52,11 +56,15 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
+    CessationClient cessationClient;
+    @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
     private InspectionTaskClient inspectionTaskClient;
     @Autowired
     private SystemParamConfig systemParamConfig;
+    @Autowired
+    LicenceService licenceService;
     @Override
     public ApplicationViewDto searchByCorrelationIdo(String correlationId) {
         //return applicationClient.getAppViewByNo(appNo).getEntity();
@@ -237,7 +245,123 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         //setMaxFileSize
         applicationViewDto.setSystemMaxFileSize(systemParamConfig.getUploadFileLimit());
         applicationViewDto.setSystemFileType( FileUtils.getStringFromSystemConfigString(systemParamConfig.getUploadFileType()));
+        try{
+            setAppealTypeValues(applicationViewDto);
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
         return applicationViewDto;
+    }
+
+    private void setAppealTypeValues(ApplicationViewDto applicationViewDto){
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String applicationType = applicationDto.getApplicationType();
+        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)) {
+            //get appeal type
+            String appId = applicationDto.getId();
+            List<AppPremiseMiscDto> premiseMiscDtoList = cessationClient.getAppPremiseMiscDtoListByAppId(appId).getEntity();
+            if(premiseMiscDtoList != null && ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+                AppPremiseMiscDto premiseMiscDto = premiseMiscDtoList.get(0);
+                String appealNo = "";
+                String reason = premiseMiscDto.getReason();
+                if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)) {
+                    String serviceId = applicationViewDto.getApplicationDto().getServiceId();
+                    String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
+                    AppSvcCgoDto appSvcCgoDto = applicationClient.getApplicationCgoByAppId(appId,ApplicationConsts.PERSONNEL_PSN_TYPE_CGO).getEntity();
+                    appSvcCgoDto.setAssignSelect("newOfficer");
+                    List<AppSvcCgoDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
+                    appSvcCgoDtoList.add(appSvcCgoDto);
+                    SelectOption sp0 = new SelectOption("-1", "Please Select");
+                    List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();
+                    cgoSelectList.add(sp0);
+                    SelectOption sp1 = new SelectOption("newOfficer", "I'd like to add a new personnel");
+                    cgoSelectList.add(sp1);
+                    List<SelectOption> idTypeSelOp = getIdTypeSelOp();
+                    if (serviceName != null) {
+                        HcsaServiceDto serviceByServiceName = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+                        List<SelectOption> list = genSpecialtySelectList(serviceByServiceName.getSvcCode());
+                        applicationViewDto.setSpecialtySelectList(list);
+                    }
+                    applicationViewDto.setCgoMandatoryCount(1);
+                    applicationViewDto.setGovernanceOfficersList(appSvcCgoDtoList);
+                    applicationViewDto.setCgoSelectList(cgoSelectList);
+                    applicationViewDto.setIdTypeSelect(idTypeSelOp);
+                }
+                //file
+                AppPremisesSpecialDocDto appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
+                if(appealSpecialDocDto != null){
+                    applicationViewDto.setFeAppealSpecialDocDto(appealSpecialDocDto);
+                }
+                String oldAppId = premiseMiscDto.getRelateRecId();
+                ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
+                if(oldApplication != null){
+                    List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = appPremisesCorrClient.getAppPremisesCorrelationsByAppId(oldApplication.getId()).getEntity();
+                    if(appPremisesCorrelationDtos != null && appPremisesCorrelationDtos.size()>0){
+                        AppPremisesCorrelationDto appPremisesCorrelationDto = appPremisesCorrelationDtos.get(0);
+                        AppInsRepDto appInsRepDto = appPremisesCorrClient.appGrpPremises(appPremisesCorrelationDto.getId()).getEntity();
+                        if(appInsRepDto != null){
+                            String hciName = appInsRepDto.getHciName();
+                            List<String> hciNames = IaisCommonUtils.genNewArrayList();
+                            if(!StringUtil.isEmpty(hciName)){
+                                hciNames.add(hciName);
+                                applicationViewDto.setHciNames(hciNames);
+                            }
+                        }
+                    }
+                    appealNo = oldApplication.getApplicationNo();
+                }
+                String appealType = premiseMiscDto.getAppealType();
+                if(ApplicationConsts.APPEAL_TYPE_LICENCE.equals(appealType)){
+                    LicenceDto licenceDto = licenceService.getLicenceDto(premiseMiscDto.getRelateRecId());
+                    appealNo = licenceDto.getLicenceNo();
+                }
+                applicationViewDto.setAppealNo(appealNo);
+                applicationViewDto.setPremiseMiscDto(premiseMiscDto);
+            }
+        }
+    }
+
+    private List<SelectOption> getIdTypeSelOp(){
+        List<SelectOption> idTypeSelectList = IaisCommonUtils.genNewArrayList();
+        SelectOption idType0 = new SelectOption("-1", "Please Select");
+        idTypeSelectList.add(idType0);
+        SelectOption idType1 = new SelectOption("NRIC", "NRIC");
+        idTypeSelectList.add(idType1);
+        SelectOption idType2 = new SelectOption("FIN", "FIN");
+        idTypeSelectList.add(idType2);
+        return idTypeSelectList;
+    }
+
+    private List<SelectOption> genSpecialtySelectList(String svcCode){
+        List<SelectOption> specialtySelectList = IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(svcCode)){
+            if(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode) ||
+                    AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode) ||
+                    AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)){
+                specialtySelectList = IaisCommonUtils.genNewArrayList();
+                SelectOption ssl1 = new SelectOption("-1", "Please select");
+                SelectOption ssl2 = new SelectOption("Pathology", "Pathology");
+                SelectOption ssl3 = new SelectOption("Haematology", "Haematology");
+                SelectOption ssl4 = new SelectOption("other", "Others");
+                specialtySelectList.add(ssl1);
+                specialtySelectList.add(ssl2);
+                specialtySelectList.add(ssl3);
+                specialtySelectList.add(ssl4);
+            }else if(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(svcCode) ||
+                    AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode) ||
+                    AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)){
+                specialtySelectList = IaisCommonUtils.genNewArrayList();
+                SelectOption ssl1 = new SelectOption("-1", "Please select");
+                SelectOption ssl2 = new SelectOption("Diagnostic Radiology", "Diagnostic Radiology");
+                SelectOption ssl3 = new SelectOption("Nuclear Medicine", "Nuclear Medicine");
+                SelectOption ssl4 = new SelectOption("other", "Others");
+                specialtySelectList.add(ssl1);
+                specialtySelectList.add(ssl2);
+                specialtySelectList.add(ssl3);
+                specialtySelectList.add(ssl4);
+            }
+        }
+        return specialtySelectList;
     }
 
 

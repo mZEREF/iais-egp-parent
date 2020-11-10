@@ -9,6 +9,16 @@
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <c:set value="${applicationViewDto.applicationDto}" var="applicationDto"/>
+    <c:set value="${applicationViewDto.appealNo}" var="appealNo"/>
+    <c:set value="${applicationViewDto.premiseMiscDto}" var="premiseMiscDto"/>
+    <c:set value="${applicationViewDto.hciNames}" var="hciNames"/>
+    <c:set value="${applicationViewDto.cgoMandatoryCount}" var="CgoMandatoryCount"/>
+    <c:set value="${applicationViewDto.feAppealSpecialDocDto}" var="feAppealSpecialDocDto"/>
+    <c:set value="${applicationViewDto.governanceOfficersList}" var="GovernanceOfficersList"/>
+    <c:set value="${applicationViewDto.specialtySelectList}" var="SpecialtySelectList"/>
+    <c:set value="${applicationViewDto.idTypeSelect}" var="IdTypeSelect"/>
+    <c:set value="${applicationViewDto.cgoSelectList}" var="CgoSelectList"/>
+
   <div class="form-group">
     <div class="col-xs-12 col-md-10" style="margin-left: 1%">
       <h1 style="border-bottom: none;margin-top:60px;">Appeal Form</h1>
