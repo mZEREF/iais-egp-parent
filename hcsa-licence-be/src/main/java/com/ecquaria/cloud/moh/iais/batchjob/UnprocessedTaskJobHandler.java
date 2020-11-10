@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -148,7 +149,9 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                         if(days == remThreshold && remThreshold > 0){
                             log.info(StringUtil.changeForLog("send email to officer:"));
                                 List<String> email = IaisCommonUtils.genNewArrayList();
+                                List<String> sms = IaisCommonUtils.genNewArrayList();
                                 email.add(item.getUserEmail());
+                                sms.add(item.getUserMobile());
                                 String subject = StringUtil.changeForLog("Reminder for "+applicationDto.getApplicationNo()+" processing");
                                 MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_UNPROCESSED_TASK_1).getEntity();
                                 Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
@@ -157,13 +160,16 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                 String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
 
                                 sendEmail(item,email,subject,mesContext);
+                                sendSms(item,email,mesContext);
                         }else if(days == (kpi + 1) && kpi > 0){
                             List<OrgUserDto> leaders = taskService.getEmailNotifyLeader(item.getId());
                             log.info(StringUtil.changeForLog("send email to leader:"));
                             for (OrgUserDto leader: leaders
                                  ) {
                                 List<String> email = IaisCommonUtils.genNewArrayList();
+                                List<String> sms = IaisCommonUtils.genNewArrayList();
                                 email.add(leader.getEmail());
+                                sms.add(leader.getMobileNo());
                                 String subject = StringUtil.changeForLog("Reminder for "+applicationDto.getApplicationNo()+" processing for "+leader.getDisplayName());
                                 MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_UNPROCESSED_TASK_2).getEntity();
                                 Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
@@ -173,15 +179,18 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                 String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
 
                                 sendEmail(item,email,subject,mesContext);
+                                sendSms(item,email,mesContext);
                             }
                         }else if(days == sysday){
                             log.info(StringUtil.changeForLog("send email to admin:"));
-                                List<String> email = IaisCommonUtils.genNewArrayList();
                                 List<OrgUserDto> systemAdmin = organizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
                                 if(!IaisCommonUtils.isEmpty(systemAdmin)){
                                     for (OrgUserDto orgUserDto:systemAdmin
                                          ) {
+                                        List<String> email = IaisCommonUtils.genNewArrayList();
+                                        List<String> sms = IaisCommonUtils.genNewArrayList();
                                         email.add(orgUserDto.getEmail());
+                                        sms.add(orgUserDto.getMobileNo());
                                         String subject = StringUtil.changeForLog("Reminder for "+applicationDto.getApplicationNo()+" processing for "+item.getUserName());
                                         MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_UNPROCESSED_TASK_3).getEntity();
                                         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
@@ -191,6 +200,7 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                         templateContent.put("days", systemParamConfig.getUnprocessedSystemAdmin());
                                         String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
                                         sendEmail(item,email,subject,mesContext);
+                                        sendSms(item,sms,mesContext);
                                     }
                                 }
 
@@ -221,5 +231,15 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
         email.setClientQueryCode(item.getId());
         email.setReceipts(emailAddr);
         emailClient.sendNotification(email).getEntity();
+    }
+
+    private void sendSms(TaskEmailDto item,List<String> smsAddr,String content){
+        SmsDto smsDto = new SmsDto();
+        smsDto.setContent(content);
+        smsDto.setReqRefNum(item.getId());
+        smsDto.setReceipts(smsAddr);
+        smsDto.setOnlyOfficeHour(true);
+        smsDto.setSender(mailSender);
+        emailClient.sendSMS(smsAddr,smsDto,item.getId());
     }
 }
