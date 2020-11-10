@@ -36,7 +36,7 @@
                     <li class="site-fontsizer-cont"><a class="decrease-font fontsizer" onclick="zoomin();">A-</a></li>
                     <li class="site-fontsizer-cont"><a class="decrease-font fontsizer" onclick="zoomout();">A+</a></li>
                 </ul>
-                <div class="sg-gov-logo hidden-xs hidden-sm"><a href="https://www.gov.sg/"> <img src="<%=webrooth%>img/singapore-gov-logo.svg" alt="Singapore Government" width="270" height="42"></a></div>
+                <div class="visible-xs visible-sm visible-md"><a class="menu-icon" href="javascript:;"><span class="icon-bar"></span></a></div>
             </div>
         </div>
     </div>
