@@ -2892,11 +2892,31 @@ public class HcsaApplicationDelegator {
                 boolean saveRecomTypeForLastIns = appLastInsGroup.isSaveRecomTypeForLastIns();
                 if(saveRecomTypeForLastIns){
                     ParamUtil.setSessionAttr(request,"chooseInspectionChecked","Y");
+                    List<SelectOption> routingStage = (List<SelectOption>)ParamUtil.getSessionAttr(request, "verifiedValues");
+                    removeStage(routingStage,RoleConsts.PROCESS_TYPE_INS);
+                    applicationViewDto.setVerified(routingStage);
+                    ParamUtil.setSessionAttr(request, "verifiedValues", (Serializable)routingStage);
                 }
                 ParamUtil.setSessionAttr(request,"AppLastInsGroup",appLastInsGroup);
             }
         }
         return flag;
+    }
+
+    private void removeStage(List<SelectOption> routingStage,String value){
+        if(IaisCommonUtils.isEmpty(routingStage) || StringUtil.isEmpty(value)){
+            return;
+        }
+        int index = -1;
+        for(int i = 0; i <= routingStage.size();i++){
+            if(value.equals(routingStage.get(i).getValue())){
+                index = i;
+                break;
+            }
+        }
+        if(index != -1){
+            routingStage.remove(index);
+        }
     }
 
     private void setCessation(HttpServletRequest request, ApplicationViewDto applicationViewDto, String correlationId){
