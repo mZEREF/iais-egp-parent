@@ -99,7 +99,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 //		String b2sUrlPram="\""+fields.get("vpc_ReturnURL")+"\"";
 		String b2sUrlPram="";
 		String sessionId=fields.get("vpc_ReturnURL").substring(fields.get("vpc_ReturnURL").indexOf('=')+1);
-		//RedisCacheHelper
+
 		String txnRep="{\"ss\":\"1\",\"msg\":{\"netsMid\":\""+umId+"\",\"tid\":\"\",\"submissionMode\":\"B\",\"txnAmount\":\""+amoOo+"\",\"merchantTxnRef\":\""+merchantTxnRef+"\",\"merchantTxnDtm\":\""+merchantTxnDtm+"\",\"paymentType\":\"SALE\",\"currencyCode\":\"SGD\",\"paymentMode\":\"\",\"merchantTimeZone\":\"+8:00\",\"b2sTxnEndURL\":\""+b2sUrl+"\",\"b2sTxnEndURLParam\":\""+b2sUrlPram+"\",\"s2sTxnEndURL\":\""+s2sUrl+"\",\"s2sTxnEndURLParam\":\"\",\"clientType\":\"W\",\"supMsg\":\"\",\"netsMidIndicator\":\"U\",\"ipAddress\":\"192.168.7.85\",\"language\":\"en\"}}" ;
 
 		String hmac= null;

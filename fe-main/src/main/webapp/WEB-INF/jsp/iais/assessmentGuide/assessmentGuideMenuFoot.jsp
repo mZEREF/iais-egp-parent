@@ -124,6 +124,7 @@
     }
     function deleteCeasedDraft() {
         $('#isNeedDelete').val('delete');
+        $('.CeaseBtn').prop('disabled',false);
         doLicCease();
     }
     function deleteAmendDraft() {
