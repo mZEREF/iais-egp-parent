@@ -178,19 +178,19 @@ public class InspecTaskToLeaderBatchJob {
                     if(!IaisCommonUtils.isEmpty(taskDtoList)){
                         List<String> leads = organizationClient.getInspectionLead(workGroupId).getEntity();
                         if(!IaisCommonUtils.isEmpty(leads)) {
+                            List<TaskDto> taskScoreDtos = taskService.getTaskDtoScoresByWorkGroupId(workGroupId);
+                            String lead = getLeadWithTheFewestScores(taskScoreDtos, leads);
                             TaskDto taskDto = taskDtoList.get(0);
-                            for(String lead : leads) {
-                                TaskDto taskDto1 = new TaskDto();
-                                taskDto1.setRefNo(appInspStatusDto.getAppPremCorreId());
-                                taskDto1.setTaskType(taskDto.getTaskType());
-                                taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
-                                taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
-                                taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
-                                taskDto1.setWkGrpId(workGroupId);
-                                taskDto1.setUserId(lead);
-                                taskDto1.setApplicationNo(taskDto.getApplicationNo());
-                                createTasks = prepareTaskList(taskDto1, hcsaSvcStageWorkingGroupDto, intranet, createTasks);
-                            }
+                            TaskDto taskDto1 = new TaskDto();
+                            taskDto1.setRefNo(appInspStatusDto.getAppPremCorreId());
+                            taskDto1.setTaskType(taskDto.getTaskType());
+                            taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
+                            taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
+                            taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
+                            taskDto1.setWkGrpId(workGroupId);
+                            taskDto1.setUserId(lead);
+                            taskDto1.setApplicationNo(taskDto.getApplicationNo());
+                            createTasks = prepareTaskList(taskDto1, hcsaSvcStageWorkingGroupDto, intranet, createTasks);
                         }
                         if(!IaisCommonUtils.isEmpty(createTasks)) {
                             taskService.createTasks(createTasks);
@@ -201,6 +201,48 @@ public class InspecTaskToLeaderBatchJob {
                     appInspectionStatusClient.update(appInspStatusDto);
                 }
             }
+        }
+    }
+
+    private String getLeadWithTheFewestScores(List<TaskDto> taskScoreDtos, List<String> leads) {
+        List<TaskDto> taskUserDtos = IaisCommonUtils.genNewArrayList();
+        if(IaisCommonUtils.isEmpty(taskScoreDtos)){
+            return leads.get(0);//NOSONAR
+        } else {
+            for(TaskDto taskDto : taskScoreDtos){
+                String userId = taskDto.getUserId();
+                for(String lead : leads) {//NOSONAR
+                    if (!StringUtil.isEmpty(userId)) {//NOSONAR
+                        if(userId.equals(lead)){
+                            taskUserDtos.add(taskDto);
+                        }
+                    }
+                }
+            }
+            String lead = getLeadByTaskScore(taskUserDtos, leads);
+            return lead;
+        }
+    }
+
+    private String getLeadByTaskScore(List<TaskDto> taskUserDtos, List<String> leads) {
+        if(IaisCommonUtils.isEmpty(taskUserDtos)){
+            return leads.get(0);//NOSONAR
+        } else {
+            int score1 = 0;
+            String lead = "";
+            for(TaskDto taskDto : taskUserDtos){
+                if(StringUtil.isEmpty(lead)){
+                    lead = taskDto.getUserId();
+                    score1 = taskDto.getScore();
+                } else {
+                    int scoreNow = taskDto.getScore();
+                    if(scoreNow < score1){
+                        lead = taskDto.getUserId();
+                        score1 = taskDto.getScore();
+                    }
+                }
+            }
+            return lead;
         }
     }
 
