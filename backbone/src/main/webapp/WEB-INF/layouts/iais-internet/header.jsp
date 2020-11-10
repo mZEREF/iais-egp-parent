@@ -32,11 +32,11 @@
                     <a href="<%=internetInbox%>"><p class="logo-txt">Integrated Application and Inspection System</p></a></div>
             </div>
             <div class="col-xs-2 col-lg-6">
-                <div class="gcse-search"></div>
                 <ul class="list-inline hidden-xs hidden-sm">
                     <li class="site-fontsizer-cont"><a class="decrease-font fontsizer" onclick="zoomin();">A-</a></li>
                     <li class="site-fontsizer-cont"><a class="decrease-font fontsizer" onclick="zoomout();">A+</a></li>
                 </ul>
+                <div class="gcse-search" style="width: 50%;"></div>
                 <div class="visible-xs visible-sm visible-md"><a class="menu-icon" href="javascript:;"><span class="icon-bar"></span></a></div>
             </div>
         </div>
