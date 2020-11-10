@@ -776,6 +776,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         msgInfoMap.put("HCIName",appGrpPremisesDto.getHciName());
                         msgInfoMap.put("Address",appGrpPremisesDto.getAddress());
                         msgInfoMap.put("licenseeName",licenseeDto.getName());
+                        msgInfoMap.put("submissionDate",Formatter.formatDateTime(applicationGroupDto.getSubmitDt()));
                         msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date()));
                         msgInfoMap.put("S_LName",serviceName);
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
