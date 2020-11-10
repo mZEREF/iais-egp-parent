@@ -94,13 +94,13 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String keyId=GatewayConfig.eNetsKeyId;
 		String secretKey=GatewayConfig.eNetsSecretKey ;
 		String s2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+bpc.request.getContextPath()+"/s2sTxnEnd";
-		String b2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/payment-web/eservice/INTERNET/Payment/1/Payment.jsp";
+		String b2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/payment-web";
 //		String b2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/paycallback?refNo="+reqNo;
 //		String b2sUrlPram="\""+fields.get("vpc_ReturnURL")+"\"";
 		String b2sUrlPram="";
 		String sessionId=fields.get("vpc_ReturnURL").substring(fields.get("vpc_ReturnURL").indexOf('=')+1);
 
-		String txnRep="{\"ss\":\"1\",\"msg\":{\"netsMid\":\""+umId+"\",\"tid\":\"\",\"submissionMode\":\"B\",\"txnAmount\":\""+amoOo+"\",\"merchantTxnRef\":\""+merchantTxnRef+"\",\"merchantTxnDtm\":\""+merchantTxnDtm+"\",\"paymentType\":\"SALE\",\"currencyCode\":\"SGD\",\"paymentMode\":\"\",\"merchantTimeZone\":\"+8:00\",\"b2sTxnEndURL\":\""+b2sUrl+"\",\"b2sTxnEndURLParam\":\""+b2sUrlPram+"\",\"s2sTxnEndURL\":\""+s2sUrl+"\",\"s2sTxnEndURLParam\":\"\",\"clientType\":\"W\",\"supMsg\":\"\",\"netsMidIndicator\":\"U\",\"ipAddress\":\"192.168.7.85\",\"language\":\"en\"}}" ;
+		String txnRep="{\"ss\":\"1\",\"msg\":{\"netsMid\":\""+umId+"\",\"tid\":\"\",\"submissionMode\":\"B\",\"txnAmount\":\""+amoOo+"\",\"merchantTxnRef\":\""+merchantTxnRef+"\",\"merchantTxnDtm\":\""+merchantTxnDtm+"\",\"paymentType\":\"SALE\",\"currencyCode\":\"SGD\",\"paymentMode\":\"\",\"merchantTimeZone\":\"+8:00\",\"b2sTxnEndURL\":\""+b2sUrl+"\",\"b2sTxnEndURLParam\":\""+b2sUrlPram+"\",\"s2sTxnEndURL\":\""+s2sUrl+"\",\"s2sTxnEndURLParam\":\"\",\"clientType\":\"W\",\"supMsg\":\"\",\"netsMidIndicator\":\"U\",\"ipAddress\":\"127.0.0.1\",\"language\":\"en\"}}" ;
 
 		String hmac= null;
 		try {
