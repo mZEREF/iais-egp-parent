@@ -53,6 +53,7 @@ import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -1515,7 +1516,8 @@ public class WithOutRenewalDelegator {
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
             String paymentMethodName = "onlinePayment";
             String groupNo = appSubmissionDtos.get(0).getAppGrpNo();
-            String applicationName = (String)ParamUtil.getSessionAttr(request, "licenseeName");
+            LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            String applicationName = loginContext.getUserName();
             log.info(StringUtil.changeForLog("send renewal application notification applicationName : " + applicationName));
             log.info(StringUtil.changeForLog("send renewal application notification paymentMethod : " + paymentMethod));
             int index = 1;
