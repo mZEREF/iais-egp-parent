@@ -32,6 +32,7 @@
                             <label class="col-xs-12 col-md-4 control-label" >Non-working Date</label>
                             <div class="col-xs-8 col-sm-6 col-md-5" id="fromdatediv">
                                 <iais:datePicker id="sub_date"  name="sub_date" dateVal="${holiday.fromDate}"/>
+                                <span id="error_sub_date" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
 
