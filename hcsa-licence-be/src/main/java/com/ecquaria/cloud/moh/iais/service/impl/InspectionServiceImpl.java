@@ -216,8 +216,11 @@ public class InspectionServiceImpl implements InspectionService {
         String userId = taskDto.getUserId();
         for(OrgUserDto oDto:orgUserDtoList){
             if(!(oDto.getId().equals(userId))){
-                SelectOption so = new SelectOption(oDto.getId(), oDto.getDisplayName());
-                inspectorOption.add(so);
+                Boolean available = oDto.getAvailable();
+                if(available){
+                    SelectOption so = new SelectOption(oDto.getId(), oDto.getDisplayName());
+                    inspectorOption.add(so);
+                }
             }
         }
         inspectionTaskPoolListDto.setInspectorOption(inspectorOption);
