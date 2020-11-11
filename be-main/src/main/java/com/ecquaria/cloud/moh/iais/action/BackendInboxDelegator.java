@@ -547,17 +547,23 @@ public class BackendInboxDelegator {
         }
         emailParam.setSubject(subject);
         //email
+        log.info(StringUtil.changeForLog("send RFC Reject email send"));
         notificationHelper.sendNotification(emailParam);
+        log.info(StringUtil.changeForLog("send RFC Reject email end"));
         //msg
         emailParam.setSvcCodeList(svcCodeList);
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG);
         emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         emailParam.setRefId(applicationNo);
+        log.info(StringUtil.changeForLog("send RFC Reject msg send"));
         notificationHelper.sendNotification(emailParam);
+        log.info(StringUtil.changeForLog("send RFC Reject msg end"));
         //sms
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS);
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        log.info(StringUtil.changeForLog("send RFC Reject sms send"));
         notificationHelper.sendNotification(emailParam);
+        log.info(StringUtil.changeForLog("send RFC Reject sms end"));
     }
 
     private void newAppSendNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto,List<String> svcCodeList){
