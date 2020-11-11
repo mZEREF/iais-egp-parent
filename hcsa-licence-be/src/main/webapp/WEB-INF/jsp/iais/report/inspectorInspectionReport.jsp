@@ -108,7 +108,7 @@
                                                                         <textarea style="resize:none"
                                                                                   name="processRemarks" cols="65"
                                                                                   rows="6" title="content"
-                                                                                  MAXLENGTH="8000"><c:out
+                                                                                  MAXLENGTH="300"><c:out
                                                                                 value="${appPremisesRecommendationDto.processRemarks}"/></textarea>
                                                                         </iais:value>
                                                                     </iais:row>
