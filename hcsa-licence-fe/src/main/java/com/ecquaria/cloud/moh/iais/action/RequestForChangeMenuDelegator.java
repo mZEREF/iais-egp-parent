@@ -1102,27 +1102,25 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do prePayment start ...."));
         PersonnelListDto personnelEditDto = (PersonnelListDto) ParamUtil.getSessionAttr(bpc.request, "personnelEditDto");
         String emailAddr = personnelEditDto.getEmailAddr();
-        AppSubmissionDto appSubmissionDto=new AppSubmissionDto();
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        appSubmissionDto.setLicenseeId(loginContext.getLicenseeId());
-        appSubmissionDto.setAppGrpNo(personnelEditDto.getLicenceNo());
-        appSubmissionDto.setAppGrpId(personnelEditDto.getLicenceNo());
-        appSubmissionDto.setLicenceNo(personnelEditDto.getLicenceNo());
-        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-        appSubmissionDto.setAmountStr("$0");
-        LicenceDto licenceDto=requestForChangeService.getLicenceDtoByLicNo(personnelEditDto.getLicenceNo());
-        appSubmissionDto.setServiceName(licenceDto.getSvcName());
         try {
-            requestForChangeService.sendRfcSubmittedEmail(appSubmissionDto,null);
+            List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
 
-        } catch (IOException | TemplateException e) {
-            log.info(e.getMessage(),e);
-        }
-        try {
-            requestForChangeService.sendRfcEmailToOfficer( appSubmissionDto, "Change of licence personnel particulars");
-
-        } catch (IOException | TemplateException e) {
-            log.info(e.getMessage(),e);
+            if(appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                AppSubmissionDto ackPageAppSubmissionDto;
+                try {
+                    ackPageAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
+                    if(ackPageAppSubmissionDto==null){
+                        ackPageAppSubmissionDto=appSubmissionDtos.get(0);
+                    }
+                }catch (Exception e){
+                    log.info(e.getMessage(),e);
+                    ackPageAppSubmissionDto=appSubmissionDtos.get(0);
+                }
+                requestForChangeService.sendRfcSubmittedEmail(ackPageAppSubmissionDto,null);
+                requestForChangeService.sendRfcEmailToOfficer( ackPageAppSubmissionDto, "Change of licence personnel particulars");
+            }
+        } catch (Exception e) {
+            log.info(e.getMessage(), e);
         }
         ParamUtil.setSessionAttr(bpc.request, "emailAddress", emailAddr);
         ParamUtil.setSessionAttr(bpc.request, "pmtRefNo", "N/A");

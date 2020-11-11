@@ -1496,6 +1496,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(appSubmissionDto.getLicenseeId()).getEntity();
+        if(appSubmissionDto.getLicenceNo()==null){
+            LicenceDto licenceDto= licenceClient.getLicBylicId(appSubmissionDto.getLicenceId()).getEntity();
+            appSubmissionDto.setLicenceNo(licenceDto.getLicenceNo());
+            appSubmissionDto.setServiceName(licenceDto.getSvcName());
+        }
         String applicantName = licenseeDto.getName();
         if(pmtMethod==null){
             emailMap.remove("GIRO_PAY");
@@ -1526,10 +1531,17 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         EmailParam emailParam = new EmailParam();
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT);
         emailParam.setTemplateContent(emailMap);
-        emailParam.setQueryCode(appSubmissionDto.getAppGrpNo());
-        emailParam.setReqRefNum(appSubmissionDto.getAppGrpNo());
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP_GRP);
-        emailParam.setRefId(appSubmissionDto.getAppGrpId());
+        if(appSubmissionDto.getAppGrpId()==null){
+            emailParam.setQueryCode(appSubmissionDto.getLicenceNo());
+            emailParam.setReqRefNum(appSubmissionDto.getLicenceNo());
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+            emailParam.setRefId(appSubmissionDto.getLicenceId());
+        }else {
+            emailParam.setQueryCode(appSubmissionDto.getAppGrpNo());
+            emailParam.setReqRefNum(appSubmissionDto.getAppGrpNo());
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP_GRP);
+            emailParam.setRefId(appSubmissionDto.getAppGrpId());
+        }
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT).getEntity();
         map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
@@ -1558,7 +1570,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         }
         //sms
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_SMS);
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        if(appSubmissionDto.getAppGrpId()==null){
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+        }else {
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        }
         notificationHelper.sendNotification(emailParam);
     }
 
