@@ -1200,8 +1200,19 @@ public class RequestForChangeMenuDelegator {
         String noNeedPayment = bpc.request.getParameter("noNeedPayment");
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
         try {
-            AppSubmissionDto ackPageAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
-            requestForChangeService.sendRfcSubmittedEmail(ackPageAppSubmissionDto, payMethod);
+            if(appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                AppSubmissionDto ackPageAppSubmissionDto;
+                try {
+                    ackPageAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
+                    if(ackPageAppSubmissionDto==null){
+                        ackPageAppSubmissionDto=appSubmissionDtos.get(0);
+                    }
+                }catch (Exception e){
+                    log.info(e.getMessage(),e);
+                    ackPageAppSubmissionDto=appSubmissionDtos.get(0);
+                }
+                requestForChangeService.sendRfcSubmittedEmail(ackPageAppSubmissionDto, payMethod);
+            }
         } catch (Exception e) {
             log.info(e.getMessage(), e);
         }
