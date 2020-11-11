@@ -2244,7 +2244,7 @@ public class HcsaApplicationDelegator {
         MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(messageTemplateId).getEntity();
         Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
         subMap.put("ApplicationNumber", applicationDto.getApplicationNo());
-        subMap.put("ApplicationType", applicationDto.getApplicationType());
+        subMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
         String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),subMap);
         messageParam.setTemplateId(messageTemplateId);
         messageParam.setQueryCode(applicationDto.getApplicationNo());
