@@ -1117,7 +1117,7 @@ public class RequestForChangeMenuDelegator {
                     ackPageAppSubmissionDto=appSubmissionDtos.get(0);
                 }
                 requestForChangeService.sendRfcSubmittedEmail(ackPageAppSubmissionDto,null);
-                requestForChangeService.sendRfcEmailToOfficer( ackPageAppSubmissionDto, "Change of licence personnel particulars");
+                requestForChangeService.sendRfcEmailToOfficer( ackPageAppSubmissionDto, "");
             }
         } catch (Exception e) {
             log.info(e.getMessage(), e);

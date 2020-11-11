@@ -2040,7 +2040,7 @@ public class NewApplicationDelegator {
         List<AppSubmissionDto> notAutoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
         String description="";
         if (grpPremiseIsChange || docIsChange) {
-            description="Change in administrative information";
+            description="";
             appSubmissionDto.setOneLicDoRenew(true);
             if(appSubmissionDto.isGroupLic()){
                 List<AppGrpPremisesDto> appGrpPremisesDtos = groupLicecePresmiseChange(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
@@ -2084,7 +2084,7 @@ public class NewApplicationDelegator {
         appSubmissionListDto1.setEventRefNo(l1.toString());
         boolean appGrpMisc = false;
         if (serviceIsChange) {
-            description="Change of licence personnel particulars";
+            description="";
             List<AppSubmissionDto> personAppSubmissionList = personContact(bpc, appSubmissionDto, oldAppSubmissionDto);
             //sync other application
 

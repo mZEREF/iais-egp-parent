@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -44,6 +45,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -151,7 +153,9 @@ public class ClientReschedulingDelegator {
                         apptViewDtos.get(viewCorrId).getSvcIds().add(reschApptGrpPremsQueryDto.getSvcId());
                         svcIds=apptViewDtos.get(viewCorrId).getSvcIds();
                     }
-                    if (reschApptGrpPremsQueryDto.getRecomInDate().compareTo(dateRange)>=0 && appStatus.contains(reschApptGrpPremsQueryDto.getApplicationStatus())&&reschApptGrpPremsQueryDto.getRescheduleCount()<systemParamConfig.getRescheduleMaxCount()){
+                    String dateRang=new SimpleDateFormat(SystemAdminBaseConstants.DATE_FORMAT).format(dateRange);
+                    String inDate=new SimpleDateFormat(SystemAdminBaseConstants.DATE_FORMAT).format(reschApptGrpPremsQueryDto.getRecomInDate());
+                    if (inDate.compareTo(dateRang)>=0 && !appStatus.contains(reschApptGrpPremsQueryDto.getApplicationStatus())&&reschApptGrpPremsQueryDto.getRescheduleCount()<systemParamConfig.getRescheduleMaxCount()){
                         apptViewDto.setCanReschedule(Boolean.TRUE);
                     }else {
                         apptViewDto.setCanReschedule(Boolean.FALSE);

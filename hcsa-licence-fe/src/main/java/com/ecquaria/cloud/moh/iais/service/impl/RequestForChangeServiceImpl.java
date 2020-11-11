@@ -38,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
@@ -1609,6 +1610,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         map.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
         String subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
         String content = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(), emailMap);
+        content= MessageTemplateUtil.replaceNum(content);
         emailParam.setSubject(subject);
         //email
         EmailDto emailDto=new EmailDto();
