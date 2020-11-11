@@ -317,6 +317,7 @@ public class CessationApplicationFeDelegator {
         for (AppCessLicDto appCessLicDto : appCessLicDtos) {
             String licenceId = appCessLicDto.getLicenceId();
             List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
+            List<String> specialLicIds = appCessLicDto.getSpecialLicIds();
             if (appCessHciDtos != null && !appCessHciDtos.isEmpty()) {
                 for (AppCessHciDto appCessHciDto : appCessHciDtos) {
                     String whichTodo = appCessHciDto.getPremiseIdChecked();
@@ -347,6 +348,7 @@ public class CessationApplicationFeDelegator {
                         appCessationDto.setPremiseId(whichTodo);
                         appCessationDto.setReadInfo(readInfo);
                         appCessationDto.setLicId(licenceId);
+                        appCessationDto.setSpecialLicIds(specialLicIds);
                         appCessationDtos.add(appCessationDto);
                     }
                 }
