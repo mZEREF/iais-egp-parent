@@ -530,13 +530,14 @@ public class LicenceServiceImpl implements LicenceService {
         emailMap.put("ExistingLicensee", applicantName);
         emailMap.put("transferee_licensee", newLicenseeDto.getName());
         emailMap.put("LicenceNumber", licenceNo);
+        emailMap.put("specialText", "");
         //emailMap.put("Hypelink", loginUrl);
         emailMap.put("isSpecial", "N");
         emailMap.put("createHyperlink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_CREATE_LINK));
         emailMap.put("HCSA_Regulations", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_REGULATIONS_LINK));
         emailMap.put("Number", systemPhoneNumber);
         emailMap.put("email_1", systemAddressOne);
-        emailMap.put("email_2", systemAddressTwo);
+        emailMap.put("Email_2", systemAddressTwo);
         emailMap.put("systemLink", loginUrl);
         emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
         emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
@@ -546,7 +547,7 @@ public class LicenceServiceImpl implements LicenceService {
         emailParam.setQueryCode(applicationDto.getApplicationNo());
         emailParam.setReqRefNum(applicationDto.getApplicationNo());
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-        emailParam.setRefId(applicationGroupDto.getNewLicenseeId());
+        emailParam.setRefId(applicationDto.getApplicationNo());
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED).getEntity();
         map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
@@ -567,7 +568,7 @@ public class LicenceServiceImpl implements LicenceService {
             emailParam.setSvcCodeList(svcCodeList);
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED_MSG);
             emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-            emailParam.setRefId(applicationGroupDto.getNewLicenseeId());
+            emailParam.setRefId(applicationDto.getApplicationNo());
             log.info(StringUtil.changeForLog("send RfcApproveLicensee application msg"));
             notificationHelper.sendNotification(emailParam);
             log.info(StringUtil.changeForLog("send RfcApproveLicensee application msg end"));
