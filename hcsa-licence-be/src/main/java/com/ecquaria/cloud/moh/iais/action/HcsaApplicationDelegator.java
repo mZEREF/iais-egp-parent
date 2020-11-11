@@ -2055,49 +2055,55 @@ public class HcsaApplicationDelegator {
                 if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(withdrawApplicationDto.getApplicationType())){
                     LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
                     String serviceId = applicationViewDto.getApplicationDto().getServiceId();
-                    String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
-                    String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
-                    ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
-                    Integer isByGIRO = applicationGroupDto.getIsByGiro();
-                    String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-                    if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(withdrawApplicationDto.getStatus())
-                            ||ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(withdrawApplicationDto.getStatus())){
-                        applicationService.closeTaskWhenWhAppApprove(withdrawApplicationDto.getId());
-                        Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                        msgInfoMap.put("Applicant", licenseeDto.getName());
-                        msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(withdrawApplicationDto.getApplicationType()));
-                        msgInfoMap.put("ApplicationNumber", applicationNo);
-                        msgInfoMap.put("reqAppNo",applicationNo);
-                        msgInfoMap.put("S_LName",serviceName);
-                        msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-                        msgInfoMap.put("ApplicationDate",applicationViewDto.getSubmissionDate());
-                        msgInfoMap.put("returnMount",applicationViewDto.getReturnFee());
-                        if (isByGIRO == 0){
-                            msgInfoMap.put("paymentMode","GIRO");
-                            msgInfoMap.put("paymentType","0");
+                    AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
+                    if (premiseMiscDto != null){
+                        String oldAppId = premiseMiscDto.getRelateRecId();
+                        ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
+                        String applicationNo = oldApplication.getApplicationNo();
+                        String applicationType1 = oldApplication.getApplicationType();
+                        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+                        ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+                        Integer isByGIRO = applicationGroupDto.getIsByGiro();
+                        String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
+                        if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(withdrawApplicationDto.getStatus())
+                                ||ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(withdrawApplicationDto.getStatus())){
+                            applicationService.closeTaskWhenWhAppApprove(withdrawApplicationDto.getId());
+                            Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+                            msgInfoMap.put("Applicant", licenseeDto.getName());
+                            msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
+                            msgInfoMap.put("ApplicationNumber", applicationNo);
+                            msgInfoMap.put("reqAppNo",applicationNo);
+                            msgInfoMap.put("S_LName",serviceName);
+                            msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+                            msgInfoMap.put("ApplicationDate",applicationViewDto.getSubmissionDate());
+                            msgInfoMap.put("returnMount",applicationViewDto.getReturnFee());
+                            if (isByGIRO == 0){
+                                msgInfoMap.put("paymentMode","GIRO");
+                                msgInfoMap.put("paymentType","0");
+                            }else{
+                                msgInfoMap.put("paymentMode","Online Payment");
+                                msgInfoMap.put("paymentType","1");
+                            }
+                            msgInfoMap.put("adminFee","100");
+                            msgInfoMap.put("systemLink",loginUrl);
+                            msgInfoMap.put("emailAddress",systemAddressOne);
+                            sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_EMAIL,msgInfoMap,oldApplication);
+                            sendInboxMessage(oldApplication,serviceId,msgInfoMap,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_MESSAGE);
+                            /**
+                             *  Send SMS when withdrawal Application Approve
+                             */
+                            sendSMS(oldApplication,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS,msgInfoMap);
                         }else{
-                            msgInfoMap.put("paymentMode","Online Payment");
-                            msgInfoMap.put("paymentType","1");
+                            Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+                            msgInfoMap.put("ApplicationNumber", applicationNo);
+                            msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType));
+                            msgInfoMap.put("Applicant", licenseeDto.getName());
+                            msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date()));
+                            msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+                            sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_EMAIL,msgInfoMap,oldApplication);
+                            sendInboxMessage(oldApplication,serviceId,msgInfoMap,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_MESSAGE);
+                            sendSMS(oldApplication,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_SMS,msgInfoMap);
                         }
-                        msgInfoMap.put("adminFee","100");
-                        msgInfoMap.put("systemLink",loginUrl);
-                        msgInfoMap.put("emailAddress",systemAddressOne);
-                        sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_EMAIL,msgInfoMap,applicationViewDto.getApplicationDto());
-                        sendInboxMessage(applicationViewDto,serviceId,msgInfoMap,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_MESSAGE);
-                        /**
-                         *  Send SMS when withdrawal Application Approve
-                         */
-                        sendSMS(applicationViewDto,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS,msgInfoMap);
-                    }else{
-                        Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                        msgInfoMap.put("ApplicationNumber", applicationNo);
-                        msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType));
-                        msgInfoMap.put("Applicant", licenseeDto.getName());
-                        msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date()));
-                        msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-                        sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_EMAIL,msgInfoMap,applicationViewDto.getApplicationDto());
-                        sendInboxMessage(applicationViewDto,serviceId,msgInfoMap,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_MESSAGE);
-                        sendSMS(applicationViewDto,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_SMS,msgInfoMap);
                     }
                 }
             }
@@ -2228,9 +2234,8 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private void sendInboxMessage(ApplicationViewDto applicationViewDto,String serviceId,Map<String, Object> map,String messageTemplateId) throws IOException, TemplateException {
+    private void sendInboxMessage(ApplicationDto applicationDto,String serviceId,Map<String, Object> map,String messageTemplateId) throws IOException, TemplateException {
         EmailParam messageParam = new EmailParam();
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
         if(serviceDto != null){
@@ -2302,13 +2307,12 @@ public class HcsaApplicationDelegator {
         notificationHelper.sendNotification(emailParam);
     }
 
-    private void sendSMS(ApplicationViewDto applicationViewDto ,String msgId,Map<String, Object> msgInfoMap) throws IOException, TemplateException {
+    private void sendSMS(ApplicationDto applicationDto ,String msgId,Map<String, Object> msgInfoMap) throws IOException, TemplateException {
         log.info(StringUtil.changeForLog("***************** send withdraw application sms  *****************"));
         EmailParam emailParam = new EmailParam();
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationType()));
+        map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
         map.put("ApplicationNumber", applicationDto.getApplicationNo());
         String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
         emailParam.setTemplateId(msgId);
