@@ -125,6 +125,7 @@
             return;
         }
 
+        showWaiting();
         if (action == "create") {
             SOP.Crud.cfxSubmit("mainForm", "createBlackedOutCalendar");
         }
