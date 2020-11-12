@@ -3901,7 +3901,17 @@ public class NewApplicationDelegator {
             boolean newApp = requestInformationConfig == null && !ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) && !ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType);
             if (newApp) {
                 if (!StringUtil.isEmpty(premisesSel) && !premisesSel.equals("-1") && !premisesSel.equals(ApplicationConsts.NEW_PREMISES)) {
-                    appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premisesSel);
+                    AppGrpPremisesDto licPremise = licAppGrpPremisesDtoMap.get(premisesSel);
+                    if(licPremise != null){
+                        try {
+                            appGrpPremisesDto = (AppGrpPremisesDto) CopyUtil.copyMutableObject(licPremise);
+                        } catch (CloneNotSupportedException e) {
+                            log.error(StringUtil.changeForLog(e.getMessage()),e);
+                        }
+                    }else{
+                        log.info(StringUtil.changeForLog("can not found this existing premises data ...."));
+                    }
+//                    appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premisesSel);
                     if (appGrpPremisesDto != null) {
                         //get value for jsp page
                         if (StringUtil.isEmpty(premisesIndexNo[i])) {
