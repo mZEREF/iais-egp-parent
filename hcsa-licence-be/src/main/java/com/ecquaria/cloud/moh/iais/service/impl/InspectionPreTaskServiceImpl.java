@@ -375,7 +375,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             map.put("ApplicationType",MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
             map.put("ApplicationNumber",StringUtil.viewHtml(applicationNo));
             map.put("ApplicationDate",Formatter.formatDateTime(now, Formatter.DATE));
-            map.put("Remarks",remarks);
+            if(!StringUtil.isEmpty(appRfiDecision)) {
+                map.put("Remarks", remarks);
+            }
             map.put("systemLink",url);
             map.put("TATtime",tatTimeStr);
             map.put("email",systemParamConfig.getSystemAddressOne());

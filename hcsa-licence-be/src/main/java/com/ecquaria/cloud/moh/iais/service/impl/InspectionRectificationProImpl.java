@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -281,30 +280,6 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             if(applicationViewDto.getApplicationGroupDto() != null && applicationViewDto.getApplicationGroupDto().getSubmitDt() != null){
                 now = applicationViewDto.getApplicationGroupDto().getSubmitDt();
             }
-            String editSelect = "";
-            //judge premises amend or licence amend
-            AppEditSelectDto appEditSelectDto = applicationViewDto.getAppEditSelectDto();
-            if(appEditSelectDto != null){
-                if(appEditSelectDto.isPremisesEdit()){
-                    editSelect = editSelect + "Premises";
-                }
-                if(appEditSelectDto.isDocEdit()){
-                    editSelect = editSelect +(StringUtil.isEmpty(editSelect)?"":", ") +"Primary Documents";
-                }
-                if(appEditSelectDto.isServiceEdit()){
-                    editSelect = editSelect + (StringUtil.isEmpty(editSelect)?"":", ") +"Service Related Information - " + applicationViewDto.getServiceType();
-                }
-                if(appEditSelectDto.isPoEdit()){
-                    editSelect = editSelect +(StringUtil.isEmpty(editSelect)?"":", ") + "PO";
-                }
-                if(appEditSelectDto.isDpoEdit()){
-                    editSelect = editSelect +(StringUtil.isEmpty(editSelect)?"":", ") + "DPO";
-                }
-                if(appEditSelectDto.isMedAlertEdit()){
-                    editSelect = editSelect +(StringUtil.isEmpty(editSelect)?"":", ") + "medAlert";
-                }
-            }
-            String remarks = "<br/>Sections Allowed for Change : "+editSelect;
             int rfiDueDate = systemParamConfig.getRfiDueDate();
             LocalDate tatTime = LocalDate.now().plusDays(rfiDueDate);
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern(Formatter.DATE);
@@ -315,7 +290,6 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             map.put("ApplicationType",MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
             map.put("ApplicationNumber",StringUtil.viewHtml(applicationNo));
             map.put("ApplicationDate",Formatter.formatDateTime(now, Formatter.DATE));
-            map.put("Remarks",remarks);
             map.put("systemLink",url);
             map.put("TATtime",tatTimeStr);
             map.put("email",systemParamConfig.getSystemAddressOne());
