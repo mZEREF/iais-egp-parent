@@ -495,6 +495,24 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    @Override
+    public boolean checkCompleteTaskByApplicationNo(List<ApplicationDto> applicationDtoList) {
+        if(IaisCommonUtils.isEmpty(applicationDtoList)){
+            return false;
+        }
+        boolean flag = true;
+        for(ApplicationDto applicationDto : applicationDtoList){
+            List<TaskDto> taskList = taskOrganizationClient.getTaskbyApplicationNo(applicationDto.getApplicationNo()).getEntity();
+            if(!IaisCommonUtils.isEmpty(taskList)){
+                log.info(StringUtil.changeForLog("task list are not null,application no : " + applicationDto.getApplicationNo()));
+                flag = false;
+                break;
+            }
+        }
+        log.info(StringUtil.changeForLog("checkCompleteTaskByApplicationNo flag : " + flag));
+        return flag;
+    }
+
 
     @Override
     public List<TaskEmailDto> getEmailNotifyList(){

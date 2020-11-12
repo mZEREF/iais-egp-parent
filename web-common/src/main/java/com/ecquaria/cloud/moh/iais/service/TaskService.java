@@ -100,4 +100,6 @@ public interface TaskService {
     List<TaskDto> getTaskRfi(String applicationNo);
 
     void sendNoteToAdm(String appNo,String refNo,OrgUserDto orgUserDto);
+
+    boolean checkCompleteTaskByApplicationNo(List<ApplicationDto> applicationDtoList);
 }
