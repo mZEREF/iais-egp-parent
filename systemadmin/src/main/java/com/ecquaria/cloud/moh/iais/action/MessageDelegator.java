@@ -74,6 +74,8 @@ public class MessageDelegator {
         moduleList.add(new SelectOption("Service Configurator", "Service Configurator"));
         moduleList.add(new SelectOption("Load Levelling", "Load Levelling"));
         moduleList.add(new SelectOption("System Parameter Management", "System Parameter Management"));
+        moduleList.add(new SelectOption("Performance Management", "Performance Management"));
+        moduleList.add(new SelectOption("Request For Information", "Request For Information"));
         moduleList.add(new SelectOption("Alert, Notifications and Letter Template Mgt", "Alert, Notifications and Letter Template Mgt"));
         moduleList.add(new SelectOption("Suspension", "Suspension"));
         moduleList.add(new SelectOption("Revocation", "Revocation"));
