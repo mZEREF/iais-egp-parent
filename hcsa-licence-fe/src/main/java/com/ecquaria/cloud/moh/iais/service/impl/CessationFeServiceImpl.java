@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
@@ -20,7 +19,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -169,7 +171,6 @@ public class CessationFeServiceImpl implements CessationFeService {
                 }
             }
         }
-//        specLicIds.contains(licIds);
         return specLicIdsE;
     }
 
@@ -344,7 +345,6 @@ public class CessationFeServiceImpl implements CessationFeService {
                 if (effectiveDate.after(new Date())) {
                     String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
                     Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                    LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
                     String applicantName = loginContext.getUserName();
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());

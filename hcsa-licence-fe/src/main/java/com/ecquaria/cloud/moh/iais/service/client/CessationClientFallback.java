@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
@@ -70,14 +69,6 @@ public class CessationClientFallback implements CessationClient {
 
     @Override
     public FeignResponseEntity<Map<String, Boolean>> listCanCeased(List<String> licIds) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<List<String>> isAllCeased(List<String> licIds) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
