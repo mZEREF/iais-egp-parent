@@ -20,10 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -110,8 +107,6 @@ public class CessationFeServiceImpl implements CessationFeService {
                 appCessDto.setLicenceNo(licenceNo);
                 appCessDto.setSvcName(svcName);
                 appCessDto.setLicenceId(licId);
-                List<String> specLicIds = licenceClient.getSpecIdsByBaseId(licId).getEntity();
-                appCessDto.setSpecialLicIds(specLicIds);
                 List<AppCessHciDto> appCessHciDtos = IaisCommonUtils.genNewArrayList();
                 if (premisesDtos != null && !premisesDtos.isEmpty()) {
                     for (PremisesDto premisesDto : premisesDtos) {
@@ -211,24 +206,14 @@ public class CessationFeServiceImpl implements CessationFeService {
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         List<String> appIds = IaisCommonUtils.genNewArrayList();
         Map<String, List<String>> licPremiseIdMap = IaisCommonUtils.genNewHashMap();
-        List<String> baseLicIds = IaisCommonUtils.genNewArrayList();
         for (AppCessationDto appCessationDto : appCessationDtos) {
             String licId = appCessationDto.getLicId();
             String premiseId = appCessationDto.getPremiseId();
-            List<String> specialLicIds = appCessationDto.getSpecialLicIds();
             List<String> premiseIds = licPremiseIdMap.get(licId);
             if (premiseIds == null) {
-                //base
                 List<String> premisesIds = IaisCommonUtils.genNewArrayList();
                 premisesIds.add(premiseId);
                 licPremiseIdMap.put(licId, premisesIds);
-                baseLicIds.add(licenseeId);
-                //special
-                if(!IaisCommonUtils.isEmpty(specialLicIds)){
-                   for(String specLicId : specialLicIds){
-                       licPremiseIdMap.put(specLicId, premisesIds);
-                   }
-                }
             } else {
                 premiseIds.add(premiseId);
             }
@@ -251,16 +236,6 @@ public class CessationFeServiceImpl implements CessationFeService {
                 }
             }
         });
-        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
-        for(String appId :appIds){
-            ApplicationDto applicationDto = applicationFeClient.getApplicationById(appId).getEntity();
-            String originLicenceId = applicationDto.getOriginLicenceId();
-            if(!baseLicIds.contains(originLicenceId)){
-                applicationDto.setFastTracking(true);
-                applicationDtos.add(applicationDto);
-            }
-        }
-        applicationFeClient.updateApplicationList(applicationDtos);
         cessationClient.saveCessation(appCessMiscDtos).getEntity();
         return appIdPremisesMap;
     }
@@ -370,7 +345,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
                     Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                     LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
-                    String applicantName = licenseeDto.getName();
+                    String applicantName = loginContext.getUserName();
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     emailMap.put("ApplicationNumber", applicationNo);
@@ -378,7 +353,6 @@ public class CessationFeServiceImpl implements CessationFeService {
                     svcNameLicNo.append(svcName).append(" : ").append(licenceNo);
                     if(!IaisCommonUtils.isEmpty(specLicIds)){
                        for(String specLicId :specLicIds){
-                           svcNameLicNo.append("<br/>");
                            LicenceDto specLicDto = licenceClient.getLicBylicId(specLicId).getEntity();
                            String svcName1 = specLicDto.getSvcName();
                            String licenceNo1 = specLicDto.getLicenceNo();
@@ -418,17 +392,16 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_SMS);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
                     notificationHelper.sendNotification(emailParam);
+
                 } else {
                     Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                    LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
-                    String applicantName = licenseeDto.getName();
+                    String applicantName = loginContext.getUserName();
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     StringBuilder svcNameLicNo = new StringBuilder();
                     svcNameLicNo.append(svcName).append(" : ").append(licenceNo);
                     if(!IaisCommonUtils.isEmpty(specLicIds)){
                         for(String specLicId :specLicIds){
-                            svcNameLicNo.append("<br/>");
                             LicenceDto specLicDto = licenceClient.getLicBylicId(specLicId).getEntity();
                             String svcName1 = specLicDto.getSvcName();
                             String licenceNo1 = specLicDto.getLicenceNo();
