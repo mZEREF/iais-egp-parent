@@ -28,22 +28,34 @@
                                                 <p>${withdrawAppNo}</p>
                                             </div>
                                             <div class="withdraw-delete">
-                                                <!--   <p><a href="#"><i class="fa fa-trash-o"></i>Delete</a></p> -->
+
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                                <c:if test="${isDoView != 'Y'}">
-                                    <div class="col-lg-4 col-xs-12">
-                                        <div class="withdraw-addmore gradient-light-grey">
-                                            <a href="#newappModal" data-toggle="modal" data-target="#newappModal"><h4><em
-                                                    class="fa fa-plus-circle"></em> Add more applications</h4></a> <%--NOSONAR--%>
+                                <c:forEach items="${addWithdrawnDtoList}" var="wdList">
+                                    <div class="withdraw-content-box">
+                                        <div class="withdraw-info-gp">
+                                            <div class="withdraw-info-row">
+                                                <div class="withdraw-info">
+                                                    <p>${wdList.applicationNo}</p>
+                                                </div>
+                                                <div class="withdraw-delete">
+                                                    <p ><a onclick="deleteWithdraw(this)"><i class="fa fa-trash-o"></i>Delete</a></p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </c:if>
-
+                                </c:forEach>
+                            </div>
+                            <c:if test="${isDoView != 'Y'}">
+                                <div class="col-lg-4 col-xs-12">
+                                    <div class="withdraw-addmore gradient-light-grey">
+                                        <a href="#newappModal" data-toggle="modal" data-target="#newappModal"><h4><em
+                                                class="fa fa-plus-circle"></em> Add more applications</h4></a> <%--NOSONAR--%>
+                                    </div>
+                                </div>
+                            </c:if>
                         </div>
                     </div>
                     <div id="newappModal" class="modal fade" role="dialog">
@@ -87,30 +99,10 @@
                                                      value="${withdrawDtoView.withdrawnReason}"  />
                                     </c:otherwise>
                                 </c:choose>
-
-
-
                                 <span id="error_withdrawnReason" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                     </div>
-
-
-
-
-
-                    <c:choose>
-                        <c:when test="">
-
-                        </c:when>
-                        <c:otherwise>
-
-                        </c:otherwise>
-                    </c:choose>
-
-
-
-
                     <div id="reason"
                          <c:if test="${withdrawDtoView.withdrawnReason != 'WDR005' || withdrawDtoView.withdrawnReason== null}">hidden</c:if>>
                         <div class="row">
@@ -136,8 +128,6 @@
                             <div class="document-upload-gp">
                                 <div class="document-upload-list">
                                     <h3>File upload for Withdrawal Reasons</h3>
-
-
                                     <c:choose>
                                         <c:when test="${isDoView != 'Y'}">
                                             <div class="file-upload-gp">
@@ -160,12 +150,8 @@
                                             <%--NewApplicationAjaxController method - > file-repo--%>
                                             <a class="" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${fileRpId}&fileRo${fileRpId}=<iais:mask name="fileRo${fileRpId}"
                                             value="${fileRpId}"/>&fileRepoName=${fileDocName}"  >${fileDocName}</a>
-
-
                                         </c:otherwise>
                                     </c:choose>
-
-
                                     <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
                                     <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
@@ -174,7 +160,6 @@
                         </div>
                     </div>
                 </div>
-
                 <c:if test="${isDoView != 'Y'}">
                     <div class="row" style="padding-bottom: 2%">
                         <div class="center-content">
@@ -192,7 +177,23 @@
                         </div>
                     </div>
                 </c:if>
-
+            </div>
+        </div>
+        <div class="modal fade" id="isAppealModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body" style="text-align: center;">
+                        <div class="row">
+                            <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem;"> ${ARR} </span></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
             </div>
         </div>
     </form>
@@ -207,6 +208,10 @@
         if (${file_upload_withdraw != null && file_upload_withdraw != ""}) {
             $("#delFile").removeAttr("hidden");
         }
+        if('${appIsWithdrawal}'){
+            $('#isAppealModal').modal('show');
+        }
+
     });
 
     function withdrawalReasons(obj) {

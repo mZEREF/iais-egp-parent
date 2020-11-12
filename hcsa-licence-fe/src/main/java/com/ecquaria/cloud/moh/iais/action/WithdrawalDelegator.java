@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -18,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
@@ -58,6 +60,8 @@ public class WithdrawalDelegator {
     private ApplicationFeClient applicationFeClient;
 
     private LoginContext loginContext = null;
+
+    private String wdIsValid = IaisEGPConstant.YES;
 
     public void start(BaseProcessClass bpc){
         loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -168,22 +172,21 @@ public class WithdrawalDelegator {
     }
 
     public void withdrawalStep(BaseProcessClass bpc) throws Exception {
-        String isValid = IaisEGPConstant.YES;
-        List<WithdrawnDto> withdrawnDtoList = getWithdrawAppList(bpc,isValid);
-        if (withdrawnDtoList != null && withdrawnDtoList.size() > 0){
+        wdIsValid = IaisEGPConstant.YES;
+        List<WithdrawnDto> withdrawnDtoList = getWithdrawAppList(bpc);
+        if (IaisEGPConstant.YES.equals(wdIsValid) && withdrawnDtoList != null && withdrawnDtoList.size() > 0){
             withdrawalService.saveWithdrawn(withdrawnDtoList);
         }
     }
 
     public void withdrawDoRfi(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("****The withdrawDoRfi Step****"));
-        String isValid = IaisEGPConstant.YES;
-        List<WithdrawnDto> withdrawnDtoList = getWithdrawAppList(bpc,isValid);
-        if (withdrawnDtoList != null && withdrawnDtoList.size() > 0){
+        List<WithdrawnDto> withdrawnDtoList = getWithdrawAppList(bpc);
+        if (IaisEGPConstant.YES.equals(wdIsValid) && withdrawnDtoList != null && withdrawnDtoList.size() > 0){
 //            withdrawalService.saveWithdrawn(withdrawnDtoList);
             withdrawalService.saveRfiWithdrawn(withdrawnDtoList);
         }
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,isValid);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,wdIsValid);
     }
 
     public void prepareRfiDate(BaseProcessClass bpc) {
@@ -198,7 +201,7 @@ public class WithdrawalDelegator {
         log.debug(StringUtil.changeForLog("****The saveDateStep Step****"));
     }
 
-    private List<WithdrawnDto> getWithdrawAppList(BaseProcessClass bpc,String isValid) throws IOException {
+    private List<WithdrawnDto> getWithdrawAppList(BaseProcessClass bpc) throws IOException {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String withdrawnReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
         String paramAppNos = ParamUtil.getString(mulReq, "withdraw_app_list");
@@ -225,7 +228,6 @@ public class WithdrawalDelegator {
                     String withdrawnRemarks = ParamUtil.getRequestString(bpc.request, "withdrawnRemarks");
                     withdrawnDto.setWithdrawnRemarks(withdrawnRemarks);
                 }
-
                 ValidationResult validationResult = WebValidationHelper.validateProperty(withdrawnDto,"save");
                 if(validationResult != null && validationResult.isHasErrors()){
                     Map<String, String> errorMap = validationResult.retrieveAll();
@@ -236,7 +238,7 @@ public class WithdrawalDelegator {
                         ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",commonsMultipartFile.getFileItem().getName());
                     }
                     ParamUtil.setRequestAttr(bpc.request,"withdrawDtoView",withdrawnDto);
-                    isValid = IaisEGPConstant.NO;
+                    wdIsValid = IaisEGPConstant.NO;
                 }else{
                     if (commonsMultipartFile != null && commonsMultipartFile.getSize() > 0 ){
                         String fileRepoId = serviceConfigService.saveFileToRepo(commonsMultipartFile);
@@ -251,9 +253,25 @@ public class WithdrawalDelegator {
                     }
                     withdrawnDtoList.add(withdrawnDto);
                 }
+
             }
         }
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,isValid);
+        String applicationNo =  (String)ParamUtil.getSessionAttr(bpc.request, "withdrawAppNo");
+        List<WithdrawnDto> addWithdrawnDtoList = IaisCommonUtils.genNewArrayList();
+        addWithdrawnDtoList.addAll(withdrawnDtoList);
+        addWithdrawnDtoList.removeIf(h -> applicationNo.equals(h.getApplicationNo()));
+        for (WithdrawnDto withdrawnDto : addWithdrawnDtoList) {
+            if (!applicationFeClient.isApplicationWithdrawal(withdrawnDto.getApplicationId()).getEntity()) {
+                String withdrawalError = MessageUtil.replaceMessage("WDL_EER002","appNo",withdrawnDto.getApplicationNo());
+                ParamUtil.setRequestAttr(bpc.request,"appIsWithdrawal",Boolean.TRUE);
+                bpc.request.setAttribute(InboxConst.APP_RECALL_RESULT,withdrawalError);
+                wdIsValid = IaisEGPConstant.NO;
+                break;
+            }
+        }
+
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,wdIsValid);
+        ParamUtil.setRequestAttr(bpc.request, "addWithdrawnDtoList",addWithdrawnDtoList);
         return withdrawnDtoList;
     }
 }

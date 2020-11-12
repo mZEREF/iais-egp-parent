@@ -695,6 +695,14 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
+    public FeignResponseEntity<Boolean> isApplicationWithdrawal(String appId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<AppGrpPremisesEntityDto>> getPendAppPremises(String licenseeId, String svcIdStr) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

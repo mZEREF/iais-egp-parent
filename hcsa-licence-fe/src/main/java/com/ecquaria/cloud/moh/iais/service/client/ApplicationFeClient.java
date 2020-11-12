@@ -304,7 +304,8 @@ public interface ApplicationFeClient {
     FeignResponseEntity<List<AppGrpPremisesDto>> getAppGrpPremisesDtoByHciName(@RequestParam("hciName") String hciName,@RequestParam("licencessId") String licencessId);
     @GetMapping(value = "/iais-application/application-dto-by-appNo",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationDtoByAppNo(@RequestParam("appNo") String appNo);
-
+    @GetMapping(value = "/appeal/application-withdrawal-by-app-id")
+    FeignResponseEntity<Boolean> isApplicationWithdrawal(@RequestParam("appId") String appId);
     @GetMapping(value = "/iais-application/pending-app-premises",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppGrpPremisesEntityDto>> getPendAppPremises(@RequestParam("licenseeId") String licenseeId, @RequestParam("svcIdStr") String svcIdStr);
     @GetMapping(value = "/appeal/licence-appeal-or-cessation-by-licence-id")
