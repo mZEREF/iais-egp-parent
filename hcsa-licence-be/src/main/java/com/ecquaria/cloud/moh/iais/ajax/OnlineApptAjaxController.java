@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -24,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -64,6 +66,9 @@ public class OnlineApptAjaxController {
     private InspectionTaskClient inspectionTaskClient;
 
     @Autowired
+    private HcsaLicenceClient hcsaLicenceClient;
+
+    @Autowired
     private ApplicationClient applicationClient;
 
     @Autowired
@@ -91,10 +96,22 @@ public class OnlineApptAjaxController {
                     List<String> premCorrIds = apptInspectionDateDto.getRefNo();
                     Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
                     List<String> serviceIds = IaisCommonUtils.genNewArrayList();
-                    for (Map.Entry<String, String> mapDate : corrIdServiceIdMap.entrySet()) {
-                        if(!StringUtil.isEmpty(mapDate.getValue())){
-                            serviceIds.add(mapDate.getValue());
+                    if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                        Map<String, Date> svcIdLicDtMap = IaisCommonUtils.genNewHashMap();
+                        for (Map.Entry<String, String> mapDate : corrIdServiceIdMap.entrySet()) {
+                            if(!StringUtil.isEmpty(mapDate.getValue())){
+                                svcIdLicDtMap = setSvcIdLicDtMapByApp(mapDate.getKey(), mapDate.getValue(), svcIdLicDtMap);
+                                serviceIds.add(mapDate.getValue());
+                            }
                         }
+                        appointmentDto.setSvcIdLicDtMap(svcIdLicDtMap);
+                    } else {
+                        for (Map.Entry<String, String> mapDate : corrIdServiceIdMap.entrySet()) {
+                            if(!StringUtil.isEmpty(mapDate.getValue())){
+                                serviceIds.add(mapDate.getValue());
+                            }
+                        }
+                        appointmentDto.setSvcIdLicDtMap(null);
                     }
                     //get Start date and End date when group no date
                     if (appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null) {
@@ -181,6 +198,7 @@ public class OnlineApptAjaxController {
                 //get Start date and End date when group no date
                 if (specificApptDto.getStartDate() == null && specificApptDto.getEndDate() == null) {
                     specificApptDto.setServiceIds(serviceIds);
+                    specificApptDto.setSvcIdLicDtMap(null);
                     specificApptDto = hcsaConfigClient.getApptStartEndDateByService(specificApptDto).getEntity();
                 }
                 //set data to validate
@@ -219,6 +237,18 @@ public class OnlineApptAjaxController {
             }
         }
         return map;
+    }
+
+    private Map<String, Date> setSvcIdLicDtMapByApp(String appPremCorrId, String serviceId, Map<String, Date> svcIdLicDtMap) {
+        ApplicationDto appDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
+        String orgLicId = appDto.getOriginLicenceId();
+        if(!StringUtil.isEmpty(orgLicId)) {
+            LicenceDto licDto = hcsaLicenceClient.getLicDtoById(orgLicId).getEntity();
+            if(licDto != null && licDto.getExpiryDate() != null){
+                svcIdLicDtMap.put(serviceId, licDto.getExpiryDate());
+            }
+        }
+        return svcIdLicDtMap;
     }
 
     private List<AppointmentUserDto> getOnePersonBySomeService(List<AppointmentUserDto> appointmentUserDtos) {
