@@ -211,7 +211,7 @@ public class PrefDateRangePeriodDelegator {
 
         Boolean result = periodService.savePrefInspPeriod(period);
         if (result){
-	        ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.getMessageDesc("ACK022"));
+	        ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.getMessageDesc("OAPPT_ACK022"));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             return;
         }else {

@@ -378,7 +378,7 @@ public class BlackedOutDateDelegator {
         switch (ans){
             case 0:
                 appointmentService.createBlackedOutCalendar(blackoutDateDto);
-                ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.getMessageDesc("ACK023"));
+                ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.getMessageDesc("OAPPT_"));
                 break;
             case 1:
                 appointmentService.updateBlackedOutCalendar(blackoutDateDto);
