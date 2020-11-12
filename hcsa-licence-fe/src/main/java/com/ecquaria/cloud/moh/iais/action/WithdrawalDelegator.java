@@ -159,6 +159,8 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY001","APST011"});
 
         List<WithdrawApplicationDto> withdrawAppList =  withdrawalService.getCanWithdrawAppList(applicationTandS,loginContext.getLicenseeId());
+        String applicationNo =  (String)ParamUtil.getSessionAttr(bpc.request, "withdrawAppNo");
+        withdrawAppList.removeIf(h -> applicationNo.equals(h.getApplicationNo()));
         PaginationHandler<WithdrawApplicationDto> handler = new PaginationHandler<>("withdrawPagDiv", "withdrawBodyDiv");
         handler.setAllData(withdrawAppList);
         handler.preLoadingPage();
