@@ -124,7 +124,7 @@ public class SelfAssessmentDelegator {
         }else {
             ParamUtil.setSessionAttr(bpc.request, REDIRECT_TO_MAIN_FLAG, "N");
         }
-        String ack026 = MessageUtil.getMessageDesc("ACK026");
+        String ack026 = MessageUtil.getMessageDesc("NEW_ACK026");
         List<SelfAssessment> selfAssessmentList;
         boolean hasSubmitted;
         if (SelfAssessmentConstant.SELF_ASSESSMENT_RFI_ACTION.equals(action)){
