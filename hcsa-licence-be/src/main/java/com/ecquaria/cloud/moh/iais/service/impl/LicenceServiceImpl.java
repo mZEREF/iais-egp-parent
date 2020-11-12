@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IssuanceAddresses;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IssuanceBasic;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -46,6 +47,7 @@ import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
@@ -135,6 +137,8 @@ public class LicenceServiceImpl implements LicenceService {
     @Autowired
     private NotificationHelper notificationHelper;
 
+    @Autowired
+    private InspectionAssignTaskService inspectionAssignTaskService;
     @Autowired
     private SystemParamConfig systemParamConfig;
 
@@ -372,13 +376,14 @@ public class LicenceServiceImpl implements LicenceService {
                     log.info(StringUtil.changeForLog("licence id = " + licenceDto.getId()));
                     LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
                     LicenseeIndividualDto licenseeIndividualDto = licenseeDto.getLicenseeIndividualDto();
+                    String[] appGrpNo = licenceDto.getApplicationNo().split("-");
+                    AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appGrpNo[0]);
                     log.info(StringUtil.changeForLog("licenseeIndividualDto.getUenMailFlag() = " + licenseeIndividualDto.getUenMailFlag()));
                     //judge licence is singlepass
                     if(licenseeIndividualDto.getUenMailFlag() == 0){
                         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
-
-                        templateContent.put("HCI_Name", licenseeDto.getName());
-                        String address = MiscUtil.getAddress(licenseeDto.getBlkNo(),licenseeDto.getStreetName(),licenseeDto.getBuildingName(),licenseeDto.getFloorNo(),licenseeDto.getUnitNo(),licenseeDto.getPostalCode());
+                        templateContent.put("HCI_Name", appGrpPremisesDto.getHciName());
+                        String address = MiscUtil.getAddress(appGrpPremisesDto.getBlkNo(),appGrpPremisesDto.getStreetName(),appGrpPremisesDto.getBuildingName(),appGrpPremisesDto.getFloorNo(),appGrpPremisesDto.getUnitNo(),appGrpPremisesDto.getPostalCode());
                         templateContent.put("HCI_Address", address);
                         log.info(StringUtil.changeForLog("HCI_Address = " + address));
                         OrganizationDto organizationDto = organizationClient.getOrganizationById(licenseeDto.getOrganizationId()).getEntity();
@@ -394,11 +399,19 @@ public class LicenceServiceImpl implements LicenceService {
                         templateContent.put("emailAddress", systemAddressOne);
                         templateContent.put("telNo", systemPhoneNumber);
 
-                        String subject = "MOH HALP - Issuance of UEN for Solo Applicant";
+                        MsgTemplateDto emailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_EMAIL).getEntity();
+                        MsgTemplateDto smsTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_SMS).getEntity();
+                        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_MSG).getEntity();
+                        Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+                        String emailSubject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
+                        String smsSubject = MsgUtil.getTemplateMessageByContent(smsTemplateDto.getTemplateName(),subMap);
+                        String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),subMap);
+
+
                         EmailParam emailParam = new EmailParam();
                         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_EMAIL);
                         emailParam.setTemplateContent(templateContent);
-                        emailParam.setSubject(subject);
+                        emailParam.setSubject(emailSubject);
                         emailParam.setQueryCode(licenceDto.getLicenceNo());
                         emailParam.setReqRefNum(licenceDto.getLicenceNo());
                         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
@@ -407,8 +420,8 @@ public class LicenceServiceImpl implements LicenceService {
                         log.info(StringUtil.changeForLog("send email end"));
 
                         EmailParam smsParam = new EmailParam();
-                        smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_EMAIL);
-                        smsParam.setSubject(subject);
+                        smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_SMS);
+                        smsParam.setSubject(smsSubject);
                         smsParam.setTemplateContent(templateContent);
                         smsParam.setQueryCode(licenceDto.getLicenceNo());
                         smsParam.setReqRefNum(licenceDto.getLicenceNo());
@@ -418,9 +431,9 @@ public class LicenceServiceImpl implements LicenceService {
                         log.info(StringUtil.changeForLog("send sms end"));
 
                         EmailParam msgParam = new EmailParam();
-                        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_EMAIL);
+                        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_MSG);
                         msgParam.setTemplateContent(templateContent);
-                        msgParam.setSubject(subject);
+                        msgParam.setSubject(msgSubject);
                         msgParam.setQueryCode(licenceDto.getLicenceNo());
                         msgParam.setReqRefNum(licenceDto.getLicenceNo());
                         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
