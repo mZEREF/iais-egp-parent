@@ -960,7 +960,7 @@ public class AppealServiceImpl implements AppealService {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-        return appNo;
+        return applicationGroupDto.getGroupNo();
     }
 
     public String arrayToString(List<ApplicationDto> applicationDtoListlist,String groupNo){
@@ -1075,7 +1075,6 @@ public class AppealServiceImpl implements AppealService {
             applicationGroupDto.setGroupNo(rfiApplication.getApplicationNo().substring(0,rfiApplication.getApplicationNo().lastIndexOf('-')));
             applicationDto1.setApplicationNo(rfiApplication.getApplicationNo());
             applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
-            applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
             s = rfiApplication.getApplicationNo();
             appNo=s;
             rfiApplication.setStatus(ApplicationConsts.APPLICATION_STATUS_DELETED);
@@ -1123,7 +1122,7 @@ public class AppealServiceImpl implements AppealService {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-        return appNo;
+        return applicationGroupDto.getGroupNo();
     }
 
     private void requetForInformationGetMessage(HttpServletRequest request, AppPremiseMiscDto appPremiseMiscDto) {

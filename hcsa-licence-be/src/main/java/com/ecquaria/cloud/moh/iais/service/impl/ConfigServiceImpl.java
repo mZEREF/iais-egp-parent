@@ -505,7 +505,7 @@ public class ConfigServiceImpl implements ConfigService {
             }
         }else {
             if(!StringUtil.isEmpty(endDate)){
-                if(!endDate.before(maxVersionEndDate)){
+                if(endDate.before(maxVersionEndDate)){
                     errorMap.put("effectiveEndDate","The end time cannot be earlier than the max version service start time");
                 }
             }

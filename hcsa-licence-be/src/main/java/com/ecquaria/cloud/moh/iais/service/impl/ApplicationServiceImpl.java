@@ -532,7 +532,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             inboxMsgService.saveInterMessage(interMessageDto);
             //send email
             EmailParam emailParam = new EmailParam();
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APP_RFI_EMAIL);
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
             map.put("systemLink",loginUrl);
             emailParam.setTemplateContent(map);

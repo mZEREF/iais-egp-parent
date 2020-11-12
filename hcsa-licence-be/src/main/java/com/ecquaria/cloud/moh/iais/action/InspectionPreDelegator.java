@@ -119,6 +119,7 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO, null);
         ParamUtil.setSessionAttr(bpc.request,"commonDto", null);
         ParamUtil.setSessionAttr(bpc.request,"serListDto", null);
+        ParamUtil.setSessionAttr(bpc.request,"isSaveRfiSelect",null);
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, null);
         ParamUtil.setSessionAttr(bpc.request, "actionValue", null);
         ParamUtil.setSessionAttr(bpc.request, "inspectionHistoryShowDtos", null);

@@ -720,11 +720,8 @@ public class ConfigServiceDelegator {
             Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(startDate);
             String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(parse);
             hcsaServiceDto.setEffectiveDate(format);
-            if(parse.after(new Date())){
-                hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-            }else {
-                hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            }
+            hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+
         } catch (Exception e) {
           /*  Date parse = new SimpleDateFormat("yyyy-MM-dd").parse(startDate);
             hcsaServiceDto.setEffectiveDate(startDate);

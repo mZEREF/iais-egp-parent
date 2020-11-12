@@ -238,8 +238,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-7">
                                       <div class="">
-                                        <input maxlength="20"  name="professionRegoNo" value="${currentCgo.profRegNo}" type="text" onblur="prs(this)">
-                                       <%-- <iais:input maxLength="20" type="text" name="professionRegoNo" value="${currentCgo.profRegNo}"></iais:input>--%>
+                                        <input maxlength="20"  name="professionRegoNo" value="${currentCgo.profRegNo}" type="text" onblur="aaa(this)">
                                         <span class="error-msg" name="iaisErrorMsg" id="error_professionRegoNo${status.index}"></span>
                                       </div>
                                     </div>
@@ -506,7 +505,7 @@
 
     }
 
-    function prs(obj){
+    function aaa(obj){
         var val = $(obj).val();
         $.getJSON("${pageContext.request.contextPath}/regNo-prs",{"regNo":val},function (data) {
             if(data.regno==null){
