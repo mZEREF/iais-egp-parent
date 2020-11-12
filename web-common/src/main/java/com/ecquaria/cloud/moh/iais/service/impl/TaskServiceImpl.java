@@ -498,7 +498,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public boolean checkCompleteTaskByApplicationNo(List<ApplicationDto> applicationDtoList) {
         if(IaisCommonUtils.isEmpty(applicationDtoList)){
-            return false;
+            return true;
         }
         boolean flag = true;
         for(ApplicationDto applicationDto : applicationDtoList){
