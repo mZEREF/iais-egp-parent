@@ -90,15 +90,18 @@
 <script type="text/javascript">
     function save() {
         $("#action").val("save");
-        SOP.Crud.cfxSubmit("mainForm");
+        var mainPoolForm = document.getElementById('mainForm');
+        mainPoolForm.submit();
     }
     function cancel() {
         $("#action").val("cancel");
-        SOP.Crud.cfxSubmit("mainForm");
+        var mainPoolForm = document.getElementById('mainForm');
+        mainPoolForm.submit();
     }
 
     function reLoadMyInfoTodo() {
         $("#action").val("getMyInfo");
-        SOP.Crud.cfxSubmit("mainForm");
+        var mainPoolForm = document.getElementById('mainForm');
+        mainPoolForm.submit();
     }
 </script>

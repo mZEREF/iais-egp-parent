@@ -100,7 +100,8 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <p><a onclick="edit('${item.id}')">Edit</a></p>
+                                                <p><a onclick="edit('userIndex${status.index}')">Edit</a></p>
+                                                <input hidden name="userIndex${status.index}" value="<iais:mask name='userIndex${status.index}' value='${item.id}'></iais:mask>">
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -125,6 +126,7 @@
                 </div>
             </div>
         </div>
+        <input hidden name="userIndex" value="">
     </form>
 </div>
 <script>
@@ -134,9 +136,9 @@
         mainPoolForm.submit();
     }
 
-    function edit(id) {
-        console.log(id);
+    function edit(name) {
         $("[name='crud_action_type']").val("edit");
+        $("[name='userIndex']").val(name);
         var mainPoolForm = document.getElementById('mainForm');
         mainPoolForm.submit();
     }

@@ -119,7 +119,8 @@ public class FeAdminManageDelegate {
         String userId ;
         String isAdmin ;
         if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)){
-            userId = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+            String userInputName = ParamUtil.getString(bpc.request,"userIndex");
+            userId = ParamUtil.getMaskedString(bpc.request,userInputName);
             isAdmin = "1";
         }else{
             userId = loginContext.getUserId();
@@ -166,14 +167,12 @@ public class FeAdminManageDelegate {
 
             ParamUtil.setRequestAttr(bpc.request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.YES);
             FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, "inter_user_attr");
-            if(feUserDto.getIdType() == null){
-                feUserDto.setIdType(idType);
-            }
             if(feUserDto.getUenNo() != null){
                 feUserDto.setUserId(feUserDto.getUenNo() + "_" + idNo);
             }else{
                 feUserDto.setUserId(idNo);
             }
+            feUserDto.setIdType(idType);
             feUserDto.setIdentityNo(idNo);
             feUserDto.setDisplayName(name);
             feUserDto.setSalutation(salutation);
