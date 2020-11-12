@@ -58,30 +58,15 @@ public class MessageDelegator {
      */
     private void preSelectOption(HttpServletRequest request){
         List<SelectOption> moduleList =  IaisCommonUtils.genNewArrayList();
-        moduleList.add(new SelectOption("Common", "Common"));
-        moduleList.add(new SelectOption("New", "New"));
-        moduleList.add(new SelectOption("Renewal", "Renewal"));
-        moduleList.add(new SelectOption("Request For Change", "Request For Change"));
-        moduleList.add(new SelectOption("Withdrawal", "Withdrawal"));
-        moduleList.add(new SelectOption("Cessation", "Cessation"));
-        moduleList.add(new SelectOption("Inspection", "Inspection"));
-        moduleList.add(new SelectOption("Checklist Management", "Checklist Management"));
-        moduleList.add(new SelectOption("Email SMS Blast", "Email SMS Blast"));
-        moduleList.add(new SelectOption("User Management", "User Management"));
-        moduleList.add(new SelectOption("Online Appointment", "Online Appointment "));
-        moduleList.add(new SelectOption("Audit", "Audit"));
-        moduleList.add(new SelectOption("Audit Trail", "Audit Trail"));
-        moduleList.add(new SelectOption("Service Configurator", "Service Configurator"));
-        moduleList.add(new SelectOption("Load Levelling", "Load Levelling"));
-        moduleList.add(new SelectOption("System Parameter Management", "System Parameter Management"));
-        moduleList.add(new SelectOption("Performance Management", "Performance Management"));
-        moduleList.add(new SelectOption("Request For Information", "Request For Information"));
-        moduleList.add(new SelectOption("Alert, Notifications and Letter Template Mgt", "Alert, Notifications and Letter Template Mgt"));
-        moduleList.add(new SelectOption("Suspension", "Suspension"));
-        moduleList.add(new SelectOption("Revocation", "Revocation"));
-        moduleList.add(new SelectOption("Reinstatement", "Reinstatement"));
-        moduleList.add(new SelectOption("Appeal", "Appeal"));
-        moduleList.add(new SelectOption("Online Enquiry", "Online Enquiry"));
+
+        String[] option = new String[]{"Common", "New", "Renewal", "Request For Change", "Withdrawal",
+                "Cessation", "Inspection", "Checklist Management", "Email SMS Blast", "User Management", "Online Appointment",
+                "Audit", "Audit Trail", "Service Configurator", "Load Levelling", "System Parameter Management", "Performance Management",
+                "Request For Information", "Alert, Notifications and Letter Template Mgt", "Suspension", "Revocation", "Reinstatement", "Appeal", "Online Enquiry"};
+
+        for (String i : option){
+            moduleList.add(new SelectOption(i, i));
+        }
         ParamUtil.setRequestAttr(request, "moduleTypeSelect", moduleList);
     }
 
