@@ -121,4 +121,12 @@ public class OrganizationLienceseeClientFallback
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<OrgUserDto> retrieveOneOrgUserAccount(String user_id) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
@@ -128,15 +129,16 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 AppSubmissionDto appSubmissionDto = applicationFeClient.gainSubmissionDto(h.getApplicationNo()).getEntity();
                 if (appSubmissionDto != null){
                     ApplicationDto applicationDto = applicationFeClient.getApplicationById(h.getApplicationId()).getEntity();
+                    ApplicationGroupDto applicationGroupDto =  applicationFeClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
                     String serviceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceId();
                     if (!StringUtil.isEmpty(serviceId)){
                         applicationDtoList.add(applicationDto);
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                         msgInfoMap.put("ApplicationNumber", h.getApplicationNo());
                         msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
-                        LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(h.getLicenseeId()).getEntity();
+                        OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
                         List<ApplicationDto> applicationDtoList2 = hcsaConfigFeClient.returnFee(applicationDtoList).getEntity();
-                        String applicantName = licenseeDto.getName();
+                        String applicantName = orgUserDto.getDisplayName();
                         msgInfoMap.put("Applicant", applicantName);
                         if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())
                                 || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())){
