@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IssuanceAddresses;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IssuanceBasic;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -58,6 +57,7 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -115,6 +115,9 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Autowired
     private EmailClient emailClient;
+
+    @Autowired
+    private InspectionTaskClient inspectionTaskClient;
 
     @Autowired
     private AcraUenBeClient acraUenBeClient;
@@ -376,17 +379,14 @@ public class LicenceServiceImpl implements LicenceService {
                     log.info(StringUtil.changeForLog("licence id = " + licenceDto.getId()));
                     LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
                     LicenseeIndividualDto licenseeIndividualDto = licenseeDto.getLicenseeIndividualDto();
-                    String[] appGrpNo = licenceDto.getApplicationNo().split("-");
-                    log.info(StringUtil.changeForLog("licenceDto :" + JsonUtil.parseToJson(licenceDto)));
-                    log.info(StringUtil.changeForLog("application :" + appGrpNo[0]));
-                    AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appGrpNo[0]);
-                    log.info(StringUtil.changeForLog("appGrpPremisesDto :" + JsonUtil.parseToJson(appGrpPremisesDto)));
+                    PremisesDto premisesDto = superLicDto.getPremisesGroupDtos().get(0).getPremisesDto();
                     log.info(StringUtil.changeForLog("licenseeIndividualDto.getUenMailFlag() = " + licenseeIndividualDto.getUenMailFlag()));
+                    log.info(StringUtil.changeForLog("premisesDto = " + JsonUtil.parseToJson(premisesDto)));
                     //judge licence is singlepass
                     if(licenseeIndividualDto.getUenMailFlag() == 0){
                         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
-                        templateContent.put("HCI_Name", appGrpPremisesDto.getHciName());
-                        String address = MiscUtil.getAddress(appGrpPremisesDto.getBlkNo(),appGrpPremisesDto.getStreetName(),appGrpPremisesDto.getBuildingName(),appGrpPremisesDto.getFloorNo(),appGrpPremisesDto.getUnitNo(),appGrpPremisesDto.getPostalCode());
+                        templateContent.put("HCI_Name", premisesDto.getHciName());
+                        String address = MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
                         templateContent.put("HCI_Address", address);
                         log.info(StringUtil.changeForLog("HCI_Address = " + address));
                         OrganizationDto organizationDto = organizationClient.getOrganizationById(licenseeDto.getOrganizationId()).getEntity();
