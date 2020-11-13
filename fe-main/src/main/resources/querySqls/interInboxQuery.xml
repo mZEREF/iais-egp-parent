@@ -61,14 +61,15 @@
                     app.service_id,
                     repalceService  as code,
                     app.self_assmt_flag,
+                    app.is_fast_tracking,
                     app.created_dt,
                     app.version
                 FROM APPLICATION AS app
                 join (select application_no,MAX(version) as version from application GROUP BY application_no) as app2
-                on app.APPLICATION_NO = app2.application_no and app.version = app2.version
+                on app.APPLICATION_NO = app2.application_no and app.version = app2.version on app.self_assmt_flag != 'APST008' and app.is_fast_tracking = 0
                 union
                 select
-                    A.ID as id,A.DRAFT_NO AS application_no,A.app_grp_id,A.licensee_id,A.app_type,'APST008' as status,NULL as service_id,A.SERVICE_CODES as code,null,A.CREATED_DT,1
+                    A.ID as id,A.DRAFT_NO AS application_no,A.app_grp_id,A.licensee_id,A.app_type,'APST008' as status,NULL as service_id,A.SERVICE_CODES as code,null,null,A.CREATED_DT,1
                 from
                     app_grp_submission_draft AS A
                 where  A.status = 'CMSTAT001') AS B
@@ -77,6 +78,7 @@
              AND B.STATUS != 'APST074'
              AND B.STATUS != 'APST073'
              AND B.APP_TYPE != 'APTY007'
+             AND ( B.app_type = 'APTY008' and B.is_fast_tracking = 0)
             <#if id??> AND CHARINDEX(:id, app.id) >0</#if>
             <#if appType??> AND B.app_type = :appType</#if>
             <#if licenseeId??> AND B.licensee_id = :licenseeId</#if>
