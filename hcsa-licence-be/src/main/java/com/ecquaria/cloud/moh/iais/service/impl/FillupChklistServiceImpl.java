@@ -683,8 +683,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         String svcId = applicationDto.getServiceId();
         String appType = applicationDto.getApplicationType();
         String stgId = taskDto.getTaskKey();
-        List<TaskDto> dtos = organizationClient.getTasksByRefNo(taskDto.getRefNo()).getEntity();
-        removeOtherTask(dtos,taskDto.getId());
+       /* List<TaskDto> dtos = organizationClient.getTasksByRefNo(taskDto.getRefNo()).getEntity();
+        removeOtherTask(dtos,taskDto.getId());*/
         ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_EMAIL);
         HcsaSvcStageWorkingGroupDto dto = new HcsaSvcStageWorkingGroupDto();
         dto.setStageId(stgId);
@@ -699,8 +699,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.PROCESS_DECI_PENDING_MYSELF_FOR_CHECKLIST_VERIFY, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
         //create
         TaskDto updatedtaskDto = completedTask(taskDto);
-        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        taskDto.setApplicationNo(applicationDto.getApplicationNo());
+        updatedtaskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        updatedtaskDto.setApplicationNo(applicationDto.getApplicationNo());
         updatedtaskDto.setId(null);
         updatedtaskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_NCEMAIL);
         updatedtaskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
@@ -722,8 +722,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     public void routingForToReport(TaskDto taskDto, String preInspecRemarks,LoginContext loginContext){
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        List<TaskDto> dtos = organizationClient.getTasksByRefNo(taskDto.getRefNo()).getEntity();
-        removeOtherTask(dtos,taskDto.getId());
+       /* List<TaskDto> dtos = organizationClient.getTasksByRefNo(taskDto.getRefNo()).getEntity();
+        removeOtherTask(dtos,taskDto.getId());*/
         ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT );
         updateInspectionStatus(applicationDto,InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
         //create createAppPremisesRoutingHistory
@@ -768,7 +768,13 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         taskDto.setSlaDateCompleted(new Date());
         taskDto.setSlaRemainInDays(taskService.remainDays(taskDto));
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        return taskService.updateTask(taskDto);
+        taskDto.setUpdateCount(1);
+        TaskDto updatedtaskDto = taskService.updateTask(taskDto);
+        if(updatedtaskDto == null){
+            updatedtaskDto = taskDto;
+            updatedtaskDto.setUpdateCount(0);
+        }
+        return updatedtaskDto;
     }
 
     private ApplicationDto updateApplicaitonStatus(ApplicationDto applicationDto, String appStatus) {
@@ -781,16 +787,17 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         return applicationClient.updateApplication(applicationDto).getEntity();
     }
 
-    private void removeOtherTask(List<TaskDto> dtos, String taskId) {
+  /*  private void removeOtherTask(List<TaskDto> dtos, String taskId) {
         if(!IaisCommonUtils.isEmpty(dtos)){
             for(TaskDto temp:dtos){
                 if(removeOtherTaskLogic(temp,taskId)){
                     temp.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+                    temp.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     taskService.updateTask(temp);
                 }
             }
         }
-    }
+    }*/
 
     public boolean removeOtherTaskLogic(TaskDto temp,String taskId){
         if(!taskId.equals(temp.getId())&&TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY.equals(temp.getProcessUrl())&&!temp.getTaskStatus().equals(TaskConsts.TASK_STATUS_COMPLETED)){
@@ -1680,6 +1687,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             if( !taskDto.getId().equalsIgnoreCase( taskDto1.getId())){
                 taskDto1.setSlaDateCompleted(date);
                 taskDto1.setSlaRemainInDays(taskService.remainDays(taskDto1));
+                taskDto1.setUpdateCount(1);
                 taskDto1.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
                 taskDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 taskDtoList.add(taskDto1);

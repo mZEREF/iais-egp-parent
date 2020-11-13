@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.AdhocChecklistConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
@@ -105,6 +106,18 @@ public class InspectionNcCheckListDelegator {
 
     }
 
+    private boolean setCsrf(BaseProcessClass bpc,TaskDto taskDto){
+        if( taskDto == null || TaskConsts.TASK_STATUS_COMPLETED.equals(taskDto.getTaskStatus()) || TaskConsts.TASK_STATUS_REMOVE.equals(taskDto.getTaskStatus()) || taskDto.getUpdateCount() ==1) {
+            try{
+                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+            } catch (IOException ioe){
+                log.error(ioe.getMessage(),ioe);
+            }
+            return true;
+        }else {
+            return  false;
+        }
+    }
     public void init(BaseProcessClass bpc){
         log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
         HttpServletRequest request = bpc.request;
@@ -124,7 +137,9 @@ public class InspectionNcCheckListDelegator {
 
 
         TaskDto taskDto = taskService.getTaskById(taskId);
-        if( taskDto == null) return;
+        if(setCsrf(bpc,taskDto)){
+            return;
+        }
         String appPremCorrId = taskDto.getRefNo();
         List<TaskDto> taskDtos = fillupChklistService.getCurrTaskByRefNo(taskDto);
         ParamUtil.setSessionAttr(request,TASKDTOLIST ,(Serializable) taskDtos);
@@ -243,6 +258,14 @@ public class InspectionNcCheckListDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
             }else{
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+                String taskId = taskDto.getId();
+                TaskDto searchTask = taskService.getTaskById(taskId);
+                if(TaskConsts.TASK_STATUS_COMPLETED.equals(searchTask.getTaskStatus()) || TaskConsts.TASK_STATUS_REMOVE.equals(searchTask.getTaskStatus()) || searchTask.getUpdateCount() ==1){
+                    ParamUtil.setRequestAttr(request,"errerMessageForNoTaskForUpdate","LOLEV_ACK039");
+                    return;
+                }else {
+                    ParamUtil.setRequestAttr(request,"errerMessageForNoTaskForUpdate","LOLEV_ACK034");
+                }
                 boolean flag = insepctionNcCheckListService.isHaveNcOrBestPractice(serListDto,comDto,showDto);
                 insepctionNcCheckListService.submit(comDto,showDto,serListDto,taskDto.getRefNo());
                 ApplicationViewDto appViewDto =(ApplicationViewDto) ParamUtil.getSessionAttr(request,APPLICATIONVIEWDTO);
@@ -563,13 +586,16 @@ public class InspectionNcCheckListDelegator {
 
     public void saveAhocs(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request,TASKDTO);
+        TaskDto taskDtoSearch = taskService.getTaskById(taskDto.getId());
+        if(setCsrf(bpc,taskDtoSearch)){
+            return;
+        }
         AdhocCheckListConifgDto adhocCheckListConifgDto = (AdhocCheckListConifgDto) ParamUtil.getSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR);
         AdhocCheckListConifgDto adhocCheckListConifgDtoOld = (AdhocCheckListConifgDto)ParamUtil.getSessionAttr(request, INSPECTION_ADHOC_CHECKLIST_LIST_ATTR);
         boolean editAhoc = fillupChklistService.editAhocByAdhocCheckListConifgDtoAndOldAdhocCheckListConifgDto(adhocCheckListConifgDto,adhocCheckListConifgDtoOld);
         if(editAhoc){
             fillupChklistService.saveAdhocDto(adhocCheckListConifgDto);
-
-            TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request,TASKDTO);
             List<TaskDto> taskDtos = (List<TaskDto>) ParamUtil.getSessionAttr(request,TASKDTOLIST);
             String appPremCorrId = taskDto.getRefNo();
             AdCheckListShowDto adchklDto = fillupChklistService.getAdhocDraftByappCorrId(appPremCorrId);
@@ -726,11 +752,15 @@ public class InspectionNcCheckListDelegator {
     public void saveDraftChecklist(BaseProcessClass bpc){
         log.info("----------saveDraftChecklist start--------");
         HttpServletRequest request = bpc.request;
+        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request,TASKDTO);
+        TaskDto taskDtoSearch = taskService.getTaskById(taskDto.getId());
+        if(setCsrf(bpc,taskDtoSearch)){
+            return;
+        }
         saveCheckListAllSession(request);
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
         InspectionFillCheckListDto commonDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,COMMONDTO);
         AdCheckListShowDto adchklDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,ADHOCLDTO);
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,TASKDTO);
         insepctionNcCheckListService.saveDraftChecklist(commonDto,adchklDto,serListDto,taskDto.getRefNo());
         String nowTabIn = ParamUtil.getString(request,"nowTabIn");
         ParamUtil.setRequestAttr(request, "nowTabIn",  nowTabIn);
