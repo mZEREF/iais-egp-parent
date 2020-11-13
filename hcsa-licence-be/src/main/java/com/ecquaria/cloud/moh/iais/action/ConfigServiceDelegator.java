@@ -523,9 +523,9 @@ public class ConfigServiceDelegator {
                 }else if("1".equals(commDocPremises[i])){
                     hcsaSvcDocConfigDto.setDupForPrem("1");
                 }
-                if(!StringUtil.isEmpty(commDocIds[i])){
+               /* if(!StringUtil.isEmpty(commDocIds[i])){
                     hcsaSvcDocConfigDto.setId(commDocIds[i]);
-                }
+                }*/
                 hcsaSvcDocConfig.add(hcsaSvcDocConfigDto);
                 hcsaSvcDocConfigDtoList.add(hcsaSvcDocConfigDto);
             }

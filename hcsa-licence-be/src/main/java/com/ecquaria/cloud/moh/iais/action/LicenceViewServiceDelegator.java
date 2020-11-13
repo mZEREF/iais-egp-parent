@@ -629,6 +629,7 @@ public class LicenceViewServiceDelegator {
                         appGrpPrimaryDocDto.setDocSize(appSvcDocDto.getDocSize());
                         appGrpPrimaryDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
                         appGrpPrimaryDocDto.setMd5Code(appSvcDocDto.getMd5Code());
+                        appGrpPrimaryDocDto.setVersion(appSvcDocDto.getVersion());
                         appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
                         appSvcDocDtos.add(appSvcDocDto);
                     }
@@ -1125,8 +1126,8 @@ public class LicenceViewServiceDelegator {
             }
         }
         //oldAppGrpPrimaryDocDtos = new ArrayList<>(list1);
-        appSubmissionDto.setAppGrpPrimaryDocDtos(list);
-        oldAppSubmissionDto.setAppGrpPrimaryDocDtos(list1);
+        appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
+        oldAppSubmissionDto.setAppGrpPrimaryDocDtos(oldAppGrpPrimaryDocDtos);
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();

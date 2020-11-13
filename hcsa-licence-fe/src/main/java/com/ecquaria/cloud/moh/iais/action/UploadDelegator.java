@@ -78,12 +78,14 @@ public class UploadDelegator {
                     uploadFileService.changeStatus(applicationListFileDto,map);
                 }
             }catch (Exception e){
-
+                Map<String,List<String>> errorMap=new HashMap();
                 List<String> newStatus=IaisCommonUtils.genNewArrayList();
+                List<String> errorOldStatus= IaisCommonUtils.genNewArrayList();
+                errorOldStatus.add(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
                 newStatus.add(ApplicationConsts.APPLICATION_GROUP_ERROR_ZIP);
-                map.put("oldStatus",oldStatus);
-                map.put("newStatus",newStatus);
-                uploadFileService.changeStatus(applicationListFileDto,map);
+                errorMap.put("oldStatus",errorOldStatus);
+                errorMap.put("newStatus",newStatus);
+                uploadFileService.changeStatus(applicationListFileDto,errorMap);
             }
 
 

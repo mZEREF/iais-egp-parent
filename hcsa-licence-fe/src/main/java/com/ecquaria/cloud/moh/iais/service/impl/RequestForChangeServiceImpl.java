@@ -1389,6 +1389,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         appGrpPrimaryDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
                         appGrpPrimaryDocDto.setPassValidate(appSvcDocDto.isPassValidate());
                         appGrpPrimaryDocDto.setMd5Code(appSvcDocDto.getMd5Code());
+                        appGrpPrimaryDocDto.setVersion(appSvcDocDto.getVersion());
                         appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
                         appSvcDocDtos.add(appSvcDocDto);
                     }
@@ -1471,6 +1472,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 AppSvcDocDto appSvcDocDto = MiscUtil.transferEntityDto(appGrpPrimaryDocDto, AppSvcDocDto.class);
                 appSvcDocDto.setSvcDocId(appGrpPrimaryDocDto.getSvcComDocId());
                 appSvcDocDto.setDocName(appGrpPrimaryDocDto.getDocName());
+                appSvcDocDto.setVersion(appGrpPrimaryDocDto.getVersion());
                 appSvcDocDtoList.add(appSvcDocDto);
             }
             appSubmissionDtoByLicenceId.setAppGrpPrimaryDocDtos(null);

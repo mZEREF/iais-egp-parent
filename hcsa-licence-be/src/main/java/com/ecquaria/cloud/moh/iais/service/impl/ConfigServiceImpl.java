@@ -325,7 +325,7 @@ public class ConfigServiceImpl implements ConfigService {
                          }else {
                              Calendar calendar=Calendar.getInstance();
                              calendar.setTime(parse);
-                             calendar.add(Calendar.DAY_OF_MONTH,1);
+                             calendar.add(Calendar.DAY_OF_MONTH,2);
                              String format = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
                              hcsaServiceDto.setEffectiveDate(format);
                          }
@@ -499,15 +499,31 @@ public class ConfigServiceImpl implements ConfigService {
                     calendar.setTime(maxVersionEndDate);
                     calendar.add(Calendar.DAY_OF_MONTH,1);
                     if(!calendar.getTime().before(parse)){
-                        errorMap.put("effectiveDate","The start time cannot be earlier than the max version service end time ");
+                        errorMap.put("effectiveDate","The start time cannot be earlier than the max version service end time (after "+new SimpleDateFormat("dd/MM/yyyy").format(calendar.getTime())+")");
                     }
                 }
             }
-        }else {
+        }else if(serviceIsUsed){
             if(!StringUtil.isEmpty(endDate)){
-                if(endDate.before(maxVersionEndDate)){
-                    errorMap.put("effectiveEndDate","The end time cannot be earlier than the max version service start time");
+                if(StringUtil.isEmpty(maxVersionEndDate)){
+                    Calendar calendar =Calendar.getInstance();
+                    Date parse = new SimpleDateFormat("yyyy-MM-dd").parse(maxVersionEffectiveDate);
+                    calendar.setTime(parse);
+                    calendar.add(Calendar.DAY_OF_MONTH,3);
+                    if(endDate.before(calendar.getTime())){
+                        calendar.add(Calendar.DAY_OF_MONTH,-1);
+                        errorMap.put("effectiveEndDate","The end time cannot be earlier than the max version service start time (after "+new  SimpleDateFormat("dd/MM/yyyy").format(calendar.getTime())+")");
+                    }
+                }else {
+                    Calendar calendar=Calendar.getInstance();
+                    calendar.setTime(maxVersionEndDate);
+                    calendar.add(Calendar.DAY_OF_MONTH,1);
+                    if(endDate.before(calendar.getTime())){
+                        calendar.add(Calendar.DAY_OF_MONTH,1);
+                        errorMap.put("effectiveEndDate","The end time cannot be earlier than the max version service start time (after "+new  SimpleDateFormat("dd/MM/yyyy").format(calendar.getTime())+")");
+                    }
                 }
+
             }
         }
         if(!StringUtil.isEmpty(endDate)){
