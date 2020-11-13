@@ -1117,7 +1117,6 @@ public class RequestForChangeMenuDelegator {
                     ackPageAppSubmissionDto=appSubmissionDtos.get(0);
                 }
                 requestForChangeService.sendRfcSubmittedEmail(ackPageAppSubmissionDto,null);
-                requestForChangeService.sendRfcEmailToOfficer( ackPageAppSubmissionDto, "");
             }
         } catch (Exception e) {
             log.info(e.getMessage(), e);

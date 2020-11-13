@@ -1580,77 +1580,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
 
-    @Override
-    public void sendRfcEmailToOfficer(AppSubmissionDto appSubmissionDto,String description) throws IOException, TemplateException {
-        List<String> email = IaisCommonUtils.genNewArrayList();
-        email.add("szecq03@ecqsz.com");
-        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-        LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(appSubmissionDto.getLicenseeId()).getEntity();
-        String applicantName = licenseeDto.getName();
-        emailMap.put("officer_name", "system");
-        emailMap.put("ServiceLicenceName", appSubmissionDto.getServiceName());
-        emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
-        emailMap.put("Licensee", applicantName);
-        emailMap.put("LicenceNumber", appSubmissionDto.getLicenceNo());
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("<p class=\"line\">   ").append(description).append("</p>");
-        emailMap.put("ServiceNames", stringBuilder);
-        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
-        EmailParam emailParam = new EmailParam();
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER);
-        emailParam.setTemplateContent(emailMap);
-        emailParam.setQueryCode(appSubmissionDto.getAppGrpNo());
-        emailParam.setReqRefNum(appSubmissionDto.getAppGrpNo());
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
-        emailParam.setRefId(appSubmissionDto.getLicenceId());
-        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER).getEntity();
-        map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
-        map.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
-        String subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
-        String content = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(), emailMap);
-        content= MessageTemplateUtil.replaceNum(content);
-        emailParam.setSubject(subject);
-        //email
-        EmailDto emailDto=new EmailDto();
-        emailDto.setContent(content);
-        emailDto.setSubject(subject);
-        emailDto.setSender(mailSender);
-        emailDto.setClientQueryCode(appSubmissionDto.getAppGrpNo());
-        emailDto.setReceipts(email);
-        emailDto.setReqRefNum(appSubmissionDto.getAppGrpNo());
 
-        try {
-            appSubmissionService.feSendEmail(emailDto);
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-        }
-        //notificationHelper.sendNotification(emailParam);
-        //msg
-//        try {
-//            String svcName=appSubmissionDto.getServiceName();
-//            if(svcName==null){
-//                LicenceDto licenceDto= licenceClient.getLicBylicNo(appSubmissionDto.getLicenceNo()).getEntity();
-//                svcName=licenceDto.getSvcName();
-//            }
-//            List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(svcName)).getEntity();
-//            List<String> svcCode=IaisCommonUtils.genNewArrayList();
-//            svcCode.add(svcDto.get(0).getSvcCode());
-//            emailParam.setSvcCodeList(svcCode);
-//            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_MSG);
-//            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-//            emailParam.setRefId(appSubmissionDto.getLicenceId());
-//            notificationHelper.sendNotification(emailParam);
-//        }catch (Exception e){
-//            log.info(e.getMessage(),e);
-//        }
-        //sms
-//        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS);
-//        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
-//        notificationHelper.sendNotification(emailParam);
-
-    }
 
 
     private void validateVehicleNo(Map<String, String> errorMap, Set<String> distinctVehicleNo, int numberCount, String conveyanceVehicleNo) {

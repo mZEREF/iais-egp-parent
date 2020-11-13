@@ -2144,11 +2144,7 @@ public class NewApplicationDelegator {
 
         }
 
-        try {
-            requestForChangeService.sendRfcEmailToOfficer( appSubmissionDto, description);
-        } catch (Exception e) {
-            log.info(e.getMessage(),e);
-        }
+
         String auto = generateIdClient.getSeqId().getEntity();
         String notAuto = generateIdClient.getSeqId().getEntity();
         AppSubmissionListDto autoAppSubmissionListDto = new AppSubmissionListDto();
