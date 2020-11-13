@@ -123,20 +123,38 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         List<String> reportIds = IaisCommonUtils.genNewArrayList();
         if(new File(zipFile).isDirectory()){
             File[] files = new File(zipFile).listFiles();
+            int allSize = processFileTrackDtos.size();//NOSONAR
+            int nowSize = 0;
             for(File fil:files) {
                 for(ProcessFileTrackDto pDto : processFileTrackDtos){
                     if (fil.getName().endsWith(".zip") && fil.getName().equals(pDto.getFileName())) {
-                        try (ZipFile unZipFile = new ZipFile(zipFile + pDto.getFilePath())) {
-                            for (Enumeration<? extends ZipEntry> entries = unZipFile.entries(); entries.hasMoreElements(); ) {
-                                ZipEntry zipEntry = entries.nextElement();
-                                String reportId = unzipFile(zipEntry, unZipFile);
-                                if(!StringUtil.isEmpty(reportId)) {
-                                    reportIds.add(reportId);
+                        nowSize++;
+                    }
+                }
+            }
+            String appId = processFileTrackDtos.get(0).getRefId();
+            log.debug(StringUtil.changeForLog("Application Id:" + appId));
+            JobLogger.log(StringUtil.changeForLog("Application Id:" + appId));
+            log.debug(StringUtil.changeForLog("Rectification allSize:" + allSize));
+            JobLogger.log(StringUtil.changeForLog("Rectification allSize:" + allSize));
+            log.debug(StringUtil.changeForLog("Rectification nowSize:" + nowSize));
+            JobLogger.log(StringUtil.changeForLog("Rectification nowSize:" + nowSize));
+            if(allSize == nowSize) {
+                for (File fil : files) {
+                    for (ProcessFileTrackDto pDto : processFileTrackDtos) {
+                        if (fil.getName().endsWith(".zip") && fil.getName().equals(pDto.getFileName())) {
+                            try (ZipFile unZipFile = new ZipFile(zipFile + pDto.getFilePath())) {
+                                for (Enumeration<? extends ZipEntry> entries = unZipFile.entries(); entries.hasMoreElements(); ) {
+                                    ZipEntry zipEntry = entries.nextElement();
+                                    String reportId = unzipFile(zipEntry, unZipFile);
+                                    if (!StringUtil.isEmpty(reportId)) {
+                                        reportIds.add(reportId);
+                                    }
                                 }
+                            } catch (IOException e) {
+                                log.error(e.getMessage(), e);
+                                JobLogger.log(e.getMessage(), e);
                             }
-                        } catch (IOException e) {
-                            log.error(e.getMessage(), e);
-                            JobLogger.log(e.getMessage(), e);
                         }
                     }
                 }
