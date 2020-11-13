@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 
-import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -13,8 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -33,17 +30,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
@@ -770,119 +764,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             log.info(StringUtil.changeForLog(JsonUtil.parseToJson(updateTaskList)+"updateTaskList"));
             updateRfiTask(updateTaskList);
         }
-        try {
-            if(taskHistoryDto!=null&&taskHistoryDto.getTaskDtoList()!=null){
-                for (TaskDto task:taskHistoryDto.getTaskDtoList()
-                ) {
-
-                    ApplicationDto applicationDto=applicationClient.getAppByNo(task.getApplicationNo()).getEntity();
-                    ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-                    if(applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
-                        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(task.getUserId()).getEntity();
-                        LicenseeDto licenseeDto=organizationClient.getLicenseeDtoById(applicationDto.getLicenseeId()).getEntity();
-                        LicenceDto licenceDto=hcsaLicenceClient.getLicenceDtoById(applicationDto.getOriginLicenceId()).getEntity();
-                        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                        String applicantName = orgUserDto.getDisplayName();
-                        String serviceName = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId()).getSvcName();
-                        emailMap.put("officer_name", applicantName);
-                        emailMap.put("ServiceLicenceName", serviceName);
-                        emailMap.put("ApplicationDate", Formatter.formatDate(applicationGroupDto.getSubmitDt()));
-                        emailMap.put("Licensee", licenseeDto.getName());
-                        emailMap.put("LicenceNumber", licenceDto.getLicenceNo());
-                        StringBuilder stringBuilder = new StringBuilder();
-                        List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
-                        if (appEditSelectDtos.get(0).isServiceEdit()){
-                            stringBuilder.append("<p class=\"line\">   ").append("Remove subsumed service").append("</p>");
-                        }
-                        if (applicationGroupDto.getNewLicenseeId()!=null){
-                            stringBuilder.append("<p class=\"line\">   ").append("Change in Management of Licensee").append("</p>");
-                        }
-                        emailMap.put("ServiceNames", stringBuilder);
-                        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-                        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
-                        try {
-                            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS).getEntity();
-                            String content = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(),emailMap);
-                            int smsFlag = systemParamConfig.getEgpSmsNotifications();
-                            if (0 == smsFlag) {
-                                log.info("please turn on sms param.......");
-                                JobLogger.log(StringUtil.changeForLog("please turn on sms param......."));
-                            } else {
-                                List<String> mobile = IaisCommonUtils.genNewArrayList();
-                                String phoneNo = orgUserDto.getMobileNo();
-                                if(!StringUtil.isEmpty(phoneNo)) {
-                                    mobile.add(phoneNo);
-                                }
-                                if (!IaisCommonUtils.isEmpty(mobile)) {
-                                    SmsDto smsDto = new SmsDto();
-                                    smsDto.setSender(mailSender);
-                                    smsDto.setContent(content);
-                                    smsDto.setOnlyOfficeHour(true);
-                                    smsDto.setReceipts(mobile);
-                                    smsDto.setReqRefNum(applicationDto.getApplicationNo());
-                                    emailClient.sendSMS(mobile, smsDto, applicationDto.getApplicationNo());
-                                } else {
-                                    log.info("mobile is null.......");
-                                    JobLogger.log(StringUtil.changeForLog("mobile is null......."));
-                                }
-                            }
-                        } catch (IOException | TemplateException e) {
-                            log.error(e.getMessage(), e);
-                        }
-                        int emailFlag = systemParamConfig.getEgpEmailNotifications();
-                        if (0 == emailFlag) {
-                            log.info("please turn on email param.......");
-                            JobLogger.log(StringUtil.changeForLog("please turn on email param......."));
-                        } else {
-                            List<String> receiptEmail = IaisCommonUtils.genNewArrayList();
-                            String emailAddress = orgUserDto.getEmail();
-                            if(!StringUtil.isEmpty(emailAddress)) {
-                                receiptEmail.add(emailAddress);
-                            }
-                            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER).getEntity();
-
-                            String emailTemplate = msgTemplateDto.getMessageContent();
-                            //replace num
-                            emailTemplate = MessageTemplateUtil.replaceNum(emailTemplate);
-                            //get mesContext
-                            String mesContext;
-                            String mesSubject;
-
-                            if (emailMap != null && !emailMap.isEmpty()) {
-                                try {
-                                    mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, emailMap);
-                                    mesSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), emailMap);
-                                } catch (IOException | TemplateException e) {
-                                    log.error(e.getMessage(), e);
-                                    throw new IaisRuntimeException(e);
-                                }
-                            } else {
-                                mesContext = emailTemplate;
-                                mesSubject=msgTemplateDto.getTemplateName();
-                            }
-                            if(!IaisCommonUtils.isEmpty(receiptEmail)) {
-                                EmailDto emailDto = new EmailDto();
-                                emailDto.setContent(mesContext);
-                                emailDto.setSubject(mesSubject);
-                                emailDto.setSender(mailSender);
-                                emailDto.setReceipts(receiptEmail);
-                                emailDto.setClientQueryCode(applicationDto.getApplicationNo());
-                                emailDto.setReqRefNum(applicationDto.getApplicationNo());
-                                emailClient.sendNotification(emailDto);
-                            } else {
-                                log.info("receiptEmail is null.......");
-                                JobLogger.log(StringUtil.changeForLog("receiptEmail is null......."));
-                            }
-                        }
-                    }
-                }
-            }
-
-        }catch (Exception e ){
-            log.info(e.getMessage(),e);
-        }
-
-
     }
 
     public void  removeFile(String eventRefNum ,String submissionId){
@@ -946,6 +827,46 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             log.error(e.getMessage(), e);
                         }
                     }
+                    try {
+                        if(h.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                            LicenceDto licenceDto=hcsaLicenceClient.getLicenceDtoById(h.getOriginLicenceId()).getEntity();
+                            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+                            emailMap.put("officer_name", "");
+                            emailMap.put("ServiceLicenceName", serviceName);
+                            emailMap.put("ApplicationDate", Formatter.formatDate(applicationGroupDto.getSubmitDt()));
+                            emailMap.put("Licensee", licenseeDto.getName());
+                            emailMap.put("LicenceNumber", licenceDto.getLicenceNo());
+                            StringBuilder stringBuilder = new StringBuilder();
+                            List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(h.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
+                            if (appEditSelectDtos.get(0).isServiceEdit()){
+                                stringBuilder.append("<p class=\"line\">   ").append("Remove subsumed service").append("</p>");
+                            }
+                            if (applicationGroupDto.getNewLicenseeId()!=null){
+                                stringBuilder.append("<p class=\"line\">   ").append("Change in Management of Licensee").append("</p>");
+                            }
+                            emailMap.put("ServiceNames", stringBuilder);
+                            emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+                            emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+                            EmailParam emailParam = new EmailParam();
+                            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER);
+                            emailParam.setQueryCode(h.getApplicationNo());
+                            emailParam.setReqRefNum(h.getApplicationNo());
+                            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                            emailParam.setRefId(h.getApplicationNo());
+                            notificationHelper.sendNotification(emailParam);
+                            //emailClient.sendNotification(emailDto).getEntity();
+
+                            //sms
+                            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS);
+                            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                            notificationHelper.sendNotification(emailParam);
+                        }
+
+                    }catch (Exception e ){
+                        log.info(e.getMessage(),e);
+                    }
+
+
                 });
             }
 
