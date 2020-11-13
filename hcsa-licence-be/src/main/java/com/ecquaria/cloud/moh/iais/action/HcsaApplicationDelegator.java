@@ -2149,7 +2149,7 @@ public class HcsaApplicationDelegator {
         List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(appGrpId);
         applicationDtoList = removeFastTrackingAndTransfer(applicationDtoList);
         applicationDtoList = removeCurrentApplicationDto(applicationDtoList,appId);
-        if(IaisCommonUtils.isEmpty(applicationDtoList) || applicationDtoList.size() == 1){
+        if(IaisCommonUtils.isEmpty(applicationDtoList)){
             return;
         }else{
             boolean flag = taskService.checkCompleteTaskByApplicationNo(applicationDtoList);
