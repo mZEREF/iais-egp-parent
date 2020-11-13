@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -64,6 +65,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import sop.util.CopyUtil;
 import sop.webflow.rt.api.Process;
 
 import java.util.Date;
@@ -115,6 +117,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private SystemParamConfig systemParamConfig;
     @Autowired
     private NotificationHelper notificationHelper;
+    @Autowired
+    private ServiceConfigServiceImpl serviceConfigService;
 
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
@@ -1044,6 +1048,54 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public AppSubmissionDto getAppSubmissionDtoByAppGrpNo(String appGrpNo) {
         return applicationFeClient.getAppSubmissionDtoByAppGrpNo(appGrpNo).getEntity();
+    }
+
+    @Override
+    public List<AppGrpPrimaryDocDto> syncPrimaryDoc(String appType,Boolean isRfi,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos, List<HcsaSvcDocConfigDto> primaryDocConfig) throws CloneNotSupportedException {
+        List<AppGrpPrimaryDocDto> newGrpPrimaryDocList = IaisCommonUtils.genNewArrayList();
+        //rfc/renew for primary doc
+        boolean rfcOrRenw = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType);
+        if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos) && !IaisCommonUtils.isEmpty(primaryDocConfig)){
+            List<String> docConfigIds = IaisCommonUtils.genNewArrayList();
+            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
+                docConfigIds.add(appGrpPrimaryDocDto.getSvcDocId());
+            }
+            List<HcsaSvcDocConfigDto> oldHcsaSvcDocConfigDtos = serviceConfigService.getPrimaryDocConfigByIds(docConfigIds);
+            if(!IaisCommonUtils.isEmpty(oldHcsaSvcDocConfigDtos)){
+                if(rfcOrRenw && !isRfi){
+                    for(HcsaSvcDocConfigDto oldDocConfig:oldHcsaSvcDocConfigDtos){
+                        for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
+                            if(oldDocConfig.getId().equals(appGrpPrimaryDocDto.getSvcDocId())){
+                                String oldDocTitle = oldDocConfig.getDocTitle();
+                                for(HcsaSvcDocConfigDto docConfig:primaryDocConfig){
+                                    if(docConfig.getDocTitle().equals(oldDocTitle)){
+                                        AppGrpPrimaryDocDto newGrpPrimaryDoc = (AppGrpPrimaryDocDto) CopyUtil.copyMutableObject(appGrpPrimaryDocDto);
+                                        newGrpPrimaryDoc.setSvcComDocId(docConfig.getId());
+                                        newGrpPrimaryDoc.setSvcComDocName(docConfig.getDocTitle());
+                                        newGrpPrimaryDocList.add(newGrpPrimaryDoc);
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }else if(isRfi){
+                    //set title name
+                    for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
+                        for(HcsaSvcDocConfigDto oldDocConfig:oldHcsaSvcDocConfigDtos){
+                            if(oldDocConfig.getId().equals(appGrpPrimaryDocDto.getSvcDocId())){
+                                AppGrpPrimaryDocDto newGrpPrimaryDoc = (AppGrpPrimaryDocDto) CopyUtil.copyMutableObject(appGrpPrimaryDocDto);
+                                newGrpPrimaryDoc.setSvcComDocName(oldDocConfig.getDocTitle());
+                                newGrpPrimaryDocList.add(newGrpPrimaryDoc);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return newGrpPrimaryDocList;
     }
 
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){

@@ -197,4 +197,7 @@ public interface AppConfigClient {
 
     @GetMapping(value = "/iais-hcsa-service/avtice-hcas-service-by-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaServiceDto> getActiveHcsaServiceDtoById(@RequestParam("serviceId") String serviceId);
+
+    @RequestMapping(path = "/iais-hcsa-service/primary-doc-by-version",method = RequestMethod.GET)
+    FeignResponseEntity<List<HcsaSvcDocConfigDto>> getPrimaryDocConfigByVersion(@RequestParam(value = "version") String version);
 }

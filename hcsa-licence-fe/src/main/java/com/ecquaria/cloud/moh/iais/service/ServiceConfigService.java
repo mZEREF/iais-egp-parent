@@ -54,4 +54,6 @@ public interface ServiceConfigService {
 
     HcsaServiceDto getActiveHcsaServiceDtoByName(String svcName);
     void updateAppGrpPmtStatus(ApplicationGroupDto appGrp);
+    List<HcsaSvcDocConfigDto> getPrimaryDocConfigByVersion(Integer version);
+    List<HcsaSvcDocConfigDto> getPrimaryDocConfigByIds(List<String> ids);
 }

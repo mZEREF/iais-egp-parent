@@ -99,8 +99,11 @@ public class RetriggerGiroPaymentDelegator {
             }
         }
         //set doc name
-        List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
+        List<HcsaSvcDocConfigDto> primaryDocConfig = null;
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+        if(appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
+            primaryDocConfig = serviceConfigService.getPrimaryDocConfigByVersion(appGrpPrimaryDocDtos.get(0).getDocConfigVersion());
+        }
         NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, null, primaryDocConfig, null);
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             //set svc info

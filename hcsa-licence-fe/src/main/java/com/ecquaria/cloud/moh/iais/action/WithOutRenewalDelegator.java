@@ -145,7 +145,7 @@ public class WithOutRenewalDelegator {
     @Autowired
     private SystemParamConfig systemParamConfig;
 
-    public void start(BaseProcessClass bpc) {
+    public void start(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info("**** the non auto renwal  start ******");
         String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
         //init session
@@ -241,10 +241,14 @@ public class WithOutRenewalDelegator {
                 //set doc info
                 List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
                 List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
+                boolean isRfi = false;
+                //rfc/renew for primary doc
+                List<AppGrpPrimaryDocDto> newGrpPrimaryDocList = appSubmissionService.syncPrimaryDoc(ApplicationConsts.APPLICATION_TYPE_RENEWAL,isRfi,appGrpPrimaryDocDtos,primaryDocConfig);
+                appSubmissionDto.setAppGrpPrimaryDocDtos(newGrpPrimaryDocList);
                 if (!StringUtil.isEmpty(svcId)) {
                     List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                     List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
-                    NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, appSvcDocDtos, primaryDocConfig, svcDocConfig);
+                    NewApplicationHelper.setDocInfo(null, appSvcDocDtos, null, svcDocConfig);
                 }
                 appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
                 List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();

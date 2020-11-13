@@ -114,9 +114,14 @@ public class LicenceViewDelegator {
                         //set primary doc info
                         requestForChangeService.svcDocToPresmise(appSubmissionDto);
                         //set doc info
-                        List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
-                        List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(hcsaServiceDto.getId());
+//                        List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
+                        List<HcsaSvcDocConfigDto> primaryDocConfig = null;
                         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+                        if(appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
+                            primaryDocConfig = serviceConfigService.getPrimaryDocConfigByVersion(appGrpPrimaryDocDtos.get(0).getDocConfigVersion());
+                        }
+                        List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(hcsaServiceDto.getId());
+                        //List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
                         List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                         NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, appSvcDocDtos, primaryDocConfig, svcDocConfig);
                         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);

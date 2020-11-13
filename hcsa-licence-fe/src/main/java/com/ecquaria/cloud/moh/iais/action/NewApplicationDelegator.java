@@ -487,9 +487,16 @@ public class NewApplicationDelegator {
      */
     public void prepareDocuments(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do prepareDocuments start ...."));
-
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
-        List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(null);
+        List<HcsaSvcDocConfigDto> hcsaSvcDocDtos;
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+        if(isRfi && appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
+            hcsaSvcDocDtos = serviceConfigService.getPrimaryDocConfigByVersion(appGrpPrimaryDocDtos.get(0).getDocConfigVersion());
+        }else{
+            hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(null);
+        }
         if (hcsaSvcDocDtos != null) {
             List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigDto = IaisCommonUtils.genNewArrayList();
             List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigDto = IaisCommonUtils.genNewArrayList();
@@ -505,7 +512,6 @@ public class NewApplicationDelegator {
         }
 
         //reload page
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
         if (appGrpPrimaryDocDtoList != null && appGrpPrimaryDocDtoList.size() > 0) {
             Map<String, AppGrpPrimaryDocDto> reloadDocMap = IaisCommonUtils.genNewHashMap();
@@ -948,6 +954,7 @@ public class NewApplicationDelegator {
                         //if  common ==> set null
                         appGrpPrimaryDocDto.setPremisessName("");
                         appGrpPrimaryDocDto.setPremisessType("");
+                        appGrpPrimaryDocDto.setDocConfigVersion(comm.getVersion());
                         appGrpPrimaryDocDto.setVersion(getAppGrpPrimaryDocVersion(comm.getId(),oldDocs,isRfi,md5Code,oldSubmissionDto.getAppGrpId(),null,appSubmissionDto.getAppType()));
                         commonsMultipartFileMap.put(comm.getId(), file);
                         appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
@@ -991,6 +998,7 @@ public class NewApplicationDelegator {
                             appGrpPrimaryDocDto.setMd5Code(md5Code);
                             appGrpPrimaryDocDto.setPremisessName(premisesIndexNo);
                             appGrpPrimaryDocDto.setPremisessType(appGrpPremisesDto.getPremisesType());
+                            appGrpPrimaryDocDto.setDocConfigVersion(prem.getVersion());
                             appGrpPrimaryDocDto.setVersion(getAppGrpPrimaryDocVersion(prem.getId(),oldDocs,isRfi,md5Code,oldSubmissionDto.getAppGrpId(),oldSubmissionDto.getRfiAppNo(),appSubmissionDto.getAppType()));
                             commonsMultipartFileMap.put(premisesIndexNo + prem.getId(), file);
                             appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
@@ -1512,7 +1520,12 @@ public class NewApplicationDelegator {
                             if (!StringUtil.isEmpty(svcId)) {
                                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
                                 List<AppSvcRelatedInfoDto> newSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
-                                List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
+                                //set doc name
+                                List<HcsaSvcDocConfigDto> primaryDocConfig = null;
+                                if(appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
+                                    primaryDocConfig = serviceConfigService.getPrimaryDocConfigByVersion(appGrpPrimaryDocDtos.get(0).getDocConfigVersion());
+                                }
+
                                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                                     if (svcId.equals(appSvcRelatedInfoDto.getServiceId())) {
                                         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(svcId);
@@ -4226,7 +4239,14 @@ public class NewApplicationDelegator {
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
         List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) request.getSession().getAttribute(COMMONHCSASVCDOCCONFIGDTO);
         if (commonHcsaSvcDocConfigList == null) {
-            List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(null);
+            List<HcsaSvcDocConfigDto> hcsaSvcDocDtos;
+            boolean isRfi = NewApplicationHelper.checkIsRfi(request);
+            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+            if(isRfi && appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
+                hcsaSvcDocDtos = serviceConfigService.getPrimaryDocConfigByVersion(appGrpPrimaryDocDtos.get(0).getDocConfigVersion());
+            }else{
+                hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(null);
+            }
             if (hcsaSvcDocDtos != null) {
                 List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigDto = IaisCommonUtils.genNewArrayList();
                 for (HcsaSvcDocConfigDto hcsaSvcDocConfigDto : hcsaSvcDocDtos) {
@@ -5323,6 +5343,8 @@ public class NewApplicationDelegator {
             //set licseeId and psn drop down
             setLicseeAndPsnDropDown(appSubmissionDto, bpc);
         } else {
+            String appType = appSubmissionDto.getAppType();
+            boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
             //set svc info,this fun will set oldAppSubmission
             appSubmissionDto = NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
             Object rfi = ParamUtil.getSessionAttr(bpc.request, REQUESTINFORMATIONCONFIG);
@@ -5358,8 +5380,16 @@ public class NewApplicationDelegator {
             Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
-                List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
+                List<HcsaSvcDocConfigDto> primaryDocConfig;
                 List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+                if(isRfi && appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
+                    primaryDocConfig = serviceConfigService.getPrimaryDocConfigByVersion(appGrpPrimaryDocDtos.get(0).getDocConfigVersion());
+                }else{
+                    primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
+                }
+                //rfc/renew for primary doc
+                List<AppGrpPrimaryDocDto> newGrpPrimaryDocList = appSubmissionService.syncPrimaryDoc(appType,isRfi,appGrpPrimaryDocDtos,primaryDocConfig);
+                appSubmissionDto.setAppGrpPrimaryDocDtos(newGrpPrimaryDocList);
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     String currentSvcId = appSvcRelatedInfoDto.getServiceId();
                     List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = null;
@@ -5368,7 +5398,7 @@ public class NewApplicationDelegator {
                         //set doc name
                         List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                         List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
-                        NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, appSvcDocDtos, primaryDocConfig, svcDocConfig);
+                        NewApplicationHelper.setDocInfo(null, appSvcDocDtos, null, svcDocConfig);
                     }
                     //set AppSvcLaboratoryDisciplinesDto
                     if (!IaisCommonUtils.isEmpty(hcsaSvcSubtypeOrSubsumedDtos)) {

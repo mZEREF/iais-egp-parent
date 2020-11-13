@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -71,6 +72,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     private ApplicationFeClient applicationFeClient;
     @Autowired
     private LicenceClient licenceClient;
+    @Autowired
+    private HcsaConfigFeClient hcsaConfigFeClient;
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
 
@@ -319,5 +322,19 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     public void updateAppGrpPmtStatus(ApplicationGroupDto appGrp) {
         appGrp.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         applicationFeClient.doPaymentUpDate(appGrp);
+    }
+
+    @Override
+    public List<HcsaSvcDocConfigDto> getPrimaryDocConfigByVersion(Integer version) {
+        String ver = "empty";
+        if(version != null){
+            ver = String.valueOf(version);
+        }
+        return appConfigClient.getPrimaryDocConfigByVersion(ver).getEntity();
+    }
+
+    @Override
+    public List<HcsaSvcDocConfigDto> getPrimaryDocConfigByIds(List<String> ids) {
+        return hcsaConfigFeClient.listSvcDocConfig(ids).getEntity();
     }
 }

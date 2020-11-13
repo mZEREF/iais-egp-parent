@@ -601,8 +601,9 @@ public class RequestForChangeDelegator {
             }else{
                 AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE,appSubmissionDto.getLicenceNo());
                 //set audit trail licNo
+                String appType = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
                 AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());
-                appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                appSubmissionDto.setAppType(appType);
                 String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
                 HcsaServiceDto hcsaServiceDto = serviceConfigService.getActiveHcsaServiceDtoByName(svcName);
                 List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
@@ -623,13 +624,17 @@ public class RequestForChangeDelegator {
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
                 if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                     List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+                    boolean isRfi = false;
                     List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
+                    //rfc/renew for primary doc
+                    List<AppGrpPrimaryDocDto> newGrpPrimaryDocList = appSubmissionService.syncPrimaryDoc(appType,isRfi,appGrpPrimaryDocDtos,primaryDocConfig);
+                    appSubmissionDto.setAppGrpPrimaryDocDtos(newGrpPrimaryDocList);
                     for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                         String currentSvcId = appSvcRelatedInfoDto.getServiceId();
                         if(!StringUtil.isEmpty(currentSvcId)){
                             List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                             List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
-                            NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos,appSvcDocDtos,primaryDocConfig,svcDocConfig);
+                            NewApplicationHelper.setDocInfo(null,appSvcDocDtos,null,svcDocConfig);
                         }
                     }
                 }
