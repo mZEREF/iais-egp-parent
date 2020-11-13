@@ -57,7 +57,6 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -115,9 +114,6 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Autowired
     private EmailClient emailClient;
-
-    @Autowired
-    private InspectionTaskClient inspectionTaskClient;
 
     @Autowired
     private AcraUenBeClient acraUenBeClient;
