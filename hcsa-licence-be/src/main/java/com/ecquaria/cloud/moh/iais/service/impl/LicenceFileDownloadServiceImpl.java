@@ -801,32 +801,37 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     String applicationGrpId = h.getAppGrpId();
                     String applicationType = h.getApplicationType();
                     String serviceId = h.getServiceId();
-                    ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationGrpId);
-                    AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(h.getAppPremisesCorrelationId());
-                    AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremisesCorrelationDto.getNewCorrelationId());
-                    LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
                     String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-                    String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
-                    if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
-                        Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                        msgInfoMap.put("systemLink",loginUrl);
-                        msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType));
-                        msgInfoMap.put("ApplicationNumber", applicationNo);
-                        msgInfoMap.put("HCIName",appGrpPremisesDto.getHciName());
-                        msgInfoMap.put("Address",appGrpPremisesDto.getAddress());
-                        msgInfoMap.put("licenseeName",licenseeDto.getName());
-                        msgInfoMap.put("submissionDate",Formatter.formatDateTime(applicationGroupDto.getSubmitDt()));
-                        msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date()));
-                        msgInfoMap.put("S_LName",serviceName);
-                        msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-                        try {
-                            sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL,msgInfoMap,h);
-                            sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_MESSAGE,msgInfoMap,h);
-                            sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_SMS,msgInfoMap,h);
-                        } catch (IOException | TemplateException e) {
-                            log.error(e.getMessage(), e);
+                    ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationGrpId);
+                    LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
+                    try {
+                        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(h.getAppPremisesCorrelationId());
+                        AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremisesCorrelationDto.getNewCorrelationId());
+                        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+                        if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
+                            Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+                            msgInfoMap.put("systemLink",loginUrl);
+                            msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType));
+                            msgInfoMap.put("ApplicationNumber", applicationNo);
+                            msgInfoMap.put("HCIName",appGrpPremisesDto.getHciName());
+                            msgInfoMap.put("Address",appGrpPremisesDto.getAddress());
+                            msgInfoMap.put("licenseeName",licenseeDto.getName());
+                            msgInfoMap.put("submissionDate",Formatter.formatDateTime(applicationGroupDto.getSubmitDt()));
+                            msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date()));
+                            msgInfoMap.put("S_LName",serviceName);
+                            msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+                            try {
+                                sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL,msgInfoMap,h);
+                                sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_MESSAGE,msgInfoMap,h);
+                                sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_SMS,msgInfoMap,h);
+                            } catch (IOException | TemplateException e) {
+                                log.error(e.getMessage(), e);
+                            }
                         }
+                    }catch (Exception e){
+                        log.info(e.getMessage(),e);
                     }
+
                     try {
                         if(h.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
                             LicenceDto licenceDto=hcsaLicenceClient.getLicenceDtoById(h.getOriginLicenceId()).getEntity();
