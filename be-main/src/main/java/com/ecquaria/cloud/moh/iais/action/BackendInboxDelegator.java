@@ -38,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppGroupQuery
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -517,11 +518,13 @@ public class BackendInboxDelegator {
 
     private void rfcSendRejectNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto,List<String> svcCodeList){
         ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-
-        LicenseeDto licenseeDto = organizationMainClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
-        String applicationName = licenseeDto.getName();
+        String applicantName = "";
+        OrgUserDto orgUserDto = organizationMainClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+        if(orgUserDto != null){
+            applicantName = orgUserDto.getDisplayName();
+        }
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-        emailMap.put("ApplicantName", applicationName);
+        emailMap.put("ApplicantName", applicantName);
         emailMap.put("ApplicationType", applicationTypeShow);
         emailMap.put("ApplicationNumber", applicationNo);
         emailMap.put("ApplicationDate", appDate);
@@ -636,7 +639,11 @@ public class BackendInboxDelegator {
             log.info(StringUtil.changeForLog("send renewal application notification groupLicenseeId : " + groupLicenseeId));
             LicenseeDto licenseeDto = organizationMainClient.getLicenseeDtoById(groupLicenseeId).getEntity();
             if(licenseeDto != null){
-                String applicantName = licenseeDto.getName();
+                String applicantName = "";
+                OrgUserDto orgUserDto = organizationMainClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+                if(orgUserDto != null){
+                    applicantName = orgUserDto.getDisplayName();
+                }
                 log.info(StringUtil.changeForLog("send renewal application notification applicantName : " + applicantName));
                 Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                 map.put("ApplicantName", applicantName);
