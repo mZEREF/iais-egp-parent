@@ -192,7 +192,6 @@ public class NewApplicationDelegator {
 
     @Autowired
     private CessationClient cessationClient;
-
     @Autowired
     private WithOutRenewalService withOutRenewalService;
 
@@ -1677,7 +1676,9 @@ public class NewApplicationDelegator {
         //update message statusdo
         String msgId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         appSubmissionService.updateMsgStatus(msgId, MessageConstants.MESSAGE_STATUS_RESPONSE);
-        /* applicationClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto);*/
+/*
+        appSubmissionDto= applicationFeClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto).getEntity();
+*/
         appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
             List<AppSubmissionDto> appSubmissionDtos = new ArrayList<>(1);
