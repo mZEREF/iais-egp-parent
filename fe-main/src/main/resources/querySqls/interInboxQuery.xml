@@ -66,7 +66,7 @@
                     app.version
                 FROM APPLICATION AS app
                 join (select application_no,MAX(version) as version from application GROUP BY application_no) as app2
-                on app.APPLICATION_NO = app2.application_no and app.version = app2.version on app.self_assmt_flag != 'APST008' and app.is_fast_tracking = 0
+                on app.APPLICATION_NO = app2.application_no and app.version = app2.version
                 union
                 select
                     A.ID as id,A.DRAFT_NO AS application_no,A.app_grp_id,A.licensee_id,A.app_type,'APST008' as status,NULL as service_id,A.SERVICE_CODES as code,null,null,A.CREATED_DT,1
