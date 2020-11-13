@@ -23,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
@@ -2528,7 +2527,7 @@ public class HcsaApplicationDelegator {
         emailMap.put("details", "HCI Name : "+applicationViewDto.getHciName()+"<br>"+
                 "HCI Address : "+applicationViewDto.getHciAddress()+"<br>"+
                 "Licensee Name : "+applicationName+"<br>"+
-                "Submission Date : "+applicationViewDto.getSubmissionDate()+"<br>"+
+                "Submission Date : "+Formatter.formatDate(Formatter.parseDate(applicationViewDto.getSubmissionDate()))+"<br>"+
                 "Comment : "+StringUtil.viewHtml(internalRemarks)+"<br>");
         emailMap.put("systemLink", loginUrl);
         emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
