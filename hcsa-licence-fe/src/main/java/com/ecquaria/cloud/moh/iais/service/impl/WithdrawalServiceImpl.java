@@ -131,6 +131,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                     ApplicationDto applicationDto = applicationFeClient.getApplicationById(h.getApplicationId()).getEntity();
                     ApplicationGroupDto applicationGroupDto =  applicationFeClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
                     String serviceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceId();
+                    String applicantName = "";
                     if (!StringUtil.isEmpty(serviceId)){
                         applicationDtoList.add(applicationDto);
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
@@ -138,7 +139,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                         msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
                         OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
                         List<ApplicationDto> applicationDtoList2 = hcsaConfigFeClient.returnFee(applicationDtoList).getEntity();
-                        String applicantName = orgUserDto.getDisplayName();
+                        if (orgUserDto != null){
+                            applicantName = orgUserDto.getDisplayName();
+                        }
                         msgInfoMap.put("Applicant", applicantName);
                         if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())
                                 || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())){
