@@ -41,6 +41,7 @@ import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -188,7 +189,7 @@ public class NotificationHelper {
 		for (Map.Entry<String, String> entry : params.entrySet()){
 			String sign = entry.getKey();
 			String value = entry.getValue();
-			if (text.indexOf(sign) != -1){
+			if (!StringUtils.isEmpty(text) &&  !StringUtil.isEmpty(sign) && text.indexOf(sign) != -1 && !StringUtil.isEmpty(value)){
 				text = text.replace(sign, value);
 			}
 		}
