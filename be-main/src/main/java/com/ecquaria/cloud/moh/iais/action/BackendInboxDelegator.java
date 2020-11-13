@@ -932,18 +932,14 @@ public class BackendInboxDelegator {
                     broadcastOrganizationDto.setCreateTask(newTaskDto);
                 }
                 List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
-                applicationDtoList = removeFastTracking(applicationDtoList);
-                boolean isAllSubmit = false;
-                if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)){
-                    isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
-                            appStatus);
-                }else{
-                    isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
-                            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
-                }
+                applicationDtoList = removeFastTrackingAndTransfer(applicationDtoList);
+                List<ApplicationDto> flagApplicationDtoList = IaisCommonUtils.genNewArrayList();
+                CopyUtil.copyMutableObjectList(applicationDtoList,flagApplicationDtoList);
+                flagApplicationDtoList = removeCurrentApplicationDto(flagApplicationDtoList,applicationDto.getId());
+                boolean flag = taskService.checkCompleteTaskByApplicationNo(flagApplicationDtoList);
 
-                log.debug(StringUtil.changeForLog("isAllSubmit is " + isAllSubmit));
-                if(isAllSubmit){
+                log.debug(StringUtil.changeForLog("isAllSubmit is " + flag));
+                if(flag){
                     List<ApplicationDto> saveApplicationDtoList = IaisCommonUtils.genNewArrayList();
                     CopyUtil.copyMutableObjectList(applicationDtoList,saveApplicationDtoList);
                     //update current application status in db search result
@@ -1004,8 +1000,9 @@ public class BackendInboxDelegator {
                 if(isAo1Ao2Approve){
                     doAo1Ao2Approve(broadcastOrganizationDto,broadcastApplicationDto,applicationDto,applicationDtoIds,taskDto);
                 }
-
-                if(isAllSubmit || applicationDto.isFastTracking()){
+                boolean needUpdateGroup = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList, applicationDtoIds,
+                        ApplicationConsts.APPLICATION_STATUS_APPROVED, ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                if(needUpdateGroup || applicationDto.isFastTracking()){
                     //update application Group status
                     ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                     broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
@@ -1021,12 +1018,14 @@ public class BackendInboxDelegator {
                          ) {
                         log.info(StringUtil.changeForLog("****viewitem ***** " + viewitem.getApplicationNo()));
                     }
-                    //get and set return fee
-                    saveApplicationDtoList = hcsaConfigMainClient.returnFee(saveApplicationDtoList).getEntity();
-                    //save return fee
-                    saveRejectReturnFee(saveApplicationDtoList,broadcastApplicationDto);
-                    //clearApprovedHclCodeByExistRejectApp
-                    applicationViewService.clearApprovedHclCodeByExistRejectApp(saveApplicationDtoList,applicationGroupDto.getAppType(), broadcastApplicationDto.getApplicationDto());
+                    if(needUpdateGroup){
+                        //get and set return fee
+                        saveApplicationDtoList = hcsaConfigMainClient.returnFee(saveApplicationDtoList).getEntity();
+                        //save return fee
+                        saveRejectReturnFee(saveApplicationDtoList,broadcastApplicationDto);
+                        //clearApprovedHclCodeByExistRejectApp
+                        applicationViewService.clearApprovedHclCodeByExistRejectApp(saveApplicationDtoList,applicationGroupDto.getAppType(), broadcastApplicationDto.getApplicationDto());
+                    }
                 }
             }
         }
@@ -1065,15 +1064,13 @@ public class BackendInboxDelegator {
         String status = applicationDto.getStatus();
         String appId = applicationDto.getId();
         List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(appGrpId);
-        if (IaisCommonUtils.isEmpty(applicationDtoList) || applicationDtoList.size() == 1) {
+        applicationDtoList = removeFastTrackingAndTransfer(applicationDtoList);
+        applicationDtoList = removeCurrentApplicationDto(applicationDtoList,appId);
+        if (IaisCommonUtils.isEmpty(applicationDtoList)) {
             return;
         } else {
-            boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList, appNo,
-                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
-            boolean isAllSubmitAO3 = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList, appNo,
-                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
-            if (isAllSubmit && (!(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(status))
-                    || (isAllSubmitAO3 && (ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(status))))) {
+            boolean flag = taskService.checkCompleteTaskByApplicationNo(applicationDtoList);
+            if(flag) {
                     String stageId = HcsaConsts.ROUTING_STAGE_AO3;
                     String roleId = RoleConsts.USER_ROLE_AO3;
                     updateCurrentApplicationStatus(applicationDtoList, appId, status);
@@ -1096,6 +1093,36 @@ public class BackendInboxDelegator {
             }
         }
     }
+
+    private List<ApplicationDto> removeFastTrackingAndTransfer(List<ApplicationDto> applicationDtos){
+        List<ApplicationDto> result = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(applicationDtos)){
+            for (ApplicationDto applicationDto : applicationDtos){
+                if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(applicationDto.getStatus())){
+                    continue;
+                }
+                if(!applicationDto.isFastTracking()){
+                    result.add(applicationDto);
+                }
+            }
+        }
+        return  result;
+    }
+
+    private List<ApplicationDto> removeCurrentApplicationDto(List<ApplicationDto> applicationDtoList, String currentId){
+        List<ApplicationDto> result = null;
+        if(!IaisCommonUtils.isEmpty(applicationDtoList) && !StringUtil.isEmpty(currentId)){
+            result = IaisCommonUtils.genNewArrayList();
+            for(ApplicationDto applicationDto : applicationDtoList){
+                if(currentId.equals(applicationDto.getId())){
+                    continue;
+                }
+                result.add(applicationDto);
+            }
+        }
+        return result;
+    }
+
     private List<ApplicationDto> getStatusAppList(List<ApplicationDto> applicationDtos, String status){
         if(IaisCommonUtils.isEmpty(applicationDtos) || StringUtil.isEmpty(status)){
             return null;
@@ -1166,6 +1193,9 @@ public class BackendInboxDelegator {
         List<ApplicationDto> result = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(applicationDtos)){
             for (ApplicationDto applicationDto : applicationDtos){
+                if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(applicationDto.getStatus())){
+                    continue;
+                }
                 if(!applicationDto.isFastTracking()){
                     result.add(applicationDto);
                 }
