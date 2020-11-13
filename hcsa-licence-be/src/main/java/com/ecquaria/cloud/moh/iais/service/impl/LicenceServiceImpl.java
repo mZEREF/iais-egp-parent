@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SuperLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -495,8 +496,11 @@ public class LicenceServiceImpl implements LicenceService {
                         String applicationNo = applicationDto.getApplicationNo();
                         String applicationType = applicationDto.getApplicationType();
                         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-                        if(licenseeDto != null){
-                            String applicantName = licenseeDto.getName();
+                        String appGrpId = applicationDto.getAppGrpId();
+                        ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGrpId).getEntity();
+                        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+                        if(licenseeDto != null && orgUserDto != null){
+                            String applicantName = orgUserDto.getDisplayName();
                             String organizationId = licenseeDto.getOrganizationId();
                             OrganizationDto organizationDto = organizationClient.getOrganizationById(organizationId).getEntity();
                             String appDate = Formatter.formatDateTime(new Date(), "dd/MM/yyyy");
@@ -510,7 +514,6 @@ public class LicenceServiceImpl implements LicenceService {
                                 sendRenewalAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,MohName,inspectionRecommendation);
                             }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
                                 try {
-                                    ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
                                     if(applicationGroupDto.getNewLicenseeId()!=null){
                                         sendRfcApproveLicenseeEmail(applicationGroupDto,applicationDto,licenceNo,svcCodeList);
                                     }else {
@@ -519,6 +522,13 @@ public class LicenceServiceImpl implements LicenceService {
                                 } catch (IOException e) {
                                     log.info(e.getMessage(),e);
                                 }
+                            }
+                        }else{
+                            if(licenseeDto == null){
+                                log.error(StringUtil.changeForLog("---licenseeDto == null"));
+                            }
+                            if(orgUserDto == null){
+                                log.error(StringUtil.changeForLog("---orgUserDto == null"));
                             }
                         }
                     }

@@ -1178,10 +1178,10 @@ public class HcsaApplicationDelegator {
         ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
         if(applicationGroupDto != null) {
             String groupLicenseeId = applicationGroupDto.getLicenseeId();
+            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
             log.info(StringUtil.changeForLog("send new application notification groupLicenseeId : " + groupLicenseeId));
-            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(groupLicenseeId).getEntity();
-            if (licenseeDto != null) {
-                String applicantName = licenseeDto.getName();
+            if (orgUserDto != null) {
+                String applicantName = orgUserDto.getDisplayName();
                 log.info(StringUtil.changeForLog("send new application notification applicantName : " + applicantName));
                 Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                 map.put("ApplicantName", applicantName);
@@ -1240,9 +1240,10 @@ public class HcsaApplicationDelegator {
         if(applicationGroupDto != null){
             String groupLicenseeId = applicationGroupDto.getLicenseeId();
             log.info(StringUtil.changeForLog("send renewal application notification groupLicenseeId : " + groupLicenseeId));
-            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(groupLicenseeId).getEntity();
-            if(licenseeDto != null){
-                String applicantName = licenseeDto.getName();
+//            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(groupLicenseeId).getEntity();
+            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+            if(orgUserDto != null){
+                String applicantName = orgUserDto.getDisplayName();
                 log.info(StringUtil.changeForLog("send renewal application notification applicantName : " + applicantName));
                 Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                 map.put("ApplicantName", applicantName);
