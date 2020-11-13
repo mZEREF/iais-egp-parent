@@ -1125,16 +1125,16 @@ public class HcsaApplicationDelegator {
             Map<String,Object> rejectMap=IaisCommonUtils.genNewHashMap();
             rejectMap.put("applicationId",applicationNo);
             try{
-                LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-                String applicationName = licenseeDto.getName();
+                ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
                 Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                emailMap.put("ApplicantName", applicationName);
+                emailMap.put("ApplicantName", orgUserDto.getDisplayName());
                 emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE}).get(0).getText());
                 emailMap.put("ApplicationNumber", applicationNo);
                 emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
                 emailMap.put("email_address", systemParamConfig.getSystemAddressOne());
                 emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+                emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
                 EmailParam emailParam = new EmailParam();
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED);
                 emailParam.setTemplateContent(emailMap);
@@ -2051,7 +2051,6 @@ public class HcsaApplicationDelegator {
                  * Send Withdrawal Application Email
                  */
                 if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(withdrawApplicationDto.getApplicationType())){
-                    LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
                     String serviceId = applicationViewDto.getApplicationDto().getServiceId();
                     AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
                     if (premiseMiscDto != null){
@@ -2061,13 +2060,14 @@ public class HcsaApplicationDelegator {
                         String applicationType1 = oldApplication.getApplicationType();
                         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
                         ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+                        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
                         Integer isByGIRO = applicationGroupDto.getIsByGiro();
                         String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
                         if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(withdrawApplicationDto.getStatus())
                                 ||ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(withdrawApplicationDto.getStatus())){
                             applicationService.closeTaskWhenWhAppApprove(withdrawApplicationDto.getId());
                             Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                            msgInfoMap.put("Applicant", licenseeDto.getName());
+                            msgInfoMap.put("Applicant", orgUserDto.getDisplayName());
                             msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
                             msgInfoMap.put("ApplicationNumber", applicationNo);
                             msgInfoMap.put("reqAppNo",applicationNo);
@@ -2095,7 +2095,7 @@ public class HcsaApplicationDelegator {
                             Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                             msgInfoMap.put("ApplicationNumber", applicationNo);
                             msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType));
-                            msgInfoMap.put("Applicant", licenseeDto.getName());
+                            msgInfoMap.put("Applicant", orgUserDto.getDisplayName());
                             msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date()));
                             msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
                             sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_EMAIL,msgInfoMap,oldApplication);
@@ -2512,8 +2512,9 @@ public class HcsaApplicationDelegator {
     //Send EN_RFC_005_CLARIFICATION
     public void sendRfcClarificationEmail(String licenseeId,ApplicationViewDto applicationViewDto,String internalRemarks) throws Exception{
         ApplicationDto applicationDto=applicationViewDto.getApplicationDto();
-        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-        String applicationName = licenseeDto.getName();
+        ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+        String applicationName = orgUserDto.getDisplayName();
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         emailMap.put("officer_name", "");
