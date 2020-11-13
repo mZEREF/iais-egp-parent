@@ -27,7 +27,15 @@ public class AppointmentUtil {
                 ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED,
                 ApplicationConsts.PENDING_ASO_REPLY,
                 ApplicationConsts.PENDING_PSO_REPLY,
-                ApplicationConsts.PENDING_INP_REPLY
+                ApplicationConsts.PENDING_INP_REPLY,
+                ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
+                ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_EMAIL,
+                ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT,
+                ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,
+                ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,
+                ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,
+                ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW,
+                ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION
         };
     }
 }

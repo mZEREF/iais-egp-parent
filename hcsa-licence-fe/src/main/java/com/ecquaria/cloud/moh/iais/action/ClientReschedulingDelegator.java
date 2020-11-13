@@ -155,7 +155,10 @@ public class ClientReschedulingDelegator {
                     }
                     String dateRang=new SimpleDateFormat(SystemAdminBaseConstants.DATE_FORMAT).format(dateRange);
                     String inDate=new SimpleDateFormat(SystemAdminBaseConstants.DATE_FORMAT).format(reschApptGrpPremsQueryDto.getRecomInDate());
-                    if (inDate.compareTo(dateRang)>=0 && !appStatus.contains(reschApptGrpPremsQueryDto.getApplicationStatus())&&reschApptGrpPremsQueryDto.getRescheduleCount()<systemParamConfig.getRescheduleMaxCount()){
+                    boolean flag1=inDate.compareTo(dateRang)>=0;
+                    boolean flag2=!appStatus.contains(reschApptGrpPremsQueryDto.getApplicationStatus());
+                    boolean flag3=reschApptGrpPremsQueryDto.getRescheduleCount()<systemParamConfig.getRescheduleMaxCount();
+                    if (flag1 && flag2&&flag3){
                         apptViewDto.setCanReschedule(Boolean.TRUE);
                     }else {
                         apptViewDto.setCanReschedule(Boolean.FALSE);
