@@ -60,6 +60,14 @@ public class TaskOrganizationClientFallback implements TaskOrganizationClient {
     }
 
     @Override
+    public FeignResponseEntity<OrgUserDto> getUserById(String userId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<TaskDto>> getCommPoolTaskByWorkGroupId(String workGroupId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
