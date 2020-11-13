@@ -269,7 +269,7 @@ public class InspectionMergeSendNcEmailDelegator {
             mapTemplate.put("DDMMYYYY", StringUtil.viewHtml(Formatter.formatDateTime(new Date(),Formatter.DATE)));
             mapTemplate.put("Inspector_mail_Address", leadDto.getEmail());
             mapTemplate.put("InspectorDID", leadDto.getMobileNo());
-            mapTemplate.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+            mapTemplate.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
             msgTemplateDto.setMessageContent(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(),mapTemplate));
 
             int index = 1;
