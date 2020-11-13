@@ -377,7 +377,10 @@ public class LicenceServiceImpl implements LicenceService {
                     LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
                     LicenseeIndividualDto licenseeIndividualDto = licenseeDto.getLicenseeIndividualDto();
                     String[] appGrpNo = licenceDto.getApplicationNo().split("-");
+                    log.info(StringUtil.changeForLog("licenceDto :" + JsonUtil.parseToJson(licenceDto)));
+                    log.info(StringUtil.changeForLog("application :" + appGrpNo[0]));
                     AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appGrpNo[0]);
+                    log.info(StringUtil.changeForLog("appGrpPremisesDto :" + JsonUtil.parseToJson(appGrpPremisesDto)));
                     log.info(StringUtil.changeForLog("licenseeIndividualDto.getUenMailFlag() = " + licenseeIndividualDto.getUenMailFlag()));
                     //judge licence is singlepass
                     if(licenseeIndividualDto.getUenMailFlag() == 0){
