@@ -172,13 +172,17 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         if(!fastFlag) {
             //get all application info from same premises
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = getAppPremisesCorrelationsByPremises(taskDto.getRefNo());
+            log.info(StringUtil.changeForLog("AppPremisesCorrelationDto Size = " + appPremisesCorrelationDtos.size()));
             //get show App Premises Ids
-
             corrAppShowMap = filterCancelAppByCorrShow(appPremisesCorrelationDtos);
+            log.info(StringUtil.changeForLog("corrAppShowMap Size = " + corrAppShowMap.size()));
             appPremCorrShowIds = getCorrIdsByCorrIdFromPremises(corrAppShowMap);
+            log.info(StringUtil.changeForLog("appPremCorrShowIds Size = " + appPremCorrShowIds.size()));
             //filter cancel application
             corrAppMap = filterCancelAppByCorr(appPremisesCorrelationDtos, applicationDto.getStatus());
+            log.info(StringUtil.changeForLog("corrAppMap Size = " + corrAppMap.size()));
             premCorrIds = getCorrIdsByCorrIdFromPremises(corrAppMap);
+            log.info(StringUtil.changeForLog("premCorrIds Size = " + premCorrIds.size()));
             apptInspectionDateDto.setRefNo(premCorrIds);
             apptInspectionDateDto.setRefShowNo(appPremCorrShowIds);
             //get Other Tasks From The Same Premises
