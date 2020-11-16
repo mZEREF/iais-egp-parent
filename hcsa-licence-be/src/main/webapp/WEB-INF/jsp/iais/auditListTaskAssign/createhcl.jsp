@@ -13,10 +13,11 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
+<div class="main-content">
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-    <div class="main-content">
-        <div class="container">
+
+
             <div class="row">
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
@@ -32,9 +33,9 @@
                 </button>
             </iais:action>
         </div>
-    </div>
-    </div>
+
 </form>
+</div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 
 <script type="text/javascript">

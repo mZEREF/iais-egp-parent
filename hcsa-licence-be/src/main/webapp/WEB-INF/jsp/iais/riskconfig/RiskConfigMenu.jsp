@@ -13,15 +13,15 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
-
+<div class="main-content">
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
 
-    <div class="main-content">
-        <div class="container">
+
+
             <div class="row">
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
@@ -66,10 +66,11 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+
+
 
 </form>
+</div>
 <script type="text/javascript">
     function configGolbalRisk() {
         SOP.Crud.cfxSubmit("mainForm","golbalRiskConfig");

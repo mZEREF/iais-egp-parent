@@ -27,6 +27,7 @@
         padding-top:40px;
     }
 </style>
+<div class="main-content">
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.HcsaRiskLicenceTenureConfigDelegator"/>
@@ -38,8 +39,8 @@
 
     <input type="hidden" id="removeValue" name ="removeValue" >
     <input type="hidden" id="addValue" name ="addValue" >
-    <div class="main-content">
-        <div class="container">
+
+
             <div class="row">
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
@@ -220,9 +221,10 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+
+
 </form>
+</div>
 <%@ include file="validationForRisk.jsp" %>
 <script type="text/javascript">
     function doNext() {

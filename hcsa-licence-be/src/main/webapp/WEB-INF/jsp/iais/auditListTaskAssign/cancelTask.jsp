@@ -13,12 +13,11 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
-
+<div class="main-content">
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.AuditCancelTaskValidateDto"/>
-    <div class="main-content">
-        <div class="container">
+
             <div class="row">
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
@@ -82,9 +81,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 </form>
+</div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@ include file="/WEB-INF/jsp/include/yesNoConfirm.jsp" %>
 <script type="text/javascript">
