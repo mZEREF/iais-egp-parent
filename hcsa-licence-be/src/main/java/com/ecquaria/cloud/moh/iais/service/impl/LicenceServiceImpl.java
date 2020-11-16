@@ -467,8 +467,10 @@ public class LicenceServiceImpl implements LicenceService {
                 String licenceNo = licenceDto.getLicenceNo();
                 String licenseeId = licenceDto.getLicenseeId();
                 List<String> appIdList = hcsaLicenceClient.getAppIdsByLicId(superLicDto.getLicenceDto().getId()).getEntity();
+                log.debug(StringUtil.changeForLog("send approve email --- get app list by licence id : " + superLicDto.getLicenceDto().getId()));
                 if(appIdList != null && appIdList.size() >0) {
                     String appId = appIdList.get(0);
+                    log.debug(StringUtil.changeForLog("send approve email --- get app by app id : " + appId));
                     ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
                     //getAppPremisesCorrelationsByAppId
                     AppPremisesRecommendationDto inspectionRecommendation = null;
@@ -494,6 +496,7 @@ public class LicenceServiceImpl implements LicenceService {
                         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
                         svcCodeList.add(svcDto.getSvcCode());
                         String applicationNo = applicationDto.getApplicationNo();
+                        log.debug(StringUtil.changeForLog("send approve email --- get app by applicationNo : " + applicationNo));
                         String applicationType = applicationDto.getApplicationType();
                         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
                         String appGrpId = applicationDto.getAppGrpId();
