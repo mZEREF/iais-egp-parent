@@ -79,7 +79,8 @@
                 </div>
             </div>
         </div>
-        <iais:confirm msg="Content cannot be exceeded 4000 characters"  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
+
+        <iais:confirm msg='ESB_ERR004'  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
         <input hidden value="${id}" id="blastId" >
         <input hidden value="" id="action" name="action">
         <input hidden value="0" id="fileChange" name="fileChange">
@@ -232,12 +233,12 @@
                 var content;
                 var allowedKeys = [8,13, 46]; // backspace, delete and cursor keys
                 ed.on('keydown', function (e) {
-                    if (allowedKeys.indexOf(e.keyCode) != -1) return true;
-                    if (tinymce_getContentLength() + 1 >= this.settings.max_chars) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        return false;
-                    }
+                    // if (allowedKeys.indexOf(e.keyCode) != -1) return true;
+                    // if (tinymce_getContentLength() + 1 >= this.settings.max_chars) {
+                    //     e.preventDefault();
+                    //     e.stopPropagation();
+                    //     return false;
+                    // }
                     return true;
                 });
                 ed.on('keyup', function (e) {
@@ -253,12 +254,12 @@
                 var len = editor.contentDocument.body.innerText.length;
                 var text = $(args.content).text();
 
-                if (tinymce_getContentLength() > editor.settings.max_chars) {
-                    $('#support').modal('show');
-                    args.content = '';
-                } else {
+                // if (tinymce_getContentLength() > editor.settings.max_chars) {
+                //     $('#support').modal('show');
+                //     args.content = '';
+                // } else {
                     tinymce_updateCharCounter(editor, len + text.length);
-                }
+                // }
             }
         });
 
