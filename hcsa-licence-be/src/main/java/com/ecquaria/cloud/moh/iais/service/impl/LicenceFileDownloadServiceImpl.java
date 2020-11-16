@@ -868,13 +868,17 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             emailParam.setReqRefNum(h.getApplicationNo());
                             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
                             emailParam.setRefId(h.getApplicationNo());
+                            log.info("start send email start");
                             notificationHelper.sendNotification(emailParam);
+                            log.info("start send email end");
                             //emailClient.sendNotification(emailDto).getEntity();
 
                             //sms
                             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS);
                             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                            log.info("start send sms start");
                             notificationHelper.sendNotification(emailParam);
+                            log.info("start send sms end");
                         }
 
                     }catch (Exception e ){
