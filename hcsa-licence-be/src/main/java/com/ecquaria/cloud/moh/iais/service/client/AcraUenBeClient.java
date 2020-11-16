@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * AcraUenBeClient
@@ -23,6 +24,6 @@ public interface AcraUenBeClient {
     FeignResponseEntity<GenerateUENDto> getUen(@PathVariable(name = "uen") String uen);
 
     @PostMapping(value = "/entity", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<GenerateUENDto> generateUen(@RequestBody GenerateUENDto generateUENDto);
+    FeignResponseEntity<GenerateUENDto> generateUen(@RequestBody GenerateUENDto generateUENDto,@RequestParam String licenseeId);
 
 }
