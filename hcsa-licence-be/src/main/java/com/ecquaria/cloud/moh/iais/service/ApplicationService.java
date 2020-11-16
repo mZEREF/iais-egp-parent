@@ -9,9 +9,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import freemarker.template.TemplateException;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +55,7 @@ public interface ApplicationService {
       * @return: void
       * @Descripation: Hcsa Application Request Information And Send Email
       */
-    void applicationRfiAndEmail(ApplicationViewDto applicationViewDto, ApplicationDto applicationDto, String licenseeId, LicenseeDto licenseeDto, LoginContext loginContext, String externalRemarks) throws IOException, TemplateException;
+    void applicationRfiAndEmail(ApplicationViewDto applicationViewDto, ApplicationDto applicationDto, LoginContext loginContext, String externalRemarks) throws IOException, TemplateException;
     void appealRfiAndEmail(ApplicationViewDto applicationViewDto,ApplicationDto applicationDto,String appealingFor,String appealType, HashMap<String, String> maskParams) throws Exception;
     ApplicationDto getApplicationBytaskId(String ref);
 

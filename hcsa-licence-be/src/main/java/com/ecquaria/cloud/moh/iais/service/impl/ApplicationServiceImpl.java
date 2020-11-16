@@ -567,7 +567,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
     }
     @Override
-    public void applicationRfiAndEmail(ApplicationViewDto applicationViewDto, ApplicationDto applicationDto, String licenseeId, LicenseeDto licenseeDto,
+    public void applicationRfiAndEmail(ApplicationViewDto applicationViewDto, ApplicationDto applicationDto,
                                        LoginContext loginContext, String externalRemarks) throws IOException, TemplateException {
         String applicantName = "";
         ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();

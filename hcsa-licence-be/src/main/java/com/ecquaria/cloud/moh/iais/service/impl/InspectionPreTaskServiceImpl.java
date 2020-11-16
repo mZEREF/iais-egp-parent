@@ -301,8 +301,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         }
         String preInspecComments = inspectionPreTaskDto.getPreInspecComments();
         if(!StringUtil.isEmpty(appRfiDecision)){
-            applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId,
-                    licenseeDto, loginContext, preInspecComments);
+            applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, loginContext, preInspecComments);
             if(!StringUtil.isEmpty(selfRfiDecision)){
                 applicationDto.setSelfAssMtFlag(selfAssMtFlag);
             }
