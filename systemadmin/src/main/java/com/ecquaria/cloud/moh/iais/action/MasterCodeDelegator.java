@@ -915,8 +915,8 @@ public class MasterCodeDelegator {
         masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_ED)) ? null : ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_ED) * 1000);
         masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_FROM_ED)));
         masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_TO_ED)));
-        masterCodeDto.setIsEditable(0);
-        masterCodeDto.setIsCentrallyManage(0);
+        masterCodeDto.setIsEditable(1);
+        masterCodeDto.setIsCentrallyManage(1);
         masterCodeDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
     }
 
@@ -931,8 +931,8 @@ public class MasterCodeDelegator {
         masterCodeDto.setVersion(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_CMC)) ? null : Float.parseFloat(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_CMC)));
         masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_FROM_CMC)));
         masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_TO_CMC)));
-        masterCodeDto.setIsEditable(0);
-        masterCodeDto.setIsCentrallyManage(0);
+        masterCodeDto.setIsEditable(1);
+        masterCodeDto.setIsCentrallyManage(1);
         masterCodeDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
     }
 
@@ -945,7 +945,8 @@ public class MasterCodeDelegator {
         masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, "codeCategorySequence")) ? null : ParamUtil.getInt(request, "codeCategorySequence") * 1000);
         masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, "categoryEsd")));
         masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, "categoryEed")));
-        masterCodeDto.setIsEditable(0);
+        masterCodeDto.setIsEditable(1);
+        masterCodeDto.setIsCentrallyManage(1);
         masterCodeDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
     }
 
