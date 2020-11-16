@@ -29,7 +29,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
@@ -483,11 +482,12 @@ public class RoundRobinCommPoolBatchJob {
         String dateStr = Formatter.formatDateTime(inspDate, "dd/MM/yyyy");
         String dateTime = Formatter.formatDateTime(inspDate, "HH:mm:ss");
         String appNo = applicationDto.getApplicationNo();
-        String licenseeId = applicationGroupDto.getLicenseeId();
-        LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
+        String applicantId = applicationGroupDto.getSubmitBy();
+        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
+        String applicantName = orgUserDto.getDisplayName();
         AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(applicationDto.getId()).getEntity();
         Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
-        map.put("applicant", licenseeDto.getName());
+        map.put("applicant", applicantName);
         String hciName = appGrpPremisesDto.getHciName();
         if(!StringUtil.isEmpty(hciName)){
             map.put("hciName", hciName);
