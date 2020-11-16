@@ -7,10 +7,10 @@
                     <ul class="list-inline">
                         <li><a><label>HALP</label></a></li>
                         <li><a href="<iais:code code='MRUS007'/>">Who we are</a></li>
-                        <li><a href="#">Privacy Statement</a></li>
-                        <li><a href="#">Terms Of Use</a></li>
-                        <li><a href="#">Rate This E-Service</a></li>
-                        <li><a href="#">Sitemap</a></li>
+                        <li><a href="<iais:code code='MRUS014'/>">Privacy Statement</a></li>
+                        <li><a href="<iais:code code='MRUS015'/>">Terms Of Use</a></li>
+                        <li><a href="<iais:code code='MRUS016'/>">Rate This E-Service</a></li>
+                        <li><a href="<iais:code code='MRUS017'/>">Sitemap</a></li>
                     </ul>
                 </div>
             </div>
