@@ -189,11 +189,11 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
                         }
                         if(!IaisCommonUtils.isEmpty(createTasks)) {
                             taskService.createTasks(createTasks);
+                            appInspStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_REVIEW_CHECKLIST_EMAIL);
+                            appInspStatusDto.setAuditTrailDto(intranet);
+                            appInspectionStatusClient.update(appInspStatusDto);
                         }
                     }
-                    appInspStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_REVIEW_CHECKLIST_EMAIL);
-                    appInspStatusDto.setAuditTrailDto(intranet);
-                    appInspectionStatusClient.update(appInspStatusDto);
                 }
             }
         }
