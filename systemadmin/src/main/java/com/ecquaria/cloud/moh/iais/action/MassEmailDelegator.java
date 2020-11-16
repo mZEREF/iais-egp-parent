@@ -251,7 +251,7 @@ public class MassEmailDelegator {
         filelist = getAllData(file);
         if(SMS.equals(mode)){
             List<String> address = getEmail(bpc,"mobile");
-            if(repeatList(filelist)){
+            if(filelist != null && repeatList(filelist)){
                 errMap.put("file", "There are repeated mobile provided");
             }
             if(!isMobileEmail(filelist)){
