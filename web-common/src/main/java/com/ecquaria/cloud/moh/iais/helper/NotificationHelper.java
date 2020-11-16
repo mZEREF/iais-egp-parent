@@ -665,8 +665,8 @@ public class NotificationHelper {
 			return mobile;
 		}
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
-		//licensee
-		mobile = getMobileLicensee(roles, grpDto.getLicenseeId(), mobile);
+		//applicant
+		mobile = getMobileApplicant(roles, grpDto.getSubmitBy(), mobile);
 		//officer
 		Set<String> userIds = IaisCommonUtils.genNewHashSet();
 		List<AppPremisesRoutingHistoryDto> hisList;
@@ -745,6 +745,18 @@ public class NotificationHelper {
 		return mobile;
 	}
 
+	private List<String> getMobileApplicant(List<String> roles, String applicantId, List<String> mobile) {
+		for (String role : roles) {
+			if (RECEIPT_ROLE_LICENSEE.equals(role)) {
+				OrgUserDto orgUserDto = taskOrganizationClient.getUserById(applicantId).getEntity();
+				if(orgUserDto != null && !StringUtil.isEmpty(orgUserDto.getMobileNo())){
+					mobile.add(orgUserDto.getMobileNo());
+				}
+			}
+		}
+		return mobile;
+	}
+
 	public InspectionEmailTemplateDto getRecript(List<String> role, String refType, String refId, String moduleType, InspectionEmailTemplateDto inspectionEmailTemplateDto) {
 		if (RECEIPT_TYPE_APP_GRP.equals(refType)) {
 			inspectionEmailTemplateDto = getRecriptAppGrp(role, refId, moduleType, inspectionEmailTemplateDto);
@@ -772,6 +784,27 @@ public class NotificationHelper {
 		List<String> receiptEmails = new ArrayList<>(set);
 		inspectionEmailTemplateDto.setReceiptEmails(receiptEmails);//NOSONAR
 		return inspectionEmailTemplateDto;
+	}
+
+	private Collection<String> getRecrptLicensee(List<String> roles, String licenseeId) {
+		Set<String> set = IaisCommonUtils.genNewHashSet();
+		for (String role : roles) {
+			if (RECEIPT_ROLE_LICENSEE.equals(role)) {
+				List<String> mails = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
+				set.addAll(mails);
+			} else if (RECEIPT_ROLE_AUTHORISED_PERSON.equals(role)) {
+				List<LicenseeKeyApptPersonDto> pers = licenseeClient.getPersonByid(licenseeId).getEntity();
+				if (!IaisCommonUtils.isEmpty(pers)) {
+					pers.forEach(p -> {
+						if (!StringUtil.isEmpty(p.getEmailAddr())) {
+							set.add(p.getEmailAddr());
+						}
+					});
+				}
+			}
+		}
+
+		return set;
 	}
 
 	private Collection<String> getRecrptPersonnel(List<String> roles, String licenceId) {
@@ -804,7 +837,7 @@ public class NotificationHelper {
 		for (ApplicationDto app : appList) {
 			inspectionEmailTemplateDto = getAssignedOfficer(roles, app.getApplicationNo(), moduleType, inspectionEmailTemplateDto);//NOSONAR
 		}
-		set.addAll(getRecrptLicensee(roles, grpDto.getLicenseeId()));
+		set.addAll(getSubmitApplicant(roles, grpDto.getSubmitBy()));
 		inspectionEmailTemplateDto = getOfficer(roles, inspectionEmailTemplateDto);//NOSONAR
 		List<String> receiptEmails = new ArrayList<>(set);
 		inspectionEmailTemplateDto.setReceiptEmails(receiptEmails);//NOSONAR
@@ -814,7 +847,7 @@ public class NotificationHelper {
 	private InspectionEmailTemplateDto getRecriptApp(List<String> roles, String appNo, String moduleType, InspectionEmailTemplateDto inspectionEmailTemplateDto) {
 		Set<String> set = IaisCommonUtils.genNewHashSet();
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
-		set.addAll(getRecrptLicensee(roles, grpDto.getLicenseeId()));
+		set.addAll(getSubmitApplicant(roles, grpDto.getSubmitBy()));
 		inspectionEmailTemplateDto = getAssignedOfficer(roles, appNo, moduleType, inspectionEmailTemplateDto);//NOSONAR
 		inspectionEmailTemplateDto = getOfficer(roles, inspectionEmailTemplateDto);//NOSONAR
 		List<String> receiptEmails = new ArrayList<>(set);
@@ -822,13 +855,17 @@ public class NotificationHelper {
 		return inspectionEmailTemplateDto;
 	}
 
-	private Collection<String> getRecrptLicensee(List<String> roles, String licenseeId) {
+	private Collection<String> getSubmitApplicant(List<String> roles, String applicantId) {
 		Set<String> set = IaisCommonUtils.genNewHashSet();
 		for (String role : roles) {
 			if (RECEIPT_ROLE_LICENSEE.equals(role)) {
-				List<String> mails = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
-				set.addAll(mails);
-			} else if (RECEIPT_ROLE_AUTHORISED_PERSON.equals(role)) {
+				OrgUserDto orgUserDto = taskOrganizationClient.getUserById(applicantId).getEntity();
+				if(orgUserDto != null && !StringUtil.isEmpty(orgUserDto.getEmail())){
+					set.add(orgUserDto.getEmail());
+				} else {
+					log.info("orgUserDto is null, no applicant or no email");
+				}
+			}/* else if (RECEIPT_ROLE_AUTHORISED_PERSON.equals(role)) {
 				List<LicenseeKeyApptPersonDto> pers = licenseeClient.getPersonByid(licenseeId).getEntity();
 				if (!IaisCommonUtils.isEmpty(pers)) {
 					pers.forEach(p -> {
@@ -837,7 +874,7 @@ public class NotificationHelper {
 						}
 					});
 				}
-			}
+			}*/
 		}
 
 		return set;
