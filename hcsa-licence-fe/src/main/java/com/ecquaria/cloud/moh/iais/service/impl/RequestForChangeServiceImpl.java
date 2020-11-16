@@ -1406,22 +1406,33 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             }
         }
         if (dtoAppGrpPrimaryDocDtos != null) {
+            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : dtoAppGrpPrimaryDocDtos){
+                if(StringUtil.isEmpty(appGrpPrimaryDocDto.getSvcComDocName())){
+                    String svcDocId = appGrpPrimaryDocDto.getSvcDocId();
+                    if(svcDocId!=null){
+                        HcsaSvcDocConfigDto hcsaSvcDocConfigDto = appConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
+                        if (hcsaSvcDocConfigDto != null) {
+                            appGrpPrimaryDocDto.setSvcComDocName(hcsaSvcDocConfigDto.getDocTitle());
+                        }
+                    }
+                }
+            }
             if (appGrpPrimaryDocDtos.isEmpty()) {
                 appGrpPrimaryDocDtos.addAll(dtoAppGrpPrimaryDocDtos);
             } else {
                 List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
                 for (AppGrpPrimaryDocDto appGrpPrimaryDocDto1 : dtoAppGrpPrimaryDocDtos) {
                     for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos) {
-                        String svcDocId = appGrpPrimaryDocDto.getSvcDocId();
-                        String svcDocId1 = appGrpPrimaryDocDto1.getSvcDocId();
-                        if (svcDocId1 != null) {
-                            if (svcDocId1.equals(svcDocId)) {
+                        String svcComDocName = appGrpPrimaryDocDto.getSvcComDocName();
+                        String svcComDocName1 = appGrpPrimaryDocDto1.getSvcComDocName();
+                        if (svcComDocName1 != null) {
+                            if (svcComDocName1.equals(svcComDocName)) {
                                 continue;
                             } else {
                                 appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto1);
                             }
-                        } else if (svcDocId != null) {
-                            if (svcDocId.equals(svcDocId1)) {
+                        } else if (svcComDocName != null) {
+                            if (svcComDocName.equals(svcComDocName1)) {
                                 continue;
                             } else {
                                 appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto1);
