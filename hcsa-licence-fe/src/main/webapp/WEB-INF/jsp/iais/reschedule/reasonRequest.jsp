@@ -87,7 +87,7 @@
 
     function doReschedule(){
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm")
+        $("#mainForm").submit();
 
     }
 

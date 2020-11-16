@@ -135,8 +135,8 @@
 
     function doRequest(){
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "request")
-
+        $("[name='crud_action_type']").val("request");
+        $("#mainForm").submit();
     }
     function sortRecords(sortFieldName, sortType) {
         $("[name='crud_action_value']").val(sortFieldName);
