@@ -25,7 +25,7 @@ public class PaymentDelegator {
         log.info(StringUtil.changeForLog("==========>getSessionID:"+bpc.getSession().getId()));
         HttpServletRequest request=bpc.request;
 
-        String sessionId=  ParamUtil.getRequestString(request,"sessionNetsId");
+        String sessionId= (String) ParamUtil.getSessionAttr(request,"sessionNetsId");
         String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+"/payment-web/process/EGPCLOUD/PaymentCallBack";
         StringBuilder bud = new StringBuilder();
         bud.append(url).append("?sessionId=").append(sessionId);

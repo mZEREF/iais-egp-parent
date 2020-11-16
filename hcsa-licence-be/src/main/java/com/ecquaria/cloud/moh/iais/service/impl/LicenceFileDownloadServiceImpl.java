@@ -831,6 +831,16 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }catch (Exception e){
                         log.info(e.getMessage(),e);
                     }
+                });
+            }
+            List<ApplicationDto> applicationDtoListRfc = applicationNewAndRequstDto.getListNewApplicationDto();
+            if (applicationDtoListRfc != null && applicationDtoListRfc.size() > 0){
+                applicationDtoListRfc.forEach(h -> {
+                    String applicationGrpId = h.getAppGrpId();
+                    String serviceId = h.getServiceId();
+                    String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
+                    ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationGrpId);
+                    LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
 
                     try {
                         if(h.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
