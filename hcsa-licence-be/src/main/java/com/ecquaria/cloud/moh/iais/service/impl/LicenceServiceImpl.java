@@ -335,7 +335,7 @@ public class LicenceServiceImpl implements LicenceService {
                 addressesList.add(addresses);
                 generateUENDto.setAddresses(addressesList);
                 log.info(StringUtil.changeForLog("generateUenDto : " + JsonUtil.parseToJson(generateUENDto)));
-                acraUenBeClient.generateUen(generateUENDto,"licenseeId");
+                acraUenBeClient.generateUen(generateUENDto);
 
             }
         }
