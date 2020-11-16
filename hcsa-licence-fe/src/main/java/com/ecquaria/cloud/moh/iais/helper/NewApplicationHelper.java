@@ -493,7 +493,7 @@ public class NewApplicationHelper {
                     }
 
                     if(StringUtil.isEmpty(idType)||"-1".equals(idType)){
-                        oneErrorMap.put("deputyIdType"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","ID No. Type","field"));
+                        oneErrorMap.put("deputyIdType"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","ID Type","field"));
                     }
                     if(StringUtil.isEmpty(name)){
                         oneErrorMap.put("deputyName"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field"));
