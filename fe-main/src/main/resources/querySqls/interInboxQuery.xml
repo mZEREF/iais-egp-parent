@@ -78,7 +78,6 @@
              AND B.STATUS != 'APST074'
              AND B.STATUS != 'APST073'
              AND B.APP_TYPE != 'APTY007'
-             AND ( B.app_type = 'APTY008' and B.is_fast_tracking = 0)
             <#if id??> AND CHARINDEX(:id, app.id) >0</#if>
             <#if appType??> AND B.app_type = :appType</#if>
             <#if licenseeId??> AND B.licensee_id = :licenseeId</#if>
