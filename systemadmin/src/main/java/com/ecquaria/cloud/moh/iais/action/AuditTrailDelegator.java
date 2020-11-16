@@ -157,6 +157,7 @@ public class AuditTrailDelegator {
         operationList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_USER_UPDATE), "User Account"));
         operationList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_SESSION_TIMEOUT), "Session Timeout"));
         operationList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_INACTIVE_RECORD), "Inactive Record"));
+        operationList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_UNAUTHORISED_ACCESS_SOURCES), "Unauthorised Access Sources"));
         ParamUtil.setRequestAttr(request, "operationValueTypeSelect", operationList);
 
         List<SelectOption> dataActivites =  IaisCommonUtils.genNewArrayList();

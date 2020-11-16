@@ -51,6 +51,7 @@ public final class LoginHelper {
 
     public static void insertLoginFailureAuditTrail(String uen, String identityNo){
         AuditTrailDto auditTrailDto = new AuditTrailDto();
+        auditTrailDto.setEntityId(identityNo);
         auditTrailDto.setMohUserId(identityNo);
         auditTrailDto.setNricNumber(identityNo);
         auditTrailDto.setModule("login");
