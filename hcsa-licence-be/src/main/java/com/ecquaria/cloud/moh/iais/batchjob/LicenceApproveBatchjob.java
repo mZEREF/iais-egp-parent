@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
@@ -73,17 +74,16 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
+import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -130,7 +130,7 @@ public class LicenceApproveBatchjob {
     @Autowired
     private EmailClient emailClient;
     @Autowired
-    private MsgTemplateClient msgTemplateClient;
+    private AcraUenBeClient acraUenBeClient;
     @Autowired
     FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
@@ -209,6 +209,10 @@ public class LicenceApproveBatchjob {
                     GenerateResult generalGenerateResult = null;
                     GenerateResult groupGenerateResult = null;
                     try {
+                        log.info(StringUtil.changeForLog("The generateUen start ..."));
+                        GenerateUENDto generateUENDto = new GenerateUENDto();
+                        acraUenBeClient.generateUen(generateUENDto);
+                        log.info(StringUtil.changeForLog("The generateUen end ..."));
                         if (groupApplicationLicenceDto != null) {
                             //generate the Group licence
                             groupGenerateResult = generateGroupLicence(groupApplicationLicenceDto, hcsaServiceDtos);
