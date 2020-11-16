@@ -990,13 +990,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 }
                 List<ApplicationDto> applicationDtoList=IaisCommonUtils.genNewArrayList();
                 for(ApplicationDto application :v){
-//                    if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)&&ApplicationConsts.APPLICATION_STATUS_CESSATION_SPEC_NEED_LICENCE.equals(application.getStatus())){
-//                        application.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
-//                    }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)&&ApplicationConsts.APPLICATION_STATUS_CESSATION_SPEC_NOT_LICENCE.equals(application.getStatus())){
-//                        application.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE);
-//                    }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)&&ApplicationConsts.APPLICATION_STATUS_CESSATION_SPEC_TEMPORARY_LICENCE.equals(application.getStatus())){
-//                        application.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_TEMPORARY_LICENCE);
-//                    }
+                    if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)&&ApplicationConsts.APPLICATION_STATUS_CESSATION_SPEC_NEED_LICENCE.equals(application.getStatus())){
+                        application.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
+                    }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)&&ApplicationConsts.APPLICATION_STATUS_CESSATION_SPEC_NOT_LICENCE.equals(application.getStatus())){
+                        application.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE);
+                    }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)&&ApplicationConsts.APPLICATION_STATUS_CESSATION_SPEC_TEMPORARY_LICENCE.equals(application.getStatus())){
+                        application.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_TEMPORARY_LICENCE);
+                    }
 
                         if (autoRfc) {
                         application.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
