@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.action.HcsaApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -997,9 +996,9 @@ public class InsRepServiceImpl implements InsRepService {
         }
         log.info(StringUtil.changeForLog("================== taskDtos ===================>>>>>"+taskDtos.size()));
         log.info(StringUtil.changeForLog("==================  eventBus Start  ===================>>>>>"));
-            eventBusHelper.submitAsyncRequest(taskDtos, submissionId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK, EventBusConsts.OPERATION_POST_INSPECTION_TASK, eventRefNum, null);
+            //eventBusHelper.submitAsyncRequest(taskDtos, submissionId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK, EventBusConsts.OPERATION_POST_INSPECTION_TASK, eventRefNum, null);
+        taskService.createTasks(taskDtos);
         log.info(StringUtil.changeForLog("=======================taskDtos ===================>>>>>Success"));
-
         AppSubmissionForAuditDto appSubmissionForAuditDto = applicationClient.getAppSubmissionForAuditDto(eventRefNum).getEntity();
         appSubmissionForAuditDto.setIsCancel(Boolean.FALSE);
         appSubmissionForAuditDto.setAuditTrailDto(auditTrailDto);
