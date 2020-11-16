@@ -28,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
@@ -625,9 +624,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
         maskParams.put("applicationNo", applicationNo);
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
-        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
+        String applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
         //send email
-        Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, licenseeId, applicationViewDto, urlId, applicationDtos);
+        Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, applicantId, applicationViewDto, urlId, applicationDtos);
         createMessage(url, applicationNo, maskParams, map, applicationDtos);
         //update app Info and insp Info
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_SPECIFIC_INSP_DATE, InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE);
@@ -707,9 +706,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
         maskParams.put("applicationNo", applicationNo);
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
-        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
+        String applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
         //send email
-        Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, licenseeId, applicationViewDto, urlId, applicationDtos);
+        Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, applicantId, applicationViewDto, urlId, applicationDtos);
         //get service code to send message
         createMessage(url, applicationNo, maskParams, map, applicationDtos);
         //save data to app table
@@ -1109,7 +1108,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         appInspectionStatusClient.update(appInspectionStatusDto);
     }
 
-    private Map<String, Object> inspectionDateSendEmail(Date inspecDate, String url, String licenseeId, ApplicationViewDto applicationViewDto,
+    private Map<String, Object> inspectionDateSendEmail(Date inspecDate, String url, String applicantId, ApplicationViewDto applicationViewDto,
                                                         String appPremCorrId, List<ApplicationDto> applicationDtos) {
         StringBuilder appNoShow = new StringBuilder();
         for(ApplicationDto applicationDto : applicationDtos){
@@ -1120,8 +1119,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                 appNoShow.append(applicationDto.getApplicationNo());
             }
         }
-        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-        String licName = licenseeDto.getName();
+        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
+        String applicantName = orgUserDto.getDisplayName();
         ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appNo = applicationDto.getApplicationNo();
@@ -1144,7 +1143,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String address2 = systemParamConfig.getSystemAddressTwo();
         String phoneNo = systemParamConfig.getSystemPhoneNumber();
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        map.put("applicant", licName);
+        map.put("applicant", applicantName);
         String appTypeShow = MasterCodeUtil.getCodeDesc(appType);
         map.put("applicationType", appTypeShow);
         map.put("applicationNo", appNoShow.toString());
