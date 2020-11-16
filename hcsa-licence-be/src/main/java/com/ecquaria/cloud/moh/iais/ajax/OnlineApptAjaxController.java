@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -148,30 +149,37 @@ public class OnlineApptAjaxController {
                     appointmentUserDtos = getOnePersonBySomeService(appointmentUserDtos);
                     appointmentDto.setUsers(appointmentUserDtos);
                     apptInspectionDateDto.setAppointmentDto(appointmentDto);
-                    try {
-                        FeignResponseEntity<List<ApptRequestDto>> result = appointmentClient.getUserCalendarByUserId(appointmentDto);
-                        Map<String, Collection<String>> headers = result.getHeaders();
-                        //Has it been blown up
-                        if(headers != null && StringUtil.isEmpty(headers.get("fusing"))) {
-                            List<ApptRequestDto> apptRequestDtos = result.getEntity();
-                            if(!IaisCommonUtils.isEmpty(apptRequestDtos)){
-                                Map<String, List<ApptUserCalendarDto>> inspectionDateMap = new LinkedHashMap<>(apptRequestDtos.size());
-                                for(ApptRequestDto apptRequestDto : apptRequestDtos){
-                                    inspectionDateMap.put(apptRequestDto.getApptRefNo(), apptRequestDto.getUserClandars());
+                    boolean dateFlag = getStartEndDateFlag(appointmentDto);
+                    if(dateFlag) {
+                        try {
+                            FeignResponseEntity<List<ApptRequestDto>> result = appointmentClient.getUserCalendarByUserId(appointmentDto);
+                            Map<String, Collection<String>> headers = result.getHeaders();
+                            //Has it been blown up
+                            if (headers != null && StringUtil.isEmpty(headers.get("fusing"))) {
+                                List<ApptRequestDto> apptRequestDtos = result.getEntity();
+                                if (!IaisCommonUtils.isEmpty(apptRequestDtos)) {
+                                    Map<String, List<ApptUserCalendarDto>> inspectionDateMap = new LinkedHashMap<>(apptRequestDtos.size());
+                                    for (ApptRequestDto apptRequestDto : apptRequestDtos) {
+                                        inspectionDateMap.put(apptRequestDto.getApptRefNo(), apptRequestDto.getUserClandars());
+                                    }
+                                    apptInspectionDateDto.setSysInspDateFlag(AppConsts.TRUE);
+                                    apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
+                                    map.put("buttonFlag", AppConsts.TRUE);
+                                    map.put("specButtonFlag", AppConsts.TRUE);
+                                    map.put("inspDateList", apptInspectionDateDto.getInspectionDate());
+                                } else {
+                                    map.put("buttonFlag", AppConsts.FALSE);
+                                    map.put("specButtonFlag", AppConsts.TRUE);
+                                    map.put("inspDateList", null);
                                 }
-                                apptInspectionDateDto.setSysInspDateFlag(AppConsts.TRUE);
-                                apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
-                                map.put("buttonFlag", AppConsts.TRUE);
-                                map.put("specButtonFlag", AppConsts.TRUE);
-                                map.put("inspDateList", apptInspectionDateDto.getInspectionDate());
-                            } else {
-                                map.put("buttonFlag", AppConsts.FALSE);
-                                map.put("specButtonFlag", AppConsts.TRUE);
-                                map.put("inspDateList", null);
                             }
+                        } catch (Exception e) {
+                            log.error(e.getMessage(), e);
                         }
-                    } catch (Exception e){
-                        log.error(e.getMessage(), e);
+                    } else {
+                        map.put("buttonFlag", AppConsts.FALSE);
+                        map.put("specButtonFlag", AppConsts.TRUE);
+                        map.put("inspDateList", null);
                     }
                     specificApptDto.setSubmitDt(appointmentDto.getSubmitDt());
                     specificApptDto.setUsers(appointmentDto.getUsers());
@@ -237,6 +245,51 @@ public class OnlineApptAjaxController {
             }
         }
         return map;
+    }
+
+    private boolean getStartEndDateFlag(AppointmentDto appointmentDto) {
+        Date today = new Date();
+        String todayStr = Formatter.formatDateTime(today, AppConsts.DEFAULT_DATE_FORMAT);
+        String startDateStr = appointmentDto.getStartDate();
+        String endDateStr = appointmentDto.getEndDate();
+        Date startDate = null;
+        Date endDate = null;
+        try {
+            today = Formatter.parseDateTime(todayStr, AppConsts.DEFAULT_DATE_FORMAT);
+            if(!StringUtil.isEmpty(startDateStr)) {
+                startDate = Formatter.parseDateTime(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
+            }
+            if(!StringUtil.isEmpty(endDateStr)) {
+                endDate = Formatter.parseDateTime(endDateStr, AppConsts.DEFAULT_DATE_FORMAT);
+            }
+        } catch (ParseException e) {
+            log.info("Appt Date Error!!!!!");
+            log.error(e.getMessage(), e);
+        }
+        if(endDate != null){
+            if(endDate.before(today)){
+                return false;
+            } else {
+                if(startDate == null){
+                    return false;
+                } else {
+                    if(startDate.before(today)){
+                        startDate = new Date();
+                        appointmentDto.setStartDate(Formatter.formatDateTime(startDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                    }
+                }
+            }
+        } else {
+            if(startDate == null){
+                return false;
+            } else {
+                if(startDate.before(today)){
+                    startDate = new Date();
+                    appointmentDto.setStartDate(Formatter.formatDateTime(startDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                }
+            }
+        }
+        return true;
     }
 
     private Map<String, Date> setSvcIdLicDtMapByApp(String appPremCorrId, String serviceId, Map<String, Date> svcIdLicDtMap) {
