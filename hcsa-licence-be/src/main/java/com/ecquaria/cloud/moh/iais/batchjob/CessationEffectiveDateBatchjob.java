@@ -112,7 +112,9 @@ public class CessationEffectiveDateBatchjob {
                             if (statusSet.size() == 1 && statusSet.contains(ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE)) {
                                 String originLicenceId = applicationDtos.get(0).getOriginLicenceId();
                                 LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
-                                licenceDtos.add(licenceDto);
+                                if (licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())) {
+                                    licenceDtos.add(licenceDto);
+                                }
                                 continue;
                             }
                             for (ApplicationDto applicationDto : applicationDtos) {
@@ -125,9 +127,11 @@ public class CessationEffectiveDateBatchjob {
                                         if (effectiveDate.compareTo(date) <= 0) {
                                             String originLicenceId = applicationDto.getOriginLicenceId();
                                             LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
-                                            if (!licenceDtos.contains(licenceDto)) {
-                                                licenceDtos.add(licenceDto);
-                                                applicationGroupDtosCesead.add(applicationGroupDto);
+                                            if (!licenceDtos.contains(licenceDto) && licenceDto != null) {
+                                                if (ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())) {
+                                                    licenceDtos.add(licenceDto);
+                                                    applicationGroupDtosCesead.add(applicationGroupDto);
+                                                }
                                             }
                                             break;
                                         }
