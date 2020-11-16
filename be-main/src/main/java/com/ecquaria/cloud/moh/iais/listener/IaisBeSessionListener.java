@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.listener;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -33,6 +34,7 @@ public class IaisBeSessionListener {
         if (loginContext != null) {
             AuditTrailDto loginDto = auditTrailMainClient.getLoginInfoBySessionId(sessionEvent.getSession().getId()).getEntity();
             if (loginDto != null) {
+                loginDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTRANET);
                 AuditTrailHelper.callSaveSessionDuration(sessionEvent.getSession().getId(), 30);
             }
         }

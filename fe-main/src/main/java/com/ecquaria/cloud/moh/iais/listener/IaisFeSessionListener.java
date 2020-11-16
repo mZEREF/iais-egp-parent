@@ -41,6 +41,7 @@ public class IaisFeSessionListener {
             AuditTrailDto loginDto = auditTrailMainClient.getLoginInfoBySessionId(sessionEvent.getSession().getId()).getEntity();
             AuditTrailDto auditTrailDto = MiscUtil.transferEntityDto(loginDto, AuditTrailDto.class);
             IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
+            auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_SESSION_TIMEOUT);
             AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
             if (loginDto != null) {
