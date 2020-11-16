@@ -264,7 +264,7 @@ public class TemplatesDelegator {
                 errorMap.put("messageContent",MessageUtil.replaceMessage("EMM_ERR005","8000","num"));
             }
             if (contentSize < 2) {
-                errorMap.put("messageContent", MessageUtil.replaceMessage("GENERAL_ERR0006","Message Content","field"));
+                errorMap.put("messageContent", MessageUtil.getMessageDesc("EMM_ERR0010"));
             }
             String recipientString = "";
             String ccrecipientString = "";
