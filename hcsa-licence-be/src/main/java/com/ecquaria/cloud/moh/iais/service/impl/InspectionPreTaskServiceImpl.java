@@ -28,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskInspectionComplianceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -261,8 +260,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         String reMarks = inspectionPreTaskDto.getReMarks();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
-        String licenseeId = applicationGroupDto.getLicenseeId();
-        LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
+        String applicantId = applicationGroupDto.getSubmitBy();
+        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
+        String applicantName = orgUserDto.getDisplayName();
         String applicationNo = applicationDto.getApplicationNo();
         createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskDto.getTaskKey(), reMarks, InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION, RoleConsts.USER_ROLE_INSPECTIOR, taskDto.getWkGrpId(), null);
 
@@ -370,18 +370,18 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern(Formatter.DATE);
             String tatTimeStr = tatTime.format(dtf);
             Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
-            map.put("ApplicantName",licenseeDto.getName());
-            map.put("ApplicationType",MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
-            map.put("ApplicationNumber",StringUtil.viewHtml(applicationNo));
-            map.put("ApplicationDate",Formatter.formatDateTime(now, Formatter.DATE));
+            map.put("ApplicantName", applicantName);
+            map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+            map.put("ApplicationNumber", StringUtil.viewHtml(applicationNo));
+            map.put("ApplicationDate", Formatter.formatDateTime(now, Formatter.DATE));
             if(!StringUtil.isEmpty(appRfiDecision)) {
                 map.put("Remarks", remarks);
             }
-            map.put("systemLink",url);
-            map.put("TATtime",tatTimeStr);
-            map.put("email",systemParamConfig.getSystemAddressOne());
-            map.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-            map.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+            map.put("systemLink", url);
+            map.put("TATtime", tatTimeStr);
+            map.put("email", systemParamConfig.getSystemAddressOne());
+            map.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
+            map.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
             List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
             String serviceId = applicationDto.getServiceId();
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
