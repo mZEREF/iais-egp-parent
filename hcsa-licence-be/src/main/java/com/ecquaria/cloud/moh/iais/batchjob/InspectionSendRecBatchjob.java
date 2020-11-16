@@ -17,10 +17,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspEmailFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -34,12 +34,12 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
-import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +61,7 @@ import java.util.Map;
 @Slf4j
 public class InspectionSendRecBatchjob {
     @Autowired
-    private LicenseeService licenseeService;
+    private OrganizationClient organizationClient;
 
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
@@ -148,9 +148,9 @@ public class InspectionSendRecBatchjob {
             JobRemindMsgTrackingDto jobRemindMsgTrackingDto2 = systemBeLicClient.getJobRemindMsgTrackingDto(aDto.getId(), MessageConstants.JOB_REMIND_MSG_KEY_SEND_REC_TO_FE).getEntity();
             if(jobRemindMsgTrackingDto2 == null) {
                 List<InspEmailFieldDto> inspEmailFieldDtos = getEmailFieldByAppId(aDto.getId());
-                String licenseeId = dto.getApplicationGroupDto().getLicenseeId();
-                LicenseeDto licDto = licenseeService.getLicenseeDtoById(licenseeId);
-                String licName = licDto.getName();
+                String applicantId = dto.getApplicationGroupDto().getSubmitBy();
+                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
+                String applicantName = orgUserDto.getDisplayName();
                 Date date = new Date();
                 String appNo = aDto.getApplicationNo();
                 String strDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
@@ -159,7 +159,7 @@ public class InspectionSendRecBatchjob {
                 HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                 maskParams.put("applicationNo", appNo);
                 Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
-                templateContent.put("applicant", licName);
+                templateContent.put("applicant", applicantName);
                 templateContent.put("date", strDate);
                 templateContent.put("ncDtos", inspEmailFieldDtos);
                 templateContent.put("systemLink", url);

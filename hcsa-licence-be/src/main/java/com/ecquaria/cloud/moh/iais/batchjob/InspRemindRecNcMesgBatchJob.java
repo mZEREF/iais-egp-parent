@@ -18,9 +18,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspEmailFieldDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -117,12 +117,12 @@ public class InspRemindRecNcMesgBatchJob {
         for(ApplicationDto applicationDto : applicationDtos){
             try {
                 ApplicationGroupDto applicationGroupDto = inspectionTaskClient.getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId()).getEntity();
-                String licenseeId = applicationGroupDto.getLicenseeId();
+                String applicantId = applicationGroupDto.getSubmitBy();
                 JobRemindMsgTrackingDto jobRemindMsgTrackingDto2 = systemBeLicClient.getJobRemindMsgTrackingDto(applicationDto.getApplicationNo(), MessageConstants.JOB_REMIND_MSG_KEY_REMIND_RECTIFICATION_EMAIL).getEntity();
                 if(jobRemindMsgTrackingDto2 == null) {
                     log.info(StringUtil.changeForLog("jobRemindMsgTrackingDto2 null"));
                     JobLogger.log(StringUtil.changeForLog("jobRemindMsgTrackingDto2 null"));
-                    inspectionDateSendEmail(licenseeId, applicationDto);
+                    inspectionDateSendEmail(applicantId, applicationDto);
                     createJobRemindMsgTrackingDto(intranet, applicationDto.getApplicationNo());
                 } else {
                     Date createDate = jobRemindMsgTrackingDto2.getCreateTime();
@@ -133,7 +133,7 @@ public class InspRemindRecNcMesgBatchJob {
                     log.info(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, nowDays = " + nowDays));
                     JobLogger.log(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, nowDays = " + nowDays));
                     if(nowDays > days){
-                        inspectionDateSendEmail(licenseeId, applicationDto);
+                        inspectionDateSendEmail(applicantId, applicationDto);
                         jobRemindMsgTrackingDto2.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                         jobRemindMsgTrackingDto2.setAuditTrailDto(intranet);
                         systemBeLicClient.updateJobRemindMsgTrackingDto(jobRemindMsgTrackingDto2);
@@ -160,16 +160,16 @@ public class InspRemindRecNcMesgBatchJob {
         systemBeLicClient.createJobRemindMsgTrackingDtos(jobRemindMsgTrackingDtos);
     }
 
-    private void inspectionDateSendEmail(String licenseeId, ApplicationDto applicationDto) {
+    private void inspectionDateSendEmail(String applicantId, ApplicationDto applicationDto) {
         String appId = applicationDto.getId();
         String appNo = applicationDto.getApplicationNo();
         List<InspEmailFieldDto> inspEmailFieldDtos = getEmailFieldByAppId(appId);
-        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-        String licName = licenseeDto.getName();
+        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
+        String applicantName = orgUserDto.getDisplayName();
         Date date = new Date();
         String strDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
-        templateContent.put("applicant", licName);
+        templateContent.put("applicant", applicantName);
         templateContent.put("date", strDate);
         templateContent.put("ncDtos", inspEmailFieldDtos);
         EmailParam emailParam = new EmailParam();
