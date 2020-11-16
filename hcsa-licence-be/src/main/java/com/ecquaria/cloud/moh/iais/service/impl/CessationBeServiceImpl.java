@@ -145,7 +145,12 @@ public class CessationBeServiceImpl implements CessationBeService {
             licIds.clear();
             licIds.add(licId);
             AppSubmissionDto appSubmissionDto = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity().get(0);
+            List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
             Map<String, String> transform = transform(appSubmissionDto, premiseIds);
+            if (!IaisCommonUtils.isEmpty(specLicIds)) {
+                AppSubmissionDto appSubmissionDtoSpec = hcsaLicenceClient.getAppSubmissionDtos(specLicIds).getEntity().get(0);
+                transform(appSubmissionDtoSpec, premiseIds);
+            }
             appIdPremisesMap.putAll(transform);
         });
 
@@ -256,9 +261,7 @@ public class CessationBeServiceImpl implements CessationBeService {
             AppCessationDto appCessationDto = appCessationDtos.get(i);
             String premiseId = appCessationDto.getPremiseId();
             String licId = appCessationDto.getLicId();
-            List<String> specIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
             LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
-            String licenseeId = licenceDto.getLicenseeId();
             licIds.clear();
             licIds.add(licId);
             String appId = appIdPremisesMap.get(premiseId);
@@ -361,7 +364,7 @@ public class CessationBeServiceImpl implements CessationBeService {
         String refNo = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(refNo);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        completedTask(taskDto,applicationDto.getApplicationNo());
+        completedTask(taskDto, applicationDto.getApplicationNo());
         String originLicenceId = applicationDto.getOriginLicenceId();
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         licIds.add(originLicenceId);
@@ -371,9 +374,10 @@ public class CessationBeServiceImpl implements CessationBeService {
         cessationClient.updateCessation(appCessMiscDto).getEntity();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         applicationDtos.add(applicationDto);
-        updateApplicaitonStatus(applicationDto,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+        updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
         routingTaskToAo3(applicationDtos, loginContext);
     }
+
     private TaskDto completedTask(TaskDto taskDto, String appNo) {
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
         taskDto.setSlaDateCompleted(new Date());
@@ -410,6 +414,7 @@ public class CessationBeServiceImpl implements CessationBeService {
             asoHistory.add(appPremisesRoutingHistoryDto);
             taskService.createHistorys(asoHistory);
         }
+
         TaskHistoryDto taskHistoryDto = prepareTask(applicationDtos);
         List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
         taskService.createTasks(taskDtos);
@@ -451,8 +456,8 @@ public class CessationBeServiceImpl implements CessationBeService {
         List<ApplicationDto> applicationDtos = appSubmissionDtoSave.getApplicationDtos();
         List<String> hciCodes = IaisCommonUtils.genNewArrayList();
         for (String premiseId : premiseIds) {
-            PremisesDto entity1 = hcsaLicenceClient.getLicPremisesDtoById(premiseId).getEntity();
-            String hciCode = entity1.getHciCode();
+            PremisesDto premisesDto = hcsaLicenceClient.getLicPremisesDtoById(premiseId).getEntity();
+            String hciCode = premisesDto.getHciCode();
             hciCodes.add(hciCode);
         }
         for (ApplicationDto applicationDto : applicationDtos) {

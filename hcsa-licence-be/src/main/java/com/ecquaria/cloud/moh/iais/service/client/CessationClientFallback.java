@@ -127,5 +127,13 @@ public class CessationClientFallback implements CessationClient {
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<List<ApplicationDto>> getAppsByLicId(String licId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 
 }

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 
 @FeignClient(name = "hcsa-licence",configuration = FeignConfiguration.class,fallback = LicenceInFallback.class)
 public interface LicenceClient {
@@ -26,4 +28,7 @@ public interface LicenceClient {
 
     @GetMapping(value = "/hcsa-licence/doQuery",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<QueryHelperResultDto> doQuery(@RequestParam("sql") String sql);
+
+    @GetMapping(value = "/hcsa-licence/baseLicId-list-specLicId",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getSpecIdsByBaseId(@RequestParam("licId") String licId);
 }

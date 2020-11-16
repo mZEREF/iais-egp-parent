@@ -273,7 +273,7 @@
                     </c:forEach>
                 </div>
                 <br/>
-                <div class="form-check">
+                <div class="form-check" style="z-index:1">
                     <ul>
                         <li>
                             <p> The ASO must notify the Director of Medical Services in writing at least 30 days before

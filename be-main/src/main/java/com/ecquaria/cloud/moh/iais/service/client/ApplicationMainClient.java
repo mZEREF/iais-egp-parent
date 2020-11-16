@@ -53,4 +53,10 @@ public interface ApplicationMainClient {
     FeignResponseEntity<ApplicationDto> getApplicationById(@PathVariable(name = "id") String id);
     @PostMapping(value = "/iais-application-be/clearHclcode-appIds",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> clearHclcodeByAppIds(@RequestBody List<ApplicationDto> applicationDtos);
+
+    @GetMapping(value = "/iais-cessation/application-by-licId", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getAppsByLicId(@RequestParam("licId") String licId);
+
+    @PutMapping(value = "/iais-application-be/cessation-application",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> updateCessationApplications(@RequestBody List<ApplicationDto> applicationDtos);
 }

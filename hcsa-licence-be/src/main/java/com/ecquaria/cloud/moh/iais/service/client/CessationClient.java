@@ -64,4 +64,7 @@ import java.util.Map;
 
     @PostMapping(value = "/iais-cessation/prepare-cessation",produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> prepareCessation();
+
+    @GetMapping(value = "/iais-cessation/application-by-licId", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getAppsByLicId(@RequestParam("licId") String licId);
 }

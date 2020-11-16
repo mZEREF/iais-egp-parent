@@ -20,13 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeEntityDto;
@@ -44,38 +38,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryMainService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
-import com.ecquaria.cloud.moh.iais.service.BroadcastMainService;
-import com.ecquaria.cloud.moh.iais.service.InspEmailService;
-import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusMainClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
-import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
+import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -155,6 +124,8 @@ public class BackendInboxDelegator {
     private SystemParamConfig systemParamConfig;
     @Autowired
     private IaisSystemClient iaisSystemClient;
+    @Autowired
+    LicenceClient licenceClient;
 
     static private String APPSTATUSCATEID = "BEE661EE-220C-EA11-BE7D-000C29F371DC";
 
@@ -991,6 +962,7 @@ public class BackendInboxDelegator {
                         taskDto.getWkGrpId(),null,null,null,roleId);
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             }
+
         }else{
             log.debug(StringUtil.changeForLog("not has next stageId :" + stageId));
             log.debug(StringUtil.changeForLog("do ao3 approve ----- "));
@@ -1033,6 +1005,20 @@ public class BackendInboxDelegator {
                         //clearApprovedHclCodeByExistRejectApp
                         applicationViewService.clearApprovedHclCodeByExistRejectApp(saveApplicationDtoList,applicationGroupDto.getAppType(), broadcastApplicationDto.getApplicationDto());
                     }
+                }
+            }
+            //cessation
+            if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)) {
+                String originLicenceId = applicationDto.getOriginLicenceId();
+                List<String> specLicIds = licenceClient.getSpecIdsByBaseId(originLicenceId).getEntity();
+                if (!IaisCommonUtils.isEmpty(specLicIds)) {
+                    List<ApplicationDto> specApplicationDtos = applicationMainClient.getAppsByLicId(specLicIds.get(0)).getEntity();
+                    if (!IaisCommonUtils.isEmpty(specApplicationDtos)) {
+                        for (ApplicationDto dto : specApplicationDtos) {
+                            dto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                        }
+                    }
+                    applicationMainClient.updateCessationApplications(specApplicationDtos);
                 }
             }
         }
