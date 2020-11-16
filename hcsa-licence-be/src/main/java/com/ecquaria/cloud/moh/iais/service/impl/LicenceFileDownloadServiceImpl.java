@@ -998,7 +998,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         application.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_TEMPORARY_LICENCE);
                     }
 
-                        if (autoRfc) {
+                    if (autoRfc) {
                         application.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                     }else {
 
