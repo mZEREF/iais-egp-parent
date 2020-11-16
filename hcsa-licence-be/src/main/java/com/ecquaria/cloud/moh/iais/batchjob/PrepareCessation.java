@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -42,13 +41,12 @@ public class PrepareCessation {
     public void jobExecute(){
         List<ApplicationDto> applicationDtos = cessationClient.prepareCessation().getEntity();
         if (!IaisCommonUtils.isEmpty(applicationDtos)) {
-
             for (ApplicationDto applicationDto : applicationDtos) {
                 try {
                     String originLicenceId = applicationDto.getOriginLicenceId();
                     if (!StringUtil.isEmpty(originLicenceId)) {
+                        log.error(StringUtil.changeForLog("==============originLicenceId============" + originLicenceId));
                         String licenceId = hcsaLicenceClient.findNewestLicId(originLicenceId).getEntity();
-                        log.error(StringUtil.changeForLog("==============" + licenceId + "==============="));
                         if (!StringUtil.isEmpty(licenceId)) {
                             applicationDto.setOriginLicenceId(licenceId);
                         }
