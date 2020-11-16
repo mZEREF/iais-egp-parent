@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
+import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IaisUENDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -23,6 +24,6 @@ public interface AcraUenBeClient {
     FeignResponseEntity<GenerateUENDto> getUen(@PathVariable(name = "uen") String uen);
 
     @PostMapping(value = "/entity", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<GenerateUENDto> generateUen(@RequestBody GenerateUENDto generateUENDto);
+    FeignResponseEntity<GenerateUENDto> generateUen(@RequestBody IaisUENDto iaisUENDto);
 
 }

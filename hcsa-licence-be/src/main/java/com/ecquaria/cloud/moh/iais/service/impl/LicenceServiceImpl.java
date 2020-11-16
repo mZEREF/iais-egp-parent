@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
+import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IaisUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IssuanceAddresses;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IssuanceBasic;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -335,7 +336,10 @@ public class LicenceServiceImpl implements LicenceService {
                 addressesList.add(addresses);
                 generateUENDto.setAddresses(addressesList);
                 log.info(StringUtil.changeForLog("generateUenDto : " + JsonUtil.parseToJson(generateUENDto)));
-                acraUenBeClient.generateUen(generateUENDto);
+                IaisUENDto iaisUENDto = new IaisUENDto();
+                iaisUENDto.setGenerateUENDto(generateUENDto);
+                iaisUENDto.setLicenseeId("licensee");
+                acraUenBeClient.generateUen(iaisUENDto);
 
             }
         }
