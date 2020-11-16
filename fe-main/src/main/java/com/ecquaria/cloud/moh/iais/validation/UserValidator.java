@@ -37,7 +37,7 @@ public class UserValidator implements CustomizeValidator {
                 boolean b = SgNoValidator.validateFin(dto.getIdentityNo());
                 boolean b1 = SgNoValidator.validateNric(dto.getIdentityNo());
                 if (!(b || b1)) {
-                    map.put("identityNo", MessageUtil.getMessageDesc("GENERAL_ERR0008"));
+                    map.put("identityNo", MessageUtil.getMessageDesc("RFC_ERR0012"));
                 }
             }
 

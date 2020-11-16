@@ -735,14 +735,14 @@ public class AppealServiceImpl implements AppealService {
                             if ("FIN".equals(idTyp)) {
                                 boolean b = SgNoValidator.validateFin(idNo);
                                 if (!b) {
-                                    map.put("idNo" + i, "GENERAL_ERR0008");
+                                    map.put("idNo" + i, "RFC_ERR0012");
                                 }
                                 stringBuilder1.append(idTyp).append(idNo);
 
                             } else if ("NRIC".equals(idTyp)) {
                                 boolean b1 = SgNoValidator.validateNric(idNo);
                                 if (!b1) {
-                                    map.put("idNo" + i, "GENERAL_ERR0008");
+                                    map.put("idNo" + i, "RFC_ERR0012");
                                 }
                                 stringBuilder1.append(idTyp).append(idNo);
 

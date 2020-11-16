@@ -985,13 +985,13 @@ public class RequestForChangeMenuDelegator {
                 if ("FIN".equals(idType1)) {
                     boolean b = SgNoValidator.validateFin(idNo1);
                     if (!b) {
-                        errMap.put("idNo1", "GENERAL_ERR0008");
+                        errMap.put("idNo1", "RFC_ERR0012");
                     }
                 }
                 if ("NRIC".equals(idType1)) {
                     boolean b1 = SgNoValidator.validateNric(idNo1);
                     if (!b1) {
-                        errMap.put("idNo1", "GENERAL_ERR0008");
+                        errMap.put("idNo1", "RFC_ERR0012");
                     }
                 }
             }

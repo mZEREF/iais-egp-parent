@@ -4772,7 +4772,7 @@ public class NewApplicationDelegator {
                         if ("FIN".equals(idType)) {
                             boolean b = SgNoValidator.validateFin(idNo);
                             if (!b) {
-                                oneErrorMap.put("NRICFIN", "GENERAL_ERR0008");
+                                oneErrorMap.put("NRICFIN", "RFC_ERR0012");
                             } else {
                                 stringBuilder.append(idType).append(idNo);
 
@@ -4781,7 +4781,7 @@ public class NewApplicationDelegator {
                         if ("NRIC".equals(idType)) {
                             boolean b1 = SgNoValidator.validateNric(idNo);
                             if (!b1) {
-                                oneErrorMap.put("NRICFIN", "GENERAL_ERR0008");
+                                oneErrorMap.put("NRICFIN", "RFC_ERR0012");
                             } else {
                                 stringBuilder.append(idType).append(idNo);
 
@@ -4866,7 +4866,7 @@ public class NewApplicationDelegator {
                 if ("FIN".equals(idType)) {
                     boolean b = SgNoValidator.validateFin(idNo);
                     if (!b) {
-                        oneErrorMap.put("deputyIdNo" + dpoIndex, "GENERAL_ERR0008");
+                        oneErrorMap.put("deputyIdNo" + dpoIndex, "RFC_ERR0012");
                     } else {
                         stringBuilder.append(idType).append(idNo);
                     }
@@ -4874,7 +4874,7 @@ public class NewApplicationDelegator {
                 if ("NRIC".equals(idType)) {
                     boolean b1 = SgNoValidator.validateNric(idNo);
                     if (!b1) {
-                        oneErrorMap.put("deputyIdNo" + dpoIndex, "GENERAL_ERR0008");
+                        oneErrorMap.put("deputyIdNo" + dpoIndex, "RFC_ERR0012");
                     } else {
                         stringBuilder.append(idType).append(idNo);
                     }

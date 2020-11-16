@@ -49,7 +49,7 @@ public class ClinicalOfficerValidate implements CustomizeValidator {
                 boolean b = SgNoValidator.validateFin(idNo);
                 boolean b1 = SgNoValidator.validateNric(idNo);
                 if(!(b||b1)){
-                    map.put("idNo"+i,"GENERAL_ERR0008");
+                    map.put("idNo"+i,"RFC_ERR0012");
                 }else {
                     map.put("idNo"+i,"cannot be blank ");
                 }

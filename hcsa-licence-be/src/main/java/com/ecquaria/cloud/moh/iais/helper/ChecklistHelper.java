@@ -66,7 +66,7 @@ public final class ChecklistHelper {
 
         String originalFileName = file.getOriginalFilename();
         if (!FileUtils.isExcel(originalFileName)){
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0005"));
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR040"));
             return true;
         }
 
