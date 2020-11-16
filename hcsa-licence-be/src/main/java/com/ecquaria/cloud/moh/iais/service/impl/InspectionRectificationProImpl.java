@@ -24,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
@@ -285,16 +284,18 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern(Formatter.DATE);
             String tatTimeStr = tatTime.format(dtf);
             Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
-            LicenseeDto licDto = licenseeService.getLicenseeDtoById(applicationViewDto.getApplicationGroupDto().getLicenseeId());
-            map.put("ApplicantName",licDto.getName());
-            map.put("ApplicationType",MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
-            map.put("ApplicationNumber",StringUtil.viewHtml(applicationNo));
-            map.put("ApplicationDate",Formatter.formatDateTime(now, Formatter.DATE));
-            map.put("systemLink",url);
-            map.put("TATtime",tatTimeStr);
-            map.put("email",systemParamConfig.getSystemAddressOne());
-            map.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-            map.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+            String applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
+            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
+            String applicantName = orgUserDto.getDisplayName();
+            map.put("ApplicantName", applicantName);
+            map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+            map.put("ApplicationNumber", StringUtil.viewHtml(applicationNo));
+            map.put("ApplicationDate", Formatter.formatDateTime(now, Formatter.DATE));
+            map.put("systemLink", url);
+            map.put("TATtime", tatTimeStr);
+            map.put("email", systemParamConfig.getSystemAddressOne());
+            map.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
+            map.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
             //set svc code
             List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
             String serviceId = applicationDto.getServiceId();
