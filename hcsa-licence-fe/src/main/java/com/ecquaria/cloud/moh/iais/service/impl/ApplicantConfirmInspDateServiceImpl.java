@@ -490,7 +490,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 appointmentUserDtoList.add(appointmentUserDto);
                 loginUserIds.add(appointmentUserDto.getLoginUserId());
             } else {
-                if(!loginUserIds.contains(appointmentUserDto.getLoginUserId())){
+                if(!loginUserIds.contains(appointmentUserDto.getLoginUserId())){//NOSONAR
                     appointmentUserDtoList.add(appointmentUserDto);
                     loginUserIds.add(appointmentUserDto.getLoginUserId());
                 }
