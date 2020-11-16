@@ -92,7 +92,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             checkRecommendationOtherDropdown(errMap,recommendationStr,request,applicationType,roleId,taskDto.getTaskKey());
         }
         //DMS recommendation
-        String generalErrSix = MessageUtil.replaceMessage("GENERAL_ERR0006","The field", "field");
+        String generalErrSix = MessageUtil.replaceMessage("GENERAL_ERR0006","Processing Decision", "field");
         if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
             //verify upload file
             checkIsUploadDMS(applicationViewDto,errMap);
