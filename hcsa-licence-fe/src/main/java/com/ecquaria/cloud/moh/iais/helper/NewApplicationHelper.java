@@ -382,7 +382,7 @@ public class NewApplicationHelper {
 //                        continue;
 //                    }
                     if("-1".equals(idType)||StringUtil.isEmpty(idType)){
-                        oneErrorMap.put("idType"+poIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","ID No. Type","field"));
+                        oneErrorMap.put("idType"+poIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","ID Type","field"));
                     }
                     String errName = MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field");
                     if(StringUtil.isEmpty(name)){
