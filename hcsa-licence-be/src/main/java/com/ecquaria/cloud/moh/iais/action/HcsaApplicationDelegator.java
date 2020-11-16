@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppLastInsGroup;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
@@ -2526,17 +2525,30 @@ public class HcsaApplicationDelegator {
         if(orgUserDto != null){
             applicantName = orgUserDto.getDisplayName();
         }
-        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_BEINBOX;
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         emailMap.put("officer_name", "");
         emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
         emailMap.put("ApplicationNumber", applicationDto.getApplicationNo());
         emailMap.put("TAT_time", StringUtil.viewHtml(Formatter.formatDateTime(new Date(),Formatter.DATE)));
-        emailMap.put("details", "HCI Name : "+applicationViewDto.getHciName()+"<br>"+
-                "HCI Address : "+applicationViewDto.getHciAddress()+"<br>"+
-                "Licensee Name : "+applicantName+"<br>"+
-                "Submission Date : "+Formatter.formatDate(Formatter.parseDate(applicationViewDto.getSubmissionDate()))+"<br>"+
-                "Comment : "+StringUtil.viewHtml(internalRemarks)+"<br>");
+        StringBuilder stringBuffer=new StringBuilder();
+        if(applicationViewDto.getHciName()!=null){
+            stringBuffer.append("HCI Name : ").append(applicationViewDto.getHciName()).append("<br>");
+        }
+
+        if(applicationViewDto.getHciAddress()!=null){
+            stringBuffer.append("HCI Address : ").append(applicationViewDto.getHciAddress()).append("<br>");
+        }
+        if(applicantName!=null){
+            stringBuffer.append("Licensee Name : ").append(applicantName).append("<br>");
+        }
+        if(applicationViewDto.getSubmissionDate()!=null){
+            stringBuffer.append("Submission Date : ").append(Formatter.formatDate(Formatter.parseDate(applicationViewDto.getSubmissionDate()))).append("<br>");
+        }
+        if(internalRemarks!=null){
+            stringBuffer.append("Comment : ").append(StringUtil.viewHtml(internalRemarks)).append("<br>");
+        }
+        emailMap.put("details", stringBuffer.toString());
         emailMap.put("systemLink", loginUrl);
         emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
         emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
