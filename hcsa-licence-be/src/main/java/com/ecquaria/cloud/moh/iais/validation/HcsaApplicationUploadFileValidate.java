@@ -54,18 +54,16 @@ public class HcsaApplicationUploadFileValidate implements CustomizeValidator {
             StringBuilder stringBiff = new StringBuilder();
             stringBiff.append("<br/>");
             for(int indexlist = 0;indexlist <fileTypelist.length; indexlist++){
-                if(indexlist== 0){
-                    stringBiff.append( fileTypelist[indexlist]);
-                }else if(indexlist== fileTypelist.length-1){
+                if(indexlist== fileTypelist.length-1){
                     stringBiff .append( fileTypelist[indexlist]);
-                }  else if(indexlist %5 == 0) {
+                }  else if(indexlist >0 && indexlist %5 == 0) {
                     stringBiff .append(fileTypelist[indexlist]).append(",<br/>");
 
                 }else {
                     stringBiff.append(fileTypelist[indexlist]).append(',') ;
                 }
             }
-          return stringBiff.toString();
+            return stringBiff.toString();
         }else {
             return "<br/>" + type;
         }
