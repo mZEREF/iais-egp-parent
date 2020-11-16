@@ -100,6 +100,7 @@ public class CessationEffectiveDateBatchjob {
                 for (ApplicationGroupDto applicationGroupDto : applicationGroupDtos) {
                     try {
                         String appGrpId = applicationGroupDto.getId();
+                        log.info(StringUtil.changeForLog("====================appGrpId==================" + appGrpId));
                         List<ApplicationDto> applicationDtos = applicationClient.getAppDtosByAppGrpId(appGrpId).getEntity();
                         boolean grpLic = applicationDtos.get(0).isGrpLic();
                         if (grpLic) {
