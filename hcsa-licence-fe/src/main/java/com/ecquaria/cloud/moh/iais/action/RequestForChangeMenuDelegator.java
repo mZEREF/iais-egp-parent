@@ -1412,13 +1412,7 @@ public class RequestForChangeMenuDelegator {
 
 
         List<AppGrpPremisesDto> oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDtoappSubmissionDto.getAppGrpPremisesDtoList();
-        for (AppGrpPremisesDto appGrpPremisesDto : oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList) {
-            String certIssuedDtStr = appGrpPremisesDto.getCertIssuedDtStr();
-            if (StringUtil.isEmpty(certIssuedDtStr)) {
-                appGrpPremisesDto.setCertIssuedDtStr("");
-            }
-            appGrpPremisesDto.setLicenceDtos(null);
-        }
+
         boolean eqGrpPremises = NewApplicationDelegator.eqGrpPremises(appGrpPremisesDtoList1, oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList);
         if (!eqGrpPremises) {
             ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");

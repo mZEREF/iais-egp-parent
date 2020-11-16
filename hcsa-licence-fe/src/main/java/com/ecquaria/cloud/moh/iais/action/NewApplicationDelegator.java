@@ -3559,7 +3559,7 @@ public class NewApplicationDelegator {
         }
         return result;
     }
-    private List<AppPremisesOperationalUnitDto> copyAppPremisesOperationalUnitDto(List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos){
+    public static List<AppPremisesOperationalUnitDto> copyAppPremisesOperationalUnitDto(List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos){
 
         List<AppPremisesOperationalUnitDto> list=IaisCommonUtils.genNewArrayList();
         for(AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos){
@@ -5807,7 +5807,8 @@ public class NewApplicationDelegator {
         }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
             copy.setConveyanceVehicleNo(appGrpPremisesDto.getConveyanceVehicleNo());
         }
-        copy.setAppPremisesOperationalUnitDtos(appGrpPremisesDto.getAppPremisesOperationalUnitDtos());
+        List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList = copyAppPremisesOperationalUnitDto(appGrpPremisesDto.getAppPremisesOperationalUnitDtos());
+        copy.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtoList);
         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos=new ArrayList<>();
         if(appPremPhOpenPeriodList!=null){
