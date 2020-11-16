@@ -2068,7 +2068,13 @@ public class ClinicalLaboratoryDelegator {
                 //qualification(before)
                 appSvcCgoDto.setSubSpeciality(qualification[i]);
                 appSvcCgoDto.setMobileNo(mobileNo[i]);
-                appSvcCgoDto.setEmailAddr(StringUtil.viewHtml(emailAddress[i]));
+                String emailAddr = "";
+                if(emailAddress != null){
+                    if(!StringUtil.isEmpty(emailAddress[i])){
+                        emailAddr = StringUtil.viewHtml(emailAddress[i]);
+                    }
+                }
+                appSvcCgoDto.setEmailAddr(emailAddr);
                 if (needEdit && AppConsts.YES.equals(licPerson[i])) {
                     appSvcCgoDto.setLicPerson(true);
                     AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, NewApplicationHelper.getPersonKey(appSvcCgoDto.getIdType(),appSvcCgoDto.getIdNo()));
@@ -2257,7 +2263,13 @@ public class ClinicalLaboratoryDelegator {
                     appSvcPrincipalOfficersDto.setDesignation(designation[i]);
                     appSvcPrincipalOfficersDto.setMobileNo(mobileNo[i]);
                     appSvcPrincipalOfficersDto.setOfficeTelNo(officeTelNo[i]);
-                    appSvcPrincipalOfficersDto.setEmailAddr(StringUtil.viewHtml(emailAddress[i]));
+                    String emailAddr = "";
+                    if(emailAddress != null){
+                        if(!StringUtil.isEmpty(emailAddress[i])){
+                            emailAddr = StringUtil.viewHtml(emailAddress[i]);
+                        }
+                    }
+                    appSvcPrincipalOfficersDto.setEmailAddr(emailAddr);
                     if (needEdit && AppConsts.YES.equals(licPsn)) {
                         appSvcPrincipalOfficersDto.setLicPerson(true);
                         AppSvcPrincipalOfficersDto licPerson = NewApplicationHelper.getPsnInfoFromLic(request, NewApplicationHelper.getPersonKey(appSvcPrincipalOfficersDto.getIdType(),appSvcPrincipalOfficersDto.getIdNo()));
@@ -2432,7 +2444,13 @@ public class ClinicalLaboratoryDelegator {
                     appSvcPrincipalOfficersDto.setDesignation(deputyDesignation[i]);
                     appSvcPrincipalOfficersDto.setMobileNo(deputyMobileNo[i]);
                     appSvcPrincipalOfficersDto.setOfficeTelNo(deputyOfficeTelNo[i]);
-                    appSvcPrincipalOfficersDto.setEmailAddr(StringUtil.viewHtml(deputyEmailAddr[i]));
+                    String emailAddr = "";
+                    if(deputyEmailAddr != null){
+                        if(!StringUtil.isEmpty(deputyEmailAddr[i])){
+                            emailAddr = StringUtil.viewHtml(deputyEmailAddr[i]);
+                        }
+                    }
+                    appSvcPrincipalOfficersDto.setEmailAddr(emailAddr);
                     if (needEdit && AppConsts.YES.equals(licPsn)) {
                         appSvcPrincipalOfficersDto.setLicPerson(true);
                         AppSvcPrincipalOfficersDto licPerson = NewApplicationHelper.getPsnInfoFromLic(request, NewApplicationHelper.getPersonKey(appSvcPrincipalOfficersDto.getIdType(),appSvcPrincipalOfficersDto.getIdNo()));
@@ -2972,7 +2990,13 @@ public class ClinicalLaboratoryDelegator {
                 appSvcPrincipalOfficersDto.setIdType(idType[i]);
                 appSvcPrincipalOfficersDto.setIdNo(idNo[i]);
                 appSvcPrincipalOfficersDto.setMobileNo(mobileNo[i]);
-                appSvcPrincipalOfficersDto.setEmailAddr(StringUtil.viewHtml(emailAddress[i]));
+                String emailAddr = "";
+                if(emailAddress != null){
+                    if(!StringUtil.isEmpty(emailAddress[i])){
+                        emailAddr = StringUtil.viewHtml(emailAddress[i]);
+                    }
+                }
+                appSvcPrincipalOfficersDto.setEmailAddr(emailAddr);
                 if (preferredModes != null) {
                     if (preferredModes.length == 2) {
                         appSvcPrincipalOfficersDto.setPreferredMode("3");

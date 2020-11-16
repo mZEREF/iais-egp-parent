@@ -156,7 +156,7 @@ public class NewApplicationHelper {
 //                }
 
                 if("-1".equals(idTyp)||StringUtil.isEmpty(idTyp)){
-                    errMap.put("idTyp"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID No. Type","field"));
+                    errMap.put("idTyp"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID Type","field"));
                 }
                 String salutation = appSvcCgoList.get(i).getSalutation();
                 if(StringUtil.isEmpty(salutation)){
