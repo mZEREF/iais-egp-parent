@@ -223,6 +223,11 @@ public class CessationFeServiceImpl implements CessationFeService {
         licPremiseIdMap.forEach((licId, premiseIds) -> {
             List<String> licIds = IaisCommonUtils.genNewArrayList();
             licIds.add(licId);
+            List<String> specLicIds = licenceClient.getSpecLicIdsByLicIds(licIds).getEntity();
+            if (!IaisCommonUtils.isEmpty(specLicIds)) {
+                AppSubmissionDto appSubmissionDtoSpec = licenceClient.getAppSubmissionDtos(specLicIds).getEntity().get(0);
+                transformSpec(appSubmissionDtoSpec, licenseeId, premiseIds);
+            }
             AppSubmissionDto appSubmissionDto = licenceClient.getAppSubmissionDtos(licIds).getEntity().get(0);
             Map<String, String> transform = transform(appSubmissionDto, licenseeId, premiseIds);
             appIdPremisesMap.putAll(transform);
@@ -668,7 +673,6 @@ public class CessationFeServiceImpl implements CessationFeService {
             }
             applicationFeClient.updateApplicationDto(applicationDto);
         }
-
         for (ApplicationDto applicationDto : applicationDtos) {
             String id = applicationDto.getId();
             AppGrpPremisesDto dto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
@@ -684,6 +688,59 @@ public class CessationFeServiceImpl implements CessationFeService {
         }
         return map;
     }
+
+    private void transformSpec(AppSubmissionDto appSubmissionDto, String licenseeId, List<String> premiseIds) {
+        Double amount = 0.0;
+        AuditTrailDto internet = AuditTrailHelper.getCurrentAuditTrailDto();
+        String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_CESSATION).getEntity();
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
+        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+        String svcId = hcsaServiceDto.getId();
+        HcsaServiceDto hcsaServiceDto1 = appConfigClient.getActiveHcsaServiceDtoById(svcId).getEntity();
+        String svcCode = hcsaServiceDto.getSvcCode();
+        appSvcRelatedInfoDtoList.get(0).setServiceId(hcsaServiceDto1.getId());
+        appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
+        appSubmissionDto.setAppGrpNo(grpNo);
+        appSubmissionDto.setFromBe(false);
+        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
+        appSubmissionDto.setAmount(amount);
+        appSubmissionDto.setAuditTrailDto(internet);
+        appSubmissionDto.setPreInspection(true);
+        appSubmissionDto.setRequirement(true);
+        appSubmissionDto.setLicenseeId(licenseeId);
+        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+        setRiskToDto(appSubmissionDto);
+
+        AppSubmissionDto entity = applicationFeClient.saveSubmision(appSubmissionDto).getEntity();
+        AppSubmissionDto appSubmissionDtoSave = applicationFeClient.saveApps(entity).getEntity();
+        List<ApplicationDto> applicationDtos = appSubmissionDtoSave.getApplicationDtos();
+        List<String> hciCodes = IaisCommonUtils.genNewArrayList();
+        for (String premiseId : premiseIds) {
+            PremisesDto entity1 = licenceClient.getLicPremisesDtoById(premiseId).getEntity();
+            String hciCode = entity1.getHciCode();
+            hciCodes.add(hciCode);
+        }
+        AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+        for (ApplicationDto applicationDto : applicationDtos) {
+            applicationDto.setAuditTrailDto(currentAuditTrailDto);
+            String id = applicationDto.getId();
+            AppGrpPremisesDto dto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
+            String hciCode = dto.getHciCode();
+            if (hciCodes.contains(hciCode)) {
+                applicationDto.setNeedNewLicNo(false);
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_SPEC_NOT_LICENCE);
+                applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NOT);
+            } else {
+                applicationDto.setNeedNewLicNo(true);
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_SPEC_NEED_LICENCE);
+                applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NEED);
+            }
+            applicationFeClient.updateApplicationDto(applicationDto);
+        }
+    }
+
 
     private String transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) throws Exception {
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
