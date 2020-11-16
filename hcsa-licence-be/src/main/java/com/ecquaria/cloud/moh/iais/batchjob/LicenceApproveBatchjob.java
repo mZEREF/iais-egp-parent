@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
+import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IaisUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
@@ -212,7 +213,10 @@ public class LicenceApproveBatchjob {
                     try {
                         log.info(StringUtil.changeForLog("The generateUen start ..."));
                         GenerateUENDto generateUENDto = new GenerateUENDto();
-                        acraUenBeClient.generateUen(generateUENDto);
+                        IaisUENDto iaisUENDto = new IaisUENDto();
+                        iaisUENDto.setGenerateUENDto(generateUENDto);
+                        iaisUENDto.setLicenseeId(applicationGroupDto.getLicenseeId());
+                        acraUenBeClient.generateUen(iaisUENDto);
                         log.info(StringUtil.changeForLog("The generateUen end ..."));
                         if (groupApplicationLicenceDto != null) {
                             //generate the Group licence
