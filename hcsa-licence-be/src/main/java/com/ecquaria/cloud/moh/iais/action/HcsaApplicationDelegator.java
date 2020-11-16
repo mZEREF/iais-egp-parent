@@ -1342,7 +1342,7 @@ public class HcsaApplicationDelegator {
                 maskParams.put("rfiWithdrawAppNo",applicationNo);
                 sendWithdrawalMessage(applicationNo,maskParams,serviceId,licenseeId);
             }
-            applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId, licenseeDto, loginContext, externalRemarks);
+            applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, loginContext, externalRemarks);
         }catch (Exception e){
             log.error(StringUtil.changeForLog("send application RfiAndEmail error"));
             log.error(e.getMessage(),e);
