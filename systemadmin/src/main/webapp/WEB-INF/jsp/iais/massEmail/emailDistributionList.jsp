@@ -169,10 +169,16 @@
         $('#deleteSupport').find('div.modal-body').find('div.row div').css('width','100%');
         $('#deleteSupport').find('div.modal-body').find('div.row div').css('padding','0 5% 0 5%');
     });
+
+    function submit(action) {
+        $("[name='crud_action_type']").val(action);
+        $('#mainForm').submit();
+    }
 function addList() {
     showWaiting();
-    SOP.Crud.cfxSubmit("mainForm","create");
+    submit("create");
 }
+
 function deleteList() {
     checkUse();
 }
@@ -183,7 +189,7 @@ function tagConfirmCallbacksupport() {
     $('#support').modal('hide');
 }
 function deleteDis(){
-    SOP.Crud.cfxSubmit("mainForm", "delete");
+    submit("delete");
 }
 function checkUse() {
     var deleteDis=new Array();
@@ -231,7 +237,7 @@ function edit(id) {
         success:function(data){
             if(data.canEdit == 1){
                 $("#editDistribution").val(id);
-                SOP.Crud.cfxSubmit("mainForm","edit");
+                submit("edit");
             }else{
                 $('#support').find("span").eq(1).html("The distribution list cannot be amended as it is still in used by other mass email or sms blast.");
                 $('#support').modal('show');
@@ -241,10 +247,10 @@ function edit(id) {
 
 }
 function jumpToPagechangePage() {
-    SOP.Crud.cfxSubmit("mainForm","search");
+    submit("search");
 }
 function searchResult() {
-    SOP.Crud.cfxSubmit("mainForm","search");
+    submit("search");
 }
 function clearSearch(){
     $('input[name="distributionName"]').val("");

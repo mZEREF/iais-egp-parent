@@ -35,6 +35,6 @@
 
 <script type="text/javascript">
   function back() {
-    SOP.Crud.cfxSubmit("mainForm");
+    $('#mainForm').submit();
   }
 </script>

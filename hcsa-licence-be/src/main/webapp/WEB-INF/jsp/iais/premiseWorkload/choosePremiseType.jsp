@@ -46,7 +46,9 @@
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <script type="text/javascript">
     function doNext() {
-        SOP.Crud.cfxSubmit("mainForm", "serviceInStage");
+        $("[name='crud_action_type']").val("serviceInStage");
+        $("[name='crud_action_value']").val("serviceInStage");
+        $('#mainForm').submit();
     }
 
 </script>

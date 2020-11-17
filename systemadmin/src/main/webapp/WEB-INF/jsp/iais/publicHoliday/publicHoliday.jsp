@@ -132,12 +132,18 @@
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script type="text/javascript">
+
+    function submit(action) {
+        $("[name='crud_action_type']").val(action);
+        $('#mainForm').submit();
+    }
+
     $('#createholiday').click(function () {
-        SOP.Crud.cfxSubmit("mainForm", "create");
+        submit("create");
     });
 
     function deleteDis() {
-        SOP.Crud.cfxSubmit("mainForm", "delete");
+        submit("delete");
     }
     function cancel() {
         $('#support').modal('hide');
@@ -148,7 +154,7 @@
         var id = $(this).attr('data-holiday');
         console.log(id)
         $("#holidayId").val(id);
-        SOP.Crud.cfxSubmit("mainForm", "edit");
+        submit("edit");
     });
 
     $('#delete').click(function () {
@@ -175,11 +181,11 @@
     })
 
     function jumpToPagechangePage() {
-        SOP.Crud.cfxSubmit("mainForm", "page");
+        submit("page");
     }
 
     $('#selectedFile').change(function () {
-        SOP.Crud.cfxSubmit("mainForm", "upload");
+        submit("upload");
     })
 
     $('#selectedFile').change(function () {

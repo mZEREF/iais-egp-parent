@@ -72,10 +72,16 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <script>
+
+    function submit(action) {
+        $("[name='crud_action_type']").val(action);
+        $('#mainForm1').submit();
+    }
+
     function doSubmit() {
-        SOP.Crud.cfxSubmit("mainForm1", "save");
+        submit("save");
     }
     function back() {
-        SOP.Crud.cfxSubmit("mainForm1", "back");
+        submit("back");
     }
 </script>
