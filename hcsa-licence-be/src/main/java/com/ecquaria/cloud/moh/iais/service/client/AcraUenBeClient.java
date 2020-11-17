@@ -23,7 +23,7 @@ public interface AcraUenBeClient {
     @GetMapping(value = "/iais-acraUen/entity/{uen}")
     FeignResponseEntity<GenerateUENDto> getUen(@PathVariable(name = "uen") String uen);
 
-    @PostMapping(value = "/entity", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<GenerateUENDto> generateUen(@RequestBody IaisUENDto iaisUENDto);
+    @PostMapping(value = "/iais-acraUen/entity", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> generateUen(@RequestBody IaisUENDto iaisUENDto);
 
 }

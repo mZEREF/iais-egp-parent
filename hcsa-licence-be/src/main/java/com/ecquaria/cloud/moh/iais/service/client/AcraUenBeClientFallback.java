@@ -21,7 +21,7 @@ public class AcraUenBeClientFallback implements AcraUenBeClient{
     }
 
     @Override
-    public FeignResponseEntity<GenerateUENDto> generateUen(IaisUENDto iaisUENDto) {
+    public FeignResponseEntity<Void> generateUen(IaisUENDto iaisUENDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
