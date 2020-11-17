@@ -76,6 +76,8 @@
 </form>
 <script type="text/javascript">
     $("#back").click(function () {
-        Utils.submit("mainForm","backToMenu");
+        $("[name='crud_action_type']").val('backToMenu');
+        $('#mainForm').submit();
     })
+
 </script>

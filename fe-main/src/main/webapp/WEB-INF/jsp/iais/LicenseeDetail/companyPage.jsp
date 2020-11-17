@@ -27,7 +27,7 @@
     </div>
 </div>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="crud_action_type" id="crud_action_type" value="refresh">
+    <input type="hidden" name="crud_action_type" value="">
     <div class="main-content">
         <div class="tab-gp steps-tab">
             <div class="tab-content">
@@ -151,11 +151,12 @@
 </form>
 <script type="text/javascript">
     $("#back").click(function () {
-        SOP.Crud.cfxSubmit("mainForm","back");
+        $("[name='crud_action_type']").val('back');
+        $('#mainForm').submit();
     })
 
     $("#refresh").click(function () {
-        $("#crud_action_type").val("refresh");
-        SOP.Crud.cfxSubmit("mainForm","refresh");
+        $("[name='crud_action_type']").val('refresh');
+        $('#mainForm').submit();
     })
 </script>

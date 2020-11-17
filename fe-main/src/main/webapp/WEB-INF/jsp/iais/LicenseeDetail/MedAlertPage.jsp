@@ -113,10 +113,12 @@
 </form>
 <script type="text/javascript">
     $("#back").click(function () {
-        SOP.Crud.cfxSubmit("mainForm","backToMenu");
+        $("[name='crud_action_type']").val('back');
+        $('#mainForm').submit();
     })
 
     $("#refresh").click(function () {
-        SOP.Crud.cfxSubmit("mainForm","refresh");
+        $("[name='crud_action_type']").val('refresh');
+        $('#mainForm').submit();
     })
 </script>
