@@ -220,7 +220,7 @@ public class EmailResendDelegator {
             sch = blastManagementDto.getSchedule();
             Date now = new Date();
             if (sch.compareTo(now) < 0) {
-                errMap.put("date", MessageUtil.getMessageDesc("EMM_ERR007"));
+                errMap.put("date", MessageUtil.getMessageDesc("ESB_ERR009"));
             }
         }
         if(errMap.isEmpty()){
