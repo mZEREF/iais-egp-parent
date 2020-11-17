@@ -54,7 +54,7 @@ public final class LoginHelper {
         AuditTrailDto auditTrailDto = new AuditTrailDto();
 
         if (OrganizationConstants.ID_TYPE_FIN.equals(IaisEGPHelper.checkIdentityNoType(identityNo))){
-            //for audit trail page display
+            //for audit trail page display, issue 67866
             auditTrailDto.setEntityId(identityNo);
         };
 
