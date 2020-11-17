@@ -127,7 +127,7 @@
                 </div>
             </div>
         </div>
-<iais:confirm msg="EMM_ERR0011"  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
+<iais:confirm msg="EMM_ERR005"  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
     </form>
     <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>
