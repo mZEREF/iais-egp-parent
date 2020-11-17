@@ -221,9 +221,21 @@
                                                     <c:when test="${resultRow.loginType == 10002}">
                                                         <td>-</td>
                                                         <td>-</td>
-                                                        <td><c:out value="${resultRow.entityId}"></c:out></td>
-                                                        <td><c:out value="${resultRow.nricNumber}"></c:out></td>
-                                                        <td><c:out value="${resultRow.uenId}"></c:out></td>
+
+                                                        <c:choose>
+                                                            <c:when test="${empty resultRow.entityId}">
+                                                                <td><c:out value="-"></c:out></td>
+                                                                <td><c:out value="${resultRow.nricNumber}"></c:out></td>
+                                                                <td><c:out value="${resultRow.uenId}"></c:out></td>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <td><c:out value="${resultRow.entityId}"></c:out></td>
+                                                                <td><c:out value="-"></c:out></td>
+                                                                <td><c:out value="${resultRow.uenId}"></c:out></td>
+                                                            </c:otherwise>
+                                                        </c:choose>
+
+
                                                         <td>-</td>
                                                     </c:when>
                                                     <c:otherwise>
