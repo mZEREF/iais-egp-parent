@@ -340,8 +340,8 @@ public class MasterCodeDelegator {
             masterCodeToExcelDto.setSequence(String.valueOf(h.getSequence()));
             masterCodeToExcelDto.setCodeDescription(h.getCodeDescription());
             masterCodeToExcelDto.setCodeValue(h.getCodeValue());
-            masterCodeToExcelDto.setEffectiveFrom(Formatter.formatDate(h.getEffectiveStartDate()));
-            masterCodeToExcelDto.setEffectiveTo(Formatter.formatDate(h.getEffectiveEndDate()));
+            masterCodeToExcelDto.setEffectiveFrom(h.getEffectiveStartDate());
+            masterCodeToExcelDto.setEffectiveTo(h.getEffectiveEndDate());
             masterCodeToExcelDto.setRemakes(h.getRemarks());
             masterCodeToExcelDto.setStatus(MasterCodeUtil.getCodeDesc(h.getStatus()));
             masterCodeToExcelDtoList.add(masterCodeToExcelDto);
@@ -476,7 +476,7 @@ public class MasterCodeDelegator {
                     result = true;
                 }else{
                     try{
-                        codeEffFrom = Formatter.parseDate(masterCodeToExcelDto.getEffectiveFrom());
+                        codeEffFrom = masterCodeToExcelDto.getEffectiveFrom();
                     }catch (Exception e){
                         String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0040","Effective Start Date","field");
                         errItems.add(errMsg);
@@ -489,7 +489,7 @@ public class MasterCodeDelegator {
                     result = true;
                 }else{
                     try{
-                        codeEffTo = Formatter.parseDate(masterCodeToExcelDto.getEffectiveTo());
+                        codeEffTo = masterCodeToExcelDto.getEffectiveTo();
                     }catch (Exception e){
                         String errMsg =  MessageUtil.replaceMessage("GENERAL_ERR0040","Effective End Date","field");
                         errItems.add(errMsg);
@@ -529,7 +529,7 @@ public class MasterCodeDelegator {
                         }
                         log.info(StringUtil.changeForLog("masterCodeToExcelDto1 hua ===========> " + JsonUtil.parseToJson(masterCodeToExcelDto1)));
                         if(StringUtil.isEmpty(masterCodeToExcelDto1.getFilterValue())){
-                            String errMsg = MessageUtil.getMessageDesc("SYSPAM_ERROR0007");
+                            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0040","Filter","field");
                             errItems.add(errMsg);
                             result = true;
                         }
