@@ -211,13 +211,7 @@ public class LicenceApproveBatchjob {
                     GenerateResult generalGenerateResult = null;
                     GenerateResult groupGenerateResult = null;
                     try {
-                        log.info(StringUtil.changeForLog("The generateUen start ..."));
-                        GenerateUENDto generateUENDto = new GenerateUENDto();
-                        IaisUENDto iaisUENDto = new IaisUENDto();
-                        iaisUENDto.setGenerateUENDto(generateUENDto);
-                        iaisUENDto.setLicenseeId(applicationGroupDto.getLicenseeId());
-                        acraUenBeClient.generateUen(iaisUENDto);
-                        log.info(StringUtil.changeForLog("The generateUen end ..."));
+                        generateUEN(applicationGroupDto);
                         if (groupApplicationLicenceDto != null) {
                             //generate the Group licence
                             groupGenerateResult = generateGroupLicence(groupApplicationLicenceDto, hcsaServiceDtos);
@@ -268,6 +262,21 @@ public class LicenceApproveBatchjob {
             }
         }
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is end ..."));
+    }
+
+    private void generateUEN(ApplicationGroupDto applicationGroupDto) {
+        log.info(StringUtil.changeForLog("The generateUen start ..."));
+        try{
+            GenerateUENDto generateUENDto = new GenerateUENDto();
+            IaisUENDto iaisUENDto = new IaisUENDto();
+            iaisUENDto.setGenerateUENDto(generateUENDto);
+            iaisUENDto.setLicenseeId(applicationGroupDto.getLicenseeId());
+            acraUenBeClient.generateUen(iaisUENDto);
+        }catch (Throwable t){
+           log.error(StringUtil.changeForLog("The Error for Generate UEN -->:"+applicationGroupDto.getGroupNo()));
+           log.error(StringUtil.changeForLog( t.getMessage()),t);
+        }
+        log.info(StringUtil.changeForLog("The generateUen end ..."));
     }
 
     private void updateAppealApplicationStatus(List<ApplicationDto> applicationDtos){
