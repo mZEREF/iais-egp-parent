@@ -1084,7 +1084,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     //set title name
                     for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
                         for(HcsaSvcDocConfigDto oldDocConfig:oldHcsaSvcDocConfigDtos){
-                            if(oldDocConfig.getId().equals(appGrpPrimaryDocDto.getSvcDocId())){
+                            if(oldDocConfig.getId().equals(appGrpPrimaryDocDto.getSvcComDocId())){
                                 AppGrpPrimaryDocDto newGrpPrimaryDoc = (AppGrpPrimaryDocDto) CopyUtil.copyMutableObject(appGrpPrimaryDocDto);
                                 newGrpPrimaryDoc.setSvcComDocName(oldDocConfig.getDocTitle());
                                 newGrpPrimaryDocList.add(newGrpPrimaryDoc);
