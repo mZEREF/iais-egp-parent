@@ -2288,7 +2288,7 @@ public class NewApplicationDelegator {
 
         }
         if(autoSaveAppsubmission.isEmpty()&&notAutoSaveAppsubmission.isEmpty()){
-            bpc.request.setAttribute("RFC_ERROR_NO_CHANGE","There are no changes made to this licence, please amend the licence before submitting");
+            bpc.request.setAttribute("RFC_ERROR_NO_CHANGE","RFC_ERR014");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             requestForChangeService.svcDocToPresmise(appSubmissionDto);
             return;
@@ -3571,7 +3571,6 @@ public class NewApplicationDelegator {
             AppPremisesOperationalUnitDto operationalUnitDto=new AppPremisesOperationalUnitDto();
             operationalUnitDto.setFloorNo(appPremisesOperationalUnitDto.getFloorNo());
             operationalUnitDto.setUnitNo(appPremisesOperationalUnitDto.getUnitNo());
-            operationalUnitDto.setPremisesId(appPremisesOperationalUnitDto.getPremisesId());
             list.add(operationalUnitDto);
         }
         return list;

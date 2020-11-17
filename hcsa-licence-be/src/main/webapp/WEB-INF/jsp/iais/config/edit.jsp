@@ -643,7 +643,8 @@
         <div class="form-group">
           <label class="col-xs-12 col-md-7 control-label">Effective Start Date&nbsp;<span class="mandatory">*</span></label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
-            <input type="text" <c:if test="${hcsaServiceDto.serviceIsUsed}">disabled</c:if> value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
+            <input type="hidden" name="selectAsNewVersion" value="${hcsaServiceDto.selectAsNewVersion}">
+            <input type="text" <c:if test="${hcsaServiceDto.selectAsNewVersion}">disabled</c:if> value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
             <span class="error-msg" name="iaisErrorMsg" id="error_effectiveDate"></span>
           </div>
           <div class="clear"></div></div>
@@ -720,8 +721,11 @@
 
     }
     $('#versionSelect').change(function () {
+        if($('#version').val()==''){
 
-        SOP.Crud.cfxSubmit("mainForm","version","version",$('#version').val());
+        }else {
+            SOP.Crud.cfxSubmit("mainForm","version","version",$('#version').val());
+        }
 
     });
 

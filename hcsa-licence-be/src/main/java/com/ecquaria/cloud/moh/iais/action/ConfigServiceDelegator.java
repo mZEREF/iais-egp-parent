@@ -182,6 +182,7 @@ public class ConfigServiceDelegator {
         String description = request.getParameter("description");
         String displayDescription = request.getParameter("displayDescription");
         String serviceCode = request.getParameter("serviceCode");
+        String selectAsNewVersion = request.getParameter("selectAsNewVersion");
         String serviceType = request.getParameter("ServiceType");
         String maxVersionEffectiveDate = request.getParameter("maxVersionEffectiveDate");
         String maxVersionEndDate = request.getParameter("maxVersionEndDate");
@@ -299,9 +300,7 @@ public class ConfigServiceDelegator {
         String mandeputyPrincipalOfficer = request.getParameter("man-DeputyPrincipalOfficer");
         String mixdeputyPrincipalOfficer = request.getParameter("mix-DeputyPrincipalOfficer");
         HcsaSvcPersonnelDto dpoDto = new HcsaSvcPersonnelDto();
-        if (!StringUtil.isEmpty(dpoId)) {
-            dpoDto.setId(dpoId);
-        }
+
         dpoDto.setPsnType("DPO");
         try {
             if (!StringUtil.isEmpty(mandeputyPrincipalOfficer)) {
@@ -324,13 +323,10 @@ public class ConfigServiceDelegator {
 
         dpoDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         hcsaSvcPersonnelDtos.add(dpoDto);
-        String cgoId = request.getParameter("cgoId");
         String manclinicalGovernanceOfficer = request.getParameter("man-ClinicalGovernanceOfficer");
         String mixclinicalGovernanceOfficer = request.getParameter("mix-ClinicalGovernanceOfficer");
         HcsaSvcPersonnelDto cgoDto = new HcsaSvcPersonnelDto();
-        if (!StringUtil.isEmpty(cgoId)) {
-            cgoDto.setId(cgoId);
-        }
+
         cgoDto.setPsnType("CGO");
         try {
             if (!StringUtil.isEmpty(manclinicalGovernanceOfficer)) {
@@ -353,13 +349,9 @@ public class ConfigServiceDelegator {
         int count=1;
         cgoDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         hcsaSvcPersonnelDtos.add(cgoDto);
-        String svcpsnId = request.getParameter("svcpsnId");
         String manservicePersonnel = request.getParameter("man-ServicePersonnel");
         String mixservicePersonnel = request.getParameter("mix-ServicePersonnel");
         HcsaSvcPersonnelDto svcPersonnelDto = new HcsaSvcPersonnelDto();
-        if (!StringUtil.isEmpty(svcpsnId)) {
-            svcPersonnelDto.setId(svcpsnId);
-        }
         svcPersonnelDto.setPsnType("SVCPSN");
         try {
             if (!StringUtil.isEmpty(manservicePersonnel)) {
@@ -504,7 +496,6 @@ public class ConfigServiceDelegator {
         String[] descriptionCommDocs = request.getParameterValues("descriptionCommDoc");
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtoList=IaisCommonUtils.genNewArrayList();
         String[] commDocMandatory = request.getParameterValues("commDocMandatory");
-        String[] commDocIds = request.getParameterValues("commDocId");
         String[] commDocPremises = request.getParameterValues("commDocPremises");
         if(descriptionCommDocs!=null){
             for(int i=0;i<descriptionCommDocs.length;i++){
@@ -708,6 +699,7 @@ public class ConfigServiceDelegator {
         hcsaServiceDto.setSvcName(serviceName);
         hcsaServiceDto.setSvcCode(serviceCode);
         hcsaServiceDto.setMaxVersionEffectiveDate(maxVersionEffectiveDate);
+        hcsaServiceDto.setSelectAsNewVersion("true".equals(selectAsNewVersion));
         if(!StringUtil.isEmpty(maxVersionEndDate)){
             try {
                 Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(maxVersionEndDate);
@@ -720,7 +712,11 @@ public class ConfigServiceDelegator {
             Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(startDate);
             String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(parse);
             hcsaServiceDto.setEffectiveDate(format);
-            hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            if(parse.before(new Date())){
+                hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            }else {
+                hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            }
 
         } catch (Exception e) {
           /*  Date parse = new SimpleDateFormat("yyyy-MM-dd").parse(startDate);

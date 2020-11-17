@@ -129,6 +129,13 @@ public class ConfigServiceImpl implements ConfigService {
             log.info(crud_action_additional);
             HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(crud_action_additional).getEntity();
             List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getServiceVersions(hcsaServiceDto.getSvcCode()).getEntity();
+            Boolean flag = hcsaConfigClient.serviceIdIsUsed(crud_action_additional).getEntity();
+            List<LicenceDto> entity = hcsaLicenceClient.getLicenceDtosBySvcName(hcsaServiceDto.getSvcName()).getEntity();
+            if(flag || !entity.isEmpty()){
+                hcsaServiceDto.setServiceIsUsed(true);
+            }else {
+                hcsaServiceDto.setServiceIsUsed(false);
+            }
             request.setAttribute("hcsaServiceDtosVersion",hcsaServiceDtos);
             setAttribute(request,hcsaServiceDto);
         }else if(crud_action_value != null && !"".equals(crud_action_value) && "edit".equals(crud_action_type)){
@@ -168,7 +175,7 @@ public class ConfigServiceImpl implements ConfigService {
         }
         Boolean svcName = entity.get("svcName");
         if(svcName!=null&&svcName){
-            errorMap.put("Name",MessageUtil.getMessageDesc("SC_ERR001"));
+            errorMap.put("svcName",MessageUtil.getMessageDesc("SC_ERR001"));
         }
 
         if (!errorMap.isEmpty()) {
@@ -300,39 +307,30 @@ public class ConfigServiceImpl implements ConfigService {
                  String effectiveDate = hcsaServiceDto.getEffectiveDate();
                  Date endDate = hcsaServiceDto.getEndDate();
                  Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(effectiveDate);
-                 if(hcsaServiceDto.isServiceIsUsed()){
-                     if(endDate!=null){
-                         if(new Date().after(endDate)){
-                             Calendar calendar=Calendar.getInstance();
-                             calendar.setTime(new Date());
-                             calendar.add(Calendar.DAY_OF_MONTH,1);
-                             String format = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
-                             hcsaServiceDto.setEffectiveDate(format);
-                         }else {
-                             Calendar calendar=Calendar.getInstance();
-                             calendar.setTime(endDate);
-                             calendar.add(Calendar.DAY_OF_MONTH,1);
-                             String format = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
-                             hcsaServiceDto.setEffectiveDate(format);
+                 if(hcsaServiceDto.isSelectAsNewVersion()){
+                     String maxVersionEffectiveDate = hcsaServiceDto.getMaxVersionEffectiveDate();
+                     Date parse1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(maxVersionEffectiveDate);
+                     if(new Date().before(parse1)){
+                         Calendar calendar =Calendar.getInstance();
+                         calendar.setTime(new Date());
+                         calendar.add(Calendar.SECOND,1);
+                         String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
+                         hcsaServiceDto.setEffectiveDate(format);
+                         if(endDate!=null){
+                             hcsaServiceDto.setEndDate(endDate);
                          }
                      }else {
-                         if(new Date().after(parse)){
-                             Calendar calendar=Calendar.getInstance();
-                             calendar.setTime(new Date());
-                             calendar.add(Calendar.DAY_OF_MONTH,1);
-                             String format = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
-                             hcsaServiceDto.setEffectiveDate(format);
-                         }else {
-                             Calendar calendar=Calendar.getInstance();
-                             calendar.setTime(parse);
-                             calendar.add(Calendar.DAY_OF_MONTH,2);
-                             String format = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
-                             hcsaServiceDto.setEffectiveDate(format);
+                         Calendar calendar =Calendar.getInstance();
+                         calendar.setTime(parse1);
+                         calendar.add(Calendar.SECOND,1);
+                         String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
+                         hcsaServiceDto.setEffectiveDate(format);
+                         if(endDate!=null){
+                             hcsaServiceDto.setEndDate(endDate);
                          }
                      }
-
                  }else {
-                     String format = new SimpleDateFormat("yyyy-MM-dd").format(parse);
+                     String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(parse);
                      hcsaServiceDto.setEffectiveDate(format);
                  }
                  hcsaServiceDto.setId(null);
@@ -484,51 +482,37 @@ public class ConfigServiceImpl implements ConfigService {
         String svcType = hcsaServiceDto.getSvcType();
         String effectiveDate = hcsaServiceDto.getEffectiveDate();
         Date endDate = hcsaServiceDto.getEndDate();
-        boolean serviceIsUsed = hcsaServiceDto.isServiceIsUsed();
+        boolean selectAsNewVersion = hcsaServiceDto.isSelectAsNewVersion();
         Date maxVersionEndDate = hcsaServiceDto.getMaxVersionEndDate();
         String maxVersionEffectiveDate = hcsaServiceDto.getMaxVersionEffectiveDate();
         if (StringUtil.isEmpty(effectiveDate)) {
             errorMap.put("effectiveDate", MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field"));
-        }else if(!serviceIsUsed){
+        }else if(!selectAsNewVersion){
             Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(effectiveDate);
-            if(parse.before(new Date())){
+            if(parse.before(new Date()) || parse.compareTo(new Date())==0){
                 errorMap.put("effectiveDate","RSM_ERR012");
             }else {
-                if(!StringUtil.isEmpty(endDate)){
-                    Calendar calendar=Calendar.getInstance();
-                    calendar.setTime(maxVersionEndDate);
-                    calendar.add(Calendar.DAY_OF_MONTH,1);
-                    if(!calendar.getTime().before(parse)){
-                        errorMap.put("effectiveDate","The start time cannot be earlier than the max version service end time (after "+new SimpleDateFormat("dd/MM/yyyy").format(calendar.getTime())+")");
-                    }
-                }
+               if(maxVersionEndDate!=null){
+                 if(parse.before(maxVersionEndDate) || parse.compareTo(maxVersionEndDate)==0){
+                     errorMap.put("effectiveDate","Please select after the maximum version end time");
+                 }
+               }else {
+                   Date parse1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(maxVersionEffectiveDate);
+                   if(parse.before(parse1) || parse.compareTo(parse1)==0){
+                       errorMap.put("effectiveDate","Please select after the maximum version start time");
+                   }
+               }
             }
-        }else if(serviceIsUsed){
+        }else if(selectAsNewVersion){
             if(!StringUtil.isEmpty(endDate)){
-                if(StringUtil.isEmpty(maxVersionEndDate)){
-                    Calendar calendar =Calendar.getInstance();
-                    Date parse = new SimpleDateFormat("yyyy-MM-dd").parse(maxVersionEffectiveDate);
-                    calendar.setTime(parse);
-                    calendar.add(Calendar.DAY_OF_MONTH,3);
-                    if(endDate.before(calendar.getTime())){
-                        calendar.add(Calendar.DAY_OF_MONTH,-1);
-                        errorMap.put("effectiveEndDate","The end time cannot be earlier than the max version service start time (after "+new  SimpleDateFormat("dd/MM/yyyy").format(calendar.getTime())+")");
-                    }
-                }else {
-                    Calendar calendar=Calendar.getInstance();
-                    calendar.setTime(maxVersionEndDate);
-                    calendar.add(Calendar.DAY_OF_MONTH,1);
-                    if(endDate.before(calendar.getTime())){
-                        calendar.add(Calendar.DAY_OF_MONTH,1);
-                        errorMap.put("effectiveEndDate","The end time cannot be earlier than the max version service start time (after "+new  SimpleDateFormat("dd/MM/yyyy").format(calendar.getTime())+")");
-                    }
+                if(endDate.before(new Date()) || endDate.compareTo(new Date())==0){
+                    errorMap.put("effectiveEndDate","RSM_ERR012");
                 }
-
             }
         }
         if(!StringUtil.isEmpty(endDate)){
             Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(effectiveDate);
-            if(endDate.before(parse)){
+            if(endDate.before(parse) || parse.compareTo(endDate)==0){
                 errorMap.put("effectiveEndDate", "EMM_ERR004");
             }
         }
@@ -1164,6 +1148,7 @@ public class ConfigServiceImpl implements ConfigService {
 
     private void setAttribute(HttpServletRequest request, HcsaServiceDto hcsaServiceDto){
         String effectiveDate = hcsaServiceDto.getEffectiveDate();
+        boolean serviceIsUsed = hcsaServiceDto.isServiceIsUsed();
         Date parse;
         try {
             parse = new SimpleDateFormat(DATE_FORMAT).parse(effectiveDate);
@@ -1174,8 +1159,31 @@ public class ConfigServiceImpl implements ConfigService {
         } catch (ParseException e) {
           log.error(e.getMessage(),e);
         }
+        Date maxVersionEndDate = hcsaServiceDto.getMaxVersionEndDate();
+        String maxVersionEffectiveDate = hcsaServiceDto.getMaxVersionEffectiveDate();
+        hcsaServiceDto.setSelectAsNewVersion(true);
+        try {
+            Date parse1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(maxVersionEffectiveDate);
+            Date parse2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(effectiveDate);
+            if(parse1.compareTo(parse2)==0){
+                hcsaServiceDto.setSelectAsNewVersion(true);
+            } else if(maxVersionEndDate!=null){
+                Calendar calendar =Calendar.getInstance();
+                calendar.setTime(maxVersionEndDate);
+                calendar.add(Calendar.DAY_OF_MONTH,1);
+                String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(calendar.getTime());
+                hcsaServiceDto.setEffectiveDate(format);
+            }else {
+                hcsaServiceDto.setSelectAsNewVersion(false);
+            }
+        } catch (ParseException e) {
+            log.error(e.getMessage(),e);
+        }
+        if(!serviceIsUsed){
+            hcsaServiceDto.setSelectAsNewVersion(false);
+        }
         List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getServiceVersions(hcsaServiceDto.getSvcCode()).getEntity();
-        request.setAttribute("hcsaServiceDtosVersion",hcsaServiceDtos);
+        request.getSession().setAttribute("hcsaServiceDtosVersion",hcsaServiceDtos);
         List<HcsaServiceDto> baseHcsaServiceDtos = hcsaConfigClient.baseHcsaService().getEntity();
         List<SelectOption> selectOptionList=new ArrayList<>(baseHcsaServiceDtos.size());
         for(HcsaServiceDto baseHcsaService : baseHcsaServiceDtos){

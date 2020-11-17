@@ -441,12 +441,6 @@
       </div>
     </c:forEach>
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
-          <label class="col-xs-12 col-md-10 control-label" >Service step&nbsp;<span class="mandatory">*</span></label>
-          <span name="iaisErrorMsg" class="error-msg" id="error_serviceStep" style="display: block"></span>
-        </div>
-      </div>
 
       <div class="form-group">
         <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">

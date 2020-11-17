@@ -1417,7 +1417,7 @@ public class RequestForChangeMenuDelegator {
         if (!eqGrpPremises) {
             ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
-            bpc.request.setAttribute("RFC_ERROR_NO_CHANGE","There are no changes made to this premises, please amend the premises before submitting");
+            bpc.request.setAttribute("RFC_ERROR_NO_CHANGE","RFC_ERR015");
 
             return;
         }
