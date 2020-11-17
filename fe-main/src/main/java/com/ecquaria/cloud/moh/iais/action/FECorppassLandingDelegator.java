@@ -92,12 +92,16 @@ public class FECorppassLandingDelegator {
                 return;
             }
 
+            log.debug("oLoginInfo" + JsonUtil.parseToJson(oLoginInfo));
+
             UserInfoToken userInfoToken = oLoginInfo.getUserInfo();
 
             if (userInfoToken == null) {
                 log.info("<== userInfoToken is empty ==>");
                 return;
             }
+
+            log.debug("userInfoToken" + JsonUtil.parseToJson(userInfoToken));
 
             uen = userInfoToken.getEntityId();
             identityNo  = userInfoToken.getUserIdentity();

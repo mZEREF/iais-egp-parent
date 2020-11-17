@@ -75,10 +75,11 @@ public class FESingpassLandingDelegator {
         if (FELandingDelegator.LOGIN_MODE_REAL.equals(testMode)) {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
             LoginInfo oLoginInfo = SIMUtil.doSingPassArtifactResolution(request, samlArt);
-            log.info(StringUtil.changeForLog("oLoginInfo" + oLoginInfo));
             if (oLoginInfo == null){
                 return;
             }
+
+            log.debug("oLoginInfo" + JsonUtil.parseToJson(oLoginInfo));
 
             identityNo = oLoginInfo.getLoginID();
         } else {
