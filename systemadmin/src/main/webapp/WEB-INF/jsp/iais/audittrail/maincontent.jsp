@@ -14,7 +14,8 @@
             <div class="col-xs-5 col-md-10">
                 <div class="col-xs-10 col-md-12">
                     <div class="components">
-                        <a class="btn btn-secondary" data-toggle="collapse" name="filterBtn"
+
+                        <a id="filterBtn" class="btn btn-secondary" data-toggle="collapse" name="filterBtn"
                            data-target="#searchCondition" aria-expanded="true">Filter</a>
                     </div>
                 </div>
@@ -358,4 +359,17 @@
         SOP.Crud.cfxSubmit("mainForm", "viewActivities");
     }
 
+    $(document).ready(function () {
+        let collapseFlag = $('input[name="collapseFlag"]').val();
+        $('#searchCondition').addClass(collapseFlag)
+    });
+
+    $('#filterBtn').on('click', function () {
+        let expanded = $('#searchCondition').attr("aria-expanded")
+        if ('true' == expanded){
+            $('input[name="collapseFlag"]').val('in');
+        }else {
+            $('input[name="collapseFlag"]').val();
+        }
+    });
 </script>

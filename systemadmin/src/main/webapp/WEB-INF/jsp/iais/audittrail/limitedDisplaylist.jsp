@@ -21,7 +21,7 @@
 <div class="main-content">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-
+        <input type="hidden" name="collapseFlag" value="${param.collapseFlag}">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
