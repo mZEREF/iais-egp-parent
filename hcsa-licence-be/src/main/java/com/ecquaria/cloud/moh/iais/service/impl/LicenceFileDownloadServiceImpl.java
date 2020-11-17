@@ -868,12 +868,22 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             emailParam.setReqRefNum(h.getApplicationNo());
                             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
                             emailParam.setRefId(h.getApplicationNo());
+                            emailParam.setTemplateContent(emailMap);
+                            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER).getEntity();
+                            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+                            map.put("ApplicationType", MasterCodeUtil.getCodeDesc(h.getApplicationType()));
+                            map.put("ApplicationNumber", h.getApplicationNo());
+                            String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
+                            emailParam.setSubject(subject);
                             log.info("start send email start");
                             notificationHelper.sendNotification(emailParam);
                             log.info("start send email end");
                             //emailClient.sendNotification(emailDto).getEntity();
 
                             //sms
+                            emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(h.getApplicationType()));
+                            emailMap.put("ApplicationNumber", h.getApplicationNo());
+                            emailParam.setTemplateContent(emailMap);
                             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS);
                             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
                             log.info("start send sms start");
