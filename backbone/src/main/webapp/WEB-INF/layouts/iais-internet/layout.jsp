@@ -18,7 +18,7 @@
     <%-- END additional header --%>
 
 </head>
-<body style="font-size: 14px ;">
+<body style="font-size:16px;">
 <jsp:include page="header.jsp" />
 <div class="">
     <layout:insertAttribute name="body" ignore="true" />
