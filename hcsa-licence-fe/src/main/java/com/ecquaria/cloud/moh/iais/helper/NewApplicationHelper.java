@@ -196,7 +196,7 @@ public class NewApplicationHelper {
                     if("FIN".equals(idTyp)){
                         boolean b = SgNoValidator.validateFin(idNo);
                         if(!b){
-                            errMap.put("idNo"+i,"GENERAL_ERR0008");
+                            errMap.put("idNo"+i,"RFC_ERR0012");
                         }
                         stringBuilder1.append(idTyp).append(idNo);
                         if(!StringUtil.isEmpty(stringBuilder1.toString())){
@@ -210,7 +210,7 @@ public class NewApplicationHelper {
                     if("NRIC".equals(idTyp)){
                         boolean b1 = SgNoValidator.validateNric(idNo);
                         if(!b1){
-                            errMap.put("idNo"+i,"GENERAL_ERR0008");
+                            errMap.put("idNo"+i,"RFC_ERR0012");
                         }
                         stringBuilder1.append(idTyp).append(idNo);
 
@@ -400,7 +400,7 @@ public class NewApplicationHelper {
                         if("FIN".equals(idType)){
                             boolean b = SgNoValidator.validateFin(idNo);
                             if(!b){
-                                oneErrorMap.put("poNRICFIN"+poIndex,"GENERAL_ERR0008");
+                                oneErrorMap.put("poNRICFIN"+poIndex,"RFC_ERR0012");
                             }else {
                                 stringBuilder.append(idType).append(idNo);
                                 String s = stringBuilder.toString();
@@ -412,7 +412,7 @@ public class NewApplicationHelper {
                         if("NRIC".equals(idType)){
                             boolean b1 = SgNoValidator.validateNric(idNo);
                             if(!b1){
-                                oneErrorMap.put("poNRICFIN"+poIndex,"GENERAL_ERR0008");
+                                oneErrorMap.put("poNRICFIN"+poIndex,"RFC_ERR0012");
                             }else {
                                 stringBuilder.append(idType).append(idNo);
                                 String s = stringBuilder.toString();
@@ -513,7 +513,7 @@ public class NewApplicationHelper {
                     if("FIN".equals(idType)){
                         boolean b = SgNoValidator.validateFin(idNo);
                         if(!b){
-                            oneErrorMap.put("deputyIdNo"+dpoIndex,"GENERAL_ERR0008");
+                            oneErrorMap.put("deputyIdNo"+dpoIndex,"RFC_ERR0012");
                         }else {
                             stringBuilder.append(idType).append(idNo);
                             String s = stringBuilder.toString();
@@ -525,7 +525,7 @@ public class NewApplicationHelper {
                     if("NRIC".equals(idType)){
                         boolean b1 = SgNoValidator.validateNric(idNo);
                         if(!b1){
-                            oneErrorMap.put("deputyIdNo"+dpoIndex,"GENERAL_ERR0008");
+                            oneErrorMap.put("deputyIdNo"+dpoIndex,"RFC_ERR0012");
                         }else {
                             stringBuilder.append(idType).append(idNo);
                             String s = stringBuilder.toString();
@@ -1012,7 +1012,7 @@ public class NewApplicationHelper {
                     if("FIN".equals(idTyp)){
                         boolean b = SgNoValidator.validateFin(idNo);
                         if(!b){
-                            errMap.put("idNo"+i,"GENERAL_ERR0008");
+                            errMap.put("idNo"+i,"RFC_ERR0012");
                         }
                         stringBuilder1.append(idTyp).append(idNo);
                         if(!StringUtil.isEmpty(stringBuilder1.toString())){
@@ -1024,7 +1024,7 @@ public class NewApplicationHelper {
                     if("NRIC".equals(idTyp)){
                         boolean b1 = SgNoValidator.validateNric(idNo);
                         if(!b1){
-                            errMap.put("idNo"+i,"GENERAL_ERR0008");
+                            errMap.put("idNo"+i,"RFC_ERR0012");
                         }
                         stringBuilder1.append(idTyp).append(idNo);
                         if(!StringUtil.isEmpty(stringBuilder1.toString())){
