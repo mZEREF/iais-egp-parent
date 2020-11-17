@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -51,7 +52,12 @@ public final class LoginHelper {
 
     public static void insertLoginFailureAuditTrail(String uen, String identityNo){
         AuditTrailDto auditTrailDto = new AuditTrailDto();
-        auditTrailDto.setEntityId(identityNo);
+
+        if (OrganizationConstants.ID_TYPE_FIN.equals(IaisEGPHelper.checkIdentityNoType(identityNo))){
+            //for audit trail page display
+            auditTrailDto.setEntityId(identityNo);
+        };
+
         auditTrailDto.setMohUserId(identityNo);
         auditTrailDto.setNricNumber(identityNo);
         auditTrailDto.setModule("login");
