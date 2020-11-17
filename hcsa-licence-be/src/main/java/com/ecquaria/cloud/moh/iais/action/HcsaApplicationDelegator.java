@@ -1060,7 +1060,7 @@ public class HcsaApplicationDelegator {
         }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
             //send email Appeal - Send SMS to licensee when appeal application is reject
             try {
-                sendAppealReject(licenseeId,applicationDto);
+                sendAppealReject(applicationDto);
             }catch (Exception e){
                 log.error(e.getMessage()+"error",e);
             }
@@ -2708,11 +2708,10 @@ public class HcsaApplicationDelegator {
     }
 
 
-    private  void  sendAppealReject(String licenseeId, ApplicationDto applicationDto) throws IOException, TemplateException {
+    private  void  sendAppealReject(ApplicationDto applicationDto) throws IOException, TemplateException {
         log.info("start send email sms and msg");
         log.info(StringUtil.changeForLog("appNo: " + applicationDto.getApplicationNo()));
         String applicantName = "";
-        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
         ApplicationGroupDto applicationGroupDto =  applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
         OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
@@ -2740,12 +2739,12 @@ public class HcsaApplicationDelegator {
 
         AppPremiseMiscDto premiseMiscDto = applicationClient.getAppPremisesMisc(appPremisesCorrelationDto.getId()).getEntity();
 
-        String reason = premiseMiscDto.getReason();
-        List<String> code = MasterCodeUtil.getCodeKeyByCodeValue(reason);
-        if(code != null && code.size() > 0){
-            templateContent.put("content", code.get(0));
+        if(premiseMiscDto != null && premiseMiscDto.getReason() != null){
+            String reason = premiseMiscDto.getReason();
+            String code = MasterCodeUtil.getCodeDesc(reason);
+            templateContent.put("content", code);
         }else{
-            templateContent.put("content", "");
+            templateContent.put("content", MasterCodeUtil.getCodeDesc(ApplicationConsts.CESSATION_REASON_OTHER));
         }
 
         templateContent.put("content", MasterCodeUtil.getCodeKeyByCodeValue(reason));

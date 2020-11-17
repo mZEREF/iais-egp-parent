@@ -1,13 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
@@ -15,16 +13,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * ApplicationMainClientFallback
- *
- * @author suocheng
- * @date 11/26/2019
+ * @author weilu
+ * @date 2020/2/7 13:25
  */
-public class ApplicationMainClientFallback implements ApplicationMainClient{
-
-
+public class CessationMainClientFallback implements CessationMainClient {
     @Override
-    public FeignResponseEntity<ApplicationViewDto> getAppViewByCorrelationId(String correlationId) {
+    public FeignResponseEntity<AppInsRepDto> getAppCessationDto(String appNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -32,7 +26,7 @@ public class ApplicationMainClientFallback implements ApplicationMainClient{
     }
 
     @Override
-    public FeignResponseEntity<ApplicationDto> getAppByNo(String appNo) {
+    public FeignResponseEntity<List<String>> saveCessation(List<AppCessMiscDto> appCessMiscDtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -40,7 +34,13 @@ public class ApplicationMainClientFallback implements ApplicationMainClient{
     }
 
     @Override
-    public FeignResponseEntity<ApplicationDto> updateApplication(ApplicationDto applicationDto) {
+    public FeignResponseEntity<String> updateCessation(AppCessMiscDto appCessMiscDto) {
+        return null;
+    }
+
+
+    @Override
+    public FeignResponseEntity<AppCessMiscDto> getCessationByLicId(String type, String status, String licId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -48,23 +48,7 @@ public class ApplicationMainClientFallback implements ApplicationMainClient{
     }
 
     @Override
-    public FeignResponseEntity<AppPremisesCorrelationDto> getLastAppPremisesCorrelationDtoByCorreId(String appCorreId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    FeignResponseEntity<ApplicationGroupDto> updateApplication( ApplicationGroupDto applicationGroupDto){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-
-    @Override
-    public FeignResponseEntity<List<ApplicationDto>> getGroupAppsByNo(String appGropId) {
+    public FeignResponseEntity<List<String>> getlicIdToCessation(List<String> licIds) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -72,7 +56,7 @@ public class ApplicationMainClientFallback implements ApplicationMainClient{
     }
 
     @Override
-    public FeignResponseEntity<ApplicationGroupDto> getAppById(String appGroupId) {
+    public FeignResponseEntity<List<String>> listHciNames() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -80,7 +64,7 @@ public class ApplicationMainClientFallback implements ApplicationMainClient{
     }
 
     @Override
-    public FeignResponseEntity<AppReturnFeeDto> saveAppReturnFee(AppReturnFeeDto appReturnFeeDto) {
+    public FeignResponseEntity<Boolean> isCeased(String licId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -88,7 +72,23 @@ public class ApplicationMainClientFallback implements ApplicationMainClient{
     }
 
     @Override
-    public FeignResponseEntity<ProcessFileTrackDto> isFileExistence(Map<String, String> map) {
+    public FeignResponseEntity<List<ApplicationGroupDto>> listAppGrpForCess() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppCessMiscDto>> getAppCessMiscDtosByCorrIds(List<String> corrIds) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<AppPremiseMiscDto> getAppPremiseMiscDtoByAppId(String appId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -104,7 +104,7 @@ public class ApplicationMainClientFallback implements ApplicationMainClient{
     }
 
     @Override
-    public FeignResponseEntity<AppPremisesCorrelationDto> getAppPremisesCorrelationDtosByAppId(String appId) {
+    public FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesDtoByAppId(String appId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -112,7 +112,7 @@ public class ApplicationMainClientFallback implements ApplicationMainClient{
     }
 
     @Override
-    public FeignResponseEntity<AppPremiseMiscDto> getAppPremisesMisc(String correId) {
+    public FeignResponseEntity<Map<String,Boolean>> listCanCeased(List<String> licIds) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -120,15 +120,7 @@ public class ApplicationMainClientFallback implements ApplicationMainClient{
     }
 
     @Override
-    public FeignResponseEntity<ApplicationDto> getApplicationById(String id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<List<String>> clearHclcodeByAppIds(List<ApplicationDto> applicationDtos) {
+    public FeignResponseEntity<List<ApplicationDto>> prepareCessation() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -143,11 +135,5 @@ public class ApplicationMainClientFallback implements ApplicationMainClient{
         return entity;
     }
 
-    @Override
-    public FeignResponseEntity<List<ApplicationDto>> updateCessationApplications(List<ApplicationDto> applicationDtos) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
+
 }

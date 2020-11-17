@@ -97,6 +97,12 @@ public class BackendInboxDelegator {
     private BroadcastMainService broadcastService;
 
     @Autowired
+    CessationMainClient cessationClient;
+
+    @Autowired
+    MsgTemplateMainClient msgTemplateMainClient;
+
+    @Autowired
     private HcsaConfigMainClient hcsaConfigMainClient;
 
     @Autowired
@@ -966,6 +972,7 @@ public class BackendInboxDelegator {
         }else{
             log.debug(StringUtil.changeForLog("not has next stageId :" + stageId));
             log.debug(StringUtil.changeForLog("do ao3 approve ----- "));
+
             String aoapprove = (String)ParamUtil.getSessionAttr(bpc.request,"bemainAo1Ao2Approve");
             boolean isAo1Ao2Approve = "Y".equals(aoapprove);
             List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
@@ -978,6 +985,17 @@ public class BackendInboxDelegator {
             if(isAllSubmit || applicationDto.isFastTracking() || isAo1Ao2Approve){
                 if(isAo1Ao2Approve){
                     doAo1Ao2Approve(broadcastOrganizationDto,broadcastApplicationDto,applicationDto,applicationDtoIds,taskDto);
+
+                    if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus) && ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationDto.getApplicationType())){
+                        log.info("ao1 or ao2 send application reject email");
+                        try {
+                            sendAppealReject(applicationDto);
+                            log.info("reject email success");
+                        }catch (Exception e){
+                            log.error(e.getMessage()+"error",e);
+                        }
+                    }
+
                 }
                 boolean needUpdateGroup = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList, applicationDtoIds,
                         ApplicationConsts.APPLICATION_STATUS_APPROVED, ApplicationConsts.APPLICATION_STATUS_REJECTED);
@@ -1632,5 +1650,91 @@ public class BackendInboxDelegator {
         }
     }
 
+    private  void  sendAppealReject(ApplicationDto applicationDto) throws IOException, TemplateException {
+        log.info("start send email sms and msg");
+        log.info(StringUtil.changeForLog("appNo: " + applicationDto.getApplicationNo()));
+        String applicantName = "";
+        Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
+        ApplicationGroupDto applicationGroupDto =  applicationMainClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+        OrgUserDto orgUserDto = organizationMainClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+        if(orgUserDto != null){
+            applicantName = orgUserDto.getDisplayName();
+        }
+        List<AppPremiseMiscDto> premiseMiscDtoList = cessationClient.getAppPremiseMiscDtoListByAppId(applicationDto.getId()).getEntity();
+        String appType = "Licence";
+        if(premiseMiscDtoList != null){
+            AppPremiseMiscDto premiseMiscDto = premiseMiscDtoList.get(0);
+            String oldAppId = premiseMiscDto.getRelateRecId();
+            ApplicationDto oldApplication = applicationMainClient.getApplicationById(oldAppId).getEntity();
+            appType =  MasterCodeUtil.getCodeDesc(oldApplication.getApplicationType());
+        }
+        if(StringUtil.isEmpty(appType)){
+            appType = "Licence";
+        }
+
+        templateContent.put("ApplicantName", applicantName);
+        templateContent.put("ApplicationType",  appType);
+        templateContent.put("ApplicationNo", applicationDto.getApplicationNo());
+        templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date(),"dd/MM/yyyy"));
+
+        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationMainClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
+        log.info(StringUtil.changeForLog("appPremisesCorrelationDto :" + JsonUtil.parseToJson(appPremisesCorrelationDto)));
+        AppPremiseMiscDto premiseMiscDto = applicationMainClient.getAppPremisesMisc(appPremisesCorrelationDto.getId()).getEntity();
+        if(premiseMiscDto != null && premiseMiscDto.getReason() != null){
+            String reason = premiseMiscDto.getReason();
+            String code = MasterCodeUtil.getCodeDesc(reason);
+            templateContent.put("content", code);
+        }else{
+            templateContent.put("content", MasterCodeUtil.getCodeDesc(ApplicationConsts.CESSATION_REASON_OTHER));
+        }
+
+        templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
+
+
+        MsgTemplateDto emailTemplateDto = msgTemplateMainClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_EMAIL).getEntity();
+        MsgTemplateDto smsTemplateDto = msgTemplateMainClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_SMS).getEntity();
+        MsgTemplateDto msgTemplateDto = msgTemplateMainClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_MSG).getEntity();
+        Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+        subMap.put("ApplicationType", appType);
+        subMap.put("ApplicationNo", applicationDto.getApplicationNo());
+        String emailSubject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
+        String smsSubject = MsgUtil.getTemplateMessageByContent(smsTemplateDto.getTemplateName(),subMap);
+        String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),subMap);
+
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_EMAIL);
+        emailParam.setTemplateContent(templateContent);
+        emailParam.setSubject(emailSubject);
+        emailParam.setQueryCode(applicationDto.getApplicationNo());
+        emailParam.setReqRefNum(applicationDto.getApplicationNo());
+        emailParam.setRefId(applicationDto.getApplicationNo());
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+
+        notificationHelper.sendNotification(emailParam);
+        EmailParam smsParam = new EmailParam();
+        smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_SMS);
+        smsParam.setSubject(smsSubject);
+        smsParam.setTemplateContent(templateContent);
+        smsParam.setQueryCode(applicationDto.getApplicationNo());
+        smsParam.setReqRefNum(applicationDto.getApplicationNo());
+        smsParam.setRefId(applicationDto.getApplicationNo());
+        smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        notificationHelper.sendNotification(smsParam);
+
+        EmailParam msgParam = new EmailParam();
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_MSG);
+        msgParam.setTemplateContent(templateContent);
+        msgParam.setSubject(msgSubject);
+        msgParam.setQueryCode(applicationDto.getApplicationNo());
+        msgParam.setReqRefNum(applicationDto.getApplicationNo());
+        List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+        HcsaServiceDto svcDto = hcsaConfigMainClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        svcCodeList.add(svcDto.getSvcCode());
+        msgParam.setSvcCodeList(svcCodeList);
+        msgParam.setRefId(applicationDto.getApplicationNo());
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        notificationHelper.sendNotification(msgParam);
+        log.info("end send email sms and msg");
+    }
 
 }
