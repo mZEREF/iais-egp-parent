@@ -1054,18 +1054,18 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public List<AppGrpPrimaryDocDto> syncPrimaryDoc(String appType,Boolean isRfi,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos, List<HcsaSvcDocConfigDto> primaryDocConfig) throws CloneNotSupportedException {
         List<AppGrpPrimaryDocDto> newGrpPrimaryDocList = IaisCommonUtils.genNewArrayList();
         //rfc/renew for primary doc
-        boolean rfcOrRenw = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType);
+        boolean rfcOrRenw = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
         if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos) && !IaisCommonUtils.isEmpty(primaryDocConfig)){
             List<String> docConfigIds = IaisCommonUtils.genNewArrayList();
             for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
-                docConfigIds.add(appGrpPrimaryDocDto.getSvcDocId());
+                docConfigIds.add(appGrpPrimaryDocDto.getSvcComDocId());
             }
             List<HcsaSvcDocConfigDto> oldHcsaSvcDocConfigDtos = serviceConfigService.getPrimaryDocConfigByIds(docConfigIds);
             if(!IaisCommonUtils.isEmpty(oldHcsaSvcDocConfigDtos)){
                 if(rfcOrRenw && !isRfi){
                     for(HcsaSvcDocConfigDto oldDocConfig:oldHcsaSvcDocConfigDtos){
                         for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
-                            if(oldDocConfig.getId().equals(appGrpPrimaryDocDto.getSvcDocId())){
+                            if(oldDocConfig.getId().equals(appGrpPrimaryDocDto.getSvcComDocId())){
                                 String oldDocTitle = oldDocConfig.getDocTitle();
                                 for(HcsaSvcDocConfigDto docConfig:primaryDocConfig){
                                     if(docConfig.getDocTitle().equals(oldDocTitle)){
@@ -1094,6 +1094,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }
                 }
             }
+        }else{
+            newGrpPrimaryDocList = appGrpPrimaryDocDtos;
         }
         return newGrpPrimaryDocList;
     }
