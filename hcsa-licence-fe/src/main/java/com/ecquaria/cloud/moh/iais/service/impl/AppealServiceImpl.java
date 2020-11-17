@@ -952,13 +952,15 @@ public class AppealServiceImpl implements AppealService {
         request.setAttribute("draftStatus", AppConsts.COMMON_STATUS_IACTIVE);
         saveData(request);
         request.setAttribute("newApplicationNo", appNo);
-        try {
-            String svcName = licenceDto.getSvcName();
-            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
-            LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
-            sendAllNotification(appNo,"Appeal", licenceDto, licenseeDto,hcsaServiceDto);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
+        if (!"rfi".equals(rfi)) {
+            try {
+                String svcName = licenceDto.getSvcName();
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
+                LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
+                sendAllNotification(appNo, "Appeal", licenceDto, licenseeDto, hcsaServiceDto);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
         }
         return applicationGroupDto.getGroupNo();
     }
@@ -1116,11 +1118,13 @@ public class AppealServiceImpl implements AppealService {
         request.setAttribute("draftStatus", AppConsts.COMMON_STATUS_IACTIVE);
         saveData(request);
         request.setAttribute("newApplicationNo", appNo);
-        try {
-            LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(entity.getLicenseeId()).getEntity();
-            sendAllNotification(appNo,"Appeal", null, licenseeDto,hcsaServiceDto);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
+        if (!"rfi".equals(rfi)) {
+            try {
+                LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(entity.getLicenseeId()).getEntity();
+                sendAllNotification(appNo,"Appeal", null, licenseeDto,hcsaServiceDto);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
         }
         return applicationGroupDto.getGroupNo();
     }
