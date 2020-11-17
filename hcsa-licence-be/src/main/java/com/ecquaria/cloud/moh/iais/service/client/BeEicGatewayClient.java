@@ -159,7 +159,7 @@ public class BeEicGatewayClient {
     public FeignResponseEntity<List> doStripeRefunds(List<AppReturnFeeDto> appReturnFeeDtos,
                                                                        String date, String authorization, String dateSec,
                                                                        String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/api/v1/stripe-refund", HttpMethod.POST, appReturnFeeDtos,
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/stripe-refund", HttpMethod.POST, appReturnFeeDtos,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, List.class);
     }
 
