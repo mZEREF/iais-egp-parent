@@ -261,7 +261,13 @@ public class LicenceServiceImpl implements LicenceService {
                 //send issue uen email
                 log.info(StringUtil.changeForLog("send uen email"));
                 sendUenEmail(eventBusLicenceGroupDtos);
-                sendNotification(eventBusLicenceGroupDtos);
+                for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()
+                ) {
+                    for (SuperLicDto superLicDto : item.getSuperLicDtos()
+                    ) {
+                        sendNotification(superLicDto);
+                    }
+                }
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
@@ -461,10 +467,9 @@ public class LicenceServiceImpl implements LicenceService {
 
     }
 
-    private void sendNotification(EventBusLicenceGroupDtos eventBusLicenceGroupDtos){
+    private void sendNotification(SuperLicDto superLicDto){
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
         String corpPassUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/eservice/INTERNET/FE_Landing";
-        SuperLicDto superLicDto = eventBusLicenceGroupDtos.getLicenceGroupDtos().get(0).getSuperLicDtos().get(0);
         if(superLicDto != null) {
             LicenceDto licenceDto = superLicDto.getLicenceDto();
             if(licenceDto != null){
