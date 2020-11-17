@@ -44,7 +44,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="dashboard-footernote">
-                    <p class="dashboard-small-txt"><strong>Last Login:</strong> <fmt:formatDate value="${INTER_INBOX_USER_INFO.lastLogin}" pattern="dd/MM/yyyy HH:mm"/> |
+                    <p class="dashboard-small-txt" style="font-size:16px;"><strong>Last Login:</strong> <fmt:formatDate value="${INTER_INBOX_USER_INFO.lastLogin}" pattern="dd/MM/yyyy HH:mm"/> |
                         <strong>Last Activity:</strong>
                         <c:choose>
                             <c:when test="${INTER_INBOX_USER_INFO.functionName != null}">
