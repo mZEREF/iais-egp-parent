@@ -317,7 +317,6 @@ public class CessationFeServiceImpl implements CessationFeService {
             String licId = appCessationDto.getLicId();
             List<String> specLicIds = licenceClient.getSpecIdsByBaseId(licId).getEntity();
             LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
-            String licenseeId = licenceDto.getLicenseeId();
             licIds.clear();
             licIds.add(licId);
             String appId = appIdPremisesMap.get(premiseId);
@@ -387,15 +386,18 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailParam.setRefId(applicationNo);
                     emailParam.setSubject(subject);
                     //email
+                    log.info(StringUtil.changeForLog("==================== email ===============>>>>>>>"));
                     notificationHelper.sendNotification(emailParam);
                     //msg
                     emailParam.setSvcCodeList(serviceCodes);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_MSG);
                     emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    log.info(StringUtil.changeForLog("==================== notification ===============>>>>>>>"));
                     notificationHelper.sendNotification(emailParam);
                     //sms
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_SMS);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                    log.info(StringUtil.changeForLog("==================== sms ===============>>>>>>>"));
                     notificationHelper.sendNotification(emailParam);
 
                 } else {

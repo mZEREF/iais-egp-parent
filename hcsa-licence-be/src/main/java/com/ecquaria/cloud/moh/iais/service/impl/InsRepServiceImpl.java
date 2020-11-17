@@ -87,8 +87,6 @@ public class InsRepServiceImpl implements InsRepService {
     @Autowired
     private ApplicationViewService applicationViewService;
     @Autowired
-    private EventBusHelper eventBusHelper;
-    @Autowired
     private ApplicationGroupService applicationGroupService;
     @Autowired
     private HcsaApplicationDelegator hcsaApplicationDelegator;
@@ -98,12 +96,6 @@ public class InsRepServiceImpl implements InsRepService {
     private HcsaAppClient hcsaAppClient;
     @Autowired
     InspEmailService inspEmailService;
-    @Autowired
-    private MsgTemplateClient msgTemplateClient;
-    @Value("${iais.email.sender}")
-    private String mailSender;
-    @Autowired
-    private EmailClient emailClient;
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
     @Value("${spring.application.name}")
@@ -725,11 +717,16 @@ public class InsRepServiceImpl implements InsRepService {
         String subStage = getSubStage(appPremisesCorrelationId, taskKey);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
         String groupId = hcsaSvcStageWorkingGroupDto1.getGroupId();
-        String userId = getRobackUserId(applicationNo, taskKey);
+        String userId = getRollbackInspectorId(taskDto.getRefNo());
         List<TaskDto> taskDtos = prepareBackTaskList(taskDto, userId);
         taskService.createTasks(taskDtos);
         createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_REVISE_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId, subStage);
         createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO1, groupId, subStage);
+    }
+
+    private String getRollbackInspectorId(String corrId) {
+        String userId = taskOrganizationClient.getRollBackInspector(corrId).getEntity();
+        return userId;
     }
 
     @Override
@@ -1154,52 +1151,6 @@ public class InsRepServiceImpl implements InsRepService {
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         List<TaskDto> list = IaisCommonUtils.genNewArrayList();
         list.add(taskDto);
-        return list;
-    }
-
-    private List<TaskDto> prepareTaskToAo2(TaskDto taskDto, String serviceId, List<ApplicationDto> applicationDtos) throws FeignException {
-        List<TaskDto> list = IaisCommonUtils.genNewArrayList();
-        for(ApplicationDto applicationDto : applicationDtos){
-            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-            hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
-            hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_AO2);
-            hcsaSvcStageWorkingGroupDto.setOrder(1);
-            hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
-            HcsaSvcStageWorkingGroupDto dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
-            List<ApplicationDto> applicationDtos1 = IaisCommonUtils.genNewArrayList();
-            applicationDtos1.add(applicationDto);
-            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos1, HcsaConsts.ROUTING_STAGE_AO2);
-            hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-            String schemeType = dto.getSchemeType();
-            String groupId = dto.getGroupId();
-            String userId = null;
-            Set<String> ao2 = taskService.getInspectiors(applicationDto.getApplicationNo(), TaskConsts.TASK_PROCESS_URL_MAIN_FLOW, RoleConsts.USER_ROLE_AO2);
-            if (!ao2.isEmpty()) {
-                userId = ao2.iterator().next();
-                taskDto.setUserId(userId);
-            }
-            if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ROUND.equals(schemeType)) {
-                TaskDto taskDto1 = taskService.getUserIdForWorkGroup(groupId);
-                taskDto.setUserId(taskDto1.getUserId());
-            } else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_COMMON.equals(schemeType)) {
-                taskDto.setUserId(null);
-            }else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ASSIGN.equals(schemeType)) {
-                taskDto.setUserId(null);
-                taskDto.setTaskKey(TaskConsts.TASK_TYPE_MAIN_FLOW_SUPER);
-            }
-            taskDto.setId(null);
-            taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_AO2);
-            taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
-            taskDto.setWkGrpId(groupId);
-            taskDto.setDateAssigned(new Date());
-            taskDto.setSlaDateCompleted(null);
-            taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
-            taskDto.setRoleId(RoleConsts.USER_ROLE_AO2);
-            taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_MAIN_FLOW);
-            taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            list.add(taskDto);
-        }
-
         return list;
     }
 

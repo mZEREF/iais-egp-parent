@@ -90,6 +90,9 @@
         </div>
       </div>
     </div>
+    <iais:action>
+      <a style="margin-left: 0%" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em> Back</a>
+    </iais:action>
   </form>
 </div>
 
@@ -100,3 +103,10 @@
 </style>
 
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
+
+<script type="text/javascript">
+  function submit(action) {
+    $("[name='crud_action_type']").val(action);
+    $("#mainForm").submit();
+  }
+</script>
