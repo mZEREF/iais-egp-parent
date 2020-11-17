@@ -843,7 +843,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
 
                     try {
-                        if(h.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                        if(h.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE) && applicationGroupDto.isAutoApprove()){
                             LicenceDto licenceDto=hcsaLicenceClient.getLicenceDtoById(h.getOriginLicenceId()).getEntity();
                             Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                             emailMap.put("officer_name", "");
