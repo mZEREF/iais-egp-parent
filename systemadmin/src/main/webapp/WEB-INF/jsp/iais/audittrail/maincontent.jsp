@@ -29,7 +29,7 @@
                     <iais:field value="Operation Type" required="true"></iais:field>
                     <div class="col-xs-5 col-md-5">
                         <iais:select name="operationType" id="operationType" value="${param.operationType}"
-                                     options="operationTypeSelect" firstOption="Please Select"></iais:select>
+                                     codeCategory="CATE_ID_AUDIT_TRAIL_OPERATION_TYPE" firstOption="Please Select"></iais:select>
                         <span id="error_domain" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
                 <div class="col-xs-5 col-md-10">
                     <iais:field value="Data Activities" required="false"></iais:field>
                     <div class="col-xs-5 col-md-5">
-                        <iais:select name="dataActivites" id="dataActivites" value="${param.activites}"
+                        <iais:select name="dataActivites" id="dataActivites" value="${param.dataActivites}"
                                      options="dataActivitesTypeSelect" firstOption="Please Select"></iais:select>
                         <span id="error_dataActivites" name="iaisErrorMsg" class="error-msg"></span>
                     </div>

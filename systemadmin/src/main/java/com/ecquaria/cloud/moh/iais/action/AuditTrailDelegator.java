@@ -78,6 +78,7 @@ public class AuditTrailDelegator {
 
         ParamUtil.setSessionAttr(request, "isFullMode", null);
         ParamUtil.setSessionAttr(request, AuditTrailConstants.PARAM_SEARCH, null);
+        ParamUtil.setSessionAttr(request, AuditTrailConstants.PARAM_SEARCHRESULT, null);
     }
 
     /**
@@ -139,12 +140,6 @@ public class AuditTrailDelegator {
     }
 
     private void preSelectOption(HttpServletRequest request) {
-        List<SelectOption> operationTypeList = IaisCommonUtils.genNewArrayList();
-        operationTypeList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_TYPE_INTERNET), "Internet"));
-        operationTypeList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_TYPE_INTRANET), "Intranet"));
-        operationTypeList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_TYPE_BATCH_JOB), "System Batch Job"));
-        ParamUtil.setRequestAttr(request, "operationTypeSelect", operationTypeList);
-
         List<SelectOption> operationList =  IaisCommonUtils.genNewArrayList();
         operationList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_LOGIN), "Login"));
         operationList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_LOGOUT), "Logout"));
@@ -346,7 +341,7 @@ public class AuditTrailDelegator {
 
     private void queryResult(HttpServletRequest request, SearchParam searchParam){
         SearchResult<AuditTrailQueryDto> trailDtoSearchResult = auditTrailService.listAuditTrailDto(searchParam);
-        ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_SEARCHRESULT, trailDtoSearchResult);
+        ParamUtil.setSessionAttr(request, AuditTrailConstants.PARAM_SEARCHRESULT, trailDtoSearchResult);
         ParamUtil.setSessionAttr(request, AuditTrailConstants.PARAM_SEARCH, searchParam);
     }
 

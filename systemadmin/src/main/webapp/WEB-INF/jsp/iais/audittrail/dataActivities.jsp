@@ -18,6 +18,13 @@
 %>
 <div class="main-content">
     <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
+        <input type="hidden" name="collapseFlag" value="${param.collapseFlag}">
+        <input type="hidden" name="operationType" value="${param.operationType}">
+        <input type="hidden" name="operation" value="${param.operation}">
+        <input type="hidden" name="user" value="${param.user}">
+        <input type="hidden" name="dataActivites" value="${param.dataActivites}">
+        <input type="hidden" name="startDate" value="${param.startDate}">
+        <input type="hidden" name="endDate" value="${param.endDate}">
             <br><br><br>
             <tr height="100%">
                 <td style="width: 100%;" class="first last">
