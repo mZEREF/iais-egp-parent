@@ -3090,6 +3090,12 @@ public class NewApplicationDelegator {
         }
         Double totalAmount = appSubmissionDto.getAmount();
         if (totalAmount == 0.0) {
+            //update status
+            String appGrpId = appSubmissionDto.getAppGrpId();
+            ApplicationGroupDto appGrp = new ApplicationGroupDto();
+            appGrp.setId(appGrpId);
+            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+            serviceConfigService.updatePaymentStatus(appGrp);
             StringBuilder url = new StringBuilder();
             url.append("https://")
                     .append(bpc.request.getServerName())
