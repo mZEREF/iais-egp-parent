@@ -122,6 +122,15 @@ public class MessageDelegator {
         String message = ParamUtil.getString(request, MessageConstants.PARAM_MESSAGE);
         MessageDto editDto = (MessageDto) ParamUtil.getSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO);
 
+
+        if(description != null && description.indexOf("\n")!= -1){
+            description= description.replaceAll("\n"," ");
+        }
+
+        if(message != null && message.indexOf("\n")!= -1){
+            message= message.replaceAll("\n"," ");
+        }
+
         editDto.setDescription(description);
         editDto.setMessage(message);
         ParamUtil.setSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO, editDto);
