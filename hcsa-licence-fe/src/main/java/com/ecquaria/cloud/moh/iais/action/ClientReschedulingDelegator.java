@@ -187,7 +187,6 @@ public class ClientReschedulingDelegator {
                 }
                 ParamUtil.setRequestAttr(bpc.request, "apptViewDtos", apptViewDtos1);
                 ParamUtil.setSessionAttr(bpc.request, "apptViewDtosMap", apptViewDtos);
-                result.setRowCount(apptViewDtos1.size());
                 ParamUtil.setRequestAttr(bpc.request,"SearchResult",result);
             }
             ParamUtil.setRequestAttr(bpc.request,"SearchParam",rescheduleParam);
