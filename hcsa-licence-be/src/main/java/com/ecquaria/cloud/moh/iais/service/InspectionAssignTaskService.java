@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
@@ -34,6 +35,15 @@ public interface InspectionAssignTaskService {
      * @Descripation: According to the group Id, get the work pool
      */
     List<TaskDto> getCommPoolByGroupWordId(LoginContext loginContext);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/11/18
+      * @Param: applicationDtos, stageId
+      * @return:  List<HcsaSvcStageWorkingGroupDto>
+      * @Descripation: generateHcsaSvcStageWorkingGroupDtos
+      */
+    List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId);
 
     /**
      * @author: shicheng

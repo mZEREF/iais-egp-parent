@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -44,6 +45,9 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
 
     @Autowired
     private AppInspectionStatusClient appInspectionStatusClient;
+
+    @Autowired
+    private InspectionAssignTaskService inspectionAssignTaskService;
 
     @Autowired
     private OrganizationClient organizationClient;
@@ -173,6 +177,12 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
                     if(!IaisCommonUtils.isEmpty(taskDtoList)){
                         List<String> leads = organizationClient.getInspectionLead(workGroupId).getEntity();
                         if(!IaisCommonUtils.isEmpty(leads)) {
+                            //get task score
+                            List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+                            applicationDtos.add(applicationDto);
+                            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = inspectionAssignTaskService.generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
+                            hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+                            //get lead by lead score
                             List<TaskDto> taskScoreDtos = taskService.getTaskDtoScoresByWorkGroupId(workGroupId);
                             String lead = getLeadWithTheFewestScores(taskScoreDtos, leads);
                             TaskDto taskDto = taskDtoList.get(0);
@@ -185,7 +195,7 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
                             taskDto1.setWkGrpId(workGroupId);
                             taskDto1.setUserId(lead);
                             taskDto1.setApplicationNo(taskDto.getApplicationNo());
-                            createTasks = prepareTaskList(taskDto1, hcsaSvcStageWorkingGroupDto, intranet, createTasks);
+                            createTasks = prepareTaskList(taskDto1, hcsaSvcStageWorkingGroupDto, intranet, createTasks, hcsaSvcStageWorkingGroupDtos.get(0).getCount());//NOSONAR
                         }
                         if(!IaisCommonUtils.isEmpty(createTasks)) {
                             taskService.createTasks(createTasks);
@@ -246,9 +256,7 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
     }
 
     private List<TaskDto> prepareTaskList(TaskDto taskDto, HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto,
-                                          AuditTrailDto intranet, List<TaskDto> createTasks) {
-        List<HcsaSvcStageWorkingGroupDto> listHcsaSvcStageWorkingGroupDto = hcsaConfigClient.getSvcWorkGroup(hcsaSvcStageWorkingGroupDto).getEntity();
-        Integer count = listHcsaSvcStageWorkingGroupDto.get(0).getCount();
+                                          AuditTrailDto intranet, List<TaskDto> createTasks, int count) {
         taskDto.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
         taskDto.setId(null);
         taskDto.setDateAssigned(new Date());
