@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
@@ -15,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -55,6 +57,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +76,8 @@ public class InterInboxDelegator {
     private InboxService inboxService;
     @Autowired
     private LicenceInboxClient licenceInboxClient;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
     @Autowired
     private InterInboxDelegator(InboxService inboxService){
         this.inboxService = inboxService;
@@ -458,6 +463,15 @@ public class InterInboxDelegator {
             return;
         }
         LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licId).getEntity();
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(licenceDto.getCreatedAt());
+        calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(systemParamConfig.getLicencePeriod()));
+        boolean periodEqDay = calendar.getTime().after(new Date());
+        if (!periodEqDay){
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"The selected licence is not eligible for appeal");
+            ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
+            return;
+        }
         List<AppPremiseMiscDto> entity = appInboxClient.getAppPremiseMiscDtoRelateId(licId).getEntity();
         if(!entity.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"An appeal was already made for this licence");
@@ -956,6 +970,29 @@ public class InterInboxDelegator {
                 bpc.request.setAttribute("appealApplication",appId);
                 return;
             }
+        }
+        ApplicationDto applicationDto = appInboxClient.getApplicationById(appId).getEntity();
+        Calendar calendar=Calendar.getInstance();
+        Date createAt = applicationDto.getCreateAt();
+        calendar.setTime(createAt);
+        calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(systemParamConfig.getAdditionalCgo()));
+        boolean cgoEqDay = calendar.getTime().after(new Date());
+        calendar.setTime(createAt);
+        calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(systemParamConfig.getRestrictedName()));
+        boolean nameEqDay = calendar.getTime().after(new Date());
+        calendar.setTime(createAt);
+        calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(systemParamConfig.getAppealOthers()));
+        boolean otherEqDay = calendar.getTime().after(new Date());
+        calendar.setTime(createAt);
+        calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(systemParamConfig.getRenewalFee()));
+        boolean feeEqDay = calendar.getTime().after(new Date());
+        calendar.setTime(createAt);
+        calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(systemParamConfig.getAgainstRejection()));
+        boolean rejectEqDay = calendar.getTime().after(new Date());
+        if (!cgoEqDay&&!nameEqDay&&!otherEqDay&&!feeEqDay&&!rejectEqDay){
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,"The selected licence is not eligible for appeal");
+            ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",Boolean.FALSE);
+            return;
         }
         Boolean result = inboxService.checkEligibility(appId);
         Map<String, String> map = inboxService.appealIsApprove(appId, "application");
