@@ -23,7 +23,7 @@
                     <div class="intranet-content">
                         <div class="bg-title">
                             <h2>
-                                <span>You have submitted send date and time.</span>
+                                <span><iais:message key="ESB_ERR012" escape="true"/></span>
                             </h2>
                         </div>
                         <div class="row">
