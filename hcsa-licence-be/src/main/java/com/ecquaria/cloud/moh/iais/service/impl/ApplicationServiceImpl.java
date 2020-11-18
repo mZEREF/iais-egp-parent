@@ -435,7 +435,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 templateContent.put("serviceNames", svcNames);
             }
 
-            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName() + "/main-web/";
+            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/";
             //EN-NAP-008
             String today = Formatter.formatDate(new Date());
             String applicantName = licenseeDto.getName();
