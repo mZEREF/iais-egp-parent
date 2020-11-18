@@ -6,6 +6,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -19,7 +22,9 @@ import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.InspecSaveBeRecByService;
+import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -72,7 +77,13 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     private ApplicationClient applicationClient;
 
     @Autowired
+    private InspectionRectificationProService inspectionRectificationProService;
+
+    @Autowired
     private InspectionTaskClient inspectionTaskClient;
+
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
     @Autowired
     private OrganizationClient organizationClient;
@@ -135,11 +146,15 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             String appId = processFileTrackDtos.get(0).getRefId();
             log.debug(StringUtil.changeForLog("Application Id:" + appId));
             JobLogger.log(StringUtil.changeForLog("Application Id:" + appId));
+            //get fileSize
+            int fileSize = getFileSizeByAppId(appId);
+            log.debug(StringUtil.changeForLog("Rectification fileSize:" + fileSize));
+            JobLogger.log(StringUtil.changeForLog("Rectification fileSize:" + fileSize));
             log.debug(StringUtil.changeForLog("Rectification allSize:" + allSize));
             JobLogger.log(StringUtil.changeForLog("Rectification allSize:" + allSize));
             log.debug(StringUtil.changeForLog("Rectification nowSize:" + nowSize));
             JobLogger.log(StringUtil.changeForLog("Rectification nowSize:" + nowSize));
-            if(allSize == nowSize) {
+            if(allSize == nowSize && fileSize == allSize) {
                 for (File fil : files) {
                     for (ProcessFileTrackDto pDto : processFileTrackDtos) {
                         if (fil.getName().endsWith(".zip") && fil.getName().equals(pDto.getFileName())) {
@@ -161,6 +176,31 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             }
         }
         return reportIds;
+    }
+
+    private int getFileSizeByAppId(String appId) {
+        int fileSize = 0;
+        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
+        if(appPremisesCorrelationDto != null){
+            AppPremPreInspectionNcDto appPremPreInspectionNcDto =
+                    inspectionRectificationProService.getAppPremPreInspectionNcDtoByCorrId(appPremisesCorrelationDto.getId());
+            if(appPremPreInspectionNcDto != null){
+                List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos =
+                        fillUpCheckListGetAppClient.getAppNcItemByNcId(appPremPreInspectionNcDto.getId()).getEntity();
+                if(!IaisCommonUtils.isEmpty(appPremisesPreInspectionNcItemDtos)){//NOSONAR
+                    for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtos){
+                        if(appPremisesPreInspectionNcItemDto != null) {
+                            List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos =
+                                    inspectionRectificationProService.getAppNcDocList(appPremisesPreInspectionNcItemDto.getId());
+                            if(appPremPreInspectionNcDocDtos != null) {
+                                fileSize = appPremPreInspectionNcDocDtos.size() + fileSize;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return fileSize;
     }
 
     private String unzipFile(ZipEntry zipEntry, ZipFile zipFile)  {
