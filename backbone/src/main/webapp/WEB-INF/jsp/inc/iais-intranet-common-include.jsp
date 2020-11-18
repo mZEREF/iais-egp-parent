@@ -50,7 +50,8 @@
     var BASE_CONTEXT_PATH = '<%=request.getContextPath()%>';
     $(document).ready(function(){
         $('.date_picker').datepicker({
-            format:"dd/mm/yyyy"
+            format:"dd/mm/yyyy",
+            autoclose:true
         });
     });
 </script>
