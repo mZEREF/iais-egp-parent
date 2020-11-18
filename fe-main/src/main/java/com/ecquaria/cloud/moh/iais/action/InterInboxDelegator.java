@@ -95,10 +95,17 @@ public class InterInboxDelegator {
             MessageConstants.MESSAGE_STATUS_ARCHIVER,
     };
 
-    public void start(BaseProcessClass bpc) throws IllegalAccessException, ParseException {
+    public void start(BaseProcessClass bpc) throws IllegalAccessException, ParseException, IOException {
         clearSessionAttr(bpc.request);
         IaisEGPHelper.clearSessionAttr(bpc.request,FilterParameter.class);
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        if (loginContext == null){
+            StringBuilder url = new StringBuilder();
+            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN);
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }
         AuditTrailDto auditTrailDto = inboxService.getLastLoginInfo(loginContext.getLoginId());
         InterInboxUserDto interInboxUserDto = new InterInboxUserDto();
         interInboxUserDto.setLicenseeId(loginContext.getLicenseeId());
