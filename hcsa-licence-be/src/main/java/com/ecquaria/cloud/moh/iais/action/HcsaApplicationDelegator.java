@@ -2738,9 +2738,9 @@ public class HcsaApplicationDelegator {
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
 
         AppPremiseMiscDto premiseMiscDto = applicationClient.getAppPremisesMisc(appPremisesCorrelationDto.getId()).getEntity();
-
+        String reason = "";
         if(premiseMiscDto != null && premiseMiscDto.getReason() != null){
-            String reason = premiseMiscDto.getReason();
+             reason = premiseMiscDto.getReason();
             String code = MasterCodeUtil.getCodeDesc(reason);
             templateContent.put("content", code);
         }else{
