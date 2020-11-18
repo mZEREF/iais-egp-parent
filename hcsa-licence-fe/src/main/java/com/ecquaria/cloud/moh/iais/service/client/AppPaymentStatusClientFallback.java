@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentXmlDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,14 @@ public class AppPaymentStatusClientFallback implements AppPaymentStatusClient {
 
     @Override
     public FeignResponseEntity<List<PaymentDto>> getPaymentDtosByReqRefNos() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<GiroPaymentXmlDto> updateGiroPaymentDto(GiroPaymentXmlDto giroPaymentXmlDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

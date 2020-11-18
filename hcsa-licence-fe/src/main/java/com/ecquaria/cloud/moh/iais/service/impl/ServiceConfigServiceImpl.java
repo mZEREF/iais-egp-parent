@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentXmlDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
@@ -28,13 +29,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
@@ -74,6 +69,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     private LicenceClient licenceClient;
     @Autowired
     private HcsaConfigFeClient hcsaConfigFeClient;
+    @Autowired
+    private AppPaymentStatusClient appPaymentStatusClient;
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
 
@@ -336,5 +333,22 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Override
     public List<HcsaSvcDocConfigDto> getPrimaryDocConfigByIds(List<String> ids) {
         return hcsaConfigFeClient.listSvcDocConfig(ids).getEntity();
+    }
+
+    @Override
+    public void giroPaymentXmlUpdateByGrpNo(ApplicationGroupDto appGrp) {
+        GiroPaymentXmlDto giroPaymentXmlDto = genGiroPaymentXmlDtoByAppGrp(appGrp);
+        //todo need xml file send sftp
+        appPaymentStatusClient.updateGiroPaymentDto(giroPaymentXmlDto);
+    }
+
+    private GiroPaymentXmlDto genGiroPaymentXmlDtoByAppGrp(ApplicationGroupDto appGrp){
+        GiroPaymentXmlDto giroPaymentXmlDto = new GiroPaymentXmlDto();
+        giroPaymentXmlDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        //todo gen xml by appGroup
+        giroPaymentXmlDto.setXmlData(appGrp.getGroupNo());
+        giroPaymentXmlDto.setXmlType(ApplicationConsts.GIRO_SEND_XML_SFTP);
+        giroPaymentXmlDto.setStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO);
+        return giroPaymentXmlDto;
     }
 }
