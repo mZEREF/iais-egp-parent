@@ -362,7 +362,7 @@ public class CessationFeServiceImpl implements CessationFeService {
             Date effectiveDate = appCessationDto.getEffectiveDate();
             try {
                 if (effectiveDate.after(new Date())) {
-                    String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+                    String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
                     Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                     String applicantName = loginContext.getUserName();
                     emailMap.put("ApplicantName", applicantName);

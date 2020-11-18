@@ -577,7 +577,7 @@ public class AppealApproveBatchjob {
         templateContent.put("ApplicationType",  appType);
         templateContent.put("ApplicationNo", applicationDto.getApplicationNo());
         templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date(),"dd/MM/yyyy"));
-        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         templateContent.put("newSystem", loginUrl);
 
         templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());

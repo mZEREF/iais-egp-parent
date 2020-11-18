@@ -623,7 +623,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                 MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE + applicationNo;
         HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
         maskParams.put("applicationNo", applicationNo);
-        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         String applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
         //send email
         Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, applicantId, applicationViewDto, urlId, applicationDtos);
@@ -705,7 +705,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                 MessageConstants.MESSAGE_INBOX_URL_APPT_SYS_INSP_DATE + applicationNo;
         HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
         maskParams.put("applicationNo", applicationNo);
-        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         String applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
         //send email
         Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, applicantId, applicationViewDto, urlId, applicationDtos);

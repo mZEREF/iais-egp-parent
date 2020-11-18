@@ -227,7 +227,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
         if(licenseeDto != null){
             String licenceId = licenceDto.getId();
-            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
             String applicationName = licenseeDto.getName();
             String MohName = AppConsts.MOH_AGENCY_NAME;
             log.info(StringUtil.changeForLog("send renewal application notification applicantName : " + applicationName));

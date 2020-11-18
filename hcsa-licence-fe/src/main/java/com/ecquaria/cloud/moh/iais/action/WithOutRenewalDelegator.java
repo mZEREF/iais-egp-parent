@@ -1517,7 +1517,7 @@ public class WithOutRenewalDelegator {
             String paymentMethod = appSubmissionDtos.get(0).getPaymentMethod();
             String applicationTypeShow = MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
             String MohName = AppConsts.MOH_AGENCY_NAME;
-            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
             String paymentMethodName = "onlinePayment";
             String groupNo = appSubmissionDtos.get(0).getAppGrpNo();
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);

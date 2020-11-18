@@ -807,7 +807,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     try {
                         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(h.getAppPremisesCorrelationId());
                         AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremisesCorrelationDto.getNewCorrelationId());
-                        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+                        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
                         if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
                             Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                             msgInfoMap.put("systemLink",loginUrl);

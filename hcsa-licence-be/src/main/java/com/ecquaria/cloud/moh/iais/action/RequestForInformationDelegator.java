@@ -393,7 +393,7 @@ public class RequestForInformationDelegator {
 
         try {
 
-            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
             Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
             emailMap.put("ApplicantName", applicantName);
             emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.AD_HOC}).get(0).getText());
@@ -643,7 +643,7 @@ public class RequestForInformationDelegator {
         if(status.equals(RequestForInformationConstants.RFI_NEW)||status.equals(RequestForInformationConstants.RFI_RETRIGGER)){
             try {
 
-                String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+                String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
                 Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                 emailMap.put("ApplicantName", applicantName);
                 emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.AD_HOC}).get(0).getText());

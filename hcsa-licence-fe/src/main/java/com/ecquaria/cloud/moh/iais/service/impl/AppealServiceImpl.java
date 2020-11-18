@@ -1313,7 +1313,7 @@ public class AppealServiceImpl implements AppealService {
         log.info("start send email sms and msg");
         log.info(StringUtil.changeForLog("appNo: " + appNo));
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
-        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         templateContent.put("ApplicantName", licenseeDto.getName());
         templateContent.put("ApplicationType",appType);
         templateContent.put("ApplicationNo", appNo);

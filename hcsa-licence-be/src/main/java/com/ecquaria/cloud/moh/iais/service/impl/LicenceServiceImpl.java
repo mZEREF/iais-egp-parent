@@ -405,7 +405,7 @@ public class LicenceServiceImpl implements LicenceService {
                             Calendar c = Calendar.getInstance();
                             c.add(Calendar.DAY_OF_MONTH, systemParamConfig.getIssueUenGraceDay());
                             templateContent.put("GraceDate", Formatter.formatDate(c.getTime()));
-                            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+                            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
                             templateContent.put("newSystem", loginUrl);
                             templateContent.put("emailAddress", systemAddressOne);
                             templateContent.put("telNo", systemPhoneNumber);
@@ -469,7 +469,7 @@ public class LicenceServiceImpl implements LicenceService {
     }
 
     private void sendNotification(SuperLicDto superLicDto){
-        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         String corpPassUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/eservice/INTERNET/FE_Landing";
         if(superLicDto != null) {
             LicenceDto licenceDto = superLicDto.getLicenceDto();
@@ -615,7 +615,7 @@ public class LicenceServiceImpl implements LicenceService {
 
     private void sendRfcApproveLicenseeEmail(ApplicationGroupDto applicationGroupDto,  ApplicationDto applicationDto,String licenceNo,
                                              List<String> svcCodeList)  {
-        String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+        String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
         LicenseeDto newLicenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getNewLicenseeId()).getEntity();
@@ -686,7 +686,7 @@ public class LicenceServiceImpl implements LicenceService {
                                            String appDate,
                                            String licenceNo,
                                            List<String> svcCodeList) throws IOException {
-        String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+        String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         emailMap.put("change", "true");
         emailMap.put("ApplicantName", applicantName);

@@ -148,7 +148,7 @@ public class SendsReminderToReplyRfiBatchjob {
         try{
 
 
-            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
             Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
             emailMap.put("ApplicantName", applicantName);
             emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.AD_HOC}).get(0).getText());

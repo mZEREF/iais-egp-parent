@@ -115,7 +115,7 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
     }
 
     private void sendEmailByAppGroup(Map<String, Object> map, String subject, ApplicationGroupDto applicationGroupDto) {
-        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         map.put("systemLink", loginUrl);
         String appGrpId = applicationGroupDto.getId();
         try{

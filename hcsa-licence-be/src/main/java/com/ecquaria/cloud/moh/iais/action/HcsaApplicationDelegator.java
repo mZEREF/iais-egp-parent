@@ -2056,7 +2056,7 @@ public class HcsaApplicationDelegator {
                         ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
                         String applicationNo = oldApplication.getApplicationNo();
                         String applicationType1 = oldApplication.getApplicationType();
-                        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+                        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
                         ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
                         OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
                         if(orgUserDto != null){
@@ -2074,9 +2074,9 @@ public class HcsaApplicationDelegator {
                             msgInfoMap.put("reqAppNo",applicationNo);
                             msgInfoMap.put("S_LName",serviceName);
                             msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-                            msgInfoMap.put("ApplicationDate",applicationViewDto.getSubmissionDate());
+                            msgInfoMap.put("ApplicationDate",applicationViewDto.getSubmissionDate().split(" ")[0]);
                             msgInfoMap.put("returnMount",applicationViewDto.getReturnFee());
-                            if (isByGIRO == 0){
+                            if (isByGIRO == 1){
                                 msgInfoMap.put("paymentMode","GIRO");
                                 msgInfoMap.put("paymentType","0");
                             }else{
