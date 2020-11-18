@@ -1575,6 +1575,9 @@ public class LicenceViewServiceDelegator {
 
     private void primaryDoc(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos,List<AppGrpPrimaryDocDto> copyAppGrpPrimaryDocDtos,List<AppGrpPrimaryDocDto> copyOldAppGrpPrimaryDocDtos){
         for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){
+            if(appGrpPrimaryDocDto.getSvcDocId()==null){
+                continue;
+            }
             boolean flag=false;
             for(AppGrpPrimaryDocDto primaryDocDto : oldAppGrpPrimaryDocDtos){
                 if(appGrpPrimaryDocDto.getSvcComDocName().equals(primaryDocDto.getSvcComDocName())){
