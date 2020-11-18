@@ -17,6 +17,7 @@ public class HalpActiveMcDelegator {
     MasterCodeService masterCodeService;
 
     public void updateMsStep(BaseProcessClass bpc){
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
         AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         masterCodeService.activeMasterCode(auditTrailDto);
     }
