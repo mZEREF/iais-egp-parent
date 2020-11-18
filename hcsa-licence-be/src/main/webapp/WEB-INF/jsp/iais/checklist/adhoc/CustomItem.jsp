@@ -54,7 +54,7 @@
             <div class="col-xs-5 col-md-3">
               <iais:field value="Checklist Item" required="true"></iais:field>
               <div class="col-xs-5 col-md-3">
-                <input type="text" name="checklistItem" value="" />
+                <input type="text" name="checklistItem" value="" maxlength="500"/>
                 <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
               </div>
 
