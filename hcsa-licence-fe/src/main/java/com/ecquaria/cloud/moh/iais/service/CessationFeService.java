@@ -22,7 +22,7 @@ public interface CessationFeService {
 
     void updateLicenceFe(List<String> licNos);
 
-    Map<String, String> saveCessations(List<AppCessationDto> appCessationDtos,LoginContext loginContext);
+    Map<String, List<String>> saveCessations(List<AppCessationDto> appCessationDtos,LoginContext loginContext);
 
     void saveRfiCessations(List<AppCessationDto> appCessationDtos,LoginContext loginContext,String rfiAppId) throws Exception;
 
@@ -30,7 +30,7 @@ public interface CessationFeService {
 
     List<AppSpecifiedLicDto> getSpecLicInfo(List<String> licIds);
 
-    List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, Map<String, String> appIdPremisesMap, LoginContext loginContext) throws ParseException;
+    List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, Map<String, List<String>> appIdPremisesMap, LoginContext loginContext) throws ParseException;
 
     boolean isGrpLicence(List<String> licIds);
 

@@ -123,9 +123,8 @@ public class CessationBeServiceImpl implements CessationBeService {
     }
 
     @Override
-    public Map<String, String> saveCessations(List<AppCessationDto> appCessationDtos) {
+    public Map<String, List<String>> saveCessations(List<AppCessationDto> appCessationDtos) {
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
-        List<String> appIds = IaisCommonUtils.genNewArrayList();
         Map<String, List<String>> licPremiseIdMap = IaisCommonUtils.genNewHashMap();
         for (AppCessationDto appCessationDto : appCessationDtos) {
             String licId = appCessationDto.getLicId();
@@ -139,28 +138,32 @@ public class CessationBeServiceImpl implements CessationBeService {
                 premiseIds.add(premiseId);
             }
         }
-        Map<String, String> appIdPremisesMap = IaisCommonUtils.genNewHashMap();
+        Map<String, List<String>> appIdPremisesMap = IaisCommonUtils.genNewHashMap();
         licPremiseIdMap.forEach((licId, premiseIds) -> {
             List<String> licIds = IaisCommonUtils.genNewArrayList();
             licIds.clear();
             licIds.add(licId);
             AppSubmissionDto appSubmissionDto = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity().get(0);
             List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
-            Map<String, String> transform = transform(appSubmissionDto, premiseIds);
+            Map<String, List<String>> baseMap = transform(appSubmissionDto, premiseIds);
             if (!IaisCommonUtils.isEmpty(specLicIds)) {
                 AppSubmissionDto appSubmissionDtoSpec = hcsaLicenceClient.getAppSubmissionDtos(specLicIds).getEntity().get(0);
-                transform(appSubmissionDtoSpec, premiseIds);
+                Map<String, List<String>> specMap = transform(appSubmissionDtoSpec, premiseIds);
+                for (String premiseId : premiseIds) {
+                    List<String> baseAppIds = baseMap.get(premiseId);
+                    List<String> specAppIds = specMap.get(premiseId);
+                    baseAppIds.addAll(specAppIds);
+                }
             }
-            appIdPremisesMap.putAll(transform);
+            appIdPremisesMap.putAll(baseMap);
         });
 
-        appIdPremisesMap.forEach((premiseId, appId) -> {
+        appIdPremisesMap.forEach((premiseId, appIds) -> {
             for (AppCessationDto appCessationDto : appCessationDtos) {
                 String premiseId1 = appCessationDto.getPremiseId();
                 if (premiseId.equals(premiseId1)) {
-                    AppCessMiscDto appCessMiscDto = setMiscData(appCessationDto, appId);
-                    appCessMiscDtos.add(appCessMiscDto);
-                    appIds.add(appId);
+                    List<AppCessMiscDto> appCessMiscDtos1 = setMiscData(appCessationDto, appIds);
+                    appCessMiscDtos.addAll(appCessMiscDtos1);
                 }
             }
         });
@@ -252,7 +255,7 @@ public class CessationBeServiceImpl implements CessationBeService {
     }
 
     @Override
-    public List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, Map<String, String> appIdPremisesMap, LoginContext loginContext) throws Exception {
+    public List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, Map<String, List<String>> appIdPremisesMap, LoginContext loginContext) throws Exception {
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         List<AppCessatonConfirmDto> appCessationDtosConfirms = IaisCommonUtils.genNewArrayList();
@@ -264,10 +267,18 @@ public class CessationBeServiceImpl implements CessationBeService {
             LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
             licIds.clear();
             licIds.add(licId);
-            String appId = appIdPremisesMap.get(premiseId);
-            ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
-            String applicationNo = applicationDto.getApplicationNo();
-            applicationDtos.add(applicationDto);
+            List<String> appIds = appIdPremisesMap.get(premiseId);
+            String applicationNo = null;
+            String appId = null;
+            for(String id : appIds){
+                ApplicationDto applicationDto = applicationClient.getApplicationById(id).getEntity();
+                applicationNo = applicationDto.getApplicationNo();
+                String originLicenceId = applicationDto.getOriginLicenceId();
+                if(licId.equals(originLicenceId)){
+                    applicationDtos.add(applicationDto);
+                    appId = id;
+                }
+            }
             List<AppCessLicDto> appCessDtosByLicIds = getAppCessDtosByLicIds(licIds);
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
             AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(appId).getEntity();
@@ -370,8 +381,11 @@ public class CessationBeServiceImpl implements CessationBeService {
         licIds.add(originLicenceId);
         List<String> corrIds = IaisCommonUtils.genNewArrayList();
         corrIds.add(refNo);
-        AppCessMiscDto appCessMiscDto = setMiscData(appCessationDto, applicationDto.getId());
-        cessationClient.updateCessation(appCessMiscDto).getEntity();
+        String applicationDtoId = applicationDto.getId();
+        List<String> appIds = IaisCommonUtils.genNewArrayList();
+        appIds.add(applicationDtoId);
+        List<AppCessMiscDto> appCessMiscDtos = setMiscData(appCessationDto, appIds);
+        cessationClient.updateCessation(appCessMiscDtos.get(0)).getEntity();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         applicationDtos.add(applicationDto);
         updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
@@ -424,8 +438,8 @@ public class CessationBeServiceImpl implements CessationBeService {
         taskService.createHistorys(appPremisesRoutingHistoryDtos);
     }
 
-    private Map<String, String> transform(AppSubmissionDto appSubmissionDto, List<String> premiseIds) {
-        Map<String, String> map = IaisCommonUtils.genNewHashMap();
+    private Map<String, List<String>> transform(AppSubmissionDto appSubmissionDto, List<String> premiseIds) {
+        Map<String, List<String>> map = IaisCommonUtils.genNewHashMap();
         String licenseeId = appSubmissionDto.getLicenseeId();
         Double amount = 0.0;
         AuditTrailDto internet = AuditTrailHelper.getCurrentAuditTrailDto();
@@ -471,7 +485,9 @@ public class CessationBeServiceImpl implements CessationBeService {
                     String hciCode1 = entity1.getHciCode();
                     hciCodes.add(hciCode);
                     if (hciCode.equals(hciCode1)) {
-                        map.put(premiseId, appId);
+                        List<String> appIds = IaisCommonUtils.genNewArrayList();
+                        appIds.add(appId);
+                        map.put(premiseId, appIds);
                     }
                 }
                 applicationDto.setNeedNewLicNo(false);
@@ -486,7 +502,8 @@ public class CessationBeServiceImpl implements CessationBeService {
         return map;
     }
 
-    private AppCessMiscDto setMiscData(AppCessationDto appCessationDto, String appId) {
+    private List<AppCessMiscDto> setMiscData(AppCessationDto appCessationDto, List<String> appIds) {
+        List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         Date effectiveDate = appCessationDto.getEffectiveDate();
         String reason = appCessationDto.getReason();
@@ -497,26 +514,29 @@ public class CessationBeServiceImpl implements CessationBeService {
         String patRegNo = appCessationDto.getPatRegNo();
         String patOthers = appCessationDto.getPatOthers();
         String patNoRemarks = appCessationDto.getPatNoRemarks();
-        AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
-        appCessMiscDto.setAppealType(ApplicationConsts.CESSATION_TYPE_APPLICATION);
-        appCessMiscDto.setEffectiveDate(effectiveDate);
-        appCessMiscDto.setReason(reason);
-        appCessMiscDto.setOtherReason(otherReason);
-        appCessMiscDto.setPatNeedTrans(patNeedTrans);
-        appCessMiscDto.setPatNoReason(patNoRemarks);
-        appCessMiscDto.setPatTransType(patientSelect);
-        appCessMiscDto.setAppId(appId);
-        appCessMiscDto.setAuditTrailDto(currentAuditTrailDto);
-        if (!StringUtil.isEmpty(patHciName)) {
-            appCessMiscDto.setPatTransTo(patHciName);
+        for (String appId : appIds) {
+            AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
+            appCessMiscDto.setAppealType(ApplicationConsts.CESSATION_TYPE_APPLICATION);
+            appCessMiscDto.setEffectiveDate(effectiveDate);
+            appCessMiscDto.setReason(reason);
+            appCessMiscDto.setOtherReason(otherReason);
+            appCessMiscDto.setPatNeedTrans(patNeedTrans);
+            appCessMiscDto.setPatNoReason(patNoRemarks);
+            appCessMiscDto.setPatTransType(patientSelect);
+            appCessMiscDto.setAppId(appId);
+            appCessMiscDto.setAuditTrailDto(currentAuditTrailDto);
+            if (!StringUtil.isEmpty(patHciName)) {
+                appCessMiscDto.setPatTransTo(patHciName);
+            }
+            if (!StringUtil.isEmpty(patRegNo)) {
+                appCessMiscDto.setPatTransTo(patRegNo);
+            }
+            if (!StringUtil.isEmpty(patOthers)) {
+                appCessMiscDto.setPatTransTo(patOthers);
+            }
+            appCessMiscDtos.add(appCessMiscDto);
         }
-        if (!StringUtil.isEmpty(patRegNo)) {
-            appCessMiscDto.setPatTransTo(patRegNo);
-        }
-        if (!StringUtil.isEmpty(patOthers)) {
-            appCessMiscDto.setPatTransTo(patOthers);
-        }
-        return appCessMiscDto;
+        return appCessMiscDtos;
     }
 
     private void setRiskToDto(AppSubmissionDto appSubmissionDto) {

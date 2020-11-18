@@ -19,7 +19,7 @@ public interface CessationBeService {
 
     List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds);
 
-    Map<String, String> saveCessations(List<AppCessationDto> appCessationDtos);
+    Map<String, List<String>> saveCessations(List<AppCessationDto> appCessationDtos);
 
     Map<String,Boolean> listResultCeased(List<String> licIds);
 
@@ -29,7 +29,7 @@ public interface CessationBeService {
 
     List<String> filtrateSpecLicIds(List<String> licIds);
 
-    List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, Map<String, String> appIdPremisesMap , LoginContext loginContext) throws Exception;
+    List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, Map<String, List<String>> appIdPremisesMap , LoginContext loginContext) throws Exception;
 
     boolean isGrpLicence(List<String> licIds);
 

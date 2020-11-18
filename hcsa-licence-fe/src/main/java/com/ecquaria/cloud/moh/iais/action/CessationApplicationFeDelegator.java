@@ -239,15 +239,20 @@ public class CessationApplicationFeDelegator {
         String rfiAppId = (String)ParamUtil.getSessionAttr(bpc.request, "rfiAppId");
         String rfiPremiseId = (String)ParamUtil.getSessionAttr(bpc.request, "rfiPremiseId");
         List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
-        Map<String, String> appIdPremisesMap = IaisCommonUtils.genNewHashMap();
+
         if(!StringUtil.isEmpty(rfiAppId)&&!StringUtil.isEmpty(rfiPremiseId)){
             cessationFeService.saveRfiCessations(appCessationDtos, loginContext, rfiAppId);
-            appIdPremisesMap.put(rfiPremiseId,rfiAppId);
+            Map<String, List<String>> appIdPremisesMap = IaisCommonUtils.genNewHashMap();
+            List<String> rfiAppIds = IaisCommonUtils.genNewArrayList();
+            rfiAppIds.add(rfiAppId);
+            appIdPremisesMap.put(rfiPremiseId,rfiAppIds);
+            List<AppCessatonConfirmDto> confirmDto = cessationFeService.getConfirmDto(appCessationDtos, appIdPremisesMap, loginContext);
+            ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) confirmDto);
         }else {
-            appIdPremisesMap = cessationFeService.saveCessations(appCessationDtos, loginContext);
+            Map<String, List<String>> appIdPremisesMap = cessationFeService.saveCessations(appCessationDtos, loginContext);
+            List<AppCessatonConfirmDto> confirmDto = cessationFeService.getConfirmDto(appCessationDtos, appIdPremisesMap, loginContext);
+            ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) confirmDto);
         }
-        List<AppCessatonConfirmDto> confirmDto = cessationFeService.getConfirmDto(appCessationDtos, appIdPremisesMap, loginContext);
-        ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) confirmDto);
     }
 
     public void response(BaseProcessClass bpc) throws IOException {
