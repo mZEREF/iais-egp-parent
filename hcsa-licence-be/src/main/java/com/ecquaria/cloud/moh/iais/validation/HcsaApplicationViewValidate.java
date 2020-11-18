@@ -173,7 +173,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         String rollBack = ParamUtil.getRequestString(request, "rollBack");
                         ParamUtil.setRequestAttr(request, "selectRollBack", rollBack);
                         if (StringUtil.isEmpty(rollBack)) {
-                            errMap.put("rollBack", generalErrSix);
+                            //Route Back To
+                            errMap.put("rollBack", MessageUtil.replaceMessage("GENERAL_ERR0006","Route Back To", "field"));
                         }
                     } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage)){
                         boolean flowFlag = !isAppealType && !isWithdrawal && !isCessation;

@@ -525,6 +525,7 @@ public class LicenceServiceImpl implements LicenceService {
                                 sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,corpPassUrl,MohName,organizationDto,inspectionRecommendation);
                             }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
                                 sendRenewalAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,MohName,inspectionRecommendation);
+                                sendPostInspectionNotification(applicationGroupDto,applicantName,svcDto,svcCodeList,MohName,applicationNo);
                             }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
                                 try {
                                     if(applicationGroupDto.getNewLicenseeId()!=null){
@@ -547,6 +548,67 @@ public class LicenceServiceImpl implements LicenceService {
                     }
                 }
             }
+        }
+    }
+
+    private void sendPostInspectionNotification(ApplicationGroupDto applicationGroupDto,String applicantName,HcsaServiceDto svcDto,List<String> svcCodeList,String MohName,String applicationNo){
+        if(applicationGroupDto != null && 0 == applicationGroupDto.getIsPreInspection()){
+            if(svcDto != null){
+                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+                map.put("ApplicantName", applicantName);
+                map.put("MOH_AGENCY_NAME", MohName);
+                try {
+                    String subject = "MOH HALP - Post Inspection for " + svcDto.getSvcName();
+                    log.debug(StringUtil.changeForLog("sendPostInspectionNotification subject : " + subject));
+                    EmailParam emailParam = new EmailParam();
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_POST_INSPECTION);
+                    emailParam.setTemplateContent(map);
+                    emailParam.setQueryCode(applicationNo);
+                    emailParam.setReqRefNum(applicationNo);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                    emailParam.setRefId(applicationNo);
+                    emailParam.setSubject(subject);
+                    //send email
+                    log.debug(StringUtil.changeForLog("send sendPostInspectionNotification application email"));
+                    notificationHelper.sendNotification(emailParam);
+                    log.debug(StringUtil.changeForLog("send sendPostInspectionNotification application email end"));
+                    //send sms
+                    EmailParam smsParam = new EmailParam();
+                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_POST_INSPECTION_SMS);
+                    smsParam.setSubject(subject);
+                    smsParam.setQueryCode(applicationNo);
+                    smsParam.setReqRefNum(applicationNo);
+                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                    smsParam.setRefId(applicationNo);
+                    log.debug(StringUtil.changeForLog("send sendPostInspectionNotification application sms"));
+                    notificationHelper.sendNotification(smsParam);
+                    log.debug(StringUtil.changeForLog("send sendPostInspectionNotification application sms end"));
+                    //send message
+                    EmailParam messageParam = new EmailParam();
+                    messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_POST_INSPECTION_MESSAGE);
+                    messageParam.setTemplateContent(map);
+                    messageParam.setQueryCode(applicationNo);
+                    messageParam.setReqRefNum(applicationNo);
+                    messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    messageParam.setRefId(applicationNo);
+                    messageParam.setSubject(subject);
+                    messageParam.setSvcCodeList(svcCodeList);
+                    log.debug(StringUtil.changeForLog("send sendPostInspectionNotification application message"));
+                    notificationHelper.sendNotification(messageParam);
+                    log.debug(StringUtil.changeForLog("send sendPostInspectionNotification application message end"));
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }else{
+                log.debug(StringUtil.changeForLog("sendPostInspectionNotification svcDto == null"));
+            }
+        }else{
+            if(applicationGroupDto == null){
+                log.debug(StringUtil.changeForLog("sendPostInspectionNotification is applicationGroupDto"));
+            }else{
+                log.debug(StringUtil.changeForLog("sendPostInspectionNotification applicationGroupDto.getIsPreInspection() : " + applicationGroupDto.getIsPreInspection()));
+            }
+
         }
     }
 
