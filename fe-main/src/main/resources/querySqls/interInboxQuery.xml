@@ -36,6 +36,7 @@
                 service_id,
                 repalceService as code,
                 self_assmt_flag,
+                is_fast_tracking,
                 created_dt,
                 version
             FROM APPLICATION AS app where app.app_type in ('APTY001','APTY005','APTY002')) AS wapp
