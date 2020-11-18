@@ -7,11 +7,11 @@
             <thead>
             <tr >
                 <th></th>
-                <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name"/>
-                <iais:sortableHeader needSort="true"  field="ADDR_TYPE" value="Type"/>
-                <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No."/>
-                <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises Type"/>
-                <iais:sortableHeader needSort="true"  field="ADDRESS" value="Address"/>
+                <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name" isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="ADDR_TYPE" value="Type" isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No." isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises Type" isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="ADDRESS" value="Address" isFE="true"/>
             </tr>
             </thead>
             <tbody>
