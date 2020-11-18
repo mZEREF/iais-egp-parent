@@ -2518,7 +2518,7 @@ public class HcsaApplicationDelegator {
         if(licenseeDto != null){
             licenseeName = licenseeDto.getName();
         }
-        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_BEINBOX;
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName() + "/main-web";
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         emailMap.put("officer_name", "");
         emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
