@@ -2512,12 +2512,11 @@ public class HcsaApplicationDelegator {
     }
     //Send EN_RFC_005_CLARIFICATION
     public void sendRfcClarificationEmail(String licenseeId,ApplicationViewDto applicationViewDto,String internalRemarks) throws Exception{
-        String applicantName = "";
+        String licenseeName = null;
         ApplicationDto applicationDto=applicationViewDto.getApplicationDto();
-        ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
-        if(orgUserDto != null){
-            applicantName = orgUserDto.getDisplayName();
+        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+        if(licenseeDto != null){
+            licenseeName = licenseeDto.getName();
         }
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_BEINBOX;
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
@@ -2533,8 +2532,8 @@ public class HcsaApplicationDelegator {
         if(applicationViewDto.getHciAddress()!=null){
             stringBuffer.append("HCI Address : ").append(applicationViewDto.getHciAddress()).append("<br>");
         }
-        if(applicantName!=null){
-            stringBuffer.append("Licensee Name : ").append(applicantName).append("<br>");
+        if(licenseeName!=null){
+            stringBuffer.append("Licensee Name : ").append(licenseeName).append("<br>");
         }
         if(applicationViewDto.getSubmissionDate()!=null){
             stringBuffer.append("Submission Date : ").append(Formatter.formatDate(Formatter.parseDate(applicationViewDto.getSubmissionDate()))).append("<br>");
