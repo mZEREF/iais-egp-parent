@@ -406,7 +406,7 @@
             $("#actionValue").val('routeB');
             inspectionPreTaskSubmit("apso");
         } else {
-            var errMsg = 'Processing Decision is mandatory.';
+            var errMsg = 'Processing Decision is mandatory';
             $("#error_selectValue").text(errMsg);
             dismissWaiting();
         }
