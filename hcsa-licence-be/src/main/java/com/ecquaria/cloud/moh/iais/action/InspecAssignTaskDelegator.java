@@ -30,7 +30,6 @@ import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -60,13 +59,9 @@ public class InspecAssignTaskDelegator {
     private ApplicationViewService applicationViewService;
 
     @Autowired
-    private TaskService taskService;
-
-    @Autowired
-    private InspecAssignTaskDelegator(TaskService taskService, ApplicationViewService applicationViewService, InspectionAssignTaskService inspectionAssignTaskService){
+    private InspecAssignTaskDelegator(ApplicationViewService applicationViewService, InspectionAssignTaskService inspectionAssignTaskService){
         this.inspectionAssignTaskService = inspectionAssignTaskService;
         this.applicationViewService = applicationViewService;
-        this.taskService = taskService;
     }
 
     /**
