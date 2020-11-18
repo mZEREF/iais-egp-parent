@@ -176,6 +176,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,"taskDto",null);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto",null);
         ParamUtil.setSessionAttr(bpc.request,"isSaveRfiSelect",null);
+        ParamUtil.setSessionAttr(bpc.request,"rfiAppEditSelectDto",null);
         ParamUtil.setSessionAttr(bpc.request, "nextStages", null);
         ParamUtil.setSessionAttr(bpc.request, "nextStageReply", null);
         ParamUtil.setSessionAttr(bpc.request, "premiseMiscDto", null);

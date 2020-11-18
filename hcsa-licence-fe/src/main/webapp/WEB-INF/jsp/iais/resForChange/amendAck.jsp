@@ -10,6 +10,7 @@
 
 <%@include file="dashboard.jsp" %>
 <%@include file="../common/dashboard.jsp" %>
+<%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <style>
     .ack-font-14{
         font-size: 14px;
@@ -92,6 +93,6 @@ $('#Acknowledgement').click(function () {
  window.print();
 });
 $('#GotoDashboard').click(function () {
-    SOP.Crud.cfxSubmit("menuListForm", "dashboard");
+    Utils.submit('menuListForm','dashboard','','','');
 });
 </script>

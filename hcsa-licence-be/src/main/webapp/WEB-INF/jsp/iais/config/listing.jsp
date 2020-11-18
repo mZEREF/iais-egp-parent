@@ -60,13 +60,14 @@
     </div>
 </div>
   <input type="hidden" id="reasult" value="${delete}" >
+    <input type="hidden" id="deleteFile" value="${deleteFile}" >
   </form>
 </div>
 
 <script type="text/javascript">
   $(document).ready(function () {
       if($('#reasult').val()=='fail'){
-          alert("The service is not eligible for deletion");
+          alert($('#deleteFile').val());
       }else if($('#reasult').val()=='success'){
           alert("delete success");
       }

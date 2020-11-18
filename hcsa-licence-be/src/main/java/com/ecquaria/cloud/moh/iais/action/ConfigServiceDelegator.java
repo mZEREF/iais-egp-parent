@@ -69,6 +69,7 @@ public class ConfigServiceDelegator {
     }
     private void removeSession(BaseProcessClass bpc){
         bpc.request.getSession().removeAttribute("hcsaServiceCategoryDtos");
+        bpc.request.getSession().removeAttribute("categoryDtos");
     }
     private Stack stack=new Stack();
     public void switchOr(BaseProcessClass bpc){

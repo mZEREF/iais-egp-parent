@@ -1477,6 +1477,7 @@ public class NewApplicationDelegator {
                             appCessHciDto.setPatNoRemarks(remarks);
                             appCessHciDto.setPatNeedTrans(Boolean.FALSE);
                         }
+                        appCessHciDtos.add(appCessHciDto);
                     }
                     List<SelectOption> reasonOption = getReasonOption();
                     List<SelectOption> patientsOption = getPatientsOption();
@@ -2288,7 +2289,7 @@ public class NewApplicationDelegator {
 
         }
         if(autoSaveAppsubmission.isEmpty()&&notAutoSaveAppsubmission.isEmpty()){
-            bpc.request.setAttribute("RFC_ERROR_NO_CHANGE","RFC_ERR014");
+            bpc.request.setAttribute("RFC_ERROR_NO_CHANGE",MessageUtil.getMessageDesc("RFC_ERR014"));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             requestForChangeService.svcDocToPresmise(appSubmissionDto);
             return;
@@ -2565,12 +2566,14 @@ public class NewApplicationDelegator {
         }
         List<AppGrpPrimaryDocDto> list=new ArrayList<>(appGrpPrimaryDocDtos.size());
         for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){
+            if(appGrpPrimaryDocDto.getSvcDocId()==null){
+                continue;
+            }
             AppGrpPrimaryDocDto primaryDocDto=new AppGrpPrimaryDocDto();
             primaryDocDto.setDocName(appGrpPrimaryDocDto.getDocName());
             primaryDocDto.setDocSize(appGrpPrimaryDocDto.getDocSize());
-            primaryDocDto.setSvcDocId(appGrpPrimaryDocDto.getSvcDocId());
-            primaryDocDto.setSvcComDocId(appGrpPrimaryDocDto.getSvcComDocId());
             primaryDocDto.setSvcComDocName(appGrpPrimaryDocDto.getSvcComDocName());
+            primaryDocDto.setMd5Code(appGrpPrimaryDocDto.getMd5Code());
             list.add(primaryDocDto);
         }
         return list;
@@ -2962,6 +2965,10 @@ public class NewApplicationDelegator {
         appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
         Double amount = feeDto.getTotal();
         log.info(StringUtil.changeForLog("the amount is -->:" + amount));
+        if(0.0==amount){
+            appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+            appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+        }
         appSubmissionDto.setAmount(amount);
         //judge is the preInspection
         PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
@@ -3090,12 +3097,6 @@ public class NewApplicationDelegator {
         }
         Double totalAmount = appSubmissionDto.getAmount();
         if (totalAmount == 0.0) {
-            //update status
-            String appGrpId = appSubmissionDto.getAppGrpId();
-            ApplicationGroupDto appGrp = new ApplicationGroupDto();
-            appGrp.setId(appGrpId);
-            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-            serviceConfigService.updatePaymentStatus(appGrp);
             StringBuilder url = new StringBuilder();
             url.append("https://")
                     .append(bpc.request.getServerName())
@@ -4777,7 +4778,7 @@ public class NewApplicationDelegator {
                         if ("FIN".equals(idType)) {
                             boolean b = SgNoValidator.validateFin(idNo);
                             if (!b) {
-                                oneErrorMap.put("NRICFIN", "RFC_ERR0012");
+                                oneErrorMap.put("NRICFIN", "GENERAL_ERR0008");
                             } else {
                                 stringBuilder.append(idType).append(idNo);
 
@@ -4786,7 +4787,7 @@ public class NewApplicationDelegator {
                         if ("NRIC".equals(idType)) {
                             boolean b1 = SgNoValidator.validateNric(idNo);
                             if (!b1) {
-                                oneErrorMap.put("NRICFIN", "RFC_ERR0012");
+                                oneErrorMap.put("NRICFIN", "GENERAL_ERR0008");
                             } else {
                                 stringBuilder.append(idType).append(idNo);
 
@@ -4871,7 +4872,7 @@ public class NewApplicationDelegator {
                 if ("FIN".equals(idType)) {
                     boolean b = SgNoValidator.validateFin(idNo);
                     if (!b) {
-                        oneErrorMap.put("deputyIdNo" + dpoIndex, "RFC_ERR0012");
+                        oneErrorMap.put("deputyIdNo" + dpoIndex, "GENERAL_ERR0008");
                     } else {
                         stringBuilder.append(idType).append(idNo);
                     }
@@ -4879,7 +4880,7 @@ public class NewApplicationDelegator {
                 if ("NRIC".equals(idType)) {
                     boolean b1 = SgNoValidator.validateNric(idNo);
                     if (!b1) {
-                        oneErrorMap.put("deputyIdNo" + dpoIndex, "RFC_ERR0012");
+                        oneErrorMap.put("deputyIdNo" + dpoIndex, "GENERAL_ERR0008");
                     } else {
                         stringBuilder.append(idType).append(idNo);
                     }

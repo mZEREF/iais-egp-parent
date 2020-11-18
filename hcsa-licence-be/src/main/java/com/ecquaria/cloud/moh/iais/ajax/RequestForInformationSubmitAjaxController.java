@@ -86,6 +86,7 @@ public class RequestForInformationSubmitAjaxController {
                     licenceViewService.saveAppEditSelectToFe(appEditSelectDto);
                     successMsg = "save success";
                     ParamUtil.setSessionAttr(request, "isSaveRfiSelect", AppConsts.YES);
+                    request.getSession().setAttribute("rfiAppEditSelectDto",appEditSelectDto);
                 } else {
                     errorMsg = "Please select at least a section";
                 }

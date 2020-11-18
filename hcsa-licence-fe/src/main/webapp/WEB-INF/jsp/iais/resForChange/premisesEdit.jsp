@@ -96,7 +96,7 @@
       <%@include file="../common/premFun.jsp"%>
     </div>
   </div>
-  <div class="modal fade" id="rfc_ERROR" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+  <%--<div class="modal fade" id="rfc_ERROR" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -109,7 +109,8 @@
         </div>
       </div>
     </div>
-  </div>
+  </div>--%>
+  <iais:confirm msg="${RFC_ERROR_NO_CHANGE}" callBack="cancel()"  needCancel="false" popupOrder="rfc_ERROR"></iais:confirm>
   <input type="hidden" value="${RFC_ERROR_NO_CHANGE}" id="RFC_ERROR_NO_CHANGE">
 </form>
 
@@ -152,6 +153,7 @@
 
     function cancel(){
         $('#rfcPendingApplication').modal('hide');
+        $('#rfc_ERROR').modal('hide');
     }
     $('#previewAndSub').click(function () {
         doSubmitForm('prePayment','', '');
