@@ -1,20 +1,30 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
@@ -25,17 +35,22 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -47,10 +62,15 @@ import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import com.ecquaria.sz.commons.util.FileUtil;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -94,6 +114,16 @@ public class InspectEmailAo1Delegator {
     AppInspectionStatusClient appInspectionStatusClient;
     @Autowired
     FillupChklistService fillupChklistService;
+    @Autowired
+    OrganizationClient organizationClient;
+    @Autowired
+    NotificationHelper notificationHelper;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
+    @Autowired
+    private AppointmentClient appointmentClient;
+    @Autowired
+    InspectionTaskClient inspectionTaskClient;
     @Autowired
     ApplicationClient applicationClient;
     @Autowired
@@ -353,17 +383,126 @@ public class InspectEmailAo1Delegator {
         }
 
     }
-    public void preEmailView(BaseProcessClass bpc)  {
+    public void preEmailView(BaseProcessClass bpc) throws IOException, TemplateException {
         log.info("=======>>>>>preEmailView>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, TASK_DTO);
         String correlationId = taskDto.getRefNo();
-        InspectionEmailTemplateDto inspectionEmailTemplateDto;
+        InspectionEmailTemplateDto inspectionEmailTemplateDto=new InspectionEmailTemplateDto();
         if(ParamUtil.getSessionAttr(request,INS_EMAIL_DTO)!=null){
             inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         }
         else {
-            inspectionEmailTemplateDto= inspEmailService.getInsertEmail(correlationId);
+            try{
+                inspectionEmailTemplateDto= inspEmailService.getInsertEmail(correlationId);
+            }catch (Exception e){
+                ApplicationViewDto applicationViewDto = fillupChklistService.getAppViewDto(taskDto.getId());
+                String appNo=applicationViewDto.getApplicationDto().getApplicationNo();
+                String licenseeId=applicationViewDto.getApplicationGroupDto().getLicenseeId();
+                LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
+                String applicantName=licenseeDto.getName();
+                inspectionEmailTemplateDto.setAppPremCorrId(correlationId);
+                inspectionEmailTemplateDto.setApplicantName(applicantName);
+                inspectionEmailTemplateDto.setApplicationNumber(appNo);
+                inspectionEmailTemplateDto.setHciCode(applicationViewDto.getHciCode());
+                HcsaServiceDto hcsaServiceDto=inspectionService.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId());
+                inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
+                AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(correlationId,InspectionConstants.RECOM_TYPE_TCU);
+                if(appPreRecommentdationDto!=null){
+                    inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
+                }
+                List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(correlationId);
+//
+                String mesContext;
+                {
+                    List<String> leads = organizationClient.getInspectionLead(taskDto.getWkGrpId()).getEntity();
+                    OrgUserDto leadDto=organizationClient.retrieveOrgUserAccountById(leads.get(0)).getEntity();
+                    String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+                    MsgTemplateDto msgTemplateDto= notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_INSPECTOR_EMAIL);
+                    Map<String,Object> mapTemplate=IaisCommonUtils.genNewHashMap();
+                    mapTemplate.put("inspection_lead", leadDto.getDisplayName());
+                    mapTemplate.put("ApplicantName", licenseeDto.getName());
+                    mapTemplate.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getApplicationType()}).get(0).getText());
+                    mapTemplate.put("ApplicationNumber", applicationViewDto.getApplicationDto().getApplicationNo());
+                    mapTemplate.put("ApplicationDate", applicationViewDto.getSubmissionDate());
+                    mapTemplate.put("systemLink", loginUrl);
+                    mapTemplate.put("HCI_CODE", applicationViewDto.getHciCode());
+                    mapTemplate.put("HCI_NAME",applicationViewDto.getHciName());
+                    mapTemplate.put("Address", applicationViewDto.getHciAddress());
+                    mapTemplate.put("HCI_Postal_Code", applicationViewDto.getHciPostalCode());
+                    mapTemplate.put("LicenseeName", licenseeDto.getName());
+                    AppPremisesRecommendationDto appPreRecommentdationDtoInspectionDate =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(correlationId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
+                    mapTemplate.put("InspectionDate", Formatter.formatDate(appPreRecommentdationDtoInspectionDate.getRecomInDate()));
+//cancel old calendar
+                    AppPremisesInspecApptDto appPremisesInspecApptDto=inspectionTaskClient.getSpecificDtoByAppPremCorrId(correlationId).getEntity();
+                    ApptUserCalendarDto cancelCalendarDto = new ApptUserCalendarDto();
+                    AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+                    if(appPremisesInspecApptDto!=null&&appPremisesInspecApptDto.getApptRefNo()!=null){
+                        cancelCalendarDto.setApptRefNo(appPremisesInspecApptDto.getApptRefNo());
+                        cancelCalendarDto.setAuditTrailDto(auditTrailDto);
+                        cancelCalendarDto.setStatus(AppointmentConstants.CALENDAR_STATUS_RESERVED);
+                        try {
+                            List<ApptUserCalendarDto> apptUserCalendarDtos= appointmentClient.getCalenderByApptRefNoAndStatus(cancelCalendarDto).getEntity();
+                            mapTemplate.put("InspectionEndDate", Formatter.formatDate(apptUserCalendarDtos.get(0).getEndSlot().get(0)));
+                        }catch (Exception e1){
+                            log.info(e1.getMessage(),e1);
+                        }
+                    }
+                    Map<String,Object> mapTableTemplate=IaisCommonUtils.genNewHashMap();
+                    MsgTemplateDto msgTableTemplateDto= notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_TABLE_12);
+
+                    if(ncAnswerDtos.size()!=0){
+                        StringBuilder stringBuilder=new StringBuilder();
+                        stringBuilder.append("<tr>").append(applicationViewDto.getServiceType()).append("</tr>");
+                        int i=0;
+                        for (NcAnswerDto ncAnswerDto:ncAnswerDtos
+                        ) {
+                            stringBuilder.append("<tr><td>").append(++i);
+                            stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
+                            stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
+                            stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getClause()));
+                            stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
+                            stringBuilder.append(TD).append(StringUtil.viewHtml("1".equals(ncAnswerDto.getRef())?"Yes":"No"));
+                            stringBuilder.append("</td></tr>");
+                        }
+                        mapTableTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
+                    }
+                    //mapTemplate.put("ServiceName", applicationViewDto.getServiceType());
+                    if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||appPreRecommentdationDto.getRemarks()!=null)){
+                        String stringBuilder = "<tr><td>" + 1 +
+                                TD + StringUtil.viewHtml(appPreRecommentdationDto.getBestPractice()) +
+                                TD + StringUtil.viewHtml(appPreRecommentdationDto.getRemarks()) +
+                                "</td></tr>";
+                        mapTableTemplate.put("Observation_Recommendation",StringUtil.viewHtml(stringBuilder));
+                    }
+                    msgTableTemplateDto.setMessageContent(MsgUtil.getTemplateMessageByContent(msgTableTemplateDto.getMessageContent(),mapTableTemplate));
+
+                    mapTemplate.put("NC_DETAILS_AND_Observation_Recommendation",msgTableTemplateDto.getMessageContent());
+                    mapTemplate.put("HALP", AppConsts.MOH_SYSTEM_NAME);
+                    mapTemplate.put("DDMMYYYY", StringUtil.viewHtml(Formatter.formatDateTime(new Date(),Formatter.DATE)));
+                    mapTemplate.put("Inspector_mail_Address", leadDto.getEmail());
+                    mapTemplate.put("InspectorDID", leadDto.getMobileNo());
+                    mapTemplate.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+                    msgTemplateDto.setMessageContent(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(),mapTemplate));
+
+                    int index = 1;
+                    String replaceStr = "num_rep";
+                    while(msgTemplateDto.getMessageContent().contains(replaceStr)){
+                        msgTemplateDto.setMessageContent(msgTemplateDto.getMessageContent().replaceFirst(replaceStr,  index + "."));
+                        index++;
+                    }
+                    mesContext= msgTemplateDto.getMessageContent();
+                    inspectionEmailTemplateDto.setSubject(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),mapTemplate));
+                }
+
+                String content= (String) ParamUtil.getSessionAttr(request,MSG_CON);
+                if(content!=null){
+                    mesContext=content;
+                }
+                inspectionEmailTemplateDto.setMessageContent(mesContext);
+                inspEmailService.insertEmailDraft(inspectionEmailTemplateDto);
+                inspectionEmailTemplateDto= inspEmailService.getInsertEmail(correlationId);
+            }
         }
         inspectionEmailTemplateDto.setMessageContent(StringUtil.removeNonUtf8(inspectionEmailTemplateDto.getMessageContent()));
         ParamUtil.setSessionAttr(request,DRA_EMA_ID,inspectionEmailTemplateDto.getId());

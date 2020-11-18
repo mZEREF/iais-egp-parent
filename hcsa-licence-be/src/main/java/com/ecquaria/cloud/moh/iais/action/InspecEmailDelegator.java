@@ -433,7 +433,10 @@ public class InspecEmailDelegator {
             createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING, taskDto, userId,"");
 
         }
-        inspEmailService.insertEmailDraft(inspectionEmailTemplateDto);
+        String draftId=inspEmailService.insertEmailDraft(inspectionEmailTemplateDto);
+        if(draftId==null){
+            inspEmailService.insertEmailDraft(inspectionEmailTemplateDto);
+        }
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
 
     }
