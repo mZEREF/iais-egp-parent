@@ -1,7 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
@@ -14,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.SendTaskTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -496,23 +499,40 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public boolean checkCompleteTaskByApplicationNo(List<ApplicationDto> applicationDtoList) {
+    public boolean checkCompleteTaskByApplicationNo(List<ApplicationDto> applicationDtoList,String correlationId) {
         if(IaisCommonUtils.isEmpty(applicationDtoList)){
             return true;
         }
         boolean flag = true;
         for(ApplicationDto applicationDto : applicationDtoList){
             List<TaskDto> taskList = taskOrganizationClient.getTaskbyApplicationNo(applicationDto.getApplicationNo()).getEntity();
-            if(!IaisCommonUtils.isEmpty(taskList)){
-                log.info(StringUtil.changeForLog("task list are not null,application no : " + applicationDto.getApplicationNo()));
+            String status = applicationDto.getStatus();
+            if(!IaisCommonUtils.isEmpty(taskList) || !checkTaskAppStatus(status,correlationId)){
+                log.debug(StringUtil.changeForLog("task list are not null,application no : " + applicationDto.getApplicationNo()));
                 flag = false;
                 break;
             }
         }
-        log.info(StringUtil.changeForLog("checkCompleteTaskByApplicationNo flag : " + flag));
+        log.debug(StringUtil.changeForLog("checkCompleteTaskByApplicationNo flag : " + flag));
         return flag;
     }
 
+    private boolean checkTaskAppStatus(String status,String correlationId){
+        boolean flag = true;
+        boolean pendingRfi = ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status);
+        log.debug(StringUtil.changeForLog("checkTaskAppStatus pendingRfi : " + pendingRfi));
+        AppInspectionStatusDto inspectionStatusDto = hcsaAppClient.getAppInspectionStatusByPremId(correlationId).getEntity();
+        //in inspection && not the end
+        boolean inInspection = (inspectionStatusDto != null) && !InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(inspectionStatusDto.getStatus());
+        log.debug(StringUtil.changeForLog("checkTaskAppStatus inInspection : " + inInspection));
+        log.debug(StringUtil.changeForLog("checkTaskAppStatus status : " + status));
+        log.debug(StringUtil.changeForLog("checkTaskAppStatus inInspection : " + correlationId));
+        if(pendingRfi || inInspection){
+            flag = false;
+        }
+        log.debug(StringUtil.changeForLog("checkTaskAppStatus flag : " + flag));
+        return flag;
+    }
 
     @Override
     public List<TaskEmailDto> getEmailNotifyList(){

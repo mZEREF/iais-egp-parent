@@ -1925,7 +1925,7 @@ public class HcsaApplicationDelegator {
                 List<ApplicationDto> saveApplicationDtoList = IaisCommonUtils.genNewArrayList();
                 CopyUtil.copyMutableObjectList(applicationDtoList,saveApplicationDtoList);
                 saveApplicationDtoList = removeCurrentApplicationDto(saveApplicationDtoList,applicationDto.getId());
-                boolean flag = taskService.checkCompleteTaskByApplicationNo(saveApplicationDtoList);
+                boolean flag = taskService.checkCompleteTaskByApplicationNo(saveApplicationDtoList,newCorrelationId);
 //                boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
 //                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
                 if(flag){
@@ -1988,7 +1988,7 @@ public class HcsaApplicationDelegator {
                         ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
                 if(isAllSubmit || applicationDto.isFastTracking() || isAo1Ao2Approve){
                     if(isAo1Ao2Approve && !applicationDto.isFastTracking()){
-                        doAo1Ao2Approve(broadcastOrganizationDto,broadcastApplicationDto,applicationDto,taskDto);
+                        doAo1Ao2Approve(broadcastOrganizationDto,broadcastApplicationDto,applicationDto,taskDto,newCorrelationId);
                     }
                     boolean needUpdateGroupStatus = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
                             ApplicationConsts.APPLICATION_STATUS_APPROVED,ApplicationConsts.APPLICATION_STATUS_REJECTED);
@@ -2136,7 +2136,7 @@ public class HcsaApplicationDelegator {
         return result;
     }
 
-    private void doAo1Ao2Approve(BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto, ApplicationDto applicationDto, TaskDto taskDto) throws FeignException {
+    private void doAo1Ao2Approve(BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto, ApplicationDto applicationDto, TaskDto taskDto,String newCorrelationId) throws FeignException {
         String appGrpId = applicationDto.getAppGrpId();
         String applicationNo = applicationDto.getApplicationNo();
         String status = applicationDto.getStatus();
@@ -2147,7 +2147,7 @@ public class HcsaApplicationDelegator {
         if(IaisCommonUtils.isEmpty(applicationDtoList)){
             return;
         }else{
-            boolean flag = taskService.checkCompleteTaskByApplicationNo(applicationDtoList);
+            boolean flag = taskService.checkCompleteTaskByApplicationNo(applicationDtoList,newCorrelationId);
             if(flag) {
                    String stageId = HcsaConsts.ROUTING_STAGE_AO3;
                    String roleId = RoleConsts.USER_ROLE_AO3;

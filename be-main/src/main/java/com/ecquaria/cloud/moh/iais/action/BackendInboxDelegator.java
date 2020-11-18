@@ -920,7 +920,7 @@ public class BackendInboxDelegator {
                 List<ApplicationDto> flagApplicationDtoList = IaisCommonUtils.genNewArrayList();
                 CopyUtil.copyMutableObjectList(applicationDtoList,flagApplicationDtoList);
                 flagApplicationDtoList = removeCurrentApplicationDto(flagApplicationDtoList,applicationDto.getId());
-                boolean flag = taskService.checkCompleteTaskByApplicationNo(flagApplicationDtoList);
+                boolean flag = taskService.checkCompleteTaskByApplicationNo(flagApplicationDtoList,newCorrelationId);
 
                 log.debug(StringUtil.changeForLog("isAllSubmit is " + flag));
                 if(flag){
@@ -984,7 +984,7 @@ public class BackendInboxDelegator {
             log.debug(StringUtil.changeForLog("isAllSubmit is " + isAllSubmit));
             if(isAllSubmit || applicationDto.isFastTracking() || isAo1Ao2Approve){
                 if(isAo1Ao2Approve){
-                    doAo1Ao2Approve(broadcastOrganizationDto,broadcastApplicationDto,applicationDto,applicationDtoIds,taskDto);
+                    doAo1Ao2Approve(broadcastOrganizationDto,broadcastApplicationDto,applicationDto,applicationDtoIds,taskDto,newCorrelationId);
 
                     if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus) && ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationDto.getApplicationType())){
                         log.info("ao1 or ao2 send application reject email");
@@ -1070,7 +1070,7 @@ public class BackendInboxDelegator {
         }
     }
 
-    private void doAo1Ao2Approve(BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto, ApplicationDto applicationDto,List<String> appNo,TaskDto taskDto) throws FeignException {
+    private void doAo1Ao2Approve(BroadcastOrganizationDto broadcastOrganizationDto, BroadcastApplicationDto broadcastApplicationDto, ApplicationDto applicationDto,List<String> appNo,TaskDto taskDto,String newCorrelationId) throws FeignException {
         String appGrpId = applicationDto.getAppGrpId();
         String status = applicationDto.getStatus();
         String appId = applicationDto.getId();
@@ -1080,7 +1080,7 @@ public class BackendInboxDelegator {
         if (IaisCommonUtils.isEmpty(applicationDtoList)) {
             return;
         } else {
-            boolean flag = taskService.checkCompleteTaskByApplicationNo(applicationDtoList);
+            boolean flag = taskService.checkCompleteTaskByApplicationNo(applicationDtoList,newCorrelationId);
             if(flag) {
                     String stageId = HcsaConsts.ROUTING_STAGE_AO3;
                     String roleId = RoleConsts.USER_ROLE_AO3;
