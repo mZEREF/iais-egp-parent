@@ -720,6 +720,7 @@
             $('#routeBackReviewBox').addClass('hidden');
             $('#appealRecommendationFalse').addClass('hidden');
             $('#appealRecommendationTrue').removeClass('hidden');
+            $('#rfiSelect').hide();
         }
     });
 
