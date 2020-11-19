@@ -172,7 +172,7 @@ public class AppealApproveBatchjob {
                               String reason = appealApproveDto.getAppPremiseMiscDto().getReason();
                               sendAllEmailApproved(applicationDto,reason,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealDto);
                           }catch (Exception e){
-
+                              log.info(e.getMessage(),e);
                           }
 
                           /*  appealOther(appealApplicaiton,rollBackApplication,applicationDto);*/
@@ -245,7 +245,7 @@ public class AppealApproveBatchjob {
                             appealApproveDto);
                     break;
                 case ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE:
-                    applicationLateRenewFee(applicationDto);
+//                    applicationLateRenewFee(applicationDto);
                     break;
                 case ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO :
                     applicationAddCGO(appealApplicaiton,appealPersonnel,rollBackPersonnel,appealApproveDto,appealApplicationGroupDtos);
@@ -535,10 +535,11 @@ public class AppealApproveBatchjob {
 
         List<AppPremiseMiscDto> premiseMiscDtoList = cessationClient.getAppPremiseMiscDtoListByAppId(applicationDto.getId()).getEntity();
         String appType = "Licence";
+        ApplicationDto oldApplication = new ApplicationDto();
         if(premiseMiscDtoList != null){
             AppPremiseMiscDto premiseMiscDto = premiseMiscDtoList.get(0);
             String oldAppId = premiseMiscDto.getRelateRecId();
-            ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
+            oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
             appType =  MasterCodeUtil.getCodeDesc(oldApplication.getApplicationType());
         }
         if(StringUtil.isEmpty(appType)){
@@ -583,14 +584,22 @@ public class AppealApproveBatchjob {
         templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
         templateContent.put("paymentMethod", paymentMethodName);
         if("onlinePayment".equals(paymentMethodName)){
-            AppReturnFeeDto appReturnFeeDto = applicationClient.getReturnFeeByAppNo(applicationDto.getApplicationNo(),ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL).getEntity();
-            templateContent.put("returnAmount", Formatter.formatterMoney(appReturnFeeDto.getReturnAmount()));
+            if(!StringUtil.isEmpty(oldApplication.getApplicationNo())){
+                AppReturnFeeDto appReturnFeeDto = applicationClient.getReturnFeeByAppNo(oldApplication.getApplicationNo(),ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL).getEntity();
+                templateContent.put("returnAmount", Formatter.formatterMoney(appReturnFeeDto.getReturnAmount()));
+            }else{
+                templateContent.put("returnAmount", "$0");
+            }
             templateContent.put("paymentMode", paymentMethodName);
             templateContent.put("adminFee", "100");
 
         } else if("GIRO".equals(paymentMethodName)){
-            AppReturnFeeDto appReturnFeeDto = applicationClient.getReturnFeeByAppNo(applicationDto.getApplicationNo(),ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL).getEntity();
-            templateContent.put("returnAmount", Formatter.formatterMoney(appReturnFeeDto.getReturnAmount()));
+            if(!StringUtil.isEmpty(oldApplication.getApplicationNo())){
+                AppReturnFeeDto appReturnFeeDto = applicationClient.getReturnFeeByAppNo(oldApplication.getApplicationNo(),ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL).getEntity();
+                templateContent.put("returnAmount", Formatter.formatterMoney(appReturnFeeDto.getReturnAmount()));
+            }else{
+                templateContent.put("returnAmount", "$0");
+            }
             templateContent.put("adminFee", "100");
         }else if("applicable".equals(paymentMethodName)){
             Date expiryDate;
