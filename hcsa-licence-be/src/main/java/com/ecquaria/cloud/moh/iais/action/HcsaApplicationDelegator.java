@@ -2095,7 +2095,7 @@ public class HcsaApplicationDelegator {
                         }else{
                             Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                             msgInfoMap.put("ApplicationNumber", applicationNo);
-                            msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType));
+                            msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
                             msgInfoMap.put("Applicant", applicantName);
                             msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date()));
                             msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
