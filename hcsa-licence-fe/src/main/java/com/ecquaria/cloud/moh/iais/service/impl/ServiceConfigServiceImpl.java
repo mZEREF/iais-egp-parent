@@ -336,17 +336,17 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     }
 
     @Override
-    public void giroPaymentXmlUpdateByGrpNo(ApplicationGroupDto appGrp) {
+    public void giroPaymentXmlUpdateByGrpNo(AppSubmissionDto appGrp) {
         GiroPaymentXmlDto giroPaymentXmlDto = genGiroPaymentXmlDtoByAppGrp(appGrp);
         //todo need xml file send sftp
         appPaymentStatusClient.updateGiroPaymentDto(giroPaymentXmlDto);
     }
 
-    private GiroPaymentXmlDto genGiroPaymentXmlDtoByAppGrp(ApplicationGroupDto appGrp){
+    private GiroPaymentXmlDto genGiroPaymentXmlDtoByAppGrp(AppSubmissionDto appGrp){
         GiroPaymentXmlDto giroPaymentXmlDto = new GiroPaymentXmlDto();
         giroPaymentXmlDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         //todo gen xml by appGroup
-        giroPaymentXmlDto.setXmlData(appGrp.getGroupNo());
+        giroPaymentXmlDto.setXmlData(appGrp.getAppGrpNo());
         giroPaymentXmlDto.setXmlType(ApplicationConsts.GIRO_SEND_XML_SFTP);
         giroPaymentXmlDto.setStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO);
         return giroPaymentXmlDto;

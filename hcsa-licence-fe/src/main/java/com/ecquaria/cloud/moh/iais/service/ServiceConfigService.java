@@ -57,5 +57,5 @@ public interface ServiceConfigService {
     List<HcsaSvcDocConfigDto> getPrimaryDocConfigByVersion(Integer version);
     List<HcsaSvcDocConfigDto> getPrimaryDocConfigByIds(List<String> ids);
 
-    void giroPaymentXmlUpdateByGrpNo(ApplicationGroupDto appGrp);
+    void giroPaymentXmlUpdateByGrpNo(AppSubmissionDto appGrp);
 }
