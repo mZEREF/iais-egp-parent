@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
@@ -25,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.util.DateUtil;
@@ -120,11 +122,28 @@ public class LicenceExpiredBatchJob {
         List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
         AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         for (LicenceDto licenceDto : licenceDtos) {
+            List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
             licenceDto.setAuditTrailDto(auditTrailDto);
             String licId = licenceDto.getId();
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
             String licenseeId = licenceDto.getLicenseeId();
+            StringBuilder svcNameLicNo = new StringBuilder();
+            svcNameLicNo.append(svcName).append(" : ").append(licenceNo);
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
+            serviceCodes.add(hcsaServiceDto.getSvcCode());
+            List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
+            if(!IaisCommonUtils.isEmpty(specLicIds)){
+                for(String specLicId :specLicIds){
+                    LicenceDto specLicDto = hcsaLicenceClient.getLicDtoById(specLicId).getEntity();
+                    String svcName1 = specLicDto.getSvcName();
+                    String licenceNo1 = specLicDto.getLicenceNo();
+                    svcNameLicNo.append(svcName1).append(" : ").append(licenceNo1);
+                    HcsaServiceDto hcsaServiceDto1 = HcsaServiceCacheHelper.getServiceByServiceName(svcName1);
+                    serviceCodes.add(hcsaServiceDto1.getSvcCode());
+                }
+            }
+
             //pan daun shi dou you xin de licence sheng cheng
             LicenceDto newLicDto = hcsaLicenceClient.getLicdtoByOrgId(licId).getEntity();
             if (newLicDto == null) {
@@ -147,9 +166,8 @@ public class LicenceExpiredBatchJob {
                 LicenseeDto licenseeDto = inspEmailService.getLicenseeDtoById(licenseeId);
                 String applicantName = licenseeDto.getName();
                 emailMap.put("ApplicantName", applicantName);
-                emailMap.put("ServiceLicenceName", svcName);
-                emailMap.put("LicenceNumber", licenceNo);
-                emailMap.put("CessationDate", Formatter.formatDateTime(date));
+                emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
+                emailMap.put("CessationDate", DateFormatUtils.format(date,"dd/MM/yyyy"));
                 emailMap.put("email", systemParamConfig.getSystemAddressOne());
                 emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
                 emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
@@ -173,16 +191,11 @@ public class LicenceExpiredBatchJob {
                 emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
                 notificationHelper.sendNotification(emailParam);
                 //msg
-                HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(svcName).getEntity();
-                List<String> svcCode = IaisCommonUtils.genNewArrayList();
-                svcCode.add(svcDto.getSvcCode());
-                emailParam.setSvcCodeList(svcCode);
+                emailParam.setSvcCodeList(serviceCodes);
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
                 emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                 emailParam.setRefId(licenceDto.getId());
                 notificationHelper.sendNotification(emailParam);
-
-                //cessationBeService.sendEmail(LICENCEENDDATE, date, svcName, licId, licenseeId, licenceNo);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
