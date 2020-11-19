@@ -315,6 +315,7 @@
         </div>
     </div>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+    <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>
 <script src=""></script>
 <script type="text/javascript">
@@ -323,7 +324,7 @@
     });
 
     $('.proceed').click(function () {
-        var flag=false;
+       /* var flag=false;
         if($("input[name='payMethod']").size()<=0){
             flag=true;
         }else {
@@ -337,9 +338,9 @@
         if(!flag){
             $('#error_pay').html("The field is mandatory.");
             return;
-        }
+        }*/
 
-        submit('payment','ack',null);
+        submit('jumpBank',null,null);
     });
 </script>
 
