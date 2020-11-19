@@ -18,7 +18,7 @@
         <input type="hidden" name="crud_action_additional" value="">
         <input type="hidden" name="currentValidateId" value="">
         <div class="bg-title"><h2>Acknowledgement</h2></div>
-        <p>You have uploaded Master code on <fmt:formatDate value="${UPLOAD_DATE}" pattern="dd/MM/yyyy"/> at <fmt:formatDate value="${UPLOAD_DATE}" pattern="HH:mm"/></p>
+        <p>${UPLOAD_ACKMSG}/></p>
         <div class="text-right text-center-mobile">
             <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doCancel();">Done</a>
         </div>
