@@ -2969,10 +2969,10 @@ public class NewApplicationDelegator {
         appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
         Double amount = feeDto.getTotal();
         log.info(StringUtil.changeForLog("the amount is -->:" + amount));
-        if(0.0==amount){
+        /*if(0.0==amount){
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
             appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-        }
+        }*/
         appSubmissionDto.setAmount(amount);
         //judge is the preInspection
         PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
