@@ -3110,13 +3110,13 @@ public class NewApplicationDelegator {
         } catch (Exception e) {
             log.info(e.getMessage(), e);
         }
-        if (StringUtil.isEmpty(payMethod)&&StringUtil.isEmpty(noNeedPayment)) {
+        /*if (StringUtil.isEmpty(payMethod)&&StringUtil.isEmpty(noNeedPayment)) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, "payment");
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             errorMap.put("payMethod","payMethod is empty");
             NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request),appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
             return;
-        }
+        }*/
         Double totalAmount = appSubmissionDto.getAmount();
         if (totalAmount == 0.0) {
             if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
