@@ -821,8 +821,21 @@ public class MasterCodeDelegator {
         if (StringUtil.isEmpty(masterCodeDto.getVersion())){
             masterCodeDto.setVersion(1f);
         }
+
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ValidationResult validationEditResult = WebValidationHelper.validateProperty(masterCodeDto, "edit");
+        errorMap = validationEditResult.retrieveAll();
+        if(AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
+            LocalDate newFromDate = transferLocalDate(masterCodeDto.getEffectiveFrom());
+            LocalDate newToDate = transferLocalDate(masterCodeDto.getEffectiveTo());
+            LocalDate nowDate = LocalDate.now();
+            boolean newIsEffect = isEffect(newFromDate,newToDate,nowDate);
+            if (newIsEffect){
+                String errMsg = MessageUtil.getMessageDesc("MCUPERR005");
+                validationEditResult.setHasErrors(true);
+                errorMap.put("status", errMsg);
+            }
+        }
         if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
             if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
                 validationEditResult.setHasErrors(true);
@@ -830,7 +843,6 @@ public class MasterCodeDelegator {
         }
         if (validationEditResult != null && validationEditResult.isHasErrors()) {
             logAboutStart("Edit validation");
-            errorMap = validationEditResult.retrieveAll();
             if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
                 if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
                     String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
@@ -857,6 +869,7 @@ public class MasterCodeDelegator {
             syncMasterCodeList.addAll(masterCodeDtos);
             String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
             masterCodeDto.setCodeCategory(codeCategory);
+
             masterCodeService.updateMasterCode(masterCodeDto);
         }else{
             //update old
