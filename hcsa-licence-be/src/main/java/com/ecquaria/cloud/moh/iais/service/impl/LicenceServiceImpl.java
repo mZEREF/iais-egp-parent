@@ -413,10 +413,9 @@ public class LicenceServiceImpl implements LicenceService {
                             MsgTemplateDto emailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_EMAIL).getEntity();
                             MsgTemplateDto smsTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_SMS).getEntity();
                             MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_MSG).getEntity();
-                            Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-                            String emailSubject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
-                            String smsSubject = MsgUtil.getTemplateMessageByContent(smsTemplateDto.getTemplateName(),subMap);
-                            String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),subMap);
+                            String emailSubject = emailTemplateDto.getTemplateName();
+                            String smsSubject = smsTemplateDto.getTemplateName();
+                            String msgSubject = msgTemplateDto.getTemplateName();
 
 
                             EmailParam emailParam = new EmailParam();
