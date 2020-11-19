@@ -2316,6 +2316,24 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("do reSubmit end ..."));
     }
 
+    public void doPayValidate(BaseProcessClass bpc) throws Exception {
+        log.info(StringUtil.changeForLog("do doPayValidate start ..."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        Double totalAmount = appSubmissionDto.getAmount();
+        String payMethod = ParamUtil.getString(bpc.request, "payMethod");
+        String noNeedPayment = bpc.request.getParameter("noNeedPayment");
+        if(0.0 != totalAmount && StringUtil.isEmpty(payMethod) && StringUtil.isEmpty(noNeedPayment)){
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "payment");
+            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+            errorMap.put("pay",MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field"));
+            NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request),appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            return;
+        }
+
+        log.info(StringUtil.changeForLog("do doPayValidate end ..."));
+    }
+
     private List<AppGrpPremisesDto> groupLicecePresmiseChange(List<AppGrpPremisesDto> appGrpPremisesDtos,List<AppGrpPremisesDto> oldAppGrpPremisesDtos){
         if(appGrpPremisesDtos==null || oldAppGrpPremisesDtos==null){
             return new ArrayList<>();
@@ -3101,6 +3119,13 @@ public class NewApplicationDelegator {
         }
         Double totalAmount = appSubmissionDto.getAmount();
         if (totalAmount == 0.0) {
+            if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
+                String appGrpId = appSubmissionDto.getAppGrpId();
+                ApplicationGroupDto appGrp = new ApplicationGroupDto();
+                appGrp.setId(appGrpId);
+                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                serviceConfigService.updatePaymentStatus(appGrp);
+            }
             StringBuilder url = new StringBuilder();
             url.append("https://")
                     .append(bpc.request.getServerName())
