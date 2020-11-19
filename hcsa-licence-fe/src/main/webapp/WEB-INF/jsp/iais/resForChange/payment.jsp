@@ -105,14 +105,14 @@
         </div>
     </div>
 </form>
-
+<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 
 <script>
     $(document).ready(function () {
         $('#comDashboard div.navigation-gp').css('margin-left','6.5%');
     });
     $('#proceed').click(function () {
-        var flag=false;
+        /*var flag=false;
         if($("input[name='payMethod']").size()<=0){
             flag=true;
         }else {
@@ -125,8 +125,8 @@
         if(!flag){
             $('#error_pay').html("The field is mandatory.");
             return;
-        }
-        doSubmitForm('prePayment','', '');
+        }*/
+        doSubmitForm('jumpBank','', '');
     });
 
 </script>

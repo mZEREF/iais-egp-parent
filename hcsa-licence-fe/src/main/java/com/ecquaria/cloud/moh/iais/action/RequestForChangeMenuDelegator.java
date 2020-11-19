@@ -1673,6 +1673,26 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do doRequestForInformationSubmit end ...."));
     }
 
+    public void doPayValidate(BaseProcessClass bpc) throws Exception {
+        log.info(StringUtil.changeForLog("do doPayValidate start ..."));
+        List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
+        String payMethod = ParamUtil.getString(bpc.request, "payMethod");
+        String noNeedPayment = bpc.request.getParameter("noNeedPayment");
+        log.debug(StringUtil.changeForLog("payMethod:"+payMethod));
+        log.debug(StringUtil.changeForLog("noNeedPayment:"+noNeedPayment));
+        if (0.0 != appSubmissionDtos.get(0).getAmount() && StringUtil.isEmpty(payMethod)) {
+            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+            errorMap.put("pay",MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field"));
+            boolean isRfi = false;
+            NewApplicationHelper.setAudiErrMap(isRfi,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,errorMap,null,appSubmissionDtos.get(0).getLicenceNo());
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"prePayment");
+            return;
+        }
+
+        log.info(StringUtil.changeForLog("do doPayValidate end ..."));
+    }
+
     private PremisesListQueryDto getPremisesListQueryDto(List<PremisesListQueryDto> premisesListQueryDtos, String liceId, String premId) {
         PremisesListQueryDto result = null;
         for (PremisesListQueryDto premisesListQueryDto : premisesListQueryDtos) {
