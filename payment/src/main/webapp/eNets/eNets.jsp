@@ -16,7 +16,7 @@
 <body>
 <input type="hidden" id="txnReq" name="txnReq" value='${txnReq}'>
 <input type="hidden" id="keyId" name="keyId" value='${API_KEY}'>
-<input type="hidden" id="hmac" name="hmac" value='${HMAC}'>
+<input type="hidden" id="hmac" name="hmac" value='${newHMAC}'>
 <div id="anotherSection">
     <fieldset>
         <legend></legend>

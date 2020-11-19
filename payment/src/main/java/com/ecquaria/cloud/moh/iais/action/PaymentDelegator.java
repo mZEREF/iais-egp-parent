@@ -32,6 +32,8 @@ public class PaymentDelegator {
         String header =  ParamUtil.getRequestString(request,"hmac");
         System.out.println("MerchantApp:b2sTxnEndUrl : hmac: " + header);
         String message =  ParamUtil.getRequestString(request,"message");//contains TxnRes message
+        message=message.replace("https://egp.sit.inter.iais.com/payment-web/eservice/INTERNET/Payment","");
+        message=message.replace("\n"," ");
         System.out.println("MerchantApp:b2sTxnEndUrl : data, message: " + message);
         ParamUtil.setSessionAttr(request,"message",message);
         ParamUtil.setSessionAttr(request,"header",header);

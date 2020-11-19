@@ -17,9 +17,9 @@ import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ecq.commons.helper.StringHelper;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONObject;
 import org.apache.commons.codec.binary.Base64;
 import sop.config.ConfigUtil;
 import sop.util.DateUtil;
@@ -30,7 +30,6 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -94,7 +93,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String keyId=GatewayConfig.eNetsKeyId;
 		String secretKey=GatewayConfig.eNetsSecretKey ;
 		String s2sUrl="";
-		String b2sUrl=AppConsts.REST_PROTOCOL_TYPE + "192.168.6.96:8083"+"/payment-web";
+		String b2sUrl= "http://192.168.6.195:8082/eNets/eNets/return.jsp";
 //		String b2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/payment-web/eservice/INTERNET/Payment";
 //		String b2sUrlPram="\""+fields.get("vpc_ReturnURL")+"\"";
 		String b2sUrlPram="";
@@ -110,7 +109,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		}
 		ParamUtil.setSessionAttr(bpc.request,"txnReq",txnRep);
 		ParamUtil.setSessionAttr(bpc.request,"API_KEY",keyId);
-		ParamUtil.setSessionAttr(bpc.request,"HMAC",hmac);
+		ParamUtil.setSessionAttr(bpc.request,"newHMAC",hmac);
 		ParamUtil.setSessionAttr(bpc.request,"sessionNetsId",sessionId);
 
 		log.info(StringUtil.changeForLog("==========>getSessionID:"+bpc.getSession().getId()));
@@ -126,20 +125,25 @@ public class PaymentNetsProxy extends PaymentProxy {
 			PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
 
 		}
-
 		try {
-			StringBuilder bud = new StringBuilder();
-			bud.append(bigsURL).append('?');
-			appendQueryFields(bud, fields);
-
-
-			RedirectUtil.redirect(bud.toString(), bpc.request, bpc.response);
+			String backUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/payment-web/eservice/INTERNET/Payment";
+			RedirectUtil.redirect("http://192.168.6.195:8090/eNets?txnReq="+ URLEncoder.encode(txnRep + "", StandardCharsets.UTF_8.name())+"&API_KEY="+keyId+"&hmac="+URLEncoder.encode(hmac + "", StandardCharsets.UTF_8.name())+"&backUrl="+URLEncoder.encode(backUrl + "", StandardCharsets.UTF_8.name()), bpc.request, bpc.response);
 		} catch (IOException e) {
-			log.info(e.getMessage(),e);
 			log.debug(e.getMessage());
-
-			throw new PaymentException(e);
 		}
+//		try {
+//			StringBuilder bud = new StringBuilder();
+//			bud.append(bigsURL).append('?');
+//			appendQueryFields(bud, fields);
+//
+//
+//			RedirectUtil.redirect(bud.toString(), bpc.request, bpc.response);
+//		} catch (IOException e) {
+//			log.info(e.getMessage(),e);
+//			log.debug(e.getMessage());
+//
+//			throw new PaymentException(e);
+//		}
 
 	}
 
@@ -166,21 +170,25 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
 		String txnRes= (String) ParamUtil.getSessionAttr(request,"message");
 		String header= (String) ParamUtil.getSessionAttr(request,"header");
-		String generatedHmac=(String)ParamUtil.getSessionAttr(request,"HMAC");
+		String generatedHmac= null;
 		try {
-			txnRes = URLDecoder.decode(txnRes + "", StandardCharsets.UTF_8.name());
-			if(generatedHmac.equalsIgnoreCase(header)){
-				ObjectMapper mapper = new ObjectMapper();
-				Soapi txnResObj = mapper.readValue(txnRes, Soapi.class);
+			generatedHmac = generateSignature(txnRes, GatewayConfig.eNetsSecretKey);
+		} catch (Exception e) {
+			log.debug(e.getMessage(),e);
+		}
+		log.info(StringUtil.changeForLog("MERCHANT APP : in hmac received : :" + header));
+		log.info(StringUtil.changeForLog("MERCHANT APP : in hmac generated :" + generatedHmac));
+
+		try {
+			if(generatedHmac!=null&&generatedHmac.equalsIgnoreCase(header)) {
+				JSONObject jsonObject = JSONObject.fromObject(txnRes);
+				Soapi txnResObj = (Soapi) JSONObject.toBean(jsonObject, Soapi.class);
 				log.info(StringUtil.changeForLog("MERCHANT APP : in receiveb2sTxnEnd :" + txnResObj));
-				if("0".equals(txnResObj.getMsg().getNetsTxnStatus())){
-					status=PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
+				if ("0".equals(txnResObj.getMsg().getNetsTxnStatus())) {
+					status = PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
 				}
-//please handle the success or failure response code.
-			}
-			else{
+			}else {
 				log.error("signature not matched.");
-//handle exception flow
 			}
 		} catch (Exception ex) {
 			log.info(ex.getMessage(),ex);
