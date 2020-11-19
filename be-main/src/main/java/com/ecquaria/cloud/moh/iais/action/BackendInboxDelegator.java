@@ -409,15 +409,6 @@ public class BackendInboxDelegator {
                     log.debug(StringUtil.changeForLog("the do approve start ...."));
                     routingTask(bpc,"",successStatus,"",applicationViewDto,taskDto);
                     log.debug(StringUtil.changeForLog("the do approve end ...."));
-                    //send reject email
-                    if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(successStatus)){
-                        try{
-                            rejectSendNotification(applicationViewDto);
-                        }catch (Exception e){
-                            log.error(StringUtil.changeForLog("send reject notification error"),e);
-                        }
-                    }
-
                 }
             }
             //update commPools
@@ -468,17 +459,13 @@ public class BackendInboxDelegator {
         inboxMsgService.saveInterMessage(interMessageDto);
     }
 
-    private void rejectSendNotification(ApplicationViewDto applicationViewDto) {
-        String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
-        String appGrpId = applicationViewDto.getApplicationDto().getAppGrpId();
-        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
+    private void rejectSendNotification(ApplicationDto applicationDto) {
+        String applicationNo = applicationDto.getApplicationNo();
         Date date = new Date();
         String appDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String MohName = AppConsts.MOH_AGENCY_NAME;
         String applicationType = applicationDto.getApplicationType();
         String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
-        String emailAddress = "ecquaria@ecquaria.com";
         HcsaServiceDto svcDto = hcsaConfigMainClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
         if(svcDto != null){
@@ -490,6 +477,14 @@ public class BackendInboxDelegator {
             newAppSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
         }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
             rfcSendRejectNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
+        }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+            log.info("ao1 or ao2 send application reject email");
+            try {
+                sendAppealReject(applicationDto);
+                log.info("reject email success");
+            }catch (Exception e){
+                log.error(e.getMessage()+"error",e);
+            }
         }
     }
 
@@ -986,14 +981,13 @@ public class BackendInboxDelegator {
                 if(isAo1Ao2Approve){
                     doAo1Ao2Approve(broadcastOrganizationDto,broadcastApplicationDto,applicationDto,applicationDtoIds,taskDto,newCorrelationId);
 
-                    if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus) && ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationDto.getApplicationType())){
-                        log.info("ao1 or ao2 send application reject email");
-                        try {
-                            sendAppealReject(applicationDto);
-                            log.info("reject email success");
-                        }catch (Exception e){
-                            log.error(e.getMessage()+"error",e);
-                        }
+                    if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)){
+                        //send reject email
+                       try{
+                           rejectSendNotification(applicationDto);
+                       }catch (Exception e){
+                           log.error(StringUtil.changeForLog("send reject notification error"),e);
+                       }
                     }
 
                 }
