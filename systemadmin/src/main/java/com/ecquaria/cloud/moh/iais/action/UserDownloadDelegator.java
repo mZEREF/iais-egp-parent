@@ -15,9 +15,13 @@ import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -30,21 +34,22 @@ import java.util.Date;
  */
 @Delegator(value = "IntranetUserDownload")
 @Slf4j
+@RequestMapping("/intranetUserAjax")
 public class UserDownloadDelegator {
 
     @Autowired
     private IntranetUserService intranetUserService;
     public void action(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>download");
-        String [] ids = (String [])ParamUtil.getRequestAttr(bpc.request, "ids");
+        String[] ids = (String[]) ParamUtil.getSessionAttr(bpc.request, "userIdsSess");
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>download");
         if(ids!=null){
-            byte[] xml = createXML(bpc,ids);
+            byte[] xml = createXML(ids);
             bpc.request.setAttribute("xml", xml);
             bpc.request.setAttribute("fileName", "intranetUser.xml");
         }
     }
-    private byte[] createXML(BaseProcessClass bpc,String [] ids) {
+    private byte[] createXML(String [] ids) {
         byte[] bytes = null;
         try {
             //1.create dom
@@ -171,4 +176,15 @@ public class UserDownloadDelegator {
         }
         return bytes;
     }
+
+
+
+    @RequestMapping(value = "/userId", method = RequestMethod.POST)
+    public @ResponseBody
+    String[] getUserIds(HttpServletRequest request) {
+        String[] arrs =  request.getParameterValues("userIds");
+        request.getSession().setAttribute("userIdsSess",arrs);
+        return arrs;
+    }
+
 }
