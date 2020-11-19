@@ -246,7 +246,7 @@ public class MasterCodeDelegator {
         Date date = new Date();
         String dateStr = Formatter.formatDateTime(date);
         String dateReplace = dateStr.replace(" "," at ");
-        String ackMsg = MessageUtil.replaceMessage("ACKMCM001","Date",dateReplace);
+        String ackMsg = MessageUtil.replaceMessage("ACKMCM001",dateReplace,"Date");
         ParamUtil.setRequestAttr(request,"CREATE_ACKMSG",ackMsg);
     }
 
@@ -689,7 +689,7 @@ public class MasterCodeDelegator {
         Date date = new Date();
         String dateStr = Formatter.formatDateTime(date);
         String dateReplace = dateStr.replace(" "," at ");
-        String ackMsg = MessageUtil.replaceMessage("ACKMCM003","Date",dateReplace);
+        String ackMsg = MessageUtil.replaceMessage("ACKMCM003",dateReplace,"Date");
         ParamUtil.setRequestAttr(request,"DELETE_ACKMSG",ackMsg);
     }
 
@@ -772,7 +772,7 @@ public class MasterCodeDelegator {
         Date date = new Date();
         String dateStr = Formatter.formatDateTime(date);
         String dateReplace = dateStr.replace(" "," at ");
-        String ackMsg = MessageUtil.replaceMessage("ACKMCM001","Date",dateReplace);
+        String ackMsg = MessageUtil.replaceMessage("ACKMCM001",dateReplace,"Date");
         ParamUtil.setRequestAttr(request,"CREATE_ACKMSG",ackMsg);
 
     }
@@ -923,7 +923,7 @@ public class MasterCodeDelegator {
         Date date = new Date();
         String dateStr = Formatter.formatDateTime(date);
         String dateReplace = dateStr.replace(" "," at ");
-        String ackMsg = MessageUtil.replaceMessage("ACKMCM002","Date",dateReplace);
+        String ackMsg = MessageUtil.replaceMessage("ACKMCM002",dateReplace,"Date");
         ParamUtil.setRequestAttr(request,"UPDATE_ACKMSG",ackMsg);
 
     }
