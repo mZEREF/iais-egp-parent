@@ -465,7 +465,7 @@ public class InterInboxDelegator {
         String licId = ParamUtil.getMaskedString(bpc.request,licMaskId);
         List<LicenceDto> licenceDtos = licenceInboxClient.isNewLicence(licId).getEntity();
         if(!licenceDtos.isEmpty()){
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"This is not the latest data");
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("APPEAL_ACK002"));
             ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
             return;
         }
@@ -481,7 +481,7 @@ public class InterInboxDelegator {
         }
         List<AppPremiseMiscDto> entity = appInboxClient.getAppPremiseMiscDtoRelateId(licId).getEntity();
         if(!entity.isEmpty()){
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"An appeal was already made for this licence");
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("APPEAL_ERR002"));
             ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
             return;
         }
@@ -532,7 +532,7 @@ public class InterInboxDelegator {
             if(!result){
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"An appeal has already been submitted for this licence/application");
             }else if(!map.isEmpty()){
-                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"There is already a pending application for the selected licence");
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("INBOX_ACK010"));
             }
             ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",result);
         }
@@ -949,13 +949,13 @@ public class InterInboxDelegator {
          List<LicenceDto> licenceDtos = licenceInboxClient.isNewApplication(appId).getEntity();
         if(!licenceDtos.isEmpty()){
             //change APPEAL_ACK002
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,"This is not the latest data");
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("APPEAL_ACK002"));
             ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",Boolean.FALSE);
             return;
         }
         List<AppPremiseMiscDto> entity = appInboxClient.getAppPremiseMiscDtoRelateId(appId).getEntity();
         if(!entity.isEmpty()){
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,"An appeal was already made for this application");
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("APPEAL_ERR003"));
             ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",Boolean.FALSE);
             return;
         }
@@ -1016,7 +1016,7 @@ public class InterInboxDelegator {
             if(!result){
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,"An appeal has already been submitted for this licence/application");
             } else if(!map.isEmpty()){
-                ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,"There is already a pending application for the selected licence");
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("INBOX_ACK010"));
             }
             ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",result);
         }
