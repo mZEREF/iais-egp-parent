@@ -95,7 +95,7 @@ public final class ChecklistHelper {
             }
         }
 
-        String errorMsg =  WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0031");
+        String errorMsg =  WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR050");
         if (!isCommon){
             if (StringUtil.isEmpty(module) || StringUtil.isEmpty(type) || StringUtil.isEmpty(service)){
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, errorMsg);
