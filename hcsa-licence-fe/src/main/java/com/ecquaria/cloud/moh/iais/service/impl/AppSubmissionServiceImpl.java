@@ -1052,9 +1052,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public List<AppGrpPrimaryDocDto> syncPrimaryDoc(String appType,Boolean isRfi,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos, List<HcsaSvcDocConfigDto> primaryDocConfig) throws CloneNotSupportedException {
+        log.debug(StringUtil.changeForLog("do syncPrimaryDoc start ..."));
+        log.debug(StringUtil.changeForLog("appType:"+ appType));
+        log.debug(StringUtil.changeForLog("isRfi:"+ isRfi));
         List<AppGrpPrimaryDocDto> newGrpPrimaryDocList = IaisCommonUtils.genNewArrayList();
         //rfc/renew for primary doc
-        boolean rfcOrRenw = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
+        boolean rfcOrRenwOrNew = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
         if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos) && !IaisCommonUtils.isEmpty(primaryDocConfig)){
             List<String> docConfigIds = IaisCommonUtils.genNewArrayList();
             for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
@@ -1062,7 +1065,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
             List<HcsaSvcDocConfigDto> oldHcsaSvcDocConfigDtos = serviceConfigService.getPrimaryDocConfigByIds(docConfigIds);
             if(!IaisCommonUtils.isEmpty(oldHcsaSvcDocConfigDtos)){
-                if(rfcOrRenw && !isRfi){
+                if(rfcOrRenwOrNew && !isRfi){
                     for(HcsaSvcDocConfigDto oldDocConfig:oldHcsaSvcDocConfigDtos){
                         for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
                             if(oldDocConfig.getId().equals(appGrpPrimaryDocDto.getSvcComDocId())){
@@ -1096,9 +1099,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }
                 }
             }
-        }else{
-            newGrpPrimaryDocList = appGrpPrimaryDocDtos;
         }
+        log.debug(StringUtil.changeForLog("do syncPrimaryDoc end ..."));
         return newGrpPrimaryDocList;
     }
 
