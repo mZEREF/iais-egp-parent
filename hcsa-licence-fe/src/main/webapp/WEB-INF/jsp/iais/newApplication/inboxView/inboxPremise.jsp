@@ -510,7 +510,7 @@
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.offSiteUnitNo}</span></p>
                                 </div>
-                            </div
+                            </div>
                             <c:forEach var="appPremisesOperationalUnit" items="${appGrpPremDto.appPremisesOperationalUnitDtos}">
                                 <div class="row">
                                     <div class="col-md-6">
