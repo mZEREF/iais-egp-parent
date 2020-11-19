@@ -35,7 +35,7 @@ import com.ecquaria.cloud.moh.iais.service.ApptConfirmReSchDateService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -84,7 +84,7 @@ public class ClientReschedulingDelegator {
     LicenceViewService licenceViewService;
 
     @Autowired
-    private MsgTemplateClient msgTemplateClient;
+    private LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
 
     @Autowired
     private LicEicClient licEicClient;
@@ -267,7 +267,7 @@ public class ClientReschedulingDelegator {
 
 
     private EmailDto sendNotification(String msgId, Map<String, Object> msgInfoMap, String applicationNo, String licenseeId) throws IOException, TemplateException {
-        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(msgId).getEntity();
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
         EmailDto emailDto=new EmailDto();
         emailDto.setClientQueryCode(applicationNo);

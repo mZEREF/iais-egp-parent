@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -26,14 +25,22 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import java.io.IOException;
-import java.util.*;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +48,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -51,7 +63,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     private SystemAdminClient systemAdminClient;
 
     @Autowired
-    private MsgTemplateClient msgTemplateClient;
+    private LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
 
 
     @Autowired
@@ -258,7 +270,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     private EmailParam sendSms(Map<String, Object> msgInfoMap, ApplicationDto applicationDto) throws IOException, TemplateException {
         log.info(StringUtil.changeForLog("***************** send withdraw application sms  *****************"));
         EmailParam emailParam = new EmailParam();
-        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(TEMPLATE_WITHDRAWAL_SMS).getEntity();
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(TEMPLATE_WITHDRAWAL_SMS).getEntity();
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
         map.put("ApplicationNumber", applicationDto.getApplicationNo());
@@ -276,7 +288,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     private void sendInboxMessage(ApplicationDto applicationDto,String serviceId,Map<String, Object> map) throws IOException, TemplateException {
         log.info(StringUtil.changeForLog("***************** send withdraw application message  *****************"));
         EmailParam messageParam = new EmailParam();
-        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(TEMPLATE_WITHDRAWAL_MESSAGE).getEntity();
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(TEMPLATE_WITHDRAWAL_MESSAGE).getEntity();
         Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
         subMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
         subMap.put("ApplicationNumber", applicationDto.getApplicationNo());
@@ -299,7 +311,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
     private EmailParam sendNotification(Map<String, Object> msgInfoMap, ApplicationDto applicationDto) throws IOException, TemplateException {
         log.info(StringUtil.changeForLog("***************** send withdraw application Notification  *****************"));
-        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(TEMPLATE_WITHDRAWAL_EMAIL).getEntity();
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(TEMPLATE_WITHDRAWAL_EMAIL).getEntity();
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
         map.put("ApplicationNumber", applicationDto.getApplicationNo());

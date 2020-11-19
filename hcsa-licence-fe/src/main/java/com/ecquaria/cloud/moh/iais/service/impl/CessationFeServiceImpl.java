@@ -80,7 +80,7 @@ public class CessationFeServiceImpl implements CessationFeService {
     @Autowired
     AppSubmissionService appSubmissionService;
     @Autowired
-    MsgTemplateClient msgTemplateClient;
+    LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
     private LicEicClient licEicClient;
@@ -387,7 +387,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.put("systemLink", loginUrl);
                     emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
                     emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
-                    MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE).getEntity();
+                    MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE).getEntity();
                     Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                     map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     map.put("ApplicationNumber", applicationNo);
@@ -438,7 +438,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
                     emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
-                    MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE).getEntity();
+                    MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE).getEntity();
                     Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                     map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     map.put("ApplicationNumber", applicationNo);
@@ -480,7 +480,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
                     emailParam.setRefId(licId);
                     map.clear();
-                    msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE).getEntity();
+                    msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE).getEntity();
                     map.put(SERVICE_LICENCE_NAME, svcName);
                     map.put("LicenceNumber", licenceNo);
                     subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);

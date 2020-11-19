@@ -56,7 +56,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -96,7 +96,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Autowired
     private OrganizationLienceseeClient organizationLienceseeClient;
     @Autowired
-    private MsgTemplateClient msgTemplateClient;
+    private LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
     @Autowired
@@ -264,7 +264,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         switch (subject) {
             case "RfcAndGiro":
-                MsgTemplateDto RfcAndGiroMsgTemplateDto = msgTemplateClient.getMsgTemplate("D1CC7398-8C50-4178-BE83-1659CD7DBAA8").getEntity();
+                MsgTemplateDto RfcAndGiroMsgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate("D1CC7398-8C50-4178-BE83-1659CD7DBAA8").getEntity();
                 if (RfcAndGiroMsgTemplateDto != null) {
                     Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
                     tempMap.put("serviceName", StringUtil.viewHtml(serviceName));
@@ -283,7 +283,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 }
                 break;
             case "RfcAndOnPay":
-                MsgTemplateDto RfcAndOnPayMsgTemplateDto = msgTemplateClient.getMsgTemplate("D9DDBC23-122B-47BA-B579-3B5022816BB6").getEntity();
+                MsgTemplateDto RfcAndOnPayMsgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate("D9DDBC23-122B-47BA-B579-3B5022816BB6").getEntity();
                 if (RfcAndOnPayMsgTemplateDto != null) {
                     Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
                     tempMap.put("serviceName", StringUtil.viewHtml(serviceName));
@@ -301,7 +301,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 }
                 break;
             case "rfcApproval":
-                MsgTemplateDto rfcApprovalMsgTemplateDto = msgTemplateClient.getMsgTemplate("25C8B704-1FE1-42DF-B27C-7993B1208BAC").getEntity();
+                MsgTemplateDto rfcApprovalMsgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate("25C8B704-1FE1-42DF-B27C-7993B1208BAC").getEntity();
                 if (rfcApprovalMsgTemplateDto != null) {
                     Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
                     tempMap.put("appNo", appNo);
@@ -318,7 +318,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 }
                 break;
             case "rfcReject":
-                MsgTemplateDto rfcRejectMsgTemplateDto = msgTemplateClient.getMsgTemplate("B6C8231E-940D-485A-BFFB-9E65CADB5CA9").getEntity();
+                MsgTemplateDto rfcRejectMsgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate("B6C8231E-940D-485A-BFFB-9E65CADB5CA9").getEntity();
                 if (rfcRejectMsgTemplateDto != null) {
                     Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
                     tempMap.put("appNo", appNo);
@@ -335,7 +335,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 }
                 break;
             case "rfcToLicensee":
-                MsgTemplateDto rfcToLicenseeMsgTemplateDto = msgTemplateClient.getMsgTemplate("8D3AC0E0-6684-490C-8DE8-D0452129C67D").getEntity();
+                MsgTemplateDto rfcToLicenseeMsgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate("8D3AC0E0-6684-490C-8DE8-D0452129C67D").getEntity();
                 if (rfcToLicenseeMsgTemplateDto != null) {
                     Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
                     tempMap.put("licenceeName", licenceeName);
@@ -353,7 +353,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 }
                 break;
             case "rfcForInterClarification":
-                MsgTemplateDto rfcForInterClMsgTemplateDto = msgTemplateClient.getMsgTemplate("7C6DD026-7EC3-4D58-AAE5-170C8CF208C4").getEntity();
+                MsgTemplateDto rfcForInterClMsgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate("7C6DD026-7EC3-4D58-AAE5-170C8CF208C4").getEntity();
                 if (rfcForInterClMsgTemplateDto != null) {
                     Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
                     tempMap.put("appNo", appNo);
@@ -371,7 +371,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 }
                 break;
             case "rfcToNotificationLicence":
-                MsgTemplateDto rfcToNotificationMsgTemplateDto = msgTemplateClient.getMsgTemplate("CC3610B1-01A4-4370-9DEF-936827D2880D").getEntity();
+                MsgTemplateDto rfcToNotificationMsgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate("CC3610B1-01A4-4370-9DEF-936827D2880D").getEntity();
                 if (rfcToNotificationMsgTemplateDto != null) {
                     Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
                     tempMap.put("licenceeName", licenceeName);
@@ -1556,7 +1556,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             emailParam.setRefId(appSubmissionDto.getAppGrpId());
         }
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT).getEntity();
+        MsgTemplateDto rfiEmailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT).getEntity();
         map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
         map.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
         String subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);

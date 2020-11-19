@@ -61,7 +61,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
@@ -131,7 +131,7 @@ public class AppealServiceImpl implements AppealService {
     @Autowired
     private AppConfigClient appConfigClient;
     @Autowired
-    private MsgTemplateClient msgTemplateClient;
+    private LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
     @Autowired
     private ServiceConfigService serviceConfigService;
     @Autowired
@@ -1254,7 +1254,7 @@ public class AppealServiceImpl implements AppealService {
         String newApplicationNo = (String) request.getAttribute("newApplicationNo");
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         map.put("applicationNo", newApplicationNo);
-        MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("55314F99-F97A-EA11-BE82-000C29F371DC").getEntity();
+        MsgTemplateDto entity = licenceFeMsgTemplateClient.getMsgTemplate("55314F99-F97A-EA11-BE82-000C29F371DC").getEntity();
         String messageContent = entity.getMessageContent();
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
         EmailDto emailDto = new EmailDto();
