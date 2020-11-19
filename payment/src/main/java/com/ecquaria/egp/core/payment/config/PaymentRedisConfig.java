@@ -69,10 +69,13 @@ public class PaymentRedisConfig extends CachingConfigurerSupport {
         JdkSerializationRedisSerializer jdkSerializationRedisSerializer = new JdkSerializationRedisSerializer(this.getClass().getClassLoader());
         StringRedisSerializer stringSerializer = new StringRedisSerializer();
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate();
+        redisTemplate.setHashValueSerializer(new JdkSerializationRedisSerializer());
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setKeySerializer(stringSerializer);
         redisTemplate.setValueSerializer(jdkSerializationRedisSerializer);
         redisTemplate.setConnectionFactory(this.connectionFactory);
         redisTemplate.afterPropertiesSet();
+
         return redisTemplate;
     }
 }
