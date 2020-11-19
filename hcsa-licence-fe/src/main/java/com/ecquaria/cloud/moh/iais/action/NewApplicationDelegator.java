@@ -3031,6 +3031,13 @@ public class NewApplicationDelegator {
         strList.add(serviceConfig);
         appSubmissionDto.setStepColor(strList);
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto, bpc.process);
+        if(0.0==amount){
+            String appGrpId = appSubmissionDto.getAppGrpId();
+            ApplicationGroupDto appGrp = new ApplicationGroupDto();
+            appGrp.setId(appGrpId);
+            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+            serviceConfigService.updatePaymentStatus(appGrp);
+        }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
         //get wrokgroup
@@ -3119,13 +3126,6 @@ public class NewApplicationDelegator {
         }*/
         Double totalAmount = appSubmissionDto.getAmount();
         if (totalAmount == 0.0) {
-            if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
-                String appGrpId = appSubmissionDto.getAppGrpId();
-                ApplicationGroupDto appGrp = new ApplicationGroupDto();
-                appGrp.setId(appGrpId);
-                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-                serviceConfigService.updatePaymentStatus(appGrp);
-            }
             StringBuilder url = new StringBuilder();
             url.append("https://")
                     .append(bpc.request.getServerName())
