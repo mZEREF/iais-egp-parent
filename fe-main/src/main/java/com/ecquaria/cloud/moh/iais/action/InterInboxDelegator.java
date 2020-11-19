@@ -218,7 +218,7 @@ public class InterInboxDelegator {
             msgType= (String) ParamUtil.getSessionAttr(request,InboxConst.MSG_PAGE_TYPE);
         }
         if ("msg_view".equals(MsgPage)){
-            if (MessageConstants.MESSAGE_TYPE_NOTIFICATION.equals(msgType)){
+            if (MessageConstants.MESSAGE_TYPE_NOTIFICATION.equals(msgType) || MessageConstants.MESSAGE_TYPE_ANNONUCEMENT.equals(msgType)){
                 inboxService.updateMsgStatusTo(msgId,MessageConstants.MESSAGE_STATUS_READ);
             }else{
                 inboxService.updateMsgStatusTo(msgId,MessageConstants.MESSAGE_STATUS_UNRESPONSE);
