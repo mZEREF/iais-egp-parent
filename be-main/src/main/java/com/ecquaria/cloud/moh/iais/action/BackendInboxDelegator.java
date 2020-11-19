@@ -173,6 +173,7 @@ public class BackendInboxDelegator {
      * @throws
      */
     public void prepareData(BaseProcessClass bpc){
+
         log.debug(StringUtil.changeForLog("the inspectionSupSearchPre start ...."));
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
@@ -977,20 +978,19 @@ public class BackendInboxDelegator {
             boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
                     appStatus);
             log.debug(StringUtil.changeForLog("isAllSubmit is " + isAllSubmit));
+            if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)){
+                //send reject email
+                try{
+                    rejectSendNotification(applicationDto);
+                }catch (Exception e){
+                    log.error(StringUtil.changeForLog("send reject notification error"),e);
+                }
+            }
             if(isAllSubmit || applicationDto.isFastTracking() || isAo1Ao2Approve){
                 if(isAo1Ao2Approve){
                     doAo1Ao2Approve(broadcastOrganizationDto,broadcastApplicationDto,applicationDto,applicationDtoIds,taskDto,newCorrelationId);
-
-                    if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)){
-                        //send reject email
-                       try{
-                           rejectSendNotification(applicationDto);
-                       }catch (Exception e){
-                           log.error(StringUtil.changeForLog("send reject notification error"),e);
-                       }
-                    }
-
                 }
+
                 boolean needUpdateGroup = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList, applicationDtoIds,
                         ApplicationConsts.APPLICATION_STATUS_APPROVED, ApplicationConsts.APPLICATION_STATUS_REJECTED);
                 if(needUpdateGroup || applicationDto.isFastTracking()){
