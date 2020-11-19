@@ -1931,7 +1931,7 @@ public class HcsaApplicationDelegator {
 //                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
                 if(flag){
                     //update current application status in db search result
-                    updateCurrentApplicationStatus(applicationDtoList,applicationDto.getId(),appStatus,licenseeId);
+                    updateCurrentApplicationStatus(applicationDtoList,applicationDto.getId(),appStatus);
                     List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
                     List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
                     List<ApplicationDto> creatTaskApplicationList = ao2AppList;

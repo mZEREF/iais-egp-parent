@@ -41,6 +41,7 @@ import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.ArrayList;
@@ -649,7 +650,7 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     @Override
-    public void routingTaskToAo2(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks) throws Exception {
+    public void routingTaskToAo2(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks,String newCorrelationId) throws Exception {
         String serviceId = applicationDto.getServiceId();
         List<String> list = IaisCommonUtils.genNewArrayList();
         list.add(serviceId);
@@ -662,7 +663,6 @@ public class InsRepServiceImpl implements InsRepService {
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
         String groupId = hcsaSvcStageWorkingGroupDto1.getGroupId();
         String subStage = getSubStage(appPremisesCorrelationId, taskKey);
-        List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
         if (ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType) || ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK.equals(applicationType)) {
             updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_APPEAL_APPROVE);
             List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
@@ -677,32 +677,88 @@ public class InsRepServiceImpl implements InsRepService {
             }
             createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
         } else {
-            updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
             List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
-            TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtoList,HcsaConsts.ROUTING_STAGE_AO2,RoleConsts.USER_ROLE_AO2,IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId());
-            List<TaskDto> taskDtoList = taskHistoryDto.getTaskDtoList();
-            for(TaskDto dto : taskDtoList){
-                String applicationNo1 = dto.getApplicationNo();
-                if(applicationNo.equals(applicationNo1)){
-                    taskDtos.add(dto);
-                }
-            }
-            boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
-                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+            updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
             createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
-            if(isAllSubmit){
-                for(ApplicationDto dto : applicationDtoList){
-                    String appStatus = dto.getStatus();
-                    String applicationNo1 = dto.getApplicationNo();
-                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus)&&!applicationNo.equals(applicationNo1)){
-                        TaskDto ao2Task = taskService.getRoutingTask(dto, HcsaConsts.ROUTING_STAGE_AO2, RoleConsts.USER_ROLE_AO2, appPremisesCorrelationId);
-                        taskDtos.add(ao2Task);
-                        createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO1, groupId, null);
-                    }
+            List<ApplicationDto> saveApplicationDtoList = IaisCommonUtils.genNewArrayList();
+            CopyUtil.copyMutableObjectList(applicationDtoList,saveApplicationDtoList);
+            saveApplicationDtoList = removeCurrentApplicationDto(saveApplicationDtoList,applicationDto.getId());
+            boolean flag = taskService.checkCompleteTaskByApplicationNo(saveApplicationDtoList,newCorrelationId);
+            if(flag){
+                updateCurrentApplicationStatus(applicationDtoList,applicationDto.getId(),ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+                List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+                List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+                List<ApplicationDto> creatTaskApplicationList = ao2AppList;
+                String stageId = HcsaConsts.ROUTING_STAGE_AO3;
+                String roleId = RoleConsts.USER_ROLE_AO3;
+                if(IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)){
+                    creatTaskApplicationList = ao3AppList;
+                }else{
+                    stageId = HcsaConsts.ROUTING_STAGE_AO2;
+                    roleId = RoleConsts.USER_ROLE_AO2;
+                }
+                if(!IaisCommonUtils.isEmpty(creatTaskApplicationList)){
+                    TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
+                            stageId,roleId,IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId());
+                    List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
+                    List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+                    createHistoryList(appPremisesRoutingHistoryDtos);
+                    taskService.createTasks(taskDtos);
                 }
             }
-            taskService.createTasks(taskDtos);
         }
+    }
+
+    private void updateCurrentApplicationStatus(List<ApplicationDto> applicationDtos,String applicationId,String status){
+        if(!IaisCommonUtils.isEmpty(applicationDtos) && !StringUtil.isEmpty(applicationId)){
+            for (ApplicationDto applicationDto : applicationDtos){
+                if(applicationId.equals(applicationDto.getId())){
+                    applicationDto.setStatus(status);
+                }
+            }
+        }
+    }
+
+    private void createHistoryList(List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos){
+        if(!IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtos)){
+            for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtos){
+                appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
+            }
+        }
+    }
+
+
+    private List<ApplicationDto> getStatusAppList(List<ApplicationDto> applicationDtos, String status){
+        if(IaisCommonUtils.isEmpty(applicationDtos) || StringUtil.isEmpty(status)){
+            return null;
+        }
+        List<ApplicationDto> applicationDtoList = null;
+        for(ApplicationDto applicationDto : applicationDtos){
+            if(status.equals(applicationDto.getStatus())){
+                if(applicationDtoList == null){
+                    applicationDtoList = IaisCommonUtils.genNewArrayList();
+                    applicationDtoList.add(applicationDto);
+                }else{
+                    applicationDtoList.add(applicationDto);
+                }
+            }
+        }
+
+        return applicationDtoList;
+    }
+
+    private List<ApplicationDto> removeCurrentApplicationDto(List<ApplicationDto> applicationDtoList, String currentId){
+        List<ApplicationDto> result = null;
+        if(!IaisCommonUtils.isEmpty(applicationDtoList) && !StringUtil.isEmpty(currentId)){
+            result = IaisCommonUtils.genNewArrayList();
+            for(ApplicationDto applicationDto : applicationDtoList){
+                if(currentId.equals(applicationDto.getId())){
+                    continue;
+                }
+                result.add(applicationDto);
+            }
+        }
+        return result;
     }
 
     @Override
