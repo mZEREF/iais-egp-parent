@@ -126,45 +126,49 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(withdrawnList)){
             withdrawnDtoList.forEach(h -> {
-                AppSubmissionDto appSubmissionDto = applicationFeClient.gainSubmissionDto(h.getApplicationNo()).getEntity();
-                if (appSubmissionDto != null){
-                    ApplicationDto applicationDto = applicationFeClient.getApplicationById(h.getApplicationId()).getEntity();
-                    ApplicationGroupDto applicationGroupDto =  applicationFeClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
-                    String serviceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceId();
-                    String applicantName = "";
-                    if (!StringUtil.isEmpty(serviceId)){
-                        applicationDtoList.add(applicationDto);
-                        Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                        msgInfoMap.put("ApplicationNumber", h.getApplicationNo());
-                        msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
-                        OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
-                        List<ApplicationDto> applicationDtoList2 = hcsaConfigFeClient.returnFee(applicationDtoList).getEntity();
-                        if (orgUserDto != null){
-                            applicantName = orgUserDto.getDisplayName();
-                        }
-                        msgInfoMap.put("Applicant", applicantName);
-                        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())
-                                || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())){
-                            msgInfoMap.put("paymentStatus","0");
-                            msgInfoMap.put("returnMount",applicationDtoList2.get(0).getReturnFee());
-                        }else{
-                            msgInfoMap.put("paymentStatus","1");
-                        }
-                        msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-                        msgInfoMap.put("emailAddress",systemAddressOne);
-                        msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date(),"dd/MM/yyyy"));
-                        try {
-                            EmailParam emailParam = sendNotification(msgInfoMap,applicationDto);
-                            notificationHelper.sendNotification(emailParam);
-                            EmailParam emailParamSms = sendSms(msgInfoMap,applicationDto);
-                            notificationHelper.sendNotification(emailParamSms);
-                            sendInboxMessage(applicationDto,serviceId,msgInfoMap);
-                        } catch (Exception e) {
-                            log.error(e.getMessage(), e);
-                        }
-                    }
-                }
+                sendNMS(h,applicationDtoList);
             });
+        }
+    }
+
+    private void sendNMS(WithdrawnDto withdrawnDto,List<ApplicationDto> applicationDtoList){
+        AppSubmissionDto appSubmissionDto = applicationFeClient.gainSubmissionDto(withdrawnDto.getApplicationNo()).getEntity();
+        if (appSubmissionDto != null){
+            ApplicationDto applicationDto = applicationFeClient.getApplicationById(withdrawnDto.getApplicationId()).getEntity();
+            ApplicationGroupDto applicationGroupDto =  applicationFeClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
+            String serviceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceId();
+            String applicantName = "";
+            if (!StringUtil.isEmpty(serviceId)){
+                applicationDtoList.add(applicationDto);
+                Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+                msgInfoMap.put("ApplicationNumber", withdrawnDto.getApplicationNo());
+                msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+                OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
+                List<ApplicationDto> applicationDtoList2 = hcsaConfigFeClient.returnFee(applicationDtoList).getEntity();
+                if (orgUserDto != null){
+                    applicantName = orgUserDto.getDisplayName();
+                }
+                msgInfoMap.put("Applicant", applicantName);
+                if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())
+                        || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())){
+                    msgInfoMap.put("paymentStatus","0");
+                    msgInfoMap.put("returnMount",applicationDtoList2.get(0).getReturnFee());
+                }else{
+                    msgInfoMap.put("paymentStatus","1");
+                }
+                msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+                msgInfoMap.put("emailAddress",systemAddressOne);
+                msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date(),"dd/MM/yyyy"));
+                try {
+                    EmailParam emailParam = sendNotification(msgInfoMap,applicationDto);
+                    notificationHelper.sendNotification(emailParam);
+                    EmailParam emailParamSms = sendSms(msgInfoMap,applicationDto);
+                    notificationHelper.sendNotification(emailParamSms);
+                    sendInboxMessage(applicationDto,serviceId,msgInfoMap);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
         }
     }
 
@@ -183,7 +187,14 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 log.error(e.getMessage(), e);
             }
         });
-        cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
+        List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
+        List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(withdrawnList)){
+            withdrawnDtoList.forEach(h -> {
+                sendNMS(h,applicationDtoList);
+            });
+        }
+
     }
 
     private void transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) throws Exception {
