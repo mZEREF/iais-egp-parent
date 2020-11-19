@@ -1075,7 +1075,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                         AppGrpPrimaryDocDto newGrpPrimaryDoc = (AppGrpPrimaryDocDto) CopyUtil.copyMutableObject(appGrpPrimaryDocDto);
                                         newGrpPrimaryDoc.setSvcComDocId(docConfig.getId());
                                         newGrpPrimaryDoc.setSvcComDocName(docConfig.getDocTitle());
-                                        newGrpPrimaryDoc.setVersion(docConfig.getVersion());
+                                        newGrpPrimaryDoc.setDocConfigVersion(docConfig.getVersion());
                                         newGrpPrimaryDocList.add(newGrpPrimaryDoc);
                                         break;
                                     }
