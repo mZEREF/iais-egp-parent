@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @Date 2019-12-24
  */
 
-@FeignClient(name = "system-admin", configuration = FeignConfiguration.class, fallback = MsgTemplateClientFallback.class)
-public interface MsgTemplateClient {
+@FeignClient(name = "system-admin", configuration = FeignConfiguration.class, fallback = FeMainMsgTemplateClientFallback.class)
+public interface FeMainMsgTemplateClient {
     @PostMapping(path = "/iais-messageTemplate/templates-param",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<MsgTemplateQueryDto>> getMsgTemplateResult(@RequestBody SearchParam param);
 

@@ -12,7 +12,7 @@ import org.springframework.http.HttpHeaders;
  * @Program: iais-egp
  * @Create: 2019-12-24 10:53
  **/
-public class MsgTemplateClientFallback implements MsgTemplateClient{
+public class FeMainMsgTemplateClientFallback implements FeMainMsgTemplateClient {
     @Override
     public FeignResponseEntity<SearchResult<MsgTemplateQueryDto>> getMsgTemplateResult(SearchParam param) {
         FeignResponseEntity entity = new FeignResponseEntity<>();

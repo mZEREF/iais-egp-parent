@@ -14,7 +14,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeMainMsgTemplateClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -47,7 +47,7 @@ public class SoloRegisterCorpPassJobHandler extends IJobHandler {
     @Autowired
     OrgUserManageService orgUserManageService;
     @Autowired
-    MsgTemplateClient msgTemplateClient;
+    FeMainMsgTemplateClient feMainMsgTemplateClient;
     @Override
     public ReturnT<String> execute(String s) {
         try{
@@ -76,9 +76,9 @@ public class SoloRegisterCorpPassJobHandler extends IJobHandler {
             String address = IaisEGPHelper.getAddress(licenseeDto.getBlkNo(), licenseeDto.getStreetName(), licenseeDto.getBuildingName(),
                     licenseeDto.getFloorNo(), licenseeDto.getUnitNo(), licenseeDto.getPostalCode());
             OrganizationDto organizationDto = orgUserManageService.getOrganizationById(licenseeDto.getOrganizationId());
-            MsgTemplateDto emailTemplateDto = msgTemplateClient.getMsgTemplate(emailTemp).getEntity();
-            MsgTemplateDto smsTemplateDto = msgTemplateClient.getMsgTemplate(smsTemp).getEntity();
-            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgTemp).getEntity();
+            MsgTemplateDto emailTemplateDto = feMainMsgTemplateClient.getMsgTemplate(emailTemp).getEntity();
+            MsgTemplateDto smsTemplateDto = feMainMsgTemplateClient.getMsgTemplate(smsTemp).getEntity();
+            MsgTemplateDto msgTemplateDto = feMainMsgTemplateClient.getMsgTemplate(msgTemp).getEntity();
             String emailSubject = emailTemplateDto.getTemplateName();
             String smsSubject = smsTemplateDto.getTemplateName();
             String msgSubject = msgTemplateDto.getTemplateName();
