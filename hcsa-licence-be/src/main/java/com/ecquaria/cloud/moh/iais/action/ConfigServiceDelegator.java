@@ -269,7 +269,6 @@ public class ConfigServiceDelegator {
 
         String manprincipalOfficer = request.getParameter("man-principalOfficer");
         String mixprincipalOfficer = request.getParameter("mix-principalOfficer");
-        String poId = request.getParameter("poId");
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = IaisCommonUtils.genNewArrayList();
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = IaisCommonUtils.genNewArrayList();
         HcsaSvcPersonnelDto poDto = new HcsaSvcPersonnelDto();
@@ -291,13 +290,9 @@ public class ConfigServiceDelegator {
             poDto.setPageMaximumCount(mixprincipalOfficer);
         }
 
-        if (!StringUtil.isEmpty(poId)) {
-            poDto.setServiceId(poId);
-        }
-
         poDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         hcsaSvcPersonnelDtos.add(poDto);
-        String dpoId = request.getParameter("dpoId");
+
         String mandeputyPrincipalOfficer = request.getParameter("man-DeputyPrincipalOfficer");
         String mixdeputyPrincipalOfficer = request.getParameter("mix-DeputyPrincipalOfficer");
         HcsaSvcPersonnelDto dpoDto = new HcsaSvcPersonnelDto();
@@ -696,7 +691,10 @@ public class ConfigServiceDelegator {
         if (!StringUtil.isEmpty(serviceId)) {
             hcsaServiceDto.setId(serviceId);
         }
-        hcsaServiceDto.setCategoryId(selectCategoryId);
+        if(!StringUtil.isEmpty(selectCategoryId)){
+            hcsaServiceDto.setCategoryId(selectCategoryId);
+        }
+
         hcsaServiceDto.setSvcName(serviceName);
         hcsaServiceDto.setSvcCode(serviceCode);
         hcsaServiceDto.setMaxVersionEffectiveDate(maxVersionEffectiveDate);

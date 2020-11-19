@@ -205,7 +205,6 @@ public class ConfigServiceImpl implements ConfigService {
         Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(effectiveDate);
         String format = new SimpleDateFormat("yyyy-MM-dd").format(parse);
         hcsaServiceDto.setEffectiveDate(format);
-        hcsaServiceDto.setId(null);
         hcsaServiceConfigDto = hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto).getEntity();
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -497,10 +496,13 @@ public class ConfigServiceImpl implements ConfigService {
                      errorMap.put("effectiveDate","Please select after the maximum version end time");
                  }
                }else {
-                   Date parse1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(maxVersionEffectiveDate);
-                   if(parse.before(parse1) || parse.compareTo(parse1)==0){
-                       errorMap.put("effectiveDate","Please select after the maximum version start time");
+                   if(maxVersionEffectiveDate!=null){
+                       Date parse1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(maxVersionEffectiveDate);
+                       if(parse.before(parse1) || parse.compareTo(parse1)==0){
+                           errorMap.put("effectiveDate","Please select after the maximum version start time");
+                       }
                    }
+
                }
             }
         }else if(selectAsNewVersion){
