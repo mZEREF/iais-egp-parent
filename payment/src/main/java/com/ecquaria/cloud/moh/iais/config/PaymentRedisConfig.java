@@ -1,4 +1,4 @@
-package com.ecquaria.egp.core.payment.config;
+package com.ecquaria.cloud.moh.iais.config;
 
 import java.lang.reflect.Method;
 import org.springframework.beans.factory.annotation.Autowired;

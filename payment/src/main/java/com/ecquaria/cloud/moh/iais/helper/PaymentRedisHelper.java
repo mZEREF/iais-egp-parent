@@ -1,4 +1,4 @@
-package com.ecquaria.egp.core.payment.api.util;
+package com.ecquaria.cloud.moh.iais.helper;
 
 import java.util.Map;
 import javax.servlet.http.HttpSession;
