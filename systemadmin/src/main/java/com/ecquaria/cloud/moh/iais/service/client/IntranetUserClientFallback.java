@@ -154,4 +154,9 @@ public class IntranetUserClientFallback implements IntranetUserClient{
     public FeignResponseEntity<WorkingGroupDto> getWrkGrpById(String workGroupId) {
         return null;
     }
+
+    @Override
+    public FeignResponseEntity<Boolean> checkRoleIsExist(OrgUserRoleDto orgUserRoleDto) {
+        return null;
+    }
 }
