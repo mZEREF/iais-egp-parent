@@ -115,6 +115,10 @@ public class INTERNET___MohNewApplication___1 extends BaseProcessClass {
 	// 		reSubmit->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "reSubmit", this);
 	}
+	public void doPayValidate_OnStepProcess_0() throws Exception {
+	// 		doPayValidate->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doPayValidate", this);
+	}
 	
 
 }
