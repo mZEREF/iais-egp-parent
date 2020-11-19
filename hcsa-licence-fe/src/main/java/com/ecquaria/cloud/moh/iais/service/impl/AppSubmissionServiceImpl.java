@@ -1072,6 +1072,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                         AppGrpPrimaryDocDto newGrpPrimaryDoc = (AppGrpPrimaryDocDto) CopyUtil.copyMutableObject(appGrpPrimaryDocDto);
                                         newGrpPrimaryDoc.setSvcComDocId(docConfig.getId());
                                         newGrpPrimaryDoc.setSvcComDocName(docConfig.getDocTitle());
+                                        newGrpPrimaryDoc.setVersion(docConfig.getVersion());
                                         newGrpPrimaryDocList.add(newGrpPrimaryDoc);
                                         break;
                                     }
@@ -1087,6 +1088,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             if(oldDocConfig.getId().equals(appGrpPrimaryDocDto.getSvcComDocId())){
                                 AppGrpPrimaryDocDto newGrpPrimaryDoc = (AppGrpPrimaryDocDto) CopyUtil.copyMutableObject(appGrpPrimaryDocDto);
                                 newGrpPrimaryDoc.setSvcComDocName(oldDocConfig.getDocTitle());
+                                newGrpPrimaryDoc.setDocConfigVersion(oldDocConfig.getVersion());
                                 newGrpPrimaryDocList.add(newGrpPrimaryDoc);
                                 break;
                             }
