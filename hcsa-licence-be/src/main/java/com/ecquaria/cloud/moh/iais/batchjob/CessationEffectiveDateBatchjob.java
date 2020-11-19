@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
@@ -29,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -51,7 +51,7 @@ public class CessationEffectiveDateBatchjob {
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
-    private HcsaConfigClient hcsaConfigClient;
+    private OrganizationClient organizationClient;
     @Autowired
     SystemParamConfig systemParamConfig;
     @Autowired
@@ -92,7 +92,8 @@ public class CessationEffectiveDateBatchjob {
             Date date = new Date();
             //licence
             log.debug(StringUtil.changeForLog("The CessationLicenceBatchJob is doBatchJob ..."));
-            List<LicenceDto> licenceDtos = IaisCommonUtils.genNewArrayList();
+            Set<LicenceDto> licenceDtos = IaisCommonUtils.genNewHashSet();
+            Map<String,String> licGrpMap = IaisCommonUtils.genNewHashMap();
             List<ApplicationGroupDto> applicationGroupDtos = cessationClient.listAppGrpForCess().getEntity();
             List<ApplicationGroupDto> applicationGroupDtosCesead = IaisCommonUtils.genNewArrayList();
             if (!IaisCommonUtils.isEmpty(applicationGroupDtos)) {
@@ -113,6 +114,7 @@ public class CessationEffectiveDateBatchjob {
                                 LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
                                 if (licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())) {
                                     licenceDtos.add(licenceDto);
+                                    licGrpMap.put(originLicenceId,appGrpId);
                                 }
                                 continue;
                             }
@@ -130,6 +132,7 @@ public class CessationEffectiveDateBatchjob {
                                                 if (ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())) {
                                                     licenceDtos.add(licenceDto);
                                                     applicationGroupDtosCesead.add(applicationGroupDto);
+                                                    licGrpMap.put(originLicenceId,appGrpId);
                                                 }
                                             }
                                             break;
@@ -177,20 +180,17 @@ public class CessationEffectiveDateBatchjob {
                                         if (ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)) {
                                             applicationGroupDtosCesead.add(applicationGroupDto);
                                             licenceDtos.add(licenceDto);
-                                            updateLicenceStatusAndSendMails(licenceDto, date);
+                                            licGrpMap.put(originLicenceId,appGrpId);
                                             String svcName = licenceDto.getSvcName();
                                             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
                                             String svcType = hcsaServiceDto.getSvcType();
-                                            List<LicenceDto> specLicenceDto = null;
+                                            List<LicenceDto> specLicenceDto;
                                             if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
                                                 List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(originLicenceId).getEntity();
                                                 if (specLicIds != null && !specLicIds.isEmpty()) {
                                                     specLicenceDto = hcsaLicenceClient.retrieveLicenceDtos(specLicIds).getEntity();
-                                                    updateLicencesStatusAndSendMails(specLicenceDto, date);
+                                                    updateLicence(specLicenceDto, date);
                                                 }
-                                            }
-                                            if (!IaisCommonUtils.isEmpty(specLicenceDto)) {
-                                                licenceDtos.addAll(specLicenceDto);
                                             }
                                         }
                                     }
@@ -204,7 +204,7 @@ public class CessationEffectiveDateBatchjob {
                 }
                 try {
                     //update and send email
-                    updateLicencesStatusAndSendMails(licenceDtos, date);
+                    updateLicencesStatusAndSendMails(licenceDtos, date,licGrpMap);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
@@ -214,27 +214,60 @@ public class CessationEffectiveDateBatchjob {
         }
     }
 
-    private void updateLicencesStatusAndSendMails(List<LicenceDto> licenceDtos, Date date) {
+    private void updateLicencesStatusAndSendMails(Set<LicenceDto> licenceDtos, Date date,Map<String,String> licGrpMap) {
         List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
         AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         for (LicenceDto licenceDto : licenceDtos) {
             try {
+                List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
                 licenceDto.setAuditTrailDto(auditTrailDto);
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
                 licenceDto.setEndDate(date);
+                String licenseeId = licenceDto.getLicenseeId();
                 updateLicenceDtos.add(licenceDto);
                 String svcName = licenceDto.getSvcName();
-                String licenseeId = licenceDto.getLicenseeId();
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
+                serviceCodes.add(hcsaServiceDto.getSvcCode());
                 String licenceNo = licenceDto.getLicenceNo();
-                String id = licenceDto.getId();
+                String licId = licenceDto.getId();
                 Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+                StringBuilder svcNameLicNo = new StringBuilder();
+                svcNameLicNo.append(svcName).append(" : ").append(licenceNo);
+                List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
+                if(!IaisCommonUtils.isEmpty(specLicIds)){
+                    for(String specLicId :specLicIds){
+                        LicenceDto specLicDto = hcsaLicenceClient.getLicDtoById(specLicId).getEntity();
+                        String svcName1 = specLicDto.getSvcName();
+                        String licenceNo1 = specLicDto.getLicenceNo();
+                        svcNameLicNo.append(svcName1).append(" : ").append(licenceNo1);
+                        HcsaServiceDto hcsaServiceDto1 = HcsaServiceCacheHelper.getServiceByServiceName(svcName1);
+                        serviceCodes.add(hcsaServiceDto1.getSvcCode());
+                    }
+                }
+                String groupId = licGrpMap.get(licId);
                 LicenseeDto licenseeDto = inspEmailService.getLicenseeDtoById(licenseeId);
-                String applicantName = licenseeDto.getName();
-                emailMap.put("ApplicantName", applicantName);
+                String displayName = licenseeDto.getName();
+                StringBuilder appNos = new StringBuilder();
+                if(!StringUtil.isEmpty(groupId)){
+                    List<ApplicationDto> applicationDtos = applicationClient.getAppDtosByAppGrpId(groupId).getEntity();
+                    for(ApplicationDto applicationDto :applicationDtos){
+                        String appId = applicationDto.getId();
+                        String applicationNo = applicationDto.getApplicationNo();
+                        String status = applicationDto.getStatus();
+                        List<AppPremiseMiscDto> appPremiseMiscDtos = cessationClient.getAppPremiseMiscDtoListByAppId(appId).getEntity();
+                        if(!IaisCommonUtils.isEmpty(applicationDtos)){
+                            Date effectiveDate = appPremiseMiscDtos.get(0).getEffectiveDate();
+                            if(effectiveDate.compareTo(new Date())<=0&&ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE.equals(status)){
+                                appNos.append(applicationNo);
+                            }
+                        }
+                    }
+                }
+                emailMap.put("ApplicantName", displayName);
                 emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.LICENCE_STATUS_CEASED}).get(0).getText());
-                emailMap.put("ServiceLicenceName", svcName);
-                emailMap.put("ApplicationNumber", licenceNo);
-                emailMap.put("CessationDate", Formatter.formatDateTime(date));
+                emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
+                emailMap.put("ApplicationNumber", appNos.toString());
+                emailMap.put("CessationDate", DateFormatUtils.format(date,"dd/MM/yyyy"));
                 emailMap.put("email", systemParamConfig.getSystemAddressOne());
                 emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
                 emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
@@ -244,11 +277,11 @@ public class CessationEffectiveDateBatchjob {
                 emailParam.setQueryCode(licenceNo);
                 emailParam.setReqRefNum(licenceNo);
                 emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
-                emailParam.setRefId(id);
+                emailParam.setRefId(licId);
                 Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                 InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE);
                 map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.LICENCE_STATUS_CEASED}).get(0).getText());
-                map.put("ApplicationNumber", licenceNo);
+                map.put("ApplicationNumber", appNos.toString());
                 String subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
                 emailParam.setSubject(subject);
                 //email
@@ -258,14 +291,11 @@ public class CessationEffectiveDateBatchjob {
                 emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
                 notificationHelper.sendNotification(emailParam);
                 //msg
-                HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(svcName).getEntity();
-                List<String> svcCode = IaisCommonUtils.genNewArrayList();
-                svcCode.add(svcDto.getSvcCode());
-                emailParam.setSvcCodeList(svcCode);
+                emailParam.setSvcCodeList(serviceCodes);
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE_MSG);
                 emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                 emailParam.setRefId(licenceDto.getId());
-                //notificationHelper.sendNotification(emailParam);
+                notificationHelper.sendNotification(emailParam);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 continue;
@@ -280,68 +310,19 @@ public class CessationEffectiveDateBatchjob {
         }
     }
 
-    private void updateLicenceStatusAndSendMails(LicenceDto licenceDto, Date date) {
-        if (licenceDto == null) {
-            return;
-        }
-        AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
-        licenceDto.setAuditTrailDto(auditTrailDto);
-        licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
-        licenceDto.setEndDate(date);
-        String svcName = licenceDto.getSvcName();
-        String licenseeId = licenceDto.getLicenseeId();
-        String licenceNo = licenceDto.getLicenceNo();
-        String id = licenceDto.getId();
-        List<LicenceDto> licenceDtos = IaisCommonUtils.genNewArrayList();
-        licenceDtos.add(licenceDto);
-        hcsaLicenceClient.updateLicences(licenceDtos);
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        try {
+    private void updateLicence(List<LicenceDto> licenceDtos,Date date){
+        if (!IaisCommonUtils.isEmpty(licenceDtos)) {
+            AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
+            for(LicenceDto licenceDto : licenceDtos){
+                licenceDto.setAuditTrailDto(auditTrailDto);
+                licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
+                licenceDto.setEndDate(date);
+            }
+            hcsaLicenceClient.updateLicences(licenceDtos).getEntity();
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             gatewayClient.updateFeLicDto(licenceDtos, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization());
-            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-            LicenseeDto licenseeDto = inspEmailService.getLicenseeDtoById(licenseeId);
-            String applicantName = licenseeDto.getName();
-            emailMap.put("ApplicantName", applicantName);
-            emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.LICENCE_STATUS_CEASED}).get(0).getText());
-            emailMap.put("ServiceLicenceName", svcName);
-            emailMap.put("ApplicationNumber", licenceNo);
-            emailMap.put("CessationDate", Formatter.formatDateTime(date));
-            emailMap.put("email", systemParamConfig.getSystemAddressOne());
-            emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
-            emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
-            EmailParam emailParam = new EmailParam();
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE);
-            emailParam.setTemplateContent(emailMap);
-            emailParam.setQueryCode(licenceNo);
-            emailParam.setReqRefNum(licenceNo);
-            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
-            emailParam.setRefId(id);
-            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-            InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE);
-            map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.LICENCE_STATUS_CEASED}).get(0).getText());
-            map.put("ApplicationNumber", licenceNo);
-            String subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
-            emailParam.setSubject(subject);
-            //email
-            notificationHelper.sendNotification(emailParam);
-            //sms
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE_SMS);
-            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
-            notificationHelper.sendNotification(emailParam);
-            //msg
-            HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(svcName).getEntity();
-            List<String> svcCode = IaisCommonUtils.genNewArrayList();
-            svcCode.add(svcDto.getSvcCode());
-            emailParam.setSvcCodeList(svcCode);
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE_MSG);
-            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-            emailParam.setRefId(licenceDto.getId());
-            notificationHelper.sendNotification(emailParam);
-            //cessationBeService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
         }
     }
 
