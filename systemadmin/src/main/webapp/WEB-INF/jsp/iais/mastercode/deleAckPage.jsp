@@ -17,7 +17,7 @@
                 <div class="center-content">
                     <div class="intranet-content">
                         <div class="bg-title">
-                            <h2>${DELETE_ACKMSG}/></h2>
+                            <h2>${DELETE_ACKMSG}</h2>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12">
