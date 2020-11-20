@@ -163,6 +163,9 @@ public class PaymentNetsProxy extends PaymentProxy {
 
 		String transNo = this.getPaymentData().getPaymentTrans().getTransNo();
 		String refNo = this.getPaymentData().getSvcRefNo();
+		if(refNo.length()>=19){
+			refNo=refNo.substring(0,18)+refNo.substring(refNo.length()-3);
+		}
 		double amount = this.getPaymentData().getAmount();
 		PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(refNo).getEntity();
 
