@@ -245,83 +245,53 @@
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script type="text/javascript">
-    function exportToConfigTemplate(){
-        /*const selectVal = [];
-        $("input[name='itemCheckbox']:checked").each(function(i){
-          selectVal[i] = $(this).val();
-          });
+  function exportToConfigTemplate(){
+      let url = '/hcsa-licence-web/eservice/INTRANET/MohChecklistItem/exportItemToConfigTemplate'
+      callAjaxSetCheckBoxSelectedItem('itemCheckbox', '${pageContext.request.contextPath}/checklist-item/setup-checkbox');
+      showPopupWindow(url);
+    }
 
-        if (selectVal == null || selectVal.length == 0){
-          return;
-        }*/
+  function cancelConfig() {
+      SOP.Crud.cfxSubmit("mainForm", "cancelConfig");
+  }
 
+  function doUploadFile(value) {
+      SOP.Crud.cfxSubmit("mainForm", "preUploadData", value);
+  }
 
-        SOP.Crud.cfxSubmit("mainForm", "exportItemToConfigTemplate");
+  function disable(itemId) {
+    $('#currentMaskId').val(itemId)
+      SOP.Crud.cfxSubmit("mainForm", "deleteChecklistItem", itemId);
+  }
 
-        /*$.ajax({
-          url: url,
-          type: 'POST',
-          data: {'itemCheckbox': selectVal},
-         /!* data:$("#mainForm").serialize(),*!/
-          dataType:"text",
-          async: false,
-          traditional:true,
-          success: function(data, status, xhr){
-            console.log("Download file DONE!");
-            console.log(data);
-            console.log(status);
-            console.log(xhr);
-            console.log("=====================");
-            var a = document.createElement('a');
-            a.click();
-          },
-          error: function(res){
+  function configToChecklist() {
+      var checkBoxLen = $('input[type=checkbox]:checked').length;
 
-          }
-        });*/
+      if (checkBoxLen > 0){
+          SOP.Crud.cfxSubmit("mainForm", "configToChecklist")
       }
+  }
 
-    function cancelConfig() {
-        SOP.Crud.cfxSubmit("mainForm", "cancelConfig");
-    }
+  function prepareAddItem() {
+      SOP.Crud.cfxSubmit("mainForm", "prepareAddItem");
+  }
 
-    function doUploadFile(value) {
-        SOP.Crud.cfxSubmit("mainForm", "preUploadData", value);
-    }
+  function prepareClone() {
+      SOP.Crud.cfxSubmit("mainForm", "viewCloneData");
+  }
 
-    function disable(itemId) {
-      $('#currentMaskId').val(itemId)
-        SOP.Crud.cfxSubmit("mainForm", "deleteChecklistItem", itemId);
-    }
+  function prepareEditItem(id) {
+    $('#currentMaskId').val(id)
+      SOP.Crud.cfxSubmit("mainForm", "prepareEditItem", id);
+  }
 
-    function configToChecklist() {
-        var checkBoxLen = $('input[type=checkbox]:checked').length;
+  function jumpToPagechangePage(){
+      SOP.Crud.cfxSubmit("mainForm", "doPage");
+  }
 
-        if (checkBoxLen > 0){
-            SOP.Crud.cfxSubmit("mainForm", "configToChecklist")
-        }
-    }
-
-    function prepareAddItem() {
-        SOP.Crud.cfxSubmit("mainForm", "prepareAddItem");
-    }
-
-    function prepareClone() {
-        SOP.Crud.cfxSubmit("mainForm", "viewCloneData");
-    }
-
-    function prepareEditItem(id) {
-      $('#currentMaskId').val(id)
-        SOP.Crud.cfxSubmit("mainForm", "prepareEditItem", id);
-    }
-
-    function jumpToPagechangePage(){
-        SOP.Crud.cfxSubmit("mainForm", "doPage");
-    }
-
-    function sortRecords(sortFieldName,sortType){
-        SOP.Crud.cfxSubmit("mainForm","sortRecords",sortFieldName,sortType);
-    }
+  function sortRecords(sortFieldName,sortType){
+      SOP.Crud.cfxSubmit("mainForm","sortRecords",sortFieldName,sortType);
+  }
 
 
 

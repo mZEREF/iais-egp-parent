@@ -48,6 +48,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -440,6 +442,7 @@ public class HcsaChklItemDelegator {
 
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, null);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, null);
 
         if(HcsaChecklistConstants.ACTION_CANCEL.equals(currentAction)){
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, null);
@@ -712,6 +715,7 @@ public class HcsaChklItemDelegator {
     }
 
 
+
     /**
     * @author: yichen 
     */
@@ -719,7 +723,7 @@ public class HcsaChklItemDelegator {
 	public @ResponseBody void fileHandler(HttpServletRequest request, HttpServletResponse response){
 	    log.debug(StringUtil.changeForLog("fileHandler start ...."));
 
-        SearchParam  searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         searchParam.setPageNo(0);
         searchParam.setPageSize(Integer.MAX_VALUE);
         QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
@@ -759,7 +763,11 @@ public class HcsaChklItemDelegator {
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
     }
 
-
+    @RequestMapping(value = "/checklist-item/setup-checkbox", method = RequestMethod.POST)
+    public @ResponseBody void setUpCheckBox(HttpServletRequest request) {
+        String[] sCkBox =  request.getParameterValues("selectedCheckBoxItem");
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, sCkBox);
+    }
 
     /**
      * @Author yichen
@@ -771,16 +779,14 @@ public class HcsaChklItemDelegator {
 
         try {
             File inputFile = ResourceUtils.getFile("classpath:template/Checklist_Config_Upload_Template.xlsx");
-
-            String[] checkBoxItemId = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
-            if (checkBoxItemId == null || checkBoxItemId.length <= 0) {
+            String[] sCkBox = (String[]) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
+            if (sCkBox == null || sCkBox.length <= 0) {
                 FileUtils.writeFileResponseProcessContent(request, inputFile);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
                 return;
             }
 
-            List<String> queryIds = Arrays.asList(checkBoxItemId);
-
+            List<String> queryIds = Arrays.asList(sCkBox);
             if (inputFile.exists() && inputFile.isFile()) {
                 List<ChecklistItemDto> item = hcsaChklService.listChklItemByItemId(queryIds);
 

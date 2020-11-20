@@ -257,3 +257,26 @@ function validateUploadSizeMaxOrEmpty(maxSize,selectedFileId) {
     }
     return "Y";
 }
+
+//use for download function in the page, example : /checklist-item/setup-checkbox
+function callAjaxSetCheckBoxSelectedItem(checkboxName, destUrl) {
+    let array =[];
+    $('input[name=' + checkboxName  + ']').each(function(){
+        if ($(this).prop('checked')){
+            array.push($(this).val())
+        }
+    });
+
+    $.ajax({
+        'url': destUrl,
+        'dataType': 'json',
+        'data': {selectedCheckBoxItem:array},
+        'type': 'POST',
+        'traditional':true,
+        'async': false,
+        'success': function (data) {
+        },
+        'error': function () {
+        }
+    });
+}
