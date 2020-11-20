@@ -17,7 +17,7 @@
     <c:set value="${applicationViewDto.governanceOfficersList}" var="GovernanceOfficersList"/>
     <c:set value="${applicationViewDto.specialtySelectList}" var="SpecialtySelectList"/>
     <c:set value="${applicationViewDto.idTypeSelect}" var="IdTypeSelect"/>
-    <c:set value="${applicationViewDto.cgoSelectList}" var="CgoSelectList"/>
+    <c:set value="${applicationViewDto.cgoSelectList}" var="CgoSelectList" scope="request"/>
 
   <div class="form-group">
     <div class="col-xs-12 col-md-10" style="margin-left: 1%">
