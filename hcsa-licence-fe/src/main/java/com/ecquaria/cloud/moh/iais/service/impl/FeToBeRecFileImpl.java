@@ -104,13 +104,13 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                     String compress = compress(fileId.getKey());
                     String appId = appIdItemIdMap.get(fileId.getKey());
                     rename(compress, appId);
-                    deleteFile();
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                     JobLogger.log(e.getMessage(), e);
                     continue;
                 }
             }
+            deleteFile();
         }
     }
 
