@@ -1779,6 +1779,30 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doRenewSubmit end ...."));
     }
 
+    public static boolean eqAddFloorNo(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto){
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+        List<AppPremisesOperationalUnitDto> premisesOperationalUnitDtos=IaisCommonUtils.genNewArrayList();
+        List<AppPremisesOperationalUnitDto> oldPremisesOperationalUnitDtos=IaisCommonUtils.genNewArrayList();
+        for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+            List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
+            if(appPremisesOperationalUnitDtos!=null){
+                List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList = copyAppPremisesOperationalUnitDto(appPremisesOperationalUnitDtos);
+                premisesOperationalUnitDtos.addAll(appPremisesOperationalUnitDtoList);
+            }
+        }
+        for(AppGrpPremisesDto appGrpPremisesDto : oldAppSubmissionDtoAppGrpPremisesDtoList){
+            List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
+            if(appPremisesOperationalUnitDtos!=null){
+                List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList = copyAppPremisesOperationalUnitDto(appPremisesOperationalUnitDtos);
+                oldPremisesOperationalUnitDtos.addAll(appPremisesOperationalUnitDtoList);
+            }
+        }
+        if(!premisesOperationalUnitDtos.equals(oldPremisesOperationalUnitDtos)){
+            return true;
+        }
+        return false;
+    }
     /**
      * StartStep: doRequestForChangeSubmit
      *
@@ -1837,6 +1861,7 @@ public class NewApplicationDelegator {
         }
         appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         boolean isAutoRfc = compareAndSendEmail(appSubmissionDto, oldAppSubmissionDto);
+        boolean eqAddFloorNo = eqAddFloorNo(appSubmissionDto, oldAppSubmissionDto);
         //is need to pay ?
         String appGroupNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         boolean licHadSubmit = !IaisCommonUtils.isEmpty(applicationDtos);
@@ -1879,6 +1904,9 @@ public class NewApplicationDelegator {
                     appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
                 }
             }
+        }
+        if(eqAddFloorNo){
+            amendmentFeeDto.setChangeInLocation(true);
         }
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         double amount = feeDto.getTotal();

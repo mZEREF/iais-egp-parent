@@ -1399,7 +1399,7 @@ public class RequestForChangeMenuDelegator {
         }
     }
 
-    public void doSubmit(BaseProcessClass bpc) {
+    public void doSubmit(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
         List<LicenceDto> selectLicence = (List<LicenceDto>) bpc.request.getSession().getAttribute("licenceDtoList");
         if (selectLicence != null) {
@@ -1474,6 +1474,19 @@ public class RequestForChangeMenuDelegator {
                 LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
                 boolean grpLic = licenceDto.isGrpLic();
                 AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string.getId());
+                String premisesIndexNo = "";
+                List<AppGrpPremisesDto> appGrpPremisesDtoList2 = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
+                if(grpLic){
+                    String hciCode1 = appGrpPremisesDtoList1.get(0).getHciCode();
+                    for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList2){
+                        String hciCode = appGrpPremisesDto.getHciCode();
+                        if(hciCode1.equals(hciCode)){
+                            premisesIndexNo=appGrpPremisesDto.getPremisesIndexNo();
+                        }
+                    }
+                }else {
+                    premisesIndexNo= appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getPremisesIndexNo();
+                }
                 appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
                 if(0==total){
                     appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
@@ -1490,8 +1503,11 @@ public class RequestForChangeMenuDelegator {
                     }
                 }
                 appSubmissionDtoByLicenceId.setAmount(total);
-                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-                appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
+                AppGrpPremisesDto o = (AppGrpPremisesDto)CopyUtil.copyMutableObject(appGrpPremisesDtoList1.get(0));
+                List<AppGrpPremisesDto> appGrpPremise= new ArrayList<>(1);
+                appGrpPremise.add(o);
+                appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremise);
+                appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
                 appSubmissionDtoByLicenceId.setAppGrpNo(appGrpNo);
                 appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
                 PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDtoByLicenceId);

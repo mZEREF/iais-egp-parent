@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
@@ -102,7 +103,9 @@ public class AppealDelegator {
     public void submit(BaseProcessClass bpc){
         log.info("start**************submit************");
         String s = appealService.submitData(bpc.request);
-
+        String appeal_ack001 = MessageUtil.getMessageDesc("APPEAL_ACK001");
+        String substring = appeal_ack001.substring(0, appeal_ack001.indexOf("<"));
+        bpc.request.setAttribute("substring",substring);
         bpc.request.setAttribute("newApplicationNo",s);
         log.info("end**************submit************");
     }
