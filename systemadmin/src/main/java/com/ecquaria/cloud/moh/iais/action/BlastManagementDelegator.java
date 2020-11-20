@@ -463,7 +463,12 @@ public class BlastManagementDelegator {
     void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
         File file = null;
         SearchParam searchParam = getSearchParam(request,false);
+
         QueryHelp.setMainSql("systemAdmin", "queryBlastManagementList",searchParam);
+        SearchResult<BlastManagementListDto> searchResultRowCount = blastManagementListService.blastList(searchParam);
+        int row = searchResultRowCount.getRowCount();
+        searchParam.setPageNo(1);
+        searchParam.setPageSize(row);
         SearchResult<BlastManagementListDto> searchResult = blastManagementListService.blastList(searchParam);
         if (!searchResult.getRows().isEmpty()){
             //master code to description
