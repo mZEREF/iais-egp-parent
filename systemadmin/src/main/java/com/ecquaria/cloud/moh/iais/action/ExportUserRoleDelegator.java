@@ -102,11 +102,11 @@ public class ExportUserRoleDelegator {
                             roleId.setText(RoleConsts.USER_ROLE_AO1);
                         }else if(groupName.equals("Level 1 Approval")&&isLeadForGroup==1){
                             roleId.setText(RoleConsts.USER_ROLE_AO1_LEAD);
-                        }else if(groupName.equals("Level 2 Approval")&&isLeadForGroup==1){
+                        }else if(groupName.equals("Level 2 Approval")&&isLeadForGroup==0){
                             roleId.setText(RoleConsts.USER_ROLE_AO2);
                         }else if(groupName.equals("Level 2 Approval")&&isLeadForGroup==1){
                             roleId.setText(RoleConsts.USER_ROLE_AO2_LEAD);
-                        }else if(groupName.equals("Level 3 Approval")&&isLeadForGroup==1){
+                        }else if(groupName.equals("Level 3 Approval")&&isLeadForGroup==0){
                             roleId.setText(RoleConsts.USER_ROLE_AO3);
                         }else if(groupName.equals("Level 3 Approval")&&isLeadForGroup==1){
                             roleId.setText(RoleConsts.USER_ROLE_AO3_LEAD);
