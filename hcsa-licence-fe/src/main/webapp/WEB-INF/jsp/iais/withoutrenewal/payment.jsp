@@ -14,6 +14,7 @@
 <form method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="switch_value" value="">
+    <input type="hidden" id="paymentMessageValidateMessage" value="${paymentMessageValidateMessage}">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -123,8 +124,36 @@
     });
 
     $('#proceed').click(function () {
-        $('[name="switch_value"]').val('doPayment');
-        $('#menuListForm').submit();
+        if(validatePayment()){
+            $('[name="switch_value"]').val('doPayment');
+            $('#menuListForm').submit();
+        }
+    });
+
+    function validatePayment(){
+        var flag=false;
+        var paymentMessageValidateMessage = $('#paymentMessageValidateMessage').val();
+        if($("input[name='payMethod']").size()<=0){
+            flag=true;
+        }else {
+            $("input[name='payMethod']").each(function () {
+                if ( $(this).prop("checked")){
+                    flag=true;
+                }
+            });
+        }
+        if(!flag){
+            $('#error_payMethod').html(paymentMessageValidateMessage);
+        }
+        return flag;
+    }
+
+    $("[name='payMethod']").change(function selectChange() {
+        $("input[name='payMethod']").each(function () {
+            if ( $(this).prop("checked")){
+                $('#error_payMethod').html('');
+            }
+        });
     });
 
 </script>
