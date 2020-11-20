@@ -4,7 +4,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AppGrpPaymentClient;
@@ -42,8 +41,8 @@ public class ClientCheckNotResultPaymentJob {
         for (ApplicationGroupDto appGrp :applicationGroupDtoList
                 ) {
             try {
-                PaymentRequestDto paymentRequestDto=appGrpPaymentClient.getPaymentRequestDtoByReqRefNoLike(appGrp.getGroupNo()).getEntity();
-                PaymentDto paymentDto= appGrpPaymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();                if(paymentDto!=null&&"success".equals(paymentDto.getPmtStatus())){
+                PaymentDto paymentDto= appGrpPaymentClient.getPaymentDtoByReqRefNo(appGrp.getPmtRefNo()).getEntity();
+                if(paymentDto!=null&&"success".equals(paymentDto.getPmtStatus())){
                     appGrp.setPmtRefNo(paymentDto.getReqRefNo());
                     appGrp.setPaymentDt(paymentDto.getTxnDt());
                     appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
