@@ -81,7 +81,7 @@
                           </div>
                           <iais:section title="" id = "inspection_date">
                             <div class="table-gp">
-                              <table class="table">
+                              <table class="apptApp table">
                                 <thead>
                                   <tr align="center">
                                     <th>Application No</th>
