@@ -1505,7 +1505,15 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public void sendRfcSubmittedEmail(AppSubmissionDto appSubmissionDto, String pmtMethod) throws IOException, TemplateException {
+    public void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException, TemplateException {
+        AppSubmissionDto appSubmissionDto=appSubmissionDtos.get(0);
+        if(appSubmissionDtos.size()>=2){
+            double a = 0.0;
+            for (AppSubmissionDto appSubmDto : appSubmissionDtos) {
+                a = a + appSubmDto.getAmount();
+            }
+            appSubmissionDto.setAmountStr(Formatter.formatterMoney(a));
+        }
         String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(appSubmissionDto.getLicenseeId()).getEntity();

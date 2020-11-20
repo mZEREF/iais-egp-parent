@@ -1132,16 +1132,19 @@ public class RequestForChangeMenuDelegator {
 
             if(appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
                 AppSubmissionDto ackPageAppSubmissionDto;
+                List<AppSubmissionDto> appSubmissionDtos1=IaisCommonUtils.genNewArrayList();
                 try {
                     ackPageAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
                     if(ackPageAppSubmissionDto==null){
-                        ackPageAppSubmissionDto=appSubmissionDtos.get(0);
+                        appSubmissionDtos1=appSubmissionDtos;
+                    }else {
+                        appSubmissionDtos1.add(ackPageAppSubmissionDto);
                     }
                 }catch (Exception e){
                     log.info(e.getMessage(),e);
-                    ackPageAppSubmissionDto=appSubmissionDtos.get(0);
+                    appSubmissionDtos1=appSubmissionDtos;
                 }
-                requestForChangeService.sendRfcSubmittedEmail(ackPageAppSubmissionDto,null);
+                requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos1,null);
             }
         } catch (Exception e) {
             log.info(e.getMessage(), e);
@@ -1246,16 +1249,19 @@ public class RequestForChangeMenuDelegator {
         try {
             if(appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
                 AppSubmissionDto ackPageAppSubmissionDto;
+                List<AppSubmissionDto> appSubmissionDtos1=IaisCommonUtils.genNewArrayList();
                 try {
                     ackPageAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
                     if(ackPageAppSubmissionDto==null){
-                        ackPageAppSubmissionDto=appSubmissionDtos.get(0);
+                        appSubmissionDtos1=appSubmissionDtos;
+                    }else {
+                        appSubmissionDtos1.add(ackPageAppSubmissionDto);
                     }
                 }catch (Exception e){
                     log.info(e.getMessage(),e);
-                    ackPageAppSubmissionDto=appSubmissionDtos.get(0);
+                    appSubmissionDtos1=appSubmissionDtos;
                 }
-                requestForChangeService.sendRfcSubmittedEmail(ackPageAppSubmissionDto, payMethod);
+                requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos1,payMethod);
             }
         } catch (Exception e) {
             log.info(e.getMessage(), e);

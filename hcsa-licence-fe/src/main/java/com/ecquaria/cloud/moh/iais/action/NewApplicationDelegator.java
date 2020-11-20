@@ -3118,7 +3118,9 @@ public class NewApplicationDelegator {
                     log.info(e.getMessage(),e);
                     ackPageAppSubmissionDto=appSubmissionDto;
                 }
-                requestForChangeService.sendRfcSubmittedEmail(ackPageAppSubmissionDto, payMethod);
+                List<AppSubmissionDto> appSubmissionDtos=IaisCommonUtils.genNewArrayList();
+                appSubmissionDtos.add(ackPageAppSubmissionDto);
+                requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos, payMethod);
             }
         } catch (Exception e) {
             log.info(e.getMessage(), e);
