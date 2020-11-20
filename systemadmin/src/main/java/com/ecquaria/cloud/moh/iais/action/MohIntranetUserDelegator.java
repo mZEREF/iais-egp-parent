@@ -702,6 +702,42 @@ public class MohIntranetUserDelegator {
         return;
     }
 
+    public void importUserRole(BaseProcessClass bpc) throws Exception {
+        log.debug(StringUtil.changeForLog("the importUserRole start ...."));
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        CommonsMultipartFile sessionFile = (CommonsMultipartFile) request.getFile("userRoleUpload");
+        int userFileSize = (int) ParamUtil.getSessionAttr(bpc.request, "userFileSize");
+        File file = File.createTempFile("temp", "xml");
+        File xmlFile = inputStreamToFile(sessionFile.getInputStream(), file);
+        //validate xml file
+        List<EgpUserRoleDto> egpUserRoleDtos = IaisCommonUtils.genNewArrayList();
+        Map<String, String> fileErrorMap = intranetUserService.importRoleXmlValidation(xmlFile, userFileSize, sessionFile, egpUserRoleDtos);
+        if (fileErrorMap != null && fileErrorMap.size() > 0) {
+            if (fileErrorMap.containsKey("userRoleUploadError")) {
+                ParamUtil.setRequestAttr(bpc.request, "ackSuccessFlag", "");
+            } else {
+                ParamUtil.setRequestAttr(bpc.request, "ackSuccessFlag", AppConsts.FAIL);
+            }
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(fileErrorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+        } else {
+            egpUserRoleDtos = intranetUserService.importRoleXml(xmlFile);
+            ParamUtil.setRequestAttr(bpc.request, "ackSuccessFlag", AppConsts.SUCCESS);
+        }
+        ParamUtil.setRequestAttr(bpc.request, "egpUserRoleDtos", egpUserRoleDtos);
+    }
+
+    public void exportUserRole(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the exportUserRole start ...."));
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String[] ids = ParamUtil.getStrings(request, "userUid");
+        if (ids == null || ids.length == 0) {
+            ParamUtil.setRequestAttr(request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            return;
+        }
+        ParamUtil.setRequestAttr(bpc.request, "ids", ids);
+    }
+
     public void changeStatus(BaseProcessClass bpc) {
 
     }
@@ -1206,53 +1242,6 @@ public class MohIntranetUserDelegator {
         return errors;
     }
 
-    /**
-     * StartStep: importUserRole
-     *
-     * @param bpc
-     * @throws
-     */
-    public void importUserRole(BaseProcessClass bpc) throws IOException, DocumentException {
-        log.debug(StringUtil.changeForLog("the importUserRole start ...."));
-        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        CommonsMultipartFile sessionFile = (CommonsMultipartFile) request.getFile("userRoleUpload");
-        int userFileSize = (int) ParamUtil.getSessionAttr(bpc.request, "userFileSize");
-        File file = File.createTempFile("temp", "xml");
-        File xmlFile = inputStreamToFile(sessionFile.getInputStream(), file);
-        //validate xml file
-        List<EgpUserRoleDto> egpUserRoleDtos = IaisCommonUtils.genNewArrayList();
-        Map<String, String> fileErrorMap = intranetUserService.importRoleXmlValidation(xmlFile, userFileSize, sessionFile, egpUserRoleDtos);
-        if (fileErrorMap != null && fileErrorMap.size() > 0) {
-            if (fileErrorMap.containsKey("userRoleUploadError")) {
-                ParamUtil.setRequestAttr(bpc.request, "ackSuccessFlag", "");
-            } else {
-                ParamUtil.setRequestAttr(bpc.request, "ackSuccessFlag", AppConsts.FAIL);
-            }
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(fileErrorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-        } else {
-            egpUserRoleDtos = intranetUserService.importRoleXml(xmlFile);
-            ParamUtil.setRequestAttr(bpc.request, "ackSuccessFlag", AppConsts.SUCCESS);
-        }
-        ParamUtil.setRequestAttr(bpc.request, "egpUserRoleDtos", egpUserRoleDtos);
-    }
-
-    /**
-     * StartStep: exportUserRole
-     *
-     * @param bpc
-     * @throws
-     */
-    public void exportUserRole(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the exportUserRole start ...."));
-        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String[] ids = ParamUtil.getStrings(request, "userUid");
-        if (ids == null || ids.length == 0) {
-            ParamUtil.setRequestAttr(request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-            return;
-        }
-        ParamUtil.setRequestAttr(bpc.request, "ids", ids);
-    }
 
     private List<SelectOption> getStatusOption() {
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();

@@ -120,7 +120,25 @@
     function doExportRole() {
         if ($("input[type='checkbox']").is(':checked')) {
             $('#exportError').hide();
-            submitUser('exportUserRole');
+            var arr = [];
+            var r =document.getElementsByName("userUid");
+            for(var i=0;i<r.length;i++) {
+                if (r[i].checked) {
+                    arr.push(r[i].value);
+                }
+            }
+            $.ajax({
+                'url': '${pageContext.request.contextPath}/intranetUserAjax/userId',
+                'dataType': 'json',
+                'data': {userIds:arr},
+                'type': 'POST',
+                'traditional':true,
+                'success': function (data) {
+                },
+                'error': function () {
+                }
+            });
+            showPopupWindow('/system-admin-web/eservice/INTRANET/IntrantUserRoleExport');
         } else {
             $('#exportError').show();
         }

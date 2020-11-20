@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -53,7 +55,7 @@ public class ExportUserRoleDelegator {
      */
     public void intrantUserRoleExportDo(BaseProcessClass bpc) throws IOException, DocumentException {
         log.debug(StringUtil.changeForLog("the intrantUserRoleExportDo start ...."));
-        String[] ids = (String []) ParamUtil.getRequestAttr(bpc.request, "ids");
+        String[] ids = (String[]) ParamUtil.getSessionAttr(bpc.request, "userIdsSess");
         if(ids!=null){
             byte[] xml = createXML(bpc,ids);
             bpc.request.setAttribute("xml", xml);
@@ -64,6 +66,7 @@ public class ExportUserRoleDelegator {
     private byte[] createXML(BaseProcessClass bpc,String [] ids) {
         byte[] bytes = null;
         try {
+            List<WorkingGroupDto> workingGroups = intranetUserService.getWorkingGroups();
             //1.create dom
             Document document = DocumentHelper.createDocument();
             //2.create rootElement
@@ -71,19 +74,42 @@ public class ExportUserRoleDelegator {
             for(String id :ids){
                 String maskUserId = MaskUtil.unMaskValue("maskUserId", id);
                 OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(maskUserId);
-                List<OrgUserRoleDto> orgUserRoleDtos = intranetUserService.retrieveRolesByuserAccId(maskUserId);
-                if(!IaisCommonUtils.isEmpty(orgUserRoleDtos)){
-                    String userIdText = orgUserDto.getUserId();
-                    for(OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos){
-                        String roleIdText = orgUserRoleDto.getRoleName();
+                List<UserGroupCorrelationDto> userGroupsByUserId = intranetUserService.getUserGroupsByUserId(maskUserId);
+                if(!IaisCommonUtils.isEmpty(userGroupsByUserId)){
+                    for(UserGroupCorrelationDto dto : userGroupsByUserId){
+                        String groupId = dto.getGroupId();
+                        String groupName = intranetUserService.getWrkGrpById(groupId);
                         Element userGroup = userGroups.addElement("user-group");
                         Element userId = userGroup.addElement("userId");
+                        userId.setText(orgUserDto.getUserId());
                         Element roleId = userGroup.addElement("roleId");
-                        if (!StringUtil.isEmpty(userIdText)) {
-                            userId.setText(userIdText);
-                        }
-                        if (!StringUtil.isEmpty(roleIdText)) {
-                            roleId.setText(roleIdText);
+                        Element workingGroupId = userGroup.addElement("workingGroupId");
+                        workingGroupId.setText(groupId);
+                        Integer isLeadForGroup = dto.getIsLeadForGroup();
+                        if(groupName.equals("Admin Screening officer")&&isLeadForGroup==0){
+                            roleId.setText(RoleConsts.USER_ROLE_ASO);
+                        }else if(groupName.equals("Admin Screening officer")&&isLeadForGroup==1){
+                            roleId.setText(RoleConsts.USER_ROLE_ASO_LEAD);
+                        }else if(groupName.equals("Professional")&&isLeadForGroup==0){
+                            roleId.setText(RoleConsts.USER_ROLE_PSO);
+                        }else if(groupName.equals("Professional")&&isLeadForGroup==1){
+                            roleId.setText(RoleConsts.USER_ROLE_PSO_LEAD);
+                        }else if(groupName.equals("Inspection")&&isLeadForGroup==0){
+                            roleId.setText(RoleConsts.USER_ROLE_INSPECTIOR);
+                        }else if(groupName.equals("Inspection")&&isLeadForGroup==1){
+                            roleId.setText(RoleConsts.USER_MASTER_INSPECTION_LEAD);
+                        }else if(groupName.equals("Level 1 Approval")&&isLeadForGroup==0){
+                            roleId.setText(RoleConsts.USER_ROLE_AO1);
+                        }else if(groupName.equals("Level 1 Approval")&&isLeadForGroup==1){
+                            roleId.setText(RoleConsts.USER_ROLE_AO1_LEAD);
+                        }else if(groupName.equals("Level 2 Approval")&&isLeadForGroup==1){
+                            roleId.setText(RoleConsts.USER_ROLE_AO2);
+                        }else if(groupName.equals("Level 2 Approval")&&isLeadForGroup==1){
+                            roleId.setText(RoleConsts.USER_ROLE_AO2_LEAD);
+                        }else if(groupName.equals("Level 3 Approval")&&isLeadForGroup==1){
+                            roleId.setText(RoleConsts.USER_ROLE_AO3);
+                        }else if(groupName.equals("Level 3 Approval")&&isLeadForGroup==1){
+                            roleId.setText(RoleConsts.USER_ROLE_AO3_LEAD);
                         }
                     }
                 }
