@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import java.util.Map;
 import javax.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
  * @date 2020/11/19 18:11
  */
 @Component
+@Slf4j
 public class PaymentRedisHelper {
     @Autowired
     @Qualifier("paymentRedisTemplate")
@@ -29,7 +31,9 @@ public class PaymentRedisHelper {
             for (Map.Entry<Object, Object> ent : map.entrySet()) {
                 String key = (String) ent.getKey();
                 if (key.startsWith("sessionAttr:")) {
-                    session.setAttribute(key.substring(key.indexOf("sessionAttr:")), ent.getValue());
+                    String sessionKey = key.replaceFirst("sessionAttr:", "");
+                    log.debug("Session Key => " + sessionKey);
+                    session.setAttribute(sessionKey, ent.getValue());
                 }
             }
         }
