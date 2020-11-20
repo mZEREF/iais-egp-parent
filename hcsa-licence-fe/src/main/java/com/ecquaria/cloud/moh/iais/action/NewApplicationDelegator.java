@@ -2322,6 +2322,8 @@ public class NewApplicationDelegator {
         Double totalAmount = appSubmissionDto.getAmount();
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
         String noNeedPayment = bpc.request.getParameter("noNeedPayment");
+        log.debug(StringUtil.changeForLog("payMethod:"+payMethod));
+        log.debug(StringUtil.changeForLog("noNeedPayment:"+noNeedPayment));
         if(0.0 != totalAmount && StringUtil.isEmpty(payMethod) && StringUtil.isEmpty(noNeedPayment)){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "payment");
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -3037,6 +3039,10 @@ public class NewApplicationDelegator {
             appGrp.setId(appGrpId);
             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
             serviceConfigService.updatePaymentStatus(appGrp);
+
+            //
+            LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 

@@ -158,10 +158,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             templateContent.put("isSelfAssessment","No");
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
             templateContent.put("systemLink", loginUrl);
-            String paymentMethodName = "onlinePayment";
-            if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(appSubmissionDto.getPaymentMethod())) {
+            String paymentMethodName = "noNeedPayment";
+            String payMethod = appSubmissionDto.getPaymentMethod();
+            if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
                 paymentMethodName = "GIRO";
                 //need change giro
+            }else if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
+                    || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
+                    || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
+                paymentMethodName = "onlinePayment";
             }
             templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
             templateContent.put("paymentMethod", paymentMethodName);
