@@ -110,7 +110,12 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                     continue;
                 }
             }
-            deleteFile();
+            try{
+                deleteFile();
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                JobLogger.log(e.getMessage(), e);
+            }
         }
     }
 
