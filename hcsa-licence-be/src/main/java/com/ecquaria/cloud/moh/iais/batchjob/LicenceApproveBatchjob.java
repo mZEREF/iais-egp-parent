@@ -2127,25 +2127,11 @@ public class LicenceApproveBatchjob {
                 //guying
             } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
                 //Send notification to transferor when licence transfer application is approve
-                Map<String, Object> notifyMap = IaisCommonUtils.genNewHashMap();
-                LicenseeDto licDto = inspEmailService.getLicenseeDtoById(licenceDto.getLicenseeId());
-                notifyMap.put("licensee", StringUtil.viewHtml(licDto.getUenNo()));
-                notifyMap.put("licenceList", "<p>" + licenceDto.getLicenceNo() + " - " + licenceDto.getSvcName() + "</p>");
-                notifyMap.put("status", "Is Approved.");
-                //approve
-                Map<String, Object> approveMap = IaisCommonUtils.genNewHashMap();
-                approveMap.put("licensee", licDto.getUenNo());
-                approveMap.put("licenceList", "<p>" + licenceDto.getLicenceNo() + " - " + licenceDto.getSvcName());
-
 //                sendApproveEmail(licenceDto, applicationNo, notifyMap, serviceId);
                 try {
                     //transfee
-                    sendSMS(msgId, licenceDto.getLicenseeId(), notifyMap);
-                    //transfor
-                    if(originLicenceDto != null){
-                        sendSMS(msgId, originLicenceDto.getLicenseeId(), notifyMap);
-                    }else {
-                        log.info(StringUtil.changeForLog("------ send transfor originLicenceDto is null"));
+                    if(applicationGroupDto.getNewLicenseeId()!=null){
+                        licenceService.sendRfcApproveLicenseeEmail(applicationGroupDto,applicationDto,licenceNo,svcCodeList);
                     }
 
                 } catch (Exception e) {

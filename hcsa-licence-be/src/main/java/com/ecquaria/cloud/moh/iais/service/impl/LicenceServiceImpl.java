@@ -527,9 +527,7 @@ public class LicenceServiceImpl implements LicenceService {
                                 sendPostInspectionNotification(applicationGroupDto,applicantName,svcDto,svcCodeList,MohName,applicationNo);
                             }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
                                 try {
-                                    if(applicationGroupDto.getNewLicenseeId()!=null){
-                                        sendRfcApproveLicenseeEmail(applicationGroupDto,applicationDto,licenceNo,svcCodeList);
-                                    }else {
+                                    if(applicationGroupDto.getNewLicenseeId()==null){
                                         sendRfcApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList);
                                     }
                                 } catch (IOException e) {
@@ -611,8 +609,8 @@ public class LicenceServiceImpl implements LicenceService {
         }
     }
 
-
-    private void sendRfcApproveLicenseeEmail(ApplicationGroupDto applicationGroupDto,  ApplicationDto applicationDto,String licenceNo,
+    @Override
+    public void sendRfcApproveLicenseeEmail(ApplicationGroupDto applicationGroupDto,  ApplicationDto applicationDto,String licenceNo,
                                              List<String> svcCodeList)  {
         String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
