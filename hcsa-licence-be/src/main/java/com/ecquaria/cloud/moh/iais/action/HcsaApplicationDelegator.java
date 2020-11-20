@@ -3062,6 +3062,49 @@ public class HcsaApplicationDelegator {
         return recommendationOnlyShow;
     }
 
+    private String getRecommendationOnlyShowStr (Integer recomInNumber, String chronoUnit){
+        String recommendationOnlyShow = "-";
+        if(recomInNumber == null){
+            return "-";
+        }else if(RiskConsts.YEAR.equals(chronoUnit)){
+            recommendationOnlyShow = recomInNumber + " Year(s)";
+        }else if(RiskConsts.MONTH.equals(chronoUnit)){
+            if(recomInNumber >= 12){
+                if( recomInNumber % 12 == 0){
+                    if(recomInNumber / 12 == 1){
+                        recommendationOnlyShow = "1 Year";
+                    }else {
+                        recommendationOnlyShow = recomInNumber / 12 + " Year(s)";
+                    }
+                }else {
+                    if(recomInNumber / 12 == 1) {
+                        if(recomInNumber % 12 == 1){
+                            recommendationOnlyShow = 1 + " Year " + 1 + " Month";
+                        }else {
+                            recommendationOnlyShow = 1 + " Year " + recomInNumber % 12 + " Month(s)";
+                        }
+
+                    }else {
+                        if(recomInNumber % 12 == 1){
+                            recommendationOnlyShow = recomInNumber / 12 + " Year(s) " + 1 + " Month";
+                        }else {
+                            recommendationOnlyShow = recomInNumber / 12 + " Year(s) " + recomInNumber % 12 + " Month(s)";
+                        }
+                    }
+                }
+            }else {
+                if( recomInNumber == 1){
+                    recommendationOnlyShow = recomInNumber + " Month";
+                }else if(recomInNumber == 0) {
+                    recommendationOnlyShow = "Reject";
+                }else {
+                    recommendationOnlyShow = recomInNumber + " Month(s)";
+                }
+            }
+        }
+        return recommendationOnlyShow;
+    }
+
     public void setSelectionValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto){
         //set normal processingDecision value
         setNormalProcessingDecisionDropdownValue(request,applicationViewDto,taskDto);
@@ -3217,7 +3260,7 @@ public class HcsaApplicationDelegator {
                         String returnFee = appPremisesRecommendationDto.getRemarks();
                         ParamUtil.setSessionAttr(request,"returnFeeOnlyShow",returnFee);
                     }else if(isChangePeriodAppealType && isAppealApprove){
-                        String appealRecommendationOtherOnlyShow =  getRecommendationOnlyShowStr(recomInNumber);
+                        String appealRecommendationOtherOnlyShow =  getRecommendationOnlyShowStr(recomInNumber,chronoUnit);
                         ParamUtil.setSessionAttr(request,"appealRecommendationOtherOnlyShow",appealRecommendationOtherOnlyShow);
                     }
                 }
