@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -1011,28 +1012,37 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         }
         Set<String> appPremCorrIdSet = new HashSet<>(appPremCorrIds);
         appPremCorrIds = new ArrayList<>(appPremCorrIdSet);
-        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
         for(String appPremCorrId : appPremCorrIds){
             ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
-            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = generateHcsaSvcStageWorkingGroupDto(appPremCorrId, applicationDto, HcsaConsts.ROUTING_STAGE_INS);
-            hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
+            List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+            applicationDtos.add(applicationDto);
+            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = inspectionAssignTaskService.generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
+            hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+            appPremScoreMap.put(appPremCorrId, hcsaSvcStageWorkingGroupDtos.get(0).getCount());//NOSONAR
         }
-        hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-        if(!IaisCommonUtils.isEmpty(hcsaSvcStageWorkingGroupDtos)){
-            for(HcsaSvcStageWorkingGroupDto hDto : hcsaSvcStageWorkingGroupDtos){
-                appPremScoreMap.put(hDto.getTaskRefNo(), hDto.getCount());
-            }
-        }
+
         return appPremScoreMap;
     }
 
-    private HcsaSvcStageWorkingGroupDto generateHcsaSvcStageWorkingGroupDto(String appPremCorrId, ApplicationDto applicationDto, String routingStageIns) {
-        HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-        hcsaSvcStageWorkingGroupDto.setStageId(routingStageIns);
-        hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
-        hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
-        hcsaSvcStageWorkingGroupDto.setTaskRefNo(appPremCorrId);
-        return hcsaSvcStageWorkingGroupDto;
+    public List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
+        log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos start ...."));
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
+        log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos stageId -->:"+stageId));
+        for(ApplicationDto applicationDto : applicationDtos){
+            AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+            hcsaSvcStageWorkingGroupDto.setStageId(stageId);
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+            hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
+            if(appGrpPremisesEntityDto != null){
+                hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
+            }else{
+                log.error(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos this APP do not have the premise :"+applicationDto.getApplicationNo()));
+            }
+            hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
+        }
+        log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos end ...."));
+        return hcsaSvcStageWorkingGroupDtos;
     }
 
     private TaskDto createTaskDto(TaskDto taskDto, String userId, int score) {
