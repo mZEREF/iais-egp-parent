@@ -58,4 +58,7 @@ public interface ServiceConfigService {
     List<HcsaSvcDocConfigDto> getPrimaryDocConfigByIds(List<String> ids);
 
     void giroPaymentXmlUpdateByGrpNo(AppSubmissionDto appGrp);
+
+    void sendGiroXmlToSftp();
+    void getGiroXmlFromSftpAndSaveXml();
 }

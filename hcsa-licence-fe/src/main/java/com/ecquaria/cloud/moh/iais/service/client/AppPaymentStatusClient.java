@@ -7,8 +7,10 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author weilu
@@ -24,4 +26,6 @@ public interface  AppPaymentStatusClient {
     @PostMapping(value = "/iais-payment/update-giropaymentxml" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<GiroPaymentXmlDto> updateGiroPaymentDto(@RequestBody GiroPaymentXmlDto giroPaymentXmlDto);
 
+    @GetMapping(value = "/iais-payment/get-giropaymentxmls-status-xmltype",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<GiroPaymentXmlDto>> getGiroPaymentDtosByStatusAndXmlType(@RequestParam("status") String status, @RequestParam("xmlType")String xmlType);
 }

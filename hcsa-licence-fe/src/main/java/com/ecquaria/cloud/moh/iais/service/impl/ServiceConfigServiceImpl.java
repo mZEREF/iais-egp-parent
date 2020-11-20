@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentXmlDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroXmlPaymentBackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
@@ -337,9 +338,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public void giroPaymentXmlUpdateByGrpNo(AppSubmissionDto appGrp) {
-        GiroPaymentXmlDto giroPaymentXmlDto = genGiroPaymentXmlDtoByAppGrp(appGrp);
-        //todo need xml file send sftp
-        appPaymentStatusClient.updateGiroPaymentDto(giroPaymentXmlDto);
+        //todo
+        //GiroPaymentXmlDto giroPaymentXmlDto = genGiroPaymentXmlDtoByAppGrp(appGrp);
+        //appPaymentStatusClient.updateGiroPaymentDto(giroPaymentXmlDto);
     }
 
     private GiroPaymentXmlDto genGiroPaymentXmlDtoByAppGrp(AppSubmissionDto appGrp){
@@ -348,7 +349,45 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         //todo gen xml by appGroup
         giroPaymentXmlDto.setXmlData(appGrp.getAppGrpNo());
         giroPaymentXmlDto.setXmlType(ApplicationConsts.GIRO_SEND_XML_SFTP);
-        giroPaymentXmlDto.setStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO);
+        giroPaymentXmlDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         return giroPaymentXmlDto;
+    }
+
+    @Override
+    public void sendGiroXmlToSftp() {
+        List<GiroPaymentXmlDto> giroPaymentXmlDtos =  appPaymentStatusClient.getGiroPaymentDtosByStatusAndXmlType(AppConsts.COMMON_STATUS_ACTIVE,ApplicationConsts.GIRO_SEND_XML_SFTP).getEntity();
+      if(IaisCommonUtils.isEmpty(giroPaymentXmlDtos)){
+          return;
+      }
+      for(GiroPaymentXmlDto giroPaymentXmlDto : giroPaymentXmlDtos){
+          if(genXmlFileToSftp(giroPaymentXmlDto)){
+              giroPaymentXmlDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+              giroPaymentXmlDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+              appPaymentStatusClient.updateGiroPaymentDto(giroPaymentXmlDto);
+          }
+      }
+    }
+    private boolean genXmlFileToSftp(GiroPaymentXmlDto giroPaymentXmlDto){
+        try{
+            //todo xml genfile to sftp
+            return true;
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            return  false;
+        }
+    }
+
+    @Override
+    public void getGiroXmlFromSftpAndSaveXml() {
+        //todo
+    }
+
+    private GiroPaymentXmlDto saveXml(String xml,String status,String type){
+        GiroPaymentXmlDto giroPaymentXmlDto = new GiroPaymentXmlDto();
+        giroPaymentXmlDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        giroPaymentXmlDto.setXmlData(xml);
+        giroPaymentXmlDto.setXmlType(status);
+        giroPaymentXmlDto.setStatus(type);
+       return appPaymentStatusClient.updateGiroPaymentDto(giroPaymentXmlDto).getEntity();
     }
 }
