@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AppGrpPaymentClient;
@@ -42,7 +43,8 @@ public class ClientCheckNotResultPaymentHandler extends IJobHandler {
             for (ApplicationGroupDto appGrp :applicationGroupDtoList
             ) {
                 try {
-                    PaymentDto paymentDto= appGrpPaymentClient.getPaymentDtoByReqRefNo(appGrp.getGroupNo()).getEntity();
+                    PaymentRequestDto paymentRequestDto=appGrpPaymentClient.getPaymentRequestDtoByReqRefNoLike(appGrp.getGroupNo()).getEntity();
+                    PaymentDto paymentDto= appGrpPaymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();
                     if(paymentDto!=null&&"success".equals(paymentDto.getPmtStatus())){
                         paymentDto.setAuditTrailDto(auditTrailDto);
                         appGrp.setPmtRefNo(paymentDto.getReqRefNo());

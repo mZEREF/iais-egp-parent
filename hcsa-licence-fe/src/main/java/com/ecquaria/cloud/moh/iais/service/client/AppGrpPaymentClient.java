@@ -22,5 +22,7 @@ public interface AppGrpPaymentClient {
     @PostMapping(value = "/iais-payment/payment-request-reqRefNo",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PaymentRequestDto> getPaymentRequestDtoByReqRefNo(@RequestBody String reqRefNo);
 
+    @PostMapping(value = "/iais-payment/payment-request-reqRefNoLike",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PaymentRequestDto> getPaymentRequestDtoByReqRefNoLike(@RequestBody String reqRefNo);
 
 }

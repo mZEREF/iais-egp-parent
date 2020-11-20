@@ -28,4 +28,12 @@ public class AppGrpPaymentClientFallBack implements AppGrpPaymentClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<PaymentRequestDto> getPaymentRequestDtoByReqRefNoLike(String reqRefNo) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
