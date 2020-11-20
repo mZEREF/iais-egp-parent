@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -354,6 +355,23 @@ public class IntranetUserServiceImpl implements IntranetUserService {
             createEgpRoles(egpUserRoleDtos);
         }
         if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
+            Iterator<UserGroupCorrelationDto> iterator = userGroupCorrelationDtos.iterator();
+            List<String> groupIds = IaisCommonUtils.genNewArrayList();
+            while (iterator.hasNext()){
+                UserGroupCorrelationDto next = iterator.next();
+                String groupId = next.getGroupId();
+                if(groupIds.contains(groupId)){
+                    iterator.remove();
+                }else {
+                    groupIds.add(groupId);
+                }
+            }
+            for(UserGroupCorrelationDto userGroupCorrelationDto : userGroupCorrelationDtos){
+                String groupId = userGroupCorrelationDto.getGroupId();
+                if(groupIds.contains(groupId)){
+                    userGroupCorrelationDto.setIsLeadForGroup(1);
+                }
+            }
             addUserGroupId(userGroupCorrelationDtos);
         }
         return egpUserRoleDtos;
