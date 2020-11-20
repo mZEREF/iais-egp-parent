@@ -88,16 +88,19 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String amoOo= String.valueOf(Integer.parseInt(amo));
 		String payMethod = fields.get("vpc_OrderInfo");
 		String reqNo = fields.get("vpc_MerchTxnRef");
+		if(reqNo.length()>=19){
+			reqNo=reqNo.substring(0,18)+reqNo.substring(reqNo.length()-3);
+		}
 		String returnUrl=this.getPaymentData().getContinueUrl();
 		String umId= "UMID_877772003";
 		String keyId=GatewayConfig.eNetsKeyId;
 		String secretKey=GatewayConfig.eNetsSecretKey ;
 		String s2sUrl="";
-		String b2sUrl= "http://192.168.6.195:8082/eNets/eNets/return.jsp";
-//		String b2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/payment-web/eservice/INTERNET/Payment";
+//		String b2sUrl= "http://192.168.6.195:8082/eNets/eNets/return.jsp";
+		String b2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/payment-web/back.jsp?reqNo="+reqNo;
 //		String b2sUrlPram="\""+fields.get("vpc_ReturnURL")+"\"";
 		String b2sUrlPram="";
-		String sessionId=fields.get("vpc_ReturnURL").substring(fields.get("vpc_ReturnURL").indexOf('=')+1);
+		String sessionId=bpc.getSession().getId();
 
 		String txnRep="{\"ss\":\"1\",\"msg\":{\"netsMid\":\""+umId+"\",\"tid\":\"\",\"submissionMode\":\"B\",\"txnAmount\":\""+amoOo+"\",\"merchantTxnRef\":\""+merchantTxnRef+"\",\"merchantTxnDtm\":\""+merchantTxnDtm+"\",\"paymentType\":\"SALE\",\"currencyCode\":\"SGD\",\"paymentMode\":\"\",\"merchantTimeZone\":\"+8:00\",\"b2sTxnEndURL\":\""+b2sUrl+"\",\"b2sTxnEndURLParam\":\""+b2sUrlPram+"\",\"s2sTxnEndURL\":\""+s2sUrl+"\",\"s2sTxnEndURLParam\":\"\",\"clientType\":\"W\",\"supMsg\":\"\",\"netsMidIndicator\":\"U\",\"ipAddress\":\"127.0.0.1\",\"language\":\"en\"}}" ;
 
@@ -110,7 +113,8 @@ public class PaymentNetsProxy extends PaymentProxy {
 		ParamUtil.setSessionAttr(bpc.request,"txnReq",txnRep);
 		ParamUtil.setSessionAttr(bpc.request,"API_KEY",keyId);
 		ParamUtil.setSessionAttr(bpc.request,"newHMAC",hmac);
-		ParamUtil.setSessionAttr(bpc.request,"sessionNetsId",sessionId);
+		ParamUtil.setSessionAttr(bpc.request,"sessionNetsId",fields.get("vpc_ReturnURL").substring(fields.get("vpc_ReturnURL").indexOf('=')+1));
+		log.info(StringUtil.changeForLog("==========>sessionNetsId:"+fields.get("vpc_ReturnURL").substring(fields.get("vpc_ReturnURL").indexOf('=')+1)));
 
 		log.info(StringUtil.changeForLog("==========>getSessionID:"+bpc.getSession().getId()));
 		paymentRequestDto.setQueryCode(sessionId);
@@ -125,25 +129,25 @@ public class PaymentNetsProxy extends PaymentProxy {
 			PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
 
 		}
-		try {
-			String backUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/payment-web/eservice/INTERNET/Payment";
-			RedirectUtil.redirect("http://192.168.6.195:8090/eNets?txnReq="+ URLEncoder.encode(txnRep + "", StandardCharsets.UTF_8.name())+"&API_KEY="+keyId+"&hmac="+URLEncoder.encode(hmac + "", StandardCharsets.UTF_8.name())+"&backUrl="+URLEncoder.encode(backUrl + "", StandardCharsets.UTF_8.name()), bpc.request, bpc.response);
-		} catch (IOException e) {
-			log.debug(e.getMessage());
-		}
 //		try {
-//			StringBuilder bud = new StringBuilder();
-//			bud.append(bigsURL).append('?');
-//			appendQueryFields(bud, fields);
-//
-//
-//			RedirectUtil.redirect(bud.toString(), bpc.request, bpc.response);
+//			String backUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/payment-web/eservice/INTERNET/Payment";
+//			RedirectUtil.redirect("http://192.168.6.195:8090/eNets?txnReq="+ URLEncoder.encode(txnRep + "", StandardCharsets.UTF_8.name())+"&API_KEY="+keyId+"&hmac="+URLEncoder.encode(hmac + "", StandardCharsets.UTF_8.name())+"&backUrl="+URLEncoder.encode(backUrl + "", StandardCharsets.UTF_8.name()), bpc.request, bpc.response);
 //		} catch (IOException e) {
-//			log.info(e.getMessage(),e);
 //			log.debug(e.getMessage());
-//
-//			throw new PaymentException(e);
 //		}
+		try {
+			StringBuilder bud = new StringBuilder();
+			bud.append(bigsURL).append('?');
+			appendQueryFields(bud, fields);
+
+
+			RedirectUtil.redirect(bud.toString(), bpc.request, bpc.response);
+		} catch (IOException e) {
+			log.info(e.getMessage(),e);
+			log.debug(e.getMessage());
+
+			throw new PaymentException(e);
+		}
 
 	}
 
@@ -176,7 +180,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		} catch (Exception e) {
 			log.debug(e.getMessage(),e);
 		}
-		log.info(StringUtil.changeForLog("MERCHANT APP : in hmac received : :" + header));
+		log.info(StringUtil.changeForLog("MERCHANT APP : in hmac received :" + header));
 		log.info(StringUtil.changeForLog("MERCHANT APP : in hmac generated :" + generatedHmac));
 
 		try {

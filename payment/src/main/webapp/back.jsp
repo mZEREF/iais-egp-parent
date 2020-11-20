@@ -4,17 +4,17 @@
 
 <%
 
-    String sessionId= (String) session.getAttribute("sessionNetsId");
-    String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+"/payment-web/process/EGPCLOUD/PaymentCallBack";
+    String sessionId= request.getParameter("reqNo");
+    String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+"/payment-web/eservice/INTERNET/Payment";
     StringBuilder bud = new StringBuilder();
-    bud.append(url).append("?sessionId=").append(sessionId);
+    bud.append(url).append("?reqNo=").append(sessionId);
     String header =  request.getParameter("hmac");
     System.out.println("MerchantApp:b2sTxnEndUrl : sessionId: " + session.getId());
     System.out.println("MerchantApp:b2sTxnEndUrl : hmac: " + header);
     String message =  request.getParameter("message");//contains TxnRes message
     System.out.println("MerchantApp:b2sTxnEndUrl : data, message: " + message);
-    ParamUtil.setSessionAttr(request,"message",message);
-    ParamUtil.setSessionAttr(request,"header",header);
+    bud.append("&message=").append(message);
+    bud.append("&hmac=").append(header);
     RedirectUtil.redirect(bud.toString(), request, response);
 
 %>

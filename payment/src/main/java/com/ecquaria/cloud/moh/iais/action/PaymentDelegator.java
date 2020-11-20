@@ -3,13 +3,21 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.PaymentRedisHelper;
+import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
+import ecq.commons.helper.StringHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 /**
  * @author weilu
@@ -19,22 +27,46 @@ import java.io.IOException;
 @Slf4j
 public class PaymentDelegator {
 
+    @Autowired
+    private PaymentClient paymentClient;
 
-    public void start(BaseProcessClass bpc) {
+    @Autowired
+    private PaymentRedisHelper redisCacheHelper;
+
+    public void start(BaseProcessClass bpc) throws UnsupportedEncodingException {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>payment");
         log.info(StringUtil.changeForLog("==========>getSessionID:"+bpc.getSession().getId()));
         HttpServletRequest request=bpc.request;
 
-        String sessionId= (String) ParamUtil.getSessionAttr(request,"sessionNetsId");
+        String reqNo= ParamUtil.getRequestString(request,"reqNo");
+        PaymentRequestDto paymentRequestDto=paymentClient.getPaymentRequestDtoByReqRefNo(reqNo).getEntity();
         String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+"/payment-web/process/EGPCLOUD/PaymentCallBack";
         StringBuilder bud = new StringBuilder();
-        bud.append(url).append("?sessionId=").append(sessionId);
         String header =  ParamUtil.getRequestString(request,"hmac");
         System.out.println("MerchantApp:b2sTxnEndUrl : hmac: " + header);
         String message =  ParamUtil.getRequestString(request,"message");//contains TxnRes message
-        message=message.replace("https://egp.sit.inter.iais.com/payment-web/eservice/INTERNET/Payment","");
+//        message=message.replace("https://egp.sit.inter.iais.com/payment-web/eservice/INTERNET/Payment","");
         message=message.replace("\n"," ");
         System.out.println("MerchantApp:b2sTxnEndUrl : data, message: " + message);
+        System.out.println("====>  old Session ID : " + paymentRequestDto.getQueryCode());
+        System.out.println("====>  new Session ID : " + bpc.request.getSession().getId());
+        redisCacheHelper.copySessionAttr(paymentRequestDto.getQueryCode(),bpc.request.getSession());
+        String sessionIdStr= (String) ParamUtil.getSessionAttr(request,"sessionNetsId");
+        sessionIdStr = new String(Base64.decodeBase64(sessionIdStr.getBytes()));
+        String tinyKey = null;
+        if (!StringHelper.isEmpty(sessionIdStr)) {
+            sessionIdStr = URLDecoder.decode(sessionIdStr, "UTF-8");
+            int sepIndex = sessionIdStr.lastIndexOf(95);
+            if (0 < sepIndex) {
+                tinyKey = sessionIdStr.substring(sepIndex + 1);
+            }
+        }
+        //System.out.println("====>  payment Session ID : " + sessionId);
+        String sessionId = new String(Base64.encodeBase64((request.getSession().getId()+"_"+tinyKey).getBytes()));
+
+        //String sessionId = URLEncoder.encode(request.getSession().getId(), "UTF-8");
+
+        bud.append(url).append("?sessionId=").append(sessionId);
         ParamUtil.setSessionAttr(request,"message",message);
         ParamUtil.setSessionAttr(request,"header",header);
 
