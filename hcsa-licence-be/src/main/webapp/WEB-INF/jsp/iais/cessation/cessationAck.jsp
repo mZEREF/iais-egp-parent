@@ -41,7 +41,7 @@
                                 <p><c:out value="${confirm.svcName}"></c:out></p>
                             </td>
                             <td>
-                                <p><c:out value="${confirm.hciName}"></c:out></p>
+                                <p><c:out value="${(confirm.hciName == null || confirm.hciName == '') ? 'N/A' : confirm.hciName}"></c:out></p>
                             </td>
                             <td>
                                 <p><c:out value="${confirm.hciAddress}"></c:out></p>
