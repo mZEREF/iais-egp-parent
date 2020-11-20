@@ -27,7 +27,10 @@ public class PaymentRedisHelper {
         Map<Object, Object> map = this.redisTemplate.opsForHash().entries("spring:session:sessions:" + oldSessionId);
         if (map != null && session != null) {
             for (Map.Entry<Object, Object> ent : map.entrySet()) {
-                session.setAttribute((String) ent.getKey(), ent.getValue());
+                String key = (String) ent.getKey();
+                if (key.startsWith("sessionAttr:")) {
+                    session.setAttribute(key.substring(key.indexOf("sessionAttr:")), ent.getValue());
+                }
             }
         }
     }
