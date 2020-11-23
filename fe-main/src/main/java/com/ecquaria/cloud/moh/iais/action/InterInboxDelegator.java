@@ -105,20 +105,21 @@ public class InterInboxDelegator {
                     .append(MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN);
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
+        }else{
+            AuditTrailDto auditTrailDto = inboxService.getLastLoginInfo(loginContext.getLoginId());
+            InterInboxUserDto interInboxUserDto = new InterInboxUserDto();
+            interInboxUserDto.setLicenseeId(loginContext.getLicenseeId());
+            interInboxUserDto.setUserId(loginContext.getUserId());
+            interInboxUserDto.setOrgId(loginContext.getOrgId());
+            interInboxUserDto.setFunctionName(auditTrailDto.getFunctionName());
+            interInboxUserDto.setLicenseNo(auditTrailDto.getLicenseNum());
+            interInboxUserDto.setModuleName(auditTrailDto.getModule());
+            interInboxUserDto.setLastLogin(Formatter.parseDateTime(auditTrailDto.getActionTime()));
+            interInboxUserDto.setUserDomain(loginContext.getUserDomain());
+            log.debug(StringUtil.changeForLog("Login role information --->> ##User-Id:"+interInboxUserDto.getUserId()+"### Licensee-Id:"+interInboxUserDto.getLicenseeId()));
+            ParamUtil.setSessionAttr(bpc.request,InboxConst.INTER_INBOX_USER_INFO, interInboxUserDto);
+            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTERNAL_INBOX, AuditTrailConsts.FUNCTION_INBOX);
         }
-        AuditTrailDto auditTrailDto = inboxService.getLastLoginInfo(loginContext.getLoginId());
-        InterInboxUserDto interInboxUserDto = new InterInboxUserDto();
-        interInboxUserDto.setLicenseeId(loginContext.getLicenseeId());
-        interInboxUserDto.setUserId(loginContext.getUserId());
-        interInboxUserDto.setOrgId(loginContext.getOrgId());
-        interInboxUserDto.setFunctionName(auditTrailDto.getFunctionName());
-        interInboxUserDto.setLicenseNo(auditTrailDto.getLicenseNum());
-        interInboxUserDto.setModuleName(auditTrailDto.getModule());
-        interInboxUserDto.setLastLogin(Formatter.parseDateTime(auditTrailDto.getActionTime()));
-        interInboxUserDto.setUserDomain(loginContext.getUserDomain());
-        log.debug(StringUtil.changeForLog("Login role information --->> ##User-Id:"+interInboxUserDto.getUserId()+"### Licensee-Id:"+interInboxUserDto.getLicenseeId()));
-        ParamUtil.setSessionAttr(bpc.request,InboxConst.INTER_INBOX_USER_INFO, interInboxUserDto);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTERNAL_INBOX, AuditTrailConsts.FUNCTION_INBOX);
     }
 
     public void initToPage(BaseProcessClass bpc){
