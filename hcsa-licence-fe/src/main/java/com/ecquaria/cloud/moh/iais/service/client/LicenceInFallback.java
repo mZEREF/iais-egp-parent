@@ -319,7 +319,7 @@ public class LicenceInFallback implements LicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<Boolean> existingOnSiteLicence(String svcName, String licenseeId) {
+    public FeignResponseEntity<Boolean> existingOnSiteOrConveLic(String svcName, String licenseeId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

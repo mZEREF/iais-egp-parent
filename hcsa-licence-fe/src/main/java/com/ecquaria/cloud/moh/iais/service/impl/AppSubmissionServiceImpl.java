@@ -299,7 +299,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 licenceFeeDto.setCharity(isCharity);
                 //exiting offSite licence
                 log.info(StringUtil.changeForLog("svcName:"+appSvcRelatedInfoDto.getServiceName()));
-                Boolean existingOnSiteLic = licenceClient.existingOnSiteLicence(appSvcRelatedInfoDto.getServiceName(),appSubmissionDto.getLicenseeId()).getEntity();
+                Boolean existingOnSiteLic = licenceClient.existingOnSiteOrConveLic(appSvcRelatedInfoDto.getServiceName(),appSubmissionDto.getLicenseeId()).getEntity();
                 log.info(StringUtil.changeForLog("existing onSite licncence:"+existingOnSiteLic));
                 licenceFeeDto.setExistOnsite(existingOnSiteLic);
                 licenceFeeQuaryDtos.add(licenceFeeDto);
