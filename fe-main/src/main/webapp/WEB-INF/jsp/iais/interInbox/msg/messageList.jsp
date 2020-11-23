@@ -12,14 +12,14 @@
             <div class="col-md-4">
                 <label class="col-md-3 control-label" for="inboxType" style="margin-top:5%;">Type</label>
                 <div class="col-md-8">
-                    <iais:select name="inboxType" id="inboxType" options="inboxTypeSelect" value="${param.inboxType}"/>
+                    <iais:select name="inboxType" id="inboxType" options="inboxTypeSelect" value="${param.inboxType}" cssClass="inboxType"/>
                 </div>
             </div>
             <div class="col-md-5">
                 <label class="col-md-3 control-label" for="inboxService" style="margin-top:3%;">Service</label>
                 <div class="col-md-8">
                     <%String inboxService = request.getParameter("inboxService");%>
-                    <iais:select name="inboxService" id="inboxService" options="inboxServiceSelect" value="${param.inboxService}"/>
+                    <iais:select name="inboxService" id="inboxService" options="inboxServiceSelect" value="${param.inboxService}" cssClass="inboxService"/>
                 </div>
             </div>
             <div class="col-md-3">
