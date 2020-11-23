@@ -1368,10 +1368,17 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = IaisCommonUtils.genNewArrayList();
         List<AppSvcDocDto> appSvcDocDtos = IaisCommonUtils.genNewArrayList();
+        List<AppSvcDocDto> deleteSvcDoc=IaisCommonUtils.genNewArrayList();
+        List<AppGrpPrimaryDocDto> deletePrimary=IaisCommonUtils.genNewArrayList();
         if (appSvcDocDtoLit != null) {
             for (AppSvcDocDto appSvcDocDto : appSvcDocDtoLit) {
                 String svcDocId = appSvcDocDto.getSvcDocId();
+                String fileRepoId = appSvcDocDto.getFileRepoId();
                 if (StringUtil.isEmpty(svcDocId)) {
+                    continue;
+                }
+                if(StringUtil.isEmpty(fileRepoId)){
+                    deleteSvcDoc.add(appSvcDocDto);
                     continue;
                 }
                 HcsaSvcDocConfigDto entity = appConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
@@ -1394,6 +1401,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     }
                 }
             }
+            appSvcDocDtoLit.removeAll(deleteSvcDoc);
             appSvcDocDtoLit.removeAll(appSvcDocDtos);
             for (int i = 0; i < appSvcDocDtoLit.size(); i++) {
                 for (int j = 0; j < appSvcDocDtoLit.size() && j != i; j++) {
@@ -1407,6 +1415,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         }
         if (dtoAppGrpPrimaryDocDtos != null) {
             for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : dtoAppGrpPrimaryDocDtos){
+                String fileRepoId = appGrpPrimaryDocDto.getFileRepoId();
+                if(StringUtil.isEmpty(fileRepoId)){
+                    deletePrimary.add(appGrpPrimaryDocDto);
+                    continue;
+                }
                 if(StringUtil.isEmpty(appGrpPrimaryDocDto.getSvcComDocName())){
                     String svcDocId = appGrpPrimaryDocDto.getSvcDocId();
                     if(svcDocId!=null){
@@ -1417,6 +1430,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     }
                 }
             }
+            dtoAppGrpPrimaryDocDtos.removeAll(deletePrimary);
             if (appGrpPrimaryDocDtos.isEmpty()) {
                 appGrpPrimaryDocDtos.addAll(dtoAppGrpPrimaryDocDtos);
             } else {
