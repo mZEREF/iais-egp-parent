@@ -471,30 +471,33 @@ public class InterInboxDelegator {
             return;
         }
         LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licId).getEntity();
-        Calendar calendar=Calendar.getInstance();
-        calendar.setTime(licenceDto.getCreatedAt());
-        calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(systemParamConfig.getLicencePeriod()));
-        boolean periodEqDay = calendar.getTime().after(new Date());
-        if (!periodEqDay){
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"The selected licence is not eligible for appeal");
-            ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
-            return;
+        if(licenceDto != null){
+            Calendar calendar=Calendar.getInstance();
+            calendar.setTime(licenceDto.getCreatedAt());
+            calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(systemParamConfig.getLicencePeriod()));
+            boolean periodEqDay = calendar.getTime().after(new Date());
+            if (!periodEqDay){
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"The selected licence is not eligible for appeal");
+                ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
+                return;
+            }
+            List<AppPremiseMiscDto> entity = appInboxClient.getAppPremiseMiscDtoRelateId(licId).getEntity();
+            if(!entity.isEmpty()){
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("APPEAL_ERR002"));
+                ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
+                return;
+            }
+            boolean isActive = licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus());
+            if(!isActive){
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("INBOX_ACK011"));
+                List<String> licIdValues = IaisCommonUtils.genNewArrayList();
+                licIdValues.add(licId);
+                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValues);
+                ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
+                return;
+            }
         }
-        List<AppPremiseMiscDto> entity = appInboxClient.getAppPremiseMiscDtoRelateId(licId).getEntity();
-        if(!entity.isEmpty()){
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("APPEAL_ERR002"));
-            ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
-            return;
-        }
-        boolean isActive = licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus());
-        if(!isActive){
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("INBOX_ACK011"));
-            List<String> licIdValues = IaisCommonUtils.genNewArrayList();
-            licIdValues.add(licId);
-            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValues);
-            ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
-            return;
-        }
+
         List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licId);
         if(!draftByLicAppId.isEmpty()){
             String isNeedDelete = bpc.request.getParameter("isNeedDelete");
