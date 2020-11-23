@@ -54,7 +54,7 @@ public class AuditTrailDelegator {
             .clz(AuditTrailQueryDto.class)
             .searchAttr(AuditTrailConstants.PARAM_SEARCH)
             .resultAttr(AuditTrailConstants.PARAM_SEARCHRESULT)
-            .sortField("audit_id").sortType(SearchParam.ASCENDING).build();
+            .sortField("action_time").sortType(SearchParam.DESCENDING).build();
 
 
     private AuditTrailService auditTrailService;
