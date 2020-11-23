@@ -696,7 +696,7 @@ public class InterInboxDelegator {
             for(String licId : licIdValue){
                 LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licId).getEntity();
                 if(licenceDto==null){
-                    cessationError = MessageUtil.getMessageDesc("INBOX_ACK011");
+                    cessationError = MessageUtil.getMessageDesc("CESS_ERR005");
                     ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
                     bpc.request.setAttribute("cessationError",cessationError);
                     ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
