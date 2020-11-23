@@ -363,6 +363,9 @@ public class BackendInboxDelegator {
                         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW.equals(status)){
                             successStatus = InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER;
                             inspectorAo1(bpc,applicationViewDto,taskDto);
+                        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW.equals(status)){
+                            successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW;
+                            routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO2, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02, RoleConsts.USER_ROLE_AO2,applicationViewDto,taskDto);
                         }else{
                             successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
                             routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO2, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02, RoleConsts.USER_ROLE_AO2,applicationViewDto,taskDto);
@@ -432,6 +435,8 @@ public class BackendInboxDelegator {
             }else if(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER.equals(successStatus)){
                 //AO1 inspector draft email
                 successInfo = "LOLEV_ACK035";
+            }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW.equals(successStatus)){
+                successInfo = "LOLEV_ACK036";
             }
             ParamUtil.setRequestAttr(bpc.request,"successInfo",successInfo);
         }
