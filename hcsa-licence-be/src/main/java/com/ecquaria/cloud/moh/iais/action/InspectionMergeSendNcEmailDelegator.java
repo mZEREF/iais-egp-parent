@@ -174,8 +174,7 @@ public class InspectionMergeSendNcEmailDelegator {
         for (AppPremisesCorrelationDto appPremisesCorrDto:appPremisesCorrelationDtos1
              ) {
             ApplicationDto appDto = applicationService.getApplicationBytaskId(appPremisesCorrDto.getId());
-            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto=appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(appDto.getApplicationNo(),RoleConsts.USER_ROLE_INSPECTIOR,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT);
-            if(appPremisesRoutingHistoryDto==null){
+            if(appDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING)){
                 appPremisesCorrelationDtos.add(appPremisesCorrDto);
             }
         }
