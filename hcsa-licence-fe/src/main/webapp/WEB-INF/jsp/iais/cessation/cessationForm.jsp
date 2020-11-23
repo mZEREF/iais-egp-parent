@@ -297,7 +297,7 @@
                         <a href="/main-web/eservice/INTERNET/MohInternetInbox"><em
                                 class="fa fa-angle-left"></em> Back</a>
                     </span>
-                        <span style="padding-left: 75%" class="components">
+                        <span style="padding-left: 73%" class="components">
                        <a class="btn btn-primary next" onclick="submitSure('submit')">Next</a>
                     </span>
                     </div>
