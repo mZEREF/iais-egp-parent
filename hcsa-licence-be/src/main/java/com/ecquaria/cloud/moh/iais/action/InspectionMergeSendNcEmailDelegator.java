@@ -168,7 +168,17 @@ public class InspectionMergeSendNcEmailDelegator {
         ApplicationViewDto applicationViewDto = fillupChklistService.getAppViewDto(taskDto.getId());
         applicationViewDto.setCurrentStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getStatus()}).get(0).getText());
 
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=inspEmailService.getAppPremisesCorrelationsByPremises(correlationId);
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos1=inspEmailService.getAppPremisesCorrelationsByPremises(correlationId);
+
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=IaisCommonUtils.genNewArrayList();
+        for (AppPremisesCorrelationDto appPremisesCorrDto:appPremisesCorrelationDtos1
+             ) {
+            ApplicationDto appDto = applicationService.getApplicationBytaskId(appPremisesCorrDto.getId());
+            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto=appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(appDto.getApplicationNo(),RoleConsts.USER_ROLE_INSPECTIOR,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT);
+            if(appPremisesRoutingHistoryDto==null){
+                appPremisesCorrelationDtos.add(appPremisesCorrDto);
+            }
+        }
         if(applicationViewDto.getApplicationDto().isFastTracking()){
             appPremisesCorrelationDtos.clear();
             AppPremisesCorrelationDto appCorrDto =new AppPremisesCorrelationDto();
