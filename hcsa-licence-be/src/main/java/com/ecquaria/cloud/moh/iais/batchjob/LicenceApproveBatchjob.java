@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppPremCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicFeeGroupDto;
@@ -230,7 +231,8 @@ public class LicenceApproveBatchjob {
                         updateExpiryDateByAlignFlag(licenceGroupDtos);
                         //update baseApplicationNo expiry Date
                         updateExpiryDateByBaseApplicationNo(licenceGroupDtos);
-                        //
+                        //add the originLicenceLicBaseSpecifiedCorrelationDtos
+                        setOriginLicenceLicBaseSpecifiedCorrelationDtos(licenceGroupDtos);
 
                         EventBusLicenceGroupDtos eventBusLicenceGroupDtos = new EventBusLicenceGroupDtos();
                         String evenRefNum = String.valueOf(System.currentTimeMillis());
@@ -295,6 +297,33 @@ public class LicenceApproveBatchjob {
                           signature2.date(), signature2.authorization());
               }
           }
+    }
+    private void setOriginLicenceLicBaseSpecifiedCorrelationDtos(List<LicenceGroupDto> licenceGroupDtos){
+        log.info(StringUtil.changeForLog("The setOriginLicenceLicBaseSpecifiedCorrelationDtos is strat ..."));
+        if(!IaisCommonUtils.isEmpty(licenceGroupDtos)){
+            log.info(StringUtil.changeForLog("The setOriginLicenceLicBaseSpecifiedCorrelationDtos licenceGroupDtos.size() is -->:"+licenceGroupDtos.size()));
+            for (LicenceGroupDto licenceGroupDto : licenceGroupDtos){
+                List<SuperLicDto>  superLicDtos = licenceGroupDto.getSuperLicDtos();
+                if(!IaisCommonUtils.isEmpty(superLicDtos)){
+                    log.info(StringUtil.changeForLog("The setOriginLicenceLicBaseSpecifiedCorrelationDtos superLicDtos.size() is -->:"+superLicDtos.size()));
+                    for(SuperLicDto superLicDto : superLicDtos){
+                        LicenceDto licenceDto = superLicDto.getLicenceDto();
+                        String originLicenceId = licenceDto.getOriginLicenceId();
+                        String svcType = licenceDto.getSvcType();
+                        log.info(StringUtil.changeForLog("The licenceDto.getLicenceNo() is -->:"+licenceDto.getLicenceNo()));
+                        log.info(StringUtil.changeForLog("The originLicenceId is -->:"+originLicenceId));
+                        log.info(StringUtil.changeForLog("The svcType is -->:"+svcType));
+                        if(!StringUtil.isEmpty(originLicenceId)){
+                            List<LicBaseSpecifiedCorrelationDto> licBaseSpecifiedCorrelationDtos = licenceService.getLicBaseSpecifiedCorrelationDtos(svcType,originLicenceId);
+                            if(!IaisCommonUtils.isEmpty(licBaseSpecifiedCorrelationDtos)){
+                                superLicDto.setOriginLicenceLicBaseSpecifiedCorrelationDtos(licBaseSpecifiedCorrelationDtos);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        log.info(StringUtil.changeForLog("The setOriginLicenceLicBaseSpecifiedCorrelationDtos is end ..."));
     }
     private void updateExpiryDateByAlignFlag(List<LicenceGroupDto> licenceGroupDtos){
         log.info(StringUtil.changeForLog("The updateExpiryDateByAlignFlag is strat ..."));
