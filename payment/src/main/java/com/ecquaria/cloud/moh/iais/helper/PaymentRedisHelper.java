@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,7 +34,7 @@ public class PaymentRedisHelper {
                 String key = (String) ent.getKey();
                 if (key.startsWith("sessionAttr:")) {
                     String sessionKey = key.replaceFirst("sessionAttr:", "");
-                    log.debug("Session Key => " + sessionKey);
+                    log.debug(StringUtil.changeForLog("Session Key => " + sessionKey));
                     session.setAttribute(sessionKey, ent.getValue());
                 }
             }

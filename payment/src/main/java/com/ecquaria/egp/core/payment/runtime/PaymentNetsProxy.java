@@ -92,7 +92,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 			reqNo=reqNo.substring(0,18)+reqNo.substring(reqNo.length()-3);
 		}
 		String returnUrl=this.getPaymentData().getContinueUrl();
-		String umId= "UMID_877772003";
+		String umId= GatewayConfig.eNetsUmId;
 		String keyId=GatewayConfig.eNetsKeyId;
 		String secretKey=GatewayConfig.eNetsSecretKey ;
 		String s2sUrl="";

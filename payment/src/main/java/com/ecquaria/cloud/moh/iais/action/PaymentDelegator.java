@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author weilu
@@ -46,23 +47,23 @@ public class PaymentDelegator {
         System.out.println("MerchantApp:b2sTxnEndUrl : hmac: " + header);
         String message =  ParamUtil.getRequestString(request,"message");//contains TxnRes message
 //        message=message.replace("https://egp.sit.inter.iais.com/payment-web/eservice/INTERNET/Payment","");
-        message=message.replace("\n"," ");
+        message=message.replace('\n',' ');
         System.out.println("MerchantApp:b2sTxnEndUrl : data, message: " + message);
         System.out.println("====>  old Session ID : " + paymentRequestDto.getQueryCode());
         System.out.println("====>  new Session ID : " + bpc.request.getSession().getId());
         redisCacheHelper.copySessionAttr(paymentRequestDto.getQueryCode(),bpc.request.getSession());
         String sessionIdStr= (String) ParamUtil.getSessionAttr(request,"sessionNetsId");
-        sessionIdStr = new String(Base64.decodeBase64(sessionIdStr.getBytes()));
+        sessionIdStr = new String(Base64.decodeBase64(sessionIdStr.getBytes(StandardCharsets.UTF_8) ));
         String tinyKey = null;
         if (!StringHelper.isEmpty(sessionIdStr)) {
-            sessionIdStr = URLDecoder.decode(sessionIdStr, "UTF-8");
+            sessionIdStr = URLDecoder.decode(sessionIdStr, StandardCharsets.UTF_8.name());
             int sepIndex = sessionIdStr.lastIndexOf(95);
             if (0 < sepIndex) {
                 tinyKey = sessionIdStr.substring(sepIndex + 1);
             }
         }
         //System.out.println("====>  payment Session ID : " + sessionId);
-        String sessionId = new String(Base64.encodeBase64((request.getSession().getId()+"_"+tinyKey).getBytes()));
+        String sessionId = new String(Base64.encodeBase64((request.getSession().getId()+"_"+tinyKey).getBytes(StandardCharsets.UTF_8)));
 
         //String sessionId = URLEncoder.encode(request.getSession().getId(), "UTF-8");
 
