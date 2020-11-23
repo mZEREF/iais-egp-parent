@@ -174,7 +174,7 @@ public class WithdrawalDelegator {
     public void withdrawalStep(BaseProcessClass bpc) throws Exception {
         wdIsValid = IaisEGPConstant.YES;
         List<WithdrawnDto> withdrawnDtoList = getWithdrawAppList(bpc);
-        if (IaisEGPConstant.YES.equals(wdIsValid) && withdrawnDtoList != null && withdrawnDtoList.size() > 0){
+        if ((withdrawnDtoList != null) && (withdrawnDtoList.size() > 0) && IaisEGPConstant.YES.equals(wdIsValid)){
             withdrawalService.saveWithdrawn(withdrawnDtoList);
         }
     }
@@ -182,7 +182,7 @@ public class WithdrawalDelegator {
     public void withdrawDoRfi(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("****The withdrawDoRfi Step****"));
         List<WithdrawnDto> withdrawnDtoList = getWithdrawAppList(bpc);
-        if (IaisEGPConstant.YES.equals(wdIsValid) && withdrawnDtoList != null && withdrawnDtoList.size() > 0){
+        if ((withdrawnDtoList != null) && (withdrawnDtoList.size() > 0) && IaisEGPConstant.YES.equals(wdIsValid)){
 //            withdrawalService.saveWithdrawn(withdrawnDtoList);
             withdrawalService.saveRfiWithdrawn(withdrawnDtoList);
         }
