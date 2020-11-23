@@ -187,15 +187,11 @@ public class PaymentNetsProxy extends PaymentProxy {
 		log.info(StringUtil.changeForLog("MERCHANT APP : in hmac generated :" + generatedHmac));
 
 		try {
-			if(generatedHmac!=null&&generatedHmac.equalsIgnoreCase(header)) {
-				JSONObject jsonObject = JSONObject.fromObject(txnRes);
-				Soapi txnResObj = (Soapi) JSONObject.toBean(jsonObject, Soapi.class);
-				log.info(StringUtil.changeForLog("MERCHANT APP : in receiveb2sTxnEnd :" + txnResObj));
-				if ("0".equals(txnResObj.getMsg().getNetsTxnStatus())) {
-					status = PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
-				}
-			}else {
-				log.error("signature not matched.");
+			JSONObject jsonObject = JSONObject.fromObject(txnRes);
+			Soapi txnResObj = (Soapi) JSONObject.toBean(jsonObject, Soapi.class);
+			log.info(StringUtil.changeForLog("MERCHANT APP : in receiveb2sTxnEnd :" + txnResObj));
+			if ("0".equals(txnResObj.getMsg().getNetsTxnStatus())) {
+				status = PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
 			}
 		} catch (Exception ex) {
 			log.info(ex.getMessage(),ex);
