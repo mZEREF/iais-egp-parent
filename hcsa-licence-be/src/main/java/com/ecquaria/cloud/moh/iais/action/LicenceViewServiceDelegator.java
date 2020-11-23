@@ -206,9 +206,10 @@ public class LicenceViewServiceDelegator {
                         withdrawnDtoList.add(withdrawnDto);
                     });
                 }
-
-                ParamUtil.setRequestAttr(bpc.request, WITHDRAWDTO, withdrawnDtoList.get(0));
-                ParamUtil.setRequestAttr(bpc.request, WITHDRAWDTOLIST, withdrawnDtoList);
+                if(withdrawnDtoList.size() > 0){
+                    ParamUtil.setRequestAttr(bpc.request, WITHDRAWDTO, withdrawnDtoList.get(0));
+                    ParamUtil.setRequestAttr(bpc.request, WITHDRAWDTOLIST, withdrawnDtoList);
+                }
             }
             List<String> list = new ArrayList<>(1);
             if (applicationDto.getOriginLicenceId() != null) {
