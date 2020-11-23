@@ -108,7 +108,12 @@
 
 <script type="text/javascript">
     $("#back").click(function () {
-        $("#crud_action_type_value").val("back")
-        SOP.Crud.cfxSubmit("mainForm");
+        $("#crud_action_type").val("back")
+        $('#mainForm').submit();
     })
+
+    function jumpToPagechangePage () {
+        $("#crud_action_type").val("page")
+        $('#mainForm').submit();
+    }
 </script>

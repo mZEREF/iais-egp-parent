@@ -252,7 +252,7 @@ public class MassEmailDelegator {
         if(SMS.equals(mode)){
             List<String> address = getEmail(bpc,"mobile");
             if(filelist != null && repeatList(filelist)){
-                errMap.put("file", "There are repeated mobile provided");
+                errMap.put("file", MessageUtil.replaceMessage("EMM_ERR009","mobiles","mode"));
             }
             if(!isMobileEmail(filelist)){
                 errMap.put("file", MessageUtil.getMessageDesc("GENERAL_ERR0007"));
@@ -262,7 +262,7 @@ public class MassEmailDelegator {
             }
             if(filelist != null ){
                 if(repeatList(filelist) && StringUtil.isEmpty(errMap.get("file"))){
-                    errMap.put("file", "The provided mobile already exists in the distribution list");
+                    errMap.put("file", MessageUtil.replaceMessage("EMM_ERR008","mobiles","mode"));
                 }
                 String fileData = StringUtils.join(filelist, "\r\n");
                 ParamUtil.setRequestAttr(bpc.request,"emailAddress",fileData);
@@ -275,7 +275,7 @@ public class MassEmailDelegator {
             }
 
             if(isRepeat){
-                errMap.put("file", "There are repeated email address(es) provided");
+                errMap.put("file", MessageUtil.replaceMessage("EMM_ERR009","email address(es)","mode"));
             }
             if(filelist != null && !isEmail(filelist)){
                 errMap.put("file", MessageUtil.getMessageDesc("GENERAL_ERR0014"));
@@ -289,7 +289,7 @@ public class MassEmailDelegator {
             }
             if(filelist != null ){
                 if(repeatList(filelist) && StringUtil.isEmpty(errMap.get("file"))){
-                    errMap.put("file", "The provided email address already exists in the distribution list");
+                    errMap.put("file", MessageUtil.replaceMessage("EMM_ERR008","email address(es)","mode"));
                 }
                 String fileData = StringUtils.join(filelist, "\r\n");
                 ParamUtil.setRequestAttr(bpc.request,"emailAddress",fileData);

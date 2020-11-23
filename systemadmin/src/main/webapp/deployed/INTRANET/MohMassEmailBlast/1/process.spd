@@ -218,9 +218,6 @@
   <SynchronousLink destinationName="/Pages/WebPage/auditTrial" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/AuditTrial" style="rectanular">
    <position>{(760,240)(760,360)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Pages/WebPage/auditTrial" style="oblique">
-   <position>{(760,360)(240,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/WriteMessage" style="rectanular">
    <position>{(130,760)(60,760)}</position>
   </SynchronousLink>
@@ -335,6 +332,15 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Pages/WebPage/preview" style="oblique">
    <position>{(860,360)(240,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch7" linkstyle="Direct" name="" sourceName="/Pages/WebPage/auditTrial" style="oblique">
+   <position>{(760,360)(840,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/AuditTrial" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch7" style="oblique">
+   <position>{(840,440)(760,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch7" style="oblique">
+   <position>{(840,440)(240,120)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/Step1" componentIfTrue="/Steps/AutomaticStep/Step2" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="40" y="740">
@@ -383,6 +389,11 @@
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/Prepare" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/FillMessage" value="&quot;next&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch7" x="820" y="420">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/AuditTrial" value="&quot;page&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Prepare" value="&quot;back&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

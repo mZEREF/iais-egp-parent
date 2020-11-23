@@ -39,6 +39,11 @@ public class DistributionListValidate implements CustomizeValidator {
             errMap.put("mode",MessageUtil.replaceMessage("GENERAL_ERR0006","Mode of Delivery","field"));
         }
         if(EMAIL.equals(distribution.getMode())){
+            if(distribution.getEmailAddress() != null && distribution.getEmailAddress().size()>0){
+                if(repeatList(distribution.getEmailAddress())){
+                    errMap.put("addr", MessageUtil.replaceMessage("EMM_ERR009","email address(es)","mode"));
+                }
+            }
             if(distribution.getEmailAddress() != null){
                 for (String item :distribution.getEmailAddress()
                 ) {
@@ -48,6 +53,11 @@ public class DistributionListValidate implements CustomizeValidator {
                 }
             }
         }else{
+            if(distribution.getEmailAddress() != null && distribution.getEmailAddress().size()>0){
+                if(repeatList(distribution.getEmailAddress())){
+                    errMap.put("mobileNo", MessageUtil.replaceMessage("EMM_ERR009","mobiles","mode"));
+                }
+            }
             if(distribution.getEmailAddress() != null){
                 for (String item :distribution.getEmailAddress()
                 ) {
@@ -58,11 +68,7 @@ public class DistributionListValidate implements CustomizeValidator {
             }
         }
 
-        if(distribution.getEmailAddress() != null && distribution.getEmailAddress().size()>0){
-            if(repeatList(distribution.getEmailAddress())){
-                errMap.put("addr", "There are repeated email address(es) provided");
-            }
-        }
+
 
 
         return errMap;
