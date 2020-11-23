@@ -287,7 +287,6 @@ public class KpiColourByWorkDaysJobHandler extends IJobHandler {
                 processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
                 processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
                 processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1);
-                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECK_FILLUP);
                 processUrls.add(TaskConsts.TASK_PROCESS_URL_INSP_PROCESS_RECTIFICATION);
             } else if(HcsaConsts.ROUTING_STAGE_INP.equals(subStage)){
                 processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY);
