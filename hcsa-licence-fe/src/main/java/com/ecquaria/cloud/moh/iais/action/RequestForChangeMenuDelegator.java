@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
+import com.ecquaria.cloud.moh.iais.api.services.GatewayNetsAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayStripeAPI;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -14,7 +15,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPsnTypeDto;
@@ -1299,7 +1311,7 @@ public class RequestForChangeMenuDelegator {
                         html = GatewayStripeAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
                         break;
                     case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
-                        html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);break;
+                        html = GatewayNetsAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);break;
                     case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
                         html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);break;
                     default: html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);break;

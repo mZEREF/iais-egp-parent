@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
+import com.ecquaria.cloud.moh.iais.api.services.GatewayNetsAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayStripeAPI;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -54,7 +55,15 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -1267,7 +1276,7 @@ public class WithOutRenewalDelegator {
                     case ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT:
                         html = GatewayStripeAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, backUrl);break;
                     case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
-                        html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, backUrl);break;
+                        html = GatewayNetsAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, backUrl);break;
                     case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
                         html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, backUrl);break;
                     default: html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, backUrl);
