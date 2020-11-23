@@ -732,7 +732,7 @@ public class InterInboxDelegator {
                 }
             }
             if(result) {
-                cessationError = MessageUtil.getMessageDesc("CESS_ERR002");
+                cessationError = MessageUtil.getMessageDesc("CESS_ERR005");
                 bpc.request.setAttribute("cessationError",cessationError);
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
                 ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);

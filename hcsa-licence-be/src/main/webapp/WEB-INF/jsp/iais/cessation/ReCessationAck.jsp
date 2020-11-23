@@ -10,14 +10,13 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <form id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
-    <%@ include file="../cessation/ackHead.jsp" %>
     <div class="main-content">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
                     <div class="intranet-content">
                         <div class="bg-title">
-                            <h2>The task has been submitted.</h2>
+                            <h2>You have successfully given clarification.</h2>
                         </div>
                     </div>
                     <div align="left"><span><a href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"></em> Back</a></span></div>

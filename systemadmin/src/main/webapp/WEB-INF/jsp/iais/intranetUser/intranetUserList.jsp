@@ -107,11 +107,11 @@
                 'type': 'POST',
                 'traditional':true,
                 'success': function (data) {
+                    window.location= "/system-admin-web/eservice/INTRANET/IntranetUserDownload";
                 },
                 'error': function () {
                 }
             });
-            showPopupWindow('/system-admin-web/eservice/INTRANET/IntranetUserDownload');
         } else {
             $('#exportError').show();
         }
@@ -134,11 +134,11 @@
                 'type': 'POST',
                 'traditional':true,
                 'success': function (data) {
+                    window.location= "/system-admin-web/eservice/INTRANET/IntrantUserRoleExport";
                 },
                 'error': function () {
                 }
             });
-            showPopupWindow('/system-admin-web/eservice/INTRANET/IntrantUserRoleExport');
         } else {
             $('#exportError').show();
         }
