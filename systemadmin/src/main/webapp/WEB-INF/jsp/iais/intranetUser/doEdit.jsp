@@ -64,6 +64,14 @@
                                             </div>
                                         </iais:value>
                                     </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-md-4 control-label" for="remarks">Available:</label>
+                                    <iais:value>
+                                        <div class="col-xs-8 col-sm-6 col-md-5">
+                                            <input id="available" type="checkbox" name="available" <c:if test="${orgUserDto.available == true}">checked</c:if> >
+                                        </div>
+                                    </iais:value>
+                                </div>
                             </div>
                             <div class="tab-pane" id="tabPersonal" role="tabPersonal">
                                 <div class="form-group">
@@ -153,14 +161,6 @@
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="remarks" maxlength="100" type="text" name="remarks"
                                                    value="${orgUserDto.remarks}">
-                                        </div>
-                                    </iais:value>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="remarks">Available:</label>
-                                    <iais:value>
-                                        <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="available" type="checkbox" name="available" <c:if test="${orgUserDto.available == true}">checked</c:if> >
                                         </div>
                                     </iais:value>
                                 </div>
