@@ -774,7 +774,7 @@ public class InsRepServiceImpl implements InsRepService {
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
         String groupId = hcsaSvcStageWorkingGroupDto1.getGroupId();
         String userId = getRollbackInspectorId(taskDto.getRefNo());
-        List<TaskDto> taskDtos = prepareBackTaskList(taskDto, userId);
+        List<TaskDto> taskDtos = prepareBackTaskList(taskDto, userId,applicationDto);
         taskService.createTasks(taskDtos);
         createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_REVISE_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId, subStage);
         createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO1, groupId, subStage);
@@ -1212,7 +1212,11 @@ public class InsRepServiceImpl implements InsRepService {
         return list;
     }
 
-    private List<TaskDto> prepareBackTaskList(TaskDto taskDto, String userId) {
+    private List<TaskDto> prepareBackTaskList(TaskDto taskDto, String userId,ApplicationDto applicationDto) {
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+        applicationDtos.add(applicationDto);
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
+        hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
         List<TaskDto> list = IaisCommonUtils.genNewArrayList();
         taskDto.setId(null);
         taskDto.setUserId(userId);
@@ -1223,6 +1227,7 @@ public class InsRepServiceImpl implements InsRepService {
         taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
         taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
         list.add(taskDto);
         return list;
     }
