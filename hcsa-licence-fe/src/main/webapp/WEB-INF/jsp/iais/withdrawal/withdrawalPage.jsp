@@ -41,7 +41,7 @@
                                                     <p>${wdList.applicationNo}</p>
                                                 </div>
                                                 <div class="withdraw-delete">
-                                                    <p ><a onclick="deleteWithdraw(this)"><i class="fa fa-trash-o"></i>Delete</a></p>
+                                                    <p ><a onclick="deleteWithdraw(this)"><em class="fa fa-trash-o"></em>Delete</a></p>
                                                 </div>
                                             </div>
                                         </div>
