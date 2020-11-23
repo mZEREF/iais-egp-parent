@@ -1173,7 +1173,7 @@ public class InsRepServiceImpl implements InsRepService {
         }
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         applicationDtos.add(applicationDto);
-        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_AO1);
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
         hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
         String schemeType = dto.getSchemeType();
         String groupId = dto.getGroupId();
@@ -1190,8 +1190,10 @@ public class InsRepServiceImpl implements InsRepService {
                 }
             }
             taskDto.setUserId(userId);
+            taskDto.setTaskKey(TaskConsts.TASK_TYPE_INSPECTION);
         } else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_COMMON.equals(schemeType)) {
             taskDto.setUserId(null);
+            taskDto.setTaskKey(TaskConsts.TASK_TYPE_INSPECTION);
         }else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ASSIGN.equals(schemeType)) {
             taskDto.setUserId(null);
             taskDto.setTaskKey(TaskConsts.TASK_TYPE_INSPECTION_SUPER);
