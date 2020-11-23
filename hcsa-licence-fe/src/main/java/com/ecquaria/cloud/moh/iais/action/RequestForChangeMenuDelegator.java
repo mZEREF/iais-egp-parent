@@ -1477,6 +1477,10 @@ public class RequestForChangeMenuDelegator {
                 appGrpPremisesDto.setSelfAssMtFlag(4);
             }
         }
+        boolean eqAddFloorNo = NewApplicationDelegator.eqAddFloorNo(appSubmissionDto, oldAppSubmissionDtoappSubmissionDto);
+        if(eqAddFloorNo){
+            amendmentFeeDto.setChangeInLocation(true);
+        }
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         Double total = feeDto.getTotal();
         //

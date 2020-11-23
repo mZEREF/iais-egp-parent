@@ -632,6 +632,9 @@ public class ConfigServiceImpl implements ConfigService {
             }
         });
         Map<String,List<HcsaSvcSpecificStageWorkloadDto>>map=hcsaServiceConfigDto.getHcsaSvcSpecificStageWorkloadDtoMap();
+        String general_err0041 = MessageUtil.getMessageDesc("GENERAL_ERR0041");
+        String service_routing_scheme = general_err0041.replace("{field}", "Service Routing Scheme max length");
+        String replace = service_routing_scheme.replace("{maxlength}", "2");
         map.forEach((k,v)->{
             for(int i=0;i<v.size();i++){
                 String isMandatory = v.get(i).getIsMandatory();
@@ -645,6 +648,9 @@ public class ConfigServiceImpl implements ConfigService {
                                 !ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(k)){
                             if (StringUtil.isEmpty(stringManhourCount)) {
                                 errorMap.put("manhourCount"+k+ i, MessageUtil.replaceMessage("GENERAL_ERR0006","Service Routing Scheme","field"));
+                                errorMap.put(k,"error");
+                            }else if(stringManhourCount.length()>2){
+                                errorMap.put("manhourCount"+k+i,replace);
                                 errorMap.put(k,"error");
                             }
                             if(StringUtil.isEmpty(isMandatory)){
@@ -667,6 +673,9 @@ public class ConfigServiceImpl implements ConfigService {
                 }
                 if(StringUtil.isEmpty(stringManhourCount)){
                     errorMap.put("manhourCount"+k+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Service Workload Manhours","field"));
+                    errorMap.put(k,"error");
+                }else if(stringManhourCount.length()>2){
+                    errorMap.put("manhourCount"+k+i,replace);
                     errorMap.put(k,"error");
                 }else if(!stringManhourCount.matches("^[0-9]+$")){
                     errorMap.put("manhourCount"+k+i,"NEW_ERR0003");

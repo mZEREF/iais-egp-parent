@@ -336,7 +336,13 @@ public class LicenceViewServiceDelegator {
         }
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         if (appGrpPrimaryDocDtos != null) {
+            List<AppGrpPrimaryDocDto> delteList=IaisCommonUtils.genNewArrayList();
             for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos) {
+                String fileRepoId = appGrpPrimaryDocDto.getFileRepoId();
+                if(StringUtil.isEmpty(fileRepoId)){
+                    delteList.add(appGrpPrimaryDocDto);
+                    continue;
+                }
                 if(StringUtil.isEmpty(appGrpPrimaryDocDto.getSvcComDocName())){
                     String svcDocId = appGrpPrimaryDocDto.getSvcDocId();
                     HcsaSvcDocConfigDto hcsaSvcDocConfigDto = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
@@ -345,6 +351,7 @@ public class LicenceViewServiceDelegator {
                     }
                 }
             }
+            appGrpPrimaryDocDtos.removeAll(delteList);
         }
         AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
         if(!StringUtil.isEmpty(oldAppSubmissionDto)){
@@ -628,10 +635,17 @@ public class LicenceViewServiceDelegator {
         List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos=IaisCommonUtils.genNewArrayList();
         List<AppSvcDocDto> appSvcDocDtos=IaisCommonUtils.genNewArrayList();
+        List<AppSvcDocDto> deleteSvcDoc=IaisCommonUtils.genNewArrayList();
+        List<AppGrpPrimaryDocDto> deletePrimaryDoc=IaisCommonUtils.genNewArrayList();
         if(appSvcDocDtoLit!=null){
             for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLit){
                 String svcDocId = appSvcDocDto.getSvcDocId();
+                String fileRepoId = appSvcDocDto.getFileRepoId();
                 if(StringUtil.isEmpty(svcDocId)){
+                    continue;
+                }
+                if(StringUtil.isEmpty(fileRepoId)){
+                    deleteSvcDoc.add(appSvcDocDto);
                     continue;
                 }
                 HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
@@ -653,6 +667,7 @@ public class LicenceViewServiceDelegator {
                     }
                 }
             }
+            appSvcDocDtoLit.removeAll(deleteSvcDoc);
             appSvcDocDtoLit.removeAll(appSvcDocDtos);
             for(int i=0;i < appSvcDocDtoLit.size();i++){
                 for(int j=0;j < appSvcDocDtoLit.size() && j!=i;j++){
@@ -666,6 +681,11 @@ public class LicenceViewServiceDelegator {
         }
         if(dtoAppGrpPrimaryDocDtos!=null){
             for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : dtoAppGrpPrimaryDocDtos){
+                String fileRepoId = appGrpPrimaryDocDto.getFileRepoId();
+                if(StringUtil.isEmpty(fileRepoId)){
+                    deletePrimaryDoc.add(appGrpPrimaryDocDto);
+                    continue;
+                }
                 if(StringUtil.isEmpty(appGrpPrimaryDocDto.getSvcComDocName())){
                     String svcDocId = appGrpPrimaryDocDto.getSvcDocId();
                     if(svcDocId!=null){
@@ -676,6 +696,7 @@ public class LicenceViewServiceDelegator {
                     }
                 }
             }
+            dtoAppGrpPrimaryDocDtos.removeAll(deletePrimaryDoc);
             if(appGrpPrimaryDocDtos.isEmpty()){
                 appGrpPrimaryDocDtos.addAll(dtoAppGrpPrimaryDocDtos);
             }else {
