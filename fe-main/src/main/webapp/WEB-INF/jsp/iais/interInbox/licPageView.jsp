@@ -138,8 +138,32 @@
     }
 
     function doLicPrint(){
-        submit('licDoPrint');
+        if ($("input[type='checkbox']").is(':checked')) {
+            var arr = [];
+            var r = document.getElementsByName("licenceNo");
+            for(var i=0;i<r.length;i++) {
+                if (r[i].checked) {
+                    var lic = document.getElementsByName(r[i].value);
+                    var str = r[i].value + '@' + lic[0].value;
+                    arr.push(str);
+               }
+            }
+            $.ajax({
+                'url': '${pageContext.request.contextPath}/internetInbox/licenceNo',
+                'dataType': 'json',
+                'data': {licenceNos:arr},
+                'type': 'POST',
+                'traditional':true,
+                'success': function (data) {
+                    window.location= "/main-web/eservice/INTERNET/PrintLicence";
+                },
+                'error': function () {
+                    console.log("fail");
+                }
+            });
+        }
     }
+
 
     function doLicAction(licNo){
         showWaiting();

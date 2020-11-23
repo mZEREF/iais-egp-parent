@@ -51,6 +51,9 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,6 +72,7 @@ import java.util.Map;
  **/
 @Slf4j
 @Delegator("interInboxDelegator")
+@RequestMapping("/internetInbox")
 public class InterInboxDelegator {
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
@@ -732,7 +736,7 @@ public class InterInboxDelegator {
                 }
             }
             if(result) {
-                cessationError = MessageUtil.getMessageDesc("CESS_ERR005");
+                cessationError = MessageUtil.getMessageDesc("CESS_ERR002");
                 bpc.request.setAttribute("cessationError",cessationError);
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
                 ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
@@ -747,15 +751,20 @@ public class InterInboxDelegator {
         }
     }
 
-    public void licDoPrint(BaseProcessClass bpc) throws IOException {
-        String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
+    @RequestMapping(value = "/licenceNo", method = RequestMethod.POST)
+    public @ResponseBody
+    boolean licDoPrint(HttpServletRequest request) {
+        String [] licIds = request.getParameterValues("licenceNos");
         List<String> licIdValue = IaisCommonUtils.genNewArrayList();
         for (String item : licIds) {
-            licIdValue.add(ParamUtil.getMaskedString(bpc.request, item));
+            String[] strArr = item.split("@");
+            String unMaskLic = MaskUtil.unMaskValue(strArr[0], strArr[1]);
+            licIdValue.add(unMaskLic);
         }
         if(!IaisCommonUtils.isEmpty(licIdValue)) {
-            ParamUtil.setSessionAttr(bpc.request, "lic-print-Ids", (Serializable) licIdValue);
+            ParamUtil.setSessionAttr(request, "lic-print-Ids", (Serializable) licIdValue);
         }
+        return true;
     }
 
     /**
