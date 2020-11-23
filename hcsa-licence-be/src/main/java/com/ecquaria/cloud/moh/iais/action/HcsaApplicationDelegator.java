@@ -598,6 +598,10 @@ public class HcsaApplicationDelegator {
                 }else if(RoleConsts.USER_ROLE_AO2.equals(roleId) && RoleConsts.USER_ROLE_AO3.equals(verified)){
                     //AO2 -> AO3
                     successInfo = "LOLEV_ACK013";
+                }else if(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL.equals(verified)){
+                    successInfo = "LOLEV_ACK020";
+                }else if(ApplicationConsts.PROCESSING_DECISION_REJECT.equals(verified)){
+                    successInfo = "LOLEV_ACK022";
                 }
             }else if(!StringUtil.isEmpty(rollBack)){
                 //roll back
@@ -626,6 +630,13 @@ public class HcsaApplicationDelegator {
         if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage)){
             successInfo = MessageUtil.dateIntoMessage("RFI_ACK001");
             ParamUtil.setRequestAttr(bpc.request,"rfiSuccessInfo","Y");
+        }
+
+        if(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL.equals(nextStage)){
+            successInfo = "LOLEV_ACK020";
+        }
+        if(ApplicationConsts.PROCESSING_DECISION_REJECT.equals(nextStage)){
+            successInfo = "LOLEV_ACK022";
         }
         ParamUtil.setRequestAttr(bpc.request,"successInfo",successInfo);
     }
