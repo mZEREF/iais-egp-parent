@@ -26,9 +26,7 @@ import java.util.Properties;
 import java.util.Vector;
 
 
-
-
-
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
@@ -72,7 +70,7 @@ public class SFTPUtil {
             	sftp = (ChannelSftp) channel;
             }
         } catch (Exception e) {
-        	log.error("Failed to connect to remote SFTP Server.");
+        	log.error(StringUtil.changeForLog("Failed to connect to remote SFTP Server."));
             log.error(e.getMessage(), e);
         }
     }
@@ -89,7 +87,7 @@ public class SFTPUtil {
             sshSession.connect();
             Channel channel = sshSession.openChannel("sftp");
             channel.connect();
-            log.info("Connected to " + host + ".");
+            log.info(StringUtil.changeForLog("Connected to " + host + "."));
             
             return (ChannelSftp) channel;
         } catch (Exception e) {
@@ -114,7 +112,7 @@ public class SFTPUtil {
             if(sftp.isConnected()){
             	sftp.disconnect();
             }else if(sftp.isClosed()){
-            	log.info("sftp is closed already");
+            	log.info(StringUtil.changeForLog("sftp is closed already"));
             }
             sftp = null;
         }
@@ -125,7 +123,7 @@ public class SFTPUtil {
 			if (sftp.isConnected()) {
 				sftp.disconnect();
 			} else if (sftp.isClosed()) {
-				log.info("sftp is closed already");
+				log.info(StringUtil.changeForLog("sftp is closed already"));
 			}
 			sftp = null;
 		}
@@ -185,7 +183,7 @@ public class SFTPUtil {
 	    		String src = remotePath + seperator + remoteFileName;
 	    		String dest = localPath + remoteFileName;
 	    		sftp.get(src, dest);
-	    		log.info("download " + remoteFileName + " success!" );
+	    		log.info(StringUtil.changeForLog("download " + remoteFileName + " success!"));
     		}
     		disconnect();
     	}
@@ -207,9 +205,9 @@ public class SFTPUtil {
         	connect();
             File file = new File(fileName);
             if(file.isFile()){
-            	log.info("localFile : " + file.getAbsolutePath());
+            	log.info(StringUtil.changeForLog("localFile : " + file.getAbsolutePath()));
                 String remoteFile = remotePath + seperator + file.getName();
-                log.info("remotePath:" + remoteFile);
+                log.info(StringUtil.changeForLog("remotePath:" + remoteFile));
                 
 				/*File rfile = new File(remoteFile);
                 String rpath = rfile.getParent();
@@ -221,12 +219,12 @@ public class SFTPUtil {
 
                 sftp.put(file.getAbsolutePath(), remoteFile);
                 result = true;
-                log.info("file: [" + fileName + "] uploaded to remote server. ");
+                log.info(StringUtil.changeForLog("file: [" + fileName + "] uploaded to remote server. "));
             }else{
-            	log.error("[" + fileName + "] not a file");
+            	log.error(StringUtil.changeForLog("[" + fileName + "] not a file"));
             }
         } catch (Exception e) {
-        	log.error("upload file [" + fileName + "] to remote Server failed.");
+        	log.error(StringUtil.changeForLog("upload file [" + fileName + "] to remote Server failed."));
         	result = false;
 //    		disconnect();
     		log.error(e.getMessage(), e);
@@ -271,7 +269,7 @@ public class SFTPUtil {
                 sftp.mkdir(filepath);
             }
         } catch (SftpException e) {
-            log.info("mkdir failed :" + filepath);
+            log.info(StringUtil.changeForLog("mkdir failed :" + filepath));
             log.error(e.getMessage(), e);
         }
         
@@ -279,7 +277,7 @@ public class SFTPUtil {
             sftp.cd(filepath);
         } catch (SftpException e) {
         	log.error(e.getMessage(), e);
-            log.info("can not cd into :" + filepath);
+            log.info(StringUtil.changeForLog("can not cd into :" + filepath));
         }
         
     }
