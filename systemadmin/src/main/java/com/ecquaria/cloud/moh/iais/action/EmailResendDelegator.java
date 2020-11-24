@@ -122,7 +122,7 @@ public class EmailResendDelegator {
                 int comparatorValue = endDate.compareTo(startDate);
                 if (comparatorValue < 0){
                     Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-                    errorMap.put("later", MessageUtil.getMessageDesc("EMM_ERR007"));
+                    errorMap.put("later", MessageUtil.getMessageDesc("ESB_ERR009"));
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 }
             }catch (Exception e){
