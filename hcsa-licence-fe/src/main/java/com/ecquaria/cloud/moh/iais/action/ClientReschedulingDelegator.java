@@ -158,7 +158,8 @@ public class ClientReschedulingDelegator {
                     boolean flag1=inDate.compareTo(dateRang)>=0;
                     boolean flag2=!appStatus.contains(reschApptGrpPremsQueryDto.getApplicationStatus());
                     boolean flag3=reschApptGrpPremsQueryDto.getRescheduleCount()<systemParamConfig.getRescheduleMaxCount();
-                    if (flag1 && flag2&&flag3){
+                    boolean flag4=reschApptGrpPremsQueryDto.getInsApptStatus()!=null;
+                    if (flag1 && flag2&&flag3&&flag4){
                         apptViewDto.setCanReschedule(Boolean.TRUE);
                     }else {
                         apptViewDto.setCanReschedule(Boolean.FALSE);

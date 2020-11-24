@@ -60,7 +60,7 @@
               ) AS ADDRESS,
                 T4.LICENSEE_ID,
                 appRec.RECOM_IN_DATE ,
-                insAppt.RESCHEDULE_COUNT
+                insAppt.RESCHEDULE_COUNT,insApptCorr.STATUS INS_APPT_STATUS
 
             FROM APPLICATION_GROUP T4
              LEFT JOIN APP_GRP_PREMISES T3 ON T4.ID = T3.APP_GRP_ID
