@@ -296,9 +296,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             if (RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(roleName) &&
                     !StringUtil.isEmpty(userDto.getUenNo())){
                 EgpUserRoleDto role = new EgpUserRoleDto();
-                egpUserRole.setUserId(userId);
-                egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-                egpUserRole.setPermission("A");
+                role.setUserId(userId);
+                role.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+                role.setPermission("A");
                 role.setRoleId(RoleConsts.USER_ROLE_ORG_USER);
                 //assign role
                 feMainRbacClient.createUerRoleIds(role).getEntity();
