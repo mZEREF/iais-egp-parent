@@ -284,14 +284,31 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         OrgUserRoleDto userRoleDto = userDto.getUserRoleDto();
         if (userDto != null){
             EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
+            String roleName = userRoleDto.getRoleName();
             egpUserRole.setUserId(userId);
             egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-            egpUserRole.setRoleId(userRoleDto.getRoleName());
+            egpUserRole.setRoleId(roleName);
             egpUserRole.setPermission("A");
-
             //assign role
             feMainRbacClient.createUerRoleIds(egpUserRole).getEntity();
+
+            //corppass
+            if (RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(roleName) &&
+                    !StringUtil.isEmpty(userDto.getUenNo())){
+                EgpUserRoleDto role = new EgpUserRoleDto();
+                egpUserRole.setUserId(userId);
+                egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+                egpUserRole.setPermission("A");
+                role.setRoleId(RoleConsts.USER_ROLE_ORG_USER);
+                //assign role
+                feMainRbacClient.createUerRoleIds(role).getEntity();
+            }
+
         }
+
+
+
+
         userClient.createClientUser(clientUser);
     }
 
