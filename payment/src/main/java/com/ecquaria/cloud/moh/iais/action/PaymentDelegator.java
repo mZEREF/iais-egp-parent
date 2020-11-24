@@ -53,7 +53,7 @@ public class PaymentDelegator {
         System.out.println("====>  new Session ID : " + bpc.request.getSession().getId());
         redisCacheHelper.copySessionAttr(paymentRequestDto.getQueryCode(),bpc.request.getSession());
         String sessionIdStr= (String) ParamUtil.getSessionAttr(request,"sessionNetsId");
-        sessionIdStr = new String(Base64.decodeBase64(sessionIdStr.getBytes(StandardCharsets.UTF_8) ));
+        sessionIdStr = new String(Base64.decodeBase64(sessionIdStr.getBytes(StandardCharsets.UTF_8)),StandardCharsets.UTF_8);
         String tinyKey = null;
         if (!StringHelper.isEmpty(sessionIdStr)) {
             sessionIdStr = URLDecoder.decode(sessionIdStr, StandardCharsets.UTF_8.name());
@@ -63,7 +63,7 @@ public class PaymentDelegator {
             }
         }
         //System.out.println("====>  payment Session ID : " + sessionId);
-        String sessionId = new String(Base64.encodeBase64((request.getSession().getId()+"_"+tinyKey).getBytes(StandardCharsets.UTF_8)));
+        String sessionId = new String(Base64.encodeBase64((request.getSession().getId()+"_"+tinyKey).getBytes(StandardCharsets.UTF_8)),StandardCharsets.UTF_8);
 
         //String sessionId = URLEncoder.encode(request.getSession().getId(), "UTF-8");
 
