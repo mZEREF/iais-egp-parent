@@ -64,11 +64,13 @@
         amendType();
 
         $('#Next').click(function () {
+            showWaiting();
             $("[name='crud_action_type_form_value']").val('doAmend');
             $('#menuListForm').submit();
         });
 
         $('#Back').click(function () {
+            showWaiting();
             $("[name='crud_action_type']").val('back');
             $('#menuListForm').submit();
         });

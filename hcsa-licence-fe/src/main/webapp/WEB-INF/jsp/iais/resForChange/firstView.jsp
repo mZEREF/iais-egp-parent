@@ -95,22 +95,26 @@
     });
 
     $('#premisesEdit').click(function () {
+        showWaiting();
         $('#EditValue').val('premises');
         $('#menuListForm').submit();
     });
 
     $('#docEdit').click(function () {
+        showWaiting();
         $('#EditValue').val('doc');
         $('#menuListForm').submit();
     });
 
     $('#doSvcEdit').click(function () {
+        showWaiting();
         $('#EditValue').val('service');
         $('#action').val('serviceForms');
         $('#menuListForm').submit();
     });
 
     $('#Back').click(function () {
+        showWaiting();
         $('[name="switch_value"]').val('back');
         $('#menuListForm').submit();
     });

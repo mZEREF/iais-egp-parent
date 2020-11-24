@@ -38,20 +38,23 @@
             $('#hciNameUsed').modal('show');
         }
         $('#RfcBack').click(function () {
+            showWaiting();
             submit('jump','back',null);
         });
 
         $('#RfcSave').click(function () {
+            showWaiting();
             submit('preview','next','rfcSaveDraft');
         });
 
         $('#RenewSave').click(function () {
-
+            showWaiting();
             submit('jump','next','rfcSaveDraft');
 
         });
 
         $('#RfcSaveDraft').click(function () {
+            showWaiting();
             <c:choose>
             <c:when test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
             submit('premises','saveDraft',null);
@@ -64,6 +67,7 @@
         });
 
         $('#RfcUndo').click(function () {
+            showWaiting();
             submit('jump','undo',null);
         });
     });
