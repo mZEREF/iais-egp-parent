@@ -24,7 +24,7 @@
             <strong>Authorised User</strong>
             <p style="margin-top: 30px;margin-bottom: 20px">The Authorised Person is responsible for liaising with MOH on all licensing matters and for the administration and management of the healthcare organisation. </p>
 
-            <strong>${feuser.displayName},${feuser.identityNo} (<iais:code code="${feuser.idType}"/>)</strong>
+            <strong>${feuser.displayName}, ${feuser.identityNo} (<iais:code code="${feuser.idType}"/>)</strong>
 
             <div class="form-horizontal" style="margin-top: 20px">
                 <iais:row>
