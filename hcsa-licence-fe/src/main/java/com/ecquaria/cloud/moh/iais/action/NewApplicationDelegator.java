@@ -1480,7 +1480,6 @@ public class NewApplicationDelegator {
                             appCessHciDto.setPatNoRemarks(remarks);
                             appCessHciDto.setPatNeedTrans(Boolean.FALSE);
                         }
-                        appCessHciDtos.add(appCessHciDto);
                     }
                     List<SelectOption> reasonOption = getReasonOption();
                     List<SelectOption> patientsOption = getPatientsOption();
