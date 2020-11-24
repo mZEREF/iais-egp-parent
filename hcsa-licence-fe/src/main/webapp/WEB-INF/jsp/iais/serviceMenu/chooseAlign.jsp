@@ -67,9 +67,11 @@
         $('#alignBack').click(function () {
             <c:choose>
                 <c:when test="${onlyBaseSvc}">
+                    showWaiting();
                     submit('chooseSvc',null,'back');
                 </c:when>
                 <c:otherwise>
+                    showWaiting();
                     submit('chooseBaseSvc',null,'back');
                 </c:otherwise>
             </c:choose>
@@ -77,9 +79,11 @@
         $('#alignContinue').click(function () {
             <c:choose>
                 <c:when test="${onlyBaseSvc}">
+                showWaiting();
                 submit('chooseSvc',null,'next');
                 </c:when>
                 <c:otherwise>
+                showWaiting();
                 submit('chooseBaseSvc',null,'next');
                 </c:otherwise>
             </c:choose>

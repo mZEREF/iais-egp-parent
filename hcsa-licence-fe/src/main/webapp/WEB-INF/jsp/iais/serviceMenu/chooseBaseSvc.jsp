@@ -68,9 +68,11 @@
 
 
         $('#baseBack').click(function () {
+            showWaiting();
             submit('chooseSvc',null,'back');
         });
         $('#baseContinue').click(function () {
+            showWaiting();
             submit('chooseAlign',null,'next');
 
         });

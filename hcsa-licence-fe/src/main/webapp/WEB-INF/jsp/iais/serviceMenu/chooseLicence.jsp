@@ -78,10 +78,12 @@
         $('#licBodyDiv').find('input[name="licPagDivCheck"]:eq(0)').prop('checked',true);
 
         $('#licBack').click(function () {
+            showWaiting();
             submit('chooseAlign',null,'back');
         });
 
         $('#licContinue').click(function () {
+            showWaiting();
             submit(null,'next','next');
         });
 

@@ -58,9 +58,11 @@
         }
 
         $('#Back').click(function(){
+            showWaiting();
             submit('toInbox',null,'back');
         });
         $('#submitService').click(function(){
+            showWaiting();
             submit('chooseSvc',null,'next');
         });
     });

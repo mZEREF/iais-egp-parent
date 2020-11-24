@@ -106,11 +106,13 @@
 
 <script>
   function doNext() {
+      showWaiting();
       $("input[name='switch_action_type']").val("startApplication");
       $("#mainForm").submit();
   }
 
   function doBack() {
+      showWaiting();
       $("input[name='switch_action_type']").val("doBack");
       $("#mainForm").submit();
   }
