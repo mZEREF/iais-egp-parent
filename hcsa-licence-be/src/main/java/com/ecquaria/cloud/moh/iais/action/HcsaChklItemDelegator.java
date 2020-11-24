@@ -321,6 +321,7 @@ public class HcsaChklItemDelegator {
         String[] checkBoxItemId = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
         if(checkBoxItemId == null || checkBoxItemId.length <= 0){
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("cloneRecords", "CHKL_ERR045"));
             return;
         }
 
