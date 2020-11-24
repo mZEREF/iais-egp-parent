@@ -1080,7 +1080,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                         AppGrpPrimaryDocDto newGrpPrimaryDoc = (AppGrpPrimaryDocDto) CopyUtil.copyMutableObject(appGrpPrimaryDocDto);
                                         newGrpPrimaryDoc.setSvcComDocId(docConfig.getId());
                                         newGrpPrimaryDoc.setSvcComDocName(docConfig.getDocTitle());
-                                        newGrpPrimaryDoc.setDocConfigVersion(docConfig.getVersion());
+                                        //newGrpPrimaryDoc.setDocConfigVersion(docConfig.getVersion());
                                         newGrpPrimaryDocList.add(newGrpPrimaryDoc);
                                         break;
                                     }
@@ -1096,7 +1096,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             if(oldDocConfig.getId().equals(appGrpPrimaryDocDto.getSvcComDocId())){
                                 AppGrpPrimaryDocDto newGrpPrimaryDoc = (AppGrpPrimaryDocDto) CopyUtil.copyMutableObject(appGrpPrimaryDocDto);
                                 newGrpPrimaryDoc.setSvcComDocName(oldDocConfig.getDocTitle());
-                                newGrpPrimaryDoc.setDocConfigVersion(oldDocConfig.getVersion());
+                                //newGrpPrimaryDoc.setDocConfigVersion(oldDocConfig.getVersion());
                                 newGrpPrimaryDocList.add(newGrpPrimaryDoc);
                                 break;
                             }
@@ -1107,6 +1107,61 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
         log.debug(StringUtil.changeForLog("do syncPrimaryDoc end ..."));
         return newGrpPrimaryDocList;
+    }
+
+    @Override
+    public List<AppGrpPrimaryDocDto> handlerPrimaryDoc(List<AppGrpPremisesDto> appGrpPremisesDtos,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos) {
+        log.debug(StringUtil.changeForLog("do handlerPrimaryDoc start ..."));
+        if(IaisCommonUtils.isEmpty(appGrpPremisesDtos) || IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos)){
+            return appGrpPrimaryDocDtos;
+        }
+        //remove empty doc
+        List<AppGrpPrimaryDocDto> notEmptyDocList = IaisCommonUtils.genNewArrayList();
+        for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
+            if(!StringUtil.isEmpty(appGrpPrimaryDocDto.getFileRepoId())){
+                notEmptyDocList.add(appGrpPrimaryDocDto);
+            }
+        }
+
+        //add empty doc
+        List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(null);
+        List<AppGrpPrimaryDocDto> newPrimaryDocList = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(hcsaSvcDocDtos)){
+            log.debug(StringUtil.changeForLog("hcsaSvcDocDtos not empty ..."));
+            if(notEmptyDocList != null && notEmptyDocList.size() > 0){
+                List<HcsaSvcDocConfigDto> oldHcsaSvcDocDtos = serviceConfigService.getPrimaryDocConfigById(notEmptyDocList.get(0).getSvcComDocId());
+                for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocDtos){
+                    String docTitle = hcsaSvcDocConfigDto.getDocTitle();
+                    String dupPrem = hcsaSvcDocConfigDto.getDupForPrem();
+                    int i = 0;
+                    for(HcsaSvcDocConfigDto oldHcsaSvcDocDto:oldHcsaSvcDocDtos){
+                        if(docTitle.equals(oldHcsaSvcDocDto.getDocTitle())){
+                            AppGrpPrimaryDocDto appGrpPrimaryDocDto = NewApplicationHelper.getAppGrpprimaryDocDto(oldHcsaSvcDocDto.getId(),notEmptyDocList);
+                            if(appGrpPrimaryDocDto == null){
+                                appGrpPrimaryDocDto = NewApplicationHelper.genEmptyPrimaryDocDto(hcsaSvcDocConfigDto.getId());
+                                handlerDupPremDoc(dupPrem,appGrpPrimaryDocDto,appGrpPremisesDtos,newPrimaryDocList);
+                            }else{
+                                appGrpPrimaryDocDto.setSvcComDocId(hcsaSvcDocConfigDto.getId());
+                                handlerDupPremDoc(dupPrem,appGrpPrimaryDocDto,appGrpPremisesDtos,newPrimaryDocList);
+                            }
+                        }
+                        if(i == oldHcsaSvcDocDtos.size()){
+                            //add empty doc
+                            AppGrpPrimaryDocDto appGrpPrimaryDocDto = NewApplicationHelper.genEmptyPrimaryDocDto(hcsaSvcDocConfigDto.getId());
+                            newPrimaryDocList.add(appGrpPrimaryDocDto);
+                        }
+                        i++;
+                    }
+                }
+            }else{
+                for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocDtos){
+                    AppGrpPrimaryDocDto appGrpPrimaryDocDto = NewApplicationHelper.genEmptyPrimaryDocDto(hcsaSvcDocConfigDto.getId());
+                    newPrimaryDocList.add(appGrpPrimaryDocDto);
+                }
+            }
+        }
+        log.debug(StringUtil.changeForLog("do handlerPrimaryDoc end ..."));
+        return newPrimaryDocList;
     }
 
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
@@ -1163,5 +1218,18 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
         //is same
         return true;
+    }
+
+    private void handlerDupPremDoc(String dupPrem,AppGrpPrimaryDocDto targetDto,List<AppGrpPremisesDto> appGrpPremisesDtos,List<AppGrpPrimaryDocDto> newPrimaryDocList){
+        if(AppConsts.NO.equals(dupPrem)){
+            newPrimaryDocList.add(targetDto);
+        }else if(AppConsts.YES.equals(dupPrem)){
+            for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                targetDto.setPremisessName(appGrpPremisesDto.getPremisesIndexNo());
+                targetDto.setPremisessType(appGrpPremisesDto.getPremisesType());
+                newPrimaryDocList.add(targetDto);
+            }
+        }
+
     }
 }

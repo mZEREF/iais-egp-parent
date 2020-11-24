@@ -401,4 +401,7 @@ public interface HcsaConfigFeClient {
 
     @PostMapping(value = "/iais-hcsa-service/service-list-u",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceDto>> saveServiceList(@RequestBody List<HcsaServiceDto> hcsaServiceDtos);
+
+    @GetMapping(path = "/iais-hcsa-service/list-svc-doc-config/{docId}",produces =MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaSvcDocConfigDto>> getPrimaryDocConfigList(@PathVariable(name="docId") String docId);
 }

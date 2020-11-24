@@ -907,4 +907,12 @@ public class HcsaConfigFeClientFallback implements HcsaConfigFeClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<HcsaSvcDocConfigDto>> getPrimaryDocConfigList(String docId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

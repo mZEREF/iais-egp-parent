@@ -56,6 +56,7 @@ public interface ServiceConfigService {
     void updateAppGrpPmtStatus(ApplicationGroupDto appGrp);
     List<HcsaSvcDocConfigDto> getPrimaryDocConfigByVersion(Integer version);
     List<HcsaSvcDocConfigDto> getPrimaryDocConfigByIds(List<String> ids);
+    List<HcsaSvcDocConfigDto> getPrimaryDocConfigById(String id);
 
     void giroPaymentXmlUpdateByGrpNo(AppSubmissionDto appGrp);
 

@@ -4,7 +4,10 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.*;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroGroupDataDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentXmlDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroXmlPaymentBackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
@@ -29,7 +32,14 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPaymentStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.Calculator;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +53,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -335,6 +344,11 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Override
     public List<HcsaSvcDocConfigDto> getPrimaryDocConfigByIds(List<String> ids) {
         return hcsaConfigFeClient.listSvcDocConfig(ids).getEntity();
+    }
+
+    @Override
+    public List<HcsaSvcDocConfigDto> getPrimaryDocConfigById(String id) {
+        return hcsaConfigFeClient.getPrimaryDocConfigList(id).getEntity();
     }
 
     @Override

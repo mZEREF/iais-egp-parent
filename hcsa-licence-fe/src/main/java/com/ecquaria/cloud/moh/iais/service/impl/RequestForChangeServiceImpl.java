@@ -1473,7 +1473,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Override
     public void premisesDocToSvcDoc(AppSubmissionDto appSubmissionDtoByLicenceId) {
-        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDtoByLicenceId.getAppGrpPrimaryDocDtos();
+        log.debug(StringUtil.changeForLog("do premisesDocToSvcDoc start ..."));
+        //handler primary doc
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionService.handlerPrimaryDoc(appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList(),appSubmissionDtoByLicenceId.getAppGrpPrimaryDocDtos());
+        appSubmissionDtoByLicenceId.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
+
+//        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDtoByLicenceId.getAppGrpPrimaryDocDtos();
         List<AppSvcDocDto> appSvcDocDtoLits = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDocDtoLit();
         List<AppSvcDocDto> removeList = IaisCommonUtils.genNewArrayList();
         if (!StringUtil.isEmpty(appSvcDocDtoLits)) {

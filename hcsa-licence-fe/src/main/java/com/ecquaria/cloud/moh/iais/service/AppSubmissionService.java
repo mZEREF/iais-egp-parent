@@ -84,4 +84,5 @@ public interface AppSubmissionService {
     AppSvcDocDto getMaxVersionSvcSpecDoc(String appGrpId, String configDocId,String appNo);
     AppSubmissionDto getAppSubmissionDtoByAppGrpNo(String appGrpNo);
     List<AppGrpPrimaryDocDto> syncPrimaryDoc(String appType,Boolean isRfi,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos, List<HcsaSvcDocConfigDto> primaryDocConfig) throws CloneNotSupportedException;
+    List<AppGrpPrimaryDocDto> handlerPrimaryDoc(List<AppGrpPremisesDto> appGrpPremisesDtos,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos);
 }
