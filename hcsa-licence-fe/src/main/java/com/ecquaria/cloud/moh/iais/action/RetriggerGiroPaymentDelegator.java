@@ -102,7 +102,7 @@ public class RetriggerGiroPaymentDelegator {
         List<HcsaSvcDocConfigDto> primaryDocConfig = null;
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         if(appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
-            primaryDocConfig = serviceConfigService.getPrimaryDocConfigByVersion(appGrpPrimaryDocDtos.get(0).getDocConfigVersion());
+            primaryDocConfig = serviceConfigService.getPrimaryDocConfigById(appGrpPrimaryDocDtos.get(0).getSvcComDocId());
         }
         NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, null, primaryDocConfig, null);
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){

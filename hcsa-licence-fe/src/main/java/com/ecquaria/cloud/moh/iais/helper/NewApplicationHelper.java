@@ -2203,6 +2203,25 @@ public class NewApplicationHelper {
         return url;
     }
 
+    public static AppGrpPrimaryDocDto getAppGrpprimaryDocDto(String docId,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos){
+        AppGrpPrimaryDocDto appGrpPrimaryDocDto = null;
+        if(!StringUtil.isEmpty(docId)){
+            for(AppGrpPrimaryDocDto docDto:appGrpPrimaryDocDtos){
+                if(docDto.getSvcComDocId().equals(docId)){
+                    appGrpPrimaryDocDto = docDto;
+                    break;
+                }
+            }
+        }
+        return appGrpPrimaryDocDto;
+    }
+
+    public static AppGrpPrimaryDocDto genEmptyPrimaryDocDto(String docConfigId){
+        AppGrpPrimaryDocDto appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
+        appGrpPrimaryDocDto.setSvcComDocId(docConfigId);
+        return appGrpPrimaryDocDto;
+    }
+
     //=============================================================================
     //private method
     //=============================================================================
