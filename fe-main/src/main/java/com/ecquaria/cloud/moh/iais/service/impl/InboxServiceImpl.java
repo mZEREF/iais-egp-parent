@@ -489,6 +489,11 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
+    public ApplicationGroupDto getAppGroupByGroupId(String appGroupId) {
+        return appInboxClient.getApplicationGroup(appGroupId).getEntity();
+    }
+
+    @Override
     public void deleteDraftByNo(String draftNo) {
         log.info(StringUtil.changeForLog("delete draft start ..."));
         appInboxClient.deleteDraftByNo(draftNo);

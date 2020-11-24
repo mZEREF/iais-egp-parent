@@ -16,7 +16,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -798,6 +800,21 @@ public class InterInboxDelegator {
             List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
             List<RecallApplicationDto> finalRecallApplicationDtoList = IaisCommonUtils.genNewArrayList();
             inboxAppQueryDtoList.forEach(h ->{
+                String appGroupId = h.getAppGrpId();
+//                if (h.getApplicationType())
+                if (!StringUtil.isEmpty(appGroupId)){
+                    ApplicationGroupDto applicationGroupDto = inboxService.getAppGroupByGroupId(appGroupId);
+                    if (applicationGroupDto != null){
+                        if (applicationGroupDto.getPrefInspEndDate() != null || applicationGroupDto.getPrefInspStartDate() != null){
+                            h.setCanInspection(false);
+                        }else{
+                            h.setCanInspection(true);
+                        }
+                    }
+                }else{
+                    h.setCanInspection(false);
+                }
+
                 RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
                 recallApplicationDto.setAppId(h.getId());
                 recallApplicationDto.setAppNo(h.getApplicationNo());
@@ -813,7 +830,6 @@ public class InterInboxDelegator {
             });
             ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, appParam);
             ParamUtil.setRequestAttr(request,InboxConst.APP_RESULT, appResult);
-
         }
         setNumInfoToRequest(request,interInboxUserDto);
         String delDraftConfMsg = MessageUtil.getMessageDesc("NEW_ACK002");
@@ -835,8 +851,25 @@ public class InterInboxDelegator {
        return  stringBuilder.toString();
    }
 
+    public void doInspection(BaseProcessClass bpc) throws IOException {
+        HttpServletRequest request = bpc.request;
+        log.debug(StringUtil.changeForLog("Step ---> doInspection"));
+        String appGroupId = ParamUtil.getString(request, "action_grp_value");
+        AppSubmissionDto appSubmissionDto = new AppSubmissionDto();
+        if (appGroupId != null){
+            StringBuilder url = new StringBuilder();
+            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohSubmitInspectionDate");
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+            appSubmissionDto.setAppGrpId(appGroupId);
+            ParamUtil.setSessionAttr(request, "AppSubmissionDto",appSubmissionDto);
+        }
+    }
+
     public void appSwitch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("Step ---> appSwitch"));
+
 //        ParamUtil.setRequestAttr(bpc.request,"appCannotRecall", false);
     }
 

@@ -107,7 +107,7 @@
                     <iais:sortableHeader needSort="true" field="CREATED_DT"
                                          value="Submission Date" style="width:16%" isFE="true"/>
                     <iais:sortableHeader needSort="false" field=""
-                                         value="Actions" style="width:14%" />
+                                         value="Actions" style="width:16%" />
                 </tr>
                 </thead>
                 <tbody>
@@ -181,6 +181,9 @@
                                                     <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
                                                         <option value="Assessment">Assessment</option>
                                                     </c:if>
+                                                    <c:if test="${app.canInspection}">
+                                                    <option value="Inspection">Indicate preferred Inspection Date</option>
+                                                    </c:if>
                                                 </select>
                                             </c:if>
                                             <c:if test="${app.status == 'APST028'
@@ -228,6 +231,9 @@
                                                     <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
                                                         <option value="Assessment">Assessment</option>
                                                     </c:if>
+                                                    <c:if test="${app.canInspection}">
+                                                        <option value="Inspection">Indicate preferred Inspection Date</option>
+                                                    </c:if>
                                                 </select>
                                             </c:if>
                                             <c:if test="${app.status == 'APST060'}">
@@ -236,6 +242,9 @@
                                                     <option value="Continue">Continue</option>
                                                     <c:if test="${app.selfAssmtFlag == 0}">
                                                         <option value="Assessment">Assessment</option>
+                                                    </c:if>
+                                                    <c:if test="${app.canInspection}">
+                                                        <option value="Inspection">Indicate preferred Inspection Date</option>
                                                     </c:if>
                                                 </select>
                                             </c:if>

@@ -277,11 +277,18 @@
     <JavaCode defClass="" executor="" methodName="licDoPrint_OnStepProcess_0" name="licDoPrint_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doSelfAssMt" x="480" y="880">
+  <AutomaticStep defClass="" executor="" icon="" name="doSelfAssMt" x="470" y="880">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doSelfAssMt_OnStepProcess_0" name="doSelfAssMt_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doInspection" x="500" y="860">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doInspection_OnStepProcess_0" name="doInspection_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -342,6 +349,7 @@
    <SwitchCase component="/Steps/AutomaticStep/appDoDelete" value="&quot;appDoDelete&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/appDoAppView" value="&quot;appToAppView&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSelfAssMt" value="&quot;doSelfAssMt&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doInspection" value="&quot;doInspection&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/licDoSort" executor="" icon="" leftOperand="lic_action_type" name="Switch3" x="700" y="600">
    <Description/>
@@ -672,10 +680,16 @@
    <position>{(1000,690)(1100,730)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSelfAssMt" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(160,570)(500,900)}</position>
+   <position>{(160,570)(490,900)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSelfAssMt" style="oblique">
-   <position>{(500,900)(0,1030)}</position>
+   <position>{(490,900)(0,1030)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doInspection" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(160,570)(520,880)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doInspection" style="oblique">
+   <position>{(520,880)(0,1030)}</position>
   </SynchronousLink>
  </Links>
 </Application>
