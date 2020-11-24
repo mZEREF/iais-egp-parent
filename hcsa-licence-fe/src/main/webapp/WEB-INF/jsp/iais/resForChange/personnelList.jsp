@@ -99,7 +99,7 @@
     }
 
     function doSearch() {
-        Utils.submit.cfxSubmit("menuListForm", "search");
+        Utils.submit("menuListForm", "search");
     }
 
 
