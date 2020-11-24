@@ -226,6 +226,12 @@ public final class IaisEGPHelper extends EGPHelper {
                 dto.setUenId(uenNo);
                 dto.setMohUserId(nricNum);
                 operationType = AuditTrailConsts.OPERATION_TYPE_INTERNET;
+
+                if (OrganizationConstants.ID_TYPE_FIN.equals(IaisEGPHelper.checkIdentityNoType(nricNum))){
+                    //for audit trail page display, issue 67866
+                    dto.setEntityId(nricNum);
+                }
+
                 loginType = StringUtils.isEmpty(uenNo) ? AuditTrailConsts.LOGIN_TYPE_SING_PASS : AuditTrailConsts.LOGIN_TYPE_CORP_PASS;
             }else if (AppConsts.USER_DOMAIN_INTRANET.equals(loginContext.getUserDomain())){
                 dto.setMohUserId(mohUserId);
