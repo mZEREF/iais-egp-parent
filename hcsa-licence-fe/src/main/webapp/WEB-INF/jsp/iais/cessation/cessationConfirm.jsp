@@ -282,7 +282,7 @@
                     <span style="padding-right: 10%" class="components">
                         <a onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>
                     </span>
-                            <span style="padding-left: 75%" class="components">
+                            <span style="padding-left: 73%" class="components">
                        <a class="btn btn-primary next" onclick="confirmSubmit('submit')">Submit</a>
                     </span>
                         </div>
