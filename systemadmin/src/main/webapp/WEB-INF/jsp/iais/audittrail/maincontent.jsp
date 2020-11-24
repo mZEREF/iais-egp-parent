@@ -225,7 +225,7 @@
 
                                                         <c:choose>
                                                             <c:when test="${empty resultRow.entityId}">
-                                                                <td><c:out value="-"></c:out></td>
+                                                                <td><c:out value="${resultRow.nricNumber}"></c:out></td>
                                                                 <td><c:out value="${resultRow.nricNumber}"></c:out></td>
                                                                 <td><c:out value="${resultRow.uenId}"></c:out></td>
                                                             </c:when>
