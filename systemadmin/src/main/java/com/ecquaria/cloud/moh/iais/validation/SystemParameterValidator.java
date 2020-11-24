@@ -98,6 +98,25 @@ public class SystemParameterValidator implements CustomizeValidator {
 		if (arr == null){
 			errorMap.put("customErrorMessage", "SYSPAM_ERROR0004");
 		}
+
+		String[] include = new String[]{"pdf", "xlsx", "xls", "docx", "doc", "png", "jpg", "jpeg", "csv"};
+
+		for (String i : arr){
+			boolean in = false;
+			for (String j : include){
+				if (i.equalsIgnoreCase(j)){
+					in = true;
+				}
+			}
+
+			if (!in){
+				errorMap.put("customErrorMessage", "SYSPAM_ERROR0004");
+				break;
+			}
+		}
+
+
+
 	}
 
 	private void verifyAuditTrailWeek(Map<String, String> errorMap, int value){
