@@ -141,7 +141,7 @@ public class BackendInboxDelegator {
         for (String item : loginContext.getRoleIds()) {
             selectOptionArrayList.add(new SelectOption(item,item));
         }
-        log.debug(StringUtil.changeForLog("the BackendInboxDelegator start ...."));
+        log.info(StringUtil.changeForLog("the BackendInboxDelegator start ...."));
         String curRole = "";
         curRole = loginContext.getCurRoleId();
         SearchParam searchParamGroup = getSearchParam(bpc.request,true);
@@ -161,7 +161,7 @@ public class BackendInboxDelegator {
 
 
     public void searchInit(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the inspectionSupSearchInit start ...."));
+        log.info(StringUtil.changeForLog("the inspectionSupSearchInit start ...."));
         ParamUtil.setSessionAttr(bpc.request, "taskList",null);
         ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
     }
@@ -174,7 +174,7 @@ public class BackendInboxDelegator {
      */
     public void prepareData(BaseProcessClass bpc){
 
-        log.debug(StringUtil.changeForLog("the inspectionSupSearchPre start ...."));
+        log.info(StringUtil.changeForLog("the inspectionSupSearchPre start ...."));
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
         List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
@@ -225,7 +225,7 @@ public class BackendInboxDelegator {
      * @throws
      */
     public void searchStart(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the inspectionSupSearchStartStep1 start ...."));
+        log.info(StringUtil.changeForLog("the inspectionSupSearchStartStep1 start ...."));
 
     }
 
@@ -236,7 +236,7 @@ public class BackendInboxDelegator {
      * @throws
      */
     public void doSearch(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the inspectionSupSearchDoSearch start ...."));
+        log.info(StringUtil.changeForLog("the inspectionSupSearchDoSearch start ...."));
         SearchParam searchParamGroup = getSearchParam(bpc.request,true);
         ParamUtil.setSessionAttr(bpc.request, "backendinboxSearchParam", searchParamGroup);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -345,13 +345,13 @@ public class BackendInboxDelegator {
 
                 }else if(RoleConsts.USER_ROLE_AO1.equals(loginContext.getCurRoleId())){
                     if(("ao1approve").equals(action)){
-                        log.debug(StringUtil.changeForLog("the do ao1 approve start ...."));
+                        log.info(StringUtil.changeForLog("the do ao1 approve start ...."));
                         ParamUtil.setSessionAttr(bpc.request,"bemainAo1Ao2Approve","Y");
                         successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
                         routingTask(bpc,"",successStatus,"",applicationViewDto,taskDto);
-                        log.debug(StringUtil.changeForLog("the do ao1 approve end ...."));
+                        log.info(StringUtil.changeForLog("the do ao1 approve end ...."));
                     }else{
-                        log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 start ...."));
+                        log.info(StringUtil.changeForLog("the do rontingTaskToAO2 start ...."));
                         if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(status)){
                             try{
                                 replay(bpc,applicationViewDto,taskDto);
@@ -372,17 +372,17 @@ public class BackendInboxDelegator {
                         }
 
 
-                        log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
+                        log.info(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
                     }
                 }else if(RoleConsts.USER_ROLE_AO2.equals(loginContext.getCurRoleId())){
                     if(("ao2approve").equals(action)){
-                        log.debug(StringUtil.changeForLog("the do ao2 approve start ...."));
+                        log.info(StringUtil.changeForLog("the do ao2 approve start ...."));
                         ParamUtil.setSessionAttr(bpc.request,"bemainAo1Ao2Approve","Y");
                         successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
                         routingTask(bpc,"",successStatus,"",applicationViewDto,taskDto);
-                        log.debug(StringUtil.changeForLog("the do ao2 approve end ...."));
+                        log.info(StringUtil.changeForLog("the do ao2 approve end ...."));
                     }else{
-                        log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
+                        log.info(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
                         if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(status)){
                             try{
                                 replay(bpc,applicationViewDto,taskDto);
@@ -393,7 +393,7 @@ public class BackendInboxDelegator {
                         }else{
                             routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO3, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03, RoleConsts.USER_ROLE_AO3,applicationViewDto,taskDto);
                         }
-                        log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
+                        log.info(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
                         successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
                     }
 
@@ -410,9 +410,9 @@ public class BackendInboxDelegator {
                     }else{
                         successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
                     }
-                    log.debug(StringUtil.changeForLog("the do approve start ...."));
+                    log.info(StringUtil.changeForLog("the do approve start ...."));
                     routingTask(bpc,"",successStatus,"",applicationViewDto,taskDto);
-                    log.debug(StringUtil.changeForLog("the do approve end ...."));
+                    log.info(StringUtil.changeForLog("the do approve end ...."));
                 }
             }
             //update commPools
@@ -720,7 +720,7 @@ public class BackendInboxDelegator {
      * @throws
      */
     private void replay(BaseProcessClass bpc,ApplicationViewDto applicationViewDto,TaskDto taskDto) throws FeignException, CloneNotSupportedException {
-        log.debug(StringUtil.changeForLog("the do replay start ...."));
+        log.info(StringUtil.changeForLog("the do replay start ...."));
         String nextStatus = ApplicationConsts.APPLICATION_STATUS_REPLY;
         String getHistoryStatus = applicationViewDto.getApplicationDto().getStatus();
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(getHistoryStatus)){
@@ -778,7 +778,7 @@ public class BackendInboxDelegator {
                 rollBack(bpc,applicationViewDto,stageId,nextStatus,roleId,wrkGrpId,userId,taskDto);
             }
         }
-        log.debug(StringUtil.changeForLog("the do replay end ...."));
+        log.info(StringUtil.changeForLog("the do replay end ...."));
     }
 
     private void routingTask(BaseProcessClass bpc,String stageId,String appStatus,String roleId ,ApplicationViewDto applicationViewDto,TaskDto taskDto) throws FeignException, CloneNotSupportedException {
@@ -881,13 +881,13 @@ public class BackendInboxDelegator {
 
         broadcastApplicationDto.setApplicationDto(applicationDto);
         if(!StringUtil.isEmpty(stageId)){
-            log.debug(StringUtil.changeForLog("has next stageId :" + stageId));
+            log.info(StringUtil.changeForLog("has next stageId :" + stageId));
             if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(oldStatus)){
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1 = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(
                         applicationDto.getApplicationNo(),stageId
                 );
-                log.debug(StringUtil.changeForLog("The appId is-->;"+ applicationDto.getId()));
-                log.debug(StringUtil.changeForLog("The stageId is-->;"+ stageId));
+                log.info(StringUtil.changeForLog("The appId is-->;"+ applicationDto.getId()));
+                log.info(StringUtil.changeForLog("The stageId is-->;"+ stageId));
                 if(appPremisesRoutingHistoryDto1 != null){
                     TaskDto newTaskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),stageId,TaskConsts.TASK_TYPE_MAIN_FLOW,
                             taskDto.getRefNo(),appPremisesRoutingHistoryDto1.getWrkGrpId(),
@@ -912,6 +912,11 @@ public class BackendInboxDelegator {
                     throw new IaisRuntimeException("This getAppPremisesCorrelationId can not get the broadcast -- >:"+applicationViewDto.getAppPremisesCorrelationId());
                 }
             }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus)){
+                
+                if(HcsaConsts.ROUTING_STAGE_INS.equals(taskDto.getTaskKey())){
+                    updateInspectionStatus(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT);
+                }
+
                 if(applicationDto.isFastTracking()){
                     TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,newCorrelationId);
                     broadcastOrganizationDto.setCreateTask(newTaskDto);
@@ -923,7 +928,7 @@ public class BackendInboxDelegator {
                 flagApplicationDtoList = removeCurrentApplicationDto(flagApplicationDtoList,applicationDto.getId());
                 boolean flag = taskService.checkCompleteTaskByApplicationNo(flagApplicationDtoList,newCorrelationId);
 
-                log.debug(StringUtil.changeForLog("isAllSubmit is " + flag));
+                log.info(StringUtil.changeForLog("isAllSubmit is " + flag));
                 if(flag){
                     List<ApplicationDto> saveApplicationDtoList = IaisCommonUtils.genNewArrayList();
                     CopyUtil.copyMutableObjectList(applicationDtoList,saveApplicationDtoList);
@@ -971,8 +976,8 @@ public class BackendInboxDelegator {
             }
 
         }else{
-            log.debug(StringUtil.changeForLog("not has next stageId :" + stageId));
-            log.debug(StringUtil.changeForLog("do ao3 approve ----- "));
+            log.info(StringUtil.changeForLog("not has next stageId :" + stageId));
+            log.info(StringUtil.changeForLog("do ao3 approve ----- "));
 
             String aoapprove = (String)ParamUtil.getSessionAttr(bpc.request,"bemainAo1Ao2Approve");
             boolean isAo1Ao2Approve = "Y".equals(aoapprove);
@@ -982,7 +987,7 @@ public class BackendInboxDelegator {
             applicationDtoList = removeFastTracking(applicationDtoList);
             boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
                     appStatus);
-            log.debug(StringUtil.changeForLog("isAllSubmit is " + isAllSubmit));
+            log.info(StringUtil.changeForLog("isAllSubmit is " + isAllSubmit));
             if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)){
                 //send reject email
                 try{
@@ -1273,9 +1278,8 @@ public class BackendInboxDelegator {
 
     private int remainDays(TaskDto taskDto){
         int result = 0;
-        //todo: wait count kpi
         // String  resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(),taskDto.getSlaDateCompleted().getTime(), "d");
-        // log.debug(StringUtil.changeForLog("The resultStr is -->:")+resultStr);
+        // log.info(StringUtil.changeForLog("The resultStr is -->:")+resultStr);
         return  result;
     }
 
@@ -1304,7 +1308,7 @@ public class BackendInboxDelegator {
      * @throws
      */
     public void searchQuery(BaseProcessClass bpc) throws ParseException {
-        log.debug(StringUtil.changeForLog("the inspectionSupSearchQuery1 start ...."));
+        log.info(StringUtil.changeForLog("the inspectionSupSearchQuery1 start ...."));
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<TaskDto> commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
         SearchParam searchParamGroup = getSearchParam(bpc.request,false);
@@ -1411,7 +1415,7 @@ public class BackendInboxDelegator {
 
 
             QueryHelp.setMainSql("inspectionQuery", "AppGroup",searchParamGroup);
-            log.debug(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
+            log.info(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
             SearchResult<InspectionAppGroupQueryDto> searchResult3 = inspectionService.searchInspectionBeAppGroup(searchParamGroup);
             List<InspectionAppGroupQueryDto> inspectionAppGroupQueryDtoList = searchResult3.getRows();
             SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd");
@@ -1510,7 +1514,7 @@ public class BackendInboxDelegator {
      * @throws
      */
     public void routeToDMS(BaseProcessClass bpc,ApplicationViewDto applicationViewDto,TaskDto taskDto) throws CloneNotSupportedException {
-        log.debug(StringUtil.changeForLog("the do routeToDMS start ...."));
+        log.info(StringUtil.changeForLog("the do routeToDMS start ...."));
         ApplicationDto application = applicationViewDto.getApplicationDto();
         if(application != null){
             String appNo =  application.getApplicationNo();
@@ -1534,7 +1538,7 @@ public class BackendInboxDelegator {
         }else{
             log.error(StringUtil.changeForLog("do not have the applicaiton"));
         }
-        log.debug(StringUtil.changeForLog("the do routeToDMS end ...."));
+        log.info(StringUtil.changeForLog("the do routeToDMS end ...."));
     }
 
 
