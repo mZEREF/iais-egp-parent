@@ -97,12 +97,15 @@
             $('#previewli').removeClass("complete");
         }
         $('#premises').click(function(){
+            showWaiting();
             submit('premises',null,null);
         });
         $('#documents').click(function(){
+            showWaiting();
             submit('documents',null,null);
         });
         $('#serviceForms').click(function(){
+            showWaiting();
             // submit('serviceForms',null,null);
             $("[name='crud_action_type']").val('serviceForms');
             $("[name='crud_action_type_tab']").val('${hcsaServiceDtoList.get(0).svcCode}');
@@ -111,6 +114,7 @@
             mainForm.submit();
         });
         $('#preview').click(function(){
+            showWaiting();
             submit('preview',null,null);
         });
         /*$('#payment').click(function(){

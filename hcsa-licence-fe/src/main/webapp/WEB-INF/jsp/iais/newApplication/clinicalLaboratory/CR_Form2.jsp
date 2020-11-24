@@ -714,6 +714,7 @@
         /*var assignContent = $('.assignContent:last').html();
         var appendHtml = '<hr/> <table class="testTable">'+ assignContent+'</table>';
         $('.assignContent:last').after(appendHtml);*/
+        showWaiting();
         $('.hideen-div').addClass('hidden');
         var number = $('.assign-psn-item').size();
         var addNumber = ${HcsaSvcPersonnel.maximumCount} -number;
@@ -750,8 +751,9 @@
                     }
                 } else {
                     $('.errorMsg').html(data.errInfo);
+                    dismissWaiting();
                 }
-
+                dismissWaiting();
             },
             error: function (data) {
                 console.log("err");

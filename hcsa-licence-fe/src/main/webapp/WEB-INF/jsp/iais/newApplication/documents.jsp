@@ -205,12 +205,15 @@
         
         //Binding method
         $('#Back').click(function(){
+            showWaiting();
             submit('premises',null,null);
         });
         $('#SaveDraft').click(function(){
+            showWaiting();
             submit('documents','saveDraft',$('#selectDraftNo').val());
         });
         $('#Next').click(function(){
+            showWaiting();
             submit('serviceForms',"next",null);
         });
 

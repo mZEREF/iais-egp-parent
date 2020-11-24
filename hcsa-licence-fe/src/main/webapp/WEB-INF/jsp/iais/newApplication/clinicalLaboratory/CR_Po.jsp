@@ -787,6 +787,7 @@
 
     var addPo = function(){
         $('#addPoBtn').click(function () {
+            showWaiting();
             var hasNumber = $('div.po-content').size() - 1;
             console.log("hasNumber" + hasNumber);
             $.ajax({
@@ -822,9 +823,11 @@
                     }else{
                         $('.poErrorMsg').html(data.errInfo);
                     }
+                    dismissWaiting();
                 },
                 error:function (data) {
                     console.log("err");
+                    dismissWaiting();
                 }
             });
 
@@ -834,6 +837,7 @@
 
     var addDpo = function(){
         $('#addDpoBtn').click(function () {
+            showWaiting();
             var hasNumber = $('.dpo-content').size() - 1;
             console.log("hasNumber" + hasNumber);
             $.ajax({
@@ -868,9 +872,11 @@
                     }else{
                         $('.dpoErrorMsg').html(data.errInfo);
                     }
+                    dismissWaiting();
                 },
                 error:function (data) {
                     console.log("err");
+                    dismissWaiting();
                 }
             });
         });

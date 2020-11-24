@@ -389,6 +389,7 @@
 
 
   $('.addListBtn').click(function () {
+      showWaiting();
       var HasNumber = $(".personnel-content").size();
       console.log("HasNumber"+HasNumber);
       $.ajax({
@@ -411,8 +412,10 @@
               }else{
                   $('.spErrorMsg').html(data.errInfo);
               }
+              dismissWaiting();
           },
           error:function (data) {
+              dismissWaiting();
           }
       });
   });

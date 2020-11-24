@@ -183,15 +183,19 @@
             $('#rfcPending').modal('show');
         }
         $('#premisesEdit').click(function(){
+            showWaiting();
             submit('premises',null,null);
         });
         $('#docEdit').click(function(){
+            showWaiting();
             submit('documents',null,null);
         });
         $('#Back').click(function(){
+            showWaiting();
             submit('serviceForms',null,null);
         });
         $('#SaveDraft').click(function(){
+            showWaiting();
             submit('preview','saveDraft',null);
         });
         $('#Next').click(function(){

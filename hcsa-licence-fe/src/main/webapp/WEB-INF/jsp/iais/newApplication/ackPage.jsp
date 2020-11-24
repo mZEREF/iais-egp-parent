@@ -167,24 +167,28 @@
     });
 
     $('#doSelfAssessment').click(function () {
+        showWaiting();
         $("[name='crud_action_type']").val('MohAppPremSelfDecl');
         var mainForm = document.getElementById("mainForm");
         mainForm.submit();
     });
 
     $('#doPrefInsDate').click(function () {
+        showWaiting();
         $("[name='crud_action_type']").val('MohSubmitInspectionDate');
         var mainForm = document.getElementById("mainForm");
         mainForm.submit();
     });
 
     $('#toDashBoard').click(function () {
+        showWaiting();
         $("[name='crud_action_type']").val('DashBoard');
         var mainForm = document.getElementById("mainForm");
         mainForm.submit();
     });
 
     $('#toChooseSvc').click(function () {
+        showWaiting();
         $("[name='crud_action_type']").val('ChooseSvc');
         var mainForm = document.getElementById("mainForm");
         mainForm.submit();

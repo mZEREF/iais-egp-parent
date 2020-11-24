@@ -177,15 +177,18 @@
         operationDel();
         //Binding method
         $('#Back').click(function(){
+            showWaiting();
             submit(null,'back',null);
         });
         $('#Next').click(function(){
+            showWaiting();
             $('input[type="radio"]').prop('disabled',false);
             submit('documents',null,null);
         });
         $('#SaveDraft').click(function(){
-                $('input[type="radio"]').prop('disabled',false);
-                submit('premises','saveDraft',$('#selectDraftNo').val());
+            showWaiting();
+            $('input[type="radio"]').prop('disabled',false);
+            submit('premises','saveDraft',$('#selectDraftNo').val());
         });
 <%--<c:if test="${AppSubmissionDto.needEditController || AppSubmissionDto.onlySpecifiedSvc}">--%>
         <c:if test="${!AppSubmissionDto.needEditController && readOnly}">

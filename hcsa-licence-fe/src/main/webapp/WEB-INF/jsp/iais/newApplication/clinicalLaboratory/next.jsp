@@ -74,6 +74,7 @@
         v=controlFormLi;
         //Binding method
         $('#Back').click(function(){
+            showWaiting();
             if(${serviceStepDto.isStepFirst()}){
                 if(${serviceStepDto.isServiceFirst()}){
                     <c:choose>
@@ -92,29 +93,35 @@
             }
         });
         $('#SaveDraft').click(function(){
+            showWaiting();
             submitForms('${serviceStepDto.currentStep.stepCode}','saveDraft',null,controlFormLi);
         });
         $('#Next').click(function(){
+            showWaiting();
             $("[name='nextStep']").val('next');
             nextFun();
         });
 
         $('#RfcUndo').click(function () {
+            showWaiting();
             $("[name='nextStep']").val('undo');
             submit('jump',null,null);
         });
 
         $('#RfcSkip').click(function () {
+            showWaiting();
             $("[name='nextStep']").val('skip');
             nextFun();
         });
 
         $('#RfcSave').click(function () {
+            showWaiting();
             $("[name='nextStep']").val('next');
             submit('preview','saveDraft',null);
         });
 
         $('#RenewSave').click(function () {
+            showWaiting();
             $("[name='nextStep']").val('next');
             submit('jump','saveDraft',null);
         });

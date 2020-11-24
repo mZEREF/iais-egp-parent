@@ -354,6 +354,7 @@
 
     var addMAP = function(){
         $('#addMapBtn').click(function () {
+            showWaiting();
             var hasNumber = $('.medAlertContent').size() - 1;
             console.log("hasNumber" + hasNumber);
             $.ajax({
@@ -393,9 +394,11 @@
                     }else{
                         $('.mapErrorMsg').html(data.errInfo);
                     }
+                    dismissWaiting();
                 },
                 error:function (data) {
                     console.log("err");
+                    dismissWaiting();
                 }
             });
         });

@@ -29,6 +29,7 @@
         $('#'+controlFormLi+'li').addClass('active');
 
         $('#tabUl > li >a').click(function () {
+            showWaiting();
             submitFormTabs(this.id,null,null);
         });
 

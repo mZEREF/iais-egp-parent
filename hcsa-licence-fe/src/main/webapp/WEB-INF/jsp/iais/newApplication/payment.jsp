@@ -339,7 +339,7 @@
             $('#error_pay').html("The field is mandatory.");
             return;
         }*/
-
+        showWaiting();
         submit('jumpBank',null,null);
     });
 </script>
