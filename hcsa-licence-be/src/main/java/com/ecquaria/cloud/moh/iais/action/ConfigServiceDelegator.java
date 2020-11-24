@@ -84,8 +84,8 @@ public class ConfigServiceDelegator {
 
     public void list(BaseProcessClass bpc){
         log.info("*********list  start***********");
-        configService.getAllHcsaServices(bpc.request);
-
+        List<HcsaServiceDto> allHcsaServices = configService.getAllHcsaServices();
+        bpc.request.setAttribute("hcsaServiceDtos", allHcsaServices);
     }
     public void addNewService(BaseProcessClass bpc){
         log.info("*********addNewService  start***********");

@@ -1468,18 +1468,18 @@ public class RequestForChangeMenuDelegator {
         boolean b = compareHciName(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
         amendmentFeeDto.setChangeInHCIName(!b);
         amendmentFeeDto.setChangeInLocation(!isSame);
+        boolean eqAddFloorNo = NewApplicationDelegator.eqAddFloorNo(appSubmissionDto, oldAppSubmissionDtoappSubmissionDto);
         if(!isSame || !b){
             for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1){
                 appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
             }
-        }else if(isSame&&b){
+        }else if(isSame&&b&& !eqAddFloorNo){
             for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1){
                 appGrpPremisesDto.setSelfAssMtFlag(4);
             }
         }
-        boolean eqAddFloorNo = NewApplicationDelegator.eqAddFloorNo(appSubmissionDto, oldAppSubmissionDtoappSubmissionDto);
         if(eqAddFloorNo){
-            amendmentFeeDto.setChangeInLocation(true);
+            amendmentFeeDto.setChangeInLocation(Boolean.TRUE);
         }
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         Double total = feeDto.getTotal();
@@ -1498,6 +1498,7 @@ public class RequestForChangeMenuDelegator {
                         String hciCode = appGrpPremisesDto.getHciCode();
                         if(hciCode1.equals(hciCode)){
                             premisesIndexNo=appGrpPremisesDto.getPremisesIndexNo();
+                            break;
                         }
                     }
                 }else {
@@ -1510,14 +1511,6 @@ public class RequestForChangeMenuDelegator {
                 }else {
                     appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
                 }
-                if (!isSame || !b) {
-                    List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
-                    if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
-                        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                            appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
-                        }
-                    }
-                }
                 appSubmissionDtoByLicenceId.setAmount(total);
                 AppGrpPremisesDto o = (AppGrpPremisesDto)CopyUtil.copyMutableObject(appGrpPremisesDtoList1.get(0));
                 List<AppGrpPremisesDto> appGrpPremise= new ArrayList<>(1);
@@ -1525,7 +1518,23 @@ public class RequestForChangeMenuDelegator {
                 appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremise);
                 appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
                 appSubmissionDtoByLicenceId.setAppGrpNo(appGrpNo);
-                appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
+                if (!isSame || !b) {
+                    appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
+                    List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
+                    if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
+                        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                            appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
+                        }
+                    }
+                }else {
+                    appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.NO);
+                    List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
+                    if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
+                        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                            appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+                        }
+                    }
+                }
                 PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDtoByLicenceId);
                 if (preOrPostInspectionResultDto == null) {
                     appSubmissionDtoByLicenceId.setPreInspection(true);
@@ -1535,7 +1544,7 @@ public class RequestForChangeMenuDelegator {
                     appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
                 }
                 appSubmissionService.setRiskToDto(appSubmissionDto);
-                if(isSame && b){
+                if(isSame && b && !eqAddFloorNo){
                     appSubmissionDtoByLicenceId.setAutoRfc(true);
                     List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
                     if(!StringUtil.isEmpty(appGrpPremisesDtos)){

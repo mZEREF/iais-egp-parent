@@ -1907,7 +1907,7 @@ public class NewApplicationDelegator {
             }
         }
         if(eqAddFloorNo){
-            amendmentFeeDto.setChangeInLocation(true);
+            amendmentFeeDto.setChangeInLocation(Boolean.TRUE);
         }
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         double amount = feeDto.getTotal();
@@ -1993,7 +1993,7 @@ public class NewApplicationDelegator {
                                     appSubmissionDtoByLicenceId.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
                                     appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
                                 }
-                                if (isAutoRfc) {
+                                if (!amendmentFeeDto.getChangeInHCIName() && !amendmentFeeDto.getChangeInLocation()) {
                                     appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.NO);
                                     for(AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList()){
                                         appGrpPremisesDto1.setNeedNewLicNo(Boolean.FALSE);

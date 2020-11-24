@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface ConfigService {
 
-    List<HcsaServiceDto> getAllHcsaServices(HttpServletRequest request);
+    List<HcsaServiceDto> getAllHcsaServices();
 
     void viewPageInfo(HttpServletRequest request);
 

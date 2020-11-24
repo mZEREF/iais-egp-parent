@@ -31,7 +31,7 @@
       </div>
     </div>
     <div class="form-group" style="position: absolute ;right: 1%" >
-      <div class="col-xs-12 col-md-4 col-lg-9">
+      <div class="col-xs-12 col-md-12 col-lg-12">
         <a class="btn btn-secondary" id="premiseClear">Clear</a>
         <a class="btn btn-primary" id="premiseSearch">search</a>
       </div>
@@ -42,7 +42,7 @@
     <div class="col-xs-12">
       <div class="table-gp">
         <span class="error-msg"><c:out value="${Error_Status}"/></span>
-        <table class="table" style="margin-right: 20%">
+        <table class="table col-xs-12 col-md-12 col-lg-12" style="margin-right: 20%">
           <iais:pagination  param="PremisesSearchParam" result="PremisesSearchResult"/>
           <thead>
             <tr>

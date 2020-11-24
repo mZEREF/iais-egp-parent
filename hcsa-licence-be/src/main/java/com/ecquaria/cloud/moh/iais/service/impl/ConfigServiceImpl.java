@@ -4,6 +4,8 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -25,13 +27,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.dto.HcsaConfigPageDto;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -42,9 +48,11 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -97,8 +105,15 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
+    @Value("${spring.application.name}")
+    private String currentApp;
+
+    @Value("${iais.current.domain}")
+    private String currentDomain;
+    @Autowired
+    private EicRequestTrackingHelper eicRequestTrackingHelper;
     @Override
-    public List<HcsaServiceDto> getAllHcsaServices(HttpServletRequest request) {
+    public List<HcsaServiceDto> getAllHcsaServices() {
         List<HcsaServiceDto> entity = hcsaConfigClient.allHcsaService().getEntity();
         for(int i=0;i<entity.size();i++){
             if("CMSTAT005".equals(entity.get(i).getStatus())){
@@ -115,8 +130,6 @@ public class ConfigServiceImpl implements ConfigService {
                 }
             }
         }
-
-        request.setAttribute("hcsaServiceDtos", entity);
         return entity;
     }
 
@@ -206,11 +219,7 @@ public class ConfigServiceImpl implements ConfigService {
         String format = new SimpleDateFormat("yyyy-MM-dd").format(parse);
         hcsaServiceDto.setEffectiveDate(format);
         hcsaServiceConfigDto = hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto).getEntity();
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-
-        gatewayClient.saveFeServiceConfig(hcsaServiceConfigDto,signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+        eicGateway(hcsaServiceConfigDto);
         HcsaServiceCacheHelper.receiveServiceMapping();
         // todo send email
         request.setAttribute("option","added");
@@ -332,10 +341,7 @@ public class ConfigServiceImpl implements ConfigService {
                  }
                  hcsaServiceDto.setId(null);
                  hcsaServiceConfigDto= hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto).getEntity();
-                 HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                 HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                 gatewayClient.saveFeServiceConfig(hcsaServiceConfigDto,signature.date(), signature.authorization(),
-                         signature2.date(), signature2.authorization());
+                 eicGateway(hcsaServiceConfigDto);
                  request.setAttribute("crud_action_type", "save");
                  //todo send email update (if start date or end date change need send  Effective Start/End )
                  HcsaServiceCacheHelper.receiveServiceMapping();
@@ -389,15 +395,15 @@ public class ConfigServiceImpl implements ConfigService {
             Boolean flag = hcsaConfigClient.serviceIdIsUsed(crud_action_value).getEntity();
             HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(crud_action_value).getEntity();
             List<LicenceDto> entity = hcsaLicenceClient.getLicenceDtosBySvcName(hcsaServiceDto.getSvcName()).getEntity();
-
+            String sc_err005 = MessageUtil.getMessageDesc("SC_ERR005");
             if(!entity.isEmpty()){
                 request.setAttribute("delete","fail");
-                request.setAttribute("deleteFile",MessageUtil.getMessageDesc("SC_ERR005"));
+                request.setAttribute("deleteFile",sc_err005);
                 return;
             }
             if(flag){
                 request.setAttribute("delete","fail");
-                request.setAttribute("deleteFile",MessageUtil.getMessageDesc("SC_ERR005"));
+                request.setAttribute("deleteFile",sc_err005);
                 return;
 
             }
@@ -443,7 +449,7 @@ public class ConfigServiceImpl implements ConfigService {
                 if(!subtypeName.contains(name)){
                     subtypeName.add(name);
                 }else {
-                    errorMap.put("hcsaSvcSubtypeOrSubsumed","All name cannot repeat");
+                    errorMap.put("hcsaSvcSubtypeOrSubsumed","SC_ERR011");
                 }
                 if(list!=null){
                     for(HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto1:list){
@@ -452,7 +458,7 @@ public class ConfigServiceImpl implements ConfigService {
                         if(!subtypeName.contains(name1)){
                             subtypeName.add(name1);
                         }else {
-                            errorMap.put("hcsaSvcSubtypeOrSubsumed","All name cannot repeat");
+                            errorMap.put("hcsaSvcSubtypeOrSubsumed","SC_ERR011");
                         }
                         if(list1!=null){
                             for(HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto2:list1){
@@ -461,7 +467,7 @@ public class ConfigServiceImpl implements ConfigService {
                                     subtypeName.add(name2);
                                 }else {
 
-                                    errorMap.put("hcsaSvcSubtypeOrSubsumed","All name cannot repeat");
+                                    errorMap.put("hcsaSvcSubtypeOrSubsumed","SC_ERR011");
                                 }
 
                             }
@@ -493,13 +499,13 @@ public class ConfigServiceImpl implements ConfigService {
             }else {
                if(maxVersionEndDate!=null){
                  if(parse.before(maxVersionEndDate) || parse.compareTo(maxVersionEndDate)==0){
-                     errorMap.put("effectiveDate","Please select after the maximum version end time");
+                     errorMap.put("effectiveDate","SC_ERR009");
                  }
                }else {
                    if(maxVersionEffectiveDate!=null){
                        Date parse1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(maxVersionEffectiveDate);
                        if(parse.before(parse1) || parse.compareTo(parse1)==0){
-                           errorMap.put("effectiveDate","Please select after the maximum version start time");
+                           errorMap.put("effectiveDate","SC_ERR010");
                        }
                    }
 
@@ -1188,7 +1194,7 @@ public class ConfigServiceImpl implements ConfigService {
                     }
                 }else if(maxVersionEndDate==null){
                     hcsaServiceDto.setSelectAsNewVersion(false);
-                }else if(maxVersionEffectiveDate!=null){
+                }else if(maxVersionEndDate!=null){
                     Calendar calendar =Calendar.getInstance();
                     calendar.setTime(maxVersionEndDate);
                     calendar.add(Calendar.DAY_OF_MONTH,1);
@@ -1321,6 +1327,38 @@ public class ConfigServiceImpl implements ConfigService {
         }else if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(type)){
             hcsaConfigPageDto.setAppTypeName("Withdrawal");
         }
+    }
 
+
+    private void eic(HcsaServiceConfigDto hcsaServiceConfigDto){
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        gatewayClient.saveFeServiceConfig(hcsaServiceConfigDto,signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
+    }
+
+    private void eicGateway(HcsaServiceConfigDto hcsaServiceConfigDto){
+        EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, ConfigServiceImpl.class.getName(),
+                "eic", currentApp + "-" + currentDomain,
+                HcsaServiceConfigDto.class.getName(), JsonUtil.parseToJson(hcsaServiceConfigDto));
+        AuditTrailDto intenet = AuditTrailHelper.getCurrentAuditTrailDto();
+        FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getAppEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
+        if (fetchResult != null && HttpStatus.SC_OK == fetchResult.getStatusCode()) {
+            log.info(StringUtil.changeForLog("------"+JsonUtil.parseToJson(fetchResult)));
+            EicRequestTrackingDto entity = fetchResult.getEntity();
+            if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
+                eic(hcsaServiceConfigDto);
+                entity.setProcessNum(1);
+                Date now = new Date();
+                entity.setFirstActionAt(now);
+                entity.setLastActionAt(now);
+                entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                entity.setAuditTrailDto(intenet);
+                eicRequestTrackingHelper.getAppEicClient().saveEicTrack(entity);
+
+            }
+        } else {
+            log.info(StringUtil.changeForLog("------ null----"));
+        }
     }
 }
