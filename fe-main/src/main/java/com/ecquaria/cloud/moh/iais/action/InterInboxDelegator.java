@@ -474,7 +474,7 @@ public class InterInboxDelegator {
             ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
             return;
         }
-        LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licId).getEntity();
+        LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
         if(licenceDto != null){
             Calendar calendar=Calendar.getInstance();
             calendar.setTime(licenceDto.getCreatedAt());
