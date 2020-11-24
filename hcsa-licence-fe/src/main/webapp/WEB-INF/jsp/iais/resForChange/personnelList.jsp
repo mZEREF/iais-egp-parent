@@ -10,7 +10,7 @@
 <%@include file="../common/dashboard.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <br/>
-<div class="tab-pane" id="tabApp" role="tabpanel">
+<div class="tab-pane" id="tabApp" role="tabpanel" style="margin-bottom: 4%;">
     <form class="form-inline" method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input type="hidden" name="crud_action_type" value="">
