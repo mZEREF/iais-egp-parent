@@ -4,10 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroGroupDataDto;
-import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentDto;
-import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentXmlDto;
-import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroXmlPaymentBackDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.*;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
@@ -42,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.Calculator;
+import com.ecquaria.cloud.moh.iais.common.utils.XmlBindUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -415,12 +413,24 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         }
     }
     private  String  genXmlByGiroPaymentXmlDtos(List<GiroPaymentXmlDto> giroPaymentXmlDtos){
-        //todo need change
-        return "";
+        GiroXmlPaymentDto grioXmlPaymentDto = getGiroXmlPaymentDtoByGiroPaymentXmlDtos(giroPaymentXmlDtos);
+        String xml = "";
+        try{
+            xml = XmlBindUtil.convertToXml(grioXmlPaymentDto);
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+        return  xml;
     }
+    private GiroXmlPaymentDto getGiroXmlPaymentDtoByGiroPaymentXmlDtos(List<GiroPaymentXmlDto> giroPaymentXmlDtos){
+        GiroXmlPaymentDto grioXmlPaymentDto = new GiroXmlPaymentDto();
+        //todo need change giroPaymentXmlDtos to grioXmlPaymentDto
+        return  grioXmlPaymentDto;
+    }
+
     private boolean genXmlFileToSftp(String xmlData){
         try{
-            //todo xml genfile to sftp and  save db
+            //todo xml genfile to sftp
             return true;
         }catch (Exception e){
             log.error(e.getMessage(),e);
@@ -432,19 +442,53 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     public void getGiroXmlFromSftpAndSaveXml() {
         String xml = "";
         //todo get sftp xmls to analyze
-       GiroXmlPaymentBackDto giroXmlPaymentBackDto = new GiroXmlPaymentBackDto();
            try{
-                getGiroPaymentDtosByGiroXmlPaymentBackDto(giroXmlPaymentBackDto);
+               GiroXmlPaymentBackDto giroXmlPaymentBackDto = (GiroXmlPaymentBackDto) XmlBindUtil.convertToObject(GiroXmlPaymentBackDto.class,xml);
+               getGiroPaymentDtosByGiroXmlPaymentBackDto(giroXmlPaymentBackDto);
+                //todo delete file sftp
                 saveXml( xml,AppConsts.COMMON_STATUS_ACTIVE,ApplicationConsts.GIRO_DOWN_XML_SFTP);
+                saveAppGroup(giroXmlPaymentBackDto.getINPUT_DETAIL());
             }catch (Exception e){
                log.error(e.getMessage(),e);
            }
+    }
+    private void saveAppGroup( List<InputDetailBackDto> inputDetailBackDtos){
+         if(!IaisCommonUtils.isEmpty(inputDetailBackDtos)){
+             List<String> appNo = IaisCommonUtils.genNewArrayList();
+             for(InputDetailBackDto inputDetailBackDto : inputDetailBackDtos){
+                 if(!appNo.contains(inputDetailBackDto.getAPPLICATION_NUMBER())){
+                     ApplicationGroupDto applicationGroupDto = applicationFeClient.getAppGrpByAppNo(inputDetailBackDto.getAPPLICATION_NUMBER()).getEntity();
+                     List<GiroPaymentDto> giroPaymentDtos = appPaymentStatusClient.getGiroPaymentDtosByPmtStatusAndAppGroupNo(AppConsts.COMMON_STATUS_ACTIVE,inputDetailBackDto.getAPPLICATION_NUMBER()).getEntity();
+                     if(!IaisCommonUtils.isEmpty(giroPaymentDtos)) {
+                         double amount = 0.0;
+                         for (GiroPaymentDto giroPaymentDto : giroPaymentDtos) {
+                             if (ApplicationConsts.GIRO_BANK_PAYMENT_TYPE_MONEYPAY.equalsIgnoreCase(giroPaymentDto.getPmtType())) {
+                                 amount = Calculator.add(amount, giroPaymentDto.getAmount());
+                             } else {
+                                 amount = Calculator.sub(amount, giroPaymentDto.getAmount());
+                             }
+                         }
+                         if(amount >= applicationGroupDto.getAmount()){
+                             applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS);
+                             applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                             applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
+                         }
+                     }
+                 }
+             }
+         }
     }
 
     private List<GiroPaymentDto> getGiroPaymentDtosByGiroXmlPaymentBackDto(GiroXmlPaymentBackDto giroXmlPaymentBackDto){
         List<GiroPaymentDto> giroPaymentDtos = IaisCommonUtils.genNewArrayList();
         //todo need analyze giroXmlPaymentBackDto to giroPaymentDtos save db
         for(GiroPaymentDto giroPaymentDto : giroPaymentDtos){
+            giroPaymentDto.setPmtStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            //todo get xml analyze  is pay or payback
+            giroPaymentDto.setPmtType(ApplicationConsts.GIRO_BANK_PAYMENT_TYPE_MONEYPAY);
+            giroPaymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            //todo get xml analyze amount
+            giroPaymentDto.setAmount(0.0d);
             //save giroPaymentDto
             appPaymentStatusClient.updateGiroPaymentDto(giroPaymentDto);
         }

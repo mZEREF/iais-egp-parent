@@ -359,4 +359,6 @@ public interface ApplicationFeClient {
     FeignResponseEntity<AppSubmissionDto> getAppSubmissionDtoByAppGrpNo(@PathVariable("appGrpNo") String appGrpNo);
     @PutMapping(path="/iais-application/app-grp-pmt-status", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> updateAppGrpPmtStatus(@RequestBody ApplicationGroupDto applicationGroupDto);
+    @GetMapping(value = "/hcsa-app-common/app-grp-appNo/{appNo}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationGroupDto> getAppGrpByAppNo(@PathVariable("appNo") String appNo);
 }
