@@ -103,8 +103,11 @@ public class AppealDelegator {
     public void submit(BaseProcessClass bpc){
         log.info("start**************submit************");
         String s = appealService.submitData(bpc.request);
-        String appeal_ack001 = MessageUtil.getMessageDesc("APPEAL_ACK001");
-        String substring = appeal_ack001.substring(0, appeal_ack001.indexOf("<"));
+        //wenkang
+        String substring = MessageUtil.replaceMessage("APPEAL_ACK001",s, "Application No");
+        log.info(StringUtil.changeForLog("substring : " + substring));
+        substring = substring.substring(0,substring.lastIndexOf(s));
+        log.info(StringUtil.changeForLog("substring substring : " + substring));
         bpc.request.setAttribute("substring",substring);
         bpc.request.setAttribute("newApplicationNo",s);
         log.info("end**************submit************");
