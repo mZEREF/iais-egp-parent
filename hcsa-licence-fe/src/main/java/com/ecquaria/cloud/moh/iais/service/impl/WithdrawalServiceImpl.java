@@ -164,7 +164,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())
                         || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())){
                     msgInfoMap.put("paymentStatus","0");
-                    msgInfoMap.put("returnMount",applicationDtoList2.get(0).getReturnFee());
+                    if (applicationDtoList2 != null ){
+                        msgInfoMap.put("returnMount",applicationDtoList2.get(0).getReturnFee());
+                    }
                 }else{
                     msgInfoMap.put("paymentStatus","1");
                 }
