@@ -76,10 +76,8 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:row id="selectSearchChkMsg" style="display: none">
-                                            <div class="col-sm-9">
-                                                <p style="color:#ff0000;">
-                                                    Please select one option
-                                                </p>
+                                            <div class="row" height="1" style="color:#ff0000; padding-left: 20px" id="selectSearchChkMsg">
+                                                <iais:message key="OEN_ERR004" escape="flase"></iais:message>
                                             </div>
                                         </iais:row>
                                         <iais:action style="text-align:right;">
