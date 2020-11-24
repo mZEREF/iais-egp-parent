@@ -1190,13 +1190,13 @@ public class InsRepServiceImpl implements InsRepService {
                 }
             }
             taskDto.setUserId(userId);
-            taskDto.setTaskKey(TaskConsts.TASK_TYPE_INSPECTION);
+            taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
         } else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_COMMON.equals(schemeType)) {
             taskDto.setUserId(null);
-            taskDto.setTaskKey(TaskConsts.TASK_TYPE_INSPECTION);
+            taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
         }else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ASSIGN.equals(schemeType)) {
             taskDto.setUserId(null);
-            taskDto.setTaskKey(TaskConsts.TASK_TYPE_INSPECTION_SUPER);
+            taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION_SUPER);
         }
         taskDto.setId(null);
         taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
