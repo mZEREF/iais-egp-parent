@@ -31,7 +31,6 @@
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="crud_action_deactivate" value="">
-        <iais:pagination param="feAdminSearchParam" result="feAdmin"/>
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -51,7 +50,7 @@
                             </thead>
                             <tbody>
                             <c:choose>
-                                <c:when test="${empty feAdmin.rows}">
+                                <c:when test="${empty feAdmin}">
                                     <tr>
                                         <td colspan="12">
                                             <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
@@ -59,7 +58,7 @@
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
-                                    <c:forEach var="item"  items="${feAdmin.rows}" varStatus="status">
+                                    <c:forEach var="item"  items="${feAdmin}" varStatus="status">
                                         <tr style="display: table-row;">
                                             <%--<td>--%>
                                                 <%--<p><c:out  value="${(status.index + 1) + (feAdminSearchParam.pageNo - 1) * feAdminSearchParam.pageSize}"/></p>--%>

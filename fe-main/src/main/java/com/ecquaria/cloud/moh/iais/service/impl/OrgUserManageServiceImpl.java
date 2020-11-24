@@ -387,7 +387,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
           licenseeDto.setBuildingName(myInfoDto.getBuildingName());
           licenseeDto.setStreetName(myInfoDto.getStreetName());
       }
+      //fe user
        editUserAccount(feUserDto);
+      //egpcloud
        updateEgpUser(feUserDto);
 
         //update be user

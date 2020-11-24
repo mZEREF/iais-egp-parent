@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -73,7 +74,23 @@ public class FeAdminManageDelegate {
             searchParam.addFilter("orgid",organizationId,true);
             QueryHelp.setMainSql("interInboxQuery", "feUserList",searchParam);
             SearchResult<FeUserQueryDto> feAdminQueryDtoSearchResult = orgUserManageService.getFeUserList(searchParam);
+            Map<String, FeUserQueryDto> feMap = IaisCommonUtils.genNewHashMap();
             for (FeUserQueryDto item:feAdminQueryDtoSearchResult.getRows()
+            ) {
+                if(feMap.get(item.getId()) != null){
+                    if(RoleConsts.USER_ROLE_ORG_ADMIN.equals(feMap.get(item.getId()).getRole()) && RoleConsts.USER_ROLE_ORG_ADMIN.equals(item.getRole())){
+                        feMap.get(item.getId()).setRole(RoleConsts.USER_ROLE_ORG_ADMIN);
+                    }
+                }else{
+                    feMap.put(item.getId(),item);
+                }
+            }
+            List<FeUserQueryDto> feUserQueryDtoList = IaisCommonUtils.genNewArrayList();
+            for (Map.Entry<String,FeUserQueryDto> entry:feMap.entrySet()
+                 ) {
+                feUserQueryDtoList.add(entry.getValue());
+            }
+            for (FeUserQueryDto item:feUserQueryDtoList
             ) {
                 item.setSalutation(MasterCodeUtil.getCodeDesc(item.getSalutation()));
                 item.setIdType(MasterCodeUtil.getCodeDesc(item.getIdType()));
@@ -85,7 +102,7 @@ public class FeAdminManageDelegate {
                 }
             }
             CrudHelper.doPaging(searchParam,bpc.request);
-            ParamUtil.setRequestAttr(bpc.request, "feAdmin",feAdminQueryDtoSearchResult);
+            ParamUtil.setRequestAttr(bpc.request, "feAdmin",feUserQueryDtoList);
             ParamUtil.setRequestAttr(bpc.request, "feAdminSearchParam",searchParam);
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.TRUE);
         }else{
