@@ -7,10 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDraftDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -248,6 +245,17 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public RecallApplicationDto recallApplication(RecallApplicationDto recallApplicationDto) {
         boolean result = false;
+        ApplicationDto applicationDto = appInboxClient.getApplicarionById(recallApplicationDto.getAppId()).getEntity();
+        if (applicationDto != null){
+            ApplicationGroupDto applicationGroupDto = appInboxClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
+            if (ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(applicationGroupDto.getStatus())){
+                result = true;
+                recallApplicationDto.setResult(result);
+                recallApplicationDto.setMessage("RECALLMSG002");
+                appInboxClient.updateFeAppStatus(recallApplicationDto.getAppId(),ApplicationConsts.APPLICATION_STATUS_RECALLED);
+                return recallApplicationDto;
+            }
+        }
         List<String> refNoList = IaisCommonUtils.genNewArrayList();
         String appId = recallApplicationDto.getAppId();
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = appInboxClient.listAppPremisesCorrelation(appId).getEntity();

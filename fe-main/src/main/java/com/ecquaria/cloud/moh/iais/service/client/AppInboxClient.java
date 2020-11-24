@@ -4,12 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.QueryHelperResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDraftDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -104,6 +99,9 @@ public interface AppInboxClient {
 
     @GetMapping(value = "/iais-application/doQuery",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<QueryHelperResultDto> doQuery(@RequestParam("sql") String sql);
+
+    @GetMapping(value = "/iais-application/application/grp/{groupId}")
+    FeignResponseEntity<ApplicationGroupDto> getApplicationGroup(@PathVariable(name = "groupId")String groupId);
 
     @GetMapping(value = "/iais-application/applicationdto-id/{appId}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
