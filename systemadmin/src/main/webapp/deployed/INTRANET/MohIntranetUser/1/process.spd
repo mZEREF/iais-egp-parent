@@ -407,6 +407,9 @@
   <SynchronousLink destinationName="/Steps/InvokeStep/Step2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/exportUserRole" style="rectanular">
    <position>{(880,150)(1040,150)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/importUserRoleSuccessPage" style="rectanular">
+   <position>{(960,80)(1181,80)(580,640)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/PrepareCreate" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="200" y="550">

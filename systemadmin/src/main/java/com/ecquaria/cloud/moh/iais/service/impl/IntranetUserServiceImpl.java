@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -214,71 +213,88 @@ public class IntranetUserServiceImpl implements IntranetUserService {
             fileErrorMap.put(errorKey, MessageUtil.replaceMessage("GENERAL_ERR0018", "XML", "fileType"));
             return fileErrorMap;
         }
-        //validate data
-        SAXReader saxReader = new SAXReader();
-        Document document = saxReader.read(xmlFile);
-        //root
-        Element root = document.getRootElement();
-        //ele
-        List list = root.elements();
-        for (int i = 1; i <= list.size(); i++) {
-            try {
-                boolean errorData = true;
-                Element element = (Element) list.get(i - 1);
-                String userId = element.element("userId").getText();
-                String roleId = element.element("roleId").getText();
-                String workingGroupId = element.element("workingGroupId").getText();
-                if (StringUtil.isEmpty(userId)) {
-                    errorData = false;
-                    fileErrorMap.put(errorUserIdKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "User ID", "field"));
-                } else {
-                    OrgUserDto oldOrgUserDto = findIntranetUserByUserId(userId);
-                    if (oldOrgUserDto == null) {
+        List list = IaisCommonUtils.genNewArrayList();
+        try {
+            //validate data
+            SAXReader saxReader = new SAXReader();
+            Document document = saxReader.read(xmlFile);
+            //root
+            Element root = document.getRootElement();
+            //ele
+            list = root.elements();
+        }catch (Exception e){
+            fileErrorMap.put(errorKey, MessageUtil.dateIntoMessage("USER_ERR018"));
+            return fileErrorMap;
+        }
+        if(!IaisCommonUtils.isEmpty(list)){
+            for (int i = 1; i <= list.size(); i++) {
+                String userId = null;
+                String roleId = null;
+                String workingGroupId = null;
+                try {
+                    boolean errorData = true;
+                    Element element = (Element) list.get(i - 1);
+                    userId = element.element("userId").getText();
+                    roleId = element.element("roleId").getText();
+                    workingGroupId = element.element("workingGroupId").getText();
+                    if (StringUtil.isEmpty(userId)) {
                         errorData = false;
-                        fileErrorMap.put(errorUserIdKey + i, "USER_ERR012");
+                        fileErrorMap.put(errorUserIdKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "User ID", "field"));
+                    } else {
+                        OrgUserDto oldOrgUserDto = findIntranetUserByUserId(userId);
+                        if (oldOrgUserDto == null) {
+                            errorData = false;
+                            fileErrorMap.put(errorUserIdKey + i, "USER_ERR012");
+                        }
                     }
-                }
-                if (StringUtil.isEmpty(roleId)) {
-                    errorData = false;
-                    fileErrorMap.put(errorRoleKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Role ID", "field"));
-                } else {
-                    List<Role> rolesByDomain = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);//NOSONAR
-                    //egp contains role
-                    fileErrorMap = containsRoleVal(rolesByDomain, roleId, fileErrorMap, errorRoleKey + i, errorData);//NOSONAR
-                }
-                if (StringUtil.isEmpty(workingGroupId)) {
-                    errorData = false;
-                    fileErrorMap.put(errorworkGrpIdKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "WorkingGroup ID", "field"));
-                } else {
-                    List<Role> rolesByDomain = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);//NOSONAR
-                    //egp contains role
-                    fileErrorMap = containsRoleVal(rolesByDomain, roleId, fileErrorMap, errorworkGrpIdKey + i, errorData);//NOSONAR
-                }
-                if (!StringUtil.isEmpty(userId) && !StringUtil.isEmpty(roleId)) {
-                    OrgUserDto oldOrgUserDto = findIntranetUserByUserId(userId);
-                    if (oldOrgUserDto != null) {
-                        List<OrgUserRoleDto> orgUserRoleDtos = retrieveRolesByuserAccId(oldOrgUserDto.getId());
-                        if (!IaisCommonUtils.isEmpty(orgUserRoleDtos)) {
-                            for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
-                                if (orgUserRoleDto != null) {
-                                    if (roleId.equals(orgUserRoleDto.getRoleName())) {
-                                        errorData = false;
-                                        fileErrorMap.put(errorUserIdKey + i, "USER_ERR011");
+                    if (StringUtil.isEmpty(roleId)) {
+                        errorData = false;
+                        fileErrorMap.put(errorRoleKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Role ID", "field"));
+                    } else {
+                        List<Role> rolesByDomain = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);//NOSONAR
+                        //egp contains role
+                        fileErrorMap = containsRoleVal(rolesByDomain, roleId, fileErrorMap, errorRoleKey + i, errorData);//NOSONAR
+                    }
+                    if (StringUtil.isEmpty(workingGroupId)) {
+                        errorData = false;
+                        fileErrorMap.put(errorworkGrpIdKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "WorkingGroup ID", "field"));
+                    } else {
+                        List<WorkingGroupDto> workingGroups = getWorkingGroups();//NOSONAR
+                        //egp contains role
+                        fileErrorMap = containsGrpIdVal(workingGroups, workingGroupId, fileErrorMap, errorworkGrpIdKey + i);//NOSONAR
+                    }
+                    if (!StringUtil.isEmpty(userId) && !StringUtil.isEmpty(roleId)) {
+                        OrgUserDto oldOrgUserDto = findIntranetUserByUserId(userId);
+                        if (oldOrgUserDto != null) {
+                            List<OrgUserRoleDto> orgUserRoleDtos = retrieveRolesByuserAccId(oldOrgUserDto.getId());
+                            if (!IaisCommonUtils.isEmpty(orgUserRoleDtos)) {
+                                for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                                    if (orgUserRoleDto != null) {
+                                        if (roleId.equals(orgUserRoleDto.getRoleName())) {
+                                            errorData = false;
+                                            fileErrorMap.put(errorUserIdKey + i, "USER_ERR011");
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                if (!errorData) {
+                    if (!errorData) {
+                        EgpUserRoleDto egpUserRoleDto = new EgpUserRoleDto();
+                        egpUserRoleDto.setUserId(userId);
+                        egpUserRoleDto.setRoleId(roleId);
+                        egpUserRoleDto.setWorkGroupId(workingGroupId);
+                        egpUserRoleDtos.add(egpUserRoleDto);
+                    }
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
                     EgpUserRoleDto egpUserRoleDto = new EgpUserRoleDto();
                     egpUserRoleDto.setUserId(userId);
                     egpUserRoleDto.setRoleId(roleId);
+                    egpUserRoleDto.setWorkGroupId(workingGroupId);
                     egpUserRoleDtos.add(egpUserRoleDto);
+                    continue;
                 }
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-                continue;
             }
         }
         return fileErrorMap;
@@ -293,6 +309,20 @@ public class IntranetUserServiceImpl implements IntranetUserService {
             }
             if (!systemRoleId.contains(roleId)) {
                 fileErrorMap.put(errorKey, "USER_ERR013");
+            }
+        }
+        return fileErrorMap;
+    }
+
+    private Map<String, String> containsGrpIdVal(List<WorkingGroupDto> workingGroupDtos, String groupId, Map<String, String> fileErrorMap, String errorKey) {
+        if (!IaisCommonUtils.isEmpty(workingGroupDtos)) {//NOSONAR
+            List<String> groupIds = IaisCommonUtils.genNewArrayList();
+            for (WorkingGroupDto workingGroupDto : workingGroupDtos) {
+                String id = workingGroupDto.getId();
+                groupIds.add(id);
+            }
+            if (!groupIds.contains(groupId)) {
+                fileErrorMap.put(errorKey, "USER_ERR017");
             }
         }
         return fileErrorMap;
@@ -338,9 +368,9 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                 userGroupCorrelationDto.setUserId(orgUserDto.getId());
                 userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 userGroupCorrelationDto.setGroupId(workingGroupId);
-                if(roleId.contains("LEAD")){
+                if (roleId.contains("LEAD")) {
                     userGroupCorrelationDto.setIsLeadForGroup(1);
-                }else {
+                } else {
                     userGroupCorrelationDto.setIsLeadForGroup(0);
                 }
                 userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
@@ -350,30 +380,33 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                 continue;
             }
         }
-        if(!IaisCommonUtils.isEmpty(orgUserRoleDtos)){
+        if (!IaisCommonUtils.isEmpty(orgUserRoleDtos)) {
             assignRole(orgUserRoleDtos);
             createEgpRoles(egpUserRoleDtos);
-        }
-        if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
-            Iterator<UserGroupCorrelationDto> iterator = userGroupCorrelationDtos.iterator();
-            List<String> groupIds = IaisCommonUtils.genNewArrayList();
-            while (iterator.hasNext()){
-                UserGroupCorrelationDto next = iterator.next();
-                String groupId = next.getGroupId();
-                if(groupIds.contains(groupId)){
-                    iterator.remove();
-                }else {
-                    groupIds.add(groupId);
-                }
-            }
-            for(UserGroupCorrelationDto userGroupCorrelationDto : userGroupCorrelationDtos){
-                String groupId = userGroupCorrelationDto.getGroupId();
-                if(groupIds.contains(groupId)){
-                    userGroupCorrelationDto.setIsLeadForGroup(1);
-                }
-            }
             addUserGroupId(userGroupCorrelationDtos);
         }
+
+//        if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
+//            Iterator<UserGroupCorrelationDto> iterator = userGroupCorrelationDtos.iterator();
+//            List<String> groupIds = IaisCommonUtils.genNewArrayList();
+//            while (iterator.hasNext()) {
+//                UserGroupCorrelationDto next = iterator.next();
+//                String groupId = next.getGroupId();
+//                Integer isLeadForGroup = next.getIsLeadForGroup();
+//                if (groupIds.contains(groupId)) {
+//                    iterator.remove();
+//                } else {
+//                    groupIds.add(groupId);
+//                }
+//            }
+//            for (UserGroupCorrelationDto userGroupCorrelationDto : userGroupCorrelationDtos) {
+//                String groupId = userGroupCorrelationDto.getGroupId();
+//                if (groupIds.contains(groupId)) {
+//                    userGroupCorrelationDto.setIsLeadForGroup(1);
+//                }
+//            }
+//
+//        }
         return egpUserRoleDtos;
     }
 }

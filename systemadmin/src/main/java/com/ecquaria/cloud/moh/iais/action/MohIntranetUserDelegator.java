@@ -758,7 +758,7 @@ public class MohIntranetUserDelegator {
             clientUser = intranetUserService.getUserByIdentifier(userId, AppConsts.HALP_EGP_DOMAIN);
             orgUserDto = intranetUserService.findIntranetUserByUserId(userId);
             if (clientUser == null || orgUserDto == null) {
-                errorMap.put("userId", "This user is not exist.");
+                errorMap.put("userId", "USER_ERR012");
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
@@ -767,7 +767,7 @@ public class MohIntranetUserDelegator {
                 String status = orgUserDto.getStatus();
                 if (IntranetUserConstant.DEACTIVATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status)) {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "This user is already in Deactivated status.");
+                    errorMap.put("userId", "USER_ERR004");
                     WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
@@ -781,7 +781,7 @@ public class MohIntranetUserDelegator {
                     return;
                 } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "This user is already in Active status.");
+                    errorMap.put("userId", "USER_ERR005");
                     WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
@@ -795,7 +795,7 @@ public class MohIntranetUserDelegator {
                     return;
                 } else if (IntranetUserConstant.TERMINATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "This user is already in Terminated status.");
+                    errorMap.put("userId", "USER_ERR0014");
                     WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
@@ -809,7 +809,7 @@ public class MohIntranetUserDelegator {
                     return;
                 } else if (IntranetUserConstant.UNLOCK.equals(actionType) && IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "This user is already in Active status.");
+                    errorMap.put("userId", "USER_ERR005");
                     WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
@@ -823,7 +823,7 @@ public class MohIntranetUserDelegator {
                     return;
                 } else if (IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "Terminated users cannot be reactivated.");
+                    errorMap.put("userId", "USER_ERR016");
                     WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;

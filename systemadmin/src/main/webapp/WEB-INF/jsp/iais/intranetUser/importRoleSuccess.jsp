@@ -31,6 +31,7 @@
                     <th style="width:10%;">No.</th>
                     <th style="width:30%;">User ID</th>
                     <th style="width:30%;">Role ID</th>
+                    <th style="width:30%;">Group ID</th>
                     <th style="width:30%;">Status</th>
                   </tr>
                 </thead>
@@ -51,6 +52,10 @@
                             <br><span class="error-msg" name="iaisErrorMsg" id="error_userRoleUploadRole${status.count}"></span>
                           </td>
                           <td>
+                            <p><c:out value="${user.workGroupId}"></c:out></p>
+                            <br><span class="error-msg" name="iaisErrorMsg" id="error_userRoleUploadWorkGroupId${status.count}"></span>
+                          </td>
+                          <td>
                             <p><c:out value="FAIL"></c:out></p>
                           </td>
                         </tr>
@@ -67,6 +72,9 @@
                           </td>
                           <td>
                             <p><c:out value="${user.roleId}"></c:out></p>
+                          </td>
+                          <td>
+                            <p><c:out value="${user.workGroupId}"></c:out></p>
                           </td>
                           <td>
                             <p><c:out value="SUCCESS"></c:out></p>
@@ -90,6 +98,9 @@
         </div>
       </div>
     </div>
+    <iais:action>
+      <a style="margin-left: 16%" class="back" onclick="submit()"><em class="fa fa-angle-left"></em> Back</a>
+    </iais:action>
   </form>
 </div>
 
@@ -103,7 +114,6 @@
 
 <script type="text/javascript">
   function submit(action) {
-    $("[name='crud_action_type']").val(action);
     $("#mainForm").submit();
   }
 </script>

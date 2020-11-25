@@ -264,7 +264,7 @@ public class CessationEffectiveDateBatchjob {
                     }
                 }
                 emailMap.put("ApplicantName", displayName);
-                emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.LICENCE_STATUS_CEASED}).get(0).getText());
+                emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_CESSATION}).get(0).getText());
                 emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
                 emailMap.put("ApplicationNumber", appNos.toString());
                 emailMap.put("CessationDate", DateFormatUtils.format(date,"dd/MM/yyyy"));
@@ -280,7 +280,7 @@ public class CessationEffectiveDateBatchjob {
                 emailParam.setRefId(licId);
                 Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                 InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE);
-                map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.LICENCE_STATUS_CEASED}).get(0).getText());
+                map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_CESSATION}).get(0).getText());
                 map.put("ApplicationNumber", appNos.toString());
                 String subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
                 emailParam.setSubject(subject);
