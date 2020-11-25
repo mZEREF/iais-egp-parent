@@ -1291,7 +1291,8 @@ public class HcsaApplicationDelegator {
 /*
                     sendAppealMessage(appealingFor,licenseeId,maskParams,serviceId,appealType,applicationDto.getApplicationNo());
 */
-                    applicationService.appealRfiAndEmail(applicationViewDto,applicationDto,appealingFor,appealType,maskParams);
+                    String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ MessageConstants.MESSAGE_CALL_BACK_URL_Appeal+appealingFor+"&type="+appealType;
+                    applicationService.appealRfiAndEmail(applicationViewDto,applicationDto,maskParams,url);
                 }
             }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
                 HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
@@ -1305,7 +1306,8 @@ public class HcsaApplicationDelegator {
             }else if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
                 HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                 maskParams.put("rfiWithdrawAppNo",applicationNo);
-                sendWithdrawalMessage(applicationNo,maskParams,serviceId,licenseeId);
+                String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ InboxConst.URL_LICENCE_WEB_MODULE+"MohWithdrawalApplication?rfiWithdrawAppNo=" + applicationNo;
+                applicationService.appealRfiAndEmail(applicationViewDto,applicationDto,maskParams,url);
             }
             applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, loginContext, externalRemarks);
         }catch (Exception e){
@@ -1427,18 +1429,6 @@ public class HcsaApplicationDelegator {
             return;
         }
         String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ InboxConst.URL_LICENCE_WEB_MODULE+"MohCessationApplication?appId=" + appId + "&premiseId=" + appGrpPremId;
-        String subject = MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION + appNo;
-        String mesContext = "Please click the link <a href='" + url + "'>here</a> for submission.";
-        sendMessage(subject,licenseeId,mesContext,maskParams,serviceId,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
-    }
-
-    private void sendWithdrawalMessage(String appNo,HashMap<String, String> maskParams,String serviceId,String licenseeId){
-        if(StringUtil.isEmpty(licenseeId)
-                || StringUtil.isEmpty(serviceId)
-                || StringUtil.isEmpty(appNo)){
-            return;
-        }
-        String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ InboxConst.URL_LICENCE_WEB_MODULE+"MohWithdrawalApplication?rfiWithdrawAppNo=" + appNo;
         String subject = MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION + appNo;
         String mesContext = "Please click the link <a href='" + url + "'>here</a> for submission.";
         sendMessage(subject,licenseeId,mesContext,maskParams,serviceId,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);

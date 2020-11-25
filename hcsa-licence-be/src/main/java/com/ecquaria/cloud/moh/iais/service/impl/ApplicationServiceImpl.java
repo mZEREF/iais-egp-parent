@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -497,12 +498,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public void appealRfiAndEmail(ApplicationViewDto applicationViewDto,ApplicationDto applicationDto,String appealingFor,String appealType, HashMap<String, String> maskParams)throws Exception{
+    public void appealRfiAndEmail(ApplicationViewDto applicationViewDto,ApplicationDto applicationDto,HashMap<String, String> maskParams,String linkURL)throws Exception{
         MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI).getEntity();
         Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
         String applicationNo = applicationDto.getApplicationNo();
         String applicantName = "";
-        String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ MessageConstants.MESSAGE_CALL_BACK_URL_Appeal+appealingFor+"&type="+appealType;
         int rfiDueDate = systemParamConfig.getRfiDueDate();
         LocalDate tatTime = LocalDate.now().plusDays(rfiDueDate);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern(Formatter.DATE);
@@ -520,7 +520,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         map.put("ApplicationNumber",StringUtil.viewHtml(applicationNo));
         map.put("ApplicationDate",Formatter.formatDateTime( new Date(), Formatter.DATE));
         map.put("Remarks","");
-        map.put("systemLink",url);
+        map.put("systemLink",linkURL);
         map.put("TATtime",tatTimeStr);
         map.put("email",systemParamConfig.getSystemAddressOne());
         map.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
@@ -528,8 +528,10 @@ public class ApplicationServiceImpl implements ApplicationService {
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
         templateMessageByContent = MessageTemplateUtil.replaceNum(templateMessageByContent);
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
-
-        String subject = "MOH IAIS - Request for information for your "+ MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()) + ", " + StringUtil.viewHtml(applicationNo);
+        Map<String, Object> subjectMap = IaisCommonUtils.genNewHashMap();
+        map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        map.put("ApplicationNumber", applicationDto.getApplicationNo());
+        String subject = MsgUtil.getTemplateMessageByContent(autoEntity.getTemplateName(),subjectMap);
         if(hcsaServiceDto!=null ){
             InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(subject,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
                     messageNo,hcsaServiceDto.getSvcCode()+"@",templateMessageByContent, applicationViewDto.getApplicationGroupDto().getLicenseeId(),IaisEGPHelper.getCurrentAuditTrailDto());
@@ -566,6 +568,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             log.info(StringUtil.changeForLog("send rfi application sms end"));
         }
     }
+
     @Override
     public void applicationRfiAndEmail(ApplicationViewDto applicationViewDto, ApplicationDto applicationDto,
                                        LoginContext loginContext, String externalRemarks) throws IOException, TemplateException {
