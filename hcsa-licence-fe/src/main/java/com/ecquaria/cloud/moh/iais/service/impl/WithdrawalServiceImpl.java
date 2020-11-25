@@ -157,6 +157,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 msgInfoMap.put("ApplicationNumber", withdrawnDto.getApplicationNo());
                 msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
                 OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
+                for(ApplicationDto applicationDto1 : applicationDtoList){
+                    applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                }
                 List<ApplicationDto> applicationDtoList2 = hcsaConfigFeClient.returnFee(applicationDtoList).getEntity();
                 if (!IaisCommonUtils.isEmpty(applicationDtoList2)){
                     fee = applicationDtoList2.get(0).getReturnFee();

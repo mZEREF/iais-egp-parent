@@ -189,16 +189,11 @@ public class InsRepServiceImpl implements InsRepService {
             inspectionReportDto.setRiskLevel(riskLevel);
             applicationDto.setRiskScore(riskScore);
         }
-        List<HcsaSvcSubtypeOrSubsumedDto> subsumedDtos = hcsaConfigClient.listSubCorrelationFooReport(serviceId).getEntity();
-        List<String> subsumedServices = IaisCommonUtils.genNewArrayList();
-        if (subsumedDtos != null && !subsumedDtos.isEmpty()) {
-            for (HcsaSvcSubtypeOrSubsumedDto subsumedDto : subsumedDtos) {
-                subsumedServices.add(subsumedDto.getName());
-            }
-        } else {
-            subsumedServices.add("-");
+        List<String> serviceSubTypeName = getServiceSubTypeName(appPremisesCorrelationId);
+        if(IaisCommonUtils.isEmpty(serviceSubTypeName)){
+            serviceSubTypeName.add("-");
         }
-        inspectionReportDto.setSubsumedServices(subsumedServices);
+        inspectionReportDto.setSubsumedServices(serviceSubTypeName);
         //Nc
         List<ReportNcRegulationDto> listReportNcRegulationDto = IaisCommonUtils.genNewArrayList();
         List<ReportNcRectifiedDto> listReportNcRectifiedDto = IaisCommonUtils.genNewArrayList();
@@ -340,6 +335,25 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setCurrentStatus(status);
         return inspectionReportDto;
     }
+
+    private List<String> getServiceSubTypeName(String correlationId){
+        List<String> serviceSubtypeName = IaisCommonUtils.genNewArrayList();
+        List<AppSvcPremisesScopeDto> scopeList = insRepClient.getAppSvcPremisesScopeListByCorreId(correlationId).getEntity();
+        for (AppSvcPremisesScopeDto premise : scopeList){
+            boolean isSubService = premise.isSubsumedType();
+            if (!isSubService){
+                String subTypeId = premise.getScopeName();
+                HcsaServiceSubTypeDto subType = hcsaConfigClient.getHcsaServiceSubTypeById(subTypeId).getEntity();
+                String subTypeName = subType.getSubtypeName();
+                serviceSubtypeName.add(subTypeName);
+            }
+        }
+        return serviceSubtypeName;
+    }
+
+
+
+
 
     @Override
     public void saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
