@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -103,10 +104,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
-
-    private static final String TEMPLATE_WITHDRAWAL_EMAIL         = "0DC58FEB-CF98-EA11-BE7A-000C29D29DB0";
-    private static final String TEMPLATE_WITHDRAWAL_SMS           = "0A7AA342-B01D-EB11-8B7C-000C29FD17F9";
-    private static final String TEMPLATE_WITHDRAWAL_MESSAGE       = "FF312463-B01D-EB11-8B7C-000C29FD17F9";
 
     @Override
     public void saveWithdrawn(List<WithdrawnDto> withdrawnDtoList) {
@@ -279,12 +276,12 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     private EmailParam sendSms(Map<String, Object> msgInfoMap, ApplicationDto applicationDto) throws IOException, TemplateException {
         log.info(StringUtil.changeForLog("***************** send withdraw application sms  *****************"));
         EmailParam emailParam = new EmailParam();
-        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(TEMPLATE_WITHDRAWAL_SMS).getEntity();
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_SMS).getEntity();
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
         map.put("ApplicationNumber", applicationDto.getApplicationNo());
         String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
-        emailParam.setTemplateId(TEMPLATE_WITHDRAWAL_SMS);
+        emailParam.setTemplateId(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_SMS);
         emailParam.setTemplateContent(msgInfoMap);
         emailParam.setQueryCode(applicationDto.getApplicationNo());
         emailParam.setReqRefNum(applicationDto.getApplicationNo());
@@ -297,7 +294,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     private void sendInboxMessage(ApplicationDto applicationDto,String serviceId,Map<String, Object> map) throws IOException, TemplateException {
         log.info(StringUtil.changeForLog("***************** send withdraw application message  *****************"));
         EmailParam messageParam = new EmailParam();
-        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(TEMPLATE_WITHDRAWAL_MESSAGE).getEntity();
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_MESSAGE).getEntity();
         Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
         subMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
         subMap.put("ApplicationNumber", applicationDto.getApplicationNo());
@@ -307,7 +304,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         if(serviceDto != null){
             svcCodeList.add(serviceDto.getSvcCode());
         }
-        messageParam.setTemplateId(TEMPLATE_WITHDRAWAL_MESSAGE);
+        messageParam.setTemplateId(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_MESSAGE);
         messageParam.setTemplateContent(map);
         messageParam.setQueryCode(applicationDto.getApplicationNo());
         messageParam.setReqRefNum(applicationDto.getApplicationNo());
@@ -320,13 +317,13 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
     private EmailParam sendNotification(Map<String, Object> msgInfoMap, ApplicationDto applicationDto) throws IOException, TemplateException {
         log.info(StringUtil.changeForLog("***************** send withdraw application Notification  *****************"));
-        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(TEMPLATE_WITHDRAWAL_EMAIL).getEntity();
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_EMAIL).getEntity();
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
         map.put("ApplicationNumber", applicationDto.getApplicationNo());
         String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
         EmailParam emailParam = new EmailParam();
-        emailParam.setTemplateId(TEMPLATE_WITHDRAWAL_EMAIL);
+        emailParam.setTemplateId(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_EMAIL);
         emailParam.setTemplateContent(msgInfoMap);
         emailParam.setQueryCode(applicationDto.getApplicationNo());
         emailParam.setReqRefNum(applicationDto.getApplicationNo());
