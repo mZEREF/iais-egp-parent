@@ -546,15 +546,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             for(File f:files){
                 if(f.isFile()){
                     try {
-                        StringBuilder fileName=new StringBuilder();
-                        String[] split = f.getName().split("@");
-                        for(int i=1;i<split.length;i++){
-                            fileName.append(split[i]);
-                        }
-
                         FileRepoDto fileRepoDto = new FileRepoDto();
-
-                        fileRepoDto.setId(split[0]);
+                        fileRepoDto.setId(f.getName());
                         fileRepoDto.setAuditTrailDto(intranet);
                         fileRepoDto.setFileName(f.getName());
                         fileRepoDto.setRelativePath(AppServicesConsts.COMPRESS+File.separator+fileNames+
