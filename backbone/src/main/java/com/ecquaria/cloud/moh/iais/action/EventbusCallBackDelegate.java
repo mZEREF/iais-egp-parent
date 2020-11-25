@@ -1,27 +1,27 @@
 package com.ecquaria.cloud.moh.iais.action;
 
-import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.submission.client.model.ServiceStatus;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.kafka.GlobalConstants;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * EventbusCallBackDelegate
@@ -30,24 +30,27 @@ import java.util.Map;
  * @date 2020/3/3 17:19
  */
 @Slf4j
-@Delegator("eventbusCallBackDelegate")
+@RestController
+@RequestMapping(value = "halp-event-callback")
 public class EventbusCallBackDelegate {
     @Autowired
     private SubmissionClient submissionClient;
 
-
-    public void callback(BaseProcessClass bpc) throws ClassNotFoundException,
+    @GetMapping
+    public ResponseEntity<String> callback(@RequestParam(name = "submissionId") String submissionId,
+                                           @RequestParam(name = "updateDate") String updateDate,
+                                           @RequestParam(name = "submissionStatus") String submissionStatus,
+                                           @RequestParam(name = "serviceStatus") String serviceStatus,
+                                           @RequestParam(name = "callbackType") String callbackType,
+                                           @RequestParam(name = "compensation") String compensation,
+                                           @RequestParam(name = "operation") String operation, @RequestParam(name = "token") String token,
+                                           @RequestParam(name = "service") String serviceName,
+                                           @RequestParam(name = "eventRefNo") String eventRefNum) throws ClassNotFoundException,
             NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         log.info("<=========== Eventbus Callback Start ===========>");
-        HttpServletRequest request = bpc.request;
-        String submissionId = ParamUtil.getString(request,"submissionId");
-        String operation = ParamUtil.getString(request, "operation");
         log.info(StringUtil.changeForLog("Submission Id ===========> " + submissionId));
-        String token = ParamUtil.getString(request, "token");
-        String serviceName = ParamUtil.getString(request, "service");
         log.info(StringUtil.changeForLog("service name ===========> " + serviceName));
         boolean isLeagal = IaisEGPHelper.verifyCallBackToken(submissionId, serviceName, token);
-        String eventRefNum = ParamUtil.getString(request, "eventRefNo");
         log.info("event Ref number ===========> {}", eventRefNum);
         if (!isLeagal) {
             throw new IaisRuntimeException("Visit without Token!!");
@@ -95,6 +98,8 @@ public class EventbusCallBackDelegate {
             }
         }
         log.info("<=========== Eventbus Callback Finish ===========>");
+
+        return ResponseEntity.ok("Success");
     }
 
     private void callbackMethod(String submissionId, String operation, String eventRefNum)
