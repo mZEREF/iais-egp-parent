@@ -150,6 +150,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             ApplicationGroupDto applicationGroupDto =  applicationFeClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
             String serviceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceId();
             String applicantName = "";
+            Double fee = 0.0;
             if (!StringUtil.isEmpty(serviceId)){
                 applicationDtoList.add(applicationDto);
                 Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
@@ -157,18 +158,21 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
                 OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
                 List<ApplicationDto> applicationDtoList2 = hcsaConfigFeClient.returnFee(applicationDtoList).getEntity();
+                if (!IaisCommonUtils.isEmpty(applicationDtoList2)){
+                    fee = applicationDtoList2.get(0).getReturnFee();
+                }
+                Integer isByGIRO = applicationGroupDto.getIsByGiro();
                 if (orgUserDto != null){
                     applicantName = orgUserDto.getDisplayName();
                 }
                 msgInfoMap.put("Applicant", applicantName);
-                if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())
-                        || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())){
+                if (isByGIRO == 1 && (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())
+                        || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType()))){
                     msgInfoMap.put("paymentStatus","0");
-                    if (applicationDtoList2 != null ){
-                        msgInfoMap.put("returnMount",applicationDtoList2.get(0).getReturnFee());
-                    }
+                    msgInfoMap.put("returnMount",fee);
                 }else{
                     msgInfoMap.put("paymentStatus","1");
+                    msgInfoMap.put("returnMount",fee);
                 }
                 msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
                 msgInfoMap.put("emailAddress",systemAddressOne);
