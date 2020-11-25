@@ -43,7 +43,8 @@
             WHERE wapp.status in ('APST001','APST003','APST004','APST007','APST010','APST011','APST012','APST013','APST014','APST021',
                                     'APST023','APST027','APST028','APST029','APST031','APST032','APST033','APST034','APST039','APST040',
                                     'APST041','APST048','APST049','APST061','APST062','APST063','APST064','APST065','APST066','APST067',
-                                    'APST068','APST069','APST070','APST071','APST077','APST090','APST091','APST092','APST037','APST019','APST020','APST022')
+                                    'APST068','APST069','APST070','APST071','APST077','APST090','APST091','APST092','APST037','APST019',
+                                    'APST020','APST022','APST079','APST080','APST081')
             <#if licenseeId??> AND wapp.licensee_id = :licenseeId</#if>
             <#if createDtStart??> AND wapp.created_dt > :createDtStart</#if>
         ]]>
