@@ -334,9 +334,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
             userClient.updateClientUser(clientUser);
             //delete egp role
-            if(!RoleConsts.USER_ROLE_ORG_ADMIN.equals(feUserDto.getUserRole())){
-                feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),RoleConsts.USER_ROLE_ORG_ADMIN);
-            }
+            feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),RoleConsts.USER_ROLE_ORG_ADMIN);
+            feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),RoleConsts.USER_ROLE_ORG_USER);
 
         }else{
             clientUser = MiscUtil.transferEntityDto(feUserDto, ClientUser.class);
@@ -347,7 +346,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             String salutation = feUserDto.getSalutation();
             clientUser.setSalutation(salutation);
             clientUser.setEmail(email);
-            clientUser.setDisplayName(feUserDto.getFirstName()+feUserDto.getLastName());
+            clientUser.setDisplayName(feUserDto.getDisplayName());
 
 
             clientUser.setPassword(pwd);
