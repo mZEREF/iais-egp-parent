@@ -461,7 +461,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     public void getGiroXmlFromSftpAndSaveXml() {
            try{
                //todo get sftp xmls to analyze
-               String fileName = "uploadGiro20201125_151434325.xml";
+               String fileName = "testGiro20201125_151434325.xml";
                if(SFTPUtil.download(ApplicationConsts.GIRO_DOWN_FILE_PATH,fileName,Config.get("sftp.downloadfilefolder"))){
                    String xml = FileUtil.getString(ApplicationConsts.GIRO_DOWN_FILE_PATH+fileName);
                    GiroXmlPaymentBackDto giroXmlPaymentBackDto = (GiroXmlPaymentBackDto) XmlBindUtil.convertToObject(GiroXmlPaymentBackDto.class,xml);
