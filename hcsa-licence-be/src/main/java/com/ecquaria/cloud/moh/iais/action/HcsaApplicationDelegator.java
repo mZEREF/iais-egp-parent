@@ -324,6 +324,10 @@ public class HcsaApplicationDelegator {
             String roleId = taskDto.getRoleId();
             String status = applicationViewDto.getApplicationDto().getStatus();
             boolean isAsoPso = RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId);
+            if(RoleConsts.USER_ROLE_BROADCAST.equals(roleId)){
+                boolean isBroadcastAsoPso =  (boolean) ParamUtil.getSessionAttr(bpc.request,"broadcastAsoPso");
+                isAsoPso = isAsoPso || isBroadcastAsoPso;
+            }
 //            String appPremCorreId=taskDto.getRefNo();
             String appPremCorreId = applicationViewDto.getNewAppPremisesCorrelationDto().getId();
             //save recommendation
