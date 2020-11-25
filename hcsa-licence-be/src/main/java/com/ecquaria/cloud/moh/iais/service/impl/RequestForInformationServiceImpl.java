@@ -497,7 +497,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             if(f.isFile()){
                 try {
                     StringBuilder fileName=new StringBuilder();
-                    String[] split = f.getName().split("@");
+                    String[] split = f.getName().split("emanelififrcohda");
                     for(int i=1;i<split.length;i++){
                         fileName.append(split[i]);
                     }

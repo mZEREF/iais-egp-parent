@@ -131,7 +131,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
             ) {
                 byte[] entity = fileRepositoryClient.getFileFormDataBase(doc.getFileRepoId()).getEntity();
                 File file = MiscUtil.generateFile(sharedPath + RequestForInformationConstants.FILE_NAME_RFI + File.separator + "files",
-                        doc.getFileRepoId() + "@" + doc.getDocName());
+                        doc.getFileRepoId() + "emanelififrcohda" + doc.getDocName());
                 try (OutputStream outputStream=Files.newOutputStream(file.toPath());){
                     outputStream.write(entity);
                 } catch (Exception e) {
