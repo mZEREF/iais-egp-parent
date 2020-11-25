@@ -187,6 +187,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,"isChooseInspection",Boolean.FALSE);
         ParamUtil.setSessionAttr(bpc.request,"chooseInspectionChecked","N");
         ParamUtil.setSessionAttr(bpc.request,"AppLastInsGroup",null);
+        ParamUtil.setSessionAttr(bpc.request,"appealRecommendationValueOnlyShow","");
         log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
 
         initData(bpc);
@@ -1051,10 +1052,9 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do reject end ...."));
     }
 
-    private void rejectSendNotification(ApplicationViewDto applicationViewDto){
+    private void rejectSendNotification(BaseProcessClass bpc,ApplicationViewDto applicationViewDto){
+        //send appeal email
         String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
-        String appGrpId = applicationViewDto.getApplicationDto().getAppGrpId();
-        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         Date date = new Date();
         String appDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
         //new application send email
@@ -1062,9 +1062,6 @@ public class HcsaApplicationDelegator {
         String MohName = AppConsts.MOH_AGENCY_NAME;
         String applicationType = applicationDto.getApplicationType();
         String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
-        String emailAddress = "ecquaria@ecquaria.com";
-        String msgId = "";
-        Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
         HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
         if(svcDto != null){
@@ -1077,7 +1074,7 @@ public class HcsaApplicationDelegator {
         }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
             //send email Appeal - Send SMS to licensee when appeal application is reject
             try {
-                sendAppealReject(applicationDto);
+                sendAppealReject(bpc,applicationDto,MohName);
             }catch (Exception e){
                 log.error(e.getMessage()+"error",e);
             }
@@ -1719,7 +1716,7 @@ public class HcsaApplicationDelegator {
         //send reject email
         if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)){
             try{
-                rejectSendNotification(applicationViewDto);
+                rejectSendNotification(bpc,applicationViewDto);
             }catch (Exception e){
                 log.error(StringUtil.changeForLog("send reject notification error"),e);
             }
@@ -2724,55 +2721,41 @@ public class HcsaApplicationDelegator {
     }
 
 
-    private  void  sendAppealReject(ApplicationDto applicationDto) throws IOException, TemplateException {
+    private  void  sendAppealReject(BaseProcessClass bpc,ApplicationDto applicationDto,String MohName) throws IOException, TemplateException {
         log.info("start send email sms and msg");
         log.info(StringUtil.changeForLog("appNo: " + applicationDto.getApplicationNo()));
         String applicantName = "";
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
         ApplicationGroupDto applicationGroupDto =  applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
         OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+        String appealNo = (String)ParamUtil.getSessionAttr(bpc.request, "appealNo");
         if(orgUserDto != null){
             applicantName = orgUserDto.getDisplayName();
         }
         List<AppPremiseMiscDto> premiseMiscDtoList = cessationClient.getAppPremiseMiscDtoListByAppId(applicationDto.getId()).getEntity();
-        String appType = "Licence";
+        String appealType = "Licence";
         if(premiseMiscDtoList != null){
             AppPremiseMiscDto premiseMiscDto = premiseMiscDtoList.get(0);
             String oldAppId = premiseMiscDto.getRelateRecId();
             ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
-            appType =  MasterCodeUtil.getCodeDesc(oldApplication.getApplicationType());
-        }
-        if(StringUtil.isEmpty(appType)){
-            appType = "Licence";
+            if(oldApplication != null){
+                appealType =  MasterCodeUtil.getCodeDesc(oldApplication.getApplicationType());
+            }
         }
 
         templateContent.put("ApplicantName", applicantName);
-        templateContent.put("ApplicationType",  appType);
-        templateContent.put("ApplicationNo", applicationDto.getApplicationNo());
+        templateContent.put("ApplicationType",  appealType);
+        templateContent.put("ApplicationNo", appealNo);
         templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date(),"dd/MM/yyyy"));
-
-        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
-
-        AppPremiseMiscDto premiseMiscDto = applicationClient.getAppPremisesMisc(appPremisesCorrelationDto.getId()).getEntity();
-        String reason = "";
-        if(premiseMiscDto != null && premiseMiscDto.getReason() != null){
-             reason = premiseMiscDto.getReason();
-            String code = MasterCodeUtil.getCodeDesc(reason);
-            templateContent.put("content", code);
-        }else{
-            templateContent.put("content", MasterCodeUtil.getCodeDesc(ApplicationConsts.CESSATION_REASON_OTHER));
-        }
-
-        templateContent.put("content", MasterCodeUtil.getCodeKeyByCodeValue(reason));
+        templateContent.put("MOH_AGENCY_NAME", MohName);
         templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
-
 
         MsgTemplateDto emailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_EMAIL).getEntity();
         MsgTemplateDto smsTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_SMS).getEntity();
         MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_MSG).getEntity();
         Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-        subMap.put("ApplicationType", appType);
-        subMap.put("ApplicationNo", applicationDto.getApplicationNo());
+        subMap.put("ApplicationType", appealType);
+        subMap.put("ApplicationNo", appealNo);
         String emailSubject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
         String smsSubject = MsgUtil.getTemplateMessageByContent(smsTemplateDto.getTemplateName(),subMap);
         String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),subMap);
@@ -3231,8 +3214,10 @@ public class HcsaApplicationDelegator {
                 String appealType = premiseMiscDto.getAppealType();
                 if(ApplicationConsts.APPEAL_TYPE_LICENCE.equals(appealType)){
                     LicenceDto licenceDto = licenceService.getLicenceDto(premiseMiscDto.getRelateRecId());
-                    appealNo = licenceDto.getLicenceNo();
-                    type = "licence";
+                    if(licenceDto != null){
+                        appealNo = licenceDto.getLicenceNo();
+                        type = "licence";
+                    }
                 }
                 ParamUtil.setSessionAttr(request, "appealNo", appealNo);
                 ParamUtil.setSessionAttr(request, "appealingFor", appealNo);

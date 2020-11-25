@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -486,7 +487,7 @@ public class BackendInboxDelegator {
         }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
             log.info("ao1 or ao2 send application reject email");
             try {
-                sendAppealReject(applicationDto);
+                sendAppealReject(applicationDto,MohName);
                 log.info("reject email success");
             }catch (Exception e){
                 log.error(e.getMessage()+"error",e);
@@ -1653,7 +1654,7 @@ public class BackendInboxDelegator {
         }
     }
 
-    private  void  sendAppealReject(ApplicationDto applicationDto) throws IOException, TemplateException {
+    private  void  sendAppealReject(ApplicationDto applicationDto,String MohName) throws IOException, TemplateException {
         log.info("start send email sms and msg");
         log.info(StringUtil.changeForLog("appNo: " + applicationDto.getApplicationNo()));
         String applicantName = "";
@@ -1665,32 +1666,34 @@ public class BackendInboxDelegator {
         }
         List<AppPremiseMiscDto> premiseMiscDtoList = cessationClient.getAppPremiseMiscDtoListByAppId(applicationDto.getId()).getEntity();
         String appType = "Licence";
+        String appealNo = "-";
         if(premiseMiscDtoList != null){
             AppPremiseMiscDto premiseMiscDto = premiseMiscDtoList.get(0);
-            String oldAppId = premiseMiscDto.getRelateRecId();
-            ApplicationDto oldApplication = applicationMainClient.getApplicationById(oldAppId).getEntity();
-            appType =  MasterCodeUtil.getCodeDesc(oldApplication.getApplicationType());
+            if(premiseMiscDto != null){
+                String oldAppId = premiseMiscDto.getRelateRecId();
+                ApplicationDto oldApplication = applicationMainClient.getApplicationById(oldAppId).getEntity();
+                if(oldApplication != null){
+                    appType =  MasterCodeUtil.getCodeDesc(oldApplication.getApplicationType());
+                    appealNo = oldApplication.getApplicationNo();
+                }
+                String appealType = premiseMiscDto.getAppealType();
+                if(ApplicationConsts.APPEAL_TYPE_LICENCE.equals(appealType)){
+                    LicenceDto licenceDto = licenceClient.getLicBylicId(premiseMiscDto.getRelateRecId()).getEntity();
+                    if(licenceDto != null){
+                        appealNo = licenceDto.getLicenceNo();
+                        appType = "Licence";
+                    }
+                }
+            }
         }
         if(StringUtil.isEmpty(appType)){
             appType = "Licence";
         }
-
         templateContent.put("ApplicantName", applicantName);
         templateContent.put("ApplicationType",  appType);
-        templateContent.put("ApplicationNo", applicationDto.getApplicationNo());
+        templateContent.put("ApplicationNo", appealNo);
         templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date(),"dd/MM/yyyy"));
-
-        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationMainClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
-        log.info(StringUtil.changeForLog("appPremisesCorrelationDto :" + JsonUtil.parseToJson(appPremisesCorrelationDto)));
-        AppPremiseMiscDto premiseMiscDto = applicationMainClient.getAppPremisesMisc(appPremisesCorrelationDto.getId()).getEntity();
-        if(premiseMiscDto != null && premiseMiscDto.getReason() != null){
-            String reason = premiseMiscDto.getReason();
-            String code = MasterCodeUtil.getCodeDesc(reason);
-            templateContent.put("content", code);
-        }else{
-            templateContent.put("content", MasterCodeUtil.getCodeDesc(ApplicationConsts.CESSATION_REASON_OTHER));
-        }
-
+        templateContent.put("MOH_AGENCY_NAME", MohName);
         templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
 
 
@@ -1699,7 +1702,7 @@ public class BackendInboxDelegator {
         MsgTemplateDto msgTemplateDto = msgTemplateMainClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_REJECT_MSG).getEntity();
         Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
         subMap.put("ApplicationType", appType);
-        subMap.put("ApplicationNo", applicationDto.getApplicationNo());
+        subMap.put("ApplicationNo", appealNo);
         String emailSubject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
         String smsSubject = MsgUtil.getTemplateMessageByContent(smsTemplateDto.getTemplateName(),subMap);
         String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),subMap);
