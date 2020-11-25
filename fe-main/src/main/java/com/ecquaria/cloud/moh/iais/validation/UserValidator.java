@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -33,11 +34,15 @@ public class UserValidator implements CustomizeValidator {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         FeUserDto dto = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
         String isNeedValidateField = (String) ParamUtil.getRequestAttr(request, UserConstants.IS_NEED_VALIDATE_FIELD);
-            if (dto.getIdentityNo() != null && !StringUtil.isEmpty(dto.getIdentityNo())) {
-                boolean b = SgNoValidator.validateFin(dto.getIdentityNo());
-                boolean b1 = SgNoValidator.validateNric(dto.getIdentityNo());
-                if (!(b || b1)) {
-                    map.put("identityNo", MessageUtil.getMessageDesc("RFC_ERR0012"));
+                if (dto.getIdentityNo() != null && !StringUtil.isEmpty(dto.getIdentityNo())) {
+                boolean b = true;
+                if(OrganizationConstants.ID_TYPE_FIN.equals(dto.getIdType())){
+                    b = SgNoValidator.validateFin(dto.getIdentityNo());
+                }else{
+                    b = SgNoValidator.validateNric(dto.getIdentityNo());
+                }
+                if (!b) {
+                    map.put("identityNo", MessageUtil.getMessageDesc("USER_ERR014"));
                 }
             }
 
