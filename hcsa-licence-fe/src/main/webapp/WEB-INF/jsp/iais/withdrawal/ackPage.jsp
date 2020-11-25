@@ -17,7 +17,7 @@
                 <div class="center-content">
                     <h2>Acknowledgement</h2>
                     <br>
-                    <span style="font-size:2rem;">You have submitted a Withdrawal Application Request</span>
+                    <span style="font-size:2rem;">${WITHDRAW_ACKMSG}</span>
                 </div>
             </div>
             <div class="col-lg-12 col-xs-12">
