@@ -176,8 +176,8 @@ public class WithdrawalDelegator {
         List<WithdrawnDto> withdrawnDtoList = getWithdrawAppList(bpc);
         if ((withdrawnDtoList != null) && (withdrawnDtoList.size() > 0) && IaisEGPConstant.YES.equals(wdIsValid)){
             StringBuilder sb = new StringBuilder();
-            withdrawnDtoList.forEach(h -> sb.append(h.getApplicationNo()));
-            String ackMsg = MessageUtil.replaceMessage("WDL_ACK001",sb.toString().substring(1),"Application No");
+            withdrawnDtoList.forEach(h -> sb.append(h.getApplicationNo() + ","));
+            String ackMsg = MessageUtil.replaceMessage("WDL_ACK001",sb.toString().substring(0,sb.toString().length() - 1),"Application No");
             ParamUtil.setRequestAttr(bpc.request,"WITHDRAW_ACKMSG",ackMsg);
             withdrawalService.saveWithdrawn(withdrawnDtoList);
         }
