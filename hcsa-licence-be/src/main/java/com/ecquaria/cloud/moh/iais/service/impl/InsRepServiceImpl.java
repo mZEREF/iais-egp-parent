@@ -339,13 +339,15 @@ public class InsRepServiceImpl implements InsRepService {
     private List<String> getServiceSubTypeName(String correlationId){
         List<String> serviceSubtypeName = IaisCommonUtils.genNewArrayList();
         List<AppSvcPremisesScopeDto> scopeList = insRepClient.getAppSvcPremisesScopeListByCorreId(correlationId).getEntity();
-        for (AppSvcPremisesScopeDto premise : scopeList){
-            boolean isSubService = premise.isSubsumedType();
-            if (!isSubService){
-                String subTypeId = premise.getScopeName();
-                HcsaServiceSubTypeDto subType = hcsaConfigClient.getHcsaServiceSubTypeById(subTypeId).getEntity();
-                String subTypeName = subType.getSubtypeName();
-                serviceSubtypeName.add(subTypeName);
+        for (AppSvcPremisesScopeDto appSvcPremisesScopeDto : scopeList){
+            boolean isSubService = appSvcPremisesScopeDto.isSubsumedType();
+            if (isSubService){
+                String serviceId = appSvcPremisesScopeDto.getScopeName();
+                HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+                if(hcsaServiceDto!=null){
+                    String svcName = hcsaServiceDto.getSvcName();
+                    serviceSubtypeName.add(svcName);
+                }
             }
         }
         return serviceSubtypeName;
