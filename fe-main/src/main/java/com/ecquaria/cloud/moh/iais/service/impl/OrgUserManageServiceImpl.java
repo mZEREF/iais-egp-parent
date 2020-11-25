@@ -419,11 +419,12 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
           licenseeDto.setStreetName(myInfoDto.getStreetName());
       }
       //fe user
-       editUserAccount(feUserDto);
+       FeUserDto feUserDtoCreate = editUserAccount(feUserDto);
       //egpcloud
        updateEgpUser(feUserDto);
 
         //update be user
+        feUserDto.setId(feUserDtoCreate.getId());
         OrganizationDto organizationById = getOrganizationById(feUserDto.getOrgId());
         OrganizationDto organizationDto = new OrganizationDto();
         organizationDto.setDoMain(AppConsts.USER_DOMAIN_INTERNET);
