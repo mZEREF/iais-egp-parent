@@ -43,7 +43,7 @@ public class SFTPUtil {
 	static{
 		property = new Properties();
 		try {
-			property.load(SFTPUtil.class.getClassLoader().getResourceAsStream("sftp.properties"));
+			property.load(SFTPUtil.class.getClassLoader().getResourceAsStream("application.properties"));
 		} catch (IOException ex) {
 			log.error(ex.getMessage(), ex);
 		}
@@ -56,11 +56,11 @@ public class SFTPUtil {
 	public static void connect() {
         try {
             if(sftp != null){
-                log.info("sftp is not null...");
+                log.info(StringUtil.changeForLog("sftp is not null..."));
             } else {
             	JSch jsch = new JSch();
             	Session sshSession = jsch.getSession(property.getProperty("sftp.username"), property.getProperty("sftp.host"), Integer.parseInt(property.getProperty("sftp.port")));
-            	sshSession.setPassword(property.getProperty("sftp.wordm"));
+            	sshSession.setPassword(property.getProperty("sftp.wordmima"));
             	Properties sshConfig = new Properties();
             	sshConfig.put("StrictHostKeyChecking", "no");
             	sshSession.setConfig(sshConfig);
@@ -157,7 +157,7 @@ public class SFTPUtil {
 			if (sftpName.indexOf(fileName) != -1) {
 				remoteFileNames.add(sftpName);
 			}
-			//bug 0079087
+
 			String sftpfullName=sftpName;
 			String[] sftpfullNmaes=sftpName.split("\\.");
 			if(sftpfullNmaes!=null&&sftpfullNmaes.length>0){
@@ -174,8 +174,12 @@ public class SFTPUtil {
 		return remoteFileNames;
 	}
 	
-    public static void download(String localPath, String fileName, String remotePath) throws Exception {
-    	//FileUtil.generateFolder(localPath);
+    public static boolean download(String localPath, String fileName, String remotePath) throws Exception {
+	    if(StringUtil.isEmpty(remotePath)){
+	        log.info(StringUtil.changeForLog("down load remotepath is null"));
+	        return false;
+        }
+    	FileUtil.generateFolder(localPath);
     	List<String> remoteFileNames = getRemoteFileNames(fileName,remotePath);
     	if (remoteFileNames != null && remoteFileNames.size() > 0) {
     		connect();
@@ -186,7 +190,9 @@ public class SFTPUtil {
 	    		log.info(StringUtil.changeForLog("download " + remoteFileName + " success!"));
     		}
     		disconnect();
+    		return true;
     	}
+    	return false;
     }
 
     public static void download(String directory, String downloadFile,String saveFile, ChannelSftp sftp) {
@@ -201,12 +207,15 @@ public class SFTPUtil {
     
     public static boolean upload(String fileName, String remotePath) {
     	boolean result = false;
+    	if(StringUtil.isEmpty(remotePath)){
+    	    return result;
+        }
         try {
         	connect();
-            File file = new File(fileName);
-            if(file.isFile()){
-            	log.info(StringUtil.changeForLog("localFile : " + file.getAbsolutePath()));
-                String remoteFile = remotePath + seperator + file.getName();
+            File f = new File(fileName);
+            if(f.isFile()){
+            	log.info(StringUtil.changeForLog("localFile : " + f.getAbsolutePath()));
+                String remoteFile = remotePath + seperator + f.getName();
                 log.info(StringUtil.changeForLog("remotePath:" + remoteFile));
                 
 				/*File rfile = new File(remoteFile);
@@ -217,7 +226,8 @@ public class SFTPUtil {
                     System.out.println("*******create path failed" + rpath);
                 }*/
 
-                sftp.put(file.getAbsolutePath(), remoteFile);
+                sftp.put(f.getAbsolutePath(), remoteFile);
+                f.delete();
                 result = true;
                 log.info(StringUtil.changeForLog("file: [" + fileName + "] uploaded to remote server. "));
             }else{
@@ -260,7 +270,6 @@ public class SFTPUtil {
                 }
                 if(!bcreated){
                     sftp.mkdir(filepath);
-                    bcreated = true;
                 }
                 return;
             }else{
