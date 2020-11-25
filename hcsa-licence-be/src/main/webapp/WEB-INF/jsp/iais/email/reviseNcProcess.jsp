@@ -115,16 +115,9 @@
                                                                 <option value="${decision.value}">${decision.text}</option>
                                                             </c:forEach>
                                                         </select>
+                                                        <span style="color:#ff0000; display: none" id="selectDecisionMsg" >Processing Decision is mandatory</span>
                                                     </iais:value>
                                                 </iais:row>
-                                                <div style="color:#ff0000; display: none" id="selectDecisionMsg" >
-                                                    <iais:row >
-                                                        <iais:field value=""/>
-                                                        <iais:value width="7">
-                                                            Processing Decision is mandatory
-                                                        </iais:value>
-                                                    </iais:row>
-                                                </div>
                                                 <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">
                                                     <iais:row>
                                                         <iais:field value="Licence Start Date" />
