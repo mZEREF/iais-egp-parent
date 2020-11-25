@@ -31,14 +31,6 @@ public class FileRepoClientFallback implements FileRepoClient{
     }
 
     @Override
-    public FeignResponseEntity<String> saveFileToDataBase(FileRepoDto fileRepoDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
     public FeignResponseEntity<byte[]> getFileFormDataBase(String guid) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
