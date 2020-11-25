@@ -277,6 +277,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                 if(licId.equals(originLicenceId)){
                     applicationDtos.add(applicationDto);
                     appId = id;
+                    break;
                 }
             }
             List<AppCessLicDto> appCessDtosByLicIds = getAppCessDtosByLicIds(licIds);

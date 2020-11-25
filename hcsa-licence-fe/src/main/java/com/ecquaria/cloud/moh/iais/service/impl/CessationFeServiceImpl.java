@@ -334,6 +334,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                 if(licId.equals(originLicenceId)){
                     applicationDtos.add(applicationDto);
                     appId = id;
+                    break;
                 }
             }
             ApplicationDto applicationDto = applicationFeClient.getApplicationById(appId).getEntity();
