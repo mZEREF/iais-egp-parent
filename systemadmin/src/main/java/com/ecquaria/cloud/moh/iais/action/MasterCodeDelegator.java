@@ -533,7 +533,7 @@ public class MasterCodeDelegator {
                         }
                         log.info(StringUtil.changeForLog("masterCodeToExcelDto1 hua ===========> " + JsonUtil.parseToJson(masterCodeToExcelDto1)));
                         if(StringUtil.isEmpty(masterCodeToExcelDto1.getFilterValue())){
-                            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0040","Filter","field");
+                            String errMsg = MessageUtil.getMessageDesc("MCUPERR006");
                             errItems.add(errMsg);
                             result = true;
                         }
