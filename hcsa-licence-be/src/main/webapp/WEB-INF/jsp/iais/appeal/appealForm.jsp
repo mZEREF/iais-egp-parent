@@ -8,15 +8,15 @@
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
-    <c:set value="${applicationViewDto.applicationDto}" var="applicationDto"/>
-    <c:set value="${applicationViewDto.appealNo}" var="appealNo"/>
-    <c:set value="${applicationViewDto.premiseMiscDto}" var="premiseMiscDto"/>
-    <c:set value="${applicationViewDto.hciNames}" var="hciNames"/>
-    <c:set value="${applicationViewDto.cgoMandatoryCount}" var="CgoMandatoryCount"/>
-    <c:set value="${applicationViewDto.feAppealSpecialDocDto}" var="feAppealSpecialDocDto"/>
-    <c:set value="${applicationViewDto.governanceOfficersList}" var="GovernanceOfficersList"/>
-    <c:set value="${applicationViewDto.specialtySelectList}" var="SpecialtySelectList"/>
-    <c:set value="${applicationViewDto.idTypeSelect}" var="IdTypeSelect"/>
+    <c:set value="${applicationViewDto.applicationDto}" var="applicationDto" scope="request"/>
+    <c:set value="${applicationViewDto.appealNo}" var="appealNo" scope="request"/>
+    <c:set value="${applicationViewDto.premiseMiscDto}" var="premiseMiscDto" scope="request"/>
+    <c:set value="${applicationViewDto.hciNames}" var="hciNames" scope="request"/>
+    <c:set value="${applicationViewDto.cgoMandatoryCount}" var="CgoMandatoryCount" scope="request"/>
+    <c:set value="${applicationViewDto.feAppealSpecialDocDto}" var="feAppealSpecialDocDto" scope="request"/>
+    <c:set value="${applicationViewDto.governanceOfficersList}" var="GovernanceOfficersList" scope="request"/>
+    <c:set value="${applicationViewDto.specialtySelectList}" var="SpecialtySelectList" scope="request"/>
+    <c:set value="${applicationViewDto.idTypeSelect}" var="IdTypeSelect" scope="request"/>
     <c:set value="${applicationViewDto.cgoSelectList}" var="CgoSelectList" scope="request"/>
 
   <div class="form-group">
