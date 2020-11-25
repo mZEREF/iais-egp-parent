@@ -16,9 +16,9 @@
         <table class="table">
             <thead>
             <tr >
-                <iais:sortableHeader needSort="true"  field="SVC_NAME" value="Type"/>
-                <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No."/>
-                <iais:sortableHeader needSort="true"  field="ROLE" value="Role"/>
+                <iais:sortableHeader needSort="true"  field="SVC_NAME" value="Type" isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No." isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="ROLE" value="Role" isFE="true"/>
             </tr>
             </thead>
             <tbody>
