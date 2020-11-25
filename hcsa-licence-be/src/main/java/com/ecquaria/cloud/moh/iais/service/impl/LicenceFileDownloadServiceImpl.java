@@ -826,71 +826,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }
                 });
             }
-            List<ApplicationDto> applicationDtoListRfc = applicationNewAndRequstDto.getListNewApplicationDto();
-            if (applicationDtoListRfc != null && applicationDtoListRfc.size() > 0){
-                applicationDtoListRfc.forEach(h -> {
-                    String applicationGrpId = h.getAppGrpId();
-                    String serviceId = h.getServiceId();
-                    String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-                    ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationGrpId);
-                    LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
-
-                    try {
-                        if(h.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE) && applicationGroupDto.isAutoApprove()){
-                            LicenceDto licenceDto=hcsaLicenceClient.getLicenceDtoById(h.getOriginLicenceId()).getEntity();
-                            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                            emailMap.put("officer_name", "");
-                            emailMap.put("ServiceLicenceName", serviceName);
-                            emailMap.put("ApplicationDate", Formatter.formatDate(applicationGroupDto.getSubmitDt()));
-                            emailMap.put("Licensee", licenseeDto.getName());
-                            emailMap.put("LicenceNumber", licenceDto.getLicenceNo());
-                            StringBuilder stringBuilder = new StringBuilder();
-                            List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(h.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
-                            if (appEditSelectDtos.get(0).isServiceEdit()){
-                                stringBuilder.append("<p class=\"line\">   ").append("Remove subsumed service").append("</p>");
-                            }
-                            if (applicationGroupDto.getNewLicenseeId()!=null){
-                                stringBuilder.append("<p class=\"line\">   ").append("Change in Management of Licensee").append("</p>");
-                            }
-                            emailMap.put("ServiceNames", stringBuilder);
-                            emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-                            emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
-                            EmailParam emailParam = new EmailParam();
-                            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER);
-                            emailParam.setQueryCode(h.getApplicationNo());
-                            emailParam.setReqRefNum(h.getApplicationNo());
-                            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                            emailParam.setRefId(h.getApplicationNo());
-                            emailParam.setTemplateContent(emailMap);
-                            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER).getEntity();
-                            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-                            map.put("ApplicationType", MasterCodeUtil.getCodeDesc(h.getApplicationType()));
-                            map.put("ApplicationNumber", h.getApplicationNo());
-                            String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
-                            emailParam.setSubject(subject);
-                            log.info("start send email start");
-                            notificationHelper.sendNotification(emailParam);
-                            log.info("start send email end");
-                            //emailClient.sendNotification(emailDto).getEntity();
-
-                            //sms
-                            emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(h.getApplicationType()));
-                            emailMap.put("ApplicationNumber", h.getApplicationNo());
-                            emailParam.setTemplateContent(emailMap);
-                            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS);
-                            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                            log.info("start send sms start");
-                            notificationHelper.sendNotification(emailParam);
-                            log.info("start send sms end");
-                        }
-
-                    }catch (Exception e ){
-                        log.info(e.getMessage(),e);
-                    }
-
-
-                });
-            }
 
         }
 
@@ -1052,6 +987,64 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         if(!autoRfc){
                             list.addAll(applicationDtoList);
                         }
+                    }
+
+                    String serviceId = application.getServiceId();
+                    String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
+                    ApplicationGroupDto applicationGroupDto = k;
+                    LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
+
+                    try {
+                        if(application.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE) && applicationGroupDto.isAutoApprove()){
+                            LicenceDto licenceDto=hcsaLicenceClient.getLicenceDtoById(application.getOriginLicenceId()).getEntity();
+                            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+                            emailMap.put("officer_name", "");
+                            emailMap.put("ServiceLicenceName", serviceName);
+                            emailMap.put("ApplicationDate", Formatter.formatDate(applicationGroupDto.getSubmitDt()));
+                            emailMap.put("Licensee", licenseeDto.getName());
+                            emailMap.put("LicenceNumber", licenceDto.getLicenceNo());
+                            StringBuilder stringBuilder = new StringBuilder();
+                            List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(application.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
+                            if (appEditSelectDtos.get(0).isServiceEdit()){
+                                stringBuilder.append("<p class=\"line\">   ").append("Remove subsumed service").append("</p>");
+                            }
+                            if (applicationGroupDto.getNewLicenseeId()!=null){
+                                stringBuilder.append("<p class=\"line\">   ").append("Change in Management of Licensee").append("</p>");
+                            }
+                            emailMap.put("ServiceNames", stringBuilder);
+                            emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+                            emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+                            EmailParam emailParam = new EmailParam();
+                            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER);
+                            emailParam.setQueryCode(application.getApplicationNo());
+                            emailParam.setReqRefNum(application.getApplicationNo());
+                            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                            emailParam.setRefId(application.getApplicationNo());
+                            emailParam.setTemplateContent(emailMap);
+                            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER).getEntity();
+                            Map<String, Object> map1 = IaisCommonUtils.genNewHashMap();
+                            map1.put("ApplicationType", MasterCodeUtil.getCodeDesc(application.getApplicationType()));
+                            map1.put("ApplicationNumber", application.getApplicationNo());
+                            String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map1);
+                            emailParam.setSubject(subject);
+                            log.info("start send email start");
+                            notificationHelper.sendNotification(emailParam);
+                            log.info("start send email end");
+                            //emailClient.sendNotification(emailDto).getEntity();
+
+                            //sms
+                            emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(application.getApplicationType()));
+                            emailMap.put("ApplicationNumber", application.getApplicationNo());
+                            emailParam.setTemplateContent(emailMap);
+                            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS);
+                            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                            log.info("start send sms start");
+                            notificationHelper.sendNotification(emailParam);
+                            log.info("start send sms end");
+                        }
+
+                    }catch (Exception e ){
+                        log.info(e.getMessage(),e);
                     }
                 }
 
