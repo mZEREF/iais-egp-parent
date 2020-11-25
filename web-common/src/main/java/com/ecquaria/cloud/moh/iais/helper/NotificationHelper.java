@@ -84,6 +84,7 @@ public class NotificationHelper {
 	public static final String MESSAGE_TYPE_ACTION_REQUIRED			 = "MESTYPE003";
 
 	public static final String RECEIPT_ROLE_LICENSEE                			= "EM-LIC";
+	public static final String RECEIPT_ROLE_TRANSFEREE_LICENSEE                	= "TRANSFEREE";
 	public static final String RECEIPT_ROLE_AUTHORISED_PERSON       			= "EM-AP";
 	public static final String RECEIPT_ROLE_ASSIGNED_ASO            			= "EM-A-ASO";
 	public static final String RECEIPT_ROLE_ASSIGNED_PSO            			= "EM-A-PSO";
@@ -447,6 +448,9 @@ public class NotificationHelper {
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
 		if(grpDto != null) {
 			licenseeId = grpDto.getLicenseeId();
+			if(grpDto.getNewLicenseeId()!=null){
+				licenseeId=grpDto.getNewLicenseeId();
+			}
 		} else {
 			String licenceId = appNo;
 			LicenceDto licenceDto = hcsaLicenceClient.getLicDtoByIdCommon(licenceId).getEntity();
@@ -666,7 +670,7 @@ public class NotificationHelper {
 		}
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
 		//applicant
-		mobile = getMobileApplicant(roles, grpDto.getSubmitBy(), mobile);
+		mobile = getMobileApplicant(roles, grpDto, mobile);
 		//officer
 		Set<String> userIds = IaisCommonUtils.genNewHashSet();
 		List<AppPremisesRoutingHistoryDto> hisList;
@@ -745,13 +749,17 @@ public class NotificationHelper {
 		return mobile;
 	}
 
-	private List<String> getMobileApplicant(List<String> roles, String applicantId, List<String> mobile) {
+	private List<String> getMobileApplicant(List<String> roles, ApplicationGroupDto applicantId, List<String> mobile) {
 		for (String role : roles) {
 			if (RECEIPT_ROLE_LICENSEE.equals(role)) {
-				OrgUserDto orgUserDto = taskOrganizationClient.getUserById(applicantId).getEntity();
+				OrgUserDto orgUserDto = taskOrganizationClient.getUserById(applicantId.getSubmitBy()).getEntity();
 				if(orgUserDto != null && !StringUtil.isEmpty(orgUserDto.getMobileNo())){
 					mobile.add(orgUserDto.getMobileNo());
 				}
+			}
+			if (RECEIPT_ROLE_TRANSFEREE_LICENSEE.equals(role)) {
+				List<String> mobiles = IaisEGPHelper.getLicenseeMobiles(applicantId.getNewLicenseeId());
+				mobile.addAll(mobiles);
 			}
 		}
 		return mobile;
@@ -837,7 +845,7 @@ public class NotificationHelper {
 		for (ApplicationDto app : appList) {
 			inspectionEmailTemplateDto = getAssignedOfficer(roles, app.getApplicationNo(), moduleType, inspectionEmailTemplateDto);//NOSONAR
 		}
-		set.addAll(getSubmitApplicant(roles, grpDto.getSubmitBy()));
+		set.addAll(getSubmitApplicant(roles, grpDto));
 		inspectionEmailTemplateDto = getOfficer(roles, inspectionEmailTemplateDto);//NOSONAR
 		List<String> receiptEmails = new ArrayList<>(set);
 		inspectionEmailTemplateDto.setReceiptEmails(receiptEmails);//NOSONAR
@@ -847,7 +855,7 @@ public class NotificationHelper {
 	private InspectionEmailTemplateDto getRecriptApp(List<String> roles, String appNo, String moduleType, InspectionEmailTemplateDto inspectionEmailTemplateDto) {
 		Set<String> set = IaisCommonUtils.genNewHashSet();
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
-		set.addAll(getSubmitApplicant(roles, grpDto.getSubmitBy()));
+		set.addAll(getSubmitApplicant(roles, grpDto));
 		inspectionEmailTemplateDto = getAssignedOfficer(roles, appNo, moduleType, inspectionEmailTemplateDto);//NOSONAR
 		inspectionEmailTemplateDto = getOfficer(roles, inspectionEmailTemplateDto);//NOSONAR
 		List<String> receiptEmails = new ArrayList<>(set);
@@ -855,17 +863,22 @@ public class NotificationHelper {
 		return inspectionEmailTemplateDto;
 	}
 
-	private Collection<String> getSubmitApplicant(List<String> roles, String applicantId) {
+	private Collection<String> getSubmitApplicant(List<String> roles, ApplicationGroupDto applicantId) {
 		Set<String> set = IaisCommonUtils.genNewHashSet();
 		for (String role : roles) {
 			if (RECEIPT_ROLE_LICENSEE.equals(role)) {
-				OrgUserDto orgUserDto = taskOrganizationClient.getUserById(applicantId).getEntity();
+				OrgUserDto orgUserDto = taskOrganizationClient.getUserById(applicantId.getSubmitBy()).getEntity();
 				if(orgUserDto != null && !StringUtil.isEmpty(orgUserDto.getEmail())){
 					set.add(orgUserDto.getEmail());
 				} else {
 					log.info("orgUserDto is null, no applicant or no email");
 				}
-			}/* else if (RECEIPT_ROLE_AUTHORISED_PERSON.equals(role)) {
+			}else if (RECEIPT_ROLE_TRANSFEREE_LICENSEE.equals(role)) {
+				List<String> mails = IaisEGPHelper.getLicenseeEmailAddrs(applicantId.getNewLicenseeId());
+				set.addAll(mails);
+			}
+
+			/* else if (RECEIPT_ROLE_AUTHORISED_PERSON.equals(role)) {
 				List<LicenseeKeyApptPersonDto> pers = licenseeClient.getPersonByid(licenseeId).getEntity();
 				if (!IaisCommonUtils.isEmpty(pers)) {
 					pers.forEach(p -> {
