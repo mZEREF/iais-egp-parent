@@ -105,7 +105,7 @@ public class RequestForChangeMenuDelegator {
             .clz(PremisesListQueryDto.class)
             .searchAttr("PremisesSearchParam")
             .resultAttr("PremisesSearchResult")
-            .sortField("PREMISES_TYPE").sortType(SearchParam.ASCENDING).build();
+            .sortField("LICENCE_ID").sortType(SearchParam.ASCENDING).build();
 
 
     @Autowired
@@ -144,6 +144,8 @@ public class RequestForChangeMenuDelegator {
     private void removeSession(BaseProcessClass bpc) {
         bpc.getSession().removeAttribute("dAmount");
         bpc.getSession().removeAttribute("payMethod");
+        bpc.getSession().removeAttribute("premiseDoSearch");
+        bpc.getSession().removeAttribute("doSearch");
     }
 
     /**
@@ -214,14 +216,14 @@ public class RequestForChangeMenuDelegator {
     public void preparePremisesList(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do preparePremisesList start ...."));
         //set licenseeId
-        String doSearch = (String) bpc.request.getAttribute("doSearch");
+        String doSearch = (String) bpc.request.getSession().getAttribute("doSearch");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
-        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, premiseFilterParameter, true);
+        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, premiseFilterParameter, false);
         searchParam.addFilter("licenseeId", licenseeId, true);
         if (!StringUtil.isEmpty(doSearch)) {
             searchParam.addFilter("type", doSearch, true);
-            bpc.request.setAttribute("premiseDoSearch", doSearch);
+            bpc.request.getSession().setAttribute("premiseDoSearch", doSearch);
         }
         QueryHelp.setMainSql("applicationPersonnelQuery", "queryPremises", searchParam);
         SearchResult<PremisesListQueryDto> searchResult = requestForChangeService.searchPreInfo(searchParam);
@@ -280,8 +282,12 @@ public class RequestForChangeMenuDelegator {
 
     public void doSearch(BaseProcessClass bpc) {
         String crud_action_value = bpc.request.getParameter("crud_action_value");
+        premiseFilterParameter.setPageNo(1);
         if (!StringUtil.isEmpty(crud_action_value)) {
-            bpc.request.setAttribute("doSearch", crud_action_value);
+            bpc.request.getSession().setAttribute("doSearch", crud_action_value);
+        }else {
+            bpc.request.getSession().removeAttribute("doSearch");
+            bpc.request.getSession().removeAttribute("premiseDoSearch");
         }
     }
 

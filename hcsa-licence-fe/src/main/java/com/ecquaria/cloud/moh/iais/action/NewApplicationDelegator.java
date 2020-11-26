@@ -1218,7 +1218,7 @@ public class NewApplicationDelegator {
                 } else if (effectiveDate.isAfter(configDate)) {
                     String errorMsg = MessageUtil.getMessageDesc("RFC_ERR008");
                     DateTimeFormatter dtf = DateTimeFormatter.ofPattern(Formatter.DATE);
-                    errorMsg = errorMsg.replace("<date>", configDate.format(dtf));
+                    errorMsg = errorMsg.replace("{date}", configDate.format(dtf));
                     errorMap.put("rfcEffectiveDate", errorMsg);
                 } else if (today.isEqual(effectiveDate)) {
                     errorMap.put("rfcEffectiveDate", "RFC_ERR012");
@@ -1695,6 +1695,89 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
         ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "The request for information save success");
         log.info(StringUtil.changeForLog("the do doRequestInformationSubmit end ...."));
+    }
+
+    public void doRenewSubmit(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("the do doRenewSubmit start ...."));
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(appSubmissionDto.getLicenceId());
+        String rfcErrOne = MessageUtil.getMessageDesc("RFC_ERR001");
+        if (!applicationDtos.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
+            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "error");
+            ParamUtil.setRequestAttr(bpc.request, "content", rfcErrOne);
+            return;
+        }
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+        boolean grpPremiseChange = false;
+        if (appGrpPremisesDtoList.equals(oldAppSubmissionDtoAppGrpPremisesDtoList)) {
+            grpPremiseChange = true;
+        }
+        if (!grpPremiseChange) {
+            for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
+                List<LicenceDto> attribute = (List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence" + i);
+                if (attribute != null && !attribute.isEmpty()) {
+                    for (LicenceDto licenceDto : attribute) {
+                        List<ApplicationDto> appByLicIdAndExcludeNew =
+                                requestForChangeService.getAppByLicIdAndExcludeNew(licenceDto.getId());
+                        if (!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNew)) {
+                            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
+                            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "error");
+                            ParamUtil.setRequestAttr(bpc.request, "content", rfcErrOne);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        boolean isAutoRfc = compareAndSendEmail(appSubmissionDto, oldAppSubmissionDto);
+        appSubmissionDto.setAutoRfc(isAutoRfc);
+        Map<String, String> map = doPreviewAndSumbit(bpc);
+        if (!map.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
+            return;
+        }
+
+        String draftNo = appSubmissionDto.getDraftNo();
+        if (StringUtil.isEmpty(draftNo)) {
+            draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
+            appSubmissionDto.setDraftNo(draftNo);
+        }
+        //get appGroupNo
+        String appGroupNo = appSubmissionService.getGroupNo(appSubmissionDto.getAppType());
+        log.info(StringUtil.changeForLog("the appGroupNo is -->:" + appGroupNo));
+        appSubmissionDto.setAppGrpNo(appGroupNo);
+        //get Amount
+        FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto,NewApplicationHelper.isCharity(bpc.request));
+        appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
+        Double amount = feeDto.getTotal();
+        log.info(StringUtil.changeForLog("the amount is -->:" + amount));
+        appSubmissionDto.setAmount(amount);
+        //judge is the preInspection
+        PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
+        if (preOrPostInspectionResultDto == null) {
+            appSubmissionDto.setPreInspection(true);
+            appSubmissionDto.setRequirement(true);
+        } else {
+            appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
+            appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
+        }
+
+        //set Risk Score
+        appSubmissionService.setRiskToDto(appSubmissionDto);
+
+        appSubmissionDto = appSubmissionService.submitRenew(appSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+
+        //back to renewal licence view page
+        ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "jump");
+        ParamUtil.setRequestAttr(bpc.request, "jumpPmt", "Y");
+
+        log.info(StringUtil.changeForLog("the do doRenewSubmit end ...."));
     }
 
     public static boolean eqAddFloorNo(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto){
@@ -2536,9 +2619,6 @@ public class NewApplicationDelegator {
         }
         List<AppGrpPrimaryDocDto> list=new ArrayList<>(appGrpPrimaryDocDtos.size());
         for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){
-            if(appGrpPrimaryDocDto.getSvcDocId()==null){
-                continue;
-            }
             AppGrpPrimaryDocDto primaryDocDto=new AppGrpPrimaryDocDto();
             primaryDocDto.setDocName(appGrpPrimaryDocDto.getDocName());
             primaryDocDto.setDocSize(appGrpPrimaryDocDto.getDocSize());
