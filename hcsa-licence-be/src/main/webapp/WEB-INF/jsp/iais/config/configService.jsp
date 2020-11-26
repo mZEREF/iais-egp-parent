@@ -565,7 +565,9 @@
           </div>
         </div>
         <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
-          <div  class="col-xs-12 col-md-12"> </div>
+          <div  class="col-xs-12 col-md-12">
+            <span name="iaisErrorMsg" class="error-msg" id="error_hcsaSvcSubtypeOrSubsumed"></span>
+          </div>
             <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed">
               <div class="view col-xs-12 col-md-12" >
                 <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >

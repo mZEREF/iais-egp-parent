@@ -2866,7 +2866,7 @@ public class NewApplicationDelegator {
         appEditSelectDto.setServiceEdit(true);
         changePerson.setAppEditSelectDto(appEditSelectDto);
         changePerson.setChangeSelectDto(appEditSelectDto);
-
+        changePerson.setGetAppInfoFromDto(true);
         return changePerson;
     }
 

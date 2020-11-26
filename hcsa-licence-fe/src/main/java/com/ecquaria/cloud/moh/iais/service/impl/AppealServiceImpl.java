@@ -957,7 +957,7 @@ public class AppealServiceImpl implements AppealService {
                 String svcName = licenceDto.getSvcName();
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
                 LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
-                sendAllNotification(appNo, "Appeal", licenceDto, licenseeDto, hcsaServiceDto);
+                sendAllNotification(appNo, "Appeal", licenceDto, licenseeDto, hcsaServiceDto,applicationGroupDto1.getLicenseeId());
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
@@ -1121,7 +1121,7 @@ public class AppealServiceImpl implements AppealService {
         if (!"rfi".equals(rfi)) {
             try {
                 LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(entity.getLicenseeId()).getEntity();
-                sendAllNotification(appNo,"Appeal", null, licenseeDto,hcsaServiceDto);
+                sendAllNotification(appNo,"Appeal", null, licenseeDto,hcsaServiceDto,applicationGroupDto1.getLicenseeId());
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
@@ -1309,7 +1309,7 @@ public class AppealServiceImpl implements AppealService {
         return email;
     }
 
-    private void sendAllNotification(String appNo,String appType,LicenceDto licenceDto, LicenseeDto licenseeDto,HcsaServiceDto hcsaServiceDto){
+    private void sendAllNotification(String appNo,String appType,LicenceDto licenceDto, LicenseeDto licenseeDto,HcsaServiceDto hcsaServiceDto,String licenssId){
         log.info("start send email sms and msg");
         log.info(StringUtil.changeForLog("appNo: " + appNo));
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
@@ -1360,7 +1360,7 @@ public class AppealServiceImpl implements AppealService {
         svcCodeList.add(hcsaServiceDto.getSvcCode());
         msgParam.setSvcCodeList(svcCodeList);
         if(licenceDto == null) {
-            msgParam.setRefId(appNo);
+            msgParam.setRefId(appNo+"-01");
             msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         }else{
             msgParam.setRefId(licenceDto.getId());
