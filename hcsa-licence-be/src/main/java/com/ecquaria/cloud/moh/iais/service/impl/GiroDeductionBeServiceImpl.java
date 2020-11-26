@@ -7,8 +7,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -59,9 +59,10 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
                 applicationClient.updateApplication(applicationGroupDto);
                 applicationGroupDtos.add(applicationGroupDto);
                 Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-                LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
-                String licName = licenseeDto.getName();
-                map.put("applicant", licName);
+                String applicantId = applicationGroupDto.getSubmitBy();
+                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
+                String applicantName = orgUserDto.getDisplayName();
+                map.put("applicant", applicantName);
                 String appType = applicationGroupDto.getAppType();
                 String appTypeShow = MasterCodeUtil.getCodeDesc(appType);
                 map.put("applicationType", appTypeShow);
