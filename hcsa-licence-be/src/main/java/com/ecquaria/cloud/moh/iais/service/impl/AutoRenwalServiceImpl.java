@@ -11,10 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -235,11 +232,12 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         String serviceCode = hcsaConfigClient.getServiceCodeByName(serviceName).getEntity();
         List<String> serviceCodeList = IaisCommonUtils.genNewArrayList();
         serviceCodeList.add(serviceCode);
-        String applicantName = getApplicantNameByLicId(id);
-        if(!StringUtil.isEmpty(applicantName)){
+        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
+        if(licenseeDto != null){
             String licenceId = licenceDto.getId();
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
             String MohName = AppConsts.MOH_AGENCY_NAME;
+            String applicantName = licenseeDto.getName();
             log.info(StringUtil.changeForLog("send renewal application notification applicantName : " + applicantName));
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
             map.put("ApplicantName", applicantName);
