@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.CheckCoLocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -34,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -1526,6 +1528,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     public void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException, TemplateException {
         AppSubmissionDto appSubmissionDto=appSubmissionDtos.get(0);
+        String appGroupId = appSubmissionDto.getAppGrpId();
+
         if(appSubmissionDtos.size()>=2){
             double a = 0.0;
             for (AppSubmissionDto appSubmDto : appSubmissionDtos) {
@@ -1535,13 +1539,22 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         }
         String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-        LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(appSubmissionDto.getLicenseeId()).getEntity();
+
         if(appSubmissionDto.getLicenceNo()==null){
             LicenceDto licenceDto= licenceClient.getLicBylicId(appSubmissionDto.getLicenceId()).getEntity();
             appSubmissionDto.setLicenceNo(licenceDto.getLicenceNo());
             appSubmissionDto.setServiceName(licenceDto.getSvcName());
         }
-        String applicantName = licenseeDto.getName();
+
+        //TODO Need to be replaced with appSubmissionDto, and set submit by id to it
+        ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(appGroupId).getEntity();
+        if (applicationGroupDto != null){
+            OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
+            if (orgUserDto != null){
+                emailMap.put("ApplicantName", orgUserDto.getDisplayName());
+            }
+        }
+
         if(pmtMethod==null){
             emailMap.remove("GIRO_PAY");
             emailMap.remove("Online_PAY");
@@ -1560,7 +1573,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
          }
 
         emailMap.put("Payment_Amount", appSubmissionDto.getAmountStr());
-        emailMap.put("ApplicantName", applicantName);
         emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
         emailMap.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
         emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));

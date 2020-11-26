@@ -107,6 +107,9 @@ public class BackendInboxDelegator {
     private HcsaConfigMainClient hcsaConfigMainClient;
 
     @Autowired
+    OrganizationMainClient omc;
+
+    @Autowired
     private AppPremisesRoutingHistoryMainClient appPremisesRoutingHistoryMainClient;
 
     @Autowired
@@ -554,58 +557,61 @@ public class BackendInboxDelegator {
         ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
         if(applicationGroupDto != null) {
             String groupLicenseeId = applicationGroupDto.getLicenseeId();
+            String aubmitBy = applicationGroupDto.getSubmitBy();
             log.info(StringUtil.changeForLog("send new application notification groupLicenseeId : " + groupLicenseeId));
-            LicenseeDto licenseeDto = organizationMainClient.getLicenseeDtoById(groupLicenseeId).getEntity();
-            if (licenseeDto != null) {
-                String applicantName = licenseeDto.getName();
-                log.info(StringUtil.changeForLog("send new application notification applicantName : " + applicantName));
-                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-                map.put("ApplicantName", applicantName);
-                map.put("applicationType", applicationTypeShow);
-                map.put("applicationNumber", applicationNo);
-                map.put("applicationDate", appDate);
-                map.put("emailAddress", systemAddressOne);
-                map.put("MOH_AGENCY_NAME", MohName);
-                try {
-                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is rejected ";
-                    EmailParam emailParam = new EmailParam();
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_ID);
-                    emailParam.setTemplateContent(map);
-                    emailParam.setQueryCode(applicationNo);
-                    emailParam.setReqRefNum(applicationNo);
-                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                    emailParam.setRefId(applicationNo);
-                    emailParam.setSubject(subject);
-                    //send email
-                    log.info(StringUtil.changeForLog("send new application email"));
-                    notificationHelper.sendNotification(emailParam);
-                    //send sms
-                    EmailParam smsParam = new EmailParam();
-                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_SMS_ID);
-                    smsParam.setSubject(subject);
-                    smsParam.setQueryCode(applicationNo);
-                    smsParam.setReqRefNum(applicationNo);
-                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                    smsParam.setRefId(applicationNo);
-                    log.info(StringUtil.changeForLog("send new application sms"));
-                    notificationHelper.sendNotification(smsParam);
-                    //send message
-                    EmailParam messageParam = new EmailParam();
-                    messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_MESSAGE_ID);
-                    messageParam.setTemplateContent(map);
-                    messageParam.setQueryCode(applicationNo);
-                    messageParam.setReqRefNum(applicationNo);
-                    messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                    messageParam.setRefId(applicationNo);
-                    messageParam.setSubject(subject);
-                    messageParam.setSvcCodeList(svcCodeList);
-                    log.info(StringUtil.changeForLog("send new application message"));
-                    notificationHelper.sendNotification(messageParam);
-                    log.info(StringUtil.changeForLog("send new application notification end"));
-                }catch (Exception e){
-                    log.error(e.getMessage(), e);
-                }
+
+            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+
+            OrgUserDto orgUserDto = omc.retrieveOneOrgUserAccount(aubmitBy).getEntity();
+            if (orgUserDto != null){
+                map.put("ApplicantName", orgUserDto.getDisplayName());
             }
+
+            map.put("applicationType", applicationTypeShow);
+            map.put("applicationNumber", applicationNo);
+            map.put("applicationDate", appDate);
+            map.put("emailAddress", systemAddressOne);
+            map.put("MOH_AGENCY_NAME", MohName);
+            try {
+                String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is rejected ";
+                EmailParam emailParam = new EmailParam();
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_ID);
+                emailParam.setTemplateContent(map);
+                emailParam.setQueryCode(applicationNo);
+                emailParam.setReqRefNum(applicationNo);
+                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                emailParam.setRefId(applicationNo);
+                emailParam.setSubject(subject);
+                //send email
+                log.info(StringUtil.changeForLog("send new application email"));
+                notificationHelper.sendNotification(emailParam);
+                //send sms
+                EmailParam smsParam = new EmailParam();
+                smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_SMS_ID);
+                smsParam.setSubject(subject);
+                smsParam.setQueryCode(applicationNo);
+                smsParam.setReqRefNum(applicationNo);
+                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                smsParam.setRefId(applicationNo);
+                log.info(StringUtil.changeForLog("send new application sms"));
+                notificationHelper.sendNotification(smsParam);
+                //send message
+                EmailParam messageParam = new EmailParam();
+                messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_MESSAGE_ID);
+                messageParam.setTemplateContent(map);
+                messageParam.setQueryCode(applicationNo);
+                messageParam.setReqRefNum(applicationNo);
+                messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                messageParam.setRefId(applicationNo);
+                messageParam.setSubject(subject);
+                messageParam.setSvcCodeList(svcCodeList);
+                log.info(StringUtil.changeForLog("send new application message"));
+                notificationHelper.sendNotification(messageParam);
+                log.info(StringUtil.changeForLog("send new application notification end"));
+            }catch (Exception e){
+                log.error(e.getMessage(), e);
+            }
+
         }
     }
 
