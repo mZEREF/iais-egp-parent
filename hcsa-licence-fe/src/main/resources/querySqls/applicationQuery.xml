@@ -96,7 +96,10 @@
                 '' as UNIT_NO,
                 '' as STREET_NAME,
                 '' as BUILDING_NAME,
-                '' as EXPIRY_DATE
+                '' as EXPIRY_DATE,
+                '' as HCI_NAME,
+                '' as VEHICLE_NO,
+                '' as PREMISES_TYPE
                 from LICENCE
         UNION
         SELECT  T3.ID,
@@ -109,7 +112,10 @@
                 T3.UNIT_NO,
                 T3.STREET_NAME,
                 T3.BUILDING_NAME,
-                T1.EXPIRY_DATE
+                T1.EXPIRY_DATE,
+                T3.HCI_NAME ,
+                T3.VEHICLE_NO,
+                T3.PREMISES_TYPE
           FROM LICENCE T1
           JOIN LIC_PREMISES T2 on T2.LICENCE_ID = T1.id
           JOIN PREMISES T3 on T2.PREMISES_ID = T3.id

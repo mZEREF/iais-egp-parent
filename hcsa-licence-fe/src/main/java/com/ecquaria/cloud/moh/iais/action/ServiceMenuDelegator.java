@@ -625,7 +625,7 @@ public class ServiceMenuDelegator {
                     allBaseId.removeAll(chkBase);
                     SearchResult<MenuLicenceDto> searchResult = getLicPremInfo(allBaseId,licenseeId);
                     //filter pending and existing data
-                    List<MenuLicenceDto> newAppLicDtos = removePendAndExistPrem(allBaseId,searchResult.getRows(),licenseeId);
+                    List<MenuLicenceDto> newAppLicDtos = removePendAndExistPrem(chkBase,searchResult.getRows(),licenseeId);
                     //pagination
                     if(!IaisCommonUtils.isEmpty(newAppLicDtos)){
                         initPaginationHandler(newAppLicDtos);
@@ -872,7 +872,7 @@ public class ServiceMenuDelegator {
                         allBaseId.removeAll(chkBase);
                         SearchResult<MenuLicenceDto> searchResult = getLicPremInfo(allBaseId,licenseeId);
                         //filter pending and existing data
-                        List<MenuLicenceDto> newAppLicDtos = removePendAndExistPrem(allBaseId,searchResult.getRows(),licenseeId);
+                        List<MenuLicenceDto> newAppLicDtos = removePendAndExistPrem(chkBase,searchResult.getRows(),licenseeId);
                         //pagination
                         if(!IaisCommonUtils.isEmpty(newAppLicDtos)){
                             initPaginationHandler(newAppLicDtos);
