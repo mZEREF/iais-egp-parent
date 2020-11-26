@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
+import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -23,13 +24,18 @@ import java.util.List;
 @JobHandler(value="syncFeServiceByEndJobHandler")
 @Component
 @Slf4j
-public class SyncFeServiceByEndJobHandler extends MohJobHandler {
+public class SyncFeServiceByEndJobHandler extends IJobHandler {
 
     @Autowired
     private HcsaConfigFeClient hcsaConfigFeClient;
 
+    private void logAbout(String methodName){
+        log.info(StringUtil.changeForLog("****The****" + methodName + "*****Start****"));
+        JobLogger.log(StringUtil.changeForLog("****The****" + methodName + "*****Start****"));
+    }
+
     @Override
-    public ReturnT<String> doExecute(String var1) {
+    public ReturnT<String> execute(String s) throws Exception {
         try {
             AuditTrailHelper.setupBatchJobAuditTrail(this);
             logAbout("SyncServiceByEndJobHandler");
@@ -87,10 +93,5 @@ public class SyncFeServiceByEndJobHandler extends MohJobHandler {
             JobLogger.log(e);
             return ReturnT.FAIL;
         }
-    }
-
-    private void logAbout(String methodName){
-        log.info(StringUtil.changeForLog("****The****" + methodName + "*****Start****"));
-        JobLogger.log(StringUtil.changeForLog("****The****" + methodName + "*****Start****"));
     }
 }
