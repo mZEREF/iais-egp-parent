@@ -2,18 +2,22 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
@@ -29,15 +33,22 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AutoRenwalService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,10 +57,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Wenkang
@@ -62,9 +69,13 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     @Autowired
     private HcsaLicenceClient hcsaLicenClient;
     @Autowired
+    private ApplicationClient applicationClient;
+    @Autowired
     private EmailClient emailClient;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
+    @Autowired
+    private InspectionTaskClient inspectionTaskClient;
     @Autowired
     private MsgTemplateClient msgTemplateClient;
     @Autowired
@@ -224,15 +235,14 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         String serviceCode = hcsaConfigClient.getServiceCodeByName(serviceName).getEntity();
         List<String> serviceCodeList = IaisCommonUtils.genNewArrayList();
         serviceCodeList.add(serviceCode);
-        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
-        if(licenseeDto != null){
+        String applicantName = getApplicantNameByLicId(id);
+        if(!StringUtil.isEmpty(applicantName)){
             String licenceId = licenceDto.getId();
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-            String applicationName = licenseeDto.getName();
             String MohName = AppConsts.MOH_AGENCY_NAME;
-            log.info(StringUtil.changeForLog("send renewal application notification applicantName : " + applicationName));
+            log.info(StringUtil.changeForLog("send renewal application notification applicantName : " + applicantName));
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-            map.put("ApplicantName", applicationName);
+            map.put("ApplicantName", applicantName);
             map.put("MOH_AGENCY_NAME", MohName);
             map.put("serviceName", serviceName);
             map.put("systemLink", loginUrl);
@@ -347,6 +357,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                     log.error(e.getMessage(), e);
                 }
             }
+        } else {
+            log.info(StringUtil.changeForLog("applicantName is null"));
         }
 
         List<String> list = useLicenceIdFindHciNameAndAddress(id);
@@ -383,6 +395,32 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         }
 
     }
+
+    private String getApplicantNameByLicId(String id) {
+        String applicantName = "";
+        List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenClient.getLicCorrBylicId(id).getEntity();
+        if(!IaisCommonUtils.isEmpty(licAppCorrelationDtos)){
+            for(LicAppCorrelationDto licAppCorrelationDto : licAppCorrelationDtos){
+                if(licAppCorrelationDto != null){
+                    String appId = licAppCorrelationDto.getApplicationId();
+                    if(!StringUtil.isEmpty(appId)){
+                        ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
+                        if(applicationDto != null && !ApplicationConsts.APPLICATION_STATUS_DELETED.equals(applicationDto.getStatus())){
+                            ApplicationGroupDto applicationGroupDto = inspectionTaskClient.getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId()).getEntity();
+                            if(applicationGroupDto != null){
+                                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+                                if(orgUserDto != null) {
+                                    applicantName = orgUserDto.getDisplayName();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return applicantName;
+    }
+
     /*
     *
     * auto to send
