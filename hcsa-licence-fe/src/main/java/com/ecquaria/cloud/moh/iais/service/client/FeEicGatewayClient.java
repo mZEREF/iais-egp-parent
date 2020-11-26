@@ -246,4 +246,9 @@ public class FeEicGatewayClient {
         return IaisEGPHelper.callEicGatewayWithParamForList(gateWayUrl + "/v1/svc-routing-stage", HttpMethod.GET, param,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, HcsaSvcRoutingStageDto.class);
     }
+
+    public FeignResponseEntity<String> saveAppGroupGiroSysnEic(ApplicationGroupDto applicationGroupDto, String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/save-appgroup-giro-sysn", HttpMethod.POST, applicationGroupDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
+    }
 }

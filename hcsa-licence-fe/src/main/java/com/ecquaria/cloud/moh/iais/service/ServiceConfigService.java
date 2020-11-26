@@ -63,4 +63,6 @@ public interface ServiceConfigService {
     void sendGiroXmlToSftp();
     void getGiroXmlFromSftpAndSaveXml();
     HcsaServiceDto getServiceDtoById(String id);
+    void sysnSaveGroupToBe();
+    String saveAppGroupGiroSysnEic(ApplicationGroupDto applicationGroupDto);
 }

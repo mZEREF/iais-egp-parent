@@ -37,8 +37,8 @@
                                         <th  width="15%">Impact of Non Compliance (NC) on Patient Safety</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
-                                        <th>Minimum Number of NCs</th>
-                                        <th>Maximum Number of NCs</th>
+                                        <th width="8%">Minimum Number of NCs</th>
+                                        <th width="8%">Maximum Number of NCs</th>
                                         <th>Compliance Risk</th>
                                     </tr>
                                     </thead>
