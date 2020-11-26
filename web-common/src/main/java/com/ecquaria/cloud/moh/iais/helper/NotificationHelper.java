@@ -453,10 +453,14 @@ public class NotificationHelper {
 			}
 		} else {
 			String licenceId = appNo;
-			LicenceDto licenceDto = hcsaLicenceClient.getLicDtoByIdCommon(licenceId).getEntity();
-			if(licenceDto!=null) {
-				licenseeId = licenceDto.getLicenseeId();
-			}else {
+			try {
+				LicenceDto licenceDto = hcsaLicenceClient.getLicDtoByIdCommon(licenceId).getEntity();
+				if(licenceDto!=null) {
+					licenseeId = licenceDto.getLicenseeId();
+				}else {
+					licenseeId=appNo;
+				}
+			}catch (Exception e){
 				licenseeId=appNo;
 			}
 		}
