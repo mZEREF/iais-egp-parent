@@ -73,6 +73,8 @@ public class TemplatesDelegator {
     }
 
     private final static List<String> processList = Arrays.asList(
+            "AUD",
+            "UEN",
             "APP",
             "CES",
             "CHM",
