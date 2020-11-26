@@ -94,11 +94,12 @@
                         <label style="font-size: 16px">Fast Tracking?</label>
                       </div>
                       <div class="col-md-6">
-                        <c:if test="${'true' eq inspecTaskCreAndAssDto.fastTrackCheck}">
+                        <c:if test="${inspecTaskCreAndAssDto.fastTrackCheckFlag}">
                           <input type="checkbox" disabled value="true" name="fastTrackCommon" checked="checked"/>
                         </c:if>
-                        <c:if test="${'true' ne inspecTaskCreAndAssDto.fastTrackCheck}">
-                          <input type="checkbox" value="true" name="fastTrackCommon"/>
+                        <c:if test="${inspecTaskCreAndAssDto.fastTrackCheckFlag}">
+                          <input type="checkbox" value="true" name="fastTrackCommon"
+                             <c:if test="${'true' eq inspecTaskCreAndAssDto.fastTrackCheck}">checked="checked"</c:if>/>
                         </c:if>
                       </div>
                     </div>

@@ -221,6 +221,11 @@ public class InspecAssignTaskDelegator {
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(appStatus)){
             fastTrackFlag = true;
         }
+        if(applicationDto.isFastTracking()){
+            inspecTaskCreAndAssDto.setFastTrackCheckFlag(true);
+        } else {
+            inspecTaskCreAndAssDto.setFastTrackCheckFlag(false);
+        }
         inspecTaskCreAndAssDto.setFastTrackFlag(fastTrackFlag);
         return inspecTaskCreAndAssDto;
     }
