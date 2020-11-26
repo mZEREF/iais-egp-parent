@@ -473,7 +473,12 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                log.error(e.getMessage(),e);
            }
     }
-    private void saveAppGroup( List<InputDetailBackDto> inputDetailBackDtos){
+
+    @Override
+    public HcsaServiceDto getServiceDtoById(String id) {
+        return hcsaConfigFeClient.getServiceDtoById(id).getEntity();
+    }
+    private void saveAppGroup(List<InputDetailBackDto> inputDetailBackDtos){
          if(!IaisCommonUtils.isEmpty(inputDetailBackDtos)){
              List<String> appNo = IaisCommonUtils.genNewArrayList();
              for(InputDetailBackDto inputDetailBackDto : inputDetailBackDtos){

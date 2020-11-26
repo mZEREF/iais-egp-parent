@@ -1446,7 +1446,9 @@ public class ServiceMenuDelegator {
         if(!IaisCommonUtils.isEmpty(hcsaServiceCorrelationDtoList)){
             for(HcsaServiceCorrelationDto corr:hcsaServiceCorrelationDtoList){
                 if(corr.getSpecifiedSvcId().equals(spcSvcId)){
-                    HcsaServiceDto serviceById = HcsaServiceCacheHelper.getServiceById(corr.getBaseSvcId());
+                    //cache status is incorrect
+//                    HcsaServiceDto serviceById = HcsaServiceCacheHelper.getServiceById(corr.getBaseSvcId());
+                    HcsaServiceDto serviceById = serviceConfigService.getServiceDtoById(corr.getBaseSvcId());
                     if(serviceById!=null){
                         if(AppConsts.COMMON_STATUS_ACTIVE.equals(serviceById.getStatus())){
                             hcsaServiceDtos.add(HcsaServiceCacheHelper.getServiceById(corr.getBaseSvcId()));
