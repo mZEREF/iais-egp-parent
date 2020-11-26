@@ -352,17 +352,13 @@ public class ApplicationServiceImpl implements ApplicationService {
             String randomStr = IaisEGPHelper.generateRandomString(26);
             int msgTrackRefNumType = i.getMsgTrackRefNumType();
 
-            LicenseeDto licenseeDto= inspEmailService.getLicenseeDtoById(i.getLicenseeId());
-            if (licenseeDto == null){
-                continue;
-            }
-
             List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-            log.info(StringUtil.changeForLog("do send email licensee name" + licenseeDto.getName()));
             //pending submit self ass mt
+            String appGrpId;
             if (msgTrackRefNumType == 1) {
                 refType = NotificationHelper.RECEIPT_TYPE_APP_GRP;
                 reqRefNum = i.getGroupId();
+                appGrpId = i.getGroupId();
                 appList = i.getAppList();
                 boolean flag = false;
                 List<String> svcNames = IaisCommonUtils.genNewArrayList();
@@ -409,6 +405,8 @@ public class ApplicationServiceImpl implements ApplicationService {
                 //never null
                 ApplicationDto app = appList.get(0);
 
+                appGrpId = app.getAppGrpId();
+
                 tlGroupNumber = app.getApplicationNo();
                 tlAppType = MasterCodeUtil.getCodeDesc(app.getApplicationType());
 
@@ -439,8 +437,15 @@ public class ApplicationServiceImpl implements ApplicationService {
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/";
             //EN-NAP-008
             String today = Formatter.formatDate(new Date());
-            String applicantName = licenseeDto.getName();
-            templateContent.put("ApplicantName", StringUtil.viewHtml(applicantName));
+
+            ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGrpId).getEntity();
+            if (applicationGroupDto != null){
+                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+                if (orgUserDto != null){
+                    templateContent.put("ApplicantName", StringUtil.viewHtml(orgUserDto.getDisplayName()));
+                }
+            }
+
             templateContent.put("MOH_AGENCY_NAM_GROUP",AppConsts.MOH_AGENCY_NAM_GROUP);
             templateContent.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
             templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
