@@ -294,7 +294,7 @@
                     <label class="form-check-label" for="confirmInfo"><span class="check-square"></span>I have read and
                         agreed with the above information</label>
                 </div>
-                <div id="readInfo" hidden><span class="error-msg">Please agree to the declaration statement</span></div>
+                <div id="readInfo" hidden><span class="error-msg"><iais:message key="CESS_ERR001"/></span></div>
                 <div><span id="error_choose" name="iaisErrorMsg" class="error-msg"/></div>
                 <div class="application-tab-footer">
                     <div class="row">

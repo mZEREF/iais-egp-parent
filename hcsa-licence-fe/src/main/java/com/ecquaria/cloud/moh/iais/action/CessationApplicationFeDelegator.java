@@ -189,7 +189,7 @@ public class CessationApplicationFeDelegator {
             }
         }
         if (!choose) {
-            errorMap.put("choose", MessageUtil.getMessageDesc("NEW_ERR0010"));
+            errorMap.put("choose", MessageUtil.getMessageDesc("CESS_ERR003"));
         }
         if (confirmDtos.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
