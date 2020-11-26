@@ -376,6 +376,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                            LicenceDto specLicDto = licenceClient.getLicBylicId(specLicId).getEntity();
                            String svcName1 = specLicDto.getSvcName();
                            String licenceNo1 = specLicDto.getLicenceNo();
+                           serviceCodes.add("<br/>");
                            svcNameLicNo.append(svcName1).append(" : ").append(licenceNo1);
                            HcsaServiceDto hcsaServiceDto1 = HcsaServiceCacheHelper.getServiceByServiceName(svcName1);
                            serviceCodes.add(hcsaServiceDto1.getSvcCode());
@@ -428,6 +429,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                             LicenceDto specLicDto = licenceClient.getLicBylicId(specLicId).getEntity();
                             String svcName1 = specLicDto.getSvcName();
                             String licenceNo1 = specLicDto.getLicenceNo();
+                            svcNameLicNo.append("<br/>");
                             svcNameLicNo.append(svcName1).append(" : ").append(licenceNo1);
                             HcsaServiceDto hcsaServiceDto1 = HcsaServiceCacheHelper.getServiceByServiceName(svcName1);
                             serviceCodes.add(hcsaServiceDto1.getSvcCode());

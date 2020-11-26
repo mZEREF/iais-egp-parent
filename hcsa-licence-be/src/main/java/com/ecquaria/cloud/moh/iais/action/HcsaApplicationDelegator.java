@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -1302,7 +1301,9 @@ public class HcsaApplicationDelegator {
                     maskParams.put("premiseId",appGrpPremId);
                 }
                 maskParams.put("appId",appId);
-                sendCessationMessage(appId,appGrpPremId,applicationNo,licenseeId,maskParams,serviceId);
+//                sendCessationMessage(appId,appGrpPremId,applicationNo,licenseeId,maskParams,serviceId);
+                String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ InboxConst.URL_LICENCE_WEB_MODULE+"MohCessationApplication?appId=" + appId + "&premiseId=" + appGrpPremId;
+                applicationService.appealRfiAndEmail(applicationViewDto,applicationDto,maskParams,url);
             }else if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
                 HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                 maskParams.put("rfiWithdrawAppNo",applicationNo);
