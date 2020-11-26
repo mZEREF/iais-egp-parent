@@ -423,7 +423,8 @@ public class InboxServiceImpl implements InboxService {
             if(!IaisCommonUtils.isEmpty(apps)){
                 for(ApplicationDto applicationDto:apps){
                     if(!finalStatusList.contains(applicationDto.getStatus())){
-                        errorMap.put("errorMessage","There is already a pending application for this licence");
+                        String message = MessageUtil.getMessageDesc("RFC_ERR011");
+                        errorMap.put("errorMessage",message);
                         break;
                     }
                 }

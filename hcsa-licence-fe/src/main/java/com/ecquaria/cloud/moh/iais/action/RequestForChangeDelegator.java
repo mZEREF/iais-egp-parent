@@ -173,7 +173,7 @@ public class RequestForChangeDelegator {
         String UNID=ParamUtil.getString(bpc.request, "UNID");
         if(StringUtil.isEmpty(amendType)){
             flag = false;
-            String errMsg = "Please select a type of amendment";
+            String errMsg = MessageUtil.getMessageDesc("RFC_ERR010");
             ParamUtil.setRequestAttr(bpc.request, "ErrorMsg", errMsg);
             //set audit
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
