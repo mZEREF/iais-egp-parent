@@ -79,7 +79,7 @@
                                         <a  class="back" id="backLink" style="text-decoration:none" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"> </em> Back</a>
                                     </c:otherwise>
                                 </c:choose>
-                                <a class="btn btn-primary next <c:if test="${fn:length(selfAssessmentQueryAttr) == 0 || hasSubmitted eq 'Y'}"> disabled</c:if>" id="submitAllDataButtonId" style="float:right" href="#">Submit</a>
+                                <a class="btn btn-primary next <c:if test="${fn:length(selfAssessmentQueryAttr) == 0 || hasSubmitted eq 'Y'}"> disabled</c:if>" id="submitAllDataButtonId" style="float:right" href="javascript:void(0);">Submit</a>
 
                             </p>
                         </iais:action>

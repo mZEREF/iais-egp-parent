@@ -17,15 +17,15 @@
           <c:when test="${serviceStepDto.isStepEnd() && serviceStepDto.isServiceEnd()}">
             <c:choose>
               <c:when test="${'APTY004' ==AppSubmissionDto.appType}">
-                <a class="btn btn-primary next premiseId" id="RenewSave" >Save and Preview</a>
+                <a class="btn btn-primary next premiseId" id="RenewSave" href="javascript:void(0);">Save and Preview</a>
               </c:when>
               <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
-                <a class="btn btn-primary next premiseId" id="RfcSave" >Save and Preview</a>
+                <a class="btn btn-primary next premiseId" id="RfcSave" href="javascript:void(0);">Save and Preview</a>
               </c:when>
             </c:choose>
           </c:when>
           <c:otherwise>
-            <a class="btn btn-primary" id="Next" >Next</a>
+            <a class="btn btn-primary" id="Next" href="javascript:void(0);">Next</a>
           </c:otherwise>
         </c:choose>
         <input name="nextStep" value="" type="hidden">
@@ -38,17 +38,17 @@
       <div class="col-xs-12 col-sm-6">
         <div class="button-group">
           <c:if test="${requestInformationConfig==null}">
-            <a class="btn btn-secondary" id = "SaveDraft"  >Save as Draft</a>
+            <a class="btn btn-secondary" id = "SaveDraft"  href="javascript:void(0);">Save as Draft</a>
           </c:if>
           <c:choose>
             <c:when test="${serviceStepDto.isStepEnd() && serviceStepDto.isServiceEnd()}">
-              <a class="btn btn-primary" id="Next" >Proceed to Preview & Submit</a>
+              <a class="btn btn-primary" id="Next" href="javascript:void(0);">Proceed to Preview & Submit</a>
             </c:when>
             <c:when test="${serviceStepDto.isStepEnd() && !serviceStepDto.isServiceEnd()}">
-              <a class="btn btn-primary" id="Next" >Proceed to Next Service</a>
+              <a class="btn btn-primary" id="Next" href="javascript:void(0);">Proceed to Next Service</a>
             </c:when>
             <c:otherwise>
-              <a class="btn btn-primary" id="Next" >Next</a>
+              <a class="btn btn-primary" id="Next" href="javascript:void(0);">Next</a>
             </c:otherwise>
           </c:choose>
         <input name="nextStep" value="" type="hidden">

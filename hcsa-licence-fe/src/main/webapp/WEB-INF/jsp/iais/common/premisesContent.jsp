@@ -248,7 +248,7 @@
             <div class="new-premise-form-on-site hidden  ">
                 <div class="form-horizontal">
                     <div class="form-group">
-                        <label class="col-xs-12 col-md-4 control-label" for="siteSafefyNo">Fire Safety & Shelter Bureau Ref No. <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message key="NEW_ACK006"></iais:message>&lt;/p&gt;">i</a></label>
+                        <label class="col-xs-12 col-md-4 control-label" for="siteSafefyNo">Fire Safety & Shelter Bureau Ref No. <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message key="NEW_ACK006"></iais:message>&lt;/p&gt;">i</a></label>
                         <div class="col-xs-9 col-sm-5 col-md-5">
                             <input id="siteSafefyNo" maxlength="66" name="onSiteScdfRefNo" type="text" value="${appGrpPremisesDto.scdfRefNo}">
                         </div>

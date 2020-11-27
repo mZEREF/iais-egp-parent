@@ -101,7 +101,7 @@
                                     </tbody>
                                 </table>
                                 <div id="edit">
-                                    <a class="btn btn-secondary aMarginleft pull-left">Edit</a>
+                                    <a class="btn btn-secondary aMarginleft pull-left" href="javascript:void(0);">Edit</a>
                                     <span class="error-msg" name="errorMsg" id="error_editSelect"></span>
                                 </div>
                                 <br/>
@@ -409,7 +409,7 @@
                             </div>
                             <div class="col-xs-12 col-sm-6 text-right">
                                 <div class="button-group">
-                                    <a class="btn btn-primary next" id="previewAndSub">Preview and Submit</a>
+                                    <a class="btn btn-primary next" id="previewAndSub" href="javascript:void(0);">Preview and Submit</a>
                                 </div>
                             </div>
                         </div>

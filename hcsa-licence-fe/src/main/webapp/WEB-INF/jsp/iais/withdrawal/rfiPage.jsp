@@ -54,7 +54,7 @@
                                     <tbody id="withdrawBodyDiv"></tbody>
                                 </table>
                                 <div class="modal-footer">
-                                    <a class="btn btn-primary withdraw-next" href="#">Done</a>
+                                    <a class="btn btn-primary withdraw-next" href="javascript:void(0);">Done</a>
                                 </div>
                             </div>
                         </div>
@@ -100,7 +100,7 @@
                                     <div class="file-upload-gp">
                                         <input id="selectedFile" type="file" style="display: none;" name = "selectedFile"
                                                aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary"
-                                                                            href="#">Upload</a>
+                                                                            href="javascript:void(0);">Upload</a>
                                         <div id="delFile" style="margin-top: 13px;color: #1F92FF;"
                                              hidden="hidden">
                                             <strong id="fileName">${rfiWithdrawDto.appPremisesSpecialDocDto.docName}</strong>
@@ -126,7 +126,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="components">
-                                <a class="btn btn-primary" onclick="doSubmit()">Submit</a>
+                                <a class="btn btn-primary" onclick="doSubmit()" href="javascript:void(0);">Submit</a>
                             </div>
                         </div>
                     </div>

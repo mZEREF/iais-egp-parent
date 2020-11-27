@@ -131,7 +131,7 @@
             <div class="fileContent col-xs-2">
               ${upFile.originalFilename}
               <input class="selectedFile"  id="selectedFile" name = "selectedFile"  type="file" style="display: none;" aria-label="selectedFile1" onchange="javascript:doUserRecUploadConfirmFile()">
-              <a class="btn btn-file-upload btn-secondary">Upload</a>
+              <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Upload</a>
 
             </div>
             <span name="iaisErrorMsg" class="error-msg" id="error_file"></span>
@@ -142,7 +142,7 @@
               <input type="text" value="Y" style="display: none" name="isDelete" id="isDelete">
               <input type="text" value="${filename}" style="display: none" id="isFile">
 
-              <a class="btn btn-danger btn-sm" style="margin-left: 20px;display: none" name="delete" id="delete" >X</a>
+              <a class="btn btn-danger btn-sm" style="margin-left: 20px;display: none" name="delete" id="delete" href="javascript:void(0);">X</a>
             </div>
           </div>
         </div>
@@ -157,9 +157,9 @@
       <div class="row">
         <div class="col-xs-12 col-sm-12" style="margin-bottom: 1%">
           <div class="text-right text-center-mobile">
-            <a class="btn btn-secondary" href="#" id="cancel">Cancel</a>
-            <a class="btn btn-secondary" href="#" id="save">Save</a>
-            <a class="btn btn-primary" href="#" id="submit">Submit</a>
+            <a class="btn btn-secondary" href="javascript:void(0);" id="cancel">Cancel</a>
+            <a class="btn btn-secondary" href="javascript:void(0);" id="save">Save</a>
+            <a class="btn btn-primary" href="javascript:void(0);" id="submit">Submit</a>
           </div>
         </div>
       </div>

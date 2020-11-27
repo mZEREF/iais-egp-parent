@@ -141,15 +141,15 @@
                 <div class="col-xs-11 col-md-11">
                     <c:choose>
                     <c:when test="${requestInformationConfig == null && 'error' != AckStatus}">
-                        <a class="btn btn-primary aMarginleft col-md-2 pull-right" id="toDashBoard"  >Go to <br>Dashboard</a>
+                        <a class="btn btn-primary aMarginleft col-md-2 pull-right" id="toDashBoard" href="javascript:void(0);">Go to <br>Dashboard</a>
                         <c:if test="${AppSubmissionDto.appType!='APTY005'}">
-                            <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="toChooseSvc" >Apply for <br>Another Licence</a>
-                            <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doSelfAssessment">Submit <br>Self-Assessment</a>
-                            <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doPrefInsDate">Indicate preferred<br>Inspection Date</a>
+                            <a class="btn btn-secondary aMarginleft col-md-3 pull-right" href="javascript:void(0);" id="toChooseSvc" >Apply for <br>Another Licence</a>
+                            <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doSelfAssessment" href="javascript:void(0);">Submit <br>Self-Assessment</a>
+                            <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doPrefInsDate" href="javascript:void(0);">Indicate preferred<br>Inspection Date</a>
                         </c:if>
                     </c:when>
                     <c:otherwise>
-                        <a class="btn btn-primary aMarginleft col-md-2 pull-right" id="toDashBoard" >Go to <br>Dashboard</a>
+                        <a class="btn btn-primary aMarginleft col-md-2 pull-right" id="toDashBoard" href="javascript:void(0);">Go to <br>Dashboard</a>
                     </c:otherwise>
                     </c:choose>
                 </div>

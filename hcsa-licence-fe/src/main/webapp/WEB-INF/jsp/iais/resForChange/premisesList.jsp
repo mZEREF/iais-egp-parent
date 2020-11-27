@@ -32,8 +32,8 @@
     </div>
     <div class="form-group" style="position: absolute ;right: 1%" >
       <div class="col-xs-12 col-md-12 col-lg-12">
-        <a class="btn btn-secondary" id="premiseClear">Clear</a>
-        <a class="btn btn-primary" id="premiseSearch">search</a>
+        <a class="btn btn-secondary" id="premiseClear" href="javascript:void(0);">Clear</a>
+        <a class="btn btn-primary" id="premiseSearch" href="javascript:void(0);">search</a>
       </div>
     </div>
 

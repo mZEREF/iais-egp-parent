@@ -57,7 +57,7 @@
                       </div>
                       <div class="col-xs-12 col-sm-6">
                         <div class="button-group">
-                          <a class="btn btn-primary next" id="previewAndSub">Preview and Submit</a>
+                          <a class="btn btn-primary next" id="previewAndSub" href="javascript:void(0);">Preview and Submit</a>
                         </div>
                       </div>
                     </div>

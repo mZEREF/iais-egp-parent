@@ -48,10 +48,10 @@
     <div class="row">
         <div class="container">
             <div class="col-xs-12 col-md-6 text-left">
-                <a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a>
+                <a class="back" id="Back" href="javascript:void(0);"><em class="fa fa-angle-left"></em> Back</a>
             </div>
             <div class="col-xs-12 col-md-6 text-right">
-                <a class="btn btn-primary next premiseId" id="Next">Next</a>
+                <a class="btn btn-primary next premiseId" id="Next" href="javascript:void(0);">Next</a>
             </div>
         </div>
 

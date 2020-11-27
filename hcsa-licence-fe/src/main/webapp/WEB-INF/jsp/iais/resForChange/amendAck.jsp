@@ -74,10 +74,10 @@
 
                         <div class="col-xs-12 col-sm-12 margin-bottom-10">
                             <div class="button-group col-xs-12 col-sm-6">
-                                <a class="btn btn-secondary next" id="Acknowledgement">Print this Acknowledgement</a>
+                                <a class="btn btn-secondary next" id="Acknowledgement" href="javascript:void(0);">Print this Acknowledgement</a>
                             </div>
                             <div class="button-group col-xs-12 col-sm-6 ">
-                                <a class="btn btn-primary aMarginleft col-md-6 pull-right" id="GotoDashboard" >Go to Dashboard</a>
+                                <a class="btn btn-primary aMarginleft col-md-6 pull-right" id="GotoDashboard" href="javascript:void(0);">Go to Dashboard</a>
                             </div>
                         </div>
                     </c:otherwise>

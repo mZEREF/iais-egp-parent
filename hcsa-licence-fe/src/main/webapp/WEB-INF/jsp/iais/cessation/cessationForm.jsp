@@ -63,7 +63,7 @@
                                                     </iais:value>
                                                     <iais:value>
                                                         <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
-                                                           data-html="true"
+                                                           data-html="true" href="javascript:void(0);"
                                                            data-original-title="<p>The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">i</a>
                                                     </iais:value>
                                                 </iais:row>
@@ -298,7 +298,7 @@
                                 class="fa fa-angle-left"></em> Back</a>
                     </span>
                         <span style="padding-left: 73%" class="components">
-                       <a class="btn btn-primary next" onclick="submitSure('submit')">Next</a>
+                       <a class="btn btn-primary next" href="javascript:void(0);" onclick="submitSure('submit')">Next</a>
                     </span>
                     </div>
                 </div>

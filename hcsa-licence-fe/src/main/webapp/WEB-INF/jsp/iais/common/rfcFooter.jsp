@@ -12,12 +12,12 @@
     <c:choose>
         <c:when test="${'APTY004' ==AppSubmissionDto.appType}">
             <div class="col-xs-12 col-sm-3  text-right">
-                <a class="btn btn-primary next premiseId" id="RenewSave" >Save and Preview</a>
+                <a class="btn btn-primary next premiseId" id="RenewSave" href="javascript:void(0);">Save and Preview</a>
             </div>
         </c:when>
         <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
             <div class="col-xs-12 col-sm-3  text-right">
-                <a class="btn btn-primary next premiseId" id="RfcSave" >Save and Preview</a>
+                <a class="btn btn-primary next premiseId" id="RfcSave" href="javascript:void(0);">Save and Preview</a>
             </div>
         </c:when>
     </c:choose>

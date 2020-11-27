@@ -117,7 +117,7 @@
                                                                    aria-label="selectedFile">
                                                             <span name="iaisErrorMsg" class="error-msg"
                                                                   id="error_UploadFile${rfiDoc.id}"></span><br>
-                                                            <a class="btn btn-file-upload btn-secondary">Attachment</a><br/>
+                                                            <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Attachment</a><br/>
                                                         </div>
                                                         <br/>
                                                     </iais:value>

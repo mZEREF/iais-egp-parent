@@ -72,7 +72,7 @@
                                             </div>
                                             <div class="col-xs-12 col-sm-3">
                                                 <div class="button-group">
-                                                    <a class="btn btn-secondary" id="rfcPrint" href="#" >Print</a>
+                                                    <a class="btn btn-secondary" id="rfcPrint" href="javascript:void(0);">Print</a>
                                                 </div>
                                             </div>
                                         </div>

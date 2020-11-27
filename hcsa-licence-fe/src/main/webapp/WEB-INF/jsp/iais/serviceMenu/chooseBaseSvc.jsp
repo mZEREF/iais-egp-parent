@@ -42,7 +42,7 @@
                 </div>
                 <div class="col-xs-12 col-md-4">
                     <div class="text-right text-center-mobile">
-                        <a class="btn btn-primary next" id="baseContinue">Continue</a>
+                        <a class="btn btn-primary next" id="baseContinue" href="javascript:void(0);">Continue</a>
                     </div>
                 </div>
             </div>

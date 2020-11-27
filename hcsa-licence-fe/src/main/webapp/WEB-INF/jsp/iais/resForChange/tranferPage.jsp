@@ -58,7 +58,7 @@
                              <a class="back" href="/hcsa-licence-web/eservice/INTERNET/MohRequestForChange?licenceId=<iais:mask name="licenceId" value="${prepareTranfer.licenceId}"/>&AmendTypeValue=0"><em class="fa fa-angle-left"></em> Back</a>
                          </div>
                          <div class="col-xs-12 col-md-6 text-right">
-                             <a class="btn btn-primary next premiseId" id="Next">Next</a>
+                             <a class="btn btn-primary next premiseId" id="Next" href="javascript:void(0);">Next</a>
                          </div>
                      </div>
                  </div>

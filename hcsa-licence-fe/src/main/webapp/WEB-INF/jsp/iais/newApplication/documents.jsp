@@ -107,7 +107,7 @@
                           <br/>
                           <input class="selectedFile commDoc" id="commonDoc"  name = "${commKey}" type="file" style="display: none;" aria-label="selectedFile1" >
                           <span name="iaisErrorMsg" class="error-msg" id="error_${commKey}"></span><br>
-                          <a class="btn btn-file-upload btn-secondary" >Upload</a><br/>
+                          <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Upload</a><br/>
                         </div>
                       </div>
                     </c:forEach>
@@ -147,7 +147,7 @@
                             <br/>
                             <input class="selectedFile premDoc"  name = "${premKey}" type="file" style="display: none;" aria-label="selectedFile1">
                             <span name="iaisErrorMsg" class="error-msg" id="error_${premKey}"></span><br>
-                            <a class="btn btn-file-upload btn-secondary" >Upload</a><br/>
+                            <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Upload</a><br/>
                           </div>
                         </div>
                       </c:forEach>
@@ -165,8 +165,8 @@
                         <input type="text" style="display: none; " id="saveDraftSuccess" value="${saveDraftSuccess}">
 
                         <div class="col-xs-12 col-sm-6">
-                          <div class="button-group"> <c:if test="${requestInformationConfig==null}"><a class="btn btn-secondary" id = "SaveDraft" >Save as Draft</a></c:if>
-                            <a class="btn btn-primary next" id="Next">Next</a></div>
+                          <div class="button-group"> <c:if test="${requestInformationConfig==null}"><a class="btn btn-secondary" id = "SaveDraft" href="javascript:void(0);">Save as Draft</a></c:if>
+                            <a class="btn btn-primary next" id="Next" href="javascript:void(0);">Next</a></div>
                         </div>
                       </div>
                     </c:otherwise>

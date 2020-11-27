@@ -1,6 +1,6 @@
 <div class="tab-pane" id="tabLicence" role="tabpanel">
     <div class="tab-search license-search clearfix">
-        <div class="licence-btns"><a class="btn btn-primary disabled" href="javascript:;">Renew</a><a class="btn btn-secondary disabled" href="javascript:;">Cease</a><a class="btn btn-secondary disabled" href="javascript:;">Amend</a></div>
+        <div class="licence-btns"><a class="btn btn-primary disabled" href="javascript:void(0);">Renew</a><a class="btn btn-secondary disabled" href="javascript:void(0);">Cease</a><a class="btn btn-secondary disabled" href="javascript:void(0);">Amend</a></div>
         <div class="search-wrap">
             <div class="input-group">
                 <input class="form-control" id="licenseAdvancedSearcch" type="text" placeholder="Licence no." name="licenseAdvancedSearcch" aria-label="licenseAdvancedSearcch"><span class="input-group-btn">

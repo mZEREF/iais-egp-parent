@@ -24,7 +24,7 @@
   </div>
   <div class="form-check row"  >
     <div class="col-xs-2" >
-      <a class="btn btn-primary" id="amendmentSubmitPremises">submit</a>
+      <a class="btn btn-primary" id="amendmentSubmitPremises" href="javascript:void(0);">submit</a>
     </div>
   </div>
 
