@@ -303,7 +303,8 @@
                         $('.removeRfiBtn').unbind('click');
                         removeRFI();
                         $('.date_picker').datepicker({
-                            format:"dd/mm/yyyy"
+                            format:"dd/mm/yyyy",
+                            autoclose:true
                         });
                         length=length+1;
                         var text=$('.docTitIndex');
@@ -369,7 +370,8 @@
                         $('.removeRfiInfoBtn').unbind('click');
                         removeRFIInfo();
                         $('.date_picker').datepicker({
-                            format:"dd/mm/yyyy"
+                            format:"dd/mm/yyyy",
+                            autoclose:true
                         });
                         lengthInfo=lengthInfo+1;
                         var text=$('.infoTitIndex');

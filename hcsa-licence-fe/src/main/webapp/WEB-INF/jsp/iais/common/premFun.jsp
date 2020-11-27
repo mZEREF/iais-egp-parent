@@ -303,7 +303,8 @@
                 preperChange();
                 addOperational();
                 $('.date_picker').datepicker({
-                    format:"dd/mm/yyyy"
+                    format:"dd/mm/yyyy",
+                    autoclose:true
                 });
                 <!--set Scrollbar -->
                 $("div.premSelect->ul").mCustomScrollbar({
@@ -832,7 +833,8 @@
         var fireIssueDateHtml = '<input type="text" autocomplete="off" class="date_picker form-control fireIssuedDate" name="onSiteFireSafetyCertIssuedDate"  value="'+val+'" placeholder="'+ issueDate +'" maxlength="10">';
         $premContent.find('div.fireIssuedDateDiv').html(fireIssueDateHtml);
         $premContent.find('.date_picker').datepicker({
-            format:"dd/mm/yyyy"
+            format:"dd/mm/yyyy",
+            autoclose:true
         });
 
     }

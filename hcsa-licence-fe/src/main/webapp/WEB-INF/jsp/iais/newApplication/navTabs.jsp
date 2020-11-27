@@ -278,7 +278,8 @@
         $Ele.find('input[type="text"]').css('border-color','');
         $Ele.find('input[type="text"]').css('color','');
         $Ele.find('.date_picker').datepicker({
-            format:"dd/mm/yyyy"
+            format:"dd/mm/yyyy",
+            autoclose:true
         });
     }
 
