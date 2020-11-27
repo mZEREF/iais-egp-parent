@@ -1006,11 +1006,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             emailMap.put("LicenceNumber", licenceDto.getLicenceNo());
                             StringBuilder stringBuilder = new StringBuilder();
                             List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(application.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
-                            if (appEditSelectDtos.get(0).isServiceEdit()){
-                                stringBuilder.append("<p class=\"line\">   ").append("Remove subsumed service").append("</p>");
-                            }
-                            if (applicationGroupDto.getNewLicenseeId()!=null){
-                                stringBuilder.append("<p class=\"line\">   ").append("Change in Management of Licensee").append("</p>");
+                            if(appEditSelectDtos!=null){
+                                if (appEditSelectDtos.get(0).isServiceEdit()){
+                                    stringBuilder.append("<p class=\"line\">   ").append("Remove subsumed service").append("</p>");
+                                }
+                                if (applicationGroupDto.getNewLicenseeId()!=null){
+                                    stringBuilder.append("<p class=\"line\">   ").append("Change in Management of Licensee").append("</p>");
+                                }
                             }
                             emailMap.put("ServiceNames", stringBuilder);
                             emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
