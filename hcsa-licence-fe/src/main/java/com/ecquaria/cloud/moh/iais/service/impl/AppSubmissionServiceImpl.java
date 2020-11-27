@@ -1,14 +1,17 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -16,8 +19,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEnt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -33,7 +41,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -41,14 +51,21 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
@@ -66,9 +83,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
 import sop.webflow.rt.api.Process;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -119,6 +139,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private NotificationHelper notificationHelper;
     @Autowired
     private ServiceConfigServiceImpl serviceConfigService;
+    @Autowired
+    private RequestForChangeServiceImpl requestForChangeService;
+
 
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
@@ -1164,6 +1187,825 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return newPrimaryDocList;
     }
 
+    @Override
+    public Map<String, String> doPreviewAndSumbit(BaseProcessClass bpc) {
+        Map<String, String> previewAndSubmitMap = IaisCommonUtils.genNewHashMap();
+        //
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+        previewAndSubmitMap = doPreviewSubmitValidate(previewAndSubmitMap,appSubmissionDto,oldAppSubmissionDto,bpc);
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),previewAndSubmitMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
+        return previewAndSubmitMap;
+    }
+
+    @Override
+    public Map<String, String> doPreviewSubmitValidate(Map<String, String> previewAndSubmitMap, AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,BaseProcessClass bpc) {
+        StringBuilder sB = new StringBuilder(10);
+        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+        List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.PREMISES_HCI_LIST);
+        String keyWord = MasterCodeUtil.getCodeDesc("MS001");
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        Map<String, String> premissMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto, premisesHciList, keyWord, isRfi);
+        premissMap.remove("hciNameUsed");
+        if (!premissMap.isEmpty()) {
+            previewAndSubmitMap.put("premiss", MessageUtil.replaceMessage("GENERAL_ERR0006","premiss","field"));
+            String premissMapStr = JsonUtil.parseToJson(premissMap);
+            log.info(StringUtil.changeForLog("premissMap json str:" + premissMapStr));
+            coMap.put("premises", "");
+        } else {
+            coMap.put("premises", "premises");
+        }
+        //
+        Map<String, AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
+        //
+        Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
+        List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        ServiceStepDto serviceStepDto = new ServiceStepDto();
+        for (int i = 0; i < dto.size(); i++) {
+            String serviceId = dto.get(i).getServiceId();
+            List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
+            serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
+            List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig = serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
+            Map<String, String> map = doCheckBox(bpc, sB, allSvcAllPsnConfig, currentSvcAllPsnConfig, dto.get(i),systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType());
+            if (!map.isEmpty()) {
+                previewAndSubmitMap.putAll(map);
+                String mapStr = JsonUtil.parseToJson(map);
+                log.info(StringUtil.changeForLog("map json str:" + mapStr));
+            }
+            NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),map,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
+        }
+        Map<String, String> documentMap = IaisCommonUtils.genNewHashMap();
+        documentValid(bpc.request, documentMap);
+        doCommomDocument(bpc.request, documentMap);
+        NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),documentMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
+        if (!documentMap.isEmpty()) {
+            previewAndSubmitMap.put("document", MessageUtil.replaceMessage("GENERAL_ERR0006","document","field"));
+            String documentMapStr = JsonUtil.parseToJson(documentMap);
+            log.info(StringUtil.changeForLog("documentMap json str:" + documentMapStr));
+            coMap.put("document", "");
+        } else {
+            coMap.put("document", "document");
+        }
+        if (!StringUtil.isEmpty(sB.toString())) {
+            previewAndSubmitMap.put("serviceId", sB.toString());
+            coMap.put("information", "");
+        } else {
+            coMap.put("information", "information");
+        }
+        bpc.request.getSession().setAttribute("coMap", coMap);
+
+        return previewAndSubmitMap;
+    }
+
+    @Override
+    public Map<String, List<HcsaSvcPersonnelDto>> getAllSvcAllPsnConfig(HttpServletRequest request) {
+        Map<String, List<HcsaSvcPersonnelDto>> svcAllPsnConfig = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.SERVICEALLPSNCONFIGMAP);
+        if (svcAllPsnConfig == null) {
+            AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            List<String> svcIds = IaisCommonUtils.genNewArrayList();
+            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+                svcIds.add(appSvcRelatedInfoDto.getServiceId());
+            }
+            List<HcsaServiceStepSchemeDto> svcStepConfigs = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcIds);
+            svcAllPsnConfig = serviceConfigService.getAllSvcAllPsnConfig(svcStepConfigs, svcIds);
+        }
+        return svcAllPsnConfig;
+    }
+
+    @Override
+    public Map<String, String> doCheckBox(BaseProcessClass bpc, StringBuilder sB, Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig, List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig, AppSvcRelatedInfoDto dto, int uploadFileLimit, String sysFileType) {
+        String serviceId = dto.getServiceId();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : currentSvcAllPsnConfig) {
+            String psnType = hcsaSvcPersonnelDto.getPsnType();
+            int mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
+            if ("PO".equals(psnType)) {
+                List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
+                if (appSvcPrincipalOfficersDtoList == null) {
+                    if (mandatoryCount > 0) {
+                        errorMap.put("error", "PO");
+                        sB.append(serviceId);
+                        log.info("PO null");
+                    }
+                } else if (appSvcPrincipalOfficersDtoList.size() < mandatoryCount) {
+                    errorMap.put("error", "PO");
+                    sB.append(serviceId);
+                    log.info("PO mandatoryCount");
+                }
+            } else if ("SVCPSN".equals(psnType)) {
+                List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
+                if (appSvcPersonnelDtoList == null) {
+                    if (mandatoryCount > 0) {
+                        errorMap.put("error", "SVCPSN");
+                        sB.append(serviceId);
+                        log.info("SVCPSN null");
+                    }
+                } else if (appSvcPersonnelDtoList.size() < mandatoryCount) {
+                    errorMap.put("error", "SVCPSN");
+                    sB.append(serviceId);
+                    log.info("SVCPSN mandatoryCount");
+                }
+            } else if ("CGO".equals(psnType)) {
+                List<AppSvcCgoDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
+                if (appSvcCgoDtoList == null) {
+                    if (mandatoryCount > 0) {
+                        errorMap.put("error", "CGO");
+                        sB.append(serviceId);
+                        log.info("CGO null");
+                    }
+                } else if (appSvcCgoDtoList.size() < mandatoryCount) {
+                    errorMap.put("error", "CGO");
+                    sB.append(serviceId);
+                    log.info("CGO mandatoryCount");
+                }
+            } else if ("MAP".equals(psnType)) {
+                List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
+                if (appSvcMedAlertPersonList == null) {
+                    if (mandatoryCount > 0) {
+                        errorMap.put("error", "MAP");
+                        sB.append(serviceId);
+                        log.info("MAP null");
+                    }
+                } else if (appSvcMedAlertPersonList.size() < mandatoryCount) {
+                    errorMap.put("error", "MAP");
+                    sB.append(serviceId);
+                    log.info("MAP mandatoryCount");
+                }
+            }
+        }
+        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
+        Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
+        Map<String, String> map = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap, dto.getServiceCode());
+        log.info(JsonUtil.parseToJson(map));
+        if (!map.isEmpty()) {
+            sB.append(serviceId);
+            errorMap.put("Medaler", "error");
+        }
+        List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.getAppSvcLaboratoryDisciplinesDtoList();
+        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = allSvcAllPsnConfig.get(serviceId);
+
+        List<AppSvcCgoDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
+        doAppSvcCgoDto(hcsaSvcPersonnelDtos, errorMap, appSvcCgoDtoList, serviceId, sB);
+        log.info(sB.toString());
+        List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
+        doSvcDis(errorMap, appSvcDisciplineAllocationDtoList, serviceId, sB);
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap) + "doSvcDis"));
+        dolabory(errorMap,appSvcDisciplineAllocationDtoList, appSvcLaboratoryDisciplinesDtoList, serviceId, sB);
+        log.info(sB.toString());
+        doSvcDisdolabory(errorMap, appSvcDisciplineAllocationDtoList, appSvcLaboratoryDisciplinesDtoList, serviceId, sB);
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap) + "doSvcDisdolabory"));
+        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
+        Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(dto.getAppSvcCgoDtoList(), licPersonMap, dto.getServiceCode());
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(govenMap)));
+        if (!govenMap.isEmpty()) {
+            errorMap.put("CGO", "error");
+            sB.append(serviceId);
+            log.info("govenMap is error");
+        }
+        doPO(hcsaSvcPersonnelDtos, errorMap, appSvcPrincipalOfficersDtoList, serviceId, sB);
+        log.info(sB.toString());
+        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
+        doAppSvcPersonnelDtoList(hcsaSvcPersonnelDtos, errorMap, appSvcPersonnelDtoList, serviceId, sB,dto.getServiceCode());
+        log.info(sB.toString());
+        List<AppSvcDocDto> appSvcDocDtoLit = dto.getAppSvcDocDtoLit();
+        doSvcDocument(errorMap, appSvcDocDtoLit, serviceId, sB,uploadFileLimit,sysFileType);
+        log.info(sB.toString());
+
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap)));
+
+        return errorMap;
+    }
+
+    @Override
+    public List<AppGrpPrimaryDocDto> documentValid(HttpServletRequest request, Map<String, String> errorMap) {
+        log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
+        if (appGrpPrimaryDocDtoList == null) {
+            return null;
+        }
+        for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList) {
+            if(StringUtil.isEmpty(appGrpPrimaryDocDto.getMd5Code())){
+                continue;
+            }
+            String keyName = "";
+            if (StringUtil.isEmpty(appGrpPrimaryDocDto.getPremisessName()) && StringUtil.isEmpty(appGrpPrimaryDocDto.getPremisessType())) {
+                //common
+                keyName = "common" + appGrpPrimaryDocDto.getSvcComDocId();
+            } else {
+                keyName = "prem" + appGrpPrimaryDocDto.getSvcComDocId() + appGrpPrimaryDocDto.getPremisessName();
+            }
+            long length = appGrpPrimaryDocDto.getRealDocSize();
+            int uploadFileLimit = systemParamConfig.getUploadFileLimit();
+            if (length / 1024 / 1024 > uploadFileLimit) {
+                errorMap.put(keyName, MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(uploadFileLimit), "sizeMax"));
+                continue;
+            }
+            Boolean flag = Boolean.FALSE;
+            String name = appGrpPrimaryDocDto.getDocName();
+            String substring = name.substring(name.lastIndexOf('.') + 1);
+            String sysFileType = systemParamConfig.getUploadFileType();
+            String[] sysFileTypeArr = FileUtils.fileTypeToArray(sysFileType);
+            for (String f : sysFileTypeArr) {
+                if (f.equalsIgnoreCase(substring)) {
+                    flag = Boolean.TRUE;
+                }
+            }
+            if (!flag) {
+                errorMap.put(keyName, MessageUtil.replaceMessage("GENERAL_ERR0018", sysFileType, "fileType"));
+            }
+            String errMsg = errorMap.get(keyName);
+            if (StringUtil.isEmpty(errMsg)) {
+                appGrpPrimaryDocDto.setPassValidate(true);
+            }
+        }
+        return appGrpPrimaryDocDtoList;
+    }
+
+    private static void doSvcDocument(Map<String, String> map, List<AppSvcDocDto> appSvcDocDtoLit, String serviceId, StringBuilder sB,int uploadFileLimit,String sysFileType) {
+        if (appSvcDocDtoLit != null) {
+            for (AppSvcDocDto appSvcDocDto : appSvcDocDtoLit) {
+                Integer docSize = appSvcDocDto.getDocSize();
+                String docName = appSvcDocDto.getDocName();
+                Boolean flag = Boolean.FALSE;
+                String substring = docName.substring(docName.lastIndexOf('.') + 1);
+                if (docSize/1024 > uploadFileLimit) {
+                    sB.append(serviceId);
+                }
+
+                String[] sysFileTypeArr = FileUtils.fileTypeToArray(sysFileType);
+                for (String f : sysFileTypeArr) {
+                    if (f.equalsIgnoreCase(substring)) {
+                        flag = Boolean.TRUE;
+                    }
+                }
+                if (!flag) {
+                    sB.append(serviceId);
+                }
+            }
+
+
+        }
+
+
+    }
+
+    private static void doAppSvcPersonnelDtoList(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map map, List<AppSvcPersonnelDto> appSvcPersonnelDtos, String serviceId, StringBuilder sB,String svcCode) {
+        if (appSvcPersonnelDtos == null) {
+            if (hcsaSvcPersonnelDtos != null) {
+                for (HcsaSvcPersonnelDto every : hcsaSvcPersonnelDtos) {
+                    String psnType = every.getPsnType();
+                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL.equals(psnType)) {
+                        sB.append(serviceId);
+                        return;
+                    }
+                }
+            }
+
+            return;
+        }
+
+        boolean flag = false;
+        String errName = MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field");
+        String errDesignation = MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field");
+        String errRegnNo = MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn No.","field");
+        String errWrkExpYear = MessageUtil.replaceMessage("GENERAL_ERR0006","Relevant working experience (Years)","field");
+        String errQualification = MessageUtil.replaceMessage("GENERAL_ERR0006","Qualification","field");
+        String errSelSvcPsnel = MessageUtil.replaceMessage("GENERAL_ERR0006","Select Service Personnel","field");
+        for (int i = 0; i < appSvcPersonnelDtos.size(); i++) {
+            if (AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)) {
+                String designation = appSvcPersonnelDtos.get(i).getDesignation();
+                if (StringUtil.isEmpty(designation)) {
+                    map.put("designation" + i, errDesignation);
+                    flag = true;
+                }
+                String name = appSvcPersonnelDtos.get(i).getName();
+                if (StringUtil.isEmpty(name)) {
+                    map.put("name" + i, errName);
+                    flag = true;
+                }
+                String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
+                if (StringUtil.isEmpty(profRegNo)) {
+                    map.put("regnNo" + i, errRegnNo);
+                    flag = true;
+                }
+                String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
+                if (StringUtil.isEmpty(wrkExpYear)) {
+                    map.put("wrkExpYear" + i, errWrkExpYear);
+                    flag = true;
+                } else {
+                    if (!wrkExpYear.matches("^[0-9]*$")) {
+                        map.put("wrkExpYear" + i, "GENERAL_ERR0002");
+                        flag = true;
+                    }
+                }
+            } else if (AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)) {
+                String name = appSvcPersonnelDtos.get(i).getName();
+                if (StringUtil.isEmpty(name)) {
+                    map.put("name" + i, errName);
+                    flag = true;
+                }
+                String quaification = appSvcPersonnelDtos.get(i).getQualification();
+                if (StringUtil.isEmpty(quaification)) {
+                    map.put("qualification" + i, errQualification);
+                    flag = true;
+                }
+                String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
+                if (StringUtil.isEmpty(wrkExpYear)) {
+                    map.put("wrkExpYear" + i, errWrkExpYear);
+                    flag = true;
+                } else {
+                    if (!wrkExpYear.matches("^[0-9]*$")) {
+                        map.put("wrkExpYear" + i, "GENERAL_ERR0002");
+                        flag = true;
+                    }
+                }
+            }else if(!AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)
+                    && !AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)
+                    && !AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode)
+                    && !AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)){
+                String name = appSvcPersonnelDtos.get(i).getName();
+                String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
+                String quaification = appSvcPersonnelDtos.get(i).getQualification();
+                if (StringUtil.isEmpty(name)) {
+                    map.put("name" + i, errName);
+                    flag = true;
+                }
+                if (StringUtil.isEmpty(wrkExpYear)) {
+                    map.put("wrkExpYear" + i, errWrkExpYear);
+                    flag = true;
+                } else {
+                    if (!wrkExpYear.matches("^[0-9]*$")) {
+                        map.put("wrkExpYear" + i, "GENERAL_ERR0002");
+                        flag = true;
+                    }
+                }
+                if (StringUtil.isEmpty(quaification)) {
+                    map.put("quaification" + i, errQualification);
+                    flag = true;
+                }
+            } else {
+                String personnelSel = appSvcPersonnelDtos.get(i).getPersonnelType();
+                if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)) {
+                    String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
+                    String name = appSvcPersonnelDtos.get(i).getName();
+                    if (StringUtil.isEmpty(name)) {
+                        map.put("name" + i, errName);
+                        flag = true;
+                    }
+                    if (StringUtil.isEmpty(profRegNo)) {
+                        map.put("regnNo" + i, errRegnNo);
+                        flag = true;
+                    }
+                } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)) {
+                    String name = appSvcPersonnelDtos.get(i).getName();
+                    String designation = appSvcPersonnelDtos.get(i).getDesignation();
+                    String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
+                    String qualification = appSvcPersonnelDtos.get(i).getQualification();
+
+                    if (StringUtil.isEmpty(name)) {
+                        map.put("name" + i, errName);
+                        flag = true;
+                    }
+                    if (StringUtil.isEmpty(designation)) {
+                        map.put("designation" + i, errDesignation);
+                        flag = true;
+                    }
+                    if (StringUtil.isEmpty(wrkExpYear)) {
+                        map.put("wrkExpYear" + i, errWrkExpYear);
+                        flag = true;
+                    } else {
+                        if (!wrkExpYear.matches("^[0-9]*$")) {
+                            map.put("wrkExpYear" + i, "GENERAL_ERR0002");
+                            flag = true;
+                        }
+                    }
+                    if (StringUtil.isEmpty(qualification)) {
+                        map.put("qualification" + i, errQualification);
+                        flag = true;
+                    }
+                } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)) {
+                    String name = appSvcPersonnelDtos.get(i).getName();
+                    String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
+                    String quaification = appSvcPersonnelDtos.get(i).getQualification();
+                    if (StringUtil.isEmpty(name)) {
+                        map.put("name" + i, errName);
+                        flag = true;
+                    }
+                    if (StringUtil.isEmpty(wrkExpYear)) {
+                        map.put("wrkExpYear" + i, errWrkExpYear);
+                        flag = true;
+                    } else {
+                        if (!wrkExpYear.matches("^[0-9]*$")) {
+                            map.put("wrkExpYear" + i, "GENERAL_ERR0002");
+                            flag = true;
+                        }
+                    }
+                    if (StringUtil.isEmpty(quaification)) {
+                        map.put("quaification" + i, errQualification);
+                        flag = true;
+                    }
+                } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)) {
+                    String name = appSvcPersonnelDtos.get(i).getName();
+                    if (StringUtil.isEmpty(name)) {
+                        map.put("name" + i, errName);
+                        flag = true;
+                    }
+                }
+            }
+
+            if (flag) {
+                sB.append(serviceId);
+            }
+        }
+
+    }
+
+    private static void doAppSvcCgoDto(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map map, List<AppSvcCgoDto> list, String serviceId, StringBuilder sB) {
+        if (list == null) {
+            if (hcsaSvcPersonnelDtos != null) {
+                for (HcsaSvcPersonnelDto every : hcsaSvcPersonnelDtos) {
+                    String psnType = every.getPsnType();
+                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
+                        log.info("PERSONNEL_PSN_TYPE_CGO null");
+                        sB.append(serviceId);
+                        return;
+                    }
+                }
+            }
+
+            return;
+        }
+
+
+        boolean flag = false;
+        for (int i = 0; i < list.size(); i++) {
+            String assignSelect = list.get(i).getAssignSelect();
+            if ("".equals(assignSelect) || assignSelect == null) {
+                map.put("cgoassignSelect" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgoassignSelect","field"));
+                flag = true;
+            }
+            String idType = list.get(i).getIdType();
+            if (StringUtil.isEmpty(idType)) {
+                map.put("cgotype" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgotype","field"));
+                flag = true;
+            }
+            String mobileNo = list.get(i).getMobileNo();
+            if (StringUtil.isEmpty(mobileNo)) {
+                map.put("cgomobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgomobileNo","field"));
+                flag = true;
+            } else {
+                if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
+                    map.put("cgomobileNo" + i, "GENERAL_ERR0007");
+                    flag = true;
+                }
+            }
+            String emailAddr = list.get(i).getEmailAddr();
+            if (StringUtil.isEmpty(emailAddr)) {
+                map.put("cgoemailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgoemailAddr","field"));
+                flag = true;
+            } else {
+                if (!ValidationUtils.isEmail(emailAddr)) {
+                    map.put("cgoemailAddr" + i, "GENERAL_ERR0014");
+                    flag = true;
+                }
+            }
+            if (flag) {
+                sB.append(serviceId);
+
+            }
+
+        }
+    }
+
+    private static void dolabory(Map<String, String> map,List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList, List<AppSvcLaboratoryDisciplinesDto> list, String serviceId, StringBuilder sB) {
+        if (list != null && list.isEmpty()) {
+
+        }
+        if(list!=null&&appSvcDisciplineAllocationDtoList!=null&&!list.isEmpty()){
+            for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : list){
+                List<AppSvcChckListDto> appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+                if(appSvcChckListDtoList!=null&&!appSvcChckListDtoList.isEmpty()){
+                    for(AppSvcChckListDto appSvcChckListDto : appSvcChckListDtoList){
+                        boolean flag=false;
+                        for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
+                            if(appSvcChckListDto.getChkLstConfId().equals(appSvcDisciplineAllocationDto.getChkLstConfId())){
+                                flag=true;
+                            }
+                        }
+                        if(!flag){
+                            map.put("allocation","allocation error");
+                            sB.append(serviceId);
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+    private static void doSvcDis(Map map, List<AppSvcDisciplineAllocationDto> list, String serviceId, StringBuilder sB) {
+        if (list == null) {
+            return;
+        } else {
+            for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : list) {
+                String idNo = appSvcDisciplineAllocationDto.getIdNo();
+                if (StringUtil.isEmpty(idNo)) {
+                    map.put("idNo", "idNo empty");
+                    sB.append(serviceId);
+                    return;
+                }
+            }
+        }
+    }
+
+    private static void doSvcDisdolabory(Map map, List<AppSvcDisciplineAllocationDto> appSvcDislist, List<AppSvcLaboratoryDisciplinesDto> appSvclaborlist, String serviceId, StringBuilder sB) {
+        if (appSvclaborlist == null || appSvclaborlist.isEmpty()) {
+            return;
+        } else if (appSvclaborlist != null && !appSvclaborlist.isEmpty()) {
+            List<AppSvcChckListDto> appSvcChckListDtoList = IaisCommonUtils.genNewArrayList();
+            for (AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvclaborlist) {
+                appSvcChckListDtoList.addAll(appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList());
+            }
+
+            if (appSvcChckListDtoList != null) {
+                if (appSvcDislist == null) {
+                    map.put("appSvcDislist", "appSvcDislist null");
+                    sB.append(serviceId);
+                    return;
+                } else {
+                  /*  if( appSvcChckListDtoList.size()!=appSvcDislist.size()){
+                        log.info(appSvcChckListDtoList.size()+" appSvcChckListDtoList ");
+                        log.info(appSvcDislist.size()+" appSvcDislist ");
+                        map.put("appSvcChckListDtoListsize","size");
+                        sB.append(serviceId);
+                        return;
+                    }
+*/
+                }
+            }
+        }
+    }
+
+    private static void doPO(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map oneErrorMap, List<AppSvcPrincipalOfficersDto> poDto, String serviceId, StringBuilder sB) {
+        if (poDto == null) {
+            log.info("podto is null");
+            if (hcsaSvcPersonnelDtos != null) {
+                for (HcsaSvcPersonnelDto every : hcsaSvcPersonnelDtos) {
+                    String psnType = every.getPsnType();
+                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)) {
+                        sB.append(serviceId);
+                        return;
+                    }
+                }
+            }
+
+            return;
+        }
+
+
+        boolean flag = false;
+        int poIndex = 0;
+        int dpoIndex = 0;
+        List<String> stringList = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i < poDto.size(); i++) {
+            String psnType = poDto.get(i).getPsnType();
+            if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)) {
+
+                StringBuilder stringBuilder = new StringBuilder(10);
+
+                String assignSelect = poDto.get(i).getAssignSelect();
+                if ("-1".equals(assignSelect)) {
+                    oneErrorMap.put("assignSelect" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","assignSelect","field"));
+                } else {
+                    //do by wenkang
+                    String mobileNo = poDto.get(i).getMobileNo();
+                    String officeTelNo = poDto.get(i).getOfficeTelNo();
+                    String emailAddr = poDto.get(i).getEmailAddr();
+                    String idNo = poDto.get(i).getIdNo();
+                    String name = poDto.get(i).getName();
+                    String salutation = poDto.get(i).getSalutation();
+                    String designation = poDto.get(i).getDesignation();
+                    String idType = poDto.get(i).getIdType();
+
+                    if ("-1".equals(idType)) {
+                        oneErrorMap.put("idType" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","idType","field"));
+                    }
+                    if (StringUtil.isEmpty(name)) {
+                        oneErrorMap.put("name" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","name","field"));
+                    } else if (name.length() > 66) {
+
+                    }
+                    if (StringUtil.isEmpty(salutation)) {
+                        oneErrorMap.put("salutation" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","salutation","field"));
+                    }
+                    if (StringUtil.isEmpty(designation)) {
+                        oneErrorMap.put("designation" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","designation","field"));
+                    }
+                    if (!StringUtil.isEmpty(idNo)) {
+                        if ("FIN".equals(idType)) {
+                            boolean b = SgNoValidator.validateFin(idNo);
+                            if (!b) {
+                                oneErrorMap.put("NRICFIN", "GENERAL_ERR0008");
+                            } else {
+                                stringBuilder.append(idType).append(idNo);
+
+                            }
+                        }
+                        if ("NRIC".equals(idType)) {
+                            boolean b1 = SgNoValidator.validateNric(idNo);
+                            if (!b1) {
+                                oneErrorMap.put("NRICFIN", "GENERAL_ERR0008");
+                            } else {
+                                stringBuilder.append(idType).append(idNo);
+
+                            }
+                        }
+                    } else {
+                        oneErrorMap.put("NRICFIN", MessageUtil.replaceMessage("GENERAL_ERR0006","NRICFIN","field"));
+                    }
+                    if (!StringUtil.isEmpty(mobileNo)) {
+
+                        if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
+                            oneErrorMap.put("mobileNo" + poIndex, "GENERAL_ERR0007");
+                        }
+                    } else {
+                        oneErrorMap.put("mobileNo" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","mobileNo","field"));
+                    }
+                    if (!StringUtil.isEmpty(emailAddr)) {
+                        if (!ValidationUtils.isEmail(emailAddr)) {
+                            oneErrorMap.put("emailAddr" + poIndex, "GENERAL_ERR0014");
+                        } else if (emailAddr.length() > 66) {
+
+                        }
+                    } else {
+                        oneErrorMap.put("emailAddr" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","emailAddr","field"));
+                    }
+                    if (!StringUtil.isEmpty(officeTelNo)) {
+                        if (!officeTelNo.matches("^[6][0-9]{7}$")) {
+                            oneErrorMap.put("officeTelNo" + poIndex, "GENERAL_ERR0015");
+                        }
+                    } else {
+                        oneErrorMap.put("officeTelNo" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","officeTelNo","field"));
+                    }
+                }
+                poIndex++;
+                String s = stringBuilder.toString();
+
+                if (stringList.contains(s)) {
+
+                    oneErrorMap.put("NRICFIN", "NEW_ERR0012");
+
+                } else {
+                    stringList.add(stringBuilder.toString());
+                }
+            }
+
+            if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)) {
+                StringBuilder stringBuilder = new StringBuilder(10);
+                String salutation = poDto.get(i).getSalutation();
+                String name = poDto.get(i).getName();
+                String idType = poDto.get(i).getIdType();
+                String mobileNo = poDto.get(i).getMobileNo();
+                String emailAddr = poDto.get(i).getEmailAddr();
+                String idNo = poDto.get(i).getIdNo();
+                String designation = poDto.get(i).getDesignation();
+                String officeTelNo = poDto.get(i).getOfficeTelNo();
+
+                if (StringUtil.isEmpty(designation) || "-1".equals(designation)) {
+                    oneErrorMap.put("deputyDesignation" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyDesignation","field"));
+                }
+                if (StringUtil.isEmpty(salutation) || "-1".equals(salutation)) {
+                    oneErrorMap.put("deputySalutation" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputySalutation","field"));
+                }
+
+                if (StringUtil.isEmpty(idType) || "-1".equals(idType)) {
+                    oneErrorMap.put("deputyIdType" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyIdType","field"));
+                }
+                if (StringUtil.isEmpty(name)) {
+                    oneErrorMap.put("deputyName" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyName","field"));
+                } else if (name.length() > 66) {
+
+                }
+                if (StringUtil.isEmpty(officeTelNo)) {
+                    oneErrorMap.put("deputyofficeTelNo" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyofficeTelNo","field"));
+                } else {
+                    if (!officeTelNo.matches("^[6][0-9]{7}$")) {
+                        oneErrorMap.put("deputyofficeTelNo" + dpoIndex, "GENERAL_ERR0015");
+                    }
+                }
+                if (StringUtil.isEmpty(idNo)) {
+                    oneErrorMap.put("deputyIdNo" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyIdNo","field"));
+                }
+                if ("FIN".equals(idType)) {
+                    boolean b = SgNoValidator.validateFin(idNo);
+                    if (!b) {
+                        oneErrorMap.put("deputyIdNo" + dpoIndex, "GENERAL_ERR0008");
+                    } else {
+                        stringBuilder.append(idType).append(idNo);
+                    }
+                }
+                if ("NRIC".equals(idType)) {
+                    boolean b1 = SgNoValidator.validateNric(idNo);
+                    if (!b1) {
+                        oneErrorMap.put("deputyIdNo" + dpoIndex, "GENERAL_ERR0008");
+                    } else {
+                        stringBuilder.append(idType).append(idNo);
+                    }
+                }
+
+                if (StringUtil.isEmpty(mobileNo)) {
+                    oneErrorMap.put("deputyMobileNo" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyMobileNo","field"));
+                } else {
+                    if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
+                        oneErrorMap.put("deputyMobileNo" + dpoIndex, "GENERAL_ERR0007");
+                    }
+                }
+                if (StringUtil.isEmpty(emailAddr)) {
+                    oneErrorMap.put("deputyEmailAddr" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyEmailAddr","field"));
+                } else {
+                    if (!ValidationUtils.isEmail(emailAddr)) {
+                        oneErrorMap.put("deputyEmailAddr" + dpoIndex, "GENERAL_ERR0014");
+                    } else if (emailAddr.length() > 66) {
+
+                    }
+                }
+                dpoIndex++;
+
+                String s = stringBuilder.toString();
+
+                if (stringList.contains(s) && !StringUtil.isEmpty(s)) {
+
+                    oneErrorMap.put("NRICFIN", "NEW_ERR0012");
+
+                } else {
+                    stringList.add(stringBuilder.toString());
+                }
+            }
+
+
+        }
+        if (flag) {
+            sB.append(serviceId);
+        }
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(oneErrorMap) + "oneErrorMap"));
+    }
+
+    private void doCommomDocument(HttpServletRequest request, Map<String, String> documentMap) {
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
+        List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) request.getSession().getAttribute(NewApplicationDelegator.COMMONHCSASVCDOCCONFIGDTO);
+        if (commonHcsaSvcDocConfigList == null) {
+            List<HcsaSvcDocConfigDto> hcsaSvcDocDtos;
+            boolean isRfi = NewApplicationHelper.checkIsRfi(request);
+            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+            if(isRfi && appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
+                hcsaSvcDocDtos = serviceConfigService.getPrimaryDocConfigById(appGrpPrimaryDocDtos.get(0).getSvcComDocId());
+            }else{
+                hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(null);
+            }
+            if (hcsaSvcDocDtos != null) {
+                List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigDto = IaisCommonUtils.genNewArrayList();
+                for (HcsaSvcDocConfigDto hcsaSvcDocConfigDto : hcsaSvcDocDtos) {
+                    if ("0".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
+                        commonHcsaSvcDocConfigDto.add(hcsaSvcDocConfigDto);
+                    }
+                }
+                commonHcsaSvcDocConfigList = commonHcsaSvcDocConfigDto;
+            } else {
+                return;
+            }
+        }
+        for (HcsaSvcDocConfigDto comm : commonHcsaSvcDocConfigList) {
+            String name = "common" + comm.getId();
+
+            Boolean isMandatory = comm.getIsMandatory();
+            String err006 = MessageUtil.replaceMessage("GENERAL_ERR0006", "Document", "field");
+            if (isMandatory && appGrpPrimaryDocDtoList == null || isMandatory && appGrpPrimaryDocDtoList.isEmpty()) {
+                documentMap.put(name, err006);
+            } else if (isMandatory && !appGrpPrimaryDocDtoList.isEmpty()) {
+                Boolean flag = Boolean.FALSE;
+                for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList) {
+                    if(StringUtil.isEmpty(appGrpPrimaryDocDto.getMd5Code())){
+                        continue;
+                    }
+                    String svcComDocId = appGrpPrimaryDocDto.getSvcComDocId();
+                    if (comm.getId().equals(svcComDocId)) {
+                        flag = Boolean.TRUE;
+                        break;
+                    }
+                }
+                if (!flag) {
+                    documentMap.put(name, err006);
+                }
+            }
+        }
+
+    }
+
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             return appSvcRelatedInfoDtos.get(0);
@@ -1232,4 +2074,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
 
     }
+
+    private static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request) {
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
+        if (appSubmissionDto == null) {
+            log.info(StringUtil.changeForLog("appSubmissionDto is empty "));
+            appSubmissionDto = new AppSubmissionDto();
+        }
+        return appSubmissionDto;
+    }
+
 }

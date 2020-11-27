@@ -37,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesOperationalUn
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -1438,8 +1439,34 @@ public class NewApplicationHelper {
         return personMap;
     }
 
-    public static Map<String,AppSvcPersonAndExtDto> getLicPsnIntoSelMap(List<PersonnelListQueryDto> licPsnDtos,Map<String, AppSvcPersonAndExtDto> personMap) {
-//        Map<String,AppSvcPersonAndExtDto> personMap = IaisCommonUtils.genNewHashMap();
+    public static Map<String,AppSvcPersonAndExtDto> getLicPsnIntoSelMap(List<FeUserDto> feUserDtos,List<PersonnelListQueryDto> licPsnDtos,Map<String, AppSvcPersonAndExtDto> personMap) {
+        //user account
+        if(!IaisCommonUtils.isEmpty(feUserDtos)){
+            for(FeUserDto feUserDto:feUserDtos){
+                String idType = MasterCodeUtil.getCodeDesc(feUserDto.getIdType());
+                String idNo = feUserDto.getIdNumber();
+                if(StringUtil.isEmpty(idNo) || StringUtil.isEmpty(idType)){
+                    continue;
+                }
+                AppSvcPersonAndExtDto appSvcPersonAndExtDto = new AppSvcPersonAndExtDto();
+                AppSvcPersonDto appSvcPersonDto = new AppSvcPersonDto();
+//                    appSvcPersonDto.setCurPersonelId("");
+                appSvcPersonDto.setSalutation(feUserDto.getSalutation());
+                appSvcPersonDto.setName(feUserDto.getDisplayName());
+                appSvcPersonDto.setIdType(idType);
+                appSvcPersonDto.setIdNo(idNo);
+                appSvcPersonDto.setDesignation(feUserDto.getDesignation());
+                appSvcPersonDto.setMobileNo(feUserDto.getMobileNo());
+                appSvcPersonDto.setEmailAddr(feUserDto.getEmail());
+                appSvcPersonDto.setOfficeTelNo(feUserDto.getOfficeTelNo());
+                appSvcPersonDto.setCurPersonelId(null);
+                appSvcPersonAndExtDto.setPersonDto(appSvcPersonDto);
+                appSvcPersonAndExtDto.setLicPerson(true);
+                appSvcPersonAndExtDto.setLoadingType(ApplicationConsts.PERSON_LOADING_TYPE_BLUR);
+                personMap.put(NewApplicationHelper.getPersonKey(idType,idNo),appSvcPersonAndExtDto);
+            }
+        }
+
         if (!IaisCommonUtils.isEmpty(licPsnDtos)) {
             Map<String,String> specialtyAttr = getSpecialtyAttr();
             for (PersonnelListQueryDto psnDto : licPsnDtos) {
