@@ -1230,6 +1230,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             Map<String, String> map = doCheckBox(bpc, sB, allSvcAllPsnConfig, currentSvcAllPsnConfig, dto.get(i),systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType());
             if (!map.isEmpty()) {
                 previewAndSubmitMap.putAll(map);
+                previewAndSubmitMap.put("service", MessageUtil.replaceMessage("GENERAL_ERR0006","service","field"));
                 String mapStr = JsonUtil.parseToJson(map);
                 log.info(StringUtil.changeForLog("map json str:" + mapStr));
             }

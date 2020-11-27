@@ -5,9 +5,15 @@
 </style>
 <div class="panel panel-default">
     <div class="panel-heading
-        <c:if test="${!FirstView}">
-            <c:if test="${coMap.premises=='premises'}">completed </c:if> <c:if test="${coMap.premises==''}">incompleted </c:if>
-        </c:if>" id="headingPremise" role="tab">
+        <c:choose>
+            <c:when test="${!FirstView}">
+                <c:if test="${coMap.premises=='premises'}">completed </c:if> <c:if test="${coMap.premises==''}">incompleted </c:if>
+            </c:when>
+            <c:when test="${needShowErr}">
+                <c:if test="${!empty svcSecMap.premiss}">incompleted </c:if>
+            </c:when>
+        </c:choose>
+        " id="headingPremise" role="tab">
         <h4 class="panel-title"><a role="button" class="collapse collapsed" data-toggle="collapse" href="#collapsePremise${documentIndex}" aria-expanded="true" aria-controls="collapsePremise">Premises</a></h4>
     </div>
     <div class="panel-collapse collapse" id="collapsePremise${documentIndex}" role="tabpanel" aria-labelledby="headingPremise">

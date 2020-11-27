@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
@@ -39,16 +40,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
@@ -169,6 +173,8 @@ public class WithOutRenewalDelegator {
         coMap.put("information", "");
         coMap.put("previewli", "");
         bpc.request.getSession().setAttribute("coMap", coMap);
+        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.CURR_ORG_USER_ACCOUNT, null);
+        ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP, null);
         //inbox draft number
 
         //init page value
@@ -224,6 +230,17 @@ public class WithOutRenewalDelegator {
                     NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                 }
             }
+            Map<String, AppSvcPersonAndExtDto> licPersonMap = IaisCommonUtils.genNewHashMap();
+            if(interInboxUserDto != null){
+                //user account
+                List<FeUserDto> feUserDtos = requestForChangeService.getFeUserDtoByLicenseeId(interInboxUserDto.getLicenseeId());
+                ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.CURR_ORG_USER_ACCOUNT, (Serializable) feUserDtos);
+                //existing person
+                List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(interInboxUserDto.getLicenseeId());
+                licPersonMap = NewApplicationHelper.getLicPsnIntoSelMap(feUserDtos,licPersonList,licPersonMap);
+            }
+            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP, (Serializable) licPersonMap);
+
             if (!appSubmissionDto.getAppSvcRelatedInfoDtoList().isEmpty()) {
                 String serviceName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
                 //add to service name list
@@ -255,6 +272,20 @@ public class WithOutRenewalDelegator {
                     List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
                     NewApplicationHelper.setDocInfo(null, appSvcDocDtos, null, svcDocConfig);
                 }
+
+                List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcRelatedInfoDto.getAppSvcCgoDtoList());
+                String svcCode = appSvcRelatedInfoDto.getServiceCode();
+                NewApplicationHelper.initSetPsnIntoSelMap(licPersonMap, appSvcCgoDtos, svcCode);
+                //reset dto
+                List<AppSvcCgoDto> newCgoDtoList = IaisCommonUtils.genNewArrayList();
+                for (AppSvcPrincipalOfficersDto item : appSvcCgoDtos) {
+                    newCgoDtoList.add(MiscUtil.transferEntityDto(item, AppSvcCgoDto.class));
+                }
+                appSvcRelatedInfoDto.setAppSvcCgoDtoList(newCgoDtoList);
+                NewApplicationHelper.initSetPsnIntoSelMap(licPersonMap, appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(), svcCode);
+                NewApplicationHelper.initSetPsnIntoSelMap(licPersonMap, appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), svcCode);
+
+
                 appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
                 List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
                 List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
@@ -1175,6 +1206,7 @@ public class WithOutRenewalDelegator {
         } else {
             ParamUtil.setSessionAttr(bpc.request, "userAgreement", Boolean.FALSE);
         }
+        Map<String,  Map<String, String>> errMap = IaisCommonUtils.genNewHashMap();
         if (!StringUtil.isEmpty(renewEffectiveDate)) {
             Date date = Formatter.parseDate(renewEffectiveDate);
             if (date.before(new Date())||date.equals(new Date())) {
@@ -1185,11 +1217,46 @@ public class WithOutRenewalDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 renewDto.getAppSubmissionDtos().get(0).setEffectiveDate(date);
                 renewDto.getAppSubmissionDtos().get(0).setEffectiveDateStr(renewEffectiveDate);
-                return;
+                errMap.put("rfcEffectiveDate",errorMap);
             }
             renewDto.getAppSubmissionDtos().get(0).setEffectiveDate(date);
             renewDto.getAppSubmissionDtos().get(0).setEffectiveDateStr(renewEffectiveDate);
         }
+        int count = 0;
+        for(AppSubmissionDto appSubmissionDto:renewDto.getAppSubmissionDtos()){
+            Map<String,String> previewAndSubmitMap = IaisCommonUtils.genNewHashMap();
+            if(renewDto.getAppSubmissionDtos().size() > 1){
+                previewAndSubmitMap = appSubmissionService.doPreviewSubmitValidate(previewAndSubmitMap,appSubmissionDto,appSubmissionDto,bpc);
+            }else{
+                previewAndSubmitMap = appSubmissionService.doPreviewSubmitValidate(previewAndSubmitMap,appSubmissionDto,oldAppSubmissionDto,bpc);
+            }
+            errMap.put(appSubmissionDto.getServiceName()+count,previewAndSubmitMap);
+            count++;
+        }
+        boolean passValidate = true;
+        Map<String,String> allErrMap = IaisCommonUtils.genNewHashMap();
+        for(Map<String,String> errorMap:errMap.values()){
+            if(!errorMap.isEmpty()){
+                allErrMap.putAll(errorMap);
+                passValidate = false;
+            }
+        }
+        if (!passValidate) {
+            if(renewDto.getAppSubmissionDtos().size() > 1){
+                WebValidationHelper.saveAuditTrailForNoUseResult(allErrMap);
+            }else{
+                LicenceDto licenceDto = new LicenceDto();
+                licenceDto.setLicenceNo(renewDto.getAppSubmissionDtos().get(0).getLicenceNo());
+                WebValidationHelper.saveAuditTrailForNoUseResult(licenceDto,allErrMap);
+            }
+            ParamUtil.setRequestAttr(bpc.request,"needShowErr",AppConsts.TRUE);
+            ParamUtil.setRequestAttr(bpc.request, "svcSecMaps", errMap);
+            ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
+            return;
+
+        }
+
+
         if (renewDto != null) {
             List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
             for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {

@@ -1,8 +1,13 @@
 <div class="panel panel-default">
     <div class="panel-heading
-        <c:if test="${!FirstView}">
-            <c:if test="${coMap.document=='document'}">completed </c:if> <c:if test="${coMap.document==''}">incompleted </c:if>
-        </c:if>" id="headingOne" role="tab">
+        <c:choose>
+            <c:when test="${!FirstView}">
+                <c:if test="${coMap.document=='document'}">completed </c:if> <c:if test="${coMap.document==''}">incompleted </c:if>
+            </c:when>
+            <c:when test="${needShowErr}">
+                <c:if test="${!empty svcSecMap.document}">incompleted </c:if>
+            </c:when>
+        </c:choose>" id="headingOne" role="tab">
         <h4 class="panel-title"><a class="collapsed" role="button" data-toggle="collapse" href="#collapseOne${documentIndex}" aria-expanded="true" aria-controls="collapseOne">Primary Documents</a></h4>
     </div>
     <div class="panel-collapse collapse " id="collapseOne${documentIndex}" role="tabpanel" aria-labelledby="headingOne">

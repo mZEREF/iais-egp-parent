@@ -62,6 +62,8 @@
                                             <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}" varStatus="status">
                                                 <c:set var="AppSubmissionDto" value="${AppSubmissionDto}" scope="request"/>
                                                 <c:set var="documentIndex" value="${status.index}" scope="request"/>
+                                                <c:set var="key" value="${AppSubmissionDto.serviceName}${status.index}"/>
+                                                <c:set var="svcSecMap" value="${svcSecMaps[key]}"/>
                                                 <div class="tab-pane ${status.index == '0' ? 'active' : ''}" id="serviceName${status.index}" role="tabpanel">
                                                     <div class="preview-gp">
                                                         <div class="row">
@@ -73,7 +75,12 @@
                                                                     <%@include file="../common/previewPremises.jsp"%>
                                                                     <%@include file="../common/previewPrimary.jsp"%>
                                                                     <div class="panel panel-default svc-content">
-                                                                        <div class="panel-heading"  id="headingServiceInfo${status.index}" role="tab">
+                                                                        <div class="panel-heading
+                                                                             <c:choose>
+                                                                                <c:when test="${needShowErr}">
+                                                                                     <c:if test="${!empty svcSecMap.service }">incompleted </c:if>
+                                                                                </c:when>
+                                                                            </c:choose>"  id="headingServiceInfo${status.index}" role="tab">
                                                                             <h4 class="panel-title"><a class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${documentIndex}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information </a></h4>
                                                                         </div>
                                                                         <div class=" panel-collapse collapse" id="collapseServiceInfo${documentIndex}" role="tabpanel" aria-labelledby="headingServiceInfo">
