@@ -1153,13 +1153,13 @@ public class HcsaApplicationDelegator {
                 map.put("emailAddress", systemAddressOne);
                 map.put("MOH_AGENCY_NAME", MohName);
                 try {
-                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is rejected ";
+//                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is rejected ";
                     Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
                     subMap.put("ApplicationType", applicationTypeShow);
                     subMap.put("ApplicationNumber", applicationNo);
-                    String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_ID,subMap);
-                    String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_SMS_ID,subMap);
-                    String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_MESSAGE_ID,subMap);
+                    String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_ID,subMap);
+                    String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_SMS_ID,subMap);
+                    String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_MESSAGE_ID,subMap);
                     log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
                     log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
                     log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
@@ -1170,14 +1170,14 @@ public class HcsaApplicationDelegator {
                     emailParam.setReqRefNum(applicationNo);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
                     emailParam.setRefId(applicationNo);
-                    emailParam.setSubject(subject);
+                    emailParam.setSubject(emailSubject);
                     //send email
                     log.info(StringUtil.changeForLog("send new application email"));
                     notificationHelper.sendNotification(emailParam);
                     //send sms
                     EmailParam smsParam = new EmailParam();
                     smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_SMS_ID);
-                    smsParam.setSubject(subject);
+                    smsParam.setSubject(smsSubject);
                     smsParam.setQueryCode(applicationNo);
                     smsParam.setReqRefNum(applicationNo);
                     smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
@@ -1192,7 +1192,7 @@ public class HcsaApplicationDelegator {
                     messageParam.setReqRefNum(applicationNo);
                     messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     messageParam.setRefId(applicationNo);
-                    messageParam.setSubject(subject);
+                    messageParam.setSubject(messageSubject);
                     messageParam.setSvcCodeList(svcCodeList);
                     log.info(StringUtil.changeForLog("send new application message"));
                     notificationHelper.sendNotification(messageParam);
