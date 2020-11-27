@@ -545,8 +545,15 @@ public class LicenceServiceImpl implements LicenceService {
                 map.put("ApplicantName", applicantName);
                 map.put("MOH_AGENCY_NAME", MohName);
                 try {
-                    String subject = "MOH HALP - Post Inspection for " + svcDto.getSvcName();
-                    log.debug(StringUtil.changeForLog("sendPostInspectionNotification subject : " + subject));
+//                    String subject = "MOH HALP - Post Inspection for " + svcDto.getSvcName();
+                    Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+                    subMap.put("ServiceName", svcDto.getSvcName());
+                    String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_POST_INSPECTION,subMap);
+                    String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_POST_INSPECTION_SMS,subMap);
+                    String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_POST_INSPECTION_MESSAGE,subMap);
+                    log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
+                    log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
+                    log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
                     EmailParam emailParam = new EmailParam();
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_POST_INSPECTION);
                     emailParam.setTemplateContent(map);
@@ -554,7 +561,7 @@ public class LicenceServiceImpl implements LicenceService {
                     emailParam.setReqRefNum(applicationNo);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
                     emailParam.setRefId(applicationNo);
-                    emailParam.setSubject(subject);
+                    emailParam.setSubject(emailSubject);
                     //send email
                     log.debug(StringUtil.changeForLog("send sendPostInspectionNotification application email"));
                     notificationHelper.sendNotification(emailParam);
@@ -562,7 +569,7 @@ public class LicenceServiceImpl implements LicenceService {
                     //send sms
                     EmailParam smsParam = new EmailParam();
                     smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_POST_INSPECTION_SMS);
-                    smsParam.setSubject(subject);
+                    smsParam.setSubject(smsSubject);
                     smsParam.setQueryCode(applicationNo);
                     smsParam.setReqRefNum(applicationNo);
                     smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
@@ -578,7 +585,7 @@ public class LicenceServiceImpl implements LicenceService {
                     messageParam.setReqRefNum(applicationNo);
                     messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     messageParam.setRefId(applicationNo);
-                    messageParam.setSubject(subject);
+                    messageParam.setSubject(messageSubject);
                     messageParam.setSvcCodeList(svcCodeList);
                     log.debug(StringUtil.changeForLog("send sendPostInspectionNotification application message"));
                     notificationHelper.sendNotification(messageParam);
