@@ -172,6 +172,10 @@ public class OnlineApptAjaxController {
                                     map.put("specButtonFlag", AppConsts.TRUE);
                                     map.put("inspDateList", null);
                                 }
+                            } else {
+                                map.put("buttonFlag", AppConsts.FALSE);
+                                map.put("specButtonFlag", AppConsts.TRUE);
+                                map.put("inspDateList", null);
                             }
                         } catch (Exception e) {
                             log.error(e.getMessage(), e);
