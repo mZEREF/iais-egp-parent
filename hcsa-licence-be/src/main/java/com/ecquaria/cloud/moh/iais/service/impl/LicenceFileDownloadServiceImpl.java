@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -58,15 +59,7 @@ import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.EventClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -162,6 +155,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     @Autowired
     private NotificationHelper notificationHelper;
+
+    @Autowired
+    AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
 
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
@@ -789,18 +785,33 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
              * Send Email
              */
             List<ApplicationDto> applicationDtoList = applicationNewAndRequstDto.getCessionOrWith();
+            log.info("Send Withdraw 003 Email");
             if (applicationDtoList != null && applicationDtoList.size() > 0){
                 applicationDtoList.forEach(h -> {
+                    String officerName = "";
                     String applicationNo = h.getApplicationNo();
                     String applicationGrpId = h.getAppGrpId();
                     String applicationType = h.getApplicationType();
                     String serviceId = h.getServiceId();
                     String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
                     ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationGrpId);
-                    LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
                     try {
-                        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(h.getAppPremisesCorrelationId());
-                        AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremisesCorrelationDto.getNewCorrelationId());
+                        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNo(h.getApplicationNo()).getEntity();
+                        if (appPremisesRoutingHistoryDtoList != null && appPremisesRoutingHistoryDtoList.size() > 0) {
+                            for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtoList) {
+                                String actionBy = appPremisesRoutingHistoryDto.getActionby();
+                                log.info("Send Withdraw 003 Email actionBy  ---->  " + actionBy);
+                                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(actionBy).getEntity();
+                                if (orgUserDto != null && (!appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN)
+                                        && !appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_ORG_ADMIN)
+                                        && !appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_ORG_USER)
+                                        && !appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_ORG_DIRECTOR))) {
+                                        officerName = orgUserDto.getDisplayName();
+                                }
+                            }
+                        }
+                        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(h.getId()).getEntity();
+                        AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremisesCorrelationDto.getId());
                         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
                         if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
                             Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
@@ -809,7 +820,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             msgInfoMap.put("ApplicationNumber", applicationNo);
                             msgInfoMap.put("HCIName",appGrpPremisesDto.getHciName());
                             msgInfoMap.put("Address",appGrpPremisesDto.getAddress());
-                            msgInfoMap.put("licenseeName",licenseeDto.getName());
+                            msgInfoMap.put("Applicant",officerName);
                             msgInfoMap.put("submissionDate",Formatter.formatDateTime(applicationGroupDto.getSubmitDt()));
                             msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date()));
                             msgInfoMap.put("S_LName",serviceName);
