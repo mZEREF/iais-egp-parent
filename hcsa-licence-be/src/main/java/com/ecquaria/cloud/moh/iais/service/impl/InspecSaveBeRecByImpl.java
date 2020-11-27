@@ -136,39 +136,39 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             File[] files = new File(zipFile).listFiles();
             int allSize = processFileTrackDtos.size();//NOSONAR
             int nowSize = 0;
+            List<String> appIds = IaisCommonUtils.genNewArrayList();//NOSONAR
             for(File fil:files) {
                 for(ProcessFileTrackDto pDto : processFileTrackDtos){
                     if (fil.getName().endsWith(".zip") && fil.getName().equals(pDto.getFileName())) {
                         nowSize++;
+                        appIds.add(pDto.getRefId());
                     }
                 }
             }
-            String appId = processFileTrackDtos.get(0).getRefId();
-            log.debug(StringUtil.changeForLog("Application Id:" + appId));
-            JobLogger.log(StringUtil.changeForLog("Application Id:" + appId));
-            //get fileSize
-            int fileSize = getFileSizeByAppId(appId);
-            log.debug(StringUtil.changeForLog("Rectification fileSize:" + fileSize));
-            JobLogger.log(StringUtil.changeForLog("Rectification fileSize:" + fileSize));
+            Set<String> appIdSet = new HashSet<>(appIds);
+            appIds = new ArrayList<>(appIdSet);
+            appIds = filterAppDocSizeFileSize(appIds, processFileTrackDtos);
             log.debug(StringUtil.changeForLog("Rectification allSize:" + allSize));
             JobLogger.log(StringUtil.changeForLog("Rectification allSize:" + allSize));
             log.debug(StringUtil.changeForLog("Rectification nowSize:" + nowSize));
             JobLogger.log(StringUtil.changeForLog("Rectification nowSize:" + nowSize));
-            if(allSize == nowSize && fileSize == allSize) {
+            if(allSize == nowSize) {
                 for (File fil : files) {
                     for (ProcessFileTrackDto pDto : processFileTrackDtos) {
-                        if (fil.getName().endsWith(".zip") && fil.getName().equals(pDto.getFileName())) {
-                            try (ZipFile unZipFile = new ZipFile(zipFile + pDto.getFilePath())) {
-                                for (Enumeration<? extends ZipEntry> entries = unZipFile.entries(); entries.hasMoreElements(); ) {
-                                    ZipEntry zipEntry = entries.nextElement();
-                                    String reportId = unzipFile(zipEntry, unZipFile);
-                                    if (!StringUtil.isEmpty(reportId)) {
-                                        reportIds.add(reportId);
+                        if(appIds.contains(pDto.getRefId())){
+                            if (fil.getName().endsWith(".zip") && fil.getName().equals(pDto.getFileName())) {
+                                try (ZipFile unZipFile = new ZipFile(zipFile + pDto.getFilePath())) {
+                                    for (Enumeration<? extends ZipEntry> entries = unZipFile.entries(); entries.hasMoreElements(); ) {
+                                        ZipEntry zipEntry = entries.nextElement();
+                                        String reportId = unzipFile(zipEntry, unZipFile);
+                                        if (!StringUtil.isEmpty(reportId)) {
+                                            reportIds.add(reportId);
+                                        }
                                     }
+                                } catch (IOException e) {
+                                    log.error(e.getMessage(), e);
+                                    JobLogger.log(e.getMessage(), e);
                                 }
-                            } catch (IOException e) {
-                                log.error(e.getMessage(), e);
-                                JobLogger.log(e.getMessage(), e);
                             }
                         }
                     }
@@ -176,6 +176,31 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             }
         }
         return reportIds;
+    }
+
+    private List<String> filterAppDocSizeFileSize(List<String> appIds, List<ProcessFileTrackDto> processFileTrackDtos) {
+        List<String> appIdList = IaisCommonUtils.genNewArrayList();
+        for(String appId : appIds){
+            log.debug(StringUtil.changeForLog("Application Id:" + appId));
+            JobLogger.log(StringUtil.changeForLog("Application Id:" + appId));
+            int docSize = getFileSizeByAppId(appId);
+            int fileSize = 0;
+            for (ProcessFileTrackDto pDto : processFileTrackDtos) {
+                if(pDto != null){
+                    if(appId.equals(pDto.getRefId())){
+                        fileSize++;
+                    }
+                }
+            }
+            log.debug(StringUtil.changeForLog("Rectification docSize:" + docSize));
+            JobLogger.log(StringUtil.changeForLog("Rectification docSize:" + docSize));
+            log.debug(StringUtil.changeForLog("Rectification nowSize:" + fileSize));
+            JobLogger.log(StringUtil.changeForLog("Rectification nowSize:" + fileSize));
+            if(docSize == fileSize){
+                appIdList.add(appId);
+            }
+        }
+        return appIdList;
     }
 
     private int getFileSizeByAppId(String appId) {
