@@ -53,6 +53,7 @@
             format:"dd/mm/yyyy",
             autoclose:true
         });
+        $(".main-content:first").append("try with it");
     });
 </script>
 
