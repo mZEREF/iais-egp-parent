@@ -99,6 +99,7 @@ public final class HcsaServiceCacheHelper {
 			if (status == HttpStatus.SC_OK){
 				List<HcsaServiceDto> serviceList = result.getEntity();
 				RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
+				redisCacheHelper.clear(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE);
 				redisCacheHelper.set(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE, RedisNameSpaceConstant.KEY_NAME_HCSA_SERVICE_LIST, serviceList);
 				serviceList.forEach(i -> redisCacheHelper.set(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE, i.getId(),
 						i, RedisCacheHelper.NOT_EXPIRE));
