@@ -1215,7 +1215,16 @@ public class HcsaApplicationDelegator {
                 map.put("emailAddress", systemAddressOne);
                 map.put("MOH_AGENCY_NAME", MohName);
                 try {
-                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is rejected ";
+//                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is rejected ";
+                    Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+                    subMap.put("ApplicationType", applicationTypeShow);
+                    subMap.put("ApplicationNumber", applicationNo);
+                    String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT,subMap);
+                    String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_SMS,subMap);
+                    String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_MESSAGE,subMap);
+                    log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
+                    log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
+                    log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
                     EmailParam emailParam = new EmailParam();
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT);
                     emailParam.setTemplateContent(map);
@@ -1223,7 +1232,7 @@ public class HcsaApplicationDelegator {
                     emailParam.setReqRefNum(applicationNo);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
                     emailParam.setRefId(applicationNo);
-                    emailParam.setSubject(subject);
+                    emailParam.setSubject(emailSubject);
                     //send email
                     log.info(StringUtil.changeForLog("send renewal application email"));
                     notificationHelper.sendNotification(emailParam);
@@ -1231,7 +1240,7 @@ public class HcsaApplicationDelegator {
                     //send sms
                     EmailParam smsParam = new EmailParam();
                     smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_SMS);
-                    smsParam.setSubject(subject);
+                    smsParam.setSubject(smsSubject);
                     smsParam.setQueryCode(applicationNo);
                     smsParam.setReqRefNum(applicationNo);
                     smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
@@ -1247,7 +1256,7 @@ public class HcsaApplicationDelegator {
                     messageParam.setReqRefNum(applicationNo);
                     messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     messageParam.setRefId(applicationNo);
-                    messageParam.setSubject(subject);
+                    messageParam.setSubject(messageSubject);
                     messageParam.setSvcCodeList(svcCodeList);
                     log.info(StringUtil.changeForLog("send renewal application message"));
                     notificationHelper.sendNotification(messageParam);
@@ -1257,6 +1266,25 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
+    }
+
+    private String getEmailSubject(String templateId,Map<String, Object> subMap){
+        String subject = "-";
+        if(!StringUtil.isEmpty(templateId)){
+            MsgTemplateDto emailTemplateDto = msgTemplateClient.getMsgTemplate(templateId).getEntity();
+            if(emailTemplateDto != null){
+                try {
+                    if(!IaisCommonUtils.isEmpty(subMap)){
+                        subject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
+                    }else{
+                        subject = emailTemplateDto.getTemplateName();
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }
+        }
+        return subject;
     }
 
     /**

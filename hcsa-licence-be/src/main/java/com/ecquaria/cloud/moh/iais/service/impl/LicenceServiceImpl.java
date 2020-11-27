@@ -773,7 +773,16 @@ public class LicenceServiceImpl implements LicenceService {
         map.put("emailAddress2", systemAddressTwo);
         map.put("MOH_AGENCY_NAME", MohName);
         try {
-            String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is approved ";
+//            String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is approved ";
+            Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+            subMap.put("ApplicationType", applicationTypeShow);
+            subMap.put("ApplicationNumber", applicationNo);
+            String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE,subMap);
+            String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE_SMS,subMap);
+            String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE_MESSAGE,subMap);
+            log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
+            log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
+            log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE);
             emailParam.setTemplateContent(map);
@@ -781,7 +790,7 @@ public class LicenceServiceImpl implements LicenceService {
             emailParam.setReqRefNum(applicationNo);
             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
             emailParam.setRefId(applicationNo);
-            emailParam.setSubject(subject);
+            emailParam.setSubject(emailSubject);
             //send email
             log.info(StringUtil.changeForLog("send renewal application email"));
             notificationHelper.sendNotification(emailParam);
@@ -789,7 +798,7 @@ public class LicenceServiceImpl implements LicenceService {
             //send sms
             EmailParam smsParam = new EmailParam();
             smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE_SMS);
-            smsParam.setSubject(subject);
+            smsParam.setSubject(smsSubject);
             smsParam.setQueryCode(applicationNo);
             smsParam.setReqRefNum(applicationNo);
             smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
@@ -805,7 +814,7 @@ public class LicenceServiceImpl implements LicenceService {
             messageParam.setReqRefNum(applicationNo);
             messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
             messageParam.setRefId(applicationNo);
-            messageParam.setSubject(subject);
+            messageParam.setSubject(messageSubject);
             messageParam.setSvcCodeList(svcCodeList);
             log.info(StringUtil.changeForLog("send renewal application message"));
             notificationHelper.sendNotification(messageParam);
@@ -813,6 +822,25 @@ public class LicenceServiceImpl implements LicenceService {
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
+    }
+
+    private String getEmailSubject(String templateId,Map<String, Object> subMap){
+        String subject = "-";
+        if(!StringUtil.isEmpty(templateId)){
+            MsgTemplateDto emailTemplateDto =msgTemplateClient.getMsgTemplate(templateId).getEntity();
+            if(emailTemplateDto != null){
+                try {
+                    if(!IaisCommonUtils.isEmpty(subMap)){
+                        subject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
+                    }else{
+                        subject = emailTemplateDto.getTemplateName();
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }
+        }
+        return subject;
     }
 
     private void sendNewAppApproveNotification(String applicantName,

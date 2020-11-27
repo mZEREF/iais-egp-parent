@@ -232,12 +232,11 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         String serviceCode = hcsaConfigClient.getServiceCodeByName(serviceName).getEntity();
         List<String> serviceCodeList = IaisCommonUtils.genNewArrayList();
         serviceCodeList.add(serviceCode);
-        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
-        if(licenseeDto != null){
+        String applicantName = getApplicantNameByLicId(id);
+        if(!StringUtil.isEmpty(applicantName)){
             String licenceId = licenceDto.getId();
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
             String MohName = AppConsts.MOH_AGENCY_NAME;
-            String applicantName = licenseeDto.getName();
             log.info(StringUtil.changeForLog("send renewal application notification applicantName : " + applicantName));
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
             map.put("ApplicantName", applicantName);
@@ -470,7 +469,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     }
 
     private String getApplicantNameByLicId(String id) {
-        String applicantName = "";
+        String applicantName = "-";
         List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenClient.getLicCorrBylicId(id).getEntity();
         if(!IaisCommonUtils.isEmpty(licAppCorrelationDtos)){
             for(LicAppCorrelationDto licAppCorrelationDto : licAppCorrelationDtos){
@@ -484,12 +483,15 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                                 OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
                                 if(orgUserDto != null) {
                                     applicantName = orgUserDto.getDisplayName();
+                                    break;
                                 }
                             }
                         }
                     }
                 }
             }
+        }else{
+            log.error(StringUtil.changeForLog("get applicant name error"));
         }
         return applicantName;
     }
