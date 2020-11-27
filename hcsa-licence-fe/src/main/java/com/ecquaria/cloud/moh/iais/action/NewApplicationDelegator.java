@@ -2004,7 +2004,7 @@ public class NewApplicationDelegator {
                                 } else {
                                     appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
                                     for(AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList()){
-                                        appGrpPremisesDto1.setNeedNewLicNo(Boolean.FALSE);
+                                        appGrpPremisesDto1.setNeedNewLicNo(Boolean.TRUE);
                                     }
                                 }
                                 appSubmissionDtoByLicenceId.setAutoRfc(isAutoRfc);

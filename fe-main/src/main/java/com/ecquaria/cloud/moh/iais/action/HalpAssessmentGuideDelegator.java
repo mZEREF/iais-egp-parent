@@ -1514,7 +1514,7 @@ public class HalpAssessmentGuideDelegator {
 
     public void amendLic2(BaseProcessClass bpc) {
         log.info("****start ******");
-        SearchParam amendHCISearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, "amendHCISearchParam",SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
+        SearchParam amendHCISearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, "amendHCISearchParam",SelfPremisesListQueryDto.class.getName(),"LICENCE_ID",SearchParam.DESCENDING,false);
         amendHCISearchParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendHCISearchParam);
         SearchResult<SelfPremisesListQueryDto> amendHCISearchResult = requestForChangeService.searchPreInfo(amendHCISearchParam);

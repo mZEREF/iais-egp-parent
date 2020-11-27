@@ -203,9 +203,9 @@
                    join premises p on lp.PREMISES_ID = p.ID WHERE 1 = 1 <#if licenseeId??>   and li.LICENSEE_ID =:licenseeId </#if>
                     and p.PREMISES_TYPE in ('ONSITE','OFFSITE','CONVEYANCE') and
                    li.STATUS ='LICEST001' and p.ID in (
-                           SELECT li.PREMISES_ID  FROM
+                           SELECT  MAX(li.PREMISES_ID) FROM
                    lic_premises as li WHERE li.LICENCE_ID in
-                   (SELECT b.ID FROM licence as b WHERE b.STATUS='LICEST001' <#if licenseeId??>   and b.LICENSEE_ID =:licenseeId </#if>))
+                   (SELECT b.ID FROM licence as b WHERE b.STATUS='LICEST001' <#if licenseeId??>   and b.LICENSEE_ID =:licenseeId </#if>)GROUP by li.LICENCE_ID)
             ]]>
     </sql>
     <sql key = "appPersonnelQuery" remarks = "Query Application Data by condition">
