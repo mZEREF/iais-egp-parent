@@ -45,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -72,6 +73,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.validation.PaymentValidate;
+import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -1562,7 +1564,16 @@ public class WithOutRenewalDelegator {
 //                    paymentMethodName = "GIRO";
                 }
                 try {
-                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ appNo +" has been submitted";
+//                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ appNo +" has been submitted";
+                    Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+                    subMap.put("ApplicationType", applicationTypeShow);
+                    subMap.put("ApplicationNumber", appNo);
+                    String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED,subMap);
+                    String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_SMS,subMap);
+                    String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_MESSAGE,subMap);
+                    log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
+                    log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
+                    log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
                     EmailParam emailParam = new EmailParam();
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED);
                     emailParam.setTemplateContent(map);
@@ -1570,7 +1581,7 @@ public class WithOutRenewalDelegator {
                     emailParam.setReqRefNum(appNo);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
                     emailParam.setRefId(appNo);
-                    emailParam.setSubject(subject);
+                    emailParam.setSubject(emailSubject);
                     //send email
                     log.info(StringUtil.changeForLog("send renewal application email"));
                     notificationHelper.sendNotification(emailParam);
@@ -1578,7 +1589,7 @@ public class WithOutRenewalDelegator {
                     //send sms
                     EmailParam smsParam = new EmailParam();
                     smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_SMS);
-                    smsParam.setSubject(subject);
+                    smsParam.setSubject(smsSubject);
                     smsParam.setQueryCode(appNo);
                     smsParam.setReqRefNum(appNo);
                     smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
@@ -1594,7 +1605,7 @@ public class WithOutRenewalDelegator {
                     messageParam.setReqRefNum(appNo);
                     messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     messageParam.setRefId(appNo);
-                    messageParam.setSubject(subject);
+                    messageParam.setSubject(messageSubject);
                     messageParam.setSvcCodeList(svcCodeList);
                     log.info(StringUtil.changeForLog("send renewal application message"));
                     notificationHelper.sendNotification(messageParam);
@@ -1606,6 +1617,25 @@ public class WithOutRenewalDelegator {
             }
             log.info(StringUtil.changeForLog("send renewal application notification end"));
         }
+    }
+
+    private String getEmailSubject(String templateId,Map<String, Object> subMap){
+        String subject = "-";
+        if(!StringUtil.isEmpty(templateId)){
+            MsgTemplateDto emailTemplateDto =appSubmissionService.getMsgTemplateById(templateId);
+            if(emailTemplateDto != null){
+                try {
+                    if(!IaisCommonUtils.isEmpty(subMap)){
+                        subject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
+                    }else{
+                        subject = emailTemplateDto.getTemplateName();
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }
+        }
+        return subject;
     }
 
     private String getAppNo(String groupNo,int index){
