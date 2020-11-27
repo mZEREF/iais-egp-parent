@@ -85,6 +85,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -288,7 +289,7 @@ public class InspectReviseNcEmailDelegator {
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             completedTask(taskDto);
 
-            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS);
+            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS,RoleConsts.USER_ROLE_AO1);
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
             hcsaSvcStageWorkingGroupDto.setType(applicationViewDto.getApplicationDto().getApplicationType());
@@ -441,7 +442,9 @@ public class InspectReviseNcEmailDelegator {
         }
         if(appPremisesRoutingHistoryDto!=null&&appPremisesRoutingHistoryDto1!=null){
             try {
-                if(appPremisesRoutingHistoryDto.getUpdatedDt().compareTo(appPremisesRoutingHistoryDto1.getUpdatedDt()) <= 0) {
+                String ao1=new SimpleDateFormat(AppConsts.DEFAULT_DATE_TIME_FORMAT).format(appPremisesRoutingHistoryDto1.getUpdatedDt());
+                String lead=new SimpleDateFormat(AppConsts.DEFAULT_DATE_TIME_FORMAT).format(appPremisesRoutingHistoryDto.getUpdatedDt());
+                if(lead.compareTo(ao1) <= 0) {
                     appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW});
                 }
             }catch (Exception e){

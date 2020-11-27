@@ -6,37 +6,36 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
-import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AppointmentUtil;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApptConfirmReSchDateService;
-import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
+import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
-import com.ecquaria.sz.commons.util.MsgUtil;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,22 +71,25 @@ public class ClientReschedulingDelegator {
             .sortField("appRec.RECOM_IN_DATE").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(SysParamUtil.getDefaultPageSize()).build();
 
     @Autowired
-    SystemParamConfig systemParamConfig;
+    private SystemParamConfig systemParamConfig;
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
 
     @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
+    private NotificationHelper notificationHelper;
 
     @Autowired
-    LicenceViewService licenceViewService;
+    private ApplicationFeClient applicationFeClient;
+    @Autowired
+    private AppConfigClient appConfigClient;
+    @Autowired
+    private OrganizationLienceseeClient organizationLienceseeClient;
 
     @Autowired
-    private LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
+    LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
 
-    @Autowired
-    private LicEicClient licEicClient;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -171,6 +173,8 @@ public class ClientReschedulingDelegator {
                     apptViewDto.setLicenseeId(reschApptGrpPremsQueryDto.getLicenseeId());
                     apptViewDto.setAddress(MiscUtil.getAddress(reschApptGrpPremsQueryDto.getBlkNo(),reschApptGrpPremsQueryDto.getStreetName(),reschApptGrpPremsQueryDto.getBuildingName(),reschApptGrpPremsQueryDto.getFloorNo(),reschApptGrpPremsQueryDto.getUnitNo(),reschApptGrpPremsQueryDto.getPostalCode()));
                     apptViewDto.setInspStartDate(reschApptGrpPremsQueryDto.getRecomInDate());
+                    apptViewDto.setHciCode(reschApptGrpPremsQueryDto.getHciCode());
+                    apptViewDto.setHciName(reschApptGrpPremsQueryDto.getHciName());
                     apptViewDto.setFastTracking(reschApptGrpPremsQueryDto.getFastTracking());
                     apptViewDto.setViewCorrId(viewCorrId);
                     apptViewDto.setChecked(Boolean.FALSE);
@@ -247,18 +251,10 @@ public class ClientReschedulingDelegator {
             apptViewDto.setReason(reason);
             apptViewDtos1.add(apptViewDto);
 
-            String serviceId = apptViewDto.getSvcIds().get(0);
-            if (!StringUtil.isEmpty(serviceId)){
-                Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                String licenseeName=licenceViewService.getLicenseeDtoBylicenseeId(apptViewDto.getLicenseeId()).getName();
-                msgInfoMap.put("Applicant",licenseeName);
-                msgInfoMap.put("Appointment Date",apptViewDto.getInspStartDate());
-                msgInfoMap.put("MOH_NAME",AppConsts.MOH_AGENCY_NAME);
-                try {
-                    sendNotification(MsgTemplateConstants.MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY,msgInfoMap,apptViewDto.getApplicationNo(),apptViewDto.getLicenseeId());
-                } catch (IOException | TemplateException e) {
-                    log.error(e.getMessage(), e);
-                }
+            try {
+                sendReschedulingSuccessEmail(apptViewDto);
+            } catch (IOException | TemplateException e) {
+                log.error(e.getMessage(), e);
             }
 
         }
@@ -267,38 +263,60 @@ public class ClientReschedulingDelegator {
     }
 
 
-    private EmailDto sendNotification(String msgId, Map<String, Object> msgInfoMap, String applicationNo, String licenseeId) throws IOException, TemplateException {
-        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(msgId).getEntity();
-        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
-        EmailDto emailDto=new EmailDto();
-        emailDto.setClientQueryCode(applicationNo);
-        emailDto.setSender(mailSender);
-        emailDto.setContent(templateMessageByContent);
-        emailDto.setSubject(msgTemplateDto.getTemplateName()+applicationNo);
-        List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
-        if(licenseeEmailAddrs!=null){
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            emailDto.setReceipts(licenseeEmailAddrs);
-            try {
-                EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.WithdrawalServiceImpl", "sendNotification",
-                        "hcsa-licence-web-internet", InspRectificationSaveDto.class.getName(), JsonUtil.parseToJson(emailDto));
-                String eicRefNo = eicRequestTrackingDto.getRefNo();
-                feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization());
-                //get eic record
-                eicRequestTrackingDto = licEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-                //update eic record status
-                eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-                eicRequestTrackingDtos.add(eicRequestTrackingDto);
-                licEicClient.updateStatus(eicRequestTrackingDtos);
-            }catch (Exception e){
-                log.error(e.getMessage(),e);
+    public void sendReschedulingSuccessEmail(ApptViewDto apptViewDto) throws IOException, TemplateException {
+
+        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+        ApplicationDto applicationDto=applicationFeClient.getApplicationById(apptViewDto.getAppId()).getEntity();
+
+
+        //TODO Need to be replaced with appSubmissionDto, and set submit by id to it
+        ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
+        if (applicationGroupDto != null){
+            OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
+            if (orgUserDto != null){
+                emailMap.put("ApplicantName", orgUserDto.getDisplayName());
             }
         }
-        return emailDto;
+
+
+        emailMap.put("DDMMYYYY", Formatter.formatDate(new Date()));
+        emailMap.put("email_address1", systemParamConfig.getSystemAddressOne());
+        emailMap.put("email_address2", systemParamConfig.getSystemAddressTwo());
+        emailMap.put("time", Formatter.formatTime(new Date()));
+        emailMap.put("HCI_Name", apptViewDto.getHciName());
+        emailMap.put("HCI_Code", apptViewDto.getHciCode());
+        emailMap.put("premises_address", apptViewDto.getAddress());
+        emailMap.put("contact_no", systemParamConfig.getSystemPhoneNumber());
+        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY);
+        emailParam.setTemplateContent(emailMap);
+        emailParam.setQueryCode(applicationDto.getApplicationNo());
+        emailParam.setReqRefNum(applicationDto.getApplicationNo());
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+        emailParam.setRefId(applicationDto.getApplicationNo());
+        //email
+        notificationHelper.sendNotification(emailParam);
+        //msg
+        try {
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY_MSG);
+
+            HcsaServiceDto svcDto = appConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+            List<String> svcCode=IaisCommonUtils.genNewArrayList();
+            svcCode.add(svcDto.getSvcCode());
+            emailParam.setSvcCodeList(svcCode);
+            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            emailParam.setRefId(applicationDto.getApplicationNo());
+            notificationHelper.sendNotification(emailParam);
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+        }
+        //sms
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY_SMS);
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+
+        notificationHelper.sendNotification(emailParam);
     }
 
     public Map<String, String> validate(HttpServletRequest httpServletRequest , String[] apptIds) {
