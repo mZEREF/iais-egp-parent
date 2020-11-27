@@ -5476,3 +5476,24 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
 }
 
 /*# sourceMappingURL=cpl_style.css.map */
+
+/********************************/
+
+.dash-announce {
+  background: #6dcff6;
+  border: 7px solid #134c85;
+  color: #134c85;
+  padding: 25px;
+}
+.dashalert {
+  border-radius: 14px;
+  /*    padding-top: 10px;
+      padding-bottom: 10px;*/
+  border: 0;
+  margin: 20px;
+}
+
+.dash-announce h3 {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #1989bf;
+}

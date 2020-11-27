@@ -5591,3 +5591,26 @@ section.logo .logo-ssg span {
 section.logo img {
   height: 27px;
 }
+
+/********************************/
+
+.dash-announce {
+  background: #1a5692;
+  border: 7px solid #134c85;
+  color: #fff;
+  padding: 25px;
+}
+.dashalert {
+  border-radius: 14px;
+  /*    padding-top: 10px;
+      padding-bottom: 10px;*/
+  border: 0;
+  margin-bottom: 20px;
+}
+
+.dash-announce h3 {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #1989bf;
+}
+
+/*# sourceMappingURL=cpl_style.css.map */
