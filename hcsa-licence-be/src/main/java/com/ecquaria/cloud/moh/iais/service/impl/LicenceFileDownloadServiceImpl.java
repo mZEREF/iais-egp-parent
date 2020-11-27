@@ -788,63 +788,61 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             log.info("Send Withdraw 003 Email");
             if (applicationDtoList != null && applicationDtoList.size() > 0){
                 applicationDtoList.forEach(h -> {
-                    String officerName = "";
-                    String applicationNo = h.getApplicationNo();
-                    String applicationGrpId = h.getAppGrpId();
-                    String applicationType = h.getApplicationType();
-                    String serviceId = h.getServiceId();
-                    String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-                    ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationGrpId);
-                    try {
-                        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNo(h.getApplicationNo()).getEntity();
-                        if (appPremisesRoutingHistoryDtoList != null && appPremisesRoutingHistoryDtoList.size() > 0) {
-                            for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtoList) {
-                                String actionBy = appPremisesRoutingHistoryDto.getActionby();
-                                log.info("Send Withdraw 003 Email actionBy  ---->  " + actionBy);
-                                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(actionBy).getEntity();
-                                if (orgUserDto != null && (!appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN)
-                                        && !appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_ORG_ADMIN)
-                                        && !appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_ORG_USER)
-                                        && !appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_ORG_DIRECTOR))) {
+                    if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(h.getApplicationType())
+                            && ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(h.getStatus())) {
+                        String officerName = "";
+                        String applicationNo = h.getApplicationNo();
+                        String applicationGrpId = h.getAppGrpId();
+                        String applicationType = h.getApplicationType();
+                        String serviceId = h.getServiceId();
+                        String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
+                        ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationGrpId);
+                        try {
+                            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNo(h.getApplicationNo()).getEntity();
+                            if (appPremisesRoutingHistoryDtoList != null && appPremisesRoutingHistoryDtoList.size() > 0) {
+                                for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtoList) {
+                                    String actionBy = appPremisesRoutingHistoryDto.getActionby();
+                                    log.info("Send Withdraw 003 Email actionBy  ---->  " + actionBy);
+                                    OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(actionBy).getEntity();
+                                    if (orgUserDto != null && (!appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN)
+                                            && !appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_ORG_ADMIN)
+                                            && !appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_ORG_USER)
+                                            && !appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_ORG_DIRECTOR))) {
                                         officerName = orgUserDto.getDisplayName();
+                                    }
                                 }
                             }
-                        }
-                        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(h.getId()).getEntity();
-                        AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremisesCorrelationDto.getId());
-                        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-                        if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
+                            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(h.getId()).getEntity();
+                            AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremisesCorrelationDto.getId());
+                            String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
                             Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                            msgInfoMap.put("systemLink",loginUrl);
+                            msgInfoMap.put("systemLink", loginUrl);
                             msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType));
                             msgInfoMap.put("ApplicationNumber", applicationNo);
-                            msgInfoMap.put("HCIName",appGrpPremisesDto.getHciName());
-                            msgInfoMap.put("Address",appGrpPremisesDto.getAddress());
-                            msgInfoMap.put("Applicant",officerName);
-                            msgInfoMap.put("submissionDate",Formatter.formatDateTime(applicationGroupDto.getSubmitDt()));
-                            msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date()));
-                            msgInfoMap.put("S_LName",serviceName);
-                            msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+                            msgInfoMap.put("HCIName", appGrpPremisesDto.getHciName());
+                            msgInfoMap.put("Address", appGrpPremisesDto.getAddress());
+                            msgInfoMap.put("Applicant", officerName);
+                            msgInfoMap.put("submissionDate", Formatter.formatDateTime(applicationGroupDto.getSubmitDt()));
+                            msgInfoMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+                            msgInfoMap.put("S_LName", serviceName);
+                            msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                             try {
-                                sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL,msgInfoMap,h);
-                                sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_MESSAGE,msgInfoMap,h);
-                                sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_SMS,msgInfoMap,h);
+                                sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL, msgInfoMap, h);
                             } catch (IOException | TemplateException e) {
                                 log.error(e.getMessage(), e);
                             }
+                        } catch (Exception e) {
+                            log.info(e.getMessage(), e);
                         }
-                    }catch (Exception e){
-                        log.info(e.getMessage(),e);
                     }
                 });
             }
-
         }
-
     }
 
     private void sendEmail(String templateId, Map<String, Object> msgInfoMap, ApplicationDto applicationDto) throws IOException, TemplateException {
         EmailParam emailParam = new EmailParam();
+        log.info("Send Withdraw 003 Email start send Email");
         MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(templateId).getEntity();
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
@@ -858,6 +856,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
         emailParam.setSubject(subject);
         notificationHelper.sendNotification(emailParam);
+        log.info("Send Withdraw 003 Email end send Email");
     }
 
     private void  moveFile(File file){
