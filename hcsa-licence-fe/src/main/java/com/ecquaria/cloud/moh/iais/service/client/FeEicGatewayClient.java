@@ -248,7 +248,7 @@ public class FeEicGatewayClient {
     }
 
     public FeignResponseEntity<String> saveAppGroupGiroSysnEic(ApplicationGroupDto applicationGroupDto, String date, String authorization, String dateSec, String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/save-appgroup-giro-sysn", HttpMethod.PUT, applicationGroupDto,
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/app-group", HttpMethod.PUT, applicationGroupDto,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
     }
 }
