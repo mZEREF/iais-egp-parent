@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -59,7 +58,16 @@ import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
+import com.ecquaria.cloud.moh.iais.service.client.EventClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -1015,14 +1023,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             emailMap.put("Licensee", licenseeDto.getName());
                             emailMap.put("LicenceNumber", licenceDto.getLicenceNo());
                             StringBuilder stringBuilder = new StringBuilder();
-                            List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(application.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
-                            if(appEditSelectDtos!=null){
-                                if (appEditSelectDtos.get(0).isServiceEdit()){
-                                    stringBuilder.append("<p class=\"line\">   ").append("Remove subsumed service").append("</p>");
-                                }
-                                if (applicationGroupDto.getNewLicenseeId()!=null){
-                                    stringBuilder.append("<p class=\"line\">   ").append("Change in Management of Licensee").append("</p>");
-                                }
+//                            List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(application.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
+//                            if(appEditSelectDtos!=null){
+//                                if (appEditSelectDtos.get(0).isServiceEdit()){
+//                                    stringBuilder.append("<p class=\"line\">   ").append("Remove subsumed service").append("</p>");
+//                                }
+//                            }
+                            if (applicationGroupDto.getNewLicenseeId()!=null){
+                                stringBuilder.append("<p class=\"line\">   ").append("Change in Management of Licensee").append("</p>");
                             }
                             emailMap.put("ServiceNames", stringBuilder);
                             emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
