@@ -219,7 +219,7 @@
                     var ajaxFlag = data.buttonFlag;
                     var inspDateList = data.inspDateList;
                     var specButtonFlag = data.specButtonFlag;
-                    if('true' == ajaxFlag){
+                    if('true' == specButtonFlag){
                         $("#disApptSpecInspDate").hide();
                         $("#apptSpecInspDate").show();
                     } else {
@@ -245,7 +245,6 @@
                         $("#disApptSysInspDate").show();
                         $("#apptSysInspDate").hide();
                         $("#apptThreeInspDate").hide();
-
                     }
                 }
             )
@@ -289,7 +288,7 @@
                     var ajaxFlag = data.buttonFlag;
                     var inspDateList = data.inspDateList;
                     var specButtonFlag = data.specButtonFlag;
-                    if('true' == ajaxFlag){
+                    if('true' == specButtonFlag){
                         $("#disApptSpecInspDate").hide();
                         $("#apptSpecInspDate").show();
                     } else {
