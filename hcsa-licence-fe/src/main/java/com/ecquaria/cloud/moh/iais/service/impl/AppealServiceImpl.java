@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -957,7 +958,7 @@ public class AppealServiceImpl implements AppealService {
                 String svcName = licenceDto.getSvcName();
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
                 LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
-                sendAllNotification(appNo, "Appeal", licenceDto, licenseeDto, hcsaServiceDto,applicationGroupDto1.getLicenseeId());
+                sendAllNotification(appNo, "Appeal", licenceDto, licenseeDto, hcsaServiceDto,applicationGroupDto1);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
@@ -1121,7 +1122,7 @@ public class AppealServiceImpl implements AppealService {
         if (!"rfi".equals(rfi)) {
             try {
                 LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(entity.getLicenseeId()).getEntity();
-                sendAllNotification(appNo,"Appeal", null, licenseeDto,hcsaServiceDto,applicationGroupDto1.getLicenseeId());
+                sendAllNotification(appNo,"Appeal", null, licenseeDto,hcsaServiceDto,applicationGroupDto1);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
@@ -1309,22 +1310,34 @@ public class AppealServiceImpl implements AppealService {
         return email;
     }
 
-    private void sendAllNotification(String appNo,String appType,LicenceDto licenceDto, LicenseeDto licenseeDto,HcsaServiceDto hcsaServiceDto,String licenssId){
+    private void sendAllNotification(String appNo,String appType,LicenceDto licenceDto, LicenseeDto licenseeDto,HcsaServiceDto hcsaServiceDto,ApplicationGroupDto applicationGroupDto) throws IOException, TemplateException{
         log.info("start send email sms and msg");
         log.info(StringUtil.changeForLog("appNo: " + appNo));
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-        templateContent.put("ApplicantName", licenseeDto.getName());
+        String applicantId = applicationGroupDto.getSubmitBy();
+        OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicantId).getEntity();
+        String applicantName = orgUserDto.getDisplayName();
+        templateContent.put("ApplicantName", applicantName);
         templateContent.put("ApplicationType",appType);
         templateContent.put("ApplicationNo", appNo);
         templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
         templateContent.put("newSystem", loginUrl);
         templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
-        String subject = "MOH IAIS - Your "+ appType+", "+appNo+" has been submitted";
+        MsgTemplateDto emailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_GENERIC_EMAIL).getEntity();
+        MsgTemplateDto smsTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_GENERIC_SMS).getEntity();
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_GENERIC_MSG).getEntity();
+        Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+        subMap.put("ApplicationType", appType);
+        subMap.put("ApplicationNumber", appNo+"-01");
+        String emailSubject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
+        String smsSubject = MsgUtil.getTemplateMessageByContent(smsTemplateDto.getTemplateName(),subMap);
+        String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),subMap);
+
         EmailParam emailParam = new EmailParam();
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_GENERIC_EMAIL);
         emailParam.setTemplateContent(templateContent);
-        emailParam.setSubject(subject);
+        emailParam.setSubject(emailSubject);
         emailParam.setQueryCode(appNo);
         emailParam.setReqRefNum(appNo);
         if(licenceDto == null){
@@ -1338,7 +1351,7 @@ public class AppealServiceImpl implements AppealService {
         notificationHelper.sendNotification(emailParam);
         EmailParam smsParam = new EmailParam();
         smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_GENERIC_SMS);
-        smsParam.setSubject(subject);
+        smsParam.setSubject(smsSubject);
         smsParam.setTemplateContent(templateContent);
         smsParam.setQueryCode(appNo);
         smsParam.setReqRefNum(appNo);
@@ -1353,7 +1366,7 @@ public class AppealServiceImpl implements AppealService {
         EmailParam msgParam = new EmailParam();
         msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_GENERIC_MSG);
         msgParam.setTemplateContent(templateContent);
-        msgParam.setSubject(subject);
+        msgParam.setSubject(msgSubject);
         msgParam.setQueryCode(appNo);
         msgParam.setReqRefNum(appNo);
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
