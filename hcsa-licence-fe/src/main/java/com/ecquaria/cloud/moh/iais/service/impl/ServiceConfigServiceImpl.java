@@ -93,6 +93,10 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
+    @Value("${spring.application.name}")
+    private String currentApp;
+    @Value("${iais.current.domain}")
+    private String currentDomain;
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
     @Autowired
@@ -521,8 +525,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         try {
-            EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ServiceConfigServiceImpl", "saveAppGroupGiroSysnEic",
-                    "save-appgroup-grio-sysn", ApplicationGroupDto.class.getName(), JsonUtil.parseToJson(applicationGroupDto));
+            EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, ServiceConfigServiceImpl.class.getName(),
+                    "saveAppGroupGiroSysnEic",currentApp + "-" + currentDomain
+                    , ApplicationGroupDto.class.getName(), JsonUtil.parseToJson(applicationGroupDto));
             String eicRefNo = eicRequestTrackingDto.getRefNo();
             String saveSuccess = feEicGatewayClient.saveAppGroupGiroSysnEic(applicationGroupDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
