@@ -6,10 +6,12 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -24,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -69,6 +72,8 @@ public class LicenceExpiredBatchJob {
     private NotificationHelper notificationHelper;
     @Autowired
     HcsaConfigClient hcsaConfigClient;
+    @Autowired
+    OrganizationClient organizationClient;
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("The licenceExpiredBatchJob is start ..."));
@@ -163,9 +168,15 @@ public class LicenceExpiredBatchJob {
             updateLicenceDtos.add(licenceDto);
             try {
                 Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                LicenseeDto licenseeDto = inspEmailService.getLicenseeDtoById(licenseeId);
-                String applicantName = licenseeDto.getName();
-                emailMap.put("ApplicantName", applicantName);
+                String appId= hcsaLicenceClient.getLicCorrBylicId(licId).getEntity().get(0).getApplicationId();
+                ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
+                ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+                if (applicationGroupDto != null){
+                    OrgUserDto orgUserDto = organizationClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
+                    if (orgUserDto != null){
+                        emailMap.put("ApplicantName", orgUserDto.getDisplayName());
+                    }
+                }
                 emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
                 emailMap.put("CessationDate", DateFormatUtils.format(date,"dd/MM/yyyy"));
                 emailMap.put("email", systemParamConfig.getSystemAddressOne());
@@ -232,9 +243,15 @@ public class LicenceExpiredBatchJob {
                 String licenseeId = licenceDto.getLicenseeId();
 
                 Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                LicenseeDto licenseeDto = inspEmailService.getLicenseeDtoById(licenseeId);
-                String applicantName = licenseeDto.getName();
-                emailMap.put("ApplicantName", applicantName);
+                String appId= hcsaLicenceClient.getLicCorrBylicId(licenceDtoId).getEntity().get(0).getApplicationId();
+                ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
+                ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+                if (applicationGroupDto != null){
+                    OrgUserDto orgUserDto = organizationClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
+                    if (orgUserDto != null){
+                        emailMap.put("ApplicantName", orgUserDto.getDisplayName());
+                    }
+                }
                 emailMap.put("ServiceLicenceName", svcName);
                 emailMap.put("LicenceNumber", licenceNo);
                 emailMap.put("CessationDate", Formatter.formatDateTime(date));
@@ -297,9 +314,15 @@ public class LicenceExpiredBatchJob {
             String licenseeId = licenceDto.getLicenseeId();
             try {
                 Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                LicenseeDto licenseeDto = inspEmailService.getLicenseeDtoById(licenseeId);
-                String applicantName = licenseeDto.getName();
-                emailMap.put("ApplicantName", applicantName);
+                String appId= hcsaLicenceClient.getLicCorrBylicId(licId).getEntity().get(0).getApplicationId();
+                ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
+                ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+                if (applicationGroupDto != null){
+                    OrgUserDto orgUserDto = organizationClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
+                    if (orgUserDto != null){
+                        emailMap.put("ApplicantName", orgUserDto.getDisplayName());
+                    }
+                }
                 emailMap.put("ServiceLicenceName", svcName);
                 emailMap.put("LicenceNumber", licenceNo);
                 emailMap.put("CessationDate", Formatter.formatDate(new Date()));
