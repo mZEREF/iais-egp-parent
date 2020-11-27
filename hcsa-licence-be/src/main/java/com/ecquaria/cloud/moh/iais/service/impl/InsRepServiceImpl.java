@@ -218,11 +218,16 @@ public class InsRepServiceImpl implements InsRepService {
         if (appPremPreInspectionNcDto != null) {
             String ncId = appPremPreInspectionNcDto.getId();
             List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
-            if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
+            if (!IaisCommonUtils.isEmpty(listAppPremisesPreInspectionNcItemDtos)) {
                 for (AppPremisesPreInspectionNcItemDto preInspNc : listAppPremisesPreInspectionNcItemDtos) {
-                    ChecklistItemDto cDto = hcsaChklClient.getChklItemById(preInspNc.getItemId()).getEntity();
+                    String adhocQuestion = preInspNc.getAdhocQuestion();
                     ReportNcRectifiedDto reportNcRectifiedDto = new ReportNcRectifiedDto();
-                    reportNcRectifiedDto.setNc(cDto.getChecklistItem());
+                    if(!StringUtil.isEmpty(adhocQuestion)){
+                        reportNcRectifiedDto.setNc(adhocQuestion);
+                    }else {
+                        ChecklistItemDto cDto = hcsaChklClient.getChklItemById(preInspNc.getItemId()).getEntity();
+                        reportNcRectifiedDto.setNc(cDto.getChecklistItem());
+                    }
                     reportNcRectifiedDto.setRectified(preInspNc.getIsRecitfied() == 1 ? "Yes" : "No");
                     listReportNcRectifiedDto.add(reportNcRectifiedDto);
                 }
