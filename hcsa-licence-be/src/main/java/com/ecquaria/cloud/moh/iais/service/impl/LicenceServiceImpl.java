@@ -683,7 +683,14 @@ public class LicenceServiceImpl implements LicenceService {
         String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         emailMap.put("change", "true");
-        emailMap.put("ApplicantName", applicantName);
+        ApplicationDto applicationDto=applicationClient.getAppByNo(applicationNo).getEntity();
+        ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+        if (applicationGroupDto != null){
+            OrgUserDto orgUserDto = organizationClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
+            if (orgUserDto != null){
+                emailMap.put("ApplicantName", orgUserDto.getDisplayName());
+            }
+        }
         emailMap.put("ApplicationType", applicationTypeShow);
         emailMap.put("ApplicationNumber", applicationNo);
         emailMap.put("ApplicationDate", appDate);

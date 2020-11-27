@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspec
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
@@ -577,7 +578,13 @@ public class InspectReviseNcEmailDelegator {
             MsgTemplateDto msgTemplateDto= notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_INSPECTOR_EMAIL);
             Map<String,Object> mapTemplate=IaisCommonUtils.genNewHashMap();
             mapTemplate.put("inspection_lead", leadDto.getDisplayName());
-            mapTemplate.put("ApplicantName", licenseeDto.getName());
+            ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationViewDto.getApplicationDto().getAppGrpId()).getEntity();
+            if (applicationGroupDto != null){
+                OrgUserDto orgUserDto = organizationClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
+                if (orgUserDto != null){
+                    mapTemplate.put("ApplicantName", orgUserDto.getDisplayName());
+                }
+            }
             mapTemplate.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getApplicationType()}).get(0).getText());
             mapTemplate.put("ApplicationNumber", applicationViewDto.getApplicationDto().getApplicationNo());
             mapTemplate.put("ApplicationDate", applicationViewDto.getSubmissionDate());
