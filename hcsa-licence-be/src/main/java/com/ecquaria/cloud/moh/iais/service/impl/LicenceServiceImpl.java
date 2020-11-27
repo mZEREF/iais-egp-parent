@@ -479,68 +479,57 @@ public class LicenceServiceImpl implements LicenceService {
                 List<String> appIdList = hcsaLicenceClient.getAppIdsByLicId(superLicDto.getLicenceDto().getId()).getEntity();
                 log.debug(StringUtil.changeForLog("send approve email --- get app list by licence id : " + superLicDto.getLicenceDto().getId()));
                 if(appIdList != null && appIdList.size() >0) {
-                    String appId = appIdList.get(0);
-                    log.debug(StringUtil.changeForLog("send approve email --- get app by app id : " + appId));
-                    ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
-                    //getAppPremisesCorrelationsByAppId
-                    AppPremisesRecommendationDto inspectionRecommendation = null;
-                    AppPremisesRecommendationDto tempRecommendation = null;
                     for(String applicationId : appIdList){
-                        ApplicationDto appDto = applicationClient.getApplicationById(applicationId).getEntity();
-                        if(appDto != null){
-                            AppPremisesCorrelationDto appPremisesCorrelationDto = appPremisesCorrClient.getAppPremisesCorrelationsByAppId(appDto.getId()).getEntity().get(0);
+                        ApplicationDto applicationDto = applicationClient.getApplicationById(applicationId).getEntity();
+                        if(applicationDto != null){
+                            //getAppPremisesCorrelationsByAppId
+                            AppPremisesRecommendationDto inspectionRecommendation = null;
+                            AppPremisesCorrelationDto appPremisesCorrelationDto = appPremisesCorrClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity().get(0);
                             if(appPremisesCorrelationDto != null){
-                                tempRecommendation = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
-                                if(tempRecommendation != null){
-                                    inspectionRecommendation = tempRecommendation;
-                                    break;
-                                }else{
-                                    continue;
-                                }
+                                inspectionRecommendation = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
                             }
-                        }
-                    }
-
-                    if (applicationDto != null) {
-                        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
-                        List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-                        svcCodeList.add(svcDto.getSvcCode());
-                        String applicationNo = applicationDto.getApplicationNo();
-                        log.debug(StringUtil.changeForLog("send approve email --- get app by applicationNo : " + applicationNo));
-                        String applicationType = applicationDto.getApplicationType();
-                        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-                        String appGrpId = applicationDto.getAppGrpId();
-                        ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGrpId).getEntity();
-                        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
-                        if(licenseeDto != null && orgUserDto != null){
-                            String applicantName = orgUserDto.getDisplayName();
-                            String organizationId = licenseeDto.getOrganizationId();
-                            OrganizationDto organizationDto = organizationClient.getOrganizationById(organizationId).getEntity();
-                            String appDate = Formatter.formatDateTime(new Date(), "dd/MM/yyyy");
-                            String MohName = AppConsts.MOH_AGENCY_NAME;
-                            log.info(StringUtil.changeForLog("send notification applicantName : " + applicantName));
-                            String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
-                            log.info(StringUtil.changeForLog("send notification applicationType : " + applicationTypeShow));
-                            if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
-                                sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,corpPassUrl,MohName,organizationDto,inspectionRecommendation);
-                            }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-                                sendRenewalAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,MohName,inspectionRecommendation);
-                                sendPostInspectionNotification(applicationGroupDto,applicantName,svcDto,svcCodeList,MohName,applicationNo);
-                            }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
-                                try {
-                                    if(applicationGroupDto.getNewLicenseeId()==null){
-                                        sendRfcApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList);
+                            if (applicationDto != null) {
+                                HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+                                List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+                                svcCodeList.add(svcDto.getSvcCode());
+                                String applicationNo = applicationDto.getApplicationNo();
+                                log.debug(StringUtil.changeForLog("send approve email --- get app by applicationNo : " + applicationNo));
+                                String applicationType = applicationDto.getApplicationType();
+                                LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+                                String appGrpId = applicationDto.getAppGrpId();
+                                ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGrpId).getEntity();
+                                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+                                if(licenseeDto != null && orgUserDto != null){
+                                    String applicantName = orgUserDto.getDisplayName();
+                                    String organizationId = licenseeDto.getOrganizationId();
+                                    OrganizationDto organizationDto = organizationClient.getOrganizationById(organizationId).getEntity();
+                                    String appDate = Formatter.formatDateTime(new Date(), "dd/MM/yyyy");
+                                    String MohName = AppConsts.MOH_AGENCY_NAME;
+                                    log.info(StringUtil.changeForLog("send notification applicantName : " + applicantName));
+                                    String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
+                                    log.info(StringUtil.changeForLog("send notification applicationType : " + applicationTypeShow));
+                                    if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
+                                        sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,corpPassUrl,MohName,organizationDto,inspectionRecommendation);
+                                    }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
+                                        sendRenewalAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,MohName,inspectionRecommendation);
+                                        sendPostInspectionNotification(applicationGroupDto,applicantName,svcDto,svcCodeList,MohName,applicationNo);
+                                    }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
+                                        try {
+                                            if(applicationGroupDto.getNewLicenseeId()==null){
+                                                sendRfcApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList);
+                                            }
+                                        } catch (IOException e) {
+                                            log.info(e.getMessage(),e);
+                                        }
                                     }
-                                } catch (IOException e) {
-                                    log.info(e.getMessage(),e);
+                                }else{
+                                    if(licenseeDto == null){
+                                        log.error(StringUtil.changeForLog("---licenseeDto == null"));
+                                    }
+                                    if(orgUserDto == null){
+                                        log.error(StringUtil.changeForLog("---orgUserDto == null"));
+                                    }
                                 }
-                            }
-                        }else{
-                            if(licenseeDto == null){
-                                log.error(StringUtil.changeForLog("---licenseeDto == null"));
-                            }
-                            if(orgUserDto == null){
-                                log.error(StringUtil.changeForLog("---orgUserDto == null"));
                             }
                         }
                     }
