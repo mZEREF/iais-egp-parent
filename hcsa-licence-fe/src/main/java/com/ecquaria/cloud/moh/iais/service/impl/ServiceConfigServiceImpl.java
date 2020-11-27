@@ -413,10 +413,10 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
       }
       //todo change filename
         String xml = genXmlByGiroPaymentXmlDtos(giroPaymentXmlDtosGen);
-        String fileName = ApplicationConsts.GIRO_UPLOAD_FILE_PATH+  "uploadGiro"+Formatter.formatDateTime(new Date(),Formatter.DATE_REF_NUMBER)+".xml";
+        // todo need change for sftp down file
+        String tag = "uploadGiro"+Formatter.formatDateTime(new Date(),Formatter.DATE_REF_NUMBER)+".xml";
+        String fileName = ApplicationConsts.GIRO_UPLOAD_FILE_PATH+  tag;
         if(genXmlFileToSftp(xml,fileName)){
-            // todo need change for sftp down file
-            String tag = fileName;
             GiroPaymentXmlDto giroPaymentXmlDtoSend = new GiroPaymentXmlDto();
             giroPaymentXmlDtoSend.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             giroPaymentXmlDtoSend.setTag(tag);
@@ -502,6 +502,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     public void sysnSaveGroupToBe(){
         log.info(" sysnSaveGroupToBe start");
         List<GiroPaymentXmlDto> giroPaymentXmlDtos =  appPaymentStatusClient.getGiroPaymentDtosByStatusAndXmlType(AppConsts.COMMON_STATUS_ACTIVE,ApplicationConsts.GIRO_PAY_SUCCESS_SYSN_BE).getEntity();
+        if(IaisCommonUtils.isEmpty(giroPaymentXmlDtos)){
+            return;
+        }
         for(GiroPaymentXmlDto giroPaymentXmlDto : giroPaymentXmlDtos){
          ApplicationGroupDto applicationGroupDto =  JsonUtil.parseToObject(giroPaymentXmlDto.getXmlData(), ApplicationGroupDto.class);
          applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -574,7 +577,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
              List<String> appNo = IaisCommonUtils.genNewArrayList();
              for(InputDetailBackDto inputDetailBackDto : inputDetailBackDtos){
                  if(!appNo.contains(inputDetailBackDto.getAPPLICATION_NUMBER())){
-                     ApplicationGroupDto applicationGroupDto = applicationFeClient.getAppGrpByAppNo(inputDetailBackDto.getAPPLICATION_NUMBER()).getEntity();
+                     appNo.add(inputDetailBackDto.getAPPLICATION_NUMBER());
+                     ApplicationGroupDto applicationGroupDto = applicationFeClient.getAppGrpByAppNo(inputDetailBackDto.getAPPLICATION_NUMBER()+"-01").getEntity();
                      List<GiroPaymentDto> giroPaymentDtos = appPaymentStatusClient.getGiroPaymentDtosByPmtStatusAndAppGroupNo(AppConsts.COMMON_STATUS_ACTIVE,inputDetailBackDto.getAPPLICATION_NUMBER()).getEntity();
                      if(!IaisCommonUtils.isEmpty(giroPaymentDtos)) {
                          double amount = 0.0;
@@ -609,7 +613,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             giroPaymentDto.setAppGroupNo(inputDetailBackDto.getAPPLICATION_NUMBER());
             giroPaymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             //todo get xml analyze amount
-            ApplicationGroupDto applicationGroupDto = applicationFeClient.getAppGrpByAppNo(inputDetailBackDto.getAPPLICATION_NUMBER()).getEntity();
+            ApplicationGroupDto applicationGroupDto = applicationFeClient.getAppGrpByAppNo(inputDetailBackDto.getAPPLICATION_NUMBER()+"-01").getEntity();
             giroPaymentDto.setAmount(applicationGroupDto.getAmount());
             //save giroPaymentDto
             appPaymentStatusClient.updateGiroPaymentDto(giroPaymentDto);
