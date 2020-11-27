@@ -138,6 +138,17 @@ public class InterInboxDelegator {
             ParamUtil.setRequestAttr(request, "init_to_page", "");
         }
     }
+
+    public void toElis(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("Step ---> toElis"));
+        HttpServletRequest request = bpc.request;
+        String initpage = ParamUtil.getRequestString(request,"initPage");
+        if (!StringUtil.isEmpty(initpage)){
+            ParamUtil.setRequestAttr(request,"init_to_page",initpage);
+        }else {
+            ParamUtil.setRequestAttr(request, "init_to_page", "");
+        }
+    }
     /**
      *
      * @param bpc
