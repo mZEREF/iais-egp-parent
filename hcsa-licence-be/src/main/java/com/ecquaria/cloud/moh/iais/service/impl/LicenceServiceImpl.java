@@ -891,7 +891,16 @@ public class LicenceServiceImpl implements LicenceService {
         map.put("MOH_AGENCY_NAME", MohName);
 
         try {
-            String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is approved ";
+//            String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is approved ";
+            Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+            subMap.put("ApplicationType", applicationTypeShow);
+            subMap.put("ApplicationNumber", applicationNo);
+            String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_ID,subMap);
+            String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_SMS_ID,subMap);
+            String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_MESSAGE_ID,subMap);
+            log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
+            log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
+            log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_ID);
             emailParam.setTemplateContent(map);
@@ -899,7 +908,7 @@ public class LicenceServiceImpl implements LicenceService {
             emailParam.setReqRefNum(applicationNo);
             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
             emailParam.setRefId(applicationNo);
-            emailParam.setSubject(subject);
+            emailParam.setSubject(emailSubject);
             //send email
             log.info(StringUtil.changeForLog("send new application email"));
             notificationHelper.sendNotification(emailParam);
@@ -907,7 +916,7 @@ public class LicenceServiceImpl implements LicenceService {
             //send sms
             EmailParam smsParam = new EmailParam();
             smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_SMS_ID);
-            smsParam.setSubject(subject);
+            smsParam.setSubject(smsSubject);
             smsParam.setQueryCode(applicationNo);
             smsParam.setReqRefNum(applicationNo);
             smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
@@ -923,7 +932,7 @@ public class LicenceServiceImpl implements LicenceService {
             messageParam.setReqRefNum(applicationNo);
             messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
             messageParam.setRefId(applicationNo);
-            messageParam.setSubject(subject);
+            messageParam.setSubject(messageSubject);
             messageParam.setSvcCodeList(svcCodeList);
             log.info(StringUtil.changeForLog("send new application message"));
             notificationHelper.sendNotification(messageParam);

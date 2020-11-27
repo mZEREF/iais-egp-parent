@@ -1154,6 +1154,15 @@ public class HcsaApplicationDelegator {
                 map.put("MOH_AGENCY_NAME", MohName);
                 try {
                     String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is rejected ";
+                    Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+                    subMap.put("ApplicationType", applicationTypeShow);
+                    subMap.put("ApplicationNumber", applicationNo);
+                    String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_ID,subMap);
+                    String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_SMS_ID,subMap);
+                    String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_MESSAGE_ID,subMap);
+                    log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
+                    log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
+                    log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
                     EmailParam emailParam = new EmailParam();
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_ID);
                     emailParam.setTemplateContent(map);
