@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -1023,12 +1024,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             emailMap.put("Licensee", licenseeDto.getName());
                             emailMap.put("LicenceNumber", licenceDto.getLicenceNo());
                             StringBuilder stringBuilder = new StringBuilder();
-//                            List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(application.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
-//                            if(appEditSelectDtos!=null){
-//                                if (appEditSelectDtos.get(0).isServiceEdit()){
-//                                    stringBuilder.append("<p class=\"line\">   ").append("Remove subsumed service").append("</p>");
-//                                }
-//                            }
+                            List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(application.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
+                            if(appEditSelectDtos!=null&&appEditSelectDtos.size()!=0){
+                                if (appEditSelectDtos.get(0).isServiceEdit()){
+                                    stringBuilder.append("<p class=\"line\">   ").append("Remove subsumed service").append("</p>");
+                                }
+                            }
                             if (applicationGroupDto.getNewLicenseeId()!=null){
                                 stringBuilder.append("<p class=\"line\">   ").append("Change in Management of Licensee").append("</p>");
                             }
