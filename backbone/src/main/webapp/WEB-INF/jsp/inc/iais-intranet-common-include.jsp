@@ -1,5 +1,6 @@
 
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
 <%
     String webroot=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT;
     String webRootCommon = IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
@@ -53,6 +54,9 @@
             format:"dd/mm/yyyy",
             autoclose:true
         });
-        $(".main-content:first").append("try with it");
+        <%
+            String banner = (String) ParamUtil.getSessionAttr(request, "bAnner_AlERt_Msg__atTR");
+        %>
+        $(".main-content:first").prepend("try with it");
     });
 </script>
