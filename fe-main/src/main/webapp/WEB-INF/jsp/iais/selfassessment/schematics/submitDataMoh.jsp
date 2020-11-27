@@ -14,7 +14,7 @@
         </label>
     </div>
 
-    <a class="btn btn-primary "  onclick="Utils.submit('mainForm','subDate')"   >NEXT</a>
+    <a class="btn btn-primary "  onclick="Utils.submit('mainForm','subDate')" href="javascript:void(0);"  >NEXT</a>
 
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>

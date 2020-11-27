@@ -52,7 +52,7 @@
                           <div class="self-assessment-item completed">
                             <div class="amendLicence">
                               <div class="form-check-gp">
-                                <p class="form-check-title">Do you (or your organisation) have a UEN number?<a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" title="" data-original-title="" aria-describedby="tooltip883061">i</a></p>
+                                <p class="form-check-title">Do you (or your organisation) have a UEN number?<a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" title="" data-original-title="" aria-describedby="tooltip883061" href="javascript:void(0);">i</a></p>
 
                                 <div class="form-check progress-step-check">
                                   <input class="form-check-input" id="updatePremise" type="radio" name="amendLicenceType" aria-invalid="false">

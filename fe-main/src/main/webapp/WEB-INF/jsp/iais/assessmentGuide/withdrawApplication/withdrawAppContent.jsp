@@ -48,7 +48,7 @@
 </div>
 <c:choose>
     <c:when test="${!empty withdrawAppResult.rows}">
-        <a class="btn btn-primary " onclick="guideSubmit('withdraw','second')">NEXT</a>
+        <a class="btn btn-primary " onclick="guideSubmit('withdraw','second')" href="javascript:void(0);">NEXT</a>
     </c:when>
 </c:choose>
 

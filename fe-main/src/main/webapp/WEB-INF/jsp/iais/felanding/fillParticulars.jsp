@@ -48,7 +48,7 @@
                                     </div>
                                    <%-- <a class="btn btn-primary next" href="javascript:void(0);"
                                        onclick="Utils.submit('mainForm', 'doBack')">Back</a>--%>
-                                    <a class="btn btn-primary next" href="#"
+                                    <a class="btn btn-primary next" href="javascript:void(0);"
                                        onclick="Utils.submit('mainForm', 'doSubmit')">Submit</a>
                                 </div>
                             </div>

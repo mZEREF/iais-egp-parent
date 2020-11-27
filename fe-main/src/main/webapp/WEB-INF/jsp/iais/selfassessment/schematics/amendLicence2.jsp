@@ -67,6 +67,6 @@
         </table>
     </div>
 
-    <a class="btn btn-primary "  onclick="Utils.submit('mainForm','amend2')"  >NEXT</a>
+    <a class="btn btn-primary "  onclick="Utils.submit('mainForm','amend2')" href="javascript:void(0);" >NEXT</a>
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>

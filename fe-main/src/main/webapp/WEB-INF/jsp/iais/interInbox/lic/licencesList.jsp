@@ -239,11 +239,11 @@
                 <div class="row" style="padding-bottom: 9%">
                     <div class="col-md-12">
                         <div class="col-md-12 text-right">
-                            <a class="btn btn-primary disabled" href="#" id="lic-renew">Renew</a>
-                            <a class="btn btn-primary disabled" href="#" id="lic-cease">Cease</a>
-                            <a class="btn btn-primary disabled" href="#" id="lic-amend">Amend</a>
-                            <a class="btn btn-primary disabled" href="#" id="lic-appeal">Appeal</a>
-                            <a class="btn btn-primary disabled" href="#" id="lic-print">Print</a>
+                            <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-renew">Renew</a>
+                            <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-cease">Cease</a>
+                            <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-amend">Amend</a>
+                            <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-appeal">Appeal</a>
+                            <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-print">Print</a>
                         </div>
                     </div>
                 </div>

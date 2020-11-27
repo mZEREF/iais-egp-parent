@@ -73,7 +73,7 @@
     </div>
     <c:choose>
         <c:when test="${!empty renewLicUpdateSearchResult.rows}">
-            <a class="btn btn-primary" id="renew-next-btn" onclick="guideSubmit('renew','second')">NEXT</a>
+            <a class="btn btn-primary" id="renew-next-btn" onclick="guideSubmit('renew','second')" href="javascript:void(0);">NEXT</a>
         </c:when>
     </c:choose>
 </div>

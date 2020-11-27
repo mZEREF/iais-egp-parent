@@ -23,7 +23,7 @@
                     </div>
                     <div class="col-xs-12 col-md-4">
                         <div class="text-right text-center-mobile">
-                            <a class="btn btn-primary next" id="alignContinue">NEXT</a>
+                            <a class="btn btn-primary next" id="alignContinue" href="javascript:void(0);">NEXT</a>
                         </div>
                     </div>
                 </div>

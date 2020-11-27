@@ -102,7 +102,7 @@
     </div>
     <c:choose>
         <c:when test="${!empty amendUpdateContactSearchResult.rows}">
-            <a class="btn btn-primary " onclick="guideSubmit('amendLic7','second')">NEXT</a>
+            <a class="btn btn-primary " onclick="guideSubmit('amendLic7','second')" href="javascript:void(0);">NEXT</a>
         </c:when>
     </c:choose>
 </div>

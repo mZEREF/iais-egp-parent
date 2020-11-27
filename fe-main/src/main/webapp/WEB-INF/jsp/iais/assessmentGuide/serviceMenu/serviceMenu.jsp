@@ -88,7 +88,7 @@ preChooseSvc<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
                 </div>
                 <div class="col-xs-12 col-md-4">
                     <div class="text-right text-center-mobile">
-                        <a class="btn btn-primary next" id="submitService">NEXT</a>
+                        <a class="btn btn-primary next" id="submitService" href="javascript:void(0);">NEXT</a>
                     </div>
                 </div>
             </div>

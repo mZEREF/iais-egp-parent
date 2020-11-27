@@ -78,7 +78,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
               <input type="text" style="display: none; " id="selectDraftNo" value="${selectDraftNo}">
-              <div class="text-right text-center-mobile"><a class="btn btn-primary next" onclick="doNext()" data-toggle="modal" data-target= "#saveDraft"  >Start Application</a></div>
+              <div class="text-right text-center-mobile"><a class="btn btn-primary next" onclick="doNext()" data-toggle="modal" data-target= "#saveDraft" href="javascript:void(0);">Start Application</a></div>
             </div>
           </div>
         </div>

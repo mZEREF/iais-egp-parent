@@ -59,7 +59,7 @@
                 </c:forEach>
             </div>
             <div class="text-right text-center-mobile">
-                <a class="btn btn-primary next" id="submitService">NEXT</a>
+                <a class="btn btn-primary next" id="submitService" href="javascript:void(0);">NEXT</a>
             </div>
         </div>
     </div>

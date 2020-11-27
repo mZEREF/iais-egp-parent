@@ -81,7 +81,7 @@
     </div>
     <c:choose>
         <c:when test="${!empty amendDetailsSearchResult.rows}">
-            <a class="btn btn-primary " onclick="guideSubmit('amendLic4','second')">NEXT</a>
+            <a class="btn btn-primary " onclick="guideSubmit('amendLic4','second')" href="javascript:void(0);">NEXT</a>
         </c:when>
     </c:choose>
 
