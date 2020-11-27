@@ -32,7 +32,7 @@ public class ErrorMsgClientFallback implements ErrorMsgClient{
     }
 
     @Override
-    public FeignResponseEntity<List<MsgTemplateDto>> getAlertMsgTemplate() {
+    public FeignResponseEntity<List<MsgTemplateDto>> getAlertMsgTemplate(String domain) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

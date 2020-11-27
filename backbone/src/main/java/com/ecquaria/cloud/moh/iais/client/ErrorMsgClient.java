@@ -12,8 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * ErrorMsgClient
@@ -31,6 +29,6 @@ public interface ErrorMsgClient {
     @GetMapping(path = "/system-parameter/properties-value/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> getValueByPropertiesKey(@PathVariable("key") String propertiesKey);
 
-    @GetMapping(value = "/iais-messageTemplate/alert")
-    FeignResponseEntity<List<MsgTemplateDto>> getAlertMsgTemplate();
+    @GetMapping(value = "/iais-messageTemplate/alert/{domain}")
+    FeignResponseEntity<List<MsgTemplateDto>> getAlertMsgTemplate(@PathVariable("domain") String domain);
 }
