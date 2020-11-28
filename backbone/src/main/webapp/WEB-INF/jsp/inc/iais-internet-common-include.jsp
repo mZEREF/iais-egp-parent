@@ -68,7 +68,7 @@
             + '<c:out value="${bAnner_AlERt_Msg__atTR}" escapeXml="false"/>' + '</div>';
         </c:if>
         bannerMsg += '</div>';
-        $(".main-content:first").prepend(bannerMsg);
+        $(".navigation-gp:first").append(bannerMsg);
         </c:if>
     });
 </script>
