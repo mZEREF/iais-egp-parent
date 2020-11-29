@@ -54,7 +54,7 @@
             autoclose:true
         });
         <c:if test="${not empty bAnner_AlERt_Msg__atTR || not empty schEdule_AlERt_Msg__atTR}">
-        var bannerMsg = '<div class="col-md-12">';
+        var bannerMsg = '<div class="row"><div class="col-md-12">';
         <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
         bannerMsg += '<div class="dashalert alert-info dash-announce">'
             + '<button aria-label="Close" data-dismiss="alert" class="close" type="button"><span aria-hidden="true">x</span></button>'
@@ -67,7 +67,7 @@
             + '<h3 style="margin-top:0;"><i class="fa fa-bell"></i> Announcement</h3>'
             + '<c:out value="${bAnner_AlERt_Msg__atTR}" escapeXml="false"/>' + '</div>';
         </c:if>
-        bannerMsg += '</div>';
+        bannerMsg += '</div></div>';
         $(".navigation-gp:first").append(bannerMsg);
         </c:if>
     });
