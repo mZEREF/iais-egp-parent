@@ -695,7 +695,7 @@ public class AppealServiceImpl implements AppealService {
                 List<AppSvcCgoDto> appSvcCgoList = appealPageDto.getAppSvcCgoDto();
                 if(IaisCommonUtils.isEmpty(appSvcCgoList)){
                     //todo
-                    map.put("addCgo", MessageUtil.getMessageDesc("APPEAL_ERR002"));
+                    map.put("addCgo",  MessageUtil.replaceMessage("GENERAL_ERR0006","Add Another Clinical Governance Officer ","field"));
                 }
                 StringBuilder stringBuilder = new StringBuilder();
                 for (int i = 0; i < appSvcCgoList.size(); i++) {
