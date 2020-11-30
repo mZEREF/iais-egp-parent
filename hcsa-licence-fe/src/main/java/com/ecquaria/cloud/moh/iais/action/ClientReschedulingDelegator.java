@@ -34,7 +34,6 @@ import com.ecquaria.cloud.moh.iais.service.ApptConfirmReSchDateService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +62,7 @@ import java.util.Set;
 @Delegator("clientReschedulingDelegator")
 public class ClientReschedulingDelegator {
     @Autowired
-    ApptConfirmReSchDateService rescheduleService;
+    private ApptConfirmReSchDateService rescheduleService;
     private FilterParameter rescheduleParameter = new FilterParameter.Builder()
             .clz(ReschApptGrpPremsQueryDto.class)
             .searchAttr("SearchParam")
@@ -86,8 +85,6 @@ public class ClientReschedulingDelegator {
     @Autowired
     private OrganizationLienceseeClient organizationLienceseeClient;
 
-    @Autowired
-    LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
 
 
     @Value("${iais.hmac.keyId}")
@@ -98,8 +95,7 @@ public class ClientReschedulingDelegator {
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
-    @Value("${iais.email.sender}")
-    private String mailSender;
+
     public void start(BaseProcessClass bpc)  {
 
     }
