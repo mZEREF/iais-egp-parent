@@ -84,7 +84,7 @@
                                                     <iais:field value="Others"/>
                                                     <iais:value width="7">
                                                         <iais:input type="text" maxLength="200"
-                                                                    name="otherReason "
+                                                                    name="otherReason"
                                                                     value="${appCessHci.otherReason}"></iais:input>
                                                     </iais:value>
                                                 </iais:row>
@@ -329,7 +329,7 @@
     }
 
     function changeReason() {
-        if ($("reasonId").val() == "CES001") {
+        if ($("#reasonId").val() == "CES001") {
             $("#reason").show();
         } else {
             $("#reason").hide();

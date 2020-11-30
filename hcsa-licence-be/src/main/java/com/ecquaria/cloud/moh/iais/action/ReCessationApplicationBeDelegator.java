@@ -211,7 +211,7 @@ public class ReCessationApplicationBeDelegator {
             errorMap.put(READINFO, ERROR);
         }
         String cessationReason = ParamUtil.getRequestString(httpServletRequest, REASON);
-        String otherReason = ParamUtil.getRequestString(httpServletRequest, OTHERREASON);
+        String otherReason = ParamUtil.getRequestString(httpServletRequest, "otherReason");
         String patientSelect = ParamUtil.getRequestString(httpServletRequest, PATIENTSELECT);
         String patNoRemarks = ParamUtil.getRequestString(httpServletRequest, PATNOREMARKS);
         String patHciName = ParamUtil.getRequestString(httpServletRequest, PATHCINAME);
@@ -291,6 +291,7 @@ public class ReCessationApplicationBeDelegator {
         if ("no".equals(patRadio) && StringUtil.isEmpty(patNoRemarks)) {
             errorMap.put(PATNOREMARKS, MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field"));
         }
+        ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTO, appCessLicDto);
         return errorMap;
     }
 

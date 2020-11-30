@@ -1686,7 +1686,7 @@ public class LicenceApproveBatchjob {
                 }
             }
         } else {
-            if (applicationGroupDto != null) {          
+            if (applicationGroupDto != null) {
                 Date startDate = null;
                 Date expiryDate = null;
                 if (applicationDto != null && originLicenceDto != null && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())) {
@@ -2123,17 +2123,16 @@ public class LicenceApproveBatchjob {
         List<Map<String, String>> fail = IaisCommonUtils.genNewArrayList();
         toDoResult(licenceGroupDtos, generalGenerateResult, groupGenerateResult, success, fail, applicationGroupDto);
         if (success.size() > 0) {
+            updateExpiryDateByAlignFlag(licenceGroupDtos);
+            updateExpiryDateByBaseApplicationNo(licenceGroupDtos);
+            setOriginLicenceLicBaseSpecifiedCorrelationDtos(licenceGroupDtos);
             AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
             EventBusLicenceGroupDtos eventBusLicenceGroupDtos = new EventBusLicenceGroupDtos();
             String evenRefNum = String.valueOf(System.currentTimeMillis());
             eventBusLicenceGroupDtos.setEventRefNo(evenRefNum);
             eventBusLicenceGroupDtos.setLicenceGroupDtos(licenceGroupDtos);
             eventBusLicenceGroupDtos.setAuditTrailDto(auditTrailDto);
-            //step1 create Licence to BE DB
             licenceService.createSuperLicDto(eventBusLicenceGroupDtos);
-            //if create licence success
-            //todo:update the success application group.
-            //get the application
             List<ApplicationDto> applicationDtos = getApplications(licenceGroupDtos);
             EventApplicationGroupDto eventApplicationGroupDto = new EventApplicationGroupDto();
             eventApplicationGroupDto.setEventRefNo(evenRefNum);
@@ -2143,7 +2142,7 @@ public class LicenceApproveBatchjob {
             eventApplicationGroupDto.setApplicationDto(updateApplicationStatusToGenerated(applicationDtos));
             eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
             applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
-        }
+            }
     }
 
     private void sendMessage(String subject, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams, String serviceId){
