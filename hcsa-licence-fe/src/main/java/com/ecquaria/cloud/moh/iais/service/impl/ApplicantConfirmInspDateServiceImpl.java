@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -49,11 +50,15 @@ import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -100,6 +105,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     @Autowired
     private AppEicClient appEicClient;
+
+    @Autowired
+    private SystemAdminClient systemAdminClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -895,8 +903,20 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             String url = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_BEINBOX;
             map.put("systemLink", url);
             map.put("reason", apptFeConfirmDateDto.getReason());
-            StringBuilder sb = new StringBuilder("MOH HALP - [Internal] Licensee Request to Reschedule Inspection Appointment Date for ");
-            sb.append(appNo);
+            MsgTemplateDto msgTemplateDto = systemAdminClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_REJECT_APPT_REQUEST_A_DATE).getEntity();
+            String subject = "";
+            if(msgTemplateDto != null){
+                String templateName = msgTemplateDto.getTemplateName();
+                if(!StringUtil.isEmpty(templateName)){
+                    Map<String, Object> mapSubject = IaisCommonUtils.genNewHashMap();
+                    mapSubject.put("appNo", appNo);
+                    try {
+                        subject = MsgUtil.getTemplateMessageByContent(templateName, mapSubject);
+                    } catch (IOException | TemplateException e) {
+                        log.error(e.getMessage(), e);
+                    }
+                }
+            }
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_REJECT_APPT_REQUEST_A_DATE);
             emailParam.setTemplateContent(map);
@@ -904,7 +924,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             emailParam.setReqRefNum(appNo);
             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
             emailParam.setRefId(appNo);
-            emailParam.setSubject(sb.toString());
+            emailParam.setSubject(subject);
             notificationHelper.sendNotification(emailParam);
             EmailParam smsParam = new EmailParam();
             smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_REJECT_APPT_REQUEST_A_DATE_SMS);
@@ -912,7 +932,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             smsParam.setReqRefNum(appNo);
             smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
             smsParam.setRefId(appNo);
-            smsParam.setSubject(sb.toString());
+            smsParam.setSubject(subject);
             notificationHelper.sendNotification(smsParam);
         }catch (Exception e){
             log.error(e.getMessage(), e);
