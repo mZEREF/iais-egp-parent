@@ -1222,16 +1222,21 @@ public class WithOutRenewalDelegator {
             renewDto.getAppSubmissionDtos().get(0).setEffectiveDate(date);
             renewDto.getAppSubmissionDtos().get(0).setEffectiveDateStr(renewEffectiveDate);
         }
-        int count = 0;
-        for(AppSubmissionDto appSubmissionDto:renewDto.getAppSubmissionDtos()){
-            Map<String,String> previewAndSubmitMap = IaisCommonUtils.genNewHashMap();
-            if(renewDto.getAppSubmissionDtos().size() > 1){
-                previewAndSubmitMap = appSubmissionService.doPreviewSubmitValidate(previewAndSubmitMap,appSubmissionDto,appSubmissionDto,bpc);
-            }else{
-                previewAndSubmitMap = appSubmissionService.doPreviewSubmitValidate(previewAndSubmitMap,appSubmissionDto,oldAppSubmissionDto,bpc);
+        if(renewDto != null){
+            List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
+            if(!IaisCommonUtils.isEmpty(appSubmissionDtos)){
+                int count = 0;
+                for(AppSubmissionDto appSubmissionDto:appSubmissionDtos){
+                    Map<String,String> previewAndSubmitMap = IaisCommonUtils.genNewHashMap();
+                    if(renewDto.getAppSubmissionDtos().size() > 1){
+                        previewAndSubmitMap = appSubmissionService.doPreviewSubmitValidate(previewAndSubmitMap,appSubmissionDto,appSubmissionDto,bpc);
+                    }else{
+                        previewAndSubmitMap = appSubmissionService.doPreviewSubmitValidate(previewAndSubmitMap,appSubmissionDto,oldAppSubmissionDto,bpc);
+                    }
+                    errMap.put(appSubmissionDto.getServiceName()+count,previewAndSubmitMap);
+                    count++;
+                }
             }
-            errMap.put(appSubmissionDto.getServiceName()+count,previewAndSubmitMap);
-            count++;
         }
         boolean passValidate = true;
         Map<String,String> allErrMap = IaisCommonUtils.genNewHashMap();
