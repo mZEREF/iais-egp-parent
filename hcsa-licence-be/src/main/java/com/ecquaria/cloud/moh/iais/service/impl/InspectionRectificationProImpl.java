@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -50,7 +51,6 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
-import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
@@ -63,12 +63,16 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -139,7 +143,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
     private BeEicGatewayClient beEicGatewayClient;
 
     @Autowired
-    private LicenseeService licenseeService;
+    private MsgTemplateClient msgTemplateClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -287,8 +291,9 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             String applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
             OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
             String applicantName = orgUserDto.getDisplayName();
+            String appType = MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
             map.put("ApplicantName", applicantName);
-            map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+            map.put("ApplicationType", appType);
             map.put("ApplicationNumber", StringUtil.viewHtml(applicationNo));
             map.put("ApplicationDate", Formatter.formatDateTime(now, Formatter.DATE));
             map.put("systemLink", url);
@@ -311,7 +316,22 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             emailParam.setReqRefNum(applicationNo);
             emailParam.setRefId(applicationNo);
             emailParam.setSvcCodeList(serviceCodes);
-            emailParam.setSubject("MOH HALP - Request for information for Application Number " + applicationNo);
+            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG).getEntity();
+            String subject = "";
+            if(msgTemplateDto != null){
+                String templateName = msgTemplateDto.getTemplateName();
+                if(!StringUtil.isEmpty(templateName)){
+                    Map<String, Object> mapSubject = IaisCommonUtils.genNewHashMap();
+                    mapSubject.put("ApplicationType", appType);
+                    mapSubject.put("ApplicationNumber", applicationNo);
+                    try {
+                        subject = MsgUtil.getTemplateMessageByContent(templateName, mapSubject);
+                    } catch (IOException | TemplateException e) {
+                        log.error(e.getMessage(), e);
+                    }
+                }
+            }
+            emailParam.setSubject(subject);
             notificationHelper.sendNotification(emailParam);
 
         }
