@@ -667,6 +667,8 @@
 
     function doCessation() {
         showWaiting();
+        $("#selectDecisionMsg").hide();
+        $("#selectDecisionMsgActive").hide();
         var chk = $("[name='appIds']:checked");
         var dropIds = new Array();
         chk.each(function () {
@@ -679,10 +681,10 @@
             if (str1 === '1'&& str3 === 'Active') {
                 flog = true;
             }
-            if(!str1 === '1'){
+            if(!(str1 === '1')){
                 $("#selectDecisionMsg").show();
             }
-            if(!str3 === 'Active'){
+            if(!(str3 === 'Active')){
                 $("#selectDecisionMsgActive").show();
             }
         }
@@ -695,6 +697,8 @@
 
     function doReqForInfo() {
         showWaiting();
+        $("#selectDecisionMsg").hide();
+        $("#selectDecisionMsgActive").hide();
         var chk = $("[name='appIds']:checked");
         var dropIds = new Array();
         chk.each(function () {

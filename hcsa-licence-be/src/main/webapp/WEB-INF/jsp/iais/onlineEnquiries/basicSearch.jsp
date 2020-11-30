@@ -259,10 +259,10 @@
             <div class="row">&nbsp;</div>
         </c:if>
         <div class="row" height="1" style="display: none ;color:#ff0000; padding-left: 20px" id="selectDecisionMsg">
-            <iais:message key="CESS_ERR005" escape="flase"></iais:message>
+            <iais:message key="CESS_ERR002" escape="flase"></iais:message>
         </div>
         <div class="row" height="1" style="display: none ;color:#ff0000;padding-left: 20px" id="selectDecisionMsgActive">
-            <iais:message key="CESS_ERR002" escape="flase"></iais:message>
+            <iais:message key="CESS_ERR005" escape="flase"></iais:message>
         </div>
         <iais:action style="text-align:right;">
             <a class="btn btn-secondary" onclick="$(this).attr('class', 'btn btn-secondary disabled')"
@@ -392,6 +392,8 @@
 
     function doCessation() {
         showWaiting();
+        $("#selectDecisionMsg").hide();
+        $("#selectDecisionMsgActive").hide();
         var chk = $("[name='appIds']:checked");
         var dropIds = new Array();
         chk.each(function () {
@@ -404,10 +406,10 @@
             if (str1 === '1'&& str3 === 'Active') {
                 flog = true;
             }
-            if(!str1 === '1'){
+            if(!(str1 === '1')){
                 $("#selectDecisionMsg").show();
             }
-            if(!str3 === 'Active'){
+            if(!(str3 === 'Active')){
                 $("#selectDecisionMsgActive").show();
             }
         }
@@ -420,6 +422,8 @@
 
     function doReqForInfo() {
         showWaiting();
+        $("#selectDecisionMsg").hide();
+        $("#selectDecisionMsgActive").hide();
         var chk = $("[name='appIds']:checked");
         var dropIds = new Array();
         chk.each(function () {
