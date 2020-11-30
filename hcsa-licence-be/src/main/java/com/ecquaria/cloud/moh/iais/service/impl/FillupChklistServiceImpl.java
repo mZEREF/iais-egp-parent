@@ -370,6 +370,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         if(adhocItemList!=null&&!adhocItemList.isEmpty()){
             for(AdhocChecklistItemDto temp:adhocItemList){
                 AdhocNcCheckItemDto addto = transfertoadNcItemDto(temp);
+                addto.setRectified(temp.getRectified());
                 adhocNcCheckItemDtoList.add(addto);
             }
             adShowDto.setAdItemList(adhocNcCheckItemDtoList);

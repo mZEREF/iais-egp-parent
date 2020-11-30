@@ -608,6 +608,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                     AdhocAnswerDto adhocAnswerDto = new AdhocAnswerDto();
                     adhocAnswerDto.setRemark(temp.getRemark());
                     adhocAnswerDto.setAnswer(temp.getAdAnswer());
+                    adhocAnswerDto.setIsRec((temp.getRectified() != null && temp.getRectified()) ? "1" :"0");
                     String saveAnswer = JsonUtil.parseToJson(adhocAnswerDto);
                     temp.setAnswer(saveAnswer);
                     saveItemDtoList.add(temp);
@@ -984,7 +985,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                         if(answerDto != null){
                             temp.setAdAnswer(answerDto.getAnswer());
                             temp.setRemark(answerDto.getRemark());
-                            temp.setRectified("1".equalsIgnoreCase(answerDto.getIsRec()));
+                            temp.setRectified(temp.getRectified());
                         }
                     }
 
