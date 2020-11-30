@@ -456,9 +456,9 @@ public class ApplicationServiceImpl implements ApplicationService {
             jobRemindMsgTrackingDto.setCreateTime(new Date());
             jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             HashMap<String, String> subjectParams = IaisCommonUtils.genNewHashMap();
-            subjectParams.put("[applicationNo]", tlGroupNumber);
-            subjectParams.put("[appType]", tlAppType);
-            subjectParams.put("[serviceName]", tlSvcName);
+            subjectParams.put("{applicationNo}", tlGroupNumber);
+            subjectParams.put("{appType}", tlAppType);
+            subjectParams.put("{serviceName}", tlSvcName);
             EmailParam emailParam = new EmailParam();
             emailParam.setSubjectParams(subjectParams);
             emailParam.setTemplateId(emailId);

@@ -352,8 +352,8 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
         EmailParam email_003 = new EmailParam();
         HashMap<String, String> subjectMap = IaisCommonUtils.genNewHashMap();
-        subjectMap.put("[appType]", tlAppType);
-        subjectMap.put("[applicationNo]", tlGroupNumber);
+        subjectMap.put("{appType}", tlAppType);
+        subjectMap.put("{applicationNo}", tlGroupNumber);
         email_003.setSubjectParams(subjectMap);
 
         email_003.setTemplateId(email_003_template);
