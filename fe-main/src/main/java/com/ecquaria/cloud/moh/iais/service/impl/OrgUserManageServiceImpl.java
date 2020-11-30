@@ -319,73 +319,75 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Override
     public void updateEgpUser(FeUserDto feUserDto) {
-        ClientUser clientUser = userClient.findUser(AppConsts.HALP_EGP_DOMAIN, feUserDto.getUserId()).getEntity();
-        String pwd = PasswordUtil.encryptPassword(AppConsts.HALP_EGP_DOMAIN, IaisEGPHelper.generateRandomString(6), null);
-        if (clientUser != null){
-            clientUser.setSalutation(feUserDto.getSalutation());
-            clientUser.setEmail(feUserDto.getEmail());
-            clientUser.setDisplayName(feUserDto.getDisplayName());
-            clientUser.setIdentityNo(feUserDto.getIdentityNo());
-            clientUser.setMobileNo(feUserDto.getMobileNo());
-            clientUser.setContactNo(feUserDto.getOfficeTelNo());
+        if(feUserDto != null){
+            ClientUser clientUser = userClient.findUser(AppConsts.HALP_EGP_DOMAIN, feUserDto.getUserId()).getEntity();
+            String pwd = PasswordUtil.encryptPassword(AppConsts.HALP_EGP_DOMAIN, IaisEGPHelper.generateRandomString(6), null);
+            if (clientUser != null){
+                clientUser.setSalutation(feUserDto.getSalutation());
+                clientUser.setEmail(feUserDto.getEmail());
+                clientUser.setDisplayName(feUserDto.getDisplayName());
+                clientUser.setIdentityNo(feUserDto.getIdentityNo());
+                clientUser.setMobileNo(feUserDto.getMobileNo());
+                clientUser.setContactNo(feUserDto.getOfficeTelNo());
 
-            //prevent history simple pwd throw 500
-            clientUser.setPassword(pwd);
+                //prevent history simple pwd throw 500
+                clientUser.setPassword(pwd);
 
-            userClient.updateClientUser(clientUser);
-            //delete egp role
-            feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),RoleConsts.USER_ROLE_ORG_ADMIN);
-            feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),RoleConsts.USER_ROLE_ORG_USER);
+                userClient.updateClientUser(clientUser);
+                //delete egp role
+                feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),RoleConsts.USER_ROLE_ORG_ADMIN);
+                feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),RoleConsts.USER_ROLE_ORG_USER);
 
-        }else{
-            clientUser = MiscUtil.transferEntityDto(feUserDto, ClientUser.class);
-            clientUser.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-            clientUser.setId(feUserDto.getUserId());
-            clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
-            String email = feUserDto.getEmail();
-            String salutation = feUserDto.getSalutation();
-            clientUser.setSalutation(salutation);
-            clientUser.setEmail(email);
-            clientUser.setDisplayName(feUserDto.getDisplayName());
+            }else{
+                clientUser = MiscUtil.transferEntityDto(feUserDto, ClientUser.class);
+                clientUser.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+                clientUser.setId(feUserDto.getUserId());
+                clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+                String email = feUserDto.getEmail();
+                String salutation = feUserDto.getSalutation();
+                clientUser.setSalutation(salutation);
+                clientUser.setEmail(email);
+                clientUser.setDisplayName(feUserDto.getDisplayName());
 
 
-            clientUser.setPassword(pwd);
-            clientUser.setPasswordChallengeQuestion("A");
-            clientUser.setPasswordChallengeAnswer("A");
+                clientUser.setPassword(pwd);
+                clientUser.setPasswordChallengeQuestion("A");
+                clientUser.setPasswordChallengeAnswer("A");
 
-            Date activeDate = new Date();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(activeDate);
-            calendar.add(Calendar.DAY_OF_MONTH, 12);
-            clientUser.setAccountActivateDatetime(activeDate);
-            clientUser.setAccountDeactivateDatetime(calendar.getTime());
+                Date activeDate = new Date();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(activeDate);
+                calendar.add(Calendar.DAY_OF_MONTH, 12);
+                clientUser.setAccountActivateDatetime(activeDate);
+                clientUser.setAccountDeactivateDatetime(calendar.getTime());
 
-            userClient.createClientUser(clientUser);
-        }
-
-        //assign role
-        if (feUserDto != null){
-            EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
-            String roleName = feUserDto.getUserRole();
-            egpUserRole.setUserId(feUserDto.getUserId());
-            egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-            egpUserRole.setRoleId(roleName);
-            egpUserRole.setPermission("A");
-            //assign role
-            feMainRbacClient.createUerRoleIds(egpUserRole).getEntity();
-
-            //corppass
-            if (RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(roleName) &&
-                    !StringUtil.isEmpty(feUserDto.getUenNo())){
-                EgpUserRoleDto role = new EgpUserRoleDto();
-                role.setUserId(feUserDto.getUserId());
-                role.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-                role.setPermission("A");
-                role.setRoleId(RoleConsts.USER_ROLE_ORG_USER);
-                //assign role
-                feMainRbacClient.createUerRoleIds(role).getEntity();
+                userClient.createClientUser(clientUser);
             }
 
+            //assign role
+            if (feUserDto != null){
+                EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
+                String roleName = feUserDto.getUserRole();
+                egpUserRole.setUserId(feUserDto.getUserId());
+                egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+                egpUserRole.setRoleId(roleName);
+                egpUserRole.setPermission("A");
+                //assign role
+                feMainRbacClient.createUerRoleIds(egpUserRole).getEntity();
+
+                //corppass
+                if (RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(roleName) &&
+                        !StringUtil.isEmpty(feUserDto.getUenNo())){
+                    EgpUserRoleDto role = new EgpUserRoleDto();
+                    role.setUserId(feUserDto.getUserId());
+                    role.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+                    role.setPermission("A");
+                    role.setRoleId(RoleConsts.USER_ROLE_ORG_USER);
+                    //assign role
+                    feMainRbacClient.createUerRoleIds(role).getEntity();
+                }
+
+            }
         }
     }
 
@@ -419,11 +421,12 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
       }
       //fe user
        FeUserDto feUserDtoCreate = editUserAccount(feUserDto);
+       feUserDto.setId(feUserDtoCreate.getId());
       //egpcloud
        updateEgpUser(feUserDto);
 
         //update be user
-        feUserDto.setId(feUserDtoCreate.getId());
+
         OrganizationDto organizationById = getOrganizationById(feUserDto.getOrgId());
         OrganizationDto organizationDto = new OrganizationDto();
         organizationDto.setDoMain(AppConsts.USER_DOMAIN_INTERNET);
