@@ -1833,8 +1833,11 @@ public class HcsaApplicationDelegator {
                                     appReturnFeeDto.setReturnAmount(returnFee);
                                     log.info(StringUtil.changeForLog("==========================returnFee"+returnFee));
                                     appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW);
+                                    appReturnFeeDto.setStatus("paying");
+                                    appReturnFeeDto.setTriggerCount(0);
                                     appReturnFeeDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                                     List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
+
                                     saveReturnFeeDtos.add(appReturnFeeDto);
                                     broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
                                     broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
@@ -1847,7 +1850,11 @@ public class HcsaApplicationDelegator {
         }catch (Exception e){
             log.error(StringUtil.changeForLog("save return fee error"),e);
         }
-
+        try {
+            doRefunds(broadcastApplicationDto.getReturnFeeDtos());
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+        }
         //completed this task and create the history
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
