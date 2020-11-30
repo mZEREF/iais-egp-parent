@@ -329,12 +329,9 @@ public class RequestForInformationDelegator {
         licPremisesReqForInfoDto.setLicPremisesReqForInfoReplyDtos(licPremisesReqForInfoReplyDtos);
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.createLicPremisesReqForInfo(licPremisesReqForInfoDto);
 
-        String inBoxTemplateId= MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI;
-        InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(inBoxTemplateId);
         String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto1.getId()).getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
         String applicantName=licenseeDto.getName();
-        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         StringBuilder stringBuilder=new StringBuilder();
         int i=0;
         if(!StringUtil.isEmpty(reqTypeInfo)&&"information".equals(reqTypeInfo)){
@@ -350,8 +347,10 @@ public class RequestForInformationDelegator {
         String url = "https://" + systemParamConfig.getInterServerName() +
                 "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" +
                 "?licenseeId=" + licenseeId;
+        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.AD_HOC}).get(0).getText());
         map.put("ApplicationNumber", licenceNo);
+        InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI);
         String subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
         HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
         mapPrem.put("licenseeId",licenseeId);
@@ -404,7 +403,7 @@ public class RequestForInformationDelegator {
             emailMap.put("Remarks", stringBuilder.toString());
             emailMap.put("systemLink", loginUrl);
             emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+            emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI);
             emailParam.setTemplateContent(emailMap);
@@ -416,6 +415,9 @@ public class RequestForInformationDelegator {
             //email
             notificationHelper.sendNotification(emailParam);
             //sms
+            rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_SMS);
+            subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
+            emailParam.setSubject(subject);
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_SMS);
             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
             notificationHelper.sendNotification(emailParam);
@@ -423,6 +425,9 @@ public class RequestForInformationDelegator {
             HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
             List<String> svcCode=IaisCommonUtils.genNewArrayList();
             svcCode.add(svcDto.getSvcCode());
+            rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
+            subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
+            emailParam.setSubject(subject);
             emailMap.put("systemLink", url);
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
             emailParam.setTemplateContent(emailMap);
@@ -654,7 +659,7 @@ public class RequestForInformationDelegator {
                 emailMap.put("Remarks", stringBuilder.toString());
                 emailMap.put("systemLink", loginUrl);
                 emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+                emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
                 EmailParam emailParam = new EmailParam();
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI);
                 emailParam.setTemplateContent(emailMap);
@@ -667,6 +672,9 @@ public class RequestForInformationDelegator {
                 //email
                 notificationHelper.sendNotification(emailParam);
                 //sms
+                rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_SMS);
+                subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
+                emailParam.setSubject(subject);
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_SMS);
                 emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
                 notificationHelper.sendNotification(emailParam);
@@ -675,6 +683,9 @@ public class RequestForInformationDelegator {
                 List<String> svcCode=IaisCommonUtils.genNewArrayList();
                 svcCode.add(svcDto.getSvcCode());
                 emailMap.put("systemLink", url);
+                rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
+                subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
+                emailParam.setSubject(subject);
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
                 emailParam.setTemplateContent(emailMap);
                 emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);

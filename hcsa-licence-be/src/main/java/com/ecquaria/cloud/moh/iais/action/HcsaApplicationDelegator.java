@@ -2618,6 +2618,14 @@ public class HcsaApplicationDelegator {
 //        emailParam.setRefId(applicationDto.getApplicationNo());
 //        notificationHelper.sendNotification(emailParam);
         //sms
+        rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_SMS).getEntity();
+        subject = null;
+        try {
+            subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
+        } catch (TemplateException e) {
+            log.info(e.getMessage(),e);
+        }
+        emailParam.setSubject(subject);
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_SMS);
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
         notificationHelper.sendNotification(emailParam);

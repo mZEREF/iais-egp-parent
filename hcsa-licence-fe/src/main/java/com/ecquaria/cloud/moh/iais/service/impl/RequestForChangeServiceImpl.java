@@ -1613,6 +1613,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(svcName)).getEntity();
             List<String> svcCode=IaisCommonUtils.genNewArrayList();
             svcCode.add(svcDto.get(0).getSvcCode());
+            rfiEmailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_MSG).getEntity();
+            subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
+            emailParam.setSubject(subject);
             emailParam.setSvcCodeList(svcCode);
             emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
             emailParam.setRefId(appSubmissionDto.getLicenceId());
@@ -1621,9 +1624,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             log.info(e.getMessage(),e);
         }
         //sms
+        rfiEmailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_SMS).getEntity();
+        subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
+        emailParam.setSubject(subject);
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_SMS);
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
-
         notificationHelper.sendNotification(emailParam);
     }
 

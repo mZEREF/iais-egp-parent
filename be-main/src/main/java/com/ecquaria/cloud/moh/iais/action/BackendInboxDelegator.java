@@ -536,6 +536,14 @@ public class BackendInboxDelegator {
         notificationHelper.sendNotification(emailParam);
         log.info(StringUtil.changeForLog("send RFC Reject email end"));
         //msg
+        rfiEmailTemplateDto = iaisSystemClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG).getEntity();
+        subject = null;
+        try {
+            subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
+        } catch (IOException |TemplateException e) {
+            log.info(e.getMessage(),e);
+        }
+        emailParam.setSubject(subject);
         emailParam.setSvcCodeList(svcCodeList);
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG);
         emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
@@ -544,6 +552,13 @@ public class BackendInboxDelegator {
         notificationHelper.sendNotification(emailParam);
         log.info(StringUtil.changeForLog("send RFC Reject msg end"));
         //sms
+        rfiEmailTemplateDto = iaisSystemClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS).getEntity();
+        subject = null;
+        try {
+            subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
+        } catch (IOException |TemplateException e) {
+            log.info(e.getMessage(),e);
+        }
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS);
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
         log.info(StringUtil.changeForLog("send RFC Reject sms send"));

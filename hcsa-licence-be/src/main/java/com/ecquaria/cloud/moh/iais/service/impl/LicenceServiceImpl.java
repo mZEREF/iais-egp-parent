@@ -656,6 +656,14 @@ public class LicenceServiceImpl implements LicenceService {
         log.info(StringUtil.changeForLog("send RfcApproveLicensee application email end"));
         //msg
         try {
+            rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED_MSG).getEntity();
+            subject = null;
+            try {
+                subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
+            } catch (TemplateException e) {
+                log.info(e.getMessage(),e);
+            }
+            emailParam.setSubject(subject);
             emailParam.setSvcCodeList(svcCodeList);
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED_MSG);
             emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
@@ -667,6 +675,14 @@ public class LicenceServiceImpl implements LicenceService {
             log.info(e.getMessage(),e);
         }
         //sms
+        rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED_SMS).getEntity();
+        subject = null;
+        try {
+            subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
+        } catch (IOException |TemplateException e) {
+            log.info(e.getMessage(),e);
+        }
+        emailParam.setSubject(subject);
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED_SMS);
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
         log.info(StringUtil.changeForLog("send RfcApproveLicensee application sms"));
@@ -725,6 +741,14 @@ public class LicenceServiceImpl implements LicenceService {
             emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
             emailParam.setSvcCodeList(svcCodeList);
             emailParam.setRefId(applicationNo);
+            rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT_MSG).getEntity();
+            subject = null;
+            try {
+                subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
+            } catch (TemplateException e) {
+                log.info(e.getMessage(),e);
+            }
+            emailParam.setSubject(subject);
             log.info(StringUtil.changeForLog("send RfcApprove application msg"));
             notificationHelper.sendNotification(emailParam);
             log.info(StringUtil.changeForLog("send RfcApprove application msg end"));
@@ -733,6 +757,14 @@ public class LicenceServiceImpl implements LicenceService {
         }
 
         //sms
+        rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT_SMS).getEntity();
+        subject = null;
+        try {
+            subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
+        } catch (TemplateException e) {
+            log.info(e.getMessage(),e);
+        }
+        emailParam.setSubject(subject);
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT_SMS);
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
         log.info(StringUtil.changeForLog("send RfcApprove application sms"));

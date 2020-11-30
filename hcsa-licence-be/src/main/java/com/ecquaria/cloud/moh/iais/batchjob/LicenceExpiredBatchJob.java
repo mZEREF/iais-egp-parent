@@ -198,10 +198,16 @@ public class LicenceExpiredBatchJob {
                 //email
                 notificationHelper.sendNotification(emailParam);
                 //sms
+                rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_SMS);
+                subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
+                emailParam.setSubject(subject);
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_SMS);
                 emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
                 notificationHelper.sendNotification(emailParam);
                 //msg
+                rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
+                subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
+                emailParam.setSubject(subject);
                 emailParam.setSvcCodeList(serviceCodes);
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
                 emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
@@ -274,10 +280,16 @@ public class LicenceExpiredBatchJob {
                 //email
                 notificationHelper.sendNotification(emailParam);
                 //sms
+                rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_SMS);
+                subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
+                emailParam.setSubject(subject);
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_SMS);
                 emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
                 notificationHelper.sendNotification(emailParam);
                 //msg
+                rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
+                subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
+                emailParam.setSubject(subject);
                 HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(svcName).getEntity();
                 List<String> svcCode = IaisCommonUtils.genNewArrayList();
                 svcCode.add(svcDto.getSvcCode());

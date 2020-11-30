@@ -430,12 +430,18 @@ public class CessationFeServiceImpl implements CessationFeService {
                     log.info(StringUtil.changeForLog("==================== email ===============>>>>>>>"));
                     notificationHelper.sendNotification(emailParam);
                     //msg
+                    msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_MSG).getEntity();
+                    subject= MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
+                    emailParam.setSubject(subject);
                     emailParam.setSvcCodeList(serviceCodes);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_MSG);
                     emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     log.info(StringUtil.changeForLog("==================== notification ===============>>>>>>>"));
                     notificationHelper.sendNotification(emailParam);
                     //sms
+                    msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_SMS).getEntity();
+                    subject= MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
+                    emailParam.setSubject(subject);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_SMS);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
                     log.info(StringUtil.changeForLog("==================== sms ===============>>>>>>>"));
@@ -465,10 +471,10 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
                     emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
-                    MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE).getEntity();
                     Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                     map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     map.put("ApplicationNumber", applicationNo);
+                    MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE).getEntity();
                     String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
                     EmailParam emailParam = new EmailParam();
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE);
@@ -481,11 +487,17 @@ public class CessationFeServiceImpl implements CessationFeService {
                     //email
                     notificationHelper.sendNotification(emailParam);
                     //msg
+                    msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_MSG).getEntity();
+                    subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
+                    emailParam.setSubject(subject);
                     emailParam.setSvcCodeList(serviceCodes);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_MSG);
                     emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     notificationHelper.sendNotification(emailParam);
                     //sms
+                    msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_SMS).getEntity();
+                    subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
+                    emailParam.setSubject(subject);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_SMS);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
                     notificationHelper.sendNotification(emailParam);
@@ -521,10 +533,16 @@ public class CessationFeServiceImpl implements CessationFeService {
                     //email
                     notificationHelper.sendNotification(emailParam);
                     //sms
+                    msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_SMS).getEntity();
+                    subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
+                    emailParam.setSubject(subject);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_SMS);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
                     notificationHelper.sendNotification(emailParam);
                     //msg
+                    msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG).getEntity();
+                    subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
+                    emailParam.setSubject(subject);
                     emailParam.setSvcCodeList(serviceCodes);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
                     emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);

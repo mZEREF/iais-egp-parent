@@ -285,10 +285,16 @@ public class CessationEffectiveDateBatchjob {
                 //email
                 notificationHelper.sendNotification(emailParam);
                 //sms
+                rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE_SMS);
+                subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
+                emailParam.setSubject(subject);
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE_SMS);
                 emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
                 notificationHelper.sendNotification(emailParam);
                 //msg
+                rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE_MSG);
+                subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
+                emailParam.setSubject(subject);
                 emailParam.setSvcCodeList(serviceCodes);
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE_MSG);
                 emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);

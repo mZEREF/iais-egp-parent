@@ -1059,6 +1059,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             //emailClient.sendNotification(emailDto).getEntity();
 
                             //sms
+                            msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS).getEntity();
+                            subject = null;
+                            try {
+                                subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map1);
+                            } catch (IOException |TemplateException e) {
+                                log.info(e.getMessage(),e);
+                            }
+                            emailParam.setSubject(subject);
                             emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(application.getApplicationType()));
                             emailMap.put("ApplicationNumber", application.getApplicationNo());
                             emailParam.setTemplateContent(emailMap);
