@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -22,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventApplicationG
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SelfAssMtEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -647,15 +645,21 @@ public class ApplicationServiceImpl implements ApplicationService {
         templateMessageByContent = MessageTemplateUtil.replaceNum(templateMessageByContent);
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         boolean isSend = !ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType) && !ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType) && !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType);
-        String subject = "MOH IAIS - Request for information for your "+ MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()) + ", " + StringUtil.viewHtml(applicationNo);
+        Map<String,Object> subjectMap = IaisCommonUtils.genNewHashMap();
+        subjectMap.put("ApplicationType",MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        subjectMap.put("ApplicationNumber",StringUtil.viewHtml(applicationNo));
+        String msgSubject = MsgUtil.getTemplateMessageByContent(autoEntity.getTemplateName(),subjectMap);
+        //autoEntity"MOH IAIS - Request for information for your "+ MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()) + ", " + StringUtil.viewHtml(applicationNo);
         if(hcsaServiceDto!=null && isSend){
-            InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(subject,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
+            InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(msgSubject,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
                     messageNo,hcsaServiceDto.getSvcCode()+"@",templateMessageByContent, applicationViewDto.getApplicationGroupDto().getLicenseeId(),IaisEGPHelper.getCurrentAuditTrailDto());
             HashMap<String,String> mapParam = IaisCommonUtils.genNewHashMap();
             mapParam.put("appNo",applicationDto.getApplicationNo());
             interMessageDto.setMaskParams(mapParam);
             inboxMsgService.saveInterMessage(interMessageDto);
             //send email
+            MsgTemplateDto emailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APP_RFI_EMAIL).getEntity();
+            String emailSubject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subjectMap);
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APP_RFI_EMAIL);
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
@@ -665,18 +669,20 @@ public class ApplicationServiceImpl implements ApplicationService {
             emailParam.setReqRefNum(applicationNo);
             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
             emailParam.setRefId(applicationNo);
-            emailParam.setSubject(subject);
+            emailParam.setSubject(emailSubject);
             log.info(StringUtil.changeForLog("send rfi application email start"));
             notificationHelper.sendNotification(emailParam);
             log.info(StringUtil.changeForLog("send rfi application email end"));
             //send sms
+            MsgTemplateDto smsTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APP_RFI_EMAIL).getEntity();
+            String smsSubject = MsgUtil.getTemplateMessageByContent(smsTemplateDto.getTemplateName(),subjectMap);
             EmailParam smsParam = new EmailParam();
             Map<String,Object> smsMap = IaisCommonUtils.genNewHashMap();
             smsMap.put("ApplicationType",MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
             smsMap.put("ApplicationNumber",StringUtil.viewHtml(applicationNo));
             smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APP_RFI_SMS);
             smsParam.setTemplateContent(smsMap);
-            smsParam.setSubject(subject);
+            smsParam.setSubject(smsSubject);
             smsParam.setQueryCode(applicationNo);
             smsParam.setReqRefNum(applicationNo);
             smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
