@@ -36,7 +36,7 @@
         <thead>
         <tr>
           <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
-          <td></td>
+          <iais:sortableHeader needSort="false"  field="" value=" "></iais:sortableHeader>
           <iais:sortableHeader needSort="true"   field="CLAUSE_NO" value="Regulation Clause Number"></iais:sortableHeader>
           <iais:sortableHeader needSort="true"   field="CLAUSE" value="Regulations"></iais:sortableHeader>
           <iais:sortableHeader needSort="true"   field="CHECKLISTITEM" value="Checklist Item"></iais:sortableHeader>

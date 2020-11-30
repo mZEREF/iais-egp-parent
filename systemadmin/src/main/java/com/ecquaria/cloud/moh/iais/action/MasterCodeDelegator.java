@@ -334,28 +334,30 @@ public class MasterCodeDelegator {
     public @ResponseBody
     void fileHandler(HttpServletRequest request, HttpServletResponse response) {
         log.debug(StringUtil.changeForLog("fileHandler start ...."));
-        List<MasterCodeToExcelDto> masterCodeToExcelDtoList = IaisCommonUtils.genNewArrayList();
+        List<MasterCodeToExcelDto> mctList = IaisCommonUtils.genNewArrayList();
         SearchParam searchParam = (SearchParam)ParamUtil.getSessionAttr(request, MasterCodeConstants.SEARCH_PARAM);
         searchParam.setPageSize(Integer.MAX_VALUE);
         SearchResult<MasterCodeQueryDto> searchResult = masterCodeService.doQuery(searchParam);
         searchResult.getRows().forEach(h ->{
-            MasterCodeToExcelDto masterCodeToExcelDto = new MasterCodeToExcelDto();
-            masterCodeToExcelDto.setCodeCategory(h.getCodeCategory());
-            masterCodeToExcelDto.setSequence(String.valueOf(h.getSequence()));
-            masterCodeToExcelDto.setCodeDescription(h.getCodeDescription());
-            masterCodeToExcelDto.setCodeValue(h.getCodeValue());
-            masterCodeToExcelDto.setEffectiveFrom(h.getEffectiveStartDate());
-            masterCodeToExcelDto.setEffectiveTo(h.getEffectiveEndDate());
-            masterCodeToExcelDto.setRemakes(h.getRemarks());
-            masterCodeToExcelDto.setStatus(MasterCodeUtil.getCodeDesc(h.getStatus()));
-            masterCodeToExcelDtoList.add(masterCodeToExcelDto);
+            MasterCodeToExcelDto mct = new MasterCodeToExcelDto();
+            mct.setCodeCategory(h.getCodeCategory());
+            mct.setSequence(String.valueOf(h.getSequence() / 1000));
+            mct.setCodeDescription(h.getCodeDescription());
+            mct.setFilterValue(h.getFilterValue());
+            mct.setCodeValue(h.getCodeValue());
+            mct.setVersion(h.getVersion());
+            mct.setEffectiveFrom(h.getEffectiveStartDate());
+            mct.setEffectiveTo(h.getEffectiveEndDate());
+            mct.setRemakes(h.getRemarks());
+            mct.setStatus(MasterCodeUtil.getCodeDesc(h.getStatus()));
+            mctList.add(mct);
         });
-        if (masterCodeToExcelDtoList.size()>0) {
+
+        if (mctList.size()> 0) {
             try {
-                File file =  ExcelWriter.writerToExcel(masterCodeToExcelDtoList, MasterCodeToExcelDto.class, "Master_Code_File");
+                File file =  ExcelWriter.writerToExcel(mctList, MasterCodeToExcelDto.class, "Master_Code_File");
                 FileUtils.writeFileResponseContent(response, file);
                 FileUtils.deleteTempFile(file);
-
             } catch (Exception e) {
                 log.error("=======>fileHandler error >>>>>", e);
             }

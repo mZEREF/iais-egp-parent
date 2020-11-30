@@ -59,7 +59,7 @@ public interface SaMasterCodeClient {
     @GetMapping(path = "/iais-mastercode/codeKey/{description}")
     FeignResponseEntity<String> getCodeKeyByDescription(@PathVariable("description") String description);
 
-    @GetMapping(path = "/iais-mastercode/mastercode-catergory")
+    @GetMapping(path = "/iais-mastercode/mastercode-catergory", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<MasterCodeCategoryDto>> getAllMasterCodeCategory();
 
     @GetMapping(path = "/iais-mastercode/mastercode-catergory-entity")
