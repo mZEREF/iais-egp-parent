@@ -22,4 +22,6 @@ public interface AssessmentGuideService {
     Boolean isNewLicensee(String licenseeId);
     List<String> getHciFromPendAppAndLic(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos);
     void deleteDraftNUmber(List<String> draftNumbers);
+    HcsaServiceDto getServiceDtoById(String id);
+    List<HcsaServiceCorrelationDto> getActiveSvcCorrelation();
 }

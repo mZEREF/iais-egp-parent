@@ -594,7 +594,12 @@ public class HalpAssessmentGuideDelegator {
         if(!IaisCommonUtils.isEmpty(hcsaServiceCorrelationDtoList)){
             for(HcsaServiceCorrelationDto corr:hcsaServiceCorrelationDtoList){
                 if(corr.getSpecifiedSvcId().equals(spcSvcId)){
-                    hcsaServiceDtos.add(HcsaServiceCacheHelper.getServiceById(corr.getBaseSvcId()));
+                    HcsaServiceDto serviceById = assessmentGuideService.getServiceDtoById(corr.getBaseSvcId());
+                    if(serviceById!=null) {
+                        if (AppConsts.COMMON_STATUS_ACTIVE.equals(serviceById.getStatus())) {
+                            hcsaServiceDtos.add(HcsaServiceCacheHelper.getServiceById(corr.getBaseSvcId()));
+                        }
+                    }
                 }
             }
         }
@@ -612,7 +617,7 @@ public class HalpAssessmentGuideDelegator {
         Map<String,List<HcsaServiceDto>> baseAndSpcSvcMap = IaisCommonUtils.genNewHashMap();
         //get correlatrion base service
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
-        List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  assessmentGuideService.getCorrelation();
+        List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  assessmentGuideService.getActiveSvcCorrelation();
         List<HcsaServiceDto> specSvcDtos = appSelectSvcDto.getSpeSvcDtoList();
         List<HcsaServiceDto> baseSvcDtoList = IaisCommonUtils.genNewArrayList();
         for(HcsaServiceDto hcsaServiceDto:specSvcDtos){
@@ -740,7 +745,7 @@ public class HalpAssessmentGuideDelegator {
         List<HcsaServiceDto> speSvcSort = IaisCommonUtils.genNewArrayList();
         if(basechks == null){
             log.info(StringUtil.changeForLog("basechks is null ..."));
-            List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  assessmentGuideService.getCorrelation();
+            List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  assessmentGuideService.getActiveSvcCorrelation();
             //no base service
             if(sepcifiedchk != null){
 //                //spe choose base
@@ -790,7 +795,7 @@ public class HalpAssessmentGuideDelegator {
 
             if(sepcifiedchk != null){
                 log.info(StringUtil.changeForLog("sepcifiedchk is not null ..."));
-                List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  assessmentGuideService.getCorrelation();
+                List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  assessmentGuideService.getActiveSvcCorrelation();
                 log.info(StringUtil.changeForLog("hcsaServiceCorrelationDtoList size:"+hcsaServiceCorrelationDtoList.size()));
                 for (String item:sepcifiedchk) {
                     sepcifiedcheckedlist.add(item);
@@ -870,7 +875,7 @@ public class HalpAssessmentGuideDelegator {
         appSelectSvcDto.setSpeSvcDtoList(speSvcSort);
         ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED, (Serializable) sepcifiedcheckedlist);
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, (Serializable) basecheckedlist);
-        List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  assessmentGuideService.getCorrelation();
+        List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  assessmentGuideService.getActiveSvcCorrelation();
         //control switch
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = null;
         if(!currentPage.equals(nextstep)){

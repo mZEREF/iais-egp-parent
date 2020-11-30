@@ -112,6 +112,16 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
         appInboxClient.deleteDraftNUmber(draftNumbers);
     }
 
+    @Override
+    public HcsaServiceDto getServiceDtoById(String id) {
+        return configInboxClient.getHcsaServiceDtoByServiceId(id).getEntity();
+    }
+
+    @Override
+    public List<HcsaServiceCorrelationDto> getActiveSvcCorrelation() {
+        return configInboxClient.getActiveSvcCorrelation().getEntity();
+    }
+
     private static List<String> setPremiseHciList(AppGrpPremisesEntityDto premisesDto, List<String> premisesHci){
         String premisesKey = IaisCommonUtils.genPremisesKey(premisesDto.getPostalCode(),premisesDto.getBlkNo(),premisesDto.getFloorNo(),premisesDto.getUnitNo());
         if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesDto.getPremisesType())){

@@ -549,6 +549,11 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         return AppConsts.NO;
     }
 
+    @Override
+    public List<HcsaServiceCorrelationDto> getActiveSvcCorrelation() {
+        return appConfigClient.getActiveSvcCorrelation().getEntity();
+    }
+
     //todo only get upload xml get down xml need change
     private String getXmlByGiroXmlPaymentDtoXml(String xml)throws Exception{
         GiroXmlPaymentDto giroXmlPaymentDto = (GiroXmlPaymentDto)  XmlBindUtil.convertToObject(GiroXmlPaymentDto.class,xml);

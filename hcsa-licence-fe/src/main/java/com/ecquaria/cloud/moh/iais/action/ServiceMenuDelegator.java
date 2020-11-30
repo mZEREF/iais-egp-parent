@@ -312,7 +312,7 @@ public class ServiceMenuDelegator {
         Map<String,List<HcsaServiceDto>> baseAndSpcSvcMap = IaisCommonUtils.genNewHashMap();
         //get correlatrion base service
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
-        List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  serviceConfigService.getCorrelation();
+        List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  serviceConfigService.getActiveSvcCorrelation();
         List<HcsaServiceDto> specSvcDtos = appSelectSvcDto.getSpeSvcDtoList();
         List<HcsaServiceDto> baseSvcDtoList = IaisCommonUtils.genNewArrayList();
         for(HcsaServiceDto hcsaServiceDto:specSvcDtos){
@@ -422,7 +422,7 @@ public class ServiceMenuDelegator {
         List<String> sepcifiedcheckedlist = IaisCommonUtils.genNewArrayList();
         List<HcsaServiceDto> baseSvcSort = IaisCommonUtils.genNewArrayList();
         List<HcsaServiceDto> speSvcSort = IaisCommonUtils.genNewArrayList();
-        List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  serviceConfigService.getCorrelation();
+        List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  serviceConfigService.getActiveSvcCorrelation();
         log.info(StringUtil.changeForLog("hcsaServiceCorrelationDtoList size:"+hcsaServiceCorrelationDtoList.size()));
         if(basechks == null){
             log.info(StringUtil.changeForLog("basechks is null ..."));

@@ -200,4 +200,7 @@ public interface AppConfigClient {
 
     @RequestMapping(path = "/iais-hcsa-service/primary-doc-by-version",method = RequestMethod.GET)
     FeignResponseEntity<List<HcsaSvcDocConfigDto>> getPrimaryDocConfigByVersion(@RequestParam(value = "version") String version);
+
+    @GetMapping(value = "/iais-hcsa-service/active-service-correlation",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaServiceCorrelationDto>> getActiveSvcCorrelation();
 }

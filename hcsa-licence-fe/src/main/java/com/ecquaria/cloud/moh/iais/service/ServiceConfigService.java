@@ -65,4 +65,5 @@ public interface ServiceConfigService {
     HcsaServiceDto getServiceDtoById(String id);
     void sysnSaveGroupToBe();
     String saveAppGroupGiroSysnEic(ApplicationGroupDto applicationGroupDto);
+    List<HcsaServiceCorrelationDto> getActiveSvcCorrelation();
 }
