@@ -1331,9 +1331,7 @@ public class RequestForChangeMenuDelegator {
             String appGrpId = appSubmissionDtos.get(0).getAppGrpId();
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
-            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS);
-            //todo Processing giro
-            serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDtos.get(0));
+            appGrp.setPmtStatus( serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDtos.get(0)));
             serviceConfigService.updatePaymentStatus(appGrp);
             ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
             ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");

@@ -358,10 +358,15 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     }
 
     @Override
-    public void giroPaymentXmlUpdateByGrpNo(AppSubmissionDto appGrp) {
+    public String giroPaymentXmlUpdateByGrpNo(AppSubmissionDto appGrp) {
+        if(!AppConsts.YES.equalsIgnoreCase(Config.get("pay.giro.switch"))) {
+            log.info("pay.giro.switch is closed");
+            return ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS;
+        }
         //todo
          GiroPaymentXmlDto giroPaymentXmlDto = genGiroPaymentXmlDtoByAppGrp(appGrp);
          appPaymentStatusClient.updateGiroPaymentXmlDto(giroPaymentXmlDto);
+         return ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO;
     }
 
     private GiroPaymentXmlDto genGiroPaymentXmlDtoByAppGrp(AppSubmissionDto appGrp){
@@ -381,6 +386,10 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public void sendGiroXmlToSftp() {
+       if(!AppConsts.YES.equalsIgnoreCase(Config.get("pay.giro.switch"))) {
+           log.info("pay.giro.switch is closed");
+           return;
+       }
         List<GiroPaymentXmlDto> giroPaymentXmlDtos =  appPaymentStatusClient.getGiroPaymentDtosByStatusAndXmlType(AppConsts.COMMON_STATUS_ACTIVE,ApplicationConsts.GIRO_NEED_GEN_XML).getEntity();
       if(IaisCommonUtils.isEmpty(giroPaymentXmlDtos)){
           return;
@@ -467,6 +476,10 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public void getGiroXmlFromSftpAndSaveXml() {
+        if(!AppConsts.YES.equalsIgnoreCase(Config.get("pay.giro.switch"))) {
+            log.info("pay.giro.switch is closed");
+            return;
+        }
         List<GiroPaymentXmlDto> giroPaymentXmlDtos =  appPaymentStatusClient.getGiroPaymentDtosByStatusAndXmlType(AppConsts.COMMON_STATUS_ACTIVE,ApplicationConsts.GIRO_SEND_XML_SFTP).getEntity();
           if(IaisCommonUtils.isEmpty( giroPaymentXmlDtos)){
               log.info("getGiroXmlFromSftpAndSaveXml is null");

@@ -3212,9 +3212,7 @@ public class NewApplicationDelegator {
             String appGrpId = appSubmissionDto.getAppGrpId();
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
-            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS);
-            //todo Processing giro
-            serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDto);
+            appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDto));
             serviceConfigService.updatePaymentStatus(appGrp);
             ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
             //todo change
