@@ -131,7 +131,9 @@ public class FileUtil {
 		if (f.exists() && f.isFile()) {
 			InputStream is = new FileInputStream(f);
 			String xml = getString(is);
-			f.delete();
+			if( !f.delete()){
+             log.error(StringUtil.changeForLog(fileName + " is inexistence in service."));
+			}
 			return xml;
 		} else {
 			throw new Exception(StringUtil.changeForLog("FileUtil: " + fileName
