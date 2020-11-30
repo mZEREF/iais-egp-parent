@@ -552,10 +552,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 if(f.isFile()){
                     try {
                         FileRepoDto fileRepoDto = new FileRepoDto();
+
                         fileRepoDto.setId(f.getName());
                         fileRepoDto.setAuditTrailDto(intranet);
                         String s = f.getName().replaceAll("-", "");
-                        File file1 = MiscUtil.generateFile(file.getPath()+File.separator, s);
+                        File file1 = new File(file.getPath()+File.separator, s);
                         f.renameTo(file1);
                         fileRepoDto.setFileName(s);
                         fileRepoDto.setRelativePath(AppServicesConsts.COMPRESS+File.separator+fileNames+
@@ -566,7 +567,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         log.info(StringUtil.changeForLog(f.getPath()+"file path------"));
 
                     }catch (Exception e){
-                        log.info(StringUtil.changeForLog(e.getMessage()+"--------error- save file"));
+                        log.info(StringUtil.changeForLog(e+e.getMessage()+"--------error- save file"));
                         continue;
                     }
 
