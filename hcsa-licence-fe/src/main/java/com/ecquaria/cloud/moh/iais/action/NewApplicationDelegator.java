@@ -3131,18 +3131,11 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         try {
             if(appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
-                AppSubmissionDto ackPageAppSubmissionDto;
-                try {
-                    ackPageAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
-                    if(ackPageAppSubmissionDto==null){
-                        ackPageAppSubmissionDto=appSubmissionDto;
-                    }
-                }catch (Exception e){
-                    log.info(e.getMessage(),e);
-                    ackPageAppSubmissionDto=appSubmissionDto;
+                List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("appSubmissionDtos");
+                if(appSubmissionDtos==null||appSubmissionDtos.size()==0){
+                    appSubmissionDtos=IaisCommonUtils.genNewArrayList();
+                    appSubmissionDtos.add(appSubmissionDto);
                 }
-                List<AppSubmissionDto> appSubmissionDtos=IaisCommonUtils.genNewArrayList();
-                appSubmissionDtos.add(ackPageAppSubmissionDto);
                 requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos, payMethod);
             }
         } catch (Exception e) {
