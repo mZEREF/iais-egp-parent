@@ -556,6 +556,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         fileRepoDto.setId(f.getName());
                         fileRepoDto.setAuditTrailDto(intranet);
                         String s = f.getName().replaceAll("-", "");
+                        //not use generateFile function.this have floder name have dian
                         File file1 = new File(file.getPath()+File.separator, s);
                         f.renameTo(file1);
                         fileRepoDto.setFileName(s);

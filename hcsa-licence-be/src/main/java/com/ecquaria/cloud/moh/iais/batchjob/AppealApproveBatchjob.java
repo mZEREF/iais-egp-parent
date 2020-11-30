@@ -377,18 +377,40 @@ public class AppealApproveBatchjob {
                 }
             }
 
-            ApplicationDto o = (ApplicationDto)CopyUtil.copyMutableObject(appealApplication);
-            LicAppCorrelationDto licAppCorrelationDto = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(o.getId()).getEntity();
-            //not need new licence no
-            o.setNeedNewLicNo(false);
-            if(licAppCorrelationDto!=null){
-                o.setOriginLicenceId(licAppCorrelationDto.getLicenceId());
-            }
-            o.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-            appealApplicaiton.add(o);
-            ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(o.getAppGrpId()).getEntity();
+            ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appealApplication.getAppGrpId()).getEntity();
             ApplicationGroupDto a=(ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto);
             a.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+            if(appealApplication.isGrpLic()){
+                List<ApplicationDto> entity = applicationClient.getGroupAppsByNo(applicationGroupDto.getId()).getEntity();
+                for(ApplicationDto applicationDto : entity ){
+                    if(!IaisCommonUtils.isEmpty(appSvcKeyPersonnelDtos)){
+                        for (AppSvcKeyPersonnelDto appSvcKeyPersonnelDto : appSvcKeyPersonnelDtos){
+                            rollBackPersonnel.add(appSvcKeyPersonnelDto);
+                            AppSvcKeyPersonnelDto appealAppSvcKeyPersonnelDto = (AppSvcKeyPersonnelDto) CopyUtil.copyMutableObject(appSvcKeyPersonnelDto);
+                            appealAppSvcKeyPersonnelDto.setApplicationId(applicationDto.getId());
+                            appealPersonnel.add(appealAppSvcKeyPersonnelDto);
+                        }
+                    }
+                    ApplicationDto o = (ApplicationDto)CopyUtil.copyMutableObject(applicationDto);
+                    LicAppCorrelationDto licAppCorrelationDto = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(o.getId()).getEntity();
+                    o.setNeedNewLicNo(false);
+                    if(licAppCorrelationDto!=null){
+                        o.setOriginLicenceId(licAppCorrelationDto.getLicenceId());
+                    }
+                    o.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                    appealApplicaiton.add(o);
+                }
+            }else {
+                ApplicationDto o = (ApplicationDto)CopyUtil.copyMutableObject(appealApplication);
+                LicAppCorrelationDto licAppCorrelationDto = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(o.getId()).getEntity();
+                //not need new licence no
+                o.setNeedNewLicNo(false);
+                if(licAppCorrelationDto!=null){
+                    o.setOriginLicenceId(licAppCorrelationDto.getLicenceId());
+                }
+                o.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                appealApplicaiton.add(o);
+            }
             appealApplicationGroupDtos.add(a);
         }
 

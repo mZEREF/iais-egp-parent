@@ -817,13 +817,13 @@ public class InterInboxDelegator {
                     ApplicationGroupDto applicationGroupDto = inboxService.getAppGroupByGroupId(appGroupId);
                     if (applicationGroupDto != null){
                         if (applicationGroupDto.getPrefInspEndDate() != null || applicationGroupDto.getPrefInspStartDate() != null){
-                            h.setCanInspection(false);
+                            h.setCanInspection(Boolean.FALSE);
                         }else{
-                            h.setCanInspection(true);
+                            h.setCanInspection(Boolean.TRUE);
                         }
                     }
                 }else{
-                    h.setCanInspection(false);
+                    h.setCanInspection(Boolean.FALSE);
                 }
 
                 RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
