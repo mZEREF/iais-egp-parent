@@ -416,10 +416,10 @@ public class CessationBeServiceImpl implements CessationBeService {
     private void routingTaskToAo3(List<ApplicationDto> applicationDtos, LoginContext loginContext) throws FeignException {
         String curRoleId = loginContext.getCurRoleId();
         for (ApplicationDto applicationDto : applicationDtos) {
+            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = applicationClient.getHistoryByAppNoAndDecision(applicationDto.getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_CESSATION_BE_DECISION).getEntity();
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
             appPremisesRoutingHistoryDto.setRoleId(curRoleId);
             appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_ASO);
-            appPremisesRoutingHistoryDto.setProcessDecision(ApplicationConsts.APPLICATION_STATUS_CESSATION_BE_DECISION);
             appPremisesRoutingHistoryDto.setApplicationNo(applicationDto.getApplicationNo());
             appPremisesRoutingHistoryDto.setActionby(loginContext.getUserId());
             appPremisesRoutingHistoryDto.setAppStatus(applicationDto.getStatus());
@@ -427,6 +427,11 @@ public class CessationBeServiceImpl implements CessationBeService {
             appPremisesRoutingHistoryDto.setWrkGrpId(workGroupId);
             List<AppPremisesRoutingHistoryDto> asoHistory = IaisCommonUtils.genNewArrayList();
             asoHistory.add(appPremisesRoutingHistoryDto);
+            if(IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtos)){
+                appPremisesRoutingHistoryDto.setProcessDecision(ApplicationConsts.APPLICATION_STATUS_CESSATION_BE_DECISION);
+            }else {
+                appPremisesRoutingHistoryDto.setProcessDecision(ApplicationConsts.APPLICATION_STATUS_CESSATION_BE_DECISION_BACK);
+            }
             taskService.createHistorys(asoHistory);
         }
 
