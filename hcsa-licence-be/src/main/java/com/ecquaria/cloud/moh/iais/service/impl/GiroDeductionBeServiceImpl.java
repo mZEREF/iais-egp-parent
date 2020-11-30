@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -19,11 +20,15 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroDeductionBeService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +46,9 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
 
     @Autowired
     private OrganizationClient organizationClient;
+
+    @Autowired
+    private MsgTemplateClient msgTemplateClient;
 
     @Autowired
     private SystemParamConfig systemParamConfig;
@@ -72,10 +80,9 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
                 map.put("paymentAmount", applicationGroupDto.getAmount());
                 String address1 = systemParamConfig.getSystemAddressOne();
                 map.put("email_address", address1);
-                String subject = "MOH HALP - Unsuccessful GIRO Deduction for " + appTypeShow + ", " + appGroupNo;
                 List<ApplicationDto> applicationDtos = applicationClient.getGroupAppsByNo(applicationGroupDto.getId()).getEntity();
-                sendEmailByAppGroup(map, subject, applicationGroupDto);
-                sendMessageByAppGroup(map, subject, applicationDtos, appGroupNo);
+                sendEmailByAppGroup(map, appTypeShow, appGroupNo, applicationGroupDto);
+                sendMessageByAppGroup(map, appTypeShow, applicationDtos, appGroupNo);
             }
             //todo eic update appGroup
             ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
@@ -84,7 +91,22 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
         }
     }
 
-    private void sendMessageByAppGroup(Map<String, Object> map, String subject, List<ApplicationDto> applicationDtos, String appGroupNo) {
+    private void sendMessageByAppGroup(Map<String, Object> map, String appTypeShow, List<ApplicationDto> applicationDtos, String appGroupNo) {
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_GIRO_RETRIGGERS).getEntity();
+        String subject = "";
+        if(msgTemplateDto != null){
+            String templateName = msgTemplateDto.getTemplateName();
+            if(!StringUtil.isEmpty(templateName)){
+                Map<String, Object> mapSubject = IaisCommonUtils.genNewHashMap();
+                mapSubject.put("appTypeShow", appTypeShow);
+                mapSubject.put("appGroupNo", appGroupNo);
+                try {
+                    subject = MsgUtil.getTemplateMessageByContent(templateName, mapSubject);
+                } catch (IOException | TemplateException e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
         //todo msg url
         String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_GIRO_RETRIGGER + appGroupNo;
         HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
@@ -115,7 +137,22 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
         notificationHelper.sendNotification(emailParam);
     }
 
-    private void sendEmailByAppGroup(Map<String, Object> map, String subject, ApplicationGroupDto applicationGroupDto) {
+    private void sendEmailByAppGroup(Map<String, Object> map, String appTypeShow, String appGroupNo, ApplicationGroupDto applicationGroupDto) {
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_GIRO_RETRIGGERS_EMAIL).getEntity();
+        String subject = "";
+        if(msgTemplateDto != null){
+            String templateName = msgTemplateDto.getTemplateName();
+            if(!StringUtil.isEmpty(templateName)){
+                Map<String, Object> mapSubject = IaisCommonUtils.genNewHashMap();
+                mapSubject.put("appTypeShow", appTypeShow);
+                mapSubject.put("appGroupNo", appGroupNo);
+                try {
+                    subject = MsgUtil.getTemplateMessageByContent(templateName, mapSubject);
+                } catch (IOException | TemplateException e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         map.put("systemLink", loginUrl);
         String appGrpId = applicationGroupDto.getId();
