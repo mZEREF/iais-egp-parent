@@ -493,7 +493,6 @@ public class AppealServiceImpl implements AppealService {
         }else {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
         }
-
         return errorMap;
     }
 
@@ -727,7 +726,35 @@ public class AppealServiceImpl implements AppealService {
                         String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
                         if (StringUtil.isEmpty(professionRegoNo)) {
                             map.put("professionRegoNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn No.  ","field"));
+                        }else {
+                            if("Y".equals(prsFlag)){
+                                ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
+                                List<String> prgNos = IaisCommonUtils.genNewArrayList();
+                                prgNos.add(professionRegoNo);
+                                professionalParameterDto.setRegNo(prgNos);
+                                professionalParameterDto.setClientId("22222");
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                                String format = simpleDateFormat.format(new Date());
+                                professionalParameterDto.setTimestamp(format);
+                                professionalParameterDto.setSignature("2222");
+                                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                                try{
+                                    List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
+                                            signature2.date(), signature2.authorization()).getEntity();
+                                    if(!IaisCommonUtils.isEmpty(professionalResponseDtos)){
+                                        List<String> specialty = professionalResponseDtos.get(0).getSpecialty();
+                                        if(IaisCommonUtils.isEmpty(specialty)){
+                                            map.put("professionRegoNo" + i, "GENERAL_ERR0042");
+                                        }
+                                    }
+                                }catch (Throwable e){
+                                    request.setAttribute("PRS_SERVICE_DOWN","PRS_SERVICE_DOWN");
+                                }
+
+                            }
                         }
+
                         String idNo = appSvcCgoList.get(i).getIdNo();
                         //to do
                         if (StringUtil.isEmpty(idNo)) {
