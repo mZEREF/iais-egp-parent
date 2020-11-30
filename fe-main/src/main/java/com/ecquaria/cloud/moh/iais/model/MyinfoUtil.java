@@ -94,7 +94,11 @@ public class MyinfoUtil {
 		// Check the signature
 		boolean signatureVerified = jws.verifySignature();
 		//Get the payload, or signed content, from the JWS
-		encipheredData = jws.getPayload();
+		if(signatureVerified){
+			encipheredData = jws.getPayload();
+		}else {
+			log.error("jws check is failed");
+		}
 		return  encipheredData;
 	}
 
