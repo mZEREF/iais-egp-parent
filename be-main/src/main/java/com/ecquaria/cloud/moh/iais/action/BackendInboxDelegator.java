@@ -107,16 +107,10 @@ public class BackendInboxDelegator {
     private HcsaConfigMainClient hcsaConfigMainClient;
 
     @Autowired
-    OrganizationMainClient omc;
-
-    @Autowired
     private AppPremisesRoutingHistoryMainClient appPremisesRoutingHistoryMainClient;
 
     @Autowired
     private NotificationHelper notificationHelper;
-
-    @Autowired
-    private EmailClient emailClient;
 
     @Autowired
     private InspEmailService inboxMsgService;
@@ -577,7 +571,7 @@ public class BackendInboxDelegator {
 
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
 
-            OrgUserDto orgUserDto = omc.retrieveOneOrgUserAccount(aubmitBy).getEntity();
+            OrgUserDto orgUserDto = organizationMainClient.retrieveOneOrgUserAccount(aubmitBy).getEntity();
             if (orgUserDto != null){
                 map.put("ApplicantName", orgUserDto.getDisplayName());
             }
