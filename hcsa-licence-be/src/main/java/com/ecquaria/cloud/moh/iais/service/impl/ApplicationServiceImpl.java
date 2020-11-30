@@ -260,7 +260,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         dto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
         dto.setActionClsName(this.getClass().getName());
         dto.setActionMethod("callEicInterPaymentRefund");
-        dto.setDtoClsName(appReturnFeeDtos.getClass().getName());
+        dto.setDtoClsName(List.class.getName());
         dto.setDtoObject(JsonUtil.parseToJson(appReturnFeeDtos));
         String refNo = String.valueOf(System.currentTimeMillis());
         log.info(StringUtil.changeForLog("The updateFEPaymentRefund refNo is  -- >:"+refNo));
