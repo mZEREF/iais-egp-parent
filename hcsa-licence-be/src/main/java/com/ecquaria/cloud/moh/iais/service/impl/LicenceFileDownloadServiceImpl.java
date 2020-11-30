@@ -555,6 +555,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         fileRepoDto.setId(f.getName());
                         fileRepoDto.setAuditTrailDto(intranet);
                         String s = f.getName().replaceAll("-", "");
+                        File file1 = MiscUtil.generateFile(file.getPath(), s);
+                        f.renameTo(file1);
                         fileRepoDto.setFileName(s);
                         fileRepoDto.setRelativePath(AppServicesConsts.COMPRESS+File.separator+fileNames+
                                 File.separator+groupPath+File.separator+"folder"+File.separator+groupPath+File.separator+"files");
