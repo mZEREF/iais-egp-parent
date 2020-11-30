@@ -260,7 +260,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                         fileErrorMap.put(errorworkGrpIdKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "WorkingGroup ID", "field"));
                     } else {
                         List<WorkingGroupDto> workingGroups = getWorkingGroups();//NOSONAR
-                        //egp contains role
+                        //egp contains workgroupId
                         fileErrorMap = containsGrpIdVal(workingGroups, workingGroupId, fileErrorMap, errorworkGrpIdKey + i);//NOSONAR
                     }
                     if (!StringUtil.isEmpty(userId) && !StringUtil.isEmpty(roleId)) {

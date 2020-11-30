@@ -17,6 +17,7 @@
 <div class="main-content">
   <form class="form-horizontal" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <br/><br/><br/><br/>
+    <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
     <input type="hidden" name="crud_action_type" value="">
     <div class="container">
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
@@ -110,7 +111,7 @@
   }
 </style>
 
-<%@include file="/WEB-INF/jsp/include/validation.jsp" %>
+
 
 <script type="text/javascript">
   function submit(action) {

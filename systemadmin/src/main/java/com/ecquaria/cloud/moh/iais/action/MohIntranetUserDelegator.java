@@ -795,7 +795,7 @@ public class MohIntranetUserDelegator {
                     return;
                 } else if (IntranetUserConstant.TERMINATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "USER_ERR0014");
+                    errorMap.put("userId", "USER_ERR014");
                     WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
