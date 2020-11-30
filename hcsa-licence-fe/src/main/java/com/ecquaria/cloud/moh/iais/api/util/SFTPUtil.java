@@ -20,6 +20,7 @@ package com.ecquaria.cloud.moh.iais.api.util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -199,7 +200,7 @@ public class SFTPUtil {
         try {
             sftp.cd(directory);
             File file = new File(saveFile);
-            sftp.get(downloadFile, new FileOutputStream(file));
+            sftp.get(downloadFile, Files.newOutputStream(file.toPath()));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

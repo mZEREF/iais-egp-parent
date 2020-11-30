@@ -12,19 +12,8 @@
  */
 package com.ecquaria.cloud.moh.iais.api.util;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.StringReader;
+import java.io.*;
+import java.nio.file.Files;
 
 
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -129,7 +118,7 @@ public class FileUtil {
 	public static String getString(String fileName) throws Exception {
 		File f = new File(fileName);
 		if (f.exists() && f.isFile()) {
-			InputStream is = new FileInputStream(f);
+			InputStream is = Files.newInputStream(f.toPath());
 			String xml = getString(is);
 			if( !f.delete()){
              log.error(StringUtil.changeForLog(fileName + " is inexistence in service."));
@@ -159,7 +148,7 @@ public class FileUtil {
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(is, charsetName));
 		String line = null;
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		while ((line = br.readLine()) != null) {
 			sb.append(line);
 		}
@@ -172,7 +161,7 @@ public class FileUtil {
 		}
 		
 		int startIndex = absolutePath.lastIndexOf(File.separator) + 1;
-		int endIndex = absolutePath.lastIndexOf(".");
+		int endIndex = absolutePath.lastIndexOf('.');
 		return absolutePath.substring(startIndex, endIndex);
 	}
 
@@ -182,7 +171,7 @@ public class FileUtil {
 	}
 
 	public static String getFileExtension(String fileName) {
-		int dotPos = fileName.lastIndexOf(".");
+		int dotPos = fileName.lastIndexOf('.');
 		if (dotPos == -1){
 			return null;
 		}
@@ -207,12 +196,12 @@ public class FileUtil {
 			generateFolder(target.getParentFile().getPath());
 		}
 		InputStream inStream = null;
-		FileOutputStream fs = null;
+	    OutputStream fs = null;
 		try {
 			int byteread = 0;
 			if (source.exists()) {
-				inStream = new FileInputStream(source);
-				fs = new FileOutputStream(target);
+				inStream = Files.newInputStream(source.toPath());
+				fs =  Files.newOutputStream(target.toPath());
 				byte[] buffer = new byte[1444];
 				while ((byteread = inStream.read(buffer)) != -1) {
 					fs.write(buffer, 0, byteread);
@@ -249,9 +238,9 @@ public class FileUtil {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		if(fileName != null){
 			File file = new File(fileName);
-			FileInputStream fis = null;
+			InputStream fis = null;
 			try {
-				fis = new FileInputStream(file);
+				fis = Files.newInputStream(file.toPath());
 				byte[] b = new byte[1024];
 				int n = fis.read(b);
 				while(n != -1){
