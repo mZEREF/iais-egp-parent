@@ -254,11 +254,15 @@ public class MassEmailDelegator {
             if(filelist != null && repeatList(filelist)){
                 errMap.put("file", MessageUtil.replaceMessage("EMM_ERR009","mobiles","mode"));
             }
-            if(!isMobileEmail(filelist)){
+            if(filelist != null && !isMobileEmail(filelist)){
                 errMap.put("file", MessageUtil.getMessageDesc("GENERAL_ERR0007"));
             }
             if(address != null){
-                filelist.addAll(address);
+                if(filelist != null ) {
+                    filelist.addAll(address);
+                }else{
+                    filelist = address;
+                }
             }
             if(filelist != null ){
                 if(repeatList(filelist) && StringUtil.isEmpty(errMap.get("file"))){
