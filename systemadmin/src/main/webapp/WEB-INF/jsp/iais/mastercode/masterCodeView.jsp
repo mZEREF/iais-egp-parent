@@ -18,6 +18,7 @@
     }
 
     $("#MC_Search").click(function() {
+        showWaiting();
         submit('doSearch');
     });
 
