@@ -464,7 +464,7 @@ public class AppealApproveBatchjob {
         String appId = o.getId();
         LicAppCorrelationDto licAppCorrelationDto = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(appId).getEntity();
         String oldLicenceId = licAppCorrelationDto.getLicenceId();
-        o.setNeedNewLicNo(true);
+        o.setNeedNewLicNo(false);
         o.setOriginLicenceId(oldLicenceId);
         appealApplicaiton.add(o);
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(o.getAppGrpId()).getEntity();
