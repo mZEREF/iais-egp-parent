@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.http.HttpHeaders;
 
 /**
@@ -31,6 +32,14 @@ public class MsgTemplateMainClientFallback implements MsgTemplateMainClient{
 
     @Override
     public FeignResponseEntity<MsgTemplateDto> updateMasterCode(MsgTemplateDto dto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<MsgTemplateDto>> getAlertMsgTemplate(String domain) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,4 +31,7 @@ public interface MsgTemplateMainClient {
 
     @PutMapping(path = "/iais-messageTemplate/template",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<MsgTemplateDto> updateMasterCode(@RequestBody MsgTemplateDto dto);
+
+    @GetMapping(value = "/iais-messageTemplate/alert/{domain}")
+    FeignResponseEntity<List<MsgTemplateDto>> getAlertMsgTemplate(@PathVariable("domain") String domain);
 }
