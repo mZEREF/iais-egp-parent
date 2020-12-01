@@ -240,7 +240,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
         dto.setRefNo(refNo);
         dto.setModuleName(moduleName);
         eicClient.saveEicTrack(dto);
-        List paymentRequestDtos=callEicInterPaymentRefund(appReturnFeeDtos);
+        List<PaymentRequestDto> paymentRequestDtos=callEicInterPaymentRefund(appReturnFeeDtos);
         dto = eicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
         Date now = new Date();
         dto.setProcessNum(1);
@@ -254,7 +254,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
         return paymentRequestDtos;
     }
 
-    private List callEicInterPaymentRefund(List<AppReturnFeeDto> appReturnFeeDtos) {
+    private List<PaymentRequestDto> callEicInterPaymentRefund(List<AppReturnFeeDto> appReturnFeeDtos) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return beEicGatewayClient.doStripeRefunds(appReturnFeeDtos, signature.date(), signature.authorization(),

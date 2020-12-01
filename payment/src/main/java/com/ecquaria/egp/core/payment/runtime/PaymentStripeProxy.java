@@ -83,6 +83,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 			log.debug(e1.getMessage());
 			throw new PaymentException(e1);
 		}
+
 		PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
 
 		String amo = fields.get("vpc_Amount");

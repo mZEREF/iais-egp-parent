@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataRequest;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataResponse;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SyncDataBody;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -157,10 +158,10 @@ public class BeEicGatewayClient {
     }
 
     public FeignResponseEntity<List> doStripeRefunds(List<AppReturnFeeDto> appReturnFeeDtos,
-                                                                       String date, String authorization, String dateSec,
-                                                                       String authorizationSec) {
+                                                                        String date, String authorization, String dateSec,
+                                                                        String authorizationSec) {
         return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/stripe-refund", HttpMethod.POST, appReturnFeeDtos,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, List.class);
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, PaymentRequestDto.class);
     }
 
 
