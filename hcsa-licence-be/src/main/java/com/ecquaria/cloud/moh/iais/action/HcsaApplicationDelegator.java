@@ -62,6 +62,7 @@ import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationProcessUploadFileValidate;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
+import com.ecquaria.cloud.submission.client.App;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -2110,11 +2111,18 @@ public class HcsaApplicationDelegator {
                         if(orgUserDto != null){
                             applicantName = orgUserDto.getDisplayName();
                         }
-                        Integer isByGIRO = applicationGroupDto.getIsByGiro();
+                        String paymentMethod = applicationGroupDto.getPmtStatus();
                         String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
                         if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(withdrawApplicationDto.getStatus())
                                 ||ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(withdrawApplicationDto.getStatus())){
+                            Double fee = 0.0;
                             applicationService.closeTaskWhenWhAppApprove(withdrawApplicationDto.getId());
+                            List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
+                            List<ApplicationDto> applicationDtoList2 = hcsaConfigClient.returnFee(applicationDtoList).getEntity();
+                            applicationDtoList2.add(applicationDto);
+                            if (!IaisCommonUtils.isEmpty(applicationDtoList2)){
+                                fee = applicationDtoList2.get(0).getReturnFee();
+                            }
                             Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                             msgInfoMap.put("Applicant", applicantName);
                             msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
@@ -2123,8 +2131,8 @@ public class HcsaApplicationDelegator {
                             msgInfoMap.put("S_LName",serviceName);
                             msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
                             msgInfoMap.put("ApplicationDate",applicationViewDto.getSubmissionDate().split(" ")[0]);
-                            msgInfoMap.put("returnMount",applicationViewDto.getReturnFee());
-                            if (isByGIRO == 1){
+                            msgInfoMap.put("returnMount",fee);
+                            if (ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(paymentMethod)){
                                 msgInfoMap.put("paymentMode","GIRO");
                                 msgInfoMap.put("paymentType","0");
                             }else{
