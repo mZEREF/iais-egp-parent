@@ -128,11 +128,11 @@ public class MessageDelegator {
         MessageDto editDto = (MessageDto) ParamUtil.getSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO);
 
 
-        if(description != null && description.indexOf("\n")!= -1){
+        if(description != null && description.indexOf('\n')!= -1){
             description= description.replaceAll("\n"," ");
         }
 
-        if(message != null && message.indexOf("\n")!= -1){
+        if(message != null && message.indexOf('\n')!= -1){
             message= message.replaceAll("\n"," ");
         }
 
