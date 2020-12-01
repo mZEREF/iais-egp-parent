@@ -93,6 +93,7 @@ public class CessationEffectiveDateBatchjob {
             //licence
             log.debug(StringUtil.changeForLog("The CessationLicenceBatchJob is doBatchJob ..."));
             Set<LicenceDto> licenceDtos = IaisCommonUtils.genNewHashSet();
+            List<String> filterLicenceId = IaisCommonUtils.genNewArrayList();
             Map<String, String> licGrpMap = IaisCommonUtils.genNewHashMap();
             List<ApplicationGroupDto> applicationGroupDtos = cessationClient.listAppGrpForCess().getEntity();
             List<ApplicationGroupDto> applicationGroupDtosCesead = IaisCommonUtils.genNewArrayList();
@@ -113,8 +114,11 @@ public class CessationEffectiveDateBatchjob {
                                 String originLicenceId = applicationDtos.get(0).getOriginLicenceId();
                                 LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
                                 if (licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())) {
-                                    licenceDtos.add(licenceDto);
-                                    licGrpMap.put(originLicenceId, appGrpId);
+                                    if(!filterLicenceId.contains(licenceDto.getId())){
+                                        licenceDtos.add(licenceDto);
+                                        filterLicenceId.add(licenceDto.getId());
+                                        licGrpMap.put(originLicenceId, appGrpId);
+                                    }
                                 }
                                 continue;
                             }
@@ -128,10 +132,13 @@ public class CessationEffectiveDateBatchjob {
                                         if (effectiveDate.compareTo(date) <= 0) {
                                             String originLicenceId = applicationDto.getOriginLicenceId();
                                             LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(originLicenceId).getEntity();
-                                            if (licenceDto != null && !licenceDtos.contains(licenceDto)) {
-                                                licenceDtos.add(licenceDto);
-                                                applicationGroupDtosCesead.add(applicationGroupDto);
-                                                licGrpMap.put(originLicenceId, appGrpId);
+                                            if (licenceDto != null) {
+                                                if(!filterLicenceId.contains(licenceDto.getId())) {
+                                                    filterLicenceId.add(licenceDto.getId());
+                                                    licenceDtos.add(licenceDto);
+                                                    applicationGroupDtosCesead.add(applicationGroupDto);
+                                                    licGrpMap.put(originLicenceId, appGrpId);
+                                                }
                                             }
                                             break;
                                         }
