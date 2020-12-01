@@ -816,7 +816,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             if (appPremisesRoutingHistoryDtoList != null && appPremisesRoutingHistoryDtoList.size() > 0) {
                                 for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtoList) {
                                     String actionBy = appPremisesRoutingHistoryDto.getActionby();
-                                    log.info("Send Withdraw 003 Email actionBy  ---->  " + actionBy);
+                                    log.info(StringUtil.changeForLog("Send Withdraw 003 Email actionBy  ---->  " + actionBy));
                                     OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(actionBy).getEntity();
                                     if (orgUserDto != null && (!appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN)
                                             && !appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_ORG_ADMIN)
