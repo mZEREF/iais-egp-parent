@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.TemplatesService;
+import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,6 +44,9 @@ import java.util.Map;
 @Slf4j
 @Delegator(value = "templatesDelegator")
 public class TemplatesDelegator {
+
+    @Autowired
+    private EicGatewayClient eicGatewayClient;
 
     private static final Map<String, String> processMap;
     static
@@ -224,6 +228,11 @@ public class TemplatesDelegator {
             deliveryModeSelectList.add(new SelectOption("DEMD003", "System Inbox"));
             List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_TEMPLATE_ROLE);
 
+            Boolean needRecipient = true;
+            if(MsgTemplateConstants.MSG_TEMPLATE_TYPE_BANNER_ALERT.equals(messageType) || MsgTemplateConstants.MSG_TEMPLATE_TYPE_SCHEDULED_MAINTENANCE.equals(messageType)){
+                needRecipient = false;
+            }
+            ParamUtil.setSessionAttr(bpc.request,"needRecipient",needRecipient);
             ParamUtil.setSessionAttr(bpc.request,"recipient",(Serializable) selectOptions);
             ParamUtil.setSessionAttr(bpc.request,"recipientString", recipientString);
             ParamUtil.setSessionAttr(bpc.request,"ccrecipientString", ccrecipientString);
@@ -268,27 +277,31 @@ public class TemplatesDelegator {
             if (contentSize < 2) {
                 errorMap.put("messageContent", MessageUtil.getMessageDesc("EMM_ERR0010"));
             }
-            String recipientString = "";
-            String ccrecipientString = "";
-            String bccrecipientString = "";
-            if(msgTemplateDto.getRecipient() != null){
-                recipientString = String.join("#", msgTemplateDto.getRecipient());
+            Boolean needRecipient = (Boolean) ParamUtil.getSessionAttr(request,"needRecipient");
+            if(needRecipient) {
+                String recipientString = "";
+                String ccrecipientString = "";
+                String bccrecipientString = "";
+                if (msgTemplateDto.getRecipient() != null) {
+                    recipientString = String.join("#", msgTemplateDto.getRecipient());
+                }
+                if (msgTemplateDto.getCcrecipient() != null) {
+                    ccrecipientString = String.join("#", msgTemplateDto.getCcrecipient());
+                }
+                if (msgTemplateDto.getBccrecipient() != null) {
+                    bccrecipientString = String.join("#", msgTemplateDto.getBccrecipient());
+                }
+                ParamUtil.setSessionAttr(bpc.request,"recipientString", recipientString);
+                ParamUtil.setSessionAttr(bpc.request,"ccrecipientString", ccrecipientString);
+                ParamUtil.setSessionAttr(bpc.request,"bccrecipientString", bccrecipientString);
             }
-            if(msgTemplateDto.getCcrecipient() != null){
-                ccrecipientString = String.join("#", msgTemplateDto.getCcrecipient());
-            }
-            if(msgTemplateDto.getBccrecipient() != null){
-                bccrecipientString = String.join("#", msgTemplateDto.getBccrecipient());
-            }
-            ParamUtil.setSessionAttr(bpc.request,"recipientString", recipientString);
-            ParamUtil.setSessionAttr(bpc.request,"ccrecipientString", ccrecipientString);
-            ParamUtil.setSessionAttr(bpc.request,"bccrecipientString", bccrecipientString);
             ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
             ParamUtil.setSessionAttr(request, MsgTemplateConstants.MSG_TEMPLATE_DTO,msgTemplateDto);
             return;
         }else {
             templatesService.updateMsgTemplate(msgTemplateDto);
+            eicGatewayClient.syncTemplateFe(msgTemplateDto);
             ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ISVALID,SystemAdminBaseConstants.YES);
         }
     }

@@ -48,30 +48,32 @@
                             </div>
                         </div>
                         </div>
-                        <div class="form-group">
-                            <iais:field value="To Recipients" required="true"/>
-                            <div class="col-xs-5 col-sm-5 col-md-5">
-                                <iais:multipleSelect name="recipient" selectValue="${recipientString}" options="recipient" disabled="${('MTTP002' == MsgTemplateDto.messageType || 'MTTP005' == MsgTemplateDto.messageType) ? true : false}"></iais:multipleSelect>
-                                <span id="error_toRecipients" name="iaisErrorMsg"
-                                      class="error-msg"></span>
+                        <c:if test="${needRecipient}">
+                            <div class="form-group">
+                                <iais:field value="To Recipients" required="true"/>
+                                <div class="col-xs-5 col-sm-5 col-md-5">
+                                    <iais:multipleSelect name="recipient" selectValue="${recipientString}" options="recipient" disabled="${('MTTP002' == MsgTemplateDto.messageType || 'MTTP005' == MsgTemplateDto.messageType) ? true : false}"></iais:multipleSelect>
+                                    <span id="error_toRecipients" name="iaisErrorMsg"
+                                          class="error-msg"></span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">CC Recipients</label>
-                            <div class="col-xs-5 col-sm-5 col-md-5">
-                                <iais:multipleSelect name="ccrecipient" selectValue="${ccrecipientString}" options="recipient" disabled="${('MTTP002' == MsgTemplateDto.messageType || 'MTTP005' == MsgTemplateDto.messageType || 'DEMD002' == MsgTemplateDto.deliveryMode) ? true : false}"></iais:multipleSelect>
-                                <span id="error_ccRecipients" name="iaisErrorMsg"
-                                      class="error-msg"></span>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-4 control-label">CC Recipients</label>
+                                <div class="col-xs-5 col-sm-5 col-md-5">
+                                    <iais:multipleSelect name="ccrecipient" selectValue="${ccrecipientString}" options="recipient" disabled="${('MTTP002' == MsgTemplateDto.messageType || 'MTTP005' == MsgTemplateDto.messageType || 'DEMD002' == MsgTemplateDto.deliveryMode) ? true : false}"></iais:multipleSelect>
+                                    <span id="error_ccRecipients" name="iaisErrorMsg"
+                                          class="error-msg"></span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">BCC Recipients</label>
-                            <div class="col-xs-5 col-sm-5 col-md-5">
-                                <iais:multipleSelect name="bccrecipient" selectValue="${bccrecipientString}" options="recipient" disabled="${('MTTP002' == MsgTemplateDto.messageType || 'MTTP005' == MsgTemplateDto.messageType || 'DEMD002' == MsgTemplateDto.deliveryMode) ? true : false}"></iais:multipleSelect>
-                                <span id="error_bccRecipients" name="iaisErrorMsg"
-                                      class="error-msg"></span>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-4 control-label">BCC Recipients</label>
+                                <div class="col-xs-5 col-sm-5 col-md-5">
+                                    <iais:multipleSelect name="bccrecipient" selectValue="${bccrecipientString}" options="recipient" disabled="${('MTTP002' == MsgTemplateDto.messageType || 'MTTP005' == MsgTemplateDto.messageType || 'DEMD002' == MsgTemplateDto.deliveryMode) ? true : false}"></iais:multipleSelect>
+                                    <span id="error_bccRecipients" name="iaisErrorMsg"
+                                          class="error-msg"></span>
+                                </div>
                             </div>
-                        </div>
+                        </c:if>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Process</label>
                             <div class="col-xs-5 col-sm-5 col-md-5">
