@@ -20,6 +20,7 @@
              LEFT JOIN app_grp_personnel_ext appGrpPerExt ON appGrpPer.ID = appGrpPerExt.APP_GRP_PSN_ID
              LEFT JOIN app_svc_key_personnel appKeyPsn ON appKeyPsn.APPLICATION_ID = app.ID
              LEFT JOIN app_premises_recommendation appRec ON (appRec.APP_PREM_CORRE_ID = T2.ID AND appRec.RECOM_TYPE='RETYPE012' AND appRec.STATUS='CMSTAT001')
+             LEFT JOIN app_svc_premises_scope appSvcScope ON appSvcScope.APP_PREM_CORRE_ID = T2.ID
             WHERE 1=1
             <#if id??> AND app.id = :id </#if>
             <#if appType??> AND app.app_type = :appType</#if>
@@ -40,6 +41,7 @@
             <#if svc_id??> AND app.SERVICE_ID = :svc_id</#if>
             <#if licHciCode??> AND  ${licHciCode}</#if>
             <#if appCorrId??>AND  T2.ID = :appCorrId</#if>
+            <#if serviceSubTypeName??>AND appSvcScope.SCOPE_NAME = :serviceSubTypeName</#if>
 
             <#if licence_status??>AND :licence_status = :licence_status</#if>
             <#if start_date??>AND :start_date = :start_date</#if>
@@ -52,7 +54,6 @@
             <#if licenseeIdNo??>AND :licenseeIdNo = :licenseeIdNo</#if>
             <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
             <#if licenseeRegnNo??>AND :licenseeRegnNo = :licenseeRegnNo</#if>
-            <#if serviceSubTypeName??>AND :serviceSubTypeName = :serviceSubTypeName</#if>
             <#if svc_name??> AND :svc_name = :svc_name</#if>
             <#if hciCode??>AND :hciCode = :hciCode</#if>
 
@@ -163,48 +164,6 @@
         ]]>
     </sql>
 
-    <sql key = "serviceQuery" remarks = "Query Service Data by condition">
-        <![CDATA[
-            SELECT distinct
-                svc.id,
-                svc.SVC_NAME as SVC_NAME
-            FROM hcsa_service AS svc
-            LEFT JOIN hcsa_service_subtype svcSub ON svcSub.SERVICE_ID = svc.ID
-
-            WHERE 1=1
-            <#if serviceSubTypeName??> AND  (svcSub.ID = :serviceSubTypeName )</#if>
-
-            <#if id??>AND :id = :id</#if>
-            <#if appType??>AND :appType = :appType</#if>
-            <#if appNo??>AND :appNo = :appNo</#if>
-            <#if appStatus??>AND :appStatus = :appStatus</#if>
-            <#if appGrpPmtStatus??> AND :appGrpPmtStatus = :appGrpPmtStatus</#if>
-            <#if subDate??>AND :subDate = :subDate</#if>
-            <#if toDate??>AND :toDate = :toDate</#if>
-            <#if licence_status??>AND :licence_status = :licence_status</#if>
-            <#if start_date??>AND :start_date = :start_date</#if>
-            <#if start_to_date??>AND :start_to_date = :start_to_date</#if>
-            <#if expiry_date??>AND :expiry_date = :expiry_date</#if>
-            <#if expiry_start_date??>AND :expiry_start_date = :expiry_start_date</#if>
-            <#if licence_no??>AND :licence_no = :licence_no</#if>
-            <#if app_id??>AND :app_id = :app_id</#if>
-            <#if org_ids??>AND :org_ids = :org_ids</#if>
-            <#if hciCode??>AND :hciCode = :hciCode</#if>
-            <#if hciName??>AND :hciName = :hciName</#if>
-            <#if hciStreetName??>AND :hciStreetName = :hciStreetName</#if>
-            <#if hciPostalCode??>AND :hciPostalCode = :hciPostalCode</#if>
-            <#if licenseeId??>AND :licenseeId = :licenseeId</#if>
-            <#if licenseeIdNo??>AND :licenseeIdNo = :licenseeIdNo</#if>
-            <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
-            <#if licenseeRegnNo??>AND :licenseeRegnNo = :licenseeRegnNo</#if>
-            <#if personnelName??> AND :personnelName = :personnelName</#if>
-            <#if personnelId??> AND :personnelId = :personnelId</#if>
-            <#if personnelRegnNo??> AND :personnelRegnNo = :personnelRegnNo</#if>
-            <#if personnelRole??> AND :personnelRole = :personnelRole</#if>
-            <#if svc_name??> AND :svc_name = :svc_name</#if>
-            <#if svc_id??> AND :svc_id = :svc_id</#if>
-        ]]>
-    </sql>
 
     <sql key="rfi-new" cached="no" remarks="new Request For Information add doc Html">
         <![CDATA[
