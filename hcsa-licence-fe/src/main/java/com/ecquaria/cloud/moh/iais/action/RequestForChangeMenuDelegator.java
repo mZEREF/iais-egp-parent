@@ -1386,11 +1386,15 @@ public class RequestForChangeMenuDelegator {
                 switchValue = "ack";
                 //update status
                 List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
+                String pmtMethod = "";
+                if(appSubmissionDtos != null && appSubmissionDtos.size() > 0){
+                    pmtMethod = appSubmissionDtos.get(0).getPaymentMethod();
+                }
                 String grpId = appSubmissionDtos.get(0).getAppGrpId();
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
                 appGrp.setId(grpId);
                 appGrp.setPmtRefNo(pmtRefNo);
-                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                appGrp.setPmtStatus(NewApplicationHelper.getPmtStatus(pmtMethod));
                 serviceConfigService.updatePaymentStatus(appGrp);
                 bpc.request.setAttribute("createDate", new Date());
             }else{

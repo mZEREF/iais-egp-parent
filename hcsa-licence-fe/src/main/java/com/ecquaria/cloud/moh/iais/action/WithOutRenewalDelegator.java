@@ -468,11 +468,15 @@ public class WithOutRenewalDelegator {
 
                 ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
                 ParamUtil.setSessionAttr(bpc.request, "txnRefNo", txnRefNo);
+                String pmtMethod = "";
+                if(appSubmissionDtos != null && appSubmissionDtos.size() > 0){
+                    pmtMethod = appSubmissionDtos.get(0).getPaymentMethod();
+                }
                 //update status
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
                 appGrp.setId(groupId);
                 appGrp.setPmtRefNo(pmtRefNo);
-                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                appGrp.setPmtStatus(NewApplicationHelper.getPmtStatus(pmtMethod));
                 serviceConfigService.updatePaymentStatus(appGrp);
                 //update application status
                 appSubmissionService.updateApplicationsStatus(groupId, ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
