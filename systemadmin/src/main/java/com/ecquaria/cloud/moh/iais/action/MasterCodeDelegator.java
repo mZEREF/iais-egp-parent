@@ -826,7 +826,9 @@ public class MasterCodeDelegator {
 
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ValidationResult validationEditResult = WebValidationHelper.validateProperty(masterCodeDto, "edit");
-        errorMap = validationEditResult.retrieveAll();
+        if(validationEditResult != null) {
+            errorMap = validationEditResult.retrieveAll();
+        }
         if(AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
             LocalDate newFromDate = transferLocalDate(masterCodeDto.getEffectiveFrom());
             LocalDate newToDate = transferLocalDate(masterCodeDto.getEffectiveTo());
