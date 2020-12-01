@@ -4,12 +4,13 @@ import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AppGrpPaymentClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import lombok.extern.slf4j.Slf4j;
@@ -43,11 +44,12 @@ public class ClientCheckNotResultPaymentHandler extends IJobHandler {
             ) {
                 try {
                     PaymentDto paymentDto= appGrpPaymentClient.getPaymentDtoByReqRefNo(appGrp.getPmtRefNo()).getEntity();
+                    PaymentRequestDto paymentRequestDto= appGrpPaymentClient.getPaymentRequestDtoByReqRefNoLike(appGrp.getPmtRefNo()).getEntity();
                     if(paymentDto!=null&&"success".equals(paymentDto.getPmtStatus())){
                         paymentDto.setAuditTrailDto(auditTrailDto);
                         appGrp.setPmtRefNo(paymentDto.getReqRefNo());
                         appGrp.setPaymentDt(paymentDto.getTxnDt());
-                        appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                        appGrp.setPmtStatus(NewApplicationHelper.getPmtStatus(paymentRequestDto.getPayMethod()));
                         applicationFeClient.doPaymentUpDate(appGrp).getEntity();
                     }
                 }catch (Exception e){

@@ -1298,7 +1298,7 @@ public class NewApplicationDelegator {
                 appGrp.setId(appGrpId);
                 appGrp.setPmtRefNo(pmtRefNo);
                 appGrp.setPaymentDt(new Date());
-                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                appGrp.setPmtStatus(NewApplicationHelper.getPmtStatus(pmtMethod));
                 serviceConfigService.updatePaymentStatus(appGrp);
                 //send email
                 try {

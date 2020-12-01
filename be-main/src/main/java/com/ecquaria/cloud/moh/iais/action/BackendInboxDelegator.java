@@ -1481,7 +1481,9 @@ public class BackendInboxDelegator {
                 if(item.getPaymentstatus() == null || item.getPaymentstatus().isEmpty()){
                     item.setPaymentstatus("N/A");
                 }else{
-                    if(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(item.getPaymentstatus())){
+                    if(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(item.getPaymentstatus()) ||
+                            ApplicationConsts.PAYMENT_STATUS_CREDIT_PAY_SUCCESS.equals(item.getPaymentstatus()) ||
+                            ApplicationConsts.PAYMENT_STATUS_NETS_PAY_SUCCESS.equals(item.getPaymentstatus()) ){
                         item.setPaymentstatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                     }
                     item.setPaymentstatus(MasterCodeUtil.getCodeDesc(item.getPaymentstatus()));
