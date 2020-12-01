@@ -552,6 +552,7 @@ public class AppealApproveBatchjob {
 
     public void  sendAllEmailApproved(ApplicationDto applicationDto,String reason,LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto,AppPremiseMiscDto appPremiseMiscDto) throws IOException, TemplateException {
         String paymentMethodName = "";
+        String paymentMode = "";
         log.info("start send email sms and msg");
         String relateRecId = appPremiseMiscDto.getRelateRecId();
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
@@ -578,8 +579,10 @@ public class AppealApproveBatchjob {
             ApplicationGroupDto entity1 = applicationClient.getAppById(entity.getAppGrpId()).getEntity();
             if (ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS.equals(entity1.getPmtStatus())) {
                 paymentMethodName = "onlinePayment";
+//                paymentMode = paymentRequestDto.getPayMethod();
             }else if (ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(entity1.getPmtStatus())) {
                 paymentMethodName = "GIRO";
+                paymentMode = "GIRO";
             }
         }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)){
 
@@ -613,8 +616,8 @@ public class AppealApproveBatchjob {
             }else{
                 templateContent.put("returnAmount", "$0");
             }
-            templateContent.put("paymentMode", paymentMethodName);
-            templateContent.put("adminFee", "100");
+            templateContent.put("paymentMode", paymentMode);
+            templateContent.put("adminFee", "$100");
 
         } else if("GIRO".equals(paymentMethodName)){
             if(!StringUtil.isEmpty(oldApplication.getApplicationNo())){
@@ -623,7 +626,7 @@ public class AppealApproveBatchjob {
             }else{
                 templateContent.put("returnAmount", "$0");
             }
-            templateContent.put("adminFee", "100");
+            templateContent.put("adminFee", "$100");
         }else if("applicable".equals(paymentMethodName)){
             Date expiryDate;
             try {
