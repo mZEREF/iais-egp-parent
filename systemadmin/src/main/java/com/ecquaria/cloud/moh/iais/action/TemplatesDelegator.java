@@ -228,9 +228,9 @@ public class TemplatesDelegator {
             deliveryModeSelectList.add(new SelectOption("DEMD003", "System Inbox"));
             List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_TEMPLATE_ROLE);
 
-            Boolean needRecipient = true;
+            Boolean needRecipient = Boolean.TRUE;
             if(MsgTemplateConstants.MSG_TEMPLATE_TYPE_BANNER_ALERT.equals(messageType) || MsgTemplateConstants.MSG_TEMPLATE_TYPE_SCHEDULED_MAINTENANCE.equals(messageType)){
-                needRecipient = false;
+                needRecipient = Boolean.FALSE;
             }
             ParamUtil.setSessionAttr(bpc.request,"needRecipient",needRecipient);
             ParamUtil.setSessionAttr(bpc.request,"recipient",(Serializable) selectOptions);
