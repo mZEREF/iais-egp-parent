@@ -2,11 +2,9 @@ package com.ecquaria.cloud.moh.iais.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.entity.MessageCode;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +27,4 @@ public interface ErrorMsgClient {
     @GetMapping(path = "/system-parameter/properties-value/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> getValueByPropertiesKey(@PathVariable("key") String propertiesKey);
 
-    @GetMapping(value = "/iais-messageTemplate/alert/{domain}")
-    FeignResponseEntity<List<MsgTemplateDto>> getAlertMsgTemplate(@PathVariable("domain") String domain);
 }
