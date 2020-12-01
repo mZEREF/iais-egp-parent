@@ -22,6 +22,8 @@
     <input type="hidden" name="crud_action_value">
     <input type="hidden" name="draftNo"/>
     <div class="container">
+        <div class="navigation-gp">
+        </div>
         <div class="component-gp">
             <br>
             <div id="svcStep1">

@@ -15,6 +15,8 @@
     <input type="hidden" name="draftNo"/>
     <input type="hidden" name="crud_action_value">
     <div class="container">
+        <div class="navigation-gp">
+        </div>
         <div class="component-gp">
             <br>
             <div class="disabledPart">

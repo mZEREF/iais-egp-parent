@@ -23,6 +23,8 @@
     <input type="hidden" name="draftNo"/>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <div class="container">
+        <div class="navigation-gp">
+        </div>
         <div class="component-gp">
             <br>
             <div class="disabledPart">
