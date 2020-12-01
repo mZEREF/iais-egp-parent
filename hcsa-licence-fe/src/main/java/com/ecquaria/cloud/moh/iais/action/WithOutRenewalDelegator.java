@@ -326,7 +326,10 @@ public class WithOutRenewalDelegator {
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
             appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_RENEWAL);
             //set licensee ID
-            String licenseeId = interInboxUserDto.getLicenseeId();
+            String licenseeId = "";
+            if(interInboxUserDto != null) {
+                licenseeId = interInboxUserDto.getLicenseeId();
+            }
             appSubmissionDto.setLicenseeId(licenseeId);
             LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
             String licenseeName = "-";
