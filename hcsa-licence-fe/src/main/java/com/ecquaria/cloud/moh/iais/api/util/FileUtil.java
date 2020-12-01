@@ -12,13 +12,23 @@
  */
 package com.ecquaria.cloud.moh.iais.api.util;
 
-import java.io.*;
-import java.nio.file.Files;
-
-
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import ecq.commons.config.Config;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.nio.file.Files;
 
 /**
  * FileUtil.java
@@ -72,7 +82,7 @@ public class FileUtil {
 		}
 			
 		try {
-			generateFolder(fileName.substring(0, fileName.lastIndexOf("\\")));
+			generateFolder(fileName.substring(0, fileName.lastIndexOf('\\')));
 		} catch (Exception e) {
 			log.error(StringUtil.changeForLog("generate folder for " + fileName + " error!" + e.getMessage()));
 			log.error(e.getMessage(), e);
