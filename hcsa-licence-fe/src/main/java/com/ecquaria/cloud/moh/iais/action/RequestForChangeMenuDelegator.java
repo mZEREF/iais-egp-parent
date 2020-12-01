@@ -1387,10 +1387,13 @@ public class RequestForChangeMenuDelegator {
                 //update status
                 List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
                 String pmtMethod = "";
+                String grpId = "";
                 if(appSubmissionDtos != null && appSubmissionDtos.size() > 0){
-                    pmtMethod = appSubmissionDtos.get(0).getPaymentMethod();
+                    if(appSubmissionDtos.get(0) != null) {
+                        pmtMethod = appSubmissionDtos.get(0).getPaymentMethod();
+                        grpId = appSubmissionDtos.get(0).getAppGrpId();
+                    }
                 }
-                String grpId = appSubmissionDtos.get(0).getAppGrpId();
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
                 appGrp.setId(grpId);
                 appGrp.setPmtRefNo(pmtRefNo);
