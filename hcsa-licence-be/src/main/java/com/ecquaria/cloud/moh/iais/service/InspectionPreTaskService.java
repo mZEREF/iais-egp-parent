@@ -103,7 +103,7 @@ public interface InspectionPreTaskService {
       * @return: List<InspectionHistoryShowDto>
       * @Descripation: get Inspection History(past two) By licenceId
       */
-    List<InspectionHistoryShowDto> getInspectionHistory(String originLicenceId);
+    List<InspectionHistoryShowDto> getInspectionHistory(String originLicenceId, String appId);
 
     /**
       * @author: shicheng

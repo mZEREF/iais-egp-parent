@@ -173,7 +173,7 @@ public class InspectionPreDelegator {
         List<SelfAssessment> selfAssessments = BeSelfChecklistHelper.receiveSelfAssessmentDataByCorrId(taskDto.getRefNo());
         setPreInspSelfChecklistInfo(selfAssessments, bpc);
         //Inspection history
-        List<InspectionHistoryShowDto> inspectionHistoryShowDtos = inspectionPreTaskService.getInspectionHistory(applicationDto.getOriginLicenceId());
+        List<InspectionHistoryShowDto> inspectionHistoryShowDtos = inspectionPreTaskService.getInspectionHistory(applicationDto.getOriginLicenceId(), applicationDto.getId());
         ParamUtil.setSessionAttr(bpc.request, "inspectionHistoryShowDtos", (Serializable) inspectionHistoryShowDtos);
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);

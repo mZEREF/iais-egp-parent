@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -128,10 +129,12 @@ public class FileUtil {
 	public static String getString(String fileName) throws Exception {
 		File f = new File(fileName);
 		if (f.exists() && f.isFile()) {
-			InputStream is = Files.newInputStream(f.toPath());
-			String xml = getString(is);
-			if( !f.delete()){
-             log.error(StringUtil.changeForLog(fileName + " is inexistence in service."));
+			String xml;
+			try(InputStream is = new FileInputStream(fileName)) {
+				xml = getString(is);
+				if (!f.delete()) {
+					log.error(StringUtil.changeForLog(fileName + " is inexistence in service."));
+				}
 			}
 			return xml;
 		} else {

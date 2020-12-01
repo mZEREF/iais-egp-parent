@@ -535,10 +535,10 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     @Override
-    public List<InspectionHistoryShowDto> getInspectionHistory(String originLicenceId) {
+    public List<InspectionHistoryShowDto> getInspectionHistory(String originLicenceId, String applicationId) {
         List<InspectionHistoryShowDto> inspectionHistoryShowDtos = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(originLicenceId)) {
-            List<ApplicationDto> applicationDtos = inspectionTaskClient.getInspHistoryAppByLicId(originLicenceId).getEntity();
+            List<ApplicationDto> applicationDtos = inspectionTaskClient.getInspHistoryAppByLicId(originLicenceId, applicationId).getEntity();
             if (!IaisCommonUtils.isEmpty(applicationDtos)) {
                 int index = 0;
                 for (ApplicationDto applicationDto : applicationDtos) {
