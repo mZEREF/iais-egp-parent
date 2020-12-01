@@ -34,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
@@ -522,6 +523,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     licenceFeeDto.setCharity(isCharity);
                     if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                         String licenceId = appSubmissionDto.getLicenceId();
+                        LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
+                        if(licenceDto != null){
+                            int migrated = licenceDto.getMigrated();
+                            if(0 != migrated){
+                                licenceFeeDto.setOldLicenceId(licenceDto.getOriginLicenceId());
+                                licenceFeeDto.setMigrated(migrated);
+                            }
+                        }
                         Date licExpiryDate = appSubmissionDto.getLicExpiryDate();
                         licenceFeeDto.setExpiryDate(licExpiryDate);
                         licenceFeeDto.setLicenceId(licenceId);
@@ -637,6 +646,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     licenceFeeDto.setCharity(isCharity);
                     if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                         String licenceId = appSubmissionDto.getLicenceId();
+                        LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
+                        if(licenceDto != null){
+                            int migrated = licenceDto.getMigrated();
+                            if(0 != migrated){
+                                licenceFeeDto.setOldLicenceId(licenceDto.getOriginLicenceId());
+                                licenceFeeDto.setMigrated(migrated);
+                            }
+                        }
                         Date licExpiryDate = appSubmissionDto.getLicExpiryDate();
                         licenceFeeDto.setExpiryDate(licExpiryDate);
                         licenceFeeDto.setLicenceId(licenceId);
