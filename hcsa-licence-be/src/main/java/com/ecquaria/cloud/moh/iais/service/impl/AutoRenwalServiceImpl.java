@@ -411,15 +411,6 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             map.put("HCI_Address",address);*/
             StringBuilder stringBuilder =new StringBuilder();
                 stringBuilder.append("License expiration time").append(format).append("---").append(time).append(licenceDto.getLicenceNo());
-                EmailDto emailDto=new EmailDto();
-                emailDto.setContent(stringBuilder.toString());
-                emailDto.setSubject(EMAIL_SUBJECT);
-                emailDto.setSender(mailSender);
-                emailDto.setClientQueryCode("isNotAuto");
-                if(!licenseeEmailAddrs.isEmpty()){
-                    emailDto.setReceipts(licenseeEmailAddrs);
-//                    emailClient.sendNotification(emailDto).getEntity();
-                }
                 String messageNo = inboxMsgService.getMessageNo();
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
                 InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(licenceDto.getId(), MessageConstants.MESSAGE_TYPE_NOTIFICATION,
