@@ -92,7 +92,7 @@ public class FECorppassLandingDelegator {
                 return;
             }
 
-            log.debug("oLoginInfo" + JsonUtil.parseToJson(oLoginInfo));
+            log.debug(StringUtil.changeForLog("oLoginInfo" + JsonUtil.parseToJson(oLoginInfo)));
 
             UserInfoToken userInfoToken = oLoginInfo.getUserInfo();
 
@@ -101,7 +101,7 @@ public class FECorppassLandingDelegator {
                 return;
             }
 
-            log.debug("userInfoToken" + JsonUtil.parseToJson(userInfoToken));
+            log.debug(StringUtil.changeForLog("userInfoToken" + JsonUtil.parseToJson(userInfoToken)));
 
             uen = userInfoToken.getEntityId();
             identityNo  = userInfoToken.getUserIdentity();
