@@ -253,26 +253,17 @@ public class FileUtil {
 	public static byte[] readBytesFromFile(String fileName) throws IOException{
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		if(fileName != null){
-			File file = new File(fileName);
-			InputStream fis = null;
-			try {
-				fis = Files.newInputStream(file.toPath());
+			try(InputStream fis = new FileInputStream(fileName)) {
 				byte[] b = new byte[1024];
 				int n = fis.read(b);
 				while(n != -1){
 					out.write(b, 0, n);
 					n = fis.read(b);
 				}
-			} finally {				
-								
-				if(fis != null){
-					try {
-						fis.close();
-					} catch (IOException e) {
-						log.error(e.getMessage(), e);
-					}
-				}
-				
+			} catch (IOException e) {
+				log.error(e.getMessage(), e);
+				return out.toByteArray();
+			} finally {
 				try {
 					out.close();
 				} catch (IOException e1) {					
