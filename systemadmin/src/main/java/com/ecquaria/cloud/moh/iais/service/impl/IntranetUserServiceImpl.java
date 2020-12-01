@@ -206,10 +206,12 @@ public class IntranetUserServiceImpl implements IntranetUserService {
         String fileName = sessionFile.getOriginalFilename();
         String substring = fileName.substring(fileName.lastIndexOf('.') + 1);
         if (sessionFile.getSize() > userFileSize * 1024 * 1024) {
+            log.error(StringUtil.changeForLog("size"));
             fileErrorMap.put(errorKey, MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(userFileSize), "sizeMax"));
             return fileErrorMap;
         }
         if (!("xml".equalsIgnoreCase(substring))) {
+            log.error(StringUtil.changeForLog("format"));
             fileErrorMap.put(errorKey, MessageUtil.replaceMessage("GENERAL_ERR0018", "XML", "fileType"));
             return fileErrorMap;
         }
@@ -222,7 +224,10 @@ public class IntranetUserServiceImpl implements IntranetUserService {
             Element root = document.getRootElement();
             //ele
             list = root.elements();
+            log.error(String.valueOf(list.size()));
         }catch (Exception e){
+            log.error(StringUtil.changeForLog("read error"));
+            log.error(StringUtil.changeForLog(e.getMessage()),e);
             fileErrorMap.put(errorKey, MessageUtil.dateIntoMessage("USER_ERR018"));
             return fileErrorMap;
         }
