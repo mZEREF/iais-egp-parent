@@ -430,7 +430,7 @@ public class WithOutRenewalDelegator {
         String groupId = "";
         Double amount = 0.0;
         String licenseeId = null;
-        if (appSubmissionDtos.size() != 0) {
+        if (appSubmissionDtos != null && appSubmissionDtos.size() != 0) {
             groupId = appSubmissionDtos.get(0).getAppGrpId();
             amount = appSubmissionDtos.get(0).getAmount();
             licenseeId = appSubmissionDtos.get(0).getLicenseeId();
