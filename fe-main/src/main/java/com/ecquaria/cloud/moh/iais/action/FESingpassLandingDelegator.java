@@ -79,7 +79,7 @@ public class FESingpassLandingDelegator {
                 return;
             }
 
-            log.debug("oLoginInfo" + JsonUtil.parseToJson(oLoginInfo));
+            log.debug(StringUtil.changeForLog("oLoginInfo" + JsonUtil.parseToJson(oLoginInfo)));
 
             identityNo = oLoginInfo.getLoginID();
         } else {
