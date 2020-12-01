@@ -35,7 +35,7 @@ public class PaymentRedisHelper {
                 if (key.startsWith("sessionAttr:")) {
                     String sessionKey = key.replaceFirst("sessionAttr:", "");
                     log.debug(StringUtil.changeForLog("Session Key => " + sessionKey));
-                    session.setAttribute(sessionKey, ent.getValue());
+                    session.setAttribute(sessionKey, ent.getValue());//NOSONAR
                 }
             }
         }
