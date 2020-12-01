@@ -135,6 +135,9 @@ public class FileUtil {
 				if (!f.delete()) {
 					log.error(StringUtil.changeForLog(fileName + " is inexistence in service."));
 				}
+			} catch (IOException e) {
+				log.error(e.getMessage(), e);
+				return null;
 			}
 			return xml;
 		} else {
@@ -146,12 +149,12 @@ public class FileUtil {
 	public static void generateTempFile(File f, String content) throws Exception {
 		int length = 0;
 		char[] buffer = new char[2048];
-		BufferedReader br = new BufferedReader(new StringReader(content));
-		BufferedWriter bw = new BufferedWriter(new FileWriter(f));
-		while ((length = br.read(buffer)) != -1) {
-			bw.write(new String(buffer, 0, length));
+		try (BufferedReader br = new BufferedReader(new StringReader(content));
+			 BufferedWriter bw = new BufferedWriter(new FileWriter(f))) {
+			while ((length = br.read(buffer)) != -1) {
+				bw.write(new String(buffer, 0, length));
+			}
 		}
-		bw.close();
 	}
 
 	public static String getString(InputStream is, String charsetName) throws Exception {
