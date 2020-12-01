@@ -53,23 +53,6 @@
             format:"dd/mm/yyyy",
             autoclose:true
         });
-        <c:if test="${not empty bAnner_AlERt_Msg__atTR || not empty schEdule_AlERt_Msg__atTR}">
-        var bannerMsg = '<div class="col-md-12" style="margin-top:10px;">';
-        <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
-        bannerMsg += '<div class="dashalert alert-info dash-announce">'
-            + '<button aria-label="Close" data-dismiss="alert" class="close" type="button"><span aria-hidden="true"></span></button>'
-            + '<h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintainace</h3>'
-            + '<c:out value="${schEdule_AlERt_Msg__atTR}" escapeXml="false"/>' + '</div>';
-        </c:if>
-        <c:if test="${not empty bAnner_AlERt_Msg__atTR}">
-        bannerMsg += '<div class="dashalert alert-info dash-announce">'
-            + '<button aria-label="Close" data-dismiss="alert" class="close" type="button"><span aria-hidden="true"></span></button>'
-            + '<h3 style="margin-top:0;"><i class="fa fa-bell"></i> Announcement</h3>'
-            + '<c:out value="${bAnner_AlERt_Msg__atTR}" escapeXml="false"/>' + '</div>';
-        </c:if>
-        bannerMsg += '</div>';
-        $(".navigation-gp:first").append(bannerMsg);
-        </c:if>
     });
 </script>
 
