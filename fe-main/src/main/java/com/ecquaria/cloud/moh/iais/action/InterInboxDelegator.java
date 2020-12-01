@@ -787,7 +787,7 @@ public class InterInboxDelegator {
      *
      * >>>>>>>>Application Inbox<<<<<<<<
      */
-    public void toAppPage(BaseProcessClass bpc){
+    public void toAppPage(BaseProcessClass bpc) {
         ParamUtil.setSessionAttr(bpc.request,"licence_err_list",null);
         log.debug(StringUtil.changeForLog("Step ---> toAppPage"));
         HttpServletRequest request = bpc.request;
