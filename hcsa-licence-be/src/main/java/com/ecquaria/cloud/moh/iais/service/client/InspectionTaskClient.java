@@ -25,13 +25,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -113,6 +107,12 @@ public interface InspectionTaskClient {
 
     @GetMapping(value = "/iais-inspection/insp-history-app/{licenceId}", consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<ApplicationDto>> getInspHistoryAppByLicId(@PathVariable(name = "licenceId") String licenceId);
+    /**
+     * inspection history
+     */
+    @GetMapping(value = "/iais-inspection/insp-history-app/licenceIdandappid", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<ApplicationDto>> getInspHistoryAppByLicId(@RequestParam(name = "licenceId") String licenceId,
+                                                                       @RequestParam(name = "newestAppld") String appId);
 
     /**
      * Kpi stageId sla days
