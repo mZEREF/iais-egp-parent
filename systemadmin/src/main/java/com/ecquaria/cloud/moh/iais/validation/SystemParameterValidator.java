@@ -97,9 +97,10 @@ public class SystemParameterValidator implements CustomizeValidator {
 		String[] arr = FileUtils.fileTypeToArray(value);
 		if (arr == null){
 			errorMap.put("customErrorMessage", "SYSPAM_ERROR0004");
+			return;
 		}
 
-		String[] include = new String[]{"pdf", "xlsx", "xls", "docx", "doc", "png", "jpg", "jpeg", "csv"};
+		String[] include = getIncludeFileType();
 
 		for (String i : arr){
 			boolean in = false;
@@ -114,9 +115,10 @@ public class SystemParameterValidator implements CustomizeValidator {
 				break;
 			}
 		}
+	}
 
-
-
+	private static String[] getIncludeFileType(){
+		return new String[]{"pdf", "xlsx", "xls", "docx", "doc", "png", "jpg", "jpeg", "csv"};
 	}
 
 	private void verifyAuditTrailWeek(Map<String, String> errorMap, int value){
