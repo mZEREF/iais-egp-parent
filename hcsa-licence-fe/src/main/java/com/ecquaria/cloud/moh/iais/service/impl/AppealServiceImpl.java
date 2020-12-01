@@ -1368,7 +1368,7 @@ public class AppealServiceImpl implements AppealService {
         emailParam.setQueryCode(appNo);
         emailParam.setReqRefNum(appNo);
         if(licenceDto == null){
-            emailParam.setRefId(appNo);
+            emailParam.setRefId(appNo+"-01");
             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
         }else{
             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
@@ -1383,7 +1383,7 @@ public class AppealServiceImpl implements AppealService {
         smsParam.setQueryCode(appNo);
         smsParam.setReqRefNum(appNo);
         if(licenceDto == null) {
-            smsParam.setRefId(appNo);
+            smsParam.setRefId(appNo+"-01");
             smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
         }else{
             smsParam.setRefId(licenceDto.getId());

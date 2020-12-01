@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -476,6 +477,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
 
         List<AppPremisesCorrelationDto> appPremisesCorrelation = applicationListDto.getAppPremisesCorrelation();
+        List<AppGrpPremisesEntityDto> appGrpPremises = applicationListDto.getAppGrpPremises();
         for(ApplicationDto applicationDto : application){
             String id = applicationDto.getId();
             for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelation){
@@ -485,6 +487,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     hcsaRiskScoreDto.setAppType(applicationDto.getApplicationType());
                     hcsaRiskScoreDto.setServiceId(applicationDto.getServiceId());
                     hcsaRiskScoreDto.setLicId(applicationDto.getOriginLicenceId());
+                    hcsaRiskScoreDto.setGrpLic(applicationDto.isGrpLic());
+                    for(AppGrpPremisesEntityDto appGrpPremisesEntityDto : appGrpPremises){
+                        if(appPremisesCorrelationDto.getAppGrpPremId().equalsIgnoreCase(appGrpPremisesEntityDto.getId())){
+                            hcsaRiskScoreDto.setHcicode(appGrpPremisesEntityDto.getHciCode());
+                            break;
+                        }
+                    }
                     try {
                         HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
                         appPremisesCorrelationDto.setRiskScore(entity.getRiskScore());

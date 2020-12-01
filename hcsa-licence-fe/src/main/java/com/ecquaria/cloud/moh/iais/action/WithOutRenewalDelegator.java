@@ -1284,30 +1284,31 @@ public class WithOutRenewalDelegator {
                     ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
                     return;
                 }
-                boolean flag = eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
-                log.info(StringUtil.changeForLog("flag is--"+flag));
-                if(flag){
-                    for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
-                        List<LicenceDto> licenceDtos = (List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence" + i);
-                        if (licenceDtos != null) {
-                            for (LicenceDto licenceDto : licenceDtos) {
-                                List<ApplicationDto> appByLicIdAndExcludeNewOther = requestForChangeService.getAppByLicIdAndExcludeNew(licenceDto.getId());
-                                if (!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNewOther)) {
-                                    bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
-                                    ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
-                                    return;
-                                }
-                                Boolean otherLicenceOperation = requestForChangeService.isOtherOperation(licenceDto.getId());
-                                if (!otherLicenceOperation) {
-                                    bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
-                                    ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
-                                    return;
+                if(appSubmissionDtos.size()==1){
+                    boolean flag =NewApplicationDelegator.eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
+                    log.info(StringUtil.changeForLog("flag is--"+flag));
+                    if(flag){
+                        for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
+                            List<LicenceDto> licenceDtos = (List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence" + i);
+                            if (licenceDtos != null) {
+                                for (LicenceDto licenceDto : licenceDtos) {
+                                    List<ApplicationDto> appByLicIdAndExcludeNewOther = requestForChangeService.getAppByLicIdAndExcludeNew(licenceDto.getId());
+                                    if (!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNewOther)) {
+                                        bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
+                                        ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
+                                        return;
+                                    }
+                                    Boolean otherLicenceOperation = requestForChangeService.isOtherOperation(licenceDto.getId());
+                                    if (!otherLicenceOperation) {
+                                        bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
+                                        ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
+                                        return;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-
             }
         }
         //go page3

@@ -565,13 +565,16 @@
           </div>
         </div>
         <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
-          <div  class="col-xs-12 col-md-12">
-            <span name="iaisErrorMsg" class="error-msg" id="error_hcsaSvcSubtypeOrSubsumed"></span>
+          <div class="col-xs-12 col-md-12">
+
           </div>
-            <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed">
+          <c:set value="1" var="j"></c:set>
+            <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed" varStatus="index">
               <div class="view col-xs-12 col-md-12" >
                 <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
                   <input class="add" type="text"  style="margin-left:0px" name="subType" maxlength="100" value="${hcsaSvcSubtypeOrSubsumed.name}">
+                  <span name="iaisErrorMsg" class="error-msg" id="error_hcsaSvcSubtypeOrSubsumed${j}"></span>
+                  <c:set value="${j+1}" var="j"></c:set>
                 </div>
                 <div class="value">
                   <input type="text" value="0" name="level" style="display: none">
@@ -594,7 +597,10 @@
                 <div class="view col-xs-12 col-md-12">
                   <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
                     <input class="add" type="text"  style="margin-left:60px" maxlength="100" name="subType" value="${hcsaSvcSubtypeOrSubsumed2.name}">
+                    <span style="white-space: nowrap" name="iaisErrorMsg" class="error-msg add" id="error_hcsaSvcSubtypeOrSubsumed${j}"></span>
+                    <c:set value="${j+1}" var="j"></c:set>
                   </div>
+
                   <div class="value">
                     <input type="text" value="1" name="level" style="display: none" >
                   </div>
@@ -616,7 +622,10 @@
                   <div class="view col-xs-12 col-md-12">
                     <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
                       <input class="add" type="text"  style="margin-left:120px" maxlength="100" name="subType" value="${hcsaSvcSubtypeOrSubsumed3.name}">
+                      <span name="iaisErrorMsg" class="error-msg" id="error_hcsaSvcSubtypeOrSubsumed${j}"></span>
+                      <c:set value="${j+1}" var="j"></c:set>
                     </div>
+
                     <div class="value">
                       <input type="text" value="2" name="level" style="display: none" >
                     </div>
@@ -749,6 +758,7 @@
         if("SVTP001"==val){
             $('#selectCategoryId').attr("style","display:block");
             $('#Subsumption').attr("style","display:none");
+            $('#Pre-requisite').attr("style","display:none");
         } else if("SVTP002"==val){
             $('#Subsumption').attr("style","display:block");
             $('#Pre-requisite').attr("style","display:none");
@@ -829,7 +839,7 @@
         }
     }
     function indents(obj) {
-        let jQuery = $(obj).closest('div.view').children("div.col-md-4").children();
+        let jQuery = $(obj).closest('div.view').children("div.col-md-4").children(".add");
         let jQuery2 = $(obj).closest('div.view').children("div.value").children();
         var jQuery1 = jQuery.attr("style");
         if(jQuery1!=""){
@@ -865,7 +875,7 @@
     }
 
     function outdent(obj) {
-        let jQuery = $(obj).closest('div.view').children("div.col-md-4").children();
+        let jQuery = $(obj).closest('div.view').children("div.col-md-4").children(".add");
         let jQuery2 = $(obj).closest('div.view').children("div.value").children();
         var jQuery1 = jQuery.attr("style");
         if(jQuery1!=""){

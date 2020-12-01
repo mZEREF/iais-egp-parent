@@ -506,7 +506,8 @@ public class InterInboxDelegator {
                 return;
             }
             boolean isActive = licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus());
-            if(!isActive){
+           boolean isApprove= licenceDto!=null && ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus());
+            if(!isActive && !isApprove){
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("INBOX_ACK011"));
                 List<String> licIdValues = IaisCommonUtils.genNewArrayList();
                 licIdValues.add(licId);

@@ -443,31 +443,35 @@ public class ConfigServiceImpl implements ConfigService {
         String pageName = request.getParameter("pageName");
         List<String> subtypeName=IaisCommonUtils.genNewArrayList();
         if(hcsaSvcSubtypeOrSubsumedDtos!=null&&!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
-            for(HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto :hcsaSvcSubtypeOrSubsumedDtos){
-                List<HcsaSvcSubtypeOrSubsumedDto> list = hcsaSvcSubtypeOrSubsumedDto.getList();
-                String name = hcsaSvcSubtypeOrSubsumedDto.getName();
+            int j=0;
+            for(int i=0;i< hcsaSvcSubtypeOrSubsumedDtos.size();i++ ){
+                j++;
+                List<HcsaSvcSubtypeOrSubsumedDto> list = hcsaSvcSubtypeOrSubsumedDtos.get(i).getList();
+                String name = hcsaSvcSubtypeOrSubsumedDtos.get(i).getName();
                 if(!subtypeName.contains(name)){
                     subtypeName.add(name);
                 }else {
-                    errorMap.put("hcsaSvcSubtypeOrSubsumed","SC_ERR011");
+                    errorMap.put("hcsaSvcSubtypeOrSubsumed"+j,"SC_ERR011");
                 }
                 if(list!=null){
                     for(HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto1:list){
+                        j++;
                         String name1 = hcsaSvcSubtypeOrSubsumedDto1.getName();
                         List<HcsaSvcSubtypeOrSubsumedDto> list1 = hcsaSvcSubtypeOrSubsumedDto1.getList();
                         if(!subtypeName.contains(name1)){
                             subtypeName.add(name1);
                         }else {
-                            errorMap.put("hcsaSvcSubtypeOrSubsumed","SC_ERR011");
+                            errorMap.put("hcsaSvcSubtypeOrSubsumed"+j,"SC_ERR011");
                         }
                         if(list1!=null){
                             for(HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto2:list1){
+                                j++;
                                 String name2 = hcsaSvcSubtypeOrSubsumedDto2.getName();
                                 if(!subtypeName.contains(name2)){
                                     subtypeName.add(name2);
                                 }else {
 
-                                    errorMap.put("hcsaSvcSubtypeOrSubsumed","SC_ERR011");
+                                    errorMap.put("hcsaSvcSubtypeOrSubsumed"+j,"SC_ERR011");
                                 }
 
                             }
