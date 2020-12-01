@@ -28,10 +28,13 @@
                 ParamUtil.setSessionAttr(request, "AlERt__Msg_FLAg_attr", "noneed");
             } else {
                 for (MsgTemplateDto mt : msgTemplateDtoList) {
+                    String msgContent = mt.getMessageContent().replaceAll("\r", "");
+                    msgContent = msgContent.replaceAll("\n", "");
+                    msgContent = msgContent.replaceAll("'", "&apos;");
                     if (MsgTemplateConstants.MSG_TEMPLATE_BANNER_ALERT_FE.equals(mt.getId())) {
-                        ParamUtil.setSessionAttr(request, "bAnner_AlERt_Msg__atTR", mt.getMessageContent());
+                        ParamUtil.setSessionAttr(request, "bAnner_AlERt_Msg__atTR", msgContent);
                     } else if (MsgTemplateConstants.MSG_TEMPLATE_SCHEDULE_MAINTENANCE_FE.equals(mt.getId())) {
-                        ParamUtil.setSessionAttr(request, "schEdule_AlERt_Msg__atTR", mt.getMessageContent());
+                        ParamUtil.setSessionAttr(request, "schEdule_AlERt_Msg__atTR", msgContent);
                     }
                 }
                 ParamUtil.setSessionAttr(request, "AlERt__Msg_FLAg_attr", "fetched");
