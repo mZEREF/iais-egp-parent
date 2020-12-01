@@ -268,7 +268,7 @@ public class ClientReschedulingDelegator {
         //TODO Need to be replaced with appSubmissionDto, and set submit by id to it
         ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
         if (applicationGroupDto != null){
-            OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+            OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
             if (orgUserDto != null){
                 emailMap.put("ApplicantName", orgUserDto.getDisplayName());
             }
