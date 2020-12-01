@@ -985,7 +985,6 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                         if(answerDto != null){
                             temp.setAdAnswer(answerDto.getAnswer());
                             temp.setRemark(answerDto.getRemark());
-                            temp.setRectified(temp.getRectified());
                         }
                     }
 
