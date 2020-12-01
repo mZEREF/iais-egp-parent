@@ -23,6 +23,7 @@
 <webui:setLayout name="iais-internet"/>
 
 <div class="main-content">
+  <div class="navigation-gp"></div>
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <div class="dashboard" style="background-image:url('/web/themes/fe/img/Masthead-banner.jpg')">

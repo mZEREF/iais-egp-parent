@@ -18,6 +18,7 @@
     <webui:setLayout name="iais-internet"/>
 
     <div class="main-content">
+      <div class="navigation-gp"></div>
       <form id="mainForm" method="post" action="/main-web/eservice/INTERNET/FE_Singpass_Landing/1/singpassCallBack">
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <div class="prelogin" style="background-image: url('/web/themes/fe/img/prelogin-masthead-banner.jpg');">
