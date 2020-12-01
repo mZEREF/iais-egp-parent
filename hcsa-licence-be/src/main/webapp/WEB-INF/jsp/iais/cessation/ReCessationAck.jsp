@@ -16,7 +16,7 @@
                 <div class="center-content">
                     <div class="intranet-content">
                         <div class="bg-title">
-                            <h2>You have successfully given clarification.</h2>
+                            <h2><iais:code code="UC_INSP_ACK005"/></h2>
                         </div>
                     </div>
                     <div align="left"><span><a href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"></em> Back</a></span></div>
@@ -24,4 +24,5 @@
             </div>
         </div>
     </div>
+    <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>

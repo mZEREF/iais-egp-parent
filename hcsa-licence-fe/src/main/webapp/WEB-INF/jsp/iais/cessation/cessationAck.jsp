@@ -16,7 +16,7 @@
             <br/>
             <div class="row">
                 <div class="col-lg-12 col-xs-12 cesform-box">
-                        <p>Your cessation application has been successfully submitted, below are the summary information</p>
+                        <p><iais:code code="CESS_ACK001"/></p>
                         <table class="table">
                             <thead>
                             <tr>
@@ -66,6 +66,7 @@
             <br/>
         </div>
     </div>
+    <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>
 <script>
     function submit(action) {
