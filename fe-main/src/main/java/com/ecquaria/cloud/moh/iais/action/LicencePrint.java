@@ -111,14 +111,22 @@ public class LicencePrint {
                 ZipOutputStream out = new ZipOutputStream(bos);
                 for (int i = 0; i < pdfFileList.size(); i++) {
                     // ByteArrayInputStream in = new ByteArrayInputStream(outputStream.toByteArray());
-                    in = java.nio.file.Files.newInputStream(pdfFileList.get(i).toPath());
+                    try {
+                        in = java.nio.file.Files.newInputStream(pdfFileList.get(i).toPath());
 //                    FileInputStream in = new FileInputStream(pdfFileList.get(i));
-                    out.putNextEntry(new ZipEntry(pdfFileList.get(i).getName()));
-                    int len;
-                    while ((len = in.read(buf)) > 0) {
-                        out.write(buf, 0, len);
+                        out.putNextEntry(new ZipEntry(pdfFileList.get(i).getName()));
+                        int len;
+                        while ((len = in.read(buf)) > 0) {
+                            out.write(buf, 0, len);
+                        }
+                        out.closeEntry();
+                    } catch (Exception e) {
+                        log.info(e.getMessage(),e);
+                    } finally {
+                        if (in != null){
+                            in.close();
+                        }
                     }
-                    out.closeEntry();
                 }
                 out.close();
 //                bytes = FileUtils.readFileToByteArray(pdfFile);
