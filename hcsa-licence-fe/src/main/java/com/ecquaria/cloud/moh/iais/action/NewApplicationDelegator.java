@@ -3061,6 +3061,9 @@ public class NewApplicationDelegator {
         String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");
         strList.add(serviceConfig);
         appSubmissionDto.setStepColor(strList);
+        //judge is giro acc
+        boolean isGiroAcc = appSubmissionService.isGiroAccount(appSubmissionDto.getLicenseeId());
+        appSubmissionDto.setGiroAccount(isGiroAcc);
         //handler primary doc
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionService.handlerPrimaryDoc(appSubmissionDto.getAppGrpPremisesDtoList(),appSubmissionDto.getAppGrpPrimaryDocDtos());
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);

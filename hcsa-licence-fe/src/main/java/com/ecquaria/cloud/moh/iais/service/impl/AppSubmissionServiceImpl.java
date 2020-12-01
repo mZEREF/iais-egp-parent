@@ -46,6 +46,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -77,6 +78,7 @@ import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import lombok.extern.slf4j.Slf4j;
@@ -142,7 +144,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private ServiceConfigServiceImpl serviceConfigService;
     @Autowired
     private RequestForChangeServiceImpl requestForChangeService;
-
+    @Autowired
+    private OrganizationLienceseeClient organizationLienceseeClient;
 
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
@@ -1442,7 +1445,17 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return appGrpPrimaryDocDtoList;
     }
 
-    private static void doSvcDocument(Map<String, String> map, List<AppSvcDocDto> appSvcDocDtoLit, String serviceId, StringBuilder sB,int uploadFileLimit,String sysFileType) {
+    @Override
+    public boolean isGiroAccount(String licenseeId) {
+        boolean result = false;
+        OrgGiroAccountInfoDto orgGiroAccountInfoDto = organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity();
+        if(!StringUtil.isEmpty(orgGiroAccountInfoDto.getOrganizationId())){
+            result = true;
+        }
+        return result;
+    }
+
+    private static void doSvcDocument(Map<String, String> map, List<AppSvcDocDto> appSvcDocDtoLit, String serviceId, StringBuilder sB, int uploadFileLimit, String sysFileType) {
         if (appSvcDocDtoLit != null) {
             for (AppSvcDocDto appSvcDocDto : appSvcDocDtoLit) {
                 Integer docSize = appSvcDocDto.getDocSize();
