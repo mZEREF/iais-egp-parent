@@ -177,7 +177,7 @@ public class WithdrawalDelegator {
         if ((withdrawnDtoList != null) && (withdrawnDtoList.size() > 0) && IaisEGPConstant.YES.equals(wdIsValid)){
             String replaceStr = "";
             StringBuilder sb = new StringBuilder();
-            withdrawnDtoList.forEach(h -> sb.append(h.getApplicationNo() + ','));
+            withdrawnDtoList.forEach(h -> sb.append(h.getApplicationNo()).append(','));
             if (sb.toString().length() > 1){
                 replaceStr = sb.toString().substring(0,sb.toString().length() - 1);
             }
