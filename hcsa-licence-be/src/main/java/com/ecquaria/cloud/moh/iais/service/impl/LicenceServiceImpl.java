@@ -400,7 +400,10 @@ public class LicenceServiceImpl implements LicenceService {
                             templateContent.put("HCI_Address", address);
                             log.info(StringUtil.changeForLog("HCI_Address = " + address));
                             templateContent.put("UEN_No", organizationDto.getUenNo());
-                            templateContent.put("Applicant", licenseeDto.getName());
+                            List<OrgUserDto> orgUserDtoList = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(organizationDto.getId()).getEntity();
+                            String applicantName = orgUserDtoList.get(0).getDisplayName();
+
+                            templateContent.put("Applicant", applicantName);
                             templateContent.put("ServiceName", licenceDto.getSvcName());
                             templateContent.put("LicenceNo", licenceDto.getLicenceNo());
                             Calendar c = Calendar.getInstance();

@@ -5,6 +5,7 @@ import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -83,11 +84,14 @@ public class SoloRegisterCorpPassJobHandler extends IJobHandler {
             String smsSubject = smsTemplateDto.getTemplateName();
             String msgSubject = msgTemplateDto.getTemplateName();
 
+            List<FeUserDto> feUserDtos = orgUserManageService.getAccountByOrgId(organizationDto.getId());
+            String applicantName = feUserDtos.get(0).getDisplayName();
+
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
             map.put("HCI_Name", licenseeDto.getName());
             map.put("HCI_Address", address);
             map.put("UEN_No", organizationDto.getUenNo());
-            map.put("Applicant", licenseeDto.getName());
+            map.put("Applicant", applicantName);
             map.put("ServiceName", "serviceName");
             map.put("LicenceNo", "LicenceNo");
             map.put("HALP", AppConsts.MOH_AGENCY_NAME);
