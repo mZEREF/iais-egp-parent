@@ -67,7 +67,7 @@ public class MessageDelegator {
         ParamUtil.setRequestAttr(request, "moduleTypeSelect", moduleList);
     }
 
-    public static String[] getMsgModuleType(){
+    private static String[] getMsgModuleType(){
         return new String[]{"Common", "New", "Renewal", "Request For Change", "Withdrawal",
                 "Cessation", "Inspection", "Checklist Management", "Email SMS Blast", "User Management", "Online Appointment",
                 "Audit", "Audit Trail", "Service Configurator", "Load Levelling", "System Parameter Management", "Risk Score Management",
