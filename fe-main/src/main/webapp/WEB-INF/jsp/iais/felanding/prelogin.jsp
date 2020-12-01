@@ -11,19 +11,63 @@
 <%@ taglib uri="http://www.ecquaria.com/menu" prefix="menu" %>
 <%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page import="java.util.Date" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.Formatter" %>
-<%@ page import="com.ncs.secureconnect.sim.lite.SIMConfig" %>
 <%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
+<%@ page import="com.ecquaria.cloud.helper.SpringContextHelper" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.client.ErrorMsgClient" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.service.client.SystemAdminMainFeClient" %>
+<%@ page import="com.ncs.secureconnect.sim.lite.SIMConfig" %>
+<%@ page import="java.util.List" %>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" language="java"%>
 <%
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+
+  String alertFlag = (String) ParamUtil.getSessionAttr(request, "AlERt__Msg_FLAg_attr");
+  if (alertFlag == null) {
+    SystemAdminMainFeClient emc = SpringContextHelper.getContext().getBean(SystemAdminMainFeClient.class);
+    List<MsgTemplateDto> msgTemplateDtoList = emc.getAlertMsgTemplate(AppConsts.DOMAIN_INTERNET).getEntity();
+    if (IaisCommonUtils.isEmpty(msgTemplateDtoList)) {
+      ParamUtil.setSessionAttr(request, "AlERt__Msg_FLAg_attr", "noneed");
+    } else {
+      for (MsgTemplateDto mt : msgTemplateDtoList) {
+        String msgContent = mt.getMessageContent().replaceAll("\r", "");
+        msgContent = msgContent.replaceAll("\n", "");
+        msgContent = msgContent.replaceAll("'", "&apos;");
+        if (MsgTemplateConstants.MSG_TEMPLATE_BANNER_ALERT_FE.equals(mt.getId())) {
+          ParamUtil.setSessionAttr(request, "bAnner_AlERt_Msg__atTR", msgContent);
+        } else if (MsgTemplateConstants.MSG_TEMPLATE_SCHEDULE_MAINTENANCE_FE.equals(mt.getId())) {
+          ParamUtil.setSessionAttr(request, "schEdule_AlERt_Msg__atTR", msgContent);
+        }
+      }
+      ParamUtil.setSessionAttr(request, "AlERt__Msg_FLAg_attr", "fetched");
+    }
+  }
 %>
 <webui:setLayout name="iais-internet"/>
 
 <div class="main-content">
-  <div class="navigation-gp"></div>
+<c:if test="${not empty bAnner_AlERt_Msg__atTR || not empty schEdule_AlERt_Msg__atTR}">
+  <div class="col-md-12" style="margin-top:10px;">
+  <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
+    <div class="dashalert alert-info dash-announce">
+      <button aria-label="Close" data-dismiss="alert" class="close" type="button"><span aria-hidden="true">x</span></button>
+      <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintainace</h3>
+      <c:out value="${schEdule_AlERt_Msg__atTR}" escapeXml="false"/>
+    </div>
+  </c:if>
+  <c:if test="${not empty bAnner_AlERt_Msg__atTR}">
+    <div class="dashalert alert-info dash-announce">
+      <button aria-label="Close" data-dismiss="alert" class="close" type="button"><span aria-hidden="true">x</span></button>
+      <h3 style="margin-top:0;"><i class="fa fa-bell"></i> Announcement</h3>
+      <c:out value="${bAnner_AlERt_Msg__atTR}" escapeXml="false"/>
+    </div>
+  </c:if>
+  </div>
+</c:if>
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <div class="prelogin" style="background-image: url('/web/themes/fe/img/prelogin-masthead-banner.jpg');">
