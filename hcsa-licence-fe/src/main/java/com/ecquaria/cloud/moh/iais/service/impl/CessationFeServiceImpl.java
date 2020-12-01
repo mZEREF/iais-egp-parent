@@ -506,7 +506,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.clear();
                     ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
                     if (applicationGroupDto != null){
-                        OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
+                        OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
                         if (orgUserDto != null){
                             emailMap.put("ApplicantName", orgUserDto.getDisplayName());
                         }

@@ -172,7 +172,7 @@ public class LicenceExpiredBatchJob {
                 ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
                 ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
                 if (applicationGroupDto != null){
-                    OrgUserDto orgUserDto = organizationClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
+                    OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
                     if (orgUserDto != null){
                         emailMap.put("ApplicantName", orgUserDto.getDisplayName());
                     }
@@ -253,7 +253,7 @@ public class LicenceExpiredBatchJob {
                 ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
                 ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
                 if (applicationGroupDto != null){
-                    OrgUserDto orgUserDto = organizationClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
+                    OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
                     if (orgUserDto != null){
                         emailMap.put("ApplicantName", orgUserDto.getDisplayName());
                     }
@@ -330,7 +330,7 @@ public class LicenceExpiredBatchJob {
                 ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
                 ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
                 if (applicationGroupDto != null){
-                    OrgUserDto orgUserDto = organizationClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
+                    OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
                     if (orgUserDto != null){
                         emailMap.put("ApplicantName", orgUserDto.getDisplayName());
                     }

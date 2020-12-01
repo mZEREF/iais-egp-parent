@@ -203,7 +203,7 @@ public class InspectionMergeSendNcEmailDelegator {
             mapTemplate.put("inspection_lead", leadDto.getDisplayName());
             ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationViewDto.getApplicationDto().getAppGrpId()).getEntity();
             if (applicationGroupDto != null){
-                OrgUserDto orgUserDto = organizationClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
+                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
                 if (orgUserDto != null){
                     mapTemplate.put("ApplicantName", orgUserDto.getDisplayName());
                 }
