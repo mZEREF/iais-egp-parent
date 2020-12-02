@@ -643,6 +643,15 @@ public class HcsaApplicationDelegator {
         if(ApplicationConsts.PROCESSING_DECISION_REJECT.equals(nextStage)){
             successInfo = "LOLEV_ACK022";
         }
+        //be cessation flow
+        if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())){
+            List<AppPremisesRoutingHistoryDto> rollBackHistroyList = applicationClient.getHistoryByAppNoAndDecision(applicationDto.getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_CESSATION_BE_DECISION).getEntity();
+            if(!IaisCommonUtils.isEmpty(rollBackHistroyList) && rollBackHistroyList.size() < 2){
+                if(ApplicationConsts.PROCESSING_DECISION_REJECT.equals(nextStage)){
+                    successInfo = "LOLEV_ACK048";
+                }
+            }
+        }
         ParamUtil.setRequestAttr(bpc.request,"successInfo",successInfo);
     }
 
