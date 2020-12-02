@@ -6,7 +6,7 @@ WORKDIR /home/iais
 
 ENV TZ=Asia/Singapore
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
+RUN chmod -R  o+w /usr/local/tomcat
 COPY target/main-web.war /usr/local/tomcat/webapps/main-web.war
 
 COPY docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
