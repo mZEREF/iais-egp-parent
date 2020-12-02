@@ -6,7 +6,7 @@ WORKDIR /home/iais
 
 ENV TZ=Asia/Singapore
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN chmod -R  o+w /usr/local/tomcat
+RUN chown -R iais:iais /usr/local/tomcat
 COPY target/hcsa-licence-web.war /usr/local/tomcat/webapps/hcsa-licence-web.war
 
 COPY docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
