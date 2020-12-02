@@ -369,7 +369,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
             //corppass
             if (RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(roleName) &&
-                    !StringUtil.isEmpty(feUserDto.getUenNo())){
+                    feUserDto.isCorpPass()){
                 EgpUserRoleDto role = new EgpUserRoleDto();
                 role.setUserId(feUserDto.getUserId());
                 role.setUserDomain(AppConsts.HALP_EGP_DOMAIN);

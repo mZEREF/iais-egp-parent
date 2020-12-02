@@ -184,7 +184,7 @@ public class FeAdminManageDelegate {
 
             ParamUtil.setRequestAttr(bpc.request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.YES);
             FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, "inter_user_attr");
-            if(feUserDto.getUenNo() != null){
+            if(feUserDto.isCorpPass()){
                 feUserDto.setUserId(feUserDto.getUenNo() + "_" + idNo);
             }else{
                 feUserDto.setUserId(idNo);
