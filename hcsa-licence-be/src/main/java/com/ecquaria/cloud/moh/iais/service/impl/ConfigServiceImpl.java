@@ -416,6 +416,10 @@ public class ConfigServiceImpl implements ConfigService {
               log.error(e.getMessage(),e);
             }
             hcsaConfigClient.updateService(crud_action_value);
+            HcsaServiceConfigDto hcsaServiceConfigDto=new HcsaServiceConfigDto();
+            hcsaServiceDto.setUseDelete(true);
+            hcsaServiceConfigDto.setHcsaServiceDto(hcsaServiceDto);
+            eicGateway(hcsaServiceConfigDto);
             request.setAttribute("delete","success");
         }
 
@@ -1342,27 +1346,29 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     private void eicGateway(HcsaServiceConfigDto hcsaServiceConfigDto){
-        EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, ConfigServiceImpl.class.getName(),
-                "eic", currentApp + "-" + currentDomain,
-                HcsaServiceConfigDto.class.getName(), JsonUtil.parseToJson(hcsaServiceConfigDto));
-        AuditTrailDto intenet = AuditTrailHelper.getCurrentAuditTrailDto();
-        FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getAppEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
-        if (fetchResult != null && HttpStatus.SC_OK == fetchResult.getStatusCode()) {
-            log.info(StringUtil.changeForLog("------"+JsonUtil.parseToJson(fetchResult)));
-            EicRequestTrackingDto entity = fetchResult.getEntity();
-            if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
-                eic(hcsaServiceConfigDto);
-                entity.setProcessNum(1);
-                Date now = new Date();
-                entity.setFirstActionAt(now);
-                entity.setLastActionAt(now);
-                entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                entity.setAuditTrailDto(intenet);
-                eicRequestTrackingHelper.getAppEicClient().saveEicTrack(entity);
+            EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, ConfigServiceImpl.class.getName(),
+                    "eic", currentApp + "-" + currentDomain,
+                    HcsaServiceConfigDto.class.getName(), JsonUtil.parseToJson(hcsaServiceConfigDto));
+            AuditTrailDto intenet = AuditTrailHelper.getCurrentAuditTrailDto();
+            FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getAppEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
+            if (fetchResult != null && HttpStatus.SC_OK == fetchResult.getStatusCode()) {
+                log.info(StringUtil.changeForLog("------"+JsonUtil.parseToJson(fetchResult)));
+                EicRequestTrackingDto entity = fetchResult.getEntity();
+                if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
+                    eic(hcsaServiceConfigDto);
+                    entity.setProcessNum(1);
+                    Date now = new Date();
+                    entity.setFirstActionAt(now);
+                    entity.setLastActionAt(now);
+                    entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                    entity.setAuditTrailDto(intenet);
+                    eicRequestTrackingHelper.getAppEicClient().saveEicTrack(entity);
 
+                }
+            } else {
+                log.info(StringUtil.changeForLog("------ null----"));
             }
-        } else {
-            log.info(StringUtil.changeForLog("------ null----"));
-        }
+
+
     }
 }

@@ -29,6 +29,9 @@
   .width-70{
     width: 70%;
   }
+  .white-space{
+    white-space: nowrap
+  }
 </style>
 
 <div class="main-content">
@@ -570,7 +573,7 @@
               <div class="view col-xs-12 col-md-12">
                 <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
                   <input class="add" type="text"  style="margin-left:0px" maxlength="100" name="subType" value="${hcsaSvcSubtypeOrSubsumed.name}">
-                  <span name="iaisErrorMsg" class="error-msg" id="error_hcsaSvcSubtypeOrSubsumed${j}"></span>
+                  <span name="iaisErrorMsg" class="error-msg white-space" id="error_hcsaSvcSubtypeOrSubsumed${j}"></span>
                   <c:set value="${j+1}" var="j"></c:set>
                 </div>
                 <div class="value">
@@ -594,7 +597,7 @@
                 <div class="view col-xs-12 col-md-12">
                   <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
                     <input class="add" type="text"  style="margin-left:60px" maxlength="100" name="subType" value="${hcsaSvcSubtypeOrSubsumed2.name}">
-                    <span name="iaisErrorMsg" class="error-msg" id="error_hcsaSvcSubtypeOrSubsumed${j}"></span>
+                    <span name="iaisErrorMsg" style="margin-left:60px" class="error-msg white-space" id="error_hcsaSvcSubtypeOrSubsumed${j}"></span>
                     <c:set value="${j+1}" var="j"></c:set>
                   </div>
                   <div class="value">
@@ -618,7 +621,7 @@
                   <div class="view col-xs-12 col-md-12">
                     <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
                       <input class="add" type="text" maxlength="100"  style="margin-left:120px" name="subType" value="${hcsaSvcSubtypeOrSubsumed3.name}">
-                      <span name="iaisErrorMsg" class="error-msg" id="error_hcsaSvcSubtypeOrSubsumed${j}"></span>
+                      <span name="iaisErrorMsg" style="margin-left:120px" class="error-msg white-space" id="error_hcsaSvcSubtypeOrSubsumed${j}"></span>
                       <c:set value="${j+1}" var="j"></c:set>
                     </div>
                     <div class="value">
@@ -860,7 +863,7 @@
         }
     }
     function indents(obj) {
-        let jQuery = $(obj).closest('div.view').children("div.col-md-4").children(".add");
+        let jQuery = $(obj).closest('div.view').children("div.col-md-4").children();
         let jQuery2 = $(obj).closest('div.view').children("div.value").children();
         var jQuery1 = jQuery.attr("style");
         if(jQuery1!=""){
@@ -903,7 +906,7 @@
         }
     }
     function outdent(obj) {
-        let jQuery = $(obj).closest('div.view').children("div.col-md-4").children("add");
+        let jQuery = $(obj).closest('div.view').children("div.col-md-4").children();
         let jQuery2 = $(obj).closest('div.view').children("div.value").children();
         var jQuery1 = jQuery.attr("style");
         if(jQuery1!=""){
@@ -920,10 +923,10 @@
             }
             a= parseInt(a)-60;
             if(a<=0){
-                $(jQuery).attr("style","margin-left:"+0+"px")
+                $(jQuery).attr("style","margin-left:"+0+"px");
                 jQuery2.val(0);
             }else {
-                $(jQuery).attr("style","margin-left:"+a+"px")
+                $(jQuery).attr("style","margin-left:"+a+"px");
                 jQuery2.val(parseInt(jQuery2.val())-1);
             }
         }else {
