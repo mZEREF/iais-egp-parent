@@ -18,8 +18,7 @@ COPY --chown=iais:iais target/hcsa-licence-web.war /usr/local/tomcat/webapps/hcs
 
 COPY --chown=iais:iais docker/run.sh /run.sh
 COPY --chown=iais:iais docker/admin.json /admin.json
-COPY --chown=iais:iais docker/glowroot.jar /usr/local/tomcat/lib/glowroot.jar
-COPY --chown=iais:iais docker/glowroot.properties /usr/local/tomcat/lib/glowroot.properties
+COPY --chown=iais:iais glowroot /glowroot
 
 
 RUN chmod a+x /run.sh
