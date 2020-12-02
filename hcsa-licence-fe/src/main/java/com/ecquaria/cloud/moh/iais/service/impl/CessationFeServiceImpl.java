@@ -338,9 +338,9 @@ public class CessationFeServiceImpl implements CessationFeService {
         List<AppCessatonConfirmDto> appCessationDtosConfirms = IaisCommonUtils.genNewArrayList();
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
-        List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
         AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         for (int i = 0; i < appCessationDtos.size(); i++) {
+            List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
             AppCessationDto appCessationDto = appCessationDtos.get(i);
             String premiseId = appCessationDto.getPremiseId();
             String licId = appCessationDto.getLicId();
