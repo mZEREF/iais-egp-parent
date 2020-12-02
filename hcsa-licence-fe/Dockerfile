@@ -19,6 +19,8 @@ COPY --chown=iais:iais glowroot /glowroot
 
 RUN chmod a+x /run.sh
 
+RUN chown -R iais:iais /iais-files
+
 USER iais
 
 CMD ["sh", "/run.sh"]
