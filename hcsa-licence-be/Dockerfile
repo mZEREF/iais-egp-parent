@@ -1,11 +1,7 @@
 FROM tomcat:9.0.36-jdk8-adoptopenjdk-hotspot
 
-RUN cp -rp /usr/local/tomcat /tmp/tomcat && \
-  rm -rf /usr/local/tomcat && \
-  mv /tmp/tomcat /usr/local/tomcat && \
-  rm -rf /usr/local/tomcat/webapps/docs /usr/local/tomcat/webapps/examples && \
-  adduser -D -u 1000 iais && \
-  chown -R iais:iais /usr/local/tomcat
+RUN useradd -ms /bin/bash iais
+RUN chown -R iais:iais /usr/local/tomcat
 
 ENV TZ=Asia/Singapore
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
