@@ -713,11 +713,7 @@ public class MohIntranetUserDelegator {
         List<EgpUserRoleDto> egpUserRoleDtos = IaisCommonUtils.genNewArrayList();
         Map<String, String> fileErrorMap = intranetUserService.importRoleXmlValidation(xmlFile, userFileSize, sessionFile, egpUserRoleDtos);
         if (fileErrorMap != null && fileErrorMap.size() > 0) {
-            if (fileErrorMap.containsKey("userRoleUploadError")) {
-                ParamUtil.setRequestAttr(bpc.request, "ackSuccessFlag", "");
-            } else {
-                ParamUtil.setRequestAttr(bpc.request, "ackSuccessFlag", AppConsts.FAIL);
-            }
+            ParamUtil.setRequestAttr(bpc.request, "ackSuccessFlag", AppConsts.FAIL);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(fileErrorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         } else {
