@@ -116,6 +116,7 @@ public class InsRepServiceImpl implements InsRepService {
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String applicationType = applicationDto.getApplicationType();
+        String applicationDtoId = applicationDto.getId();
         String appGrpId = applicationDto.getAppGrpId();
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         String status = applicationDto.getStatus();
@@ -183,6 +184,7 @@ public class InsRepServiceImpl implements InsRepService {
             applicationDtos.add(applicationDto);
             hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
             hcsaRiskScoreDto.setServiceId(serviceId);
+            hcsaRiskScoreDto.setBeExistAppId(applicationDtoId);
             HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
             Double riskScore = entity.getRiskScore();
             String riskLevel = entity.getRiskLevel();
@@ -560,6 +562,7 @@ public class InsRepServiceImpl implements InsRepService {
             applicationDtos.add(applicationViewDto.getApplicationDto());
             hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
             hcsaRiskScoreDto.setServiceId(serviceId);
+            hcsaRiskScoreDto.setBeExistAppId(applicationViewDto.getApplicationDto().getId());
             HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
             riskScore = entity.getRiskScore();
             log.info(JsonUtil.parseToJson(entity));
@@ -657,6 +660,7 @@ public class InsRepServiceImpl implements InsRepService {
             applicationDtos.add(applicationDto);
             hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
             hcsaRiskScoreDto.setServiceId(serviceId);
+            hcsaRiskScoreDto.setBeExistAppId(applicationDto.getId());
             HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
             Double riskScore = entity.getRiskScore();
             applicationDto.setRiskScore(riskScore);
