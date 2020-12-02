@@ -2,6 +2,8 @@ FROM tomcat:9.0.36-jdk8-adoptopenjdk-hotspot
 
 RUN adduser -D -s /bin/sh iais
 
+WORKDIR /home/iais
+
 ENV TZ=Asia/Singapore
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
@@ -18,3 +20,4 @@ RUN chmod +x /run.sh
 
 USER iais
 
+CMD ["sh", "/run.sh"]
