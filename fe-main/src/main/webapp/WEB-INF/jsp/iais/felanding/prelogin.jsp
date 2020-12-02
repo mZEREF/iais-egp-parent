@@ -54,7 +54,7 @@
   <div class="col-md-12" style="margin-top:10px;">
   <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
     <div class="dashalert alert-info dash-announce">
-      <button aria-label="Close" data-dismiss="alert" class="close" type="button"><span aria-hidden="true">x</span></button>
+      <button aria-label="Close" data-dismiss="dashalert" class="close" type="button"><span aria-hidden="true">x</span></button>
       <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintainace</h3>
       <c:out value="${schEdule_AlERt_Msg__atTR}" escapeXml="false"/>
     </div>
