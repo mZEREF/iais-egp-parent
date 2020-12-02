@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import lombok.extern.slf4j.Slf4j;
@@ -246,59 +247,69 @@ public class MassEmailDelegator {
         DistributionListWebDto distributionListWebDto = getDistribution(bpc);
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         MultipartFile file = mulReq.getFile("selectedFile");
-        String mode = mulReq.getParameter("mode");
-        List<String> filelist = IaisCommonUtils.genNewArrayList();
-        filelist = getAllData(file);
-        if(SMS.equals(mode)){
-            List<String> address = getEmail(bpc,"mobile");
-            if(filelist != null && repeatList(filelist)){
-                errMap.put("file", MessageUtil.replaceMessage("EMM_ERR009","mobiles","mode"));
-            }
-            if(filelist != null && !isMobileEmail(filelist)){
-                errMap.put("file", MessageUtil.getMessageDesc("GENERAL_ERR0007"));
-            }
-            if(address != null){
-                if(filelist != null ) {
-                    filelist.addAll(address);
-                }else{
-                    filelist = address;
-                }
-            }
-            if(filelist != null ){
-                if(repeatList(filelist) && StringUtil.isEmpty(errMap.get("file"))){
-                    errMap.put("file", MessageUtil.replaceMessage("EMM_ERR008","mobiles","mode"));
-                }
-                String fileData = StringUtils.join(filelist, "\r\n");
-                ParamUtil.setRequestAttr(bpc.request,"emailAddress",fileData);
-            }
-        }else{
-            List<String> address = getEmail(bpc,"email");
-            boolean isRepeat = false;
-            if(filelist != null ){
-                 isRepeat = repeatList(filelist);
-            }
 
-            if(isRepeat){
-                errMap.put("file", MessageUtil.replaceMessage("EMM_ERR009","email address(es)","mode"));
-            }
-            if(filelist != null && !isEmail(filelist)){
-                errMap.put("file", MessageUtil.getMessageDesc("GENERAL_ERR0014"));
-            }
-            if(address != null){
-                if(filelist != null ) {
-                    filelist.addAll(address);
-                }else{
-                    filelist = address;
+        String originalFileName = file.getOriginalFilename();
+        if (!FileUtils.isExcel(originalFileName)){
+            errMap.put("file", MessageUtil.getMessageDesc("CHKL_ERR041"));
+        }else if (FileUtils.outFileSize(file.getSize())){
+            int maxSize = SystemParamUtil.getFileMaxLimit();
+            String replaceMsg = MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxSize),"sizeMax");
+            errMap.put("file", replaceMsg);
+        }else {
+            String mode = mulReq.getParameter("mode");
+            List<String> filelist = IaisCommonUtils.genNewArrayList();
+            filelist = getAllData(file);
+            if(SMS.equals(mode)){
+                List<String> address = getEmail(bpc,"mobile");
+                if(filelist != null && repeatList(filelist)){
+                    errMap.put("file", MessageUtil.replaceMessage("EMM_ERR009","mobiles","mode"));
                 }
-            }
-            if(filelist != null ){
-                if(repeatList(filelist) && StringUtil.isEmpty(errMap.get("file"))){
-                    errMap.put("file", MessageUtil.replaceMessage("EMM_ERR008","email address(es)","mode"));
+                if(filelist != null && !isMobileEmail(filelist)){
+                    errMap.put("file", MessageUtil.getMessageDesc("GENERAL_ERR0007"));
                 }
-                String fileData = StringUtils.join(filelist, "\r\n");
-                ParamUtil.setRequestAttr(bpc.request,"emailAddress",fileData);
-            }
+                if(address != null){
+                    if(filelist != null ) {
+                        filelist.addAll(address);
+                    }else{
+                        filelist = address;
+                    }
+                }
+                if(filelist != null ){
+                    if(repeatList(filelist) && StringUtil.isEmpty(errMap.get("file"))){
+                        errMap.put("file", MessageUtil.replaceMessage("EMM_ERR008","mobiles","mode"));
+                    }
+                    String fileData = StringUtils.join(filelist, "\r\n");
+                    ParamUtil.setRequestAttr(bpc.request,"emailAddress",fileData);
+                }
+            }else{
+                List<String> address = getEmail(bpc,"email");
+                boolean isRepeat = false;
+                if(filelist != null ){
+                    isRepeat = repeatList(filelist);
+                }
 
+                if(isRepeat){
+                    errMap.put("file", MessageUtil.replaceMessage("EMM_ERR009","email address(es)","mode"));
+                }
+                if(filelist != null && !isEmail(filelist)){
+                    errMap.put("file", MessageUtil.getMessageDesc("GENERAL_ERR0014"));
+                }
+                if(address != null){
+                    if(filelist != null ) {
+                        filelist.addAll(address);
+                    }else{
+                        filelist = address;
+                    }
+                }
+                if(filelist != null ){
+                    if(repeatList(filelist) && StringUtil.isEmpty(errMap.get("file"))){
+                        errMap.put("file", MessageUtil.replaceMessage("EMM_ERR008","email address(es)","mode"));
+                    }
+                    String fileData = StringUtils.join(filelist, "\r\n");
+                    ParamUtil.setRequestAttr(bpc.request,"emailAddress",fileData);
+                }
+
+            }
         }
 
         ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
