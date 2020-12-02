@@ -23,6 +23,7 @@
 <div class="main-content" >
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input type="hidden" name="pageFrom" value="${param.pageFrom}">
         <div >
             <div class="container">
                 <div class="row">
@@ -65,7 +66,14 @@
                     </div>
                     <div class="col-xs-12 col-sm-6">
                         <div class="button-group">
-                            <a class="btn btn-secondary" onclick="Utils.submit('mainForm', 'doCancel')">Cancel</a>
+                            <c:choose>
+                                <c:when test="${not empty param.pageFrom}">
+                                    <a class="btn btn-secondary" href="/main-web/">Cancel</a>
+                                </c:when>
+                                <c:otherwise>
+                                    <a class="btn btn-secondary" onclick="Utils.submit('mainForm', 'doCancel')">Cancel</a>
+                                </c:otherwise>
+                            </c:choose>
                             <a class="btn btn-primary next" onclick="Utils.submit('mainForm', 'doSubmit')">Submit</a>
                         </div>
                     </div>

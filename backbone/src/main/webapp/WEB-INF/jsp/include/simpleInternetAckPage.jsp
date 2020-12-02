@@ -20,7 +20,6 @@
 <div class="main-content">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-
         <div class="container" >
             <br>
             <div class="bg-title"><h2>Acknowledgement</h2></div>
@@ -29,7 +28,7 @@
 
 
             <c:choose>
-                <c:when test="${redirectFlag == 'Y'}">
+                <c:when test="${redirectFlag == 'Y' || not empty param.pageFrom}">
                     <div class="text-right text-center-mobile">
                         <a class="btn btn-primary next" href="/main-web/" >Done</a>
                     </div>
