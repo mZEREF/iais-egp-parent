@@ -282,32 +282,25 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         clientUser.setAccountDeactivateDatetime(calendar.getTime());
 
         OrgUserRoleDto userRoleDto = userDto.getUserRoleDto();
-        if (userDto != null){
-            EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
-            String roleName = userRoleDto.getRoleName();
-            egpUserRole.setUserId(userId);
-            egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-            egpUserRole.setRoleId(roleName);
-            egpUserRole.setPermission("A");
+        EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
+        String roleName = userRoleDto.getRoleName();
+        egpUserRole.setUserId(userId);
+        egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+        egpUserRole.setRoleId(roleName);
+        egpUserRole.setPermission("A");
+        //assign role
+        feMainRbacClient.createUerRoleIds(egpUserRole).getEntity();
+
+        //corppass
+        if (RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(roleName)){
+            EgpUserRoleDto role = new EgpUserRoleDto();
+            role.setUserId(userId);
+            role.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+            role.setPermission("A");
+            role.setRoleId(RoleConsts.USER_ROLE_ORG_USER);
             //assign role
-            feMainRbacClient.createUerRoleIds(egpUserRole).getEntity();
-
-            //corppass
-            if (RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(roleName) &&
-                    !StringUtil.isEmpty(userDto.getUenNo())){
-                EgpUserRoleDto role = new EgpUserRoleDto();
-                role.setUserId(userId);
-                role.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-                role.setPermission("A");
-                role.setRoleId(RoleConsts.USER_ROLE_ORG_USER);
-                //assign role
-                feMainRbacClient.createUerRoleIds(role).getEntity();
-            }
-
+            feMainRbacClient.createUerRoleIds(role).getEntity();
         }
-
-
-
 
         userClient.createClientUser(clientUser);
     }
@@ -365,29 +358,28 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             }
 
             //assign role
-            if (feUserDto != null){
-                EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
-                String roleName = feUserDto.getUserRole();
-                egpUserRole.setUserId(feUserDto.getUserId());
-                egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-                egpUserRole.setRoleId(roleName);
-                egpUserRole.setPermission("A");
+            EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
+            String roleName = feUserDto.getUserRole();
+            egpUserRole.setUserId(feUserDto.getUserId());
+            egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+            egpUserRole.setRoleId(roleName);
+            egpUserRole.setPermission("A");
+            //assign role
+            feMainRbacClient.createUerRoleIds(egpUserRole).getEntity();
+
+            //corppass
+            if (RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(roleName) &&
+                    !StringUtil.isEmpty(feUserDto.getUenNo())){
+                EgpUserRoleDto role = new EgpUserRoleDto();
+                role.setUserId(feUserDto.getUserId());
+                role.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+                role.setPermission("A");
+                role.setRoleId(RoleConsts.USER_ROLE_ORG_USER);
                 //assign role
-                feMainRbacClient.createUerRoleIds(egpUserRole).getEntity();
-
-                //corppass
-                if (RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(roleName) &&
-                        !StringUtil.isEmpty(feUserDto.getUenNo())){
-                    EgpUserRoleDto role = new EgpUserRoleDto();
-                    role.setUserId(feUserDto.getUserId());
-                    role.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-                    role.setPermission("A");
-                    role.setRoleId(RoleConsts.USER_ROLE_ORG_USER);
-                    //assign role
-                    feMainRbacClient.createUerRoleIds(role).getEntity();
-                }
-
+                feMainRbacClient.createUerRoleIds(role).getEntity();
             }
+
+
         }
     }
 
