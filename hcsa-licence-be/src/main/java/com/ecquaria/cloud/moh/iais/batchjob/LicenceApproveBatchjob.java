@@ -2095,15 +2095,7 @@ public class LicenceApproveBatchjob {
             } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
                 //Send notification to transferor when licence transfer application is approve
 //                sendApproveEmail(licenceDto, applicationNo, notifyMap, serviceId);
-                try {
-                    //transfee
-                    if(applicationGroupDto.getNewLicenseeId()!=null){
-                        licenceService.sendRfcApproveLicenseeEmail(applicationGroupDto,applicationDto,licenceNo,svcCodeList);
-                    }
 
-                } catch (Exception e) {
-                    log.error(StringUtil.changeForLog("send sms error"), e);
-                }
             }
             log.info(StringUtil.changeForLog("The sendEmailAndSms end ..."));
         }

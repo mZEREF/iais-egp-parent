@@ -521,6 +521,10 @@ public class LicenceServiceImpl implements LicenceService {
                                             if(applicationGroupDto.getNewLicenseeId()==null){
                                                 sendRfcApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList);
                                             }
+                                            //transfee
+                                            if(applicationGroupDto.getNewLicenseeId()!=null){
+                                                sendRfcApproveLicenseeEmail(applicationGroupDto,applicationDto,licenceNo,svcCodeList);
+                                            }
                                         } catch (IOException e) {
                                             log.info(e.getMessage(),e);
                                         }
