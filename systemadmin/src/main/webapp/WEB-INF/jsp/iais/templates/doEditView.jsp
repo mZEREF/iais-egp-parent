@@ -48,7 +48,6 @@
                             </div>
                         </div>
                         </div>
-                        <c:if test="${needRecipient}">
                             <div class="form-group">
                                 <iais:field value="To Recipients" required="true"/>
                                 <div class="col-xs-5 col-sm-5 col-md-5">
@@ -73,7 +72,6 @@
                                           class="error-msg"></span>
                                 </div>
                             </div>
-                        </c:if>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Process</label>
                             <div class="col-xs-5 col-sm-5 col-md-5">
