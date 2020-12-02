@@ -48,57 +48,6 @@ public class TemplatesDelegator {
     @Autowired
     private EicGatewayClient eicGatewayClient;
 
-    private static final Map<String, String> processMap;
-    static
-    {
-        processMap = IaisCommonUtils.genNewHashMap();
-
-        processMap.put("AUD", "Audit");
-        processMap.put("CHM", "Checklist Management");
-        processMap.put("FEP", "Fees and Payments");
-        processMap.put("RSM", "Risk Score Management");
-        processMap.put("SM",  "Scheduled Maintenance");
-        processMap.put("UEN", "UEN Management");
-
-        processMap.put("APP", "Appeal");
-        processMap.put("CES", "Cessation");
-        processMap.put("CHM", "Checklist Management");
-        processMap.put("INS", "Inspection");
-        processMap.put("NAP", "New");
-        processMap.put("MISC", "MISC");
-        processMap.put("ONA", "Online Appointment");
-        processMap.put("REN", "Renewal");
-        processMap.put("RFC", "Request For Change");
-        processMap.put("RFI", "Request for Information");
-        processMap.put("REV", "Revocation");
-        processMap.put("SUS", "Suspension");
-        processMap.put("TRE", "Task Reassignment");
-        processMap.put("WIT", "Withdrawal");
-    }
-
-    private final static List<String> processList = Arrays.asList(
-            "AUD",
-            "UEN",
-            "APP",
-            "CES",
-            "CHM",
-            "INS",
-            "NAP",
-            "MISC",
-            "ONA",
-            "REN",
-            "RFC",
-            "RFI",
-            "REV",
-            "SUS",
-            "TRE",
-            "WIT");
-//    private final FilterParameter filterParameter = new FilterParameter.Builder()
-//            .clz(MsgTemplateQueryDto.class)
-//            .searchAttr(MsgTemplateConstants.MSG_SEARCH_PARAM)
-//            .resultAttr(MsgTemplateConstants.MSG_SEARCH_RESULT)
-//            .sortField(MsgTemplateConstants.TEMPLATE_SORT_COLUM).sortType(SearchParam.ASCENDING).build();
-
     private final TemplatesService templatesService;
 
     @Autowired
@@ -121,13 +70,15 @@ public class TemplatesDelegator {
                 MsgTemplateQueryDto.class.getName(),MsgTemplateConstants.TEMPLATE_SORT_COLUM,SearchParam.ASCENDING,false);
         QueryHelp.setMainSql(MsgTemplateConstants.MSG_TEMPLATE_FILE, MsgTemplateConstants.MSG_TEMPLATE_SQL,searchParam);
         SearchResult<MsgTemplateQueryDto> searchResult = templatesService.getTemplateResults(searchParam);
+
         if(!StringUtil.isEmpty(searchResult)){
             List<MsgTemplateQueryDto> msgTemplateQueryDtoList = searchResult.getRows();
+
             for (MsgTemplateQueryDto msgDto:msgTemplateQueryDtoList
              ) {
                 msgDto.setMessageType(MasterCodeUtil.getCodeDesc(msgDto.getMessageType()));
                 msgDto.setDeliveryMode(MasterCodeUtil.getCodeDesc(msgDto.getDeliveryMode()));
-                msgDto.setProcess(processMap.get(msgDto.getProcess()));
+                msgDto.setProcess(MasterCodeUtil.getCodeDesc(msgDto.getProcess()));
 
                 if(!StringUtil.isEmpty(msgDto.getBcc())){
                     msgDto.setBcc(changeStringFormat(msgDto.getBcc()));
@@ -149,31 +100,16 @@ public class TemplatesDelegator {
                 }
             }
 
-            ParamUtil.setSessionAttr(request,MsgTemplateConstants.MSG_SEARCH_PARAM, searchParam);
+
             ParamUtil.setRequestAttr(request,MsgTemplateConstants.MSG_SEARCH_RESULT, searchResult);
         }
-        List<SelectOption> messageTypeSelectList = IaisCommonUtils.genNewArrayList();
-        messageTypeSelectList.add(new SelectOption("", "Please Select"));
-        messageTypeSelectList.add(new SelectOption(MsgTemplateConstants.MSG_TEMPLATE_TYPE_ALERT, "Alert"));
-        messageTypeSelectList.add(new SelectOption(MsgTemplateConstants.MSG_TEMPLATE_TYPE_LETTER, "Letter"));
-        messageTypeSelectList.add(new SelectOption(MsgTemplateConstants.MSG_TEMPLATE_TYPE_NOTIFICATION, "Notification"));
-        messageTypeSelectList.add(new SelectOption(MsgTemplateConstants.MSG_TEMPLATE_TYPE_BANNER_ALERT, "Banner Alert"));
-        messageTypeSelectList.add(new SelectOption(MsgTemplateConstants.MSG_TEMPLATE_TYPE_SCHEDULED_MAINTENANCE, "Scheduled Maintenance"));
+        ParamUtil.setSessionAttr(request,MsgTemplateConstants.MSG_SEARCH_PARAM, searchParam);
+        List<SelectOption> messageTypeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_MSG_TEMPLATE_TYPE);
         ParamUtil.setRequestAttr(bpc.request, "msgType", messageTypeSelectList);
-
-        List<SelectOption> deliveryModeSelectList = IaisCommonUtils.genNewArrayList();
-        deliveryModeSelectList.add(new SelectOption("", "Please Select"));
-        deliveryModeSelectList.add(new SelectOption(MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_EMAIL, "Email"));
-        deliveryModeSelectList.add(new SelectOption(MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_SMS, "SMS"));
-        deliveryModeSelectList.add(new SelectOption(MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_MSG, "System Inbox"));
+        List<SelectOption> deliveryModeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DELIVERY_MODE);
         ParamUtil.setRequestAttr(bpc.request, "deliveryMode", deliveryModeSelectList);
 
-        List<SelectOption> msgProcessList = IaisCommonUtils.genNewArrayList();
-        msgProcessList.add(new SelectOption("", "Please Select"));
-        for (String item:processList
-             ) {
-            msgProcessList.add(new SelectOption(item,processMap.get(item)));
-        }
+        List<SelectOption> msgProcessList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_MSG_TEMPLATE_PROCESS);
         ParamUtil.setRequestAttr(bpc.request, "tepProcess", msgProcessList);
     }
 
@@ -212,20 +148,14 @@ public class TemplatesDelegator {
             String ccrecipientString = String.join("#", msgTemplateDto.getCcrecipient());
             String bccrecipientString = String.join("#", msgTemplateDto.getBccrecipient());
 
-            List<SelectOption> messageTypeSelectList = IaisCommonUtils.genNewArrayList();
+            List<SelectOption> messageTypeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_MSG_TEMPLATE_TYPE);
             messageTypeSelectList.add(new SelectOption(messageType, messageTypeTxt));
-            messageTypeSelectList.add(new SelectOption("MTTP001", "Alert"));
-            messageTypeSelectList.add(new SelectOption("MTTP002", "Banner Alert"));
-            messageTypeSelectList.add(new SelectOption("MTTP003", "Letter"));
-            messageTypeSelectList.add(new SelectOption("MTTP004", "Notification"));
-            messageTypeSelectList.add(new SelectOption("MTTP005", "Scheduled Maintenance"));
-            ParamUtil.setSessionAttr(bpc.request, "messageTypeSelect", (Serializable) messageTypeSelectList);
+            ParamUtil.setRequestAttr(bpc.request, "msgType", messageTypeSelectList);
 
-            List<SelectOption> deliveryModeSelectList = IaisCommonUtils.genNewArrayList();
+            List<SelectOption> deliveryModeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DELIVERY_MODE);
             deliveryModeSelectList.add(new SelectOption(deliveryMode, deliveryModeTxt));
-            deliveryModeSelectList.add(new SelectOption("DEMD001", "Email"));
-            deliveryModeSelectList.add(new SelectOption("DEMD002", "SMS"));
-            deliveryModeSelectList.add(new SelectOption("DEMD003", "System Inbox"));
+            ParamUtil.setRequestAttr(bpc.request, "deliveryMode", deliveryModeSelectList);
+
             List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_TEMPLATE_ROLE);
 
             Boolean needRecipient = Boolean.TRUE;
@@ -312,6 +242,9 @@ public class TemplatesDelegator {
         String msgType = ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE);
         String deliveryMode = ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE);
         String templateName = ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME);
+        if(!StringUtil.isEmpty(templateName)){
+            templateName = templateName.replace("\n"," ");
+        }
         Date startDate = Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM));
         Date endDate = Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO));
         String templateStartDate = Formatter.formatDateTime(startDate,SystemAdminBaseConstants.DATE_FORMAT);

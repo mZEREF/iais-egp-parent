@@ -10,7 +10,7 @@
                 <label class="col-xs-4 col-md-4 control-label" for="msgType">Process</label>
                 <div class="col-xs-6 col-sm-9 col-md-6">
                     <%String tepProcess = request.getParameter("tepProcess");%>
-                    <iais:select name="tepProcess" id="tepProcess" options="tepProcess" value="<%=tepProcess%>"/>
+                    <iais:select name="tepProcess" id="tepProcess" options="tepProcess" value="<%=tepProcess%>" firstOption="Please Select"/>
                 </div>
             </iais:value>
         </div>
@@ -19,7 +19,7 @@
                 <label class="col-xs-4 col-md-4 control-label" for="msgType">Message Type</label>
                 <div class="col-xs-6 col-sm-6 col-md-6">
                     <%String msgType = request.getParameter("msgType");%>
-                    <iais:select name="msgType" id="msgType" options="msgType" value="<%=msgType%>"/>
+                    <iais:select name="msgType" id="msgType" options="msgType" value="<%=msgType%>" firstOption="Please Select"/>
                 </div>
             </iais:value>
         </div>
@@ -27,9 +27,8 @@
             <iais:value>
                 <label class="col-xs-4 col-md-4 control-label" for="templateName">Template Name</label>
                 <div class="col-xs-6 col-sm-6 col-md-6">
-                    <%String templateName = request.getParameter("templateName")==null?"":request.getParameter("templateName");%>
                     <form><input id="templateName" type="text" name="templateName"
-                                 maxlength="500" value="<%=templateName%>"/>
+                                 maxlength="500" value="${MsgTemplateSearchParam.getFilters().get("templateName").replaceAll("\"","&quot;").replaceAll("%","")}"/>
                         <div class="input-group-btn">
                             <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                         </div>
@@ -42,7 +41,7 @@
                 <label class="col-xs-4 col-md-4 control-label" for="deliveryMode">Delivery Mode</label>
                 <div class="col-xs-6 col-sm-6 col-md-6">
                     <%String deliveryMode = request.getParameter("deliveryMode");%>
-                    <iais:select name="deliveryMode" id="deliveryMode" options="deliveryMode" value="<%=deliveryMode%>"/>
+                    <iais:select name="deliveryMode" id="deliveryMode" options="deliveryMode"  value="<%=deliveryMode%>"  firstOption="Please Select"/>
                 </div>
             </iais:value>
         </div>
