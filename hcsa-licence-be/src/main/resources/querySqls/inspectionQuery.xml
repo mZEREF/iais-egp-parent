@@ -227,7 +227,7 @@
                left  join  (select * FROM lic_prem_insp_grp_correlation WHERE lic_prem_insp_grp_correlation.STATUS = 'CMSTAT001') t6 on
                t1.LIC_PREM_ID = t6.LIC_PREM_ID
                left join  (select * FROM lic_inspection_group WHERE lic_inspection_group.STATUS ='CMSTAT001') t7
-               on  t6.INS_GRP_ID = t7.ID left join  (SELECT * FROM hcsal.dbo.licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LICENCE_ID = t3.LICENCE_ID
+               on  t6.INS_GRP_ID = t7.ID left join  (SELECT * FROM hcsal.dbo.licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LIC_PREMISES_ID = t3.ID
                WHERE   t4.STATUS = 'LICEST001' AND (t1.STATUS is NULL OR (t1.STATUS != 'AUTACPS001'))
             <#if serviceNameList??> and t4.SVC_NAME IN ${serviceNameList} </#if>
             <#if postalCode??> and charindex(:postalCode,t5.POSTAL_CODE)!=0 </#if>
@@ -310,7 +310,7 @@
                t1.LIC_PREM_ID = t6.LIC_PREM_ID
                left join  (select * FROM lic_inspection_group WHERE lic_inspection_group.STATUS ='CMSTAT001') t7
                on  t6.INS_GRP_ID = t7.ID
-               left join  (SELECT * FROM hcsal.dbo.licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LICENCE_ID = t3.LICENCE_ID
+               left join  (SELECT * FROM hcsal.dbo.licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LIC_PREMISES_ID = t3.ID
                WHERE   t4.STATUS = 'LICEST001' AND (t1.STATUS = 'CMSTAT001' OR t1.STATUS = 'AUTACPS001') )    tableall
         ]]>
     </sql>
@@ -368,7 +368,7 @@
                t1.LIC_PREM_ID = t6.LIC_PREM_ID
                left join  (select * FROM lic_inspection_group WHERE lic_inspection_group.STATUS ='CMSTAT001') t7
                on  t6.INS_GRP_ID = t7.ID
-               left join  (SELECT * FROM hcsal.dbo.licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LICENCE_ID = t3.LICENCE_ID
+               left join  (SELECT * FROM hcsal.dbo.licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LIC_PREMISES_ID = t3.ID
                WHERE   t4.STATUS = 'LICEST001' AND  t1.STATUS = 'AUTACPS001' ) tableall
         ]]>
     </sql>
