@@ -1,6 +1,6 @@
 FROM tomcat:9.0.36-jdk8-adoptopenjdk-hotspot
 
-RUN adduser -D -s /bin/sh iais
+RUN useradd -ms /bin/bash iais
 
 WORKDIR /home/iais
 
