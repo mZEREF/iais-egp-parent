@@ -193,19 +193,23 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 applicationGroupDtoList.add(newApplicationGroupDto);
                 applicationGroupDtoList.add(oldApplicationGroupDto);
                 applicationTruckDto.setApplicationGroupDtoList(applicationGroupDtoList);
-                EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.WithdrawalServiceImpl", "saveWithdrawn",
-                        "hcsa-license-web", InspRectificationSaveDto.class.getName(), JsonUtil.parseToJson(applicationTruckDto));
-                String eicRefNo = eicRequestTrackingDto.getRefNo();
-                feEicGatewayClient.saveApplicationDtosForFe(applicationTruckDto, signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization()).getEntity();
-                //get eic record
-                eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-                //update eic record status
-                eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-                eicRequestTrackingDtos.add(eicRequestTrackingDto);
-                appEicClient.updateStatus(eicRequestTrackingDtos);
+                try {
+                    EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.WithdrawalServiceImpl", "saveWithdrawn",
+                            "hcsa-license-web", InspRectificationSaveDto.class.getName(), JsonUtil.parseToJson(applicationTruckDto));
+                    String eicRefNo = eicRequestTrackingDto.getRefNo();
+                    feEicGatewayClient.saveApplicationDtosForFe(applicationTruckDto, signature.date(), signature.authorization(),
+                            signature2.date(), signature2.authorization()).getEntity();
+                    //get eic record
+                    eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
+                    //update eic record status
+                    eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                    List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
+                    eicRequestTrackingDtos.add(eicRequestTrackingDto);
+                    appEicClient.updateStatus(eicRequestTrackingDtos);
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
             }
         });
         List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
@@ -260,7 +264,13 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                     ||ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(isByGIRO)){
                 msgInfoMap.put("paymentType","0");
                 msgInfoMap.put("paymentMode","GIRO");
-            }else{
+            }else if(ApplicationConsts.PAYMENT_STATUS_CREDIT_PAY_SUCCESS.equals(isByGIRO)){
+                msgInfoMap.put("paymentType","1");
+                msgInfoMap.put("paymentMode","Credit / Debit Card");
+            }else if (ApplicationConsts.PAYMENT_STATUS_NETS_PAY_SUCCESS.equals(isByGIRO)){
+                msgInfoMap.put("paymentType","1");
+                msgInfoMap.put("paymentMode","NETS");
+            }else {
                 msgInfoMap.put("paymentType","1");
                 msgInfoMap.put("paymentMode","Online Payment");
             }
