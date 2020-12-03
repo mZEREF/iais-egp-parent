@@ -9,7 +9,7 @@
         <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="NETS">
         <label class="form-check-label" ><span class="check-circle"></span>NETS</label>
     </div>
-    <c:if test="${empty RetriggerGiro}">
+    <c:if test="${empty RetriggerGiro && IsGiroAcc}">
         <div class="col-xs-3">
             <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="GIRO">
             <label class="form-check-label" ><span class="check-circle"></span>GIRO</label>
@@ -27,7 +27,7 @@
     <div class="col-xs-2">
         <img src="<%=webroot1%>img/paymentNets.png" width="66" height="30" alt="NETS">
     </div>
-    <c:if test="${empty RetriggerGiro}">
+    <c:if test="${empty RetriggerGiro && IsGiroAcc}">
         <div class="col-xs-3">
                 <%--<img src="/hcsa-licence-web/img/PereOceanGIRO.png" width="66" height="25" alt="GIRO">--%>
             <img src="<%=webroot1%>img/PereOceanGIRO.png" width="66" height="30" alt="GIRO">
