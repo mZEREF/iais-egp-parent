@@ -44,9 +44,10 @@
                                 <thead>
                                 <tr>
                                     <th>Application No.</th>
-                                    <c:if test="${'Credit'== payMethod or 'NETS'== payMethod}">
+                                    <%--<c:if test="${'Credit'== payMethod or 'NETS'== payMethod}">
                                         <th>Transactional No.</th>
-                                    </c:if>
+                                    </c:if>--%>
+                                    <th>Transactional No.</th>
                                     <th>Date & Time</th>
                                     <th>Amount Deducted</th>
                                     <th>Payment Method</th>
@@ -55,9 +56,19 @@
                                 <tbody>
                                 <tr>
                                     <td>${appSubmissionDtos.get(0).appGrpNo}</td>
-                                    <c:if test="${'Credit'== payMethod or 'NETS'== payMethod}">
+                                    <%--<c:if test="${'Credit'== payMethod or 'NETS'== payMethod}">
                                         <td><c:out value="${pmtRefNo}"/></td>
-                                    </c:if>
+                                    </c:if>--%>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${empty txnRefNo}">
+                                                N/A
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:out value="${txnRefNo}"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
                                     <td><fmt:formatDate value="${createDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                     <td>${dAmount}</td>
                                     <td>

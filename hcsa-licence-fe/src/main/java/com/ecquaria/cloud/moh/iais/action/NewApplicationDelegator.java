@@ -3218,8 +3218,11 @@ public class NewApplicationDelegator {
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
             appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDto).getPmtStatus());
+            String giroTranNo = appSubmissionDto.getGiroTranNo();
+            appGrp.setPmtRefNo(giroTranNo);
             serviceConfigService.updatePaymentStatus(appGrp);
             ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
+            ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
             //todo change
             StringBuilder url = new StringBuilder();
             url.append("https://")

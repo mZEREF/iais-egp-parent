@@ -1375,10 +1375,13 @@ public class WithOutRenewalDelegator {
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
             appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDtos.get(0)).getPmtStatus());
+            String giroTranNo = appSubmissionDtos.get(0).getGiroTranNo();
+            appGrp.setPmtRefNo(giroTranNo);
             serviceConfigService.updatePaymentStatus(appGrp);
             String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
             ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE4);
+            ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
             StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal/1/preparatData");

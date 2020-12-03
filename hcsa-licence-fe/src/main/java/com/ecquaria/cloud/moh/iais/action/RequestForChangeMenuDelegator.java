@@ -1335,9 +1335,12 @@ public class RequestForChangeMenuDelegator {
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
             appGrp.setPmtStatus( serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDtos.get(0)).getPmtStatus());
+            String giroTranNo = appSubmissionDtos.get(0).getGiroTranNo();
+            appGrp.setPmtRefNo(giroTranNo);
             serviceConfigService.updatePaymentStatus(appGrp);
             ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
             ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
+            ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
             //todo change
             StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
