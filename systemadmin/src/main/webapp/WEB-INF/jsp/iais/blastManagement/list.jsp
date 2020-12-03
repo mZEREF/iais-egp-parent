@@ -276,7 +276,12 @@
                 html += data.distributionSelect;
                 html += ' </div>';
                 $("#distributiondiv").html(html);
-
+                $("div.distributionList->ul").mCustomScrollbar({
+                        advanced:{
+                            updateOnContentResize: true
+                        }
+                    }
+                );
             }
         });
     })
