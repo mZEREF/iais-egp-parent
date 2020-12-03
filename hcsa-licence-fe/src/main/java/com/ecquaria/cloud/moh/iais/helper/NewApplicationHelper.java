@@ -171,7 +171,7 @@ public class NewApplicationHelper {
                     if("other".equals(speciality)){
                         String specialityOther = appSvcCgoList.get(i).getSpecialityOther();
                         if(StringUtil.isEmpty(specialityOther)){
-                            errMap.put("other"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Other","field"));
+                            errMap.put("other"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Others","field"));
                         }
                     }
                 }
