@@ -97,7 +97,7 @@ public class ClientReschedulingDelegator {
     private String secSecretKey;
 
     public void start(BaseProcessClass bpc)  {
-
+        rescheduleParameter.setSortField("appRec.RECOM_IN_DATE");
     }
 
     public void init(BaseProcessClass bpc)  {
