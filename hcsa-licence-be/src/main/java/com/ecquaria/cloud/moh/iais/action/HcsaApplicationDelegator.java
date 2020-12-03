@@ -2111,71 +2111,73 @@ public class HcsaApplicationDelegator {
                     AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
                     if (premiseMiscDto != null){
                         String oldAppId = premiseMiscDto.getRelateRecId();
-                        ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
-                        String applicationNo = oldApplication.getApplicationNo();
-                        String applicationType1 = oldApplication.getApplicationType();
-                        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-                        ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
-                        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
-                        if(orgUserDto != null){
-                            applicantName = orgUserDto.getDisplayName();
-                        }
-                        String paymentMethod = applicationGroupDto.getPmtStatus();
-                        String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-                        if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(withdrawApplicationDto.getStatus())
-                                ||ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(withdrawApplicationDto.getStatus())){
-                            Double fee = 0.0;
-                            applicationService.closeTaskWhenWhAppApprove(withdrawApplicationDto.getId());
-                            List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
-                            List<ApplicationDto> applicationDtoList2 = hcsaConfigClient.returnFee(applicationDtoList).getEntity();
-                            applicationDtoList2.add(applicationDto);
-                            if (!IaisCommonUtils.isEmpty(applicationDtoList2)){
-                                fee = applicationDtoList2.get(0).getReturnFee();
+                        if (!StringUtil.isEmpty(oldAppId)){
+                            ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
+                            String applicationNo = oldApplication.getApplicationNo();
+                            String applicationType1 = oldApplication.getApplicationType();
+                            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+                            ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+                            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+                            if(orgUserDto != null){
+                                applicantName = orgUserDto.getDisplayName();
                             }
-                            Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                            msgInfoMap.put("Applicant", applicantName);
-                            msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
-                            msgInfoMap.put("ApplicationNumber", applicationNo);
-                            msgInfoMap.put("reqAppNo",applicationNo);
-                            msgInfoMap.put("S_LName",serviceName);
-                            msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-                            msgInfoMap.put("ApplicationDate",applicationViewDto.getSubmissionDate().split(" ")[0]);
-                            msgInfoMap.put("returnMount",fee);
-                            if (ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(paymentMethod)
-                                    ||ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER.equals(paymentMethod)
-                                    ||ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(paymentMethod)){
-                                msgInfoMap.put("paymentMode","GIRO");
-                                msgInfoMap.put("paymentType","0");
-                            }else if(ApplicationConsts.PAYMENT_STATUS_CREDIT_PAY_SUCCESS.equals(paymentMethod)){
-                                msgInfoMap.put("paymentType","1");
-                                msgInfoMap.put("paymentMode","Credit / Debit Card");
-                            }else if (ApplicationConsts.PAYMENT_STATUS_NETS_PAY_SUCCESS.equals(paymentMethod)){
-                                msgInfoMap.put("paymentType","1");
-                                msgInfoMap.put("paymentMode","NETS");
+                            String paymentMethod = applicationGroupDto.getPmtStatus();
+                            String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
+                            if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(withdrawApplicationDto.getStatus())
+                                    ||ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(withdrawApplicationDto.getStatus())){
+                                Double fee = 0.0;
+                                applicationService.closeTaskWhenWhAppApprove(withdrawApplicationDto.getId());
+                                List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
+                                List<ApplicationDto> applicationDtoList2 = hcsaConfigClient.returnFee(applicationDtoList).getEntity();
+                                applicationDtoList2.add(applicationDto);
+                                if (!IaisCommonUtils.isEmpty(applicationDtoList2)){
+                                    fee = applicationDtoList2.get(0).getReturnFee();
+                                }
+                                Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+                                msgInfoMap.put("Applicant", applicantName);
+                                msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
+                                msgInfoMap.put("ApplicationNumber", applicationNo);
+                                msgInfoMap.put("reqAppNo",applicationNo);
+                                msgInfoMap.put("S_LName",serviceName);
+                                msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+                                msgInfoMap.put("ApplicationDate",applicationViewDto.getSubmissionDate().split(" ")[0]);
+                                msgInfoMap.put("returnMount",fee);
+                                if (ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(paymentMethod)
+                                        ||ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER.equals(paymentMethod)
+                                        ||ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(paymentMethod)){
+                                    msgInfoMap.put("paymentMode","GIRO");
+                                    msgInfoMap.put("paymentType","0");
+                                }else if(ApplicationConsts.PAYMENT_STATUS_CREDIT_PAY_SUCCESS.equals(paymentMethod)){
+                                    msgInfoMap.put("paymentType","1");
+                                    msgInfoMap.put("paymentMode","Credit / Debit Card");
+                                }else if (ApplicationConsts.PAYMENT_STATUS_NETS_PAY_SUCCESS.equals(paymentMethod)){
+                                    msgInfoMap.put("paymentType","1");
+                                    msgInfoMap.put("paymentMode","NETS");
+                                }
+                                else{
+                                    msgInfoMap.put("paymentMode","Online Payment");
+                                    msgInfoMap.put("paymentType","1");
+                                }
+                                msgInfoMap.put("adminFee","100");
+                                msgInfoMap.put("systemLink",loginUrl);
+                                msgInfoMap.put("emailAddress",systemAddressOne);
+                                sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_EMAIL,msgInfoMap,oldApplication);
+                                sendInboxMessage(oldApplication,serviceId,msgInfoMap,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_MESSAGE);
+                                /**
+                                 *  Send SMS when withdrawal Application Approve
+                                 */
+                                sendSMS(oldApplication,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS,msgInfoMap);
+                            } else if (ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(withdrawApplicationDto.getStatus())){
+                                Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+                                msgInfoMap.put("ApplicationNumber", applicationNo);
+                                msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
+                                msgInfoMap.put("Applicant", applicantName);
+                                msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date()));
+                                msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+                                sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_EMAIL,msgInfoMap,oldApplication);
+                                sendInboxMessage(oldApplication,serviceId,msgInfoMap,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_MESSAGE);
+                                sendSMS(oldApplication,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_SMS,msgInfoMap);
                             }
-                            else{
-                                msgInfoMap.put("paymentMode","Online Payment");
-                                msgInfoMap.put("paymentType","1");
-                            }
-                            msgInfoMap.put("adminFee","100");
-                            msgInfoMap.put("systemLink",loginUrl);
-                            msgInfoMap.put("emailAddress",systemAddressOne);
-                            sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_EMAIL,msgInfoMap,oldApplication);
-                            sendInboxMessage(oldApplication,serviceId,msgInfoMap,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_MESSAGE);
-                            /**
-                             *  Send SMS when withdrawal Application Approve
-                             */
-                            sendSMS(oldApplication,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS,msgInfoMap);
-                        } else if (ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(withdrawApplicationDto.getStatus())){
-                            Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                            msgInfoMap.put("ApplicationNumber", applicationNo);
-                            msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
-                            msgInfoMap.put("Applicant", applicantName);
-                            msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date()));
-                            msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-                            sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_EMAIL,msgInfoMap,oldApplication);
-                            sendInboxMessage(oldApplication,serviceId,msgInfoMap,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_MESSAGE);
-                            sendSMS(oldApplication,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_SMS,msgInfoMap);
                         }
                     }
                 }
