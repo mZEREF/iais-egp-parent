@@ -81,6 +81,7 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
+import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -160,8 +161,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         try{
             ApplicationDto applicationDto =  appSubmissionDto.getApplicationDtos().get(0);
             String applicationType =  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("MOH HALP - Your ").append(applicationType).append(',');
             int index = 0;
             StringBuilder stringBuilderAPPNum = new StringBuilder();
             for(ApplicationDto applicationDtoApp : appSubmissionDto.getApplicationDtos()){
@@ -174,9 +173,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 index++;
             }
             String applicationNumber = stringBuilderAPPNum.toString();
-            stringBuilder.append(applicationNumber);
-            stringBuilder.append(" has been submitted");
-            String subject = stringBuilder.toString();
+            Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+            String applicationTypeShow = MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            subMap.put("ApplicationType", applicationTypeShow);
+            subMap.put("ApplicationNumber", applicationNumber);
+            String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED,subMap);
+            String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_SMS,subMap);
+            String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_MESSAGE,subMap);
+            log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
+            log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
+            log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
             Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
             templateContent.put("ApplicantName", applicantName);
             templateContent.put("ApplicationType",  applicationType);
@@ -203,7 +209,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL);
             emailParam.setTemplateContent(templateContent);
-            emailParam.setSubject(subject);
+            emailParam.setSubject(emailSubject);
             emailParam.setQueryCode(applicationDto.getApplicationNo());
             emailParam.setReqRefNum(applicationDto.getApplicationNo());
             emailParam.setRefId(applicationDto.getApplicationNo());
@@ -212,7 +218,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
             EmailParam smsParam = new EmailParam();
             smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_SMS);
-            smsParam.setSubject(subject);
+            smsParam.setSubject(smsSubject);
             smsParam.setQueryCode(applicationDto.getApplicationNo());
             smsParam.setReqRefNum(applicationDto.getApplicationNo());
             smsParam.setRefId(applicationDto.getApplicationNo());
@@ -222,7 +228,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             EmailParam msgParam = new EmailParam();
             msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_MSG);
             msgParam.setTemplateContent(templateContent);
-            msgParam.setSubject(subject);
+            msgParam.setSubject(messageSubject);
             msgParam.setQueryCode(applicationDto.getApplicationNo());
             msgParam.setReqRefNum(applicationDto.getApplicationNo());
             msgParam.setRefId(applicationDto.getApplicationNo());
@@ -242,6 +248,25 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             log.info("send app sumbit email fail");
         }
 
+    }
+
+    private String getEmailSubject(String templateId,Map<String, Object> subMap){
+        String subject = "-";
+        if(!StringUtil.isEmpty(templateId)){
+            MsgTemplateDto emailTemplateDto =appSubmissionService.getMsgTemplateById(templateId);
+            if(emailTemplateDto != null){
+                try {
+                    if(!IaisCommonUtils.isEmpty(subMap)){
+                        subject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
+                    }else{
+                        subject = emailTemplateDto.getTemplateName();
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }
+        }
+        return subject;
     }
 
     @Override
@@ -647,6 +672,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     licenceFeeDto.setServiceName(hcsaServiceDto.getSvcName());
                     licenceFeeDto.setPremises(premisessTypes);
                     licenceFeeDto.setCharity(isCharity);
+                    Boolean existingOnSiteLic = licenceClient.existingOnSiteOrConveLic(appSvcRelatedInfoDto.getServiceName(),appSubmissionDto.getLicenseeId()).getEntity();
+                    licenceFeeDto.setExistOnsite(existingOnSiteLic);
                     if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                         String licenceId = appSubmissionDto.getLicenceId();
                         LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
