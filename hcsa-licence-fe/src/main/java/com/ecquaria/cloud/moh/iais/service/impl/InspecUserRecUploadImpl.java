@@ -464,8 +464,8 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
         if(!IaisCommonUtils.isEmpty(fileRepoDtos)){
             for(int i = 0; i< fileRepoDtos.size(); i++){
                 if(id.equals(fileRepoDtos.get(i).getId())){
-                    fileRepoDtos.remove(i);
                     fileRepoClient.removeFileById(fileRepoDtos.get(i));
+                    fileRepoDtos.remove(i);
                     return fileRepoDtos;
                 }
             }
