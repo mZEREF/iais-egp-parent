@@ -589,108 +589,6 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the preparePersonnel end ...."));
     }
 
-    private List<SelectOption> genSpecialtySelectList() {
-        List<SelectOption> specialtySelectList = IaisCommonUtils.genNewArrayList();
-        SelectOption ssl2 = new SelectOption("Pathology", "Pathology");
-        SelectOption ssl3 = new SelectOption("Haematology", "Haematology");
-        SelectOption ssl4 = new SelectOption("other", "Others");
-        specialtySelectList.add(ssl2);
-        specialtySelectList.add(ssl3);
-        specialtySelectList.add(ssl4);
-        return specialtySelectList;
-    }
-
-    private List<SelectOption> genReplacePersonnel(String licenseeId) {
-        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
-        SelectOption s1 = new SelectOption("new", "I'd like to add a new personnel");
-        selectOptions.add(s1);
-        List<PersonnelListQueryDto> persons = requestForChangeService.getLicencePersonnelListQueryDto(licenseeId);
-        if (!IaisCommonUtils.isEmpty(persons)) {
-            List<String> idNos = IaisCommonUtils.genNewArrayList();
-            for (PersonnelListQueryDto dto : persons) {
-                String idNo = dto.getIdNo();
-                if (!idNos.contains(idNo)) {
-                    idNos.add(idNo);
-                    String name = dto.getName();
-                    String idType = dto.getIdType();
-                    SelectOption s = new SelectOption(idType + "," + idNo, name + ", " + idNo + " (" + idType + ")");
-                    selectOptions.add(s);
-                }
-            }
-        }
-        return selectOptions;
-    }
-
-    private void setLicseeAndPsnDropDown(BaseProcessClass bpc) {
-        //set licenseeId
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if (loginContext != null) {
-            List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
-            //exchange order
-            Map<String, AppSvcPrincipalOfficersDto> licPersonMap = NewApplicationHelper.getLicPsnIntoSelMap(bpc.request, licPersonList);
-            ParamUtil.setSessionAttr(bpc.request, "LicPersonSelectMap", (Serializable) licPersonMap);
-            Map<String, AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "PersonSelectMap");
-            if (personMap != null) {
-                licPersonMap.forEach((k, v) -> {
-                    personMap.put(k, v);
-                });
-                ParamUtil.setSessionAttr(bpc.request, "PersonSelectMap", (Serializable) personMap);
-            } else {
-                ParamUtil.setSessionAttr(bpc.request, "PersonSelectMap", (Serializable) licPersonMap);
-            }
-        } else {
-            log.info(StringUtil.changeForLog("user info is empty....."));
-        }
-    }
-
-    private List<SelectOption> getPsnType() {
-        List<SelectOption> personelRoles = IaisCommonUtils.genNewArrayList();
-        SelectOption sp1 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, "Clinical Governance Officer");
-        SelectOption sp2 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, "Principal Officer");
-        SelectOption sp3 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, "Deputy Principal Officer");
-        SelectOption sp4 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, "MedAlert");
-        personelRoles.add(sp1);
-        personelRoles.add(sp2);
-        personelRoles.add(sp3);
-        personelRoles.add(sp4);
-        return personelRoles;
-    }
-
-    public void doPersonnelList(BaseProcessClass bpc) {
-        setLicseeAndPsnDropDown(bpc);
-        log.debug(StringUtil.changeForLog("the do doPersonnelList start ...."));
-        String actionType = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
-        log.debug(StringUtil.changeForLog("the do doPersonnelList end ...."));
-    }
-
-    public void personnleSearch(BaseProcessClass bpc) {
-        log.info("search================????>>>>>");
-        String personName = ParamUtil.getString(bpc.request, "personName");
-        String psnType = ParamUtil.getString(bpc.request, "psnTypes");
-        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, filterParameter, true);
-        if (!StringUtil.isEmpty(personName)) {
-            searchParam.addFilter("personName", "%" + personName + "%", true);
-            QueryHelp.setMainSql("applicationPersonnelQuery", "appPersonnelQuery", searchParam);
-            ParamUtil.setRequestAttr(bpc.request, "personName", personName);
-            ParamUtil.setRequestAttr(bpc.request, "perName", personName);
-        } else {
-            ParamUtil.setRequestAttr(bpc.request, "perName", null);
-            ParamUtil.setRequestAttr(bpc.request, "personName", null);
-        }
-        if (!StringUtil.isEmpty(psnType)) {
-            ParamUtil.setRequestAttr(bpc.request, "psnType", psnType);
-        }
-    }
-
-    public void personnleSorting(BaseProcessClass bpc) {
-        SearchResultHelper.doSort(bpc.request, filterParameter);
-    }
-
-    public void personnlePaging(BaseProcessClass bpc) {
-        SearchResultHelper.doPage(bpc.request, filterParameter);
-    }
-
     public void preparePersonnelEdit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doPersonnelList start ...."));
         String idNo = ParamUtil.getMaskedString(bpc.request, "personnelNo");
@@ -732,26 +630,6 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do preparePersonnelEdit end ...."));
     }
 
-    private PersonnelListDto getOldPersonnelDto(PersonnelListDto personnelListDto){
-        PersonnelListDto oldDto = new PersonnelListDto();
-        String idNo = personnelListDto.getIdNo();
-        String idType = personnelListDto.getIdType();
-        String salutation = personnelListDto.getSalutation();
-        String psnName = personnelListDto.getPsnName();
-        String designation = personnelListDto.getDesignation();
-        String mobileNo = personnelListDto.getMobileNo();
-        String officeTelNo = personnelListDto.getOfficeTelNo();
-        String emailAddr = personnelListDto.getEmailAddr();
-        oldDto.setIdNo(idNo);
-        oldDto.setIdType(idType);
-        oldDto.setPsnName(psnName);
-        oldDto.setSalutation(salutation);
-        oldDto.setDesignation(designation);
-        oldDto.setOfficeTelNo(officeTelNo);
-        oldDto.setMobileNo(mobileNo);
-        oldDto.setEmailAddr(emailAddr);
-        return oldDto ;
-    }
 
     public void doPersonnelEdit(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit start ...."));
@@ -1139,6 +1017,129 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, "replaceName", replaceName);
         }
         return errMap;
+    }
+
+    private PersonnelListDto getOldPersonnelDto(PersonnelListDto personnelListDto){
+        PersonnelListDto oldDto = new PersonnelListDto();
+        String idNo = personnelListDto.getIdNo();
+        String idType = personnelListDto.getIdType();
+        String salutation = personnelListDto.getSalutation();
+        String psnName = personnelListDto.getPsnName();
+        String designation = personnelListDto.getDesignation();
+        String mobileNo = personnelListDto.getMobileNo();
+        String officeTelNo = personnelListDto.getOfficeTelNo();
+        String emailAddr = personnelListDto.getEmailAddr();
+        oldDto.setIdNo(idNo);
+        oldDto.setIdType(idType);
+        oldDto.setPsnName(psnName);
+        oldDto.setSalutation(salutation);
+        oldDto.setDesignation(designation);
+        oldDto.setOfficeTelNo(officeTelNo);
+        oldDto.setMobileNo(mobileNo);
+        oldDto.setEmailAddr(emailAddr);
+        return oldDto ;
+    }
+
+    private List<SelectOption> genSpecialtySelectList() {
+        List<SelectOption> specialtySelectList = IaisCommonUtils.genNewArrayList();
+        SelectOption ssl2 = new SelectOption("Pathology", "Pathology");
+        SelectOption ssl3 = new SelectOption("Haematology", "Haematology");
+        SelectOption ssl4 = new SelectOption("other", "Others");
+        specialtySelectList.add(ssl2);
+        specialtySelectList.add(ssl3);
+        specialtySelectList.add(ssl4);
+        return specialtySelectList;
+    }
+
+    private List<SelectOption> genReplacePersonnel(String licenseeId) {
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+        SelectOption s1 = new SelectOption("new", "I'd like to add a new personnel");
+        selectOptions.add(s1);
+        List<PersonnelListQueryDto> persons = requestForChangeService.getLicencePersonnelListQueryDto(licenseeId);
+        if (!IaisCommonUtils.isEmpty(persons)) {
+            List<String> idNos = IaisCommonUtils.genNewArrayList();
+            for (PersonnelListQueryDto dto : persons) {
+                String idNo = dto.getIdNo();
+                if (!idNos.contains(idNo)) {
+                    idNos.add(idNo);
+                    String name = dto.getName();
+                    String idType = dto.getIdType();
+                    SelectOption s = new SelectOption(idType + "," + idNo, name + ", " + idNo + " (" + idType + ")");
+                    selectOptions.add(s);
+                }
+            }
+        }
+        return selectOptions;
+    }
+
+    private void setLicseeAndPsnDropDown(BaseProcessClass bpc) {
+        //set licenseeId
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        if (loginContext != null) {
+            List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
+            //exchange order
+            Map<String, AppSvcPrincipalOfficersDto> licPersonMap = NewApplicationHelper.getLicPsnIntoSelMap(bpc.request, licPersonList);
+            ParamUtil.setSessionAttr(bpc.request, "LicPersonSelectMap", (Serializable) licPersonMap);
+            Map<String, AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "PersonSelectMap");
+            if (personMap != null) {
+                licPersonMap.forEach((k, v) -> {
+                    personMap.put(k, v);
+                });
+                ParamUtil.setSessionAttr(bpc.request, "PersonSelectMap", (Serializable) personMap);
+            } else {
+                ParamUtil.setSessionAttr(bpc.request, "PersonSelectMap", (Serializable) licPersonMap);
+            }
+        } else {
+            log.info(StringUtil.changeForLog("user info is empty....."));
+        }
+    }
+
+    private List<SelectOption> getPsnType() {
+        List<SelectOption> personelRoles = IaisCommonUtils.genNewArrayList();
+        SelectOption sp1 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, "Clinical Governance Officer");
+        SelectOption sp2 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, "Principal Officer");
+        SelectOption sp3 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, "Deputy Principal Officer");
+        SelectOption sp4 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, "MedAlert");
+        personelRoles.add(sp1);
+        personelRoles.add(sp2);
+        personelRoles.add(sp3);
+        personelRoles.add(sp4);
+        return personelRoles;
+    }
+
+    public void doPersonnelList(BaseProcessClass bpc) {
+        setLicseeAndPsnDropDown(bpc);
+        log.debug(StringUtil.changeForLog("the do doPersonnelList start ...."));
+        String actionType = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
+        log.debug(StringUtil.changeForLog("the do doPersonnelList end ...."));
+    }
+
+    public void personnleSearch(BaseProcessClass bpc) {
+        log.info("search================????>>>>>");
+        String personName = ParamUtil.getString(bpc.request, "personName");
+        String psnType = ParamUtil.getString(bpc.request, "psnTypes");
+        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, filterParameter, true);
+        if (!StringUtil.isEmpty(personName)) {
+            searchParam.addFilter("personName", "%" + personName + "%", true);
+            QueryHelp.setMainSql("applicationPersonnelQuery", "appPersonnelQuery", searchParam);
+            ParamUtil.setRequestAttr(bpc.request, "personName", personName);
+            ParamUtil.setRequestAttr(bpc.request, "perName", personName);
+        } else {
+            ParamUtil.setRequestAttr(bpc.request, "perName", null);
+            ParamUtil.setRequestAttr(bpc.request, "personName", null);
+        }
+        if (!StringUtil.isEmpty(psnType)) {
+            ParamUtil.setRequestAttr(bpc.request, "psnType", psnType);
+        }
+    }
+
+    public void personnleSorting(BaseProcessClass bpc) {
+        SearchResultHelper.doSort(bpc.request, filterParameter);
+    }
+
+    public void personnlePaging(BaseProcessClass bpc) {
+        SearchResultHelper.doPage(bpc.request, filterParameter);
     }
 
     public void preparePersonnelBank(BaseProcessClass bpc) {
