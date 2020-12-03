@@ -38,7 +38,7 @@
             <#if personnelId??> AND charindex(:personnelId, appGrpPer.ID_NO )>0</#if>
             <#if personnelRegnNo??> AND (charindex( :personnelRegnNo, appSvcPer.PROF_REG_NO )>0 OR charindex( :personnelRegnNo, appGrpPerExt.PROF_REG_NO )>0)</#if>
             <#if personnelRole??> AND  appKeyPsn.PSN_TYPE = :personnelRole</#if>
-            <#if svc_id??> AND app.SERVICE_ID = :svc_id</#if>
+            <#if svc_ids??> AND app.SERVICE_ID in( :svc_ids)</#if>
             <#if licHciCode??> AND  ${licHciCode}</#if>
             <#if appCorrId??>AND  T2.ID = :appCorrId</#if>
             <#if serviceSubTypeName??>AND appSvcScope.SCOPE_NAME = :serviceSubTypeName</#if>
@@ -93,7 +93,6 @@
             <#if hciName??> AND charindex(:hciName, Prem.HCI_NAME )>0</#if>
             <#if hciStreetName??> AND charindex(:hciStreetName, Prem.STREET_NAME )>0</#if>
             <#if hciPostalCode??> AND charindex(:hciPostalCode, Prem.POSTAL_CODE )>0</#if>
-            <#if svc_names??> AND lic.SVC_NAME in( :svc_names)</#if>
             <#if svc_name??> AND lic.SVC_NAME = :svc_name</#if>
             <#if licenseeRegnNo??> AND charindex( :licenseeRegnNo,keyPsnExt.PROF_REG_NO )>0</#if>
             <#if licenseeId??> AND ${licenseeId}</#if>
@@ -112,7 +111,6 @@
             <#if personnelId??> AND :personnelId = :personnelId</#if>
             <#if personnelRegnNo??> AND :personnelRegnNo = :personnelRegnNo</#if>
             <#if personnelRole??> AND  :personnelRole = :personnelRole</#if>
-            <#if svc_id??> AND :svc_id = :svc_id</#if>
             <#if hciCode??>AND :hciCode = :hciCode</#if>
 
         ]]>
@@ -160,7 +158,6 @@
             <#if personnelRole??> AND :personnelRole = :personnelRole</#if>
             <#if svc_name??> AND :svc_name = :svc_name</#if>
             <#if serviceSubTypeName??>AND :serviceSubTypeName = :serviceSubTypeName</#if>
-            <#if svc_id??> AND :svc_id = :svc_id</#if>
         ]]>
     </sql>
 

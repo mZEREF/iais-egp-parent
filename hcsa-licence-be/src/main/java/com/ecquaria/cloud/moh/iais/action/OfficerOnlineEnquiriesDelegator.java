@@ -75,6 +75,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -699,7 +700,7 @@ public class OfficerOnlineEnquiriesDelegator {
 
 
         Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
-        List<String> svcNames=IaisCommonUtils.genNewArrayList();
+        List<String> svcIds=IaisCommonUtils.genNewArrayList();
         List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
 
@@ -753,12 +754,16 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 if(!StringUtil.isEmpty(serviceLicenceType)){
                     filters.put("svc_name", serviceLicenceType);
-                    HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(serviceLicenceType).getEntity();
-                    filters.put("svc_id",svcDto.getId());
+                    List<HcsaServiceDto> svcDto = hcsaConfigClient.getHcsaServiceByNames(Collections.singletonList(serviceLicenceType)).getEntity();
+                    //filters.put("svc_id",svcDto.getId());
+                    for (HcsaServiceDto r:svcDto
+                    ) {
+                        svcIds.add(r.getId());
+                    }
                 }
                 if(!StringUtil.isEmpty(svcSubType)){
                     filters.put("serviceSubTypeName", svcSubType);
-                    appCount++;
+                    appCount+=15;
 
                 }
                 if(!StringUtil.isEmpty(uenNo)){
@@ -846,6 +851,9 @@ public class OfficerOnlineEnquiriesDelegator {
             return;
         }
         if(COUNTS.contains(count)){
+            if(svcIds.size()!=0){
+                filters.put("svc_ids", svcIds);
+            }
             SearchResultHelper.doPage(request,applicationParameter);
             applicationParameter.setFilters(filters);
             SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
@@ -863,7 +871,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
                     for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
                     ) {
-
+                        filters.remove("svc_ids");
                         if(!StringUtil.isEmpty(rfiApplicationQueryDto.getId())){
                             filters.put("app_id", rfiApplicationQueryDto.getId());
                         }
@@ -924,9 +932,6 @@ public class OfficerOnlineEnquiriesDelegator {
             if(!StringUtil.isEmpty(hciCode)){
                 ParamUtil.setSessionAttr(request,"count","1");
             }
-            if(svcNames.size()!=0){
-                filters.put("svc_names", svcNames);
-            }
 
             licenceParameter.setFilters(filters);
             SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
@@ -965,7 +970,9 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(lic.getAppId()!=null){
                         filters.put("id", lic.getAppId());
 
-                        filters.remove("svc_names");
+                        if(svcIds.size()!=0){
+                            filters.put("svc_ids", svcIds);
+                        }
                         applicationParameter.setFilters(filters);
 
                         SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
@@ -1313,7 +1320,7 @@ public class OfficerOnlineEnquiriesDelegator {
         log.debug(StringUtil.changeForLog("fileHandler start ...."));
         File file = null;
         Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
-        List<String> svcNames=IaisCommonUtils.genNewArrayList();
+        List<String> svcIds=IaisCommonUtils.genNewArrayList();
         List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
         String count=(String) ParamUtil.getSessionAttr(request,"count");
@@ -1369,12 +1376,16 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("svc_name"))){
                     filters.put("svc_name", parm.getFilters().get("svc_name"));
-                    HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName((String) parm.getFilters().get("svc_name")).getEntity();
-                    filters.put("svc_id",svcDto.getId());
+                    List<HcsaServiceDto> svcDto = hcsaConfigClient.getHcsaServiceByNames(Collections.singletonList((String) parm.getFilters().get("svc_name"))).getEntity();
+                    //filters.put("svc_id",svcDto.getId());
+                    for (HcsaServiceDto r:svcDto
+                    ) {
+                        svcIds.add(r.getId());
+                    }
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName"))){
                     filters.put("serviceSubTypeName", parm.getFilters().get("serviceSubTypeName"));
-                    appCount++;
+                    appCount+=15;
 
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("uen_no"))){
@@ -1451,10 +1462,14 @@ public class OfficerOnlineEnquiriesDelegator {
 
         SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
         if(COUNTS.contains(count)){
+            if(svcIds.size()!=0){
+                filters.put("svc_ids", svcIds);
+            }
             applicationParameter.setFilters(filters);
             SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
             if (appParam != null) {
             appParam.setPageNo(0);
+
             if(parm.getFilters().get("appStatus")!=null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
                 appParam.addParam("appStatus_APPROVED", "(app.status = 'APST005' OR app.status = 'APST050')");
             }
@@ -1466,7 +1481,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
                     for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
                     ) {
-
+                        filters.remove("svc_ids");
                         if(!StringUtil.isEmpty(rfiApplicationQueryDto.getId())){
                             filters.put("app_id", rfiApplicationQueryDto.getId());
                         }
@@ -1527,9 +1542,6 @@ public class OfficerOnlineEnquiriesDelegator {
         }
         else {
 
-            if(svcNames.size()!=0){
-                filters.put("svc_names", svcNames);
-            }
 
             licenceParameter.setFilters(filters);
             SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
@@ -1566,7 +1578,9 @@ public class OfficerOnlineEnquiriesDelegator {
 
                     if(lic.getAppId()!=null){
                         filters.put("id", lic.getAppId());
-                        filters.remove("svc_names");
+                        if(svcIds.size()!=0){
+                            filters.put("svc_ids", svcIds);
+                        }
                         applicationParameter.setFilters(filters);
 
                         SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
