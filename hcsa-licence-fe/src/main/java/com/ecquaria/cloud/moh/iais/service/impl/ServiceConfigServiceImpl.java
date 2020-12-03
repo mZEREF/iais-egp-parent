@@ -358,7 +358,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     }
 
     private String genGiroTranNo(){
-       return "GIROTRANS-"+Formatter.formatDateTime(new Date(),Formatter.DATE_REF_NUMBER).replace('-',' ');
+       return "GIROTRANS-"+Formatter.formatDateTime(new Date(),Formatter.DATE_REF_NUMBER).replace("_","");
     }
     private GiroPaymentXmlDto genGiroPaymentXmlDtoByAppGrp(AppSubmissionDto appGrp){
         GiroPaymentXmlDto giroPaymentXmlDto = new GiroPaymentXmlDto();
