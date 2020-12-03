@@ -571,7 +571,7 @@ public class BackendInboxDelegator {
 
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
 
-            OrgUserDto orgUserDto = organizationMainClient.retrieveOneOrgUserAccount(aubmitBy).getEntity();
+            OrgUserDto orgUserDto = organizationMainClient.retrieveOrgUserAccountById(aubmitBy).getEntity();
             if (orgUserDto != null){
                 map.put("ApplicantName", orgUserDto.getDisplayName());
             }
