@@ -54,9 +54,10 @@
                                     <thead>
                                     <tr>
                                         <th>Application No.</th>
-                                        <c:if test="${'Credit'==AppSubmissionDto.paymentMethod or 'NETS'==AppSubmissionDto.paymentMethod}">
+                                        <%--<c:if test="${'Credit'==AppSubmissionDto.paymentMethod or 'NETS'==AppSubmissionDto.paymentMethod}">
                                             <th>Transactional No.</th>
-                                        </c:if>
+                                        </c:if>--%>
+                                        <th>Transactional No.</th>
                                         <th>Date & Time</th>
                                         <th>Amount Deducted</th>
                                         <th>Payment Method</th>
@@ -68,9 +69,19 @@
                                             <c:forEach var="ackPageAppSubmission" items="${ackPageAppSubmissionDto}">
                                                 <tr>
                                                     <td><c:out value="${ackPageAppSubmission.appGrpNo}"/></td>
-                                                    <c:if test="${'Credit'==AppSubmissionDto.paymentMethod or 'NETS'==AppSubmissionDto.paymentMethod}">
+                                                    <%--<c:if test="${'Credit'==AppSubmissionDto.paymentMethod or 'NETS'==AppSubmissionDto.paymentMethod}">
                                                         <td><c:out value="${txnRefNo}"/></td>
-                                                    </c:if>
+                                                    </c:if>--%>
+                                                    <td>
+                                                        <c:choose>
+                                                            <c:when test="${empty txnRefNo}">
+                                                                N/A
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <c:out value="${txnRefNo}"/>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </td>
                                                     <td><c:out value="${txnDt}"/></td>
                                                     <td><c:if test="${ackPageAppSubmission.amount==null}">N/A</c:if>
                                                         <c:if test="${ackPageAppSubmission.amount!=null}">
@@ -96,9 +107,19 @@
                                         <c:otherwise>
                                             <tr>
                                                 <td><c:out value="${AppSubmissionDto.appGrpNo}"/></td>
-                                                <c:if test="${'Credit'==AppSubmissionDto.paymentMethod or 'NETS'==AppSubmissionDto.paymentMethod}">
+                                                <%--<c:if test="${'Credit'==AppSubmissionDto.paymentMethod or 'NETS'==AppSubmissionDto.paymentMethod}">
                                                     <td><c:out value="${txnRefNo}"/></td>
-                                                </c:if>
+                                                </c:if>--%>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${empty txnRefNo}">
+                                                            N/A
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="${txnRefNo}"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
                                                 <td><c:out value="${txnDt}"/></td>
                                                 <td><c:if test="${AppSubmissionDto.amountStr==null}">N/A</c:if>
                                                     <c:if test="${AppSubmissionDto.amountStr!=null}">
