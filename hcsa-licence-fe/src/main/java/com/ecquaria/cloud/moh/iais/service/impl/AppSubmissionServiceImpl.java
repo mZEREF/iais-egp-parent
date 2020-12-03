@@ -95,6 +95,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * AppSubmisionServiceImpl
@@ -1480,6 +1481,37 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             result = true;
         }
         return result;
+    }
+
+    @Override
+    public void removePreviousPremTypeInfo(AppSubmissionDto appSubmissionDto) throws CloneNotSupportedException {
+        if(appSubmissionDto != null){
+            List<String> svcIds = IaisCommonUtils.genNewArrayList();
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                    String svcId = appSvcRelatedInfoDto.getServiceId();
+                    if(!StringUtil.isEmpty(svcId)){
+                        svcIds.add(svcId);
+                    }
+                }
+                if(svcIds.size() > 0){
+                    Set<String> premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
+                    if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+                        List<AppGrpPremisesDto> newPremisesList = IaisCommonUtils.genNewArrayList();
+                        for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                            if(premisesType.contains(appGrpPremisesDto.getPremisesType())){
+                                AppGrpPremisesDto newPremisesDto = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDto);
+                                newPremisesList.add(newPremisesDto);
+                            }
+                        }
+                        appSubmissionDto.setAppGrpPremisesDtoList(newPremisesList);
+                        NewApplicationHelper.removePremiseEmptyAlignInfo(appSubmissionDto);
+                    }
+                }
+            }
+        }
     }
 
     private static void doSvcDocument(Map<String, String> map, List<AppSvcDocDto> appSvcDocDtoLit, String serviceId, StringBuilder sB, int uploadFileLimit, String sysFileType) {
