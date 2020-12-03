@@ -550,7 +550,7 @@
             <iais:message key="CESS_ERR005" escape="flase"></iais:message>
         </div>
         <iais:action style="text-align:right;">
-            <a class="btn btn-secondary" onclick="javascript:doDownload() ">Download</a>
+            <a class="btn btn-secondary"  href="${pageContext.request.contextPath}/officer-online-enquiries-information-file">Download</a>
             <c:if test="${cease==1}">
                 <button type="button" class="btn btn-primary ReqForInfoBtn" disabled
                         onclick="javascript:doReqForInfo();">ReqForInfo
@@ -719,17 +719,4 @@
 
     }
 
-    function doDownload() {
-        showWaiting();
-        $.ajax({
-            'url':'${pageContext.request.contextPath}/officer-online-enquiries-information-file',
-            'type':'GET',
-            'success':function (data) {
-                dismissWaiting();
-            },
-            'error':function () {
-                dismissWaiting();
-            }
-        })
-    }
 </script>

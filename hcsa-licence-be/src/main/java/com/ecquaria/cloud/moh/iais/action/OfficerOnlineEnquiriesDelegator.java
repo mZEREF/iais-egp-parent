@@ -710,6 +710,7 @@ public class OfficerOnlineEnquiriesDelegator {
         }
         ParamUtil.setSessionAttr(request,"count",count);
         switch (count) {
+            case "2":
             case "3":
                 int appCount=0;
                 int licCount=0;
@@ -1326,6 +1327,7 @@ public class OfficerOnlineEnquiriesDelegator {
         String count=(String) ParamUtil.getSessionAttr(request,"count");
         SearchParam parm = (SearchParam) ParamUtil.getSessionAttr(request,"SearchParam");
         switch (count) {
+            case "2":
             case "3":
                 int appCount=0;
                 int licCount=0;
