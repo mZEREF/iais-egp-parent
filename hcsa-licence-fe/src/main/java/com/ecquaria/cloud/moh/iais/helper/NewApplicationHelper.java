@@ -2274,9 +2274,115 @@ public class NewApplicationHelper {
         return pmtStatus;
     }
 
+    public static void removePremiseEmptyAlignInfo(AppSubmissionDto appSubmissionDto){
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        //remove empty align primary doc
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = NewApplicationHelper.removeEmptyAlignPrimaryDoc(appGrpPremisesDtoList,appSubmissionDto.getAppGrpPrimaryDocDtos());
+        appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
+            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+                //remove empty align laboratoryDisciplinesDto
+                List<AppSvcLaboratoryDisciplinesDto> laboratoryDisciplinesDtos = NewApplicationHelper.removeEmptyAlignSvcScope(appGrpPremisesDtoList,appSvcRelatedInfoDto);
+                appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(laboratoryDisciplinesDtos);
+                //remove empty align disciplineAllocation
+                List<AppSvcDisciplineAllocationDto> disciplineAllocationDtos = NewApplicationHelper.removeEmptyAlignAllocation(appGrpPremisesDtoList,appSvcRelatedInfoDto);
+                appSvcRelatedInfoDto.setAppSvcDisciplineAllocationDtoList(disciplineAllocationDtos);
+                //remove empty align svc spec doc
+                List<AppSvcDocDto> appSvcDocDtos = NewApplicationHelper.removeEmptyAlignSvcDoc(appGrpPremisesDtoList,appSvcRelatedInfoDto);
+                appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
+            }
+            appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
+        }
+    }
+
+
     //=============================================================================
     //private method
     //=============================================================================
+    private static List<AppGrpPrimaryDocDto> removeEmptyAlignPrimaryDoc( List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos){
+        List<AppGrpPrimaryDocDto> newGrpPrimaryDocDtos = IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos)) {
+            for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos) {
+                String docPremName = appGrpPrimaryDocDto.getPremisessName();
+                String docPremType = appGrpPrimaryDocDto.getPremisessType();
+                //add prem doc
+                if (!StringUtil.isEmpty(docPremName) && !StringUtil.isEmpty(docPremType)) {
+                    for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                        String premIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+                        String premType = appGrpPremisesDto.getPremisesType();
+                        if (docPremName.equals(premIndexNo) && docPremType.equals(premType)) {
+                            newGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
+                        }
+                    }
+                } else if (StringUtil.isEmpty(docPremName) && StringUtil.isEmpty(docPremType)) {
+                    //add comm doc
+                    newGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
+                }
+            }
+            appGrpPrimaryDocDtos = newGrpPrimaryDocDtos;
+        }
+        return appGrpPrimaryDocDtos;
+    }
+
+    private static List<AppSvcLaboratoryDisciplinesDto> removeEmptyAlignSvcScope( List<AppGrpPremisesDto> appGrpPremisesDtoList,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        List<AppSvcLaboratoryDisciplinesDto> laboratoryDisciplinesDtos = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+        if (!IaisCommonUtils.isEmpty(laboratoryDisciplinesDtos)) {
+            List<AppSvcLaboratoryDisciplinesDto> newLaboratoryDisciplinesDtos = IaisCommonUtils.genNewArrayList();
+            for (AppSvcLaboratoryDisciplinesDto laboratoryDisciplinesDto : laboratoryDisciplinesDtos) {
+                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                    if (laboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getPremisesIndexNo())) {
+                        newLaboratoryDisciplinesDtos.add(laboratoryDisciplinesDto);
+                        break;
+                    }
+                }
+            }
+            laboratoryDisciplinesDtos = newLaboratoryDisciplinesDtos;
+        }
+        return laboratoryDisciplinesDtos;
+    }
+
+    private static List<AppSvcDisciplineAllocationDto> removeEmptyAlignAllocation(List<AppGrpPremisesDto> appGrpPremisesDtoList,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        List<AppSvcDisciplineAllocationDto> disciplineAllocationDtos = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
+        if (!IaisCommonUtils.isEmpty(disciplineAllocationDtos)) {
+            List<AppSvcDisciplineAllocationDto> newDisciplineAllocations = IaisCommonUtils.genNewArrayList();
+            for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : disciplineAllocationDtos) {
+                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                    if (appSvcDisciplineAllocationDto.getPremiseVal().equals(appGrpPremisesDto.getPremisesIndexNo())) {
+                        newDisciplineAllocations.add(appSvcDisciplineAllocationDto);
+                        break;
+                    }
+                }
+            }
+            disciplineAllocationDtos = newDisciplineAllocations;
+        }
+        return disciplineAllocationDtos;
+    }
+
+    private static List<AppSvcDocDto> removeEmptyAlignSvcDoc(List<AppGrpPremisesDto> appGrpPremisesDtoList,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+        if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
+            List<AppSvcDocDto> newAppSvcDocDtos = IaisCommonUtils.genNewArrayList();
+            for(AppSvcDocDto appSvcDocDto:appSvcDocDtos){
+                String docPremType = appSvcDocDto.getPremisesType();
+                String docPremVal = appSvcDocDto.getPremisesVal();
+                if(StringUtil.isEmpty(docPremType) && StringUtil.isEmpty(docPremVal)){
+                    newAppSvcDocDtos.add(appSvcDocDto);
+                }else if(!StringUtil.isEmpty(docPremType) && !StringUtil.isEmpty(docPremVal)){
+                    for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                        String premIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+                        String premType = appGrpPremisesDto.getPremisesType();
+                        if (docPremVal.equals(premIndexNo) && docPremType.equals(premType)) {
+                            newAppSvcDocDtos.add(appSvcDocDto);
+                        }
+                    }
+                }
+            }
+            appSvcDocDtos = newAppSvcDocDtos;
+        }
+        return appSvcDocDtos;
+    }
+
     private static List<SelectOption> getPremisesSel(String appType){
         List<SelectOption> selectOptionList = IaisCommonUtils.genNewArrayList();
         SelectOption cps1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);

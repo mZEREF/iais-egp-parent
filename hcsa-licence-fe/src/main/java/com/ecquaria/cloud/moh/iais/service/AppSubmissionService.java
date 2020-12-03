@@ -96,4 +96,5 @@ public interface AppSubmissionService {
     List<AppGrpPrimaryDocDto> documentValid(HttpServletRequest request, Map<String, String> errorMap);
     Map<String,String> doPreviewSubmitValidate(Map<String,String> previewAndSubmitMap,AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto,BaseProcessClass bpc);
     boolean isGiroAccount(String licenseeId);
+    void removePreviousPremTypeInfo(AppSubmissionDto appSubmissionDto) throws CloneNotSupportedException;
 }
