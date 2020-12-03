@@ -45,7 +45,7 @@ public class BlastValidate implements CustomizeValidator {
                 schedule = blastManagementDto.getSchedule();
                 Date now = new Date();
                 if (schedule.compareTo(now) < 0) {
-                    errMap.put("date", MessageUtil.getMessageDesc("ESB_ERR009"));
+                    errMap.put("date", MessageUtil.getMessageDesc("EMM_ERR007"));
                 }
             }
         }
