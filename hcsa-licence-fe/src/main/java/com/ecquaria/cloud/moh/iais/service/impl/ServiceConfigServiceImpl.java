@@ -7,7 +7,13 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.*;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroGroupDataDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentXmlDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroXmlPaymentBackDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroXmlPaymentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.InputDetailBackDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.InputDetailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
@@ -23,31 +29,33 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.XmlBindUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPaymentStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.Calculator;
-import com.ecquaria.cloud.moh.iais.common.utils.XmlBindUtil;
 import ecq.commons.config.Config;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -56,6 +64,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * ServiceConfigServiceImpl
@@ -144,14 +159,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Override
     public String saveFileToRepo(MultipartFile file) throws IOException {
         //move file
-        moveFile(file.getOriginalFilename(), sharedPath, file.getBytes());
-        //
-        FileRepoDto fileRepoDto = new FileRepoDto();
-        fileRepoDto.setFileName(file.getOriginalFilename());
-        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-
-        fileRepoDto.setAuditTrailDto(auditTrailDto);
-        fileRepoDto.setRelativePath(sharedPath);
+        FileRepoDto fileRepoDto = moveFile(file.getBytes());
         String fileRepoStr = JsonUtil.parseToJson(fileRepoDto);
         //todo wait job ok => change method
         FeignResponseEntity<String> re = fileRepoClient.saveFiles(file, fileRepoStr);
@@ -236,18 +244,29 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         return appConfigClient.serviceCorrelation().getEntity();
     }
 
-    private void moveFile(String fileName, String path, byte[] fileData) throws IOException {
-        File file = new File(path+"/"+fileName);
+    private FileRepoDto moveFile(byte[] fileData) {
+        String tempFolderName = String.valueOf(System.currentTimeMillis());
+        File path = MiscUtil.generateFile(sharedPath + File.separator + "fileRepoTemp", tempFolderName);
+        MiscUtil.checkDirs(path);
+        String relativePath = "fileRepoTemp" + File.separator + tempFolderName;
+        String tempFileName = "File" + String.valueOf(System.currentTimeMillis());
+        File tempFile = MiscUtil.generateFile(sharedPath + File.separator + relativePath, tempFileName);
         OutputStream fos = null;
         try {
-            fos = Files.newOutputStream(Paths.get(file.getPath()));
+            fos = Files.newOutputStream(Paths.get(tempFile.getPath()));
             fos.write(fileData);
-        } catch (FileNotFoundException e) {
-            log.error(StringUtil.changeForLog("file not found"));
+            FileRepoDto fileRepoDto = new FileRepoDto();
+            AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+            fileRepoDto.setAuditTrailDto(auditTrailDto);
+            fileRepoDto.setFileName(tempFile.getName());
+            fileRepoDto.setRelativePath(relativePath);
+
+            return fileRepoDto;
+        } catch (IOException e) {
+            log.error(StringUtil.changeForLog("file not found"), e);
+            throw new IaisRuntimeException(e);
         }finally {
-            if(fos!= null){
-                fos.close();
-            }
+            IOUtils.closeQuietly(fos);
         }
 
     }
