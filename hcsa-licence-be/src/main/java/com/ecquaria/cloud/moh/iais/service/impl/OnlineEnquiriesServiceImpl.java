@@ -53,7 +53,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.DisciplinaryRecordResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -91,7 +90,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -307,6 +305,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                     applicationDtos.add(applicationDto);
                     hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
                     hcsaRiskScoreDto.setServiceId(applicationDto.getServiceId());
+                    hcsaRiskScoreDto.setBeExistAppId(applicationDto.getId());
                     HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
                     String riskLevel = entity.getRiskLevel();
                     complianceHistoryDto.setRiskTag(MasterCodeUtil.retrieveOptionsByCodes(new String[]{riskLevel}).get(0).getText());
@@ -443,6 +442,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             applicationDtos.add(applicationDto);
             hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
             hcsaRiskScoreDto.setServiceId(serviceId);
+            hcsaRiskScoreDto.setBeExistAppId(applicationDto.getId());
             HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
             String riskLevel = entity.getRiskLevel();
             inspectionReportDto.setRiskLevel(MasterCodeUtil.retrieveOptionsByCodes(new String[]{riskLevel}).get(0).getText());
