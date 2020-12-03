@@ -532,8 +532,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         templateMessageByContent = MessageTemplateUtil.replaceNum(templateMessageByContent);
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         Map<String, Object> subjectMap = IaisCommonUtils.genNewHashMap();
-        map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
-        map.put("ApplicationNumber", applicationDto.getApplicationNo());
+        subjectMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        subjectMap.put("ApplicationNumber", applicationDto.getApplicationNo());
         String subject = MsgUtil.getTemplateMessageByContent(autoEntity.getTemplateName(),subjectMap);
         if(hcsaServiceDto!=null ){
             InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(subject,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
