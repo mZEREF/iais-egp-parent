@@ -2249,6 +2249,19 @@ public class NewApplicationHelper {
         return appGrpPrimaryDocDto;
     }
 
+    public static String getLicenseeId(List<AppSubmissionDto> appSubmissionDtos){
+        String licenseeId = "";
+        if(!IaisCommonUtils.isEmpty(appSubmissionDtos)){
+            for(AppSubmissionDto appSubmissionDto:appSubmissionDtos){
+                licenseeId = appSubmissionDto.getLicenseeId();
+                if(!StringUtil.isEmpty(licenseeId)){
+                    break;
+                }
+            }
+        }
+        return licenseeId;
+    }
+
     public static String getPmtStatus(String pmtMethod){
         String pmtStatus;
         if(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(pmtMethod)){
