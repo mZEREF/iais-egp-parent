@@ -280,6 +280,7 @@
     //add premises testing.......
     $('#addPremBtn').click(function () {
         //console.log($('.premContent').html());
+        showWaiting();
         var data = {
             'currentLength':$('.premContent').length,
         };
@@ -315,8 +316,10 @@
                 );
                 <!--trigger tooltip -->
                 $("[data-toggle='tooltip']").tooltip();
+                dismissWaiting();
             },
             'error':function (data) {
+                dismissWaiting();
             }
         });
     });
@@ -371,7 +374,7 @@
 
     var addPubHolDay = function () {
         $('.addPubHolDay').click(function () {
-
+            showWaiting();
             var $premContentEle = $(this).closest('div.premContent');
             var $contentDivEle = $(this).closest('div.form-horizontal');
             // genPubHolDayFun($premContentEle,$contentDivEle,'Y');
@@ -424,8 +427,10 @@
                             }
                         }
                     );
+                    dismissWaiting();
                 },
                 'error':function () {
+                    dismissWaiting();
                 }
             });
         });
@@ -939,6 +944,7 @@
 
     var addOperational = function () {
         $('.addOperational').click(function () {
+            showWaiting();
             var $premContentEle = $(this).closest('div.premContent');
             var premType = $premContentEle.find('.premTypeValue').val();
             var premVal = $premContentEle.find('input[name="premValue"]').val();
@@ -956,15 +962,17 @@
                 'type':'POST',
                 'success':function (data) {
                     if(data.resCode == 200){
-                        console.log(data.resultJson)
+                        // console.log(data.resultJson)
                         $currPremForm.find('div.addOpDiv').before(data.resultJson+'');
                         var length =  $currPremForm.find('div.operationDiv').length;
                         $premContentEle.find('.opLength').val(length);
 
                         operationDel();
                     }
+                    dismissWaiting();
                 },
                 'error':function (data) {
+                    dismissWaiting();
                 }
             });
 
