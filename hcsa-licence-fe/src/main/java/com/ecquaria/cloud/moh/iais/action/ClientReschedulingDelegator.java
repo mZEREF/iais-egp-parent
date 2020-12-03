@@ -98,6 +98,7 @@ public class ClientReschedulingDelegator {
 
     public void start(BaseProcessClass bpc)  {
         rescheduleParameter.setSortField("appRec.RECOM_IN_DATE");
+        rescheduleParameter.setPageNo(1);
     }
 
     public void init(BaseProcessClass bpc)  {
@@ -199,6 +200,7 @@ public class ClientReschedulingDelegator {
 
     public void doSort(BaseProcessClass bpc)  {
         SearchResultHelper.doSort(bpc.request,rescheduleParameter);
+        rescheduleParameter.setPageNo(1);
     }
     public void doPage(BaseProcessClass bpc)  {
         SearchResultHelper.doPage(bpc.request,rescheduleParameter);
