@@ -2146,7 +2146,14 @@ public class HcsaApplicationDelegator {
                                     ||ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(paymentMethod)){
                                 msgInfoMap.put("paymentMode","GIRO");
                                 msgInfoMap.put("paymentType","0");
-                            }else{
+                            }else if(ApplicationConsts.PAYMENT_STATUS_CREDIT_PAY_SUCCESS.equals(paymentMethod)){
+                                msgInfoMap.put("paymentType","1");
+                                msgInfoMap.put("paymentMode","Credit / Debit Card");
+                            }else if (ApplicationConsts.PAYMENT_STATUS_NETS_PAY_SUCCESS.equals(paymentMethod)){
+                                msgInfoMap.put("paymentType","1");
+                                msgInfoMap.put("paymentMode","NETS");
+                            }
+                            else{
                                 msgInfoMap.put("paymentMode","Online Payment");
                                 msgInfoMap.put("paymentType","1");
                             }
