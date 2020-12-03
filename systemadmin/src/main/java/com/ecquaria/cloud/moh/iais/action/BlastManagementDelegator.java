@@ -323,6 +323,8 @@ public class BlastManagementDelegator {
             } catch (ParseException e) {
                 log.error(e.getMessage(), e);
             }
+        }else{
+            blastManagementDto.setSchedule(null);
         }
 
         ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
