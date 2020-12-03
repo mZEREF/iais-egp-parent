@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.api.util.SFTPUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroGroupDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentDto;
@@ -29,12 +28,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.XmlBindUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
@@ -55,17 +52,12 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.Calculator;
 import ecq.commons.config.Config;
-import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -159,7 +151,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Override
     public String saveFileToRepo(MultipartFile file) throws IOException {
         //move file
-        FileRepoDto fileRepoDto = moveFile(file.getBytes());
+        FileRepoDto fileRepoDto = new FileRepoDto();
+        fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         String fileRepoStr = JsonUtil.parseToJson(fileRepoDto);
         //todo wait job ok => change method
         FeignResponseEntity<String> re = fileRepoClient.saveFiles(file, fileRepoStr);
@@ -242,33 +235,6 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Override
     public List<HcsaServiceCorrelationDto> getCorrelation(){
         return appConfigClient.serviceCorrelation().getEntity();
-    }
-
-    private FileRepoDto moveFile(byte[] fileData) {
-        String tempFolderName = String.valueOf(System.currentTimeMillis());
-        File path = MiscUtil.generateFile(sharedPath + File.separator + "fileRepoTemp", tempFolderName);
-        MiscUtil.checkDirs(path);
-        String relativePath = "fileRepoTemp" + File.separator + tempFolderName;
-        String tempFileName = "File" + String.valueOf(System.currentTimeMillis());
-        File tempFile = MiscUtil.generateFile(sharedPath + File.separator + relativePath, tempFileName);
-        OutputStream fos = null;
-        try {
-            fos = Files.newOutputStream(Paths.get(tempFile.getPath()));
-            fos.write(fileData);
-            FileRepoDto fileRepoDto = new FileRepoDto();
-            AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-            fileRepoDto.setAuditTrailDto(auditTrailDto);
-            fileRepoDto.setFileName(tempFile.getName());
-            fileRepoDto.setRelativePath(relativePath);
-
-            return fileRepoDto;
-        } catch (IOException e) {
-            log.error(StringUtil.changeForLog("file not found"), e);
-            throw new IaisRuntimeException(e);
-        }finally {
-            IOUtils.closeQuietly(fos);
-        }
-
     }
 
     @Override
