@@ -109,7 +109,7 @@
                                                                     <option value="${decision.value}">${decision.text}</option>
                                                                 </c:forEach>
                                                             </select>
-                                                            <span style="color:#ff0000; display: none" id="selectDecisionMsg" >
+                                                            <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" >
                                                                 Processing Decision is mandatory
                                                             </span>
                                                         </iais:value>
@@ -118,11 +118,11 @@
                                                         <label class="col-xs-0 col-md-2  col-sm-2">Need Revise<span class="mandatory">*</span></label>
                                                         <iais:value width="6" >
                                                             <c:forEach items="${svcNames}" var="revise"
-                                                                       varStatus="index">&nbsp;
-                                                                <input type="checkbox" name="revise${index.index+1}"
+                                                                       varStatus="index"><input type="checkbox" name="revise${index.index+1}"
                                                                        value="${revise}"/>&nbsp;${revise}&nbsp;
                                                             </c:forEach>
-                                                            <span id="selectDecisionMsgRevise"  class="col-sm-9 "  style="display: none; color:#ff0000;">Need Revise is mandatory</span>
+                                                            <br>
+                                                            <span id="selectDecisionMsgRevise"  style="display: none; font-size: 1.6rem; color: #D22727;">Need Revise is mandatory</span>
                                                         </iais:value>
                                                     </iais:row>
                                                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">

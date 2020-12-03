@@ -543,10 +543,10 @@
             <div class="row">&nbsp;</div>
             <div class="row">&nbsp;</div>
         </c:if>
-        <div class="row" height="1" style="display: none ;color:#ff0000;padding-left: 20px" id="selectDecisionMsg">
+        <div class="row" height="1" style="display: none ;font-size: 1.6rem; color: #D22727;padding-left: 20px" id="selectDecisionMsg">
             <iais:message key="CESS_ERR006" escape="flase"></iais:message>
         </div>
-        <div class="row" height="1" style="display: none ;color:#ff0000;padding-left: 20px" id="selectDecisionMsgActive">
+        <div class="row" height="1" style="display: none ;font-size: 1.6rem; color: #D22727;padding-left: 20px" id="selectDecisionMsgActive">
             <iais:message key="CESS_ERR005" escape="flase"></iais:message>
         </div>
         <iais:action style="text-align:right;">
