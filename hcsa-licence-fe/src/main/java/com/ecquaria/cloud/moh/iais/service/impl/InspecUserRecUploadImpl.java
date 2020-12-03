@@ -205,6 +205,9 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
             inspecUserRecUploadDto.setFileRepoDelIds(delIds);
         }
         FileRepoDto fileRepoDto = fileRepoClient.getFilesByIds(ids).getEntity().get(0);
+        if(fileRepoDto != null){
+            fileRepoDto.setRealFileName(inspecUserRecUploadDto.getFileName());
+        }
         if(inspecUserRecUploadDto.getFileRepoDtos() == null){
             List<FileRepoDto> fileRepoDtos = IaisCommonUtils.genNewArrayList();
             fileRepoDtos.add(fileRepoDto);
@@ -316,15 +319,16 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                         //get fileReport
                         List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos =
                                 applicationFeClient.getNcDocListByItemId(appPremisesPreInspectionNcItemDto.getId()).getEntity();
-                        if(!IaisCommonUtils.isEmpty(appPremPreInspectionNcDocDtos)){
+                        if(!IaisCommonUtils.isEmpty(appPremPreInspectionNcDocDtos)){//NOSONAR
                             List<String> fileReportIds = IaisCommonUtils.genNewArrayList();
                             for(AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto : appPremPreInspectionNcDocDtos){
                                 fileReportIds.add(appPremPreInspectionNcDocDto.getFileRepoId());
                             }
                             List<FileRepoDto> fileRepoDtos = fileRepoClient.getFilesByIds(fileReportIds).getEntity();
                             inspecUserRecUploadDto.setFileRepoDtos(fileRepoDtos);
-                            if(!IaisCommonUtils.isEmpty(fileRepoDtos)) {
+                            if(!IaisCommonUtils.isEmpty(fileRepoDtos)) {//NOSONAR
                                 inspecUserRecUploadDto.setRectifyFlag(AppConsts.SUCCESS);
+                                inspecUserRecUploadDto = setRealFileName(inspecUserRecUploadDto, appPremPreInspectionNcDocDtos);//NOSONAR
                             }
                             inspecUserRecUploadDto.setAppPremPreInspectionNcDocDtos(appPremPreInspectionNcDocDtos);
                         } else {
@@ -336,6 +340,20 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
             }
         }
         return inspecUserRecUploadDtos;
+    }
+
+    private InspecUserRecUploadDto setRealFileName(InspecUserRecUploadDto inspecUserRecUploadDto, List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos) {
+        List<FileRepoDto> fileRepoDtos = inspecUserRecUploadDto.getFileRepoDtos();
+        for(FileRepoDto fileRepoDto : fileRepoDtos) {
+            if(fileRepoDto != null) {
+                for (AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto : appPremPreInspectionNcDocDtos) {
+                    if (appPremPreInspectionNcDocDto != null && fileRepoDto.getId().equals(appPremPreInspectionNcDocDto.getFileRepoId())) {//NOSONAR
+                        fileRepoDto.setRealFileName(appPremPreInspectionNcDocDto.getDocName());
+                    }
+                }
+            }
+        }
+        return inspecUserRecUploadDto;
     }
 
     private InspecUserRecUploadDto setItemClauseQues(List<ChecklistItemDto> checklistItemDtos, InspecUserRecUploadDto inspecUserRecUploadDto) {
