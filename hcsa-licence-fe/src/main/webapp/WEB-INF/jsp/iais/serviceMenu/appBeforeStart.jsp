@@ -131,7 +131,11 @@
     }else{
       url = url + "&licenseeCompanyflag=pop";
     }
-    window.open(url,"_blank", "scrollbars=yes,resizable=1,modal=false,alwaysRaised=yes");
+    var scrWidth=screen.availWidth;
+    var scrHeight=screen.availHeight;
+    var self = window.open(url,"_blank", "scrollbars=yes,resizable=1,modal=false,alwaysRaised=yes");
+    self.moveTo(0,0);
+    self.resizeTo(scrWidth*.8,scrHeight*.8);
   }
 
   // $(".license-view").click(function () {
