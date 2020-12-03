@@ -343,26 +343,35 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     }
 
     @Override
-    public String giroPaymentXmlUpdateByGrpNo(AppSubmissionDto appGrp) {
+    public AppSubmissionDto giroPaymentXmlUpdateByGrpNo(AppSubmissionDto appGrp) {
         if(!AppConsts.YES.equalsIgnoreCase(Config.get("pay.giro.switch"))) {
             log.info("pay.giro.switch is closed");
-            return ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS;
+            appGrp.setPmtStatus( ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS);
+            return appGrp;
+        }else {
+            appGrp.setPmtStatus( ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO);
         }
         //todo
          GiroPaymentXmlDto giroPaymentXmlDto = genGiroPaymentXmlDtoByAppGrp(appGrp);
          appPaymentStatusClient.updateGiroPaymentXmlDto(giroPaymentXmlDto);
-         return ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO;
+         return appGrp;
     }
 
+    private String genGiroTranNo(){
+       return "GIROTRANS-"+Formatter.formatDateTime(new Date(),Formatter.DATE_REF_NUMBER).replace('-',' ');
+    }
     private GiroPaymentXmlDto genGiroPaymentXmlDtoByAppGrp(AppSubmissionDto appGrp){
         GiroPaymentXmlDto giroPaymentXmlDto = new GiroPaymentXmlDto();
         giroPaymentXmlDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         //todo gen xml by appGroup;
+        String tranNo = genGiroTranNo();
+        appGrp.setGiroTranNo(tranNo);
         GiroGroupDataDto giroPaymentDto = new GiroGroupDataDto();
         giroPaymentDto.setAmount(appGrp.getAmount());
         giroPaymentDto.setResidualPayment(appGrp.getAmount());
         giroPaymentDto.setAppGroupNo(appGrp.getAppGrpNo());
         giroPaymentXmlDto.setTag(appGrp.getAppGrpNo());
+        giroPaymentDto.setGiroTranNo(tranNo);
         giroPaymentXmlDto.setXmlData(JsonUtil.parseToJson(giroPaymentDto));
         giroPaymentXmlDto.setXmlType(ApplicationConsts.GIRO_NEED_GEN_XML);
         giroPaymentXmlDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
