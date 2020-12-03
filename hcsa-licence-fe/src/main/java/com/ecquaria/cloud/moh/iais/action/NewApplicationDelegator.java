@@ -685,6 +685,8 @@ public class NewApplicationDelegator {
         String flag = bpc.request.getParameter("flag");
         bpc.request.setAttribute("transfer",flag);
         ParamUtil.setRequestAttr(bpc.request,"IsCharity",NewApplicationHelper.isCharity(bpc.request));
+        boolean isGiroAcc = appSubmissionService.isGiroAccount(appSubmissionDto.getLicenseeId());
+        ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
         log.info(StringUtil.changeForLog("the do preparePayment end ...."));
     }
 
