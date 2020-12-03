@@ -409,6 +409,17 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
                 fileIds.add(appInspNcDoc.getFileRepoId());
             }
             List<FileRepoDto> fileRepoDtos = fileRepoClient.getFilesByIds(fileIds).getEntity();
+            if(!IaisCommonUtils.isEmpty(fileRepoDtos)){
+                for(FileRepoDto fileRepoDto : fileRepoDtos) {
+                    if(fileRepoDto != null) {
+                        for (AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto : appPremPreInspectionNcDocDtos) {
+                            if (appPremPreInspectionNcDocDto != null && fileRepoDto.getId().equals(appPremPreInspectionNcDocDto.getFileRepoId())) {//NOSONAR
+                                fileRepoDto.setRealFileName(appPremPreInspectionNcDocDto.getDocName());
+                            }
+                        }
+                    }
+                }
+            }
             return fileRepoDtos;
         }
         return null;
