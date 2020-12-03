@@ -142,7 +142,9 @@
         fileSize = parseInt(fileSize);
         if(fileSize>= maxSize){
             return "N";
+            console.log('validate all fileSize flag : N');
         }
+        console.log('validate all fileSize flag : Y');
         return "Y";
     }
 
@@ -167,7 +169,7 @@
         }
         console.log('currentFileSize2 : ' + currentFileSize);
         console.log('all size : ' + allSize);
-        return currentFileSize;
+        return allSize;
     }
 
     function writeMessageDeleteFile(deleteWriteMessageFileId){
