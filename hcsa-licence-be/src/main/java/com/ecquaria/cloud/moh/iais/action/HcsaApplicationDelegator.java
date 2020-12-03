@@ -2141,7 +2141,9 @@ public class HcsaApplicationDelegator {
                             msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
                             msgInfoMap.put("ApplicationDate",applicationViewDto.getSubmissionDate().split(" ")[0]);
                             msgInfoMap.put("returnMount",fee);
-                            if (ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(paymentMethod)){
+                            if (ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(paymentMethod)
+                                    ||ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER.equals(paymentMethod)
+                                    ||ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(paymentMethod)){
                                 msgInfoMap.put("paymentMode","GIRO");
                                 msgInfoMap.put("paymentType","0");
                             }else{

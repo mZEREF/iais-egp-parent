@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationTruckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
@@ -259,6 +260,13 @@ public class FeEicGatewayClient {
                                                                          String authorizationSec) {
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/task-recall", HttpMethod.POST, recallApplicationDto,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, RecallApplicationDto.class);
+    }
+
+    public FeignResponseEntity<Void> saveApplicationDtosForFe(ApplicationTruckDto applicationTruckDto,
+                                                                          String date, String authorization, String dateSec,
+                                                                          String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/app-withdrawn", HttpMethod.POST, applicationTruckDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Void.class);
     }
 
 }

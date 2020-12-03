@@ -173,27 +173,39 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 log.error(e.getMessage(),e);
             }
             if (recallApplicationDto.getResult()){
-                AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
-                Double fee = 0.0;
-                for(ApplicationDto applicationDto1 : applicationDtoList){
-                    applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
-                }
-                List<ApplicationDto> applicationDtoList2 = hcsaConfigFeClient.returnFee(applicationDtoList).getEntity();
-                if (!IaisCommonUtils.isEmpty(applicationDtoList2)){
-                    fee = applicationDtoList2.get(0).getReturnFee();
-                }
-                appReturnFeeDto.setReturnAmount(fee);
-                appReturnFeeDto.setApplicationNo(recallApplicationDto.getAppNo());
-                /**
-                 * TODO: SAVE FEE DATA
-                 */
-                List<ApplicationDto> updataWithdrawApp = IaisCommonUtils.genNewArrayList();
+                ApplicationTruckDto applicationTruckDto = new ApplicationTruckDto();
+                List<ApplicationDto> updateWithdrawApp = IaisCommonUtils.genNewArrayList();
                 oldApplication.setStatus(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN);
                 newApplication.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
-                updataWithdrawApp.add(oldApplication);
-                updataWithdrawApp.add(newApplication);
-                applicationFeClient.updateApplicationList(updataWithdrawApp);
+                updateWithdrawApp.add(oldApplication);
+                updateWithdrawApp.add(newApplication);
+                applicationFeClient.updateApplicationList(updateWithdrawApp);
+                applicationTruckDto.setApplicationDtoList(updateWithdrawApp);
                 autoApproveApplicationDtoList.add(h);
+                /**
+                 * TODO: SAVE FE APP DATA TO BE
+                 */
+                List<ApplicationGroupDto> applicationGroupDtoList = IaisCommonUtils.genNewArrayList();
+                String newApplicationGroupId = newApplication.getAppGrpId();
+                String oldApplicationGroupId = oldApplication.getAppGrpId();
+                ApplicationGroupDto newApplicationGroupDto = applicationFeClient.getApplicationGroup(newApplicationGroupId).getEntity();
+                ApplicationGroupDto oldApplicationGroupDto = applicationFeClient.getApplicationGroup(oldApplicationGroupId).getEntity();
+                applicationGroupDtoList.add(newApplicationGroupDto);
+                applicationGroupDtoList.add(oldApplicationGroupDto);
+                applicationTruckDto.setApplicationGroupDtoList(applicationGroupDtoList);
+                EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.WithdrawalServiceImpl", "saveWithdrawn",
+                        "hcsa-license-web", InspRectificationSaveDto.class.getName(), JsonUtil.parseToJson(applicationTruckDto));
+                String eicRefNo = eicRequestTrackingDto.getRefNo();
+                feEicGatewayClient.saveApplicationDtosForFe(applicationTruckDto, signature.date(), signature.authorization(),
+                        signature2.date(), signature2.authorization()).getEntity();
+                //get eic record
+                eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
+                //update eic record status
+                eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
+                eicRequestTrackingDtos.add(eicRequestTrackingDto);
+                appEicClient.updateStatus(eicRequestTrackingDtos);
             }
         });
         List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
@@ -243,7 +255,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
             msgInfoMap.put("ApplicationDate",Formatter.formatDate(applicationGroupDto.getSubmitDt()));
             msgInfoMap.put("returnMount",fee);
-            if (ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(isByGIRO)){
+            if (ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO.equals(isByGIRO)
+                    ||ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER.equals(isByGIRO)
+                    ||ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(isByGIRO)){
                 msgInfoMap.put("paymentType","0");
                 msgInfoMap.put("paymentMode","GIRO");
             }else{
