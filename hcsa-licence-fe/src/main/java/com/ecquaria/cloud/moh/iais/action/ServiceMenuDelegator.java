@@ -602,11 +602,13 @@ public class ServiceMenuDelegator {
                         nextstep = CHOOSE_BASE_SVC;
                     }
                 }else if(nextstep.equals(CHOOSE_ALIGN)){
-                    if(basechks.length == 1){
+                    //107348
+                    /*if(basechks.length == 1){
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                     }else{
                         nextstep = CHOOSE_ALIGN;
-                    }
+                    }*/
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                 }
             }else{
                 if(nextstep.equals(CHOOSE_BASE_SVC)){
@@ -633,12 +635,14 @@ public class ServiceMenuDelegator {
 
                     //only not align option
                     if(IaisCommonUtils.isEmpty(newAppLicDtos) || (!IaisCommonUtils.isEmpty(newAppLicDtos) && newAppLicDtos.size() <= 1)){
-                        if(basechks.length > 1){
+                        //107348
+                        /*if(basechks.length > 1){
                             //0066206
                             nextstep = CHOOSE_ALIGN;
                         }else{
                             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
-                        }
+                        }*/
+                        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                     }
 
                 }
@@ -836,11 +840,13 @@ public class ServiceMenuDelegator {
                     if(!IaisCommonUtils.isEmpty(baseSvcCodes)){
                         svcCodeList.addAll(baseSvcCodes);
                     }
-                    if(svcCodeList.size()>1){
+                    //107348
+                    /* if(svcCodeList.size()>1){
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_ALIGN);
                     }else{
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
-                    }
+                    }*/
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                 }else{
                     if(chooseExist){
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
@@ -879,8 +885,9 @@ public class ServiceMenuDelegator {
                             appSelectSvcDto.setInitPagHandler(true);
                         }
                         if(IaisCommonUtils.isEmpty(newAppLicDtos) || (!IaisCommonUtils.isEmpty(newAppLicDtos) && newAppLicDtos.size() <= 1)){
-//                            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
-                            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_ALIGN);
+                            //107348
+//                            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_ALIGN);
+                            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                         }else{
                             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_LICENCE);
                         }
