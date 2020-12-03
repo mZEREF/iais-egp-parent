@@ -1252,6 +1252,8 @@ public class RequestForChangeMenuDelegator {
             }
         }
         bpc.request.getSession().setAttribute("dAmount", Formatter.formatterMoney(dAmount));
+        boolean isGiroAcc = appSubmissionService.isGiroAccount(NewApplicationHelper.getLicenseeId(appSubmissionDtos));
+        ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
         log.debug(StringUtil.changeForLog("the do prePayment end ...."));
     }
 

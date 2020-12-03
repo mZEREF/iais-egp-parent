@@ -1001,6 +1001,8 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "serviceNamesAck", (Serializable) serviceNamesAck);
         //has app submit
         ParamUtil.setSessionAttr(bpc.request, "hasAppSubmit", "Y");
+        boolean isGiroAcc = appSubmissionService.isGiroAccount(NewApplicationHelper.getLicenseeId(appSubmissionDtos));
+        ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
     }
 
     private void setSubmissionAmount(List<AppSubmissionDto> appSubmissionDtoList,FeeDto feeDto,AppFeeDetailsDto appFeeDetailsDto,BaseProcessClass bpc){
