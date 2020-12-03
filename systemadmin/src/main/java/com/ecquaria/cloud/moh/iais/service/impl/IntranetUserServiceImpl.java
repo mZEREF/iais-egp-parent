@@ -224,7 +224,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
             Element root = document.getRootElement();
             //ele
             list = root.elements();
-            log.error(String.valueOf(list.size()));
+            log.error(StringUtil.changeForLog("start kai shi jie xi xml------------"));
         }catch (Exception e){
             log.error(StringUtil.changeForLog("read error"));
             log.error(StringUtil.changeForLog(e.getMessage()),e);
@@ -233,6 +233,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
         }
         if(!IaisCommonUtils.isEmpty(list)){
             for (int i = 1; i <= list.size(); i++) {
+                log.error(StringUtil.changeForLog("start kai shi jie xi xml for ------------"+i));
                 String userId = null;
                 String roleId = null;
                 String workingGroupId = null;
@@ -285,6 +286,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                         }
                     }
                     if (!errorData) {
+                        log.error(StringUtil.changeForLog("xml de data  have error ------------"));
                         EgpUserRoleDto egpUserRoleDto = new EgpUserRoleDto();
                         egpUserRoleDto.setUserId(userId);
                         egpUserRoleDto.setRoleId(roleId);
@@ -292,6 +294,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                         egpUserRoleDtos.add(egpUserRoleDto);
                     }
                 } catch (Exception e) {
+                    log.error(StringUtil.changeForLog("xml de format  have error ------------"));
                     log.error(e.getMessage(), e);
                     EgpUserRoleDto egpUserRoleDto = new EgpUserRoleDto();
                     egpUserRoleDto.setUserId(userId);
