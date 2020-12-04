@@ -299,7 +299,6 @@ public class InspectionMergeSendNcEmailDelegator {
         }
         inspectionEmailTemplateDto.setAppPremCorrId(applicationViewDto.getAppPremisesCorrelationId());
         inspectionEmailTemplateDto.setMessageContent(mesContext);
-        inspectionEmailTemplateDto.setSubject("Inspection - Summary of Inspection Outcome");
 
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT});
 

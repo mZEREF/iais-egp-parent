@@ -27,7 +27,7 @@ public final class HcsaServiceCacheHelper {
 		HcsaServiceDto hcsaServiceDto = getServiceById(id);
 
 		if (hcsaServiceDto == null){
-			return null;
+			return "-";
 		}else {
 			return hcsaServiceDto.getSvcName();
 		}

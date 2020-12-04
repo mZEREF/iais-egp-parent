@@ -407,9 +407,11 @@
             }
             if(!(str1 === '1')){
                 $("#selectDecisionMsg").show();
+                $("#selectDecisionMsgActive").hide();
             }
             if(!(str3 === 'Active')){
                 $("#selectDecisionMsgActive").show();
+                $("#selectDecisionMsg").hide();
             }
         }
         if (flog) {
