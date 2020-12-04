@@ -28,7 +28,7 @@ public final class HcsaServiceCacheHelper {
 		HcsaServiceDto hcsaServiceDto = getServiceById(id);
 		log.debug(StringUtil.changeForLog("service info " + JsonUtil.parseToJson(hcsaServiceDto)));
 
-		if (hcsaServiceDto == null){
+		if (hcsaServiceDto == null || StringUtil.isEmpty(hcsaServiceDto.getSvcName())){
 			return "-";
 		}else {
 			return hcsaServiceDto.getSvcName();
