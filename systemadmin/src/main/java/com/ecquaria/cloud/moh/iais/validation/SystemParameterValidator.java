@@ -57,9 +57,19 @@ public class SystemParameterValidator implements CustomizeValidator {
 			case SystemParameterConstants.PARAM_KEY_UPLOAD_FILE_TYPE:
 				verifyUploadFileType(errMap, value);
 				break;
+			case SystemParameterConstants.PARAM_KEY_INSPECTOR_TCU_REMINDER_WEEK:
+				verifyWeekDay(errMap, number);
+				break;
 			default:
 		}
 		return errMap;
+	}
+
+	private void verifyWeekDay(Map<String, String> errorMap, int value){
+		boolean hasError = value < 1 || value > 7 ? true : false;
+		if (hasError){
+			errorMap.put("customErrorMessage", MessageUtil.getMessageDesc("SYSPAM_ERROR0007"));
+		}
 	}
 
 	private void verifyPageSize(Map<String, String> errorMap, String value){
@@ -134,18 +144,4 @@ public class SystemParameterValidator implements CustomizeValidator {
 			errorMap.put("customErrorMessage", MessageUtil.getMessageDesc("SYSPAM_ERROR0001"));
 		}
 	}
-
-	/*private HashMap<String, String> verifyYes(HashMap<String, String> errorMap, int value){
-		boolean hasError = value == 1;
-
-		if (hasError){
-			errorMap.put("customErrorMessage", "");
-		}
-
-		return errorMap;
-	}
-
-	private boolean verifyNo(int value){
-		return value == 0;
-	}*/
 }
