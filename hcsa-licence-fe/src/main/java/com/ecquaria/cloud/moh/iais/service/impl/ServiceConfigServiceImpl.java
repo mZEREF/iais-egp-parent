@@ -419,7 +419,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         String xml = genXmlByGiroPaymentXmlDtos(giroPaymentXmlDtosGen);
         // todo need change for sftp down file
         String tag = "uploadGiro"+Formatter.formatDateTime(new Date(),Formatter.DATE_REF_NUMBER)+".xml";
-        String fileName = ApplicationConsts.GIRO_UPLOAD_FILE_PATH+  tag;
+        String fileName = ApplicationConsts.GIRO_UPLOAD_FILE_PATH+Config.get("sftp.linux.seperator")+ tag;
         if(genXmlFileToSftp(xml,fileName)){
             GiroPaymentXmlDto giroPaymentXmlDtoSend = new GiroPaymentXmlDto();
             giroPaymentXmlDtoSend.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -485,8 +485,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                   String tag = giroPaymentXmlDto.getTag();
                   //todo by tag get down file name
                   String fileName = tag;
-                  if(SFTPUtil.download(ApplicationConsts.GIRO_DOWN_FILE_PATH,fileName,Config.get("sftp.downloadfilefolder"))){
-                      String xml = FileUtil.getString(ApplicationConsts.GIRO_DOWN_FILE_PATH+fileName);
+                  String downPath = ApplicationConsts.GIRO_DOWN_FILE_PATH+Config.get("sftp.linux.seperator");
+                  if(SFTPUtil.download(downPath,fileName,Config.get("sftp.downloadfilefolder"))){
+                      String xml = FileUtil.getString(downPath+fileName);
                       //todo The XML should be parsed directly into GiroXmlPaymentBackDto
                       xml = getXmlByGiroXmlPaymentDtoXml(xml);
                       GiroXmlPaymentBackDto giroXmlPaymentBackDto = (GiroXmlPaymentBackDto) XmlBindUtil.convertToObject(GiroXmlPaymentBackDto.class,xml);

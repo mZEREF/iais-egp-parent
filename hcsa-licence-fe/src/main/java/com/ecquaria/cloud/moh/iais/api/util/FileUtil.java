@@ -83,7 +83,7 @@ public class FileUtil {
 		}
 			
 		try {
-			generateFolder(fileName.substring(0, fileName.lastIndexOf('\\')));
+			generateFolder(fileName.substring(0, fileName.lastIndexOf(Config.get("sftp.linux.seperator"))));
 		} catch (Exception e) {
 			log.error(StringUtil.changeForLog("generate folder for " + fileName + " error!" + e.getMessage()));
 			log.error(e.getMessage(), e);
