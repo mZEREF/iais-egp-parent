@@ -53,6 +53,7 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
+import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -105,6 +106,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     private AppConfigClient appConfigClient;
     @Autowired
     private FeMessageClient feMessageClient;
+    @Autowired
+    private ServiceConfigService serviceConfigService;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -1523,6 +1526,19 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     public LicenceDto getLicenceDtoByLicNo(String licenceNo) {
         return licenceClient.getLicenceDtoByLicNo(licenceNo).getEntity();
+    }
+
+    @Override
+    public boolean serviceConfigIsChange(List<String> serviceId, String presmiseType) {
+        if(serviceId!=null && !serviceId.isEmpty() && presmiseType!=null){
+            Set<String> appGrpPremisesTypeBySvcId = serviceConfigService.getAppGrpPremisesTypeBySvcId(serviceId);
+            if(appGrpPremisesTypeBySvcId.contains(presmiseType)){
+                return true;
+            }else {
+                return false;
+            }
+        }
+        return false;
     }
 
     @Override
