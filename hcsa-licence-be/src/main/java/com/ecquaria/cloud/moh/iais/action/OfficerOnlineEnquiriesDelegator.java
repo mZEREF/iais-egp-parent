@@ -1523,7 +1523,6 @@ public class OfficerOnlineEnquiriesDelegator {
                                 reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                                 reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
                                 reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
-                                log.debug("============> reqForInfoSearchListDtos query!"+reqForInfoSearchListDtos.size());
 
 
                             }
@@ -1534,7 +1533,6 @@ public class OfficerOnlineEnquiriesDelegator {
                             reqForInfoSearchListDto.setLicenceStatus("-");
                             reqForInfoSearchListDto.setLicenceNo("-");
                             reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
-                            log.debug("============> reqForInfoSearchListDtos query!"+reqForInfoSearchListDtos.size());
 
                         }
                     }
