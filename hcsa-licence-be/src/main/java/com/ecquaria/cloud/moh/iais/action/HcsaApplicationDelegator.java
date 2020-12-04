@@ -861,6 +861,7 @@ public class HcsaApplicationDelegator {
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
         String userRoleId = taskDto.getRoleId();
         String routeBackStatus = ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO;
+        String recipientRole = null;
         if(RoleConsts.USER_ROLE_AO1.equals(userRoleId) || RoleConsts.USER_ROLE_AO2.equals(userRoleId) || RoleConsts.USER_ROLE_AO3.equals(userRoleId)){
             if(HcsaConsts.ROUTING_STAGE_ASO.equals(satageId)){
                 routeBackStatus = ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO;
@@ -878,27 +879,34 @@ public class HcsaApplicationDelegator {
         //ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK
         if(HcsaConsts.ROUTING_STAGE_ASO.equals(satageId)){
             rollBack(bpc,HcsaConsts.ROUTING_STAGE_ASO,routeBackStatus,RoleConsts.USER_ROLE_ASO,wrkGpId,userId);
+            recipientRole=NotificationHelper.RECEIPT_ROLE_ASSIGNED_ASO;
         }else if(HcsaConsts.ROUTING_STAGE_PSO.equals(satageId)){
             rollBack(bpc,HcsaConsts.ROUTING_STAGE_PSO,routeBackStatus,RoleConsts.USER_ROLE_PSO,wrkGpId,userId);
+            recipientRole=NotificationHelper.RECEIPT_ROLE_ASSIGNED_PSO;
         }else if(HcsaConsts.ROUTING_STAGE_INS.equals(satageId)){
             if(RoleConsts.USER_ROLE_AO1.equals(roleId)){
                 rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO1,routeBackStatus,RoleConsts.USER_ROLE_AO1,wrkGpId,userId);
+                recipientRole=NotificationHelper.RECEIPT_ROLE_ASSIGNED_AO1;
             }else{
                 rollBack(bpc,HcsaConsts.ROUTING_STAGE_INS,routeBackStatus,RoleConsts.USER_ROLE_INSPECTIOR,wrkGpId,userId);
+                recipientRole=NotificationHelper.RECEIPT_ROLE_ASSIGNED_INSPECTOR;
             }
         }else if(HcsaConsts.ROUTING_STAGE_AO1.equals(satageId)){
             rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO1,routeBackStatus,RoleConsts.USER_ROLE_AO1,wrkGpId,userId);
+            recipientRole=NotificationHelper.RECEIPT_ROLE_ASSIGNED_AO1;
         }else if(HcsaConsts.ROUTING_STAGE_AO2.equals(satageId)){
             rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO2,routeBackStatus,RoleConsts.USER_ROLE_AO2,wrkGpId,userId);
+            recipientRole=NotificationHelper.RECEIPT_ROLE_ASSIGNED_AO2;
         }else if(HcsaConsts.ROUTING_STAGE_AO3.equals(satageId)){
             rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO3,routeBackStatus,RoleConsts.USER_ROLE_AO3,wrkGpId,userId);
+            recipientRole=NotificationHelper.RECEIPT_ROLE_ASSIGNED_AO3;
         }
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
         //send internal route back email
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         try{
-            sendRfcClarificationEmail( licenseeId, applicationViewDto, internalRemarks);
+            sendRfcClarificationEmail( licenseeId, applicationViewDto, internalRemarks,recipientRole);
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
@@ -2642,7 +2650,7 @@ public class HcsaApplicationDelegator {
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
     //Send EN_RFC_005_CLARIFICATION
-    public void sendRfcClarificationEmail(String licenseeId,ApplicationViewDto applicationViewDto,String internalRemarks) throws Exception{
+    public void sendRfcClarificationEmail(String licenseeId,ApplicationViewDto applicationViewDto,String internalRemarks,String recipientRole) throws Exception{
         String licenseeName = null;
         ApplicationDto applicationDto=applicationViewDto.getApplicationDto();
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
@@ -2683,6 +2691,7 @@ public class HcsaApplicationDelegator {
         emailParam.setReqRefNum(applicationDto.getApplicationNo());
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
         emailParam.setRefId(applicationDto.getApplicationNo());
+        emailParam.setRecipientType(recipientRole);
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION).getEntity();
         map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());

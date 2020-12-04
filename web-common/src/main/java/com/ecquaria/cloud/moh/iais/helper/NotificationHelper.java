@@ -223,6 +223,7 @@ public class NotificationHelper {
 		String reqRefNum = emailParam.getReqRefNum();
 		String refIdType = emailParam.getRefIdType();
 		String refId = emailParam.getRefId();
+		String recipientType =emailParam.getRecipientType();
 		HashMap<String, String> subjectParams = emailParam.getSubjectParams();
 		JobRemindMsgTrackingDto jrDto = emailParam.getJobRemindMsgTrackingDto();
 		String subject = emailParam.getSubject();
@@ -233,7 +234,12 @@ public class NotificationHelper {
 		log.info(StringUtil.changeForLog("sendemail start... ref type is " + StringUtil.nullToEmptyStr(refIdType)
 				+ " ref Id is " + StringUtil.nullToEmptyStr(refId)
 				+ "templateId is "+ templateId+ " thread name is " + Thread.currentThread().getName()));
-		MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId).getEntity();
+		MsgTemplateDto msgTemplateDto ;
+		if(recipientType!=null&&!recipientType.isEmpty()){
+			msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId,recipientType).getEntity();
+		}else {
+			msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId).getEntity();
+		}
 		String deliveryMode = msgTemplateDto.getDeliveryMode();
 
 		if (MessageConstants.TEMPLETE_DELIVERY_MODE_MSG.equals(deliveryMode)) {

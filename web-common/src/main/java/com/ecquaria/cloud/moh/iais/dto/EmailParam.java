@@ -24,6 +24,7 @@ public class EmailParam {
     private String refId;
     private JobRemindMsgTrackingDto jobRemindMsgTrackingDto;
     private String subject;
+    private String recipientType;
     private String moduleType;
     private boolean smsOnlyOfficerHour = true;
     private List<String> svcCodeList;
