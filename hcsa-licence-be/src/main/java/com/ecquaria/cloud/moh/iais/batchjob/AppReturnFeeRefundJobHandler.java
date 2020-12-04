@@ -54,6 +54,7 @@ public class AppReturnFeeRefundJobHandler extends IJobHandler {
             for (AppReturnFeeDto appreturn:saveReturnFeeDtos
             ) {
                 if(appreturn.getApplicationNo().equals(refund.getReqRefNo())){
+                    appreturn.setTriggerCount(appreturn.getTriggerCount()+1);
                     appreturn.setStatus(refund.getStatus());
                 }
             }
