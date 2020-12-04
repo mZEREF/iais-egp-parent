@@ -9,8 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.Collection;
-import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +16,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author: yichen
@@ -37,6 +38,9 @@ public interface IaisSystemClient {
 
 	@GetMapping(path = "/iais-messageTemplate/template/{msgId}")
 	FeignResponseEntity<MsgTemplateDto> getMsgTemplate(@PathVariable("msgId") String id);
+
+	@GetMapping(path = "/iais-messageTemplate/template/{msgId}/{recipient}")
+	FeignResponseEntity<MsgTemplateDto> getMsgTemplate(@PathVariable("msgId") String id ,@PathVariable("recipient") String recipient);
 
 	@PutMapping(path = "/iais-messageTemplate/template",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	FeignResponseEntity<MsgTemplateDto> updateMasterCode(@RequestBody MsgTemplateDto dto);
