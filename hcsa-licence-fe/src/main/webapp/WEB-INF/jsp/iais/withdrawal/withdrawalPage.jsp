@@ -81,9 +81,9 @@
                                 </div>
                             </div>
                         </div>
-                    <div class="row">
-                        <div class="center-content">
-                            <h3>Reason for Withdrawal  <c:if test="${isDoView != 'Y'}"> <span style="color: #ff0000"> *</span> </c:if> </h3>
+                    <div class="center-content">
+                        <h3>Reason for Withdrawal  <c:if test="${isDoView != 'Y'}"> <span style="color: #ff0000"> *</span> </c:if> </h3>
+                        <div class="row">
                             <div class="col-md-7">
                                 <c:choose>
                                     <c:when test="${isDoView eq 'Y'}">
@@ -123,8 +123,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="center-content">
+                    <div class="center-content">
+                        <div class="">
                             <div class="document-upload-gp">
                                 <div class="document-upload-list">
                                     <h3>File upload for Withdrawal Reasons</h3>
@@ -156,24 +156,16 @@
                                     <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
                 <c:if test="${isDoView != 'Y'}">
-                    <div class="row" style="padding-bottom: 2%">
-                        <div class="center-content">
-                            <div class="col-md-2 col-md-offset-8" style="text-align: right">
-                                <div class="components">
-                                    <a class="btn btn-secondary"
-                                       href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp">Cancel</a>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="components">
-                                    <a class="btn btn-primary" onclick="doSubmit()" href="javascript:void(0);">Submit</a>
-                                </div>
-                            </div>
+                    <div class="center-content" style="padding-bottom: 2%">
+                        <div class="components">
+                            <a class="btn btn-primary" style="float:right" onclick="doSubmit()" href="javascript:void(0);">Submit</a>
+                            <span style="float:right">&nbsp;</span>
+                            <a class="btn btn-secondary" style="float:right"
+                               href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp">Cancel</a>
                         </div>
                     </div>
                 </c:if>
