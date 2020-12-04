@@ -1291,6 +1291,9 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, "prePayment");
             return;
         }
+        for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
+            appSubmissionDto.setPaymentMethod(payMethod);
+        }
         bpc.request.getSession().setAttribute("payMethod", payMethod);
         if (0.0 == appSubmissionDtos.get(0).getAmount()) {
             StringBuilder url = new StringBuilder();
