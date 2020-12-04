@@ -214,7 +214,7 @@ public class FESingpassLandingDelegator {
             feUserDto.setIdentityNo(idNo);
             feUserDto.setMobileNo(mobileNo);
             feUserDto.setOfficeTelNo(officeNo);
-            feUserDto.setIdType(idType);
+            feUserDto.setIdType(IaisEGPHelper.checkIdentityNoType(idNo));
             feUserDto.setEmail(email);
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, feUserDto);
             ValidationResult validationResult = WebValidationHelper.validateProperty(feUserDto, "create");
@@ -228,7 +228,7 @@ public class FESingpassLandingDelegator {
                 organizationDto.setOrgType(UserConstants.ORG_TYPE);
                 organizationDto.setUenNo(feUserDto.getUenNo());
                 organizationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                feUserDto.setIdType(IaisEGPHelper.checkIdentityNoType(feUserDto.getIdentityNo()));
+               ;
                 organizationDto.setFeUserDto(feUserDto);
 
                 OrganizationDto postCreateOrg = orgUserManageService.createSingpassAccount(organizationDto);
