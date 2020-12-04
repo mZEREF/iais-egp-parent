@@ -153,12 +153,19 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     @Override
-    public List<SelectOption> getProcessDecOption(String appType) {
+    public List<SelectOption> getProcessDecOption(ApplicationDto applicationDto) {
+        String appType = applicationDto.getApplicationType();
         String[] processDecArr;
         if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)) {
             processDecArr = new String[]{InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
         } else {
-            processDecArr = processDec;
+            Integer rfiCount =  applicationService.getAppBYGroupIdAndStatus(applicationDto.getAppGrpId(),
+                    ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
+            if(rfiCount==0){
+                processDecArr = processDec;
+            } else {
+                processDecArr = new String[]{InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO, InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
+            }
         }
         List<SelectOption> processDecOption = MasterCodeUtil.retrieveOptionsByCodes(processDecArr);
         return processDecOption;

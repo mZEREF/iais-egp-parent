@@ -155,7 +155,7 @@ public class InspectionPreDelegator {
         String appStatus = applicationDto.getStatus();
         inspectionPreTaskDto.setAppStatus(appStatus);
         //get process decision
-        List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption(applicationDto.getApplicationType());
+        List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption(applicationDto);
         //Audit application doesn't do back and rfi
         if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationDto.getApplicationType())) {
             //get Request For Information
