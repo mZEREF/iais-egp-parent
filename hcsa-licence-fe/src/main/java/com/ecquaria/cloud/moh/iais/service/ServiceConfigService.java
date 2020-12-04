@@ -53,7 +53,7 @@ public interface ServiceConfigService {
     void paymentUpDateByGrpNo(ApplicationGroupDto appGrp);
 
     HcsaServiceDto getActiveHcsaServiceDtoByName(String svcName);
-    void updateAppGrpPmtStatus(ApplicationGroupDto appGrp);
+    ApplicationGroupDto updateAppGrpPmtStatus(ApplicationGroupDto appGrp);
     List<HcsaSvcDocConfigDto> getPrimaryDocConfigByVersion(Integer version);
     List<HcsaSvcDocConfigDto> getPrimaryDocConfigByIds(List<String> ids);
     List<HcsaSvcDocConfigDto> getPrimaryDocConfigById(String id);

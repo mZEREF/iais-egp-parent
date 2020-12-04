@@ -52,17 +52,18 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.Calculator;
 import ecq.commons.config.Config;
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * ServiceConfigServiceImpl
@@ -318,9 +319,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     }
 
     @Override
-    public void updateAppGrpPmtStatus(ApplicationGroupDto appGrp) {
+    public ApplicationGroupDto updateAppGrpPmtStatus(ApplicationGroupDto appGrp) {
         appGrp.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        applicationFeClient.doPaymentUpDate(appGrp);
+        return applicationFeClient.updateAppGrpPmtStatus(appGrp).getEntity();
     }
 
     @Override

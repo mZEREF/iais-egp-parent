@@ -273,7 +273,9 @@ public class RetriggerGiroPaymentDelegator {
                     appGrp.setPmtRefNo(pmtRefNo);
                     appGrp.setPaymentDt(new Date());
                     appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-                    serviceConfigService.updateAppGrpPmtStatus(appGrp);
+                    appGrp = serviceConfigService.updateAppGrpPmtStatus(appGrp);
+                    //eic
+                    serviceConfigService.saveAppGroupGiroSysnEic(appGrp);
                 }else{
                     switch2 = "prepayment";
                     ParamUtil.setRequestAttr(bpc.request,"RetriggerGiro","test");
