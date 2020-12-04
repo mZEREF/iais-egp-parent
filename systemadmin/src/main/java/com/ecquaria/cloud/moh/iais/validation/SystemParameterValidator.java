@@ -38,7 +38,7 @@ public class SystemParameterValidator implements CustomizeValidator {
 			try {
 				number = Integer.parseInt(value);
 			}catch (NumberFormatException e){
-				errMap.put("customErrorMessage", "UC_CHKLMD001_ERR003");
+				errMap.put("customErrorMessage", "SYSPAM_ERROR0008");
 				return errMap;
 			}
 		}
@@ -92,11 +92,11 @@ public class SystemParameterValidator implements CustomizeValidator {
 			}
 
 			if (!IaisEGPHelper.isAsc(to)){
-				errorMap.put("customErrorMessage", "UC_CHKLMD001_ERR003");
+				errorMap.put("customErrorMessage", "SYSPAM_ERROR0008");
 			}
 
 		}catch (NumberFormatException e){
-			errorMap.put("customErrorMessage", "UC_CHKLMD001_ERR003");
+			errorMap.put("customErrorMessage", "SYSPAM_ERROR0008");
 			return;
 		}
 

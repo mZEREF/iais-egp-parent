@@ -318,7 +318,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
                 }
             }
         }catch (Exception e){
-            errMap.put("tcuDate","UC_CHKLMD001_ERR003");
+            errMap.put("tcuDate","SYSPAM_ERROR0008");
             log.debug(e.toString());
         }
         if(icDto.isTcuFlag() && StringUtil.isEmpty(icDto.getTuc())){
