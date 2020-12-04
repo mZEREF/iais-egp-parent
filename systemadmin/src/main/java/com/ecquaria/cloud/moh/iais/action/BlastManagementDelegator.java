@@ -227,7 +227,7 @@ public class BlastManagementDelegator {
         String distribution = ParamUtil.getRequestString(bpc.request,"distributionList");
         if(start != null && end !=null && start.compareTo(end)>0){
             Map<String,String> err = IaisCommonUtils.genNewHashMap();
-            err.put("errDate",MessageUtil.getMessageDesc("ESB_ERR004"));
+            err.put("errDate",MessageUtil.getMessageDesc("EMM_ERR012"));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(err));
         }else{
             searchParam.getParams().clear();
