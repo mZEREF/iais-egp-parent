@@ -60,7 +60,8 @@ public class CessationApplicationBeDelegator {
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
-
+    @Value("${moh.halp.prs.enable}")
+    private String prsFlag;
     private static final String APPCESSATIONDTOS = "appCessationDtos";
     private static final String READINFO = "readInfo";
     private static final String WHICHTODO = "whichTodo";
@@ -384,25 +385,33 @@ public class CessationApplicationBeDelegator {
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect) && StringUtil.isEmpty(patRegNo)) {
                 errorMap.put(i + PATREGNO + j, MessageUtil.replaceMessage(ERROR, "Professional Regn No.", "field"));
             }else if(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect) && !StringUtil.isEmpty(patRegNo)){
-                ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
-                List<String> prgNos = IaisCommonUtils.genNewArrayList();
-                prgNos.add(patRegNo);
-                professionalParameterDto.setRegNo(prgNos);
-                professionalParameterDto.setClientId("22222");
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-                String format = simpleDateFormat.format(new Date());
-                professionalParameterDto.setTimestamp(format);
-                professionalParameterDto.setSignature("2222");
-                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                List<ProfessionalResponseDto> professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization()).getEntity();
-                if(!IaisCommonUtils.isEmpty(professionalResponseDtos)){
-                    List<String> specialty = professionalResponseDtos.get(0).getSpecialty();
-                    if(IaisCommonUtils.isEmpty(specialty)){
-                        errorMap.put(i + PATREGNO + j, "GENERAL_ERR0042");
+                if("Y".equals(prsFlag)){
+                    ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
+                    List<String> prgNos = IaisCommonUtils.genNewArrayList();
+                    prgNos.add(patRegNo);
+                    professionalParameterDto.setRegNo(prgNos);
+                    professionalParameterDto.setClientId("22222");
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                    String format = simpleDateFormat.format(new Date());
+                    professionalParameterDto.setTimestamp(format);
+                    professionalParameterDto.setSignature("2222");
+                    HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                    HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                    try {
+                        List<ProfessionalResponseDto> professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
+                                signature2.date(), signature2.authorization()).getEntity();
+                        if(!IaisCommonUtils.isEmpty(professionalResponseDtos)){
+                            List<String> specialty = professionalResponseDtos.get(0).getSpecialty();
+                            if(IaisCommonUtils.isEmpty(specialty)){
+                                errorMap.put(i + PATREGNO + j, "GENERAL_ERR0042");
+                            }
+                        }
+                    }catch (Throwable e){
+                        bpc.request.setAttribute("PRS_SERVICE_DOWN","PRS_SERVICE_DOWN");
+
                     }
                 }
+
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patientSelect) && StringUtil.isEmpty(patOthers)) {
                 errorMap.put(i + PATOTHERS + j, MessageUtil.replaceMessage(ERROR, "Others", "field"));

@@ -650,6 +650,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             return;
         }
         byte[] entity = fileRepositoryClient.getFileFormDataBase(id).getEntity();
+        log.info("file repo id is " + id);
         File file=MiscUtil.generateFile(sharedPath+AppServicesConsts.FILE_NAME+File.separator+groupId+ File.separator + AppServicesConsts.FILES,
                 id);
         try (OutputStream outputStream=Files.newOutputStream(file.toPath())) {
@@ -658,6 +659,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             }
         }catch (Exception e){
             log.error(e.getMessage(),e);
+            log.info("file stream is null");
         }
     }
 }
