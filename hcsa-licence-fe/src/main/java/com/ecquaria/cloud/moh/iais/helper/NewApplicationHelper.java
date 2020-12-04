@@ -2262,17 +2262,6 @@ public class NewApplicationHelper {
         return licenseeId;
     }
 
-    public static String getPmtStatus(String pmtMethod){
-        String pmtStatus;
-        if(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(pmtMethod)){
-            pmtStatus = ApplicationConsts.PAYMENT_STATUS_CREDIT_PAY_SUCCESS;
-        }else if(ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(pmtMethod)){
-            pmtStatus = ApplicationConsts.PAYMENT_STATUS_NETS_PAY_SUCCESS;
-        }else{
-            pmtStatus = ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS;
-        }
-        return pmtStatus;
-    }
 
     public static void removePremiseEmptyAlignInfo(AppSubmissionDto appSubmissionDto){
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();

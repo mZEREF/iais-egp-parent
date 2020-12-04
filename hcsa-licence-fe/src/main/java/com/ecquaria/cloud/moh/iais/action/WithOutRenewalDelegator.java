@@ -476,7 +476,7 @@ public class WithOutRenewalDelegator {
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
                 appGrp.setId(groupId);
                 appGrp.setPmtRefNo(pmtRefNo);
-                appGrp.setPmtStatus(NewApplicationHelper.getPmtStatus(pmtMethod));
+                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
                 //update application status
                 appSubmissionService.updateApplicationsStatus(groupId, ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);

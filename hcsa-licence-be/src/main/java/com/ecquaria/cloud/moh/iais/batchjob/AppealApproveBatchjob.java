@@ -577,14 +577,14 @@ public class AppealApproveBatchjob {
             //return fee
             ApplicationDto entity = applicationClient.getApplicationById(relateRecId).getEntity();
             ApplicationGroupDto entity1 = applicationClient.getAppById(entity.getAppGrpId()).getEntity();
-            if (ApplicationConsts.PAYMENT_STATUS_CREDIT_PAY_SUCCESS .equals(entity1.getPmtStatus())) {
+            if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT .equals(entity1.getPayMethod())) {
                 paymentMethodName = "onlinePayment";
                 paymentMode = ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT;
-            }else if(ApplicationConsts.PAYMENT_STATUS_NETS_PAY_SUCCESS.equals(entity1.getPmtStatus())){
+            }else if(ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(entity1.getPayMethod())){
                 paymentMethodName = "onlinePayment";
                 paymentMode = ApplicationConsts.PAYMENT_METHOD_NAME_NETS;
             }
-            else if (ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(entity1.getPmtStatus())) {
+            else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(entity1.getPayMethod())) {
                 paymentMethodName = "GIRO";
                 paymentMode = ApplicationConsts.PAYMENT_METHOD_NAME_GIRO;
             }

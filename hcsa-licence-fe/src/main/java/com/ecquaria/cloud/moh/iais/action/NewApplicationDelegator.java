@@ -1206,7 +1206,7 @@ public class NewApplicationDelegator {
                             ApplicationGroupDto appGrp = new ApplicationGroupDto();
                             appGrp.setId(grpId);
                             appGrp.setPmtRefNo(pmtRefNo);
-                            appGrp.setPmtStatus(NewApplicationHelper.getPmtStatus(pmtMethod));
+                            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                             serviceConfigService.updatePaymentStatus(appGrp);
                         }
                     }
@@ -1222,7 +1222,7 @@ public class NewApplicationDelegator {
                 appGrp.setId(appGrpId);
                 appGrp.setPmtRefNo(pmtRefNo);
                 appGrp.setPaymentDt(new Date());
-                appGrp.setPmtStatus(NewApplicationHelper.getPmtStatus(pmtMethod));
+                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
                 //send email
                 try {

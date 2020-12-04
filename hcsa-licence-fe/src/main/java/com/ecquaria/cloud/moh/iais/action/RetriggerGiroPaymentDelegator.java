@@ -272,7 +272,7 @@ public class RetriggerGiroPaymentDelegator {
                     appGrp.setId(appGrpId);
                     appGrp.setPmtRefNo(pmtRefNo);
                     appGrp.setPaymentDt(new Date());
-                    appGrp.setPmtStatus(NewApplicationHelper.getPmtStatus(pmtMethod));
+                    appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                     serviceConfigService.updateAppGrpPmtStatus(appGrp);
                 }else{
                     switch2 = "prepayment";

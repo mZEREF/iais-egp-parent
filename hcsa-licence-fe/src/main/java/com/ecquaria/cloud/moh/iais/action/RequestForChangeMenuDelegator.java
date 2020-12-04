@@ -1403,7 +1403,7 @@ public class RequestForChangeMenuDelegator {
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
                 appGrp.setId(grpId);
                 appGrp.setPmtRefNo(pmtRefNo);
-                appGrp.setPmtStatus(NewApplicationHelper.getPmtStatus(pmtMethod));
+                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
                 bpc.request.setAttribute("createDate", new Date());
             }else{

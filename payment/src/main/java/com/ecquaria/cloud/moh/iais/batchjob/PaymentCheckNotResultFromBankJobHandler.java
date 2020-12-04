@@ -56,15 +56,7 @@ public class PaymentCheckNotResultFromBankJobHandler extends IJobHandler {
                             if(paymentIntent!=null && "succeeded".equals(paymentIntent.getStatus())){
                                 paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
                                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
-                                String pmtStatus;
-                                if(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(paymentRequestDto.getPayMethod())){
-                                    pmtStatus = ApplicationConsts.PAYMENT_STATUS_CREDIT_PAY_SUCCESS;
-                                }else if(ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(paymentRequestDto.getPayMethod())){
-                                    pmtStatus = ApplicationConsts.PAYMENT_STATUS_NETS_PAY_SUCCESS;
-                                }else{
-                                    pmtStatus = ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS;
-                                }
-                                applicationGroupDto.setPmtStatus(pmtStatus);
+                                applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                             }else if(paymentIntent!=null && "canceled".equals(paymentIntent.getStatus())){
                                 paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
                                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
