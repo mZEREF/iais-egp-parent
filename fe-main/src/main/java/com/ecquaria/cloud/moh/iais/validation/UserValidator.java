@@ -35,7 +35,7 @@ public class UserValidator implements CustomizeValidator {
         FeUserDto dto = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
         String isNeedValidateField = (String) ParamUtil.getRequestAttr(request, UserConstants.IS_NEED_VALIDATE_FIELD);
                 if (dto.getIdentityNo() != null && !StringUtil.isEmpty(dto.getIdentityNo())) {
-                boolean b = true;
+                boolean b;
                 if(OrganizationConstants.ID_TYPE_FIN.equals(dto.getIdType())){
                     b = SgNoValidator.validateFin(dto.getIdentityNo());
                 }else{

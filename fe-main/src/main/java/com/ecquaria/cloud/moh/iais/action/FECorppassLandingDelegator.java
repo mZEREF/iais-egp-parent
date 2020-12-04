@@ -240,7 +240,7 @@ public class FECorppassLandingDelegator {
             feUserDto.setIdentityNo(idNo);
             feUserDto.setMobileNo(mobileNo);
             feUserDto.setOfficeTelNo(officeNo);
-            feUserDto.setIdType(idType);
+            feUserDto.setIdType(IaisEGPHelper.checkIdentityNoType(idNo));
             feUserDto.setEmail(email);
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, feUserDto);
             ParamUtil.setRequestAttr(request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.NO);
@@ -256,7 +256,6 @@ public class FECorppassLandingDelegator {
                 organizationDto.setUenNo(feUserDto.getUenNo());
                 organizationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
-                feUserDto.setIdType(IaisEGPHelper.checkIdentityNoType(feUserDto.getIdentityNo()));
                 organizationDto.setFeUserDto(feUserDto);
 
                 FeUserDto postUpdate = orgUserManageService.createCorpPassUser(organizationDto);
