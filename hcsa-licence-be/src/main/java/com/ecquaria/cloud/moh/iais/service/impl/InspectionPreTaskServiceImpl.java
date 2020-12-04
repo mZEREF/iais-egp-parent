@@ -367,7 +367,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                     editSelect = editSelect +(StringUtil.isEmpty(editSelect)?"":", ") + "medAlert";
                 }
             }
-            String remarks = "Sections Allowed for Change : "+editSelect;
+            String remarks = "Sections Allowed for Change : " + editSelect;
             int rfiDueDate = systemParamConfig.getRfiDueDate();
             LocalDate tatTime = LocalDate.now().plusDays(rfiDueDate);
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern(Formatter.DATE);
