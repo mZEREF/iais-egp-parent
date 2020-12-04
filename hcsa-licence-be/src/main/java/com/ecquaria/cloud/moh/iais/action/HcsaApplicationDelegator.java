@@ -390,6 +390,11 @@ public class HcsaApplicationDelegator {
                 if(isRejectDMS){
                     recommendationStr = "reject";
                 }
+                if(isRequestForChange){
+                    if("decisionApproval".equals(decisionValues)){
+                        recommendationStr = "decisionApproval";
+                    }
+                }
             }else if((isAppealType || isWithdrawal || isCessation) && isAsoPso){
                 String appealRecommendationValues = ParamUtil.getString(bpc.request,"appealRecommendationValues");
                 if("appealReject".equals(appealRecommendationValues)){
@@ -1803,7 +1808,10 @@ public class HcsaApplicationDelegator {
         //judge the final status is Approve or Reject.
         AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
         String applicationType = applicationDto.getApplicationType();
-        if(appPremisesRecommendationDto!= null && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
+        boolean isDMS = ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus());
+        boolean isRequestForChange = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType);
+        boolean isRfcDMS = isRequestForChange && isDMS;
+        if(appPremisesRecommendationDto!= null && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus) && !isRfcDMS){
                 if(!(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType))){
                     Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
                     if(null != recomInNumber && recomInNumber == 0){
