@@ -9,26 +9,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
@@ -38,22 +26,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
-import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -500,53 +476,6 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailParam.setSubject(subject);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_SMS);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                    notificationHelper.sendNotification(emailParam);
-
-                    //lic email
-                    emailMap.clear();
-                    ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
-                    if (applicationGroupDto != null){
-                        OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
-                        if (orgUserDto != null){
-                            emailMap.put("ApplicantName", orgUserDto.getDisplayName());
-                        }
-                    }
-                    emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
-                    emailMap.put("LicenceNumber", licenceNo);
-                    emailMap.put(CESSATION_DATE, DateFormatUtils.format(new Date(),"dd/MM/yyyy"));
-                    emailMap.put("email", systemParamConfig.getSystemAddressOne());
-                    emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
-                    emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
-
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE);
-                    emailParam.setTemplateContent(emailMap);
-                    emailParam.setQueryCode(licenceNo);
-                    emailParam.setReqRefNum(licenceNo);
-                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
-                    emailParam.setRefId(licId);
-                    map.clear();
-                    msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE).getEntity();
-                    map.put(SERVICE_LICENCE_NAME, svcName);
-                    map.put("LicenceNumber", licenceNo);
-                    subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
-                    emailParam.setSubject(subject);
-                    //email
-                    notificationHelper.sendNotification(emailParam);
-                    //sms
-                    msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_SMS).getEntity();
-                    subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
-                    emailParam.setSubject(subject);
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_SMS);
-                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
-                    notificationHelper.sendNotification(emailParam);
-                    //msg
-                    msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG).getEntity();
-                    subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
-                    emailParam.setSubject(subject);
-                    emailParam.setSvcCodeList(serviceCodes);
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
-                    emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                    emailParam.setRefId(licId);
                     notificationHelper.sendNotification(emailParam);
                 }
             } catch (Exception e) {

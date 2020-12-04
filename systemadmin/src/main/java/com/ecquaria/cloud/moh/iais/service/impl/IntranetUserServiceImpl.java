@@ -259,7 +259,17 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                     } else {
                         List<Role> rolesByDomain = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);//NOSONAR
                         //egp contains role
-                        fileErrorMap = containsRoleVal(rolesByDomain, roleId, fileErrorMap, errorRoleKey + i, errorData);//NOSONAR
+                        if (!IaisCommonUtils.isEmpty(rolesByDomain)) {//NOSONAR
+                            List<String> systemRoleId = IaisCommonUtils.genNewArrayList();
+                            for (Role role : rolesByDomain) {
+                                String id = role.getId();
+                                systemRoleId.add(id);
+                            }
+                            if (!systemRoleId.contains(roleId)) {
+                                fileErrorMap.put(errorRoleKey + i, "USER_ERR013");
+                                errorData = false ;
+                            }
+                        }
                     }
                     if (StringUtil.isEmpty(workingGroupId)) {
                         errorData = false;
@@ -267,7 +277,17 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                     } else {
                         List<WorkingGroupDto> workingGroups = getWorkingGroups();//NOSONAR
                         //egp contains workgroupId
-                        fileErrorMap = containsGrpIdVal(workingGroups, workingGroupId, fileErrorMap, errorworkGrpIdKey + i);//NOSONAR
+                        if (!IaisCommonUtils.isEmpty(workingGroups)) {//NOSONAR
+                            List<String> groupIds = IaisCommonUtils.genNewArrayList();
+                            for (WorkingGroupDto workingGroupDto : workingGroups) {
+                                String id = workingGroupDto.getId();
+                                groupIds.add(id);
+                            }
+                            if (!groupIds.contains(workingGroupId)) {
+                                fileErrorMap.put(errorworkGrpIdKey + i , "USER_ERR017");
+                                errorData = false ;
+                            }
+                        }
                     }
                     if (!StringUtil.isEmpty(userId) && !StringUtil.isEmpty(roleId)) {
                         OrgUserDto oldOrgUserDto = findIntranetUserByUserId(userId);
@@ -286,7 +306,6 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                         }
                     }
                     if (!errorData) {
-                        log.error(StringUtil.changeForLog("xml de data  have error ------------"));
                         EgpUserRoleDto egpUserRoleDto = new EgpUserRoleDto();
                         egpUserRoleDto.setUserId(userId);
                         egpUserRoleDto.setRoleId(roleId);
@@ -294,7 +313,6 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                         egpUserRoleDtos.add(egpUserRoleDto);
                     }
                 } catch (Exception e) {
-                    log.error(StringUtil.changeForLog("xml de format  have error ------------"));
                     log.error(e.getMessage(), e);
                     EgpUserRoleDto egpUserRoleDto = new EgpUserRoleDto();
                     egpUserRoleDto.setUserId(userId);
@@ -308,7 +326,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
         return fileErrorMap;
     }
 
-    private Map<String, String> containsRoleVal(List<Role> rolesByDomain, String roleId, Map<String, String> fileErrorMap, String errorKey, boolean errorData) {
+    private Map<String, String> containsRoleVal(List<Role> rolesByDomain, String roleId, Map<String, String> fileErrorMap, String errorKey) {
         if (!IaisCommonUtils.isEmpty(rolesByDomain)) {//NOSONAR
             List<String> systemRoleId = IaisCommonUtils.genNewArrayList();
             for (Role role : rolesByDomain) {
