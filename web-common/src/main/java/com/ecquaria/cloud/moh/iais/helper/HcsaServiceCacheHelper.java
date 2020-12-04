@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaServiceClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -25,21 +26,12 @@ public final class HcsaServiceCacheHelper {
 
 	public static String getServiceNameById(String id){
 		HcsaServiceDto hcsaServiceDto = getServiceById(id);
+		log.debug(StringUtil.changeForLog("service info " + JsonUtil.parseToJson(hcsaServiceDto)));
 
 		if (hcsaServiceDto == null){
 			return "-";
 		}else {
 			return hcsaServiceDto.getSvcName();
-		}
-	}
-
-	public static String getServiceTypeById(String id){
-		HcsaServiceDto hcsaServiceDto = getServiceById(id);
-
-		if (hcsaServiceDto == null){
-			return null;
-		}else {
-			return hcsaServiceDto.getSvcType();
 		}
 	}
 
