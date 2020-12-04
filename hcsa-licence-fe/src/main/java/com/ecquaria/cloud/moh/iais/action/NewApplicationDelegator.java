@@ -1207,6 +1207,7 @@ public class NewApplicationDelegator {
                             appGrp.setId(grpId);
                             appGrp.setPmtRefNo(pmtRefNo);
                             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                            appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
                             serviceConfigService.updatePaymentStatus(appGrp);
                         }
                     }
@@ -1223,6 +1224,7 @@ public class NewApplicationDelegator {
                 appGrp.setPmtRefNo(pmtRefNo);
                 appGrp.setPaymentDt(new Date());
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
                 serviceConfigService.updatePaymentStatus(appGrp);
                 //send email
                 try {
@@ -3082,6 +3084,7 @@ public class NewApplicationDelegator {
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
                 appGrp.setId(appGrpId);
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                appGrp.setPayMethod(payMethod);
                 serviceConfigService.updatePaymentStatus(appGrp);
 
                 //
@@ -3142,6 +3145,7 @@ public class NewApplicationDelegator {
             appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDto).getPmtStatus());
             String giroTranNo = appSubmissionDto.getGiroTranNo();
             appGrp.setPmtRefNo(giroTranNo);
+            appGrp.setPayMethod(payMethod);
             serviceConfigService.updatePaymentStatus(appGrp);
             ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
             ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);

@@ -477,6 +477,7 @@ public class WithOutRenewalDelegator {
                 appGrp.setId(groupId);
                 appGrp.setPmtRefNo(pmtRefNo);
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                appGrp.setPayMethod(pmtMethod);
                 serviceConfigService.updatePaymentStatus(appGrp);
                 //update application status
                 appSubmissionService.updateApplicationsStatus(groupId, ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
@@ -1377,6 +1378,7 @@ public class WithOutRenewalDelegator {
             appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDtos.get(0)).getPmtStatus());
             String giroTranNo = appSubmissionDtos.get(0).getGiroTranNo();
             appGrp.setPmtRefNo(giroTranNo);
+            appGrp.setPayMethod(payMethod);
             serviceConfigService.updatePaymentStatus(appGrp);
             String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
             ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
