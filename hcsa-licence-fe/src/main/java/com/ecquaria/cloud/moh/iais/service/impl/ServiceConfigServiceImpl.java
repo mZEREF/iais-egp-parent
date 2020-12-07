@@ -619,21 +619,22 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         List<GiroPaymentDto> giroPaymentDtos = IaisCommonUtils.genNewArrayList();
         //todo need analyze giroXmlPaymentBackDto to giroPaymentDtos save db
         List<InputDetailBackDto> inputDetailBackDtos = giroXmlPaymentBackDto.getINPUT_DETAIL();
-        for(InputDetailBackDto inputDetailBackDto : inputDetailBackDtos){
-            GiroPaymentDto giroPaymentDto = new GiroPaymentDto();
-            giroPaymentDto.setPmtStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            //todo get xml analyze  is pay or payback
-            giroPaymentDto.setPmtType(ApplicationConsts.GIRO_BANK_PAYMENT_TYPE_MONEYPAY);
-            giroPaymentDto.setAppGroupNo(inputDetailBackDto.getAPPLICATION_NUMBER());
-            giroPaymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            //todo get xml analyze amount
-            ApplicationGroupDto applicationGroupDto = applicationFeClient.getAppGrpByAppNo(inputDetailBackDto.getAPPLICATION_NUMBER()+"-01").getEntity();
-            giroPaymentDto.setAmount(applicationGroupDto.getAmount());
-            //save giroPaymentDto
-            appPaymentStatusClient.updateGiroPaymentDto(giroPaymentDto);
-            giroPaymentDtos.add(giroPaymentDto);
+        if(!IaisCommonUtils.isEmpty(inputDetailBackDtos)){
+            for(InputDetailBackDto inputDetailBackDto : inputDetailBackDtos){
+                GiroPaymentDto giroPaymentDto = new GiroPaymentDto();
+                giroPaymentDto.setPmtStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                //todo get xml analyze  is pay or payback
+                giroPaymentDto.setPmtType(ApplicationConsts.GIRO_BANK_PAYMENT_TYPE_MONEYPAY);
+                giroPaymentDto.setAppGroupNo(inputDetailBackDto.getAPPLICATION_NUMBER());
+                giroPaymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                //todo get xml analyze amount
+                ApplicationGroupDto applicationGroupDto = applicationFeClient.getAppGrpByAppNo(inputDetailBackDto.getAPPLICATION_NUMBER()+"-01").getEntity();
+                giroPaymentDto.setAmount(applicationGroupDto.getAmount());
+                //save giroPaymentDto
+                appPaymentStatusClient.updateGiroPaymentDto(giroPaymentDto);
+                giroPaymentDtos.add(giroPaymentDto);
+            }
         }
-
 
 
         return  giroPaymentDtos;
