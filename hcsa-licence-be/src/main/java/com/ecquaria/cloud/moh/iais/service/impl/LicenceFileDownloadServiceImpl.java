@@ -556,7 +556,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             File[] files = file.listFiles();
             log.info(StringUtil.changeForLog(files.length+"files.length------"));
             FileRepoEventDto eventDto = new FileRepoEventDto();
-            Boolean flag=Boolean.FALSE;
+            boolean flag=false;
             for(File f:files){
                 if(f.isFile()){
                     try {
@@ -567,13 +567,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         String s = f.getName().replaceAll("-", "");
                         //not use generateFile function.this have floder name have dian
                         File file1 = new File(file.getPath()+File.separator, s);
-                        f.renameTo(file1);
+                        flag=f.renameTo(file1);
                         fileRepoDto.setFileName(s);
                         fileRepoDto.setRelativePath(AppServicesConsts.COMPRESS+File.separator+fileNames+
                                 File.separator+groupPath+File.separator+"folder"+File.separator+groupPath+File.separator+"files");
                         fileRepoDtos.add(fileRepoDto);
                         eventDto.setFileRepoList(fileRepoDtos);
-                        flag=Boolean.TRUE;
+                        flag=true;
                         log.info(StringUtil.changeForLog(f.getPath()+"file path------"));
 
                     }catch (Exception e){

@@ -17,6 +17,7 @@ package com.ecquaria.cloud.moh.iais.api.util;
  *
  * @author zhuhua
  */
+
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -27,9 +28,10 @@ import com.jcraft.jsch.SftpException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -196,7 +198,7 @@ public class SFTPUtil {
     }
 
     public static void download(String directory, String downloadFile,String saveFile, ChannelSftp sftp) {
-        try(OutputStream os = new FileOutputStream(saveFile)) {
+        try(OutputStream os = Files.newOutputStream(Paths.get(saveFile))) {
             sftp.cd(directory);
             sftp.get(downloadFile, os);
         } catch (Exception e) {
