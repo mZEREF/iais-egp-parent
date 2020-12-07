@@ -496,14 +496,16 @@ public class WithOutRenewalDelegator {
         }else if(appSubmissionDtos.get(0).getPaymentMethod()!=null&&appSubmissionDtos.get(0).getPaymentMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO)){
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE4);
         }
-        for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            if(appGrpPremisesDtoList!=null){
-                for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
-                    List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
-                    if(appPremPhOpenPeriodList !=null){
-                        for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList){
-                            appPremPhOpenPeriodDto.setDayName(MasterCodeUtil.getCodeDesc(appPremPhOpenPeriodDto.getPhDate()));
+        if(!IaisCommonUtils.isEmpty(appSubmissionDtos)) {//NOSONAR
+            for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
+                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+                if (appGrpPremisesDtoList != null) {
+                    for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+                        if (appPremPhOpenPeriodList != null) {
+                            for (AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList) {
+                                appPremPhOpenPeriodDto.setDayName(MasterCodeUtil.getCodeDesc(appPremPhOpenPeriodDto.getPhDate()));
+                            }
                         }
                     }
                 }
