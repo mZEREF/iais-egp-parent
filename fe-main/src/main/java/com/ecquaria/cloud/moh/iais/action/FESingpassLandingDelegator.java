@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
@@ -168,9 +169,17 @@ public class FESingpassLandingDelegator {
             if (infoOpt.isPresent()){
                 MyInfoDto myInfoDto = infoOpt.get();
                 if(!myInfoDto.isServiceDown()){
-                    feUserDto.setDisplayName(myInfoDto.getUserName());
                     feUserDto.setEmail(myInfoDto.getEmail());
                     feUserDto.setMobileNo(myInfoDto.getMobileNo());
+                    feUserDto.setDisplayName(myInfoDto.getUserName());
+                    LicenseeDto licenseeDto = new LicenseeDto();
+                    licenseeDto.setFloorNo(myInfoDto.getFloor());
+                    licenseeDto.setPostalCode(myInfoDto.getPostalCode());
+                    licenseeDto.setUnitNo(myInfoDto.getUnitNo());
+                    licenseeDto.setBlkNo(myInfoDto.getBlockNo());
+                    licenseeDto.setBuildingName(myInfoDto.getBuildingName());
+                    licenseeDto.setStreetName(myInfoDto.getStreetName());
+                    feUserDto.setLicenseeDto(licenseeDto);
                 }else {
                     ParamUtil.setRequestAttr(request,"myinfoServiceDown", "Y");
                 }
@@ -201,7 +210,6 @@ public class FESingpassLandingDelegator {
         String salutation = ParamUtil.getString(request, UserConstants.SALUTATION);
         String designation = ParamUtil.getString(request, UserConstants.DESIGNATION);
         String idNo = ParamUtil.getString(request, UserConstants.ID_NUMBER);
-        String idType = ParamUtil.getString(request, UserConstants.ID_TYPE);
         String mobileNo = ParamUtil.getString(request, UserConstants.MOBILE_NO);
         String officeNo = ParamUtil.getString(request, UserConstants.OFFICE_NO);
         String email = ParamUtil.getString(request, UserConstants.EMAIL);
