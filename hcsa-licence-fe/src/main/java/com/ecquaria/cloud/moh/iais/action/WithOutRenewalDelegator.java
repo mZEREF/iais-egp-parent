@@ -1290,6 +1290,25 @@ public class WithOutRenewalDelegator {
                     return;
                 }
                 if(appSubmissionDtos.size()==1){
+                    String licenceId = appSubmissionDto.getLicenceId();
+                    LicenceDto licenceById = requestForChangeService.getLicenceById(licenceId);
+                    if(licenceById.getSvcName()!=null){
+                        HcsaServiceDto hcsaServiceDto = serviceConfigService.getActiveHcsaServiceDtoByName(licenceById.getSvcName());
+                        List<String> serviceIds=IaisCommonUtils.genNewArrayList();
+                        if(hcsaServiceDto!=null){
+                            serviceIds.add(hcsaServiceDto.getId());
+                            for(AppGrpPremisesDto appGrpPremisesDto : oldAppSubmissionDtoAppGrpPremisesDtoList){
+                                boolean configIsChange = requestForChangeService.serviceConfigIsChange(serviceIds, appGrpPremisesDto.getPremisesType());
+                                if(!configIsChange){
+                                    String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
+                                    rfc_err020=rfc_err020.replace("{ServiceName}",licenceById.getSvcName());
+                                    bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
+                                    ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
+                                    return;
+                                }
+                            }
+                        }
+                    }
                     boolean flag =NewApplicationDelegator.eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
                     log.info(StringUtil.changeForLog("flag is--"+flag));
                     if(flag){
@@ -1297,6 +1316,21 @@ public class WithOutRenewalDelegator {
                             List<LicenceDto> licenceDtos = (List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence" + i);
                             if (licenceDtos != null) {
                                 for (LicenceDto licenceDto : licenceDtos) {
+                                    HcsaServiceDto hcsaServiceDto = serviceConfigService.getActiveHcsaServiceDtoByName(licenceDto.getSvcName());
+                                    if(hcsaServiceDto!=null){
+                                        List<String> serviceIds=IaisCommonUtils.genNewArrayList();
+                                        if(hcsaServiceDto!=null){
+                                            serviceIds.add(hcsaServiceDto.getId());
+                                            boolean configIsChange = requestForChangeService.serviceConfigIsChange(serviceIds, appGrpPremisesDtoList.get(i).getPremisesType());
+                                            if(!configIsChange){
+                                                String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
+                                                rfc_err020=rfc_err020.replace("{ServiceName}",licenceDto.getSvcName());
+                                                bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
+                                                ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
+                                                return;
+                                            }
+                                        }
+                                    }
                                     List<ApplicationDto> appByLicIdAndExcludeNewOther = requestForChangeService.getAppByLicIdAndExcludeNew(licenceDto.getId());
                                     if (!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNewOther)) {
                                         bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
@@ -1309,6 +1343,26 @@ public class WithOutRenewalDelegator {
                                         ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
                                         return;
                                     }
+                                }
+                            }
+                        }
+                    }
+                }else {
+                    String licenceId = appSubmissionDto.getLicenceId();
+                    LicenceDto licenceById = requestForChangeService.getLicenceById(licenceId);
+                    if(licenceById.getSvcName()!=null){
+                        HcsaServiceDto hcsaServiceDto = serviceConfigService.getActiveHcsaServiceDtoByName(licenceById.getSvcName());
+                        List<String> serviceIds=IaisCommonUtils.genNewArrayList();
+                        if(hcsaServiceDto!=null){
+                            serviceIds.add(hcsaServiceDto.getId());
+                            for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+                                boolean configIsChange = requestForChangeService.serviceConfigIsChange(serviceIds, appGrpPremisesDto.getPremisesType());
+                                if(!configIsChange){
+                                    String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
+                                    rfc_err020=rfc_err020.replace("{ServiceName}",licenceById.getSvcName());
+                                    bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
+                                    ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
+                                    return;
                                 }
                             }
                         }

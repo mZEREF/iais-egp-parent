@@ -105,4 +105,5 @@ public interface RequestForChangeService {
     List<FeUserDto> getFeUserDtoByLicenseeId(String licenseeId);
     LicenceDto getLicenceDtoByLicNo(String licenceNo);
     boolean serviceConfigIsChange(List<String> serviceId ,String presmiseType);
+    boolean eqChangeConfigPresmiseType(List<LicenceDto> list,List<String> presmiseType);
     }

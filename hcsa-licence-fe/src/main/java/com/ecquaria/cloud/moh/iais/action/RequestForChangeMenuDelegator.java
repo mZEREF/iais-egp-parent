@@ -1436,8 +1436,26 @@ public class RequestForChangeMenuDelegator {
     public void doSubmit(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
         List<LicenceDto> selectLicence = (List<LicenceDto>) bpc.request.getSession().getAttribute("licenceDtoList");
+        AppSubmissionDto oldAppSubmissionDtoappSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "oldAppSubmissionDto");
+        List<AppGrpPremisesDto> oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDtoappSubmissionDto.getAppGrpPremisesDtoList();
         if (selectLicence != null) {
             for (LicenceDto string : selectLicence) {
+                HcsaServiceDto activeHcsaServiceDtoByName = serviceConfigService.getActiveHcsaServiceDtoByName(string.getSvcName());
+                if(activeHcsaServiceDtoByName!=null){
+                    List<String> serviceIds=IaisCommonUtils.genNewArrayList();
+                    serviceIds.add(activeHcsaServiceDtoByName.getId());
+                    for(AppGrpPremisesDto appGrpPremisesDto : oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList){
+                        boolean configIsChange = requestForChangeService.serviceConfigIsChange(serviceIds, appGrpPremisesDto.getPremisesType());
+                        if(!configIsChange){
+                            String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
+                            rfc_err020=rfc_err020.replace("{ServiceName}",string.getSvcName());
+                            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
+                            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
+                            bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
+                            return;
+                        }
+                    }
+                }
                 List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(string.getId());
                 if (!IaisCommonUtils.isEmpty(applicationDtos)) {
                     ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
@@ -1447,13 +1465,11 @@ public class RequestForChangeMenuDelegator {
                 }
             }
         }
-        AppSubmissionDto oldAppSubmissionDtoappSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "oldAppSubmissionDto");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
         List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
 
 
-        List<AppGrpPremisesDto> oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDtoappSubmissionDto.getAppGrpPremisesDtoList();
 
         boolean eqGrpPremises = NewApplicationDelegator.eqGrpPremises(appGrpPremisesDtoList1, oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList);
         if (!eqGrpPremises) {

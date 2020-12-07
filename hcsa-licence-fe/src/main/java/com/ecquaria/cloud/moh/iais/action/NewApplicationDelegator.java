@@ -461,7 +461,6 @@ public class NewApplicationDelegator {
 
             List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
             String licenceNo = appSubmissionDto.getLicenceNo();
-
             for (int i = 0; i < appGrpPremisesDtoList1.size(); i++) {
                 String hciCode = appGrpPremisesDtoList1.get(i).getHciCode();
                 List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(hciCode, licenseeId);
@@ -474,7 +473,6 @@ public class NewApplicationDelegator {
                 appGrpPremisesDtoList1.get(i).setLicenceDtos(licenceDtoByHciCode);
                 bpc.request.getSession().setAttribute("selectLicence" + i, licenceDtoByHciCode);
             }
-
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         log.info(StringUtil.changeForLog("the do preparePremises end ...."));
@@ -1808,6 +1806,27 @@ public class NewApplicationDelegator {
 
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+        String licenceId = appSubmissionDto.getLicenceId();
+        LicenceDto licenceById = requestForChangeService.getLicenceById(licenceId);
+        if(licenceById.getSvcName()!=null){
+            List<String> serviceIds=IaisCommonUtils.genNewArrayList();
+            HcsaServiceDto activeHcsaServiceDtoByName = serviceConfigService.getActiveHcsaServiceDtoByName(licenceById.getSvcName());
+            if(activeHcsaServiceDtoByName!=null){
+                serviceIds.add(activeHcsaServiceDtoByName.getId());
+                for(AppGrpPremisesDto appGrpPremisesDto : oldAppSubmissionDtoAppGrpPremisesDtoList){
+                    String premisesType = appGrpPremisesDto.getPremisesType();
+                    boolean b = requestForChangeService.serviceConfigIsChange(serviceIds, premisesType);
+                    if(!b){
+                        String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
+                        rfc_err020=rfc_err020.replace("{ServiceName}",licenceById.getSvcName());
+                        bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
+                        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
+                        ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
+                        return;
+                    }
+                }
+            }
+        }
         boolean grpPremiseIsChange = false;
         boolean serviceIsChange = false;
         boolean docIsChange = false;
@@ -1855,6 +1874,18 @@ public class NewApplicationDelegator {
                         List<LicenceDto> attribute = (List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence" + i);
                         if (attribute != null) {
                             for (LicenceDto string : attribute) {
+                                HcsaServiceDto activeHcsaServiceDtoByName = serviceConfigService.getActiveHcsaServiceDtoByName(string.getSvcName());
+                                List<String> serviceIds=IaisCommonUtils.genNewArrayList();
+                                serviceIds.add(activeHcsaServiceDtoByName.getId()   );
+                                boolean configIsChange = requestForChangeService.serviceConfigIsChange(serviceIds, appGrpPremisesDtoList.get(i).getPremisesType());
+                                if(!configIsChange){
+                                    String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
+                                    rfc_err020=rfc_err020.replace("{ServiceName}",licenceById.getSvcName());
+                                    bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
+                                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
+                                    ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
+                                    return;
+                                }
                                 AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string.getId());
                                 Boolean changeOtherOperation = requestForChangeService.isOtherOperation(string.getId());
                                 if (!changeOtherOperation) {

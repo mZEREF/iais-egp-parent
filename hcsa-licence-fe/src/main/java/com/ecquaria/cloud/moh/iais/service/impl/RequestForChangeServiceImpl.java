@@ -72,6 +72,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.sql.Time;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -1527,7 +1528,28 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     public LicenceDto getLicenceDtoByLicNo(String licenceNo) {
         return licenceClient.getLicenceDtoByLicNo(licenceNo).getEntity();
     }
-
+    @Override
+    public boolean eqChangeConfigPresmiseType(List<LicenceDto> list,List<String> presmiseType){
+        List<String>serviceName=new ArrayList<>(list.size());
+        for(LicenceDto licenceDto : list) {
+            String svcName = licenceDto.getSvcName();
+            if(!serviceName.contains(svcName)){
+                serviceName.add(svcName);
+            }
+        }
+        List<HcsaServiceDto> hcsaServiceByNames = serviceConfigService.getHcsaServiceByNames(serviceName);
+        List<String> serviceIds=new ArrayList<>(hcsaServiceByNames.size());
+        for(HcsaServiceDto hcsaServiceDto : hcsaServiceByNames){
+            serviceIds.add(hcsaServiceDto.getId());
+        }
+        for(String s  : presmiseType){
+            boolean configIsChange = serviceConfigIsChange(serviceIds, s);
+            if(!configIsChange){
+                return true;
+            }
+        }
+        return false;
+    }
     @Override
     public boolean serviceConfigIsChange(List<String> serviceId, String presmiseType) {
         if(serviceId!=null && !serviceId.isEmpty() && presmiseType!=null){

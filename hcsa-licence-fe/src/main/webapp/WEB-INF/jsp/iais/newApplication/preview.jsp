@@ -167,14 +167,19 @@
     </div>
 </div>--%>
 <iais:confirm msg="${RFC_ERROR_NO_CHANGE}" callBack="cancel()"  needCancel="false" popupOrder="rfc_ERROR"></iais:confirm>
+<iais:confirm msg="${SERVICE_CONFIG_CHANGE}" callBack="cancel()"  needCancel="false" popupOrder="SERVICE_CONFIG_CHANGE"></iais:confirm>
 <input type="hidden" value="${RFC_ERROR_NO_CHANGE}" id="RFC_ERROR_NO_CHANGE">
 <input type="hidden" value="${RFC_ERR004}" id="RFC_ERR004">
+<input type="hidden" id="SERVICE_CONFIG_HAVE_CHANGE" value="${SERVICE_CONFIG_CHANGE}">
 <script type="text/javascript">
 
     $(document).ready(function() {
         //Binding method
         if($('#RFC_ERROR_NO_CHANGE').val()!=''){
             $('#rfc_ERROR').modal('show');
+        }
+        if($('#SERVICE_CONFIG_HAVE_CHANGE').val()!=''){
+            $('#SERVICE_CONFIG_CHANGE').modal('show');
         }
         if($('#saveDraftSuccess').val()=='success'){
             $('#saveDraft').modal('show');
@@ -271,6 +276,7 @@
         $('#saveDraft').modal('hide');
         $('#rfcPending').modal('hide');
         $('#rfc_ERROR').modal('hide');
+        $('#SERVICE_CONFIG_CHANGE').modal('hide');
     }
     function exitAndSave() {
         submit('premises','saveDraft','exitSaveDraft');

@@ -859,7 +859,7 @@ public class AppealServiceImpl implements AppealService {
 
 
     private String licencePresmises(HttpServletRequest request, String licenceId) {
-        LicenceDto licenceDto = licenceClient.getLicBylicId(licenceId).getEntity();
+        LicenceDto licenceDto = licenceClient.getLicDtoById(licenceId).getEntity();
         ApplicationDto entity1 = (ApplicationDto) request.getSession().getAttribute("rfiApplication");
         String licenseeId = licenceDto.getLicenseeId();
         String rfi = (String) request.getSession().getAttribute("rfi");

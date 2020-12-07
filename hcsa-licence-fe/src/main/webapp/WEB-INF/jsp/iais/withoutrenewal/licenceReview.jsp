@@ -180,6 +180,8 @@
             </div>
         </div>
     </div>
+    <iais:confirm msg="${SERVICE_CONFIG_CHANGE}" callBack="cancel()"  needCancel="false" popupOrder="SERVICE_CONFIG_CHANGE"></iais:confirm>
+    <input type="hidden" id="SERVICE_CONFIG_HAVE_CHANGE" value="${SERVICE_CONFIG_CHANGE}">
     <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>
 <script>
@@ -190,6 +192,9 @@
         }
         if($('#rfcPendingApplication').val()=='errorRfcPendingApplication'){
             $('#rfcPending').modal('show');
+        }
+        if($('#SERVICE_CONFIG_HAVE_CHANGE').val()!=''){
+            $('#SERVICE_CONFIG_CHANGE').modal('show');
         }
     });
 
@@ -208,6 +213,7 @@
     });
     function cancel() {
         $('#rfcPending').modal('hide');
+        $('#SERVICE_CONFIG_CHANGE').modal('hide');
     }
     function exitAndSave() {
         $('#crud_action_additional').val('exitSaveDraft');

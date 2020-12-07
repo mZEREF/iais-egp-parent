@@ -111,7 +111,9 @@
     </div>
   </div>--%>
   <iais:confirm msg="${RFC_ERROR_NO_CHANGE}" callBack="cancel()"  needCancel="false" popupOrder="rfc_ERROR"></iais:confirm>
+  <iais:confirm msg="${SERVICE_CONFIG_CHANGE}" callBack="cancel()"  needCancel="false" popupOrder="SERVICE_CONFIG_CHANGE"></iais:confirm>
   <input type="hidden" value="${RFC_ERROR_NO_CHANGE}" id="RFC_ERROR_NO_CHANGE">
+  <input type="hidden" id="SERVICE_CONFIG_HAVE_CHANGE" value="${SERVICE_CONFIG_CHANGE}">
 </form>
 
 
@@ -124,6 +126,9 @@
         }
         if($('#rfcPendingApplication').val()=='errorRfcPendingApplication'){
             $('#ackMessageConfim').modal('show');
+        }
+        if($('#SERVICE_CONFIG_HAVE_CHANGE').val()!=''){
+            $('#SERVICE_CONFIG_CHANGE').modal('show');
         }
         if($('#hciNameUsedInput').val()=='hciNameUsed'){
             $('#hciNameUsed').modal('show');
@@ -155,6 +160,7 @@
     function cancel(){
         $('#rfcPendingApplication').modal('hide');
         $('#rfc_ERROR').modal('hide');
+        $('#SERVICE_CONFIG_CHANGE').modal('hide');
     }
     $('#previewAndSub').click(function () {
         doSubmitForm('prePayment','', '');
