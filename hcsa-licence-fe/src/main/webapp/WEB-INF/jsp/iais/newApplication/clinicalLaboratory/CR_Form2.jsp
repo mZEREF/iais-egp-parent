@@ -643,7 +643,11 @@
             $currentPsn.find('input[type="text"]').css('border-color', '');
             $currentPsn.find('input[type="text"]').css('color', '');
             //add edit and set style
-            setPsnDisabled($currentPsn, ${GovernanceOfficersList[stat.index].psnEditFieldStr});
+            var psnDto = {};
+            <c:if test="${!empty GovernanceOfficersList[stat.index].psnEditFieldStr}">
+            psnDto = ${GovernanceOfficersList[stat.index].psnEditFieldStr};
+            </c:if>
+            setPsnDisabled($currentPsn,psnDto);
             </c:forEach>
         } else if (('APTY005' == appType || 'APTY004' == appType) && '0' == rfiObj) {
             disabledPage();

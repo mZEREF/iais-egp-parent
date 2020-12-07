@@ -295,7 +295,11 @@
                 $currentPsn.find('input[type="text"]').css('border-color','');
                 $currentPsn.find('input[type="text"]').css('color','');
                 //add edit and set style
-                setPsnDisabled($currentPsn,${AppSvcMedAlertPsn[stat.index].psnEditFieldStr});
+                var psnDto = {};
+                <c:if test="${!empty AppSvcMedAlertPsn[stat.index].psnEditFieldStr}">
+                psnDto = ${AppSvcMedAlertPsn[stat.index].psnEditFieldStr};
+                </c:if>
+                setPsnDisabled($currentPsn,psnDto);
             </c:forEach>
         }
         //doEdit();

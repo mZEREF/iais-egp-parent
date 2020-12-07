@@ -615,7 +615,11 @@
               $currentPsn.find('input[type="text"]').css('border-color','');
               $currentPsn.find('input[type="text"]').css('color','');
               //add edit and set style
-              setPoPsnDisabled($currentPsn,${ReloadPrincipalOfficers[stat.index].psnEditFieldStr});
+              var psnDto = {};
+              <c:if test="${!empty ReloadPrincipalOfficers[stat.index].psnEditFieldStr}">
+              psnDto = ${ReloadPrincipalOfficers[stat.index].psnEditFieldStr};
+              </c:if>
+              setPoPsnDisabled($currentPsn,psnDto);
             </c:forEach>
 
             //dpo
@@ -635,7 +639,11 @@
               $currentPsn.find('input[type="text"]').css('border-color','');
               $currentPsn.find('input[type="text"]').css('color','');
               //add edit and set style
-              setDpoPsnDisabled($currentPsn,${ReloadDeputyPrincipalOfficers[stat.index].psnEditFieldStr});
+              var psnDto = {};
+              <c:if test="${!empty ReloadDeputyPrincipalOfficers[stat.index].psnEditFieldStr}">
+              psnDto = ${ReloadDeputyPrincipalOfficers[stat.index].psnEditFieldStr};
+              </c:if>
+              setDpoPsnDisabled($currentPsn,psnDto);
             </c:forEach>
         }
 
