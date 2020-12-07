@@ -280,7 +280,7 @@
                                                         </div>
                                                     </c:if>
 
-                                                    <div id="recommendationDropdown">
+                                                    <div id="recommendationDropdown" ${applicationViewDto.applicationDto.applicationType == 'APTY007' ? 'hidden' : ''}>
                                                         <iais:row>
                                                             <div id="recommendationFieldTrue" class="hidden"><iais:field value="${recommendationShowName}" required="true"/></div>
                                                             <div id="recommendationFieldFalse"><iais:field value="${recommendationShowName}" required="false"/></div>
