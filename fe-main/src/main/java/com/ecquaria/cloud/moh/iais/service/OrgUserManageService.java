@@ -59,5 +59,7 @@ public interface OrgUserManageService {
 
     Boolean validatePwd(FeUserDto feUserDto);
 
+    OrganizationDto createHalpAccount(OrganizationDto organizationDto);
+
     LicenseeDto saveMyinfoDataByFeUserDtoAndLicenseeDto( LicenseeDto licenseeDto, FeUserDto feUserDto, MyInfoDto myInfoDto,boolean amendLicensee);
 }

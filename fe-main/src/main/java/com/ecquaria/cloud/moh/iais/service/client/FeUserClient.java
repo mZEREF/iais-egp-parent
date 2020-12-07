@@ -51,14 +51,12 @@ public interface FeUserClient {
     @GetMapping(path = "/iais-internet-user/user-account-orgid", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<FeUserDto>> getAccountByOrgId(@RequestParam(value = "orgId")String orgId);
 
+
     @PostMapping(path = "/iais-internet-user/user-account/", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-	FeignResponseEntity<OrganizationDto> createSingpassAccount(@RequestBody OrganizationDto organizationDto);
+    FeignResponseEntity<OrganizationDto> createHalpAccount(@RequestBody OrganizationDto organizationDto);
 
     @GetMapping(value = "/iais-internet-user/organization/{uen}/user/{nric}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FeUserDto> getUserByNricAndUen(@PathVariable(value = "uen") String uen, @PathVariable(value = "nric") String nric);
-
-    @PostMapping(path = "/iais-internet-user/organization/user-account/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<OrganizationDto> createCorpPassUser(@RequestBody OrganizationDto organizationDto);
 
     @GetMapping(value = "/iais-internet-user/user-info/{userId}")
     FeignResponseEntity<InterInboxUserDto> findUserInfoByUserId(@PathVariable("userId")String UserId);

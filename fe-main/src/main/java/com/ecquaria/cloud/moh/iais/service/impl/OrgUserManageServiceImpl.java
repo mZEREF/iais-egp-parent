@@ -131,7 +131,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Override
     public OrganizationDto createSingpassAccount(OrganizationDto organizationDto) {
-        FeignResponseEntity<OrganizationDto> result = feUserClient.createSingpassAccount(organizationDto);
+        FeignResponseEntity<OrganizationDto> result = feUserClient.createHalpAccount(organizationDto);
         int status = result.getStatusCode();
         if (status == HttpStatus.SC_OK){
             OrganizationDto postCreate = result.getEntity();
@@ -191,7 +191,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Override
     public FeUserDto createCorpPassUser(OrganizationDto organizationDto) {
-        FeignResponseEntity<OrganizationDto> result = feUserClient.createCorpPassUser(organizationDto);
+        FeignResponseEntity<OrganizationDto> result = feUserClient.createHalpAccount(organizationDto);
         OrganizationDto postCreate = result.getEntity();
         if (postCreate == null){
             // sonar check
@@ -470,6 +470,11 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public Boolean validatePwd(FeUserDto feUserDto) {
         return feUserClient.validatePwd(feUserDto).getEntity();
+    }
+
+    @Override
+    public OrganizationDto createHalpAccount(OrganizationDto organizationDto) {
+        return null;
     }
 
 

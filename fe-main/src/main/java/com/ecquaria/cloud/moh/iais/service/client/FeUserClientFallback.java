@@ -80,23 +80,16 @@ public class FeUserClientFallback implements FeUserClient{
     }
 
     @Override
-    public FeignResponseEntity<OrganizationDto> createSingpassAccount(OrganizationDto organizationDto) {
+    public FeignResponseEntity<OrganizationDto> createHalpAccount(OrganizationDto organizationDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
+
 
     @Override
     public FeignResponseEntity<FeUserDto> getUserByNricAndUen(String uen, String nric) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<OrganizationDto> createCorpPassUser(OrganizationDto organizationDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
