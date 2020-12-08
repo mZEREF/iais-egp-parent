@@ -1,6 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -26,7 +26,7 @@ public class SystemParameterValidator implements CustomizeValidator {
 	@Override
 	public Map<String, String> validate(HttpServletRequest httpServletRequest) {
 		Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-		SystemParameterDto editDto = (SystemParameterDto) ParamUtil.getSessionAttr(httpServletRequest, SystemParameterConstants.PARAMETER_REQUEST_DTO);
+		SystemParameterDto editDto = (SystemParameterDto) ParamUtil.getSessionAttr(httpServletRequest, SystemParameterConstant.PARAMETER_REQUEST_DTO);
 		if (editDto == null || StringUtils.isEmpty(editDto.getValue())){
 			return errMap;
 		}
@@ -45,19 +45,19 @@ public class SystemParameterValidator implements CustomizeValidator {
 
 		String propertiesKey = editDto.getPropertiesKey();
 		switch (propertiesKey){
-			case SystemParameterConstants.PARAM_KEY_PAGE_SIZE:
+			case SystemParameterConstant.PARAM_KEY_PAGE_SIZE:
 				verifyPageSize(errMap, value);
 			break;
-			case SystemParameterConstants.PARAM_KEY_UPLOAD_FILE_LIMIT:
+			case SystemParameterConstant.PARAM_KEY_UPLOAD_FILE_LIMIT:
 				verifyFileUploadSize(errMap, number);
 			break;
-			case SystemParameterConstants.PARAM_KEY_AUDIT_TRAIL_SEARCH_WEEK:
+			case SystemParameterConstant.PARAM_KEY_AUDIT_TRAIL_SEARCH_WEEK:
 				verifyAuditTrailWeek(errMap, number);
 			break;
-			case SystemParameterConstants.PARAM_KEY_UPLOAD_FILE_TYPE:
+			case SystemParameterConstant.PARAM_KEY_UPLOAD_FILE_TYPE:
 				verifyUploadFileType(errMap, value);
 				break;
-			case SystemParameterConstants.PARAM_KEY_INSPECTOR_TCU_REMINDER_WEEK:
+			case SystemParameterConstant.PARAM_KEY_INSPECTOR_TCU_REMINDER_WEEK:
 				verifyWeekDay(errMap, number);
 				break;
 			default:

@@ -6,7 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -120,7 +120,7 @@ public class TaskServiceImpl implements TaskService {
             log.info(StringUtil.changeForLog("------"+JsonUtil.parseToJson(hcsaSvcStageWorkingGroupDtos)));
             TaskDto taskScoreDto =new TaskDto();
             log.info(StringUtil.changeForLog("The getRoutingTask getSchemeType() is -->:"+hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType()));
-            if(SystemParameterConstants.ROUND_ROBIN.equals(hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType())){
+            if(SystemParameterConstant.ROUND_ROBIN.equals(hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType())){
                 taskScoreDto = getUserIdForWorkGroup(workGroupId);
             }
 

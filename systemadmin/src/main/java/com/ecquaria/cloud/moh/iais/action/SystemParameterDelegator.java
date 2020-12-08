@@ -4,7 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -44,8 +44,8 @@ public class SystemParameterDelegator {
 
     private final FilterParameter filterParameter = new FilterParameter.Builder()
             .clz(SystemParameterQueryDto.class)
-            .searchAttr(SystemParameterConstants.PARAM_SEARCH)
-            .resultAttr(SystemParameterConstants.PARAM_SEARCHRESULT)
+            .searchAttr(SystemParameterConstant.PARAM_SEARCH)
+            .resultAttr(SystemParameterConstant.PARAM_SEARCHRESULT)
             .sortField("pid").build();
     private final SystemParameterService parameterService;
 
@@ -73,12 +73,12 @@ public class SystemParameterDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG, AuditTrailConsts.FUNCTION_SYSTEM_PARAMETER_MANAGEMENT);
         HttpServletRequest request = bpc.request;
 
-        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_DOMAIN_TYPE, null);
-        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_MODULE, null);
-        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_STATUS, null);
-        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_DESCRIPTION, null);
-        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_SEARCH, null);
-        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_SEARCHRESULT, null);
+        ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_DOMAIN_TYPE, null);
+        ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_MODULE, null);
+        ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_STATUS, null);
+        ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_DESCRIPTION, null);
+        ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_SEARCH, null);
+        ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_SEARCHRESULT, null);
     }
 
     /**
@@ -95,8 +95,8 @@ public class SystemParameterDelegator {
         QueryHelp.setMainSql("systemAdmin", "querySystemParam", searchParam);
 
         SearchResult searchResult = parameterService.doQuery(searchParam);
-        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_SEARCH, searchParam);
-        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_SEARCHRESULT, searchResult);
+        ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_SEARCH, searchParam);
+        ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_SEARCHRESULT, searchResult);
     }
 
 
@@ -113,10 +113,10 @@ public class SystemParameterDelegator {
 
         SystemParameterQueryDto queryDto = new SystemParameterQueryDto();
 
-        String domainType = ParamUtil.getString(request, SystemParameterConstants.PARAM_DOMAIN_TYPE);
-        String module = ParamUtil.getString(request, SystemParameterConstants.PARAM_MODULE);
-        String status = ParamUtil.getString(request, SystemParameterConstants.PARAM_STATUS);
-        String description = ParamUtil.getString(request, SystemParameterConstants.PARAM_DESCRIPTION);
+        String domainType = ParamUtil.getString(request, SystemParameterConstant.PARAM_DOMAIN_TYPE);
+        String module = ParamUtil.getString(request, SystemParameterConstant.PARAM_MODULE);
+        String status = ParamUtil.getString(request, SystemParameterConstant.PARAM_STATUS);
+        String description = ParamUtil.getString(request, SystemParameterConstant.PARAM_DESCRIPTION);
 
         queryDto.setDomainType(domainType);
         queryDto.setModule(module);
@@ -124,10 +124,10 @@ public class SystemParameterDelegator {
         queryDto.setDescription(description);
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 
-        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_DOMAIN_TYPE, domainType);
-        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_MODULE, module);
-        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_STATUS, status);
-        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_DESCRIPTION, description);
+        ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_DOMAIN_TYPE, domainType);
+        ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_MODULE, module);
+        ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_STATUS, status);
+        ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_DESCRIPTION, description);
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(queryDto, "search");
         if(validationResult != null && validationResult.isHasErrors()) {
@@ -135,16 +135,16 @@ public class SystemParameterDelegator {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
         }else {
-            searchParam.addFilter(SystemParameterConstants.PARAM_DOMAIN_TYPE, domainType, true);
+            searchParam.addFilter(SystemParameterConstant.PARAM_DOMAIN_TYPE, domainType, true);
             if(!StringUtil.isEmpty(description)){
-                searchParam.addFilter(SystemParameterConstants.PARAM_DESCRIPTION, description, true);
+                searchParam.addFilter(SystemParameterConstant.PARAM_DESCRIPTION, description, true);
             }
 
             if(!StringUtil.isEmpty(module)){
-                searchParam.addFilter(SystemParameterConstants.PARAM_MODULE, module, true);
+                searchParam.addFilter(SystemParameterConstant.PARAM_MODULE, module, true);
             }
             if(!StringUtil.isEmpty(status)){
-                searchParam.addFilter(SystemParameterConstants.PARAM_STATUS, status, true);
+                searchParam.addFilter(SystemParameterConstant.PARAM_STATUS, status, true);
             }
         }
     }
@@ -152,7 +152,7 @@ public class SystemParameterDelegator {
     private void beforeSave(SystemParameterDto dto){
         String paramType = dto.getParamType();
         switch (paramType){
-            case SystemParameterConstants.PARAM_TYPE_FILE_TYPE_FOR_UPLOADING:
+            case SystemParameterConstant.PARAM_TYPE_FILE_TYPE_FOR_UPLOADING:
                 String value = dto.getValue().toUpperCase();
                 dto.setValue(value);
                 break;
@@ -173,10 +173,10 @@ public class SystemParameterDelegator {
             return;
         }
 
-        String value = ParamUtil.getString(request, SystemParameterConstants.PARAM_VALUE);
-        String description = ParamUtil.getString(request, SystemParameterConstants.PARAM_DESCRIPTION);
+        String value = ParamUtil.getString(request, SystemParameterConstant.PARAM_VALUE);
+        String description = ParamUtil.getString(request, SystemParameterConstant.PARAM_DESCRIPTION);
 
-        SystemParameterDto editDto = (SystemParameterDto) ParamUtil.getSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO);
+        SystemParameterDto editDto = (SystemParameterDto) ParamUtil.getSessionAttr(request, SystemParameterConstant.PARAMETER_REQUEST_DTO);
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         editDto.setAuditTrailDto(auditTrailDto);
         editDto.setValue(value);
@@ -192,7 +192,7 @@ public class SystemParameterDelegator {
 
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("SYSPAM_ACK001"));
-            ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO, editDto);
+            ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAMETER_REQUEST_DTO, editDto);
         }
     }
 
@@ -230,7 +230,7 @@ public class SystemParameterDelegator {
 
 
         if (!StringUtils.isEmpty(pid)){
-            SearchResult<SystemParameterQueryDto> result = (SearchResult<SystemParameterQueryDto>) ParamUtil.getSessionAttr(request, SystemParameterConstants.PARAM_SEARCHRESULT);
+            SearchResult<SystemParameterQueryDto> result = (SearchResult<SystemParameterQueryDto>) ParamUtil.getSessionAttr(request, SystemParameterConstant.PARAM_SEARCHRESULT);
             if (result != null){
                 List<SystemParameterQueryDto> parameterQueryDtos =  result.getRows();
                 for (SystemParameterQueryDto query : parameterQueryDtos){
@@ -261,7 +261,7 @@ public class SystemParameterDelegator {
                             systemParameterDto.setModifiedBy(AppConsts.USER_ID_SYSTEM);
                         }
 
-                        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO, systemParameterDto);
+                        ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAMETER_REQUEST_DTO, systemParameterDto);
                     }
                 }
             }

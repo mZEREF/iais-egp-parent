@@ -12,7 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -243,7 +243,7 @@ public class BackendInboxDelegator {
         List<TaskDto> commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
         String[] applicationNo_list = inspectionService.getApplicationNoListByPool(commPools);
         if(applicationNo_list == null || applicationNo_list.length == 0){
-            applicationNo_list = new String[]{SystemParameterConstants.PARAM_FALSE};
+            applicationNo_list = new String[]{SystemParameterConstant.PARAM_FALSE};
         }
         String applicationStr = SqlHelper.constructInCondition("T1.APPLICATION_NO",applicationNo_list.length);
     }

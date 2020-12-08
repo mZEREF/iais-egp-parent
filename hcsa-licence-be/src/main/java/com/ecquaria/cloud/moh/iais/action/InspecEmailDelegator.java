@@ -13,7 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -373,12 +373,12 @@ public class InspecEmailDelegator {
         if (inspectionEmailTemplateDto.getSubject().isEmpty()){
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
-            ParamUtil.setRequestAttr(request,DemoConstants.ISVALID, SystemParameterConstants.STATUS_ACTIVE);
+            ParamUtil.setRequestAttr(request,DemoConstants.ISVALID, SystemParameterConstant.STATUS_ACTIVE);
         }
         if (inspectionEmailTemplateDto.getMessageContent().isEmpty()){
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
-            ParamUtil.setRequestAttr(request,DemoConstants.ISVALID,SystemParameterConstants.STATUS_DEACTIVATED);
+            ParamUtil.setRequestAttr(request,DemoConstants.ISVALID,SystemParameterConstant.STATUS_DEACTIVATED);
         }
         if (decision.equals(InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW)){
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW);
