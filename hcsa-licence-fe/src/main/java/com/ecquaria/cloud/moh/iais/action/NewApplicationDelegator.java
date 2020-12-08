@@ -3320,69 +3320,6 @@ public class NewApplicationDelegator {
     //private method
     //=============================================================================
 
-    private void sendNewApplicationPaymentOnlineSuccesedEmail(AppSubmissionDto appSubmissionDto, String paymentMethod, String pmtRefNo) {
-        MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_SUCCESSED_PAYMENT_ID);
-        if (msgTemplateDto != null) {
-            Double amount = appSubmissionDto.getAmount();
-            String licenseeId = appSubmissionDto.getLicenseeId();
-            LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeDtoById(licenseeId).getEntity();
-            List<ApplicationDto> applicationDtos = appSubmissionDto.getApplicationDtos();
-            List<String> applicationNos = new ArrayList<String>();
-            if (!IaisCommonUtils.isEmpty(applicationDtos)) {
-                for (ApplicationDto applicationDto : applicationDtos) {
-                    String applicationNo = applicationDto.getApplicationNo();
-                    if (!StringUtil.isEmpty(applicationNo)) {
-                        applicationNos.add(applicationNo);
-                    }
-                }
-            }
-            String appGrpNo = appSubmissionDto.getAppGrpNo();
-            String subject = " " + msgTemplateDto.getTemplateName() + " " + appGrpNo;
-            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-            map.put("Applicant", licenseeDto.getName());
-            map.put("applications", applicationNos);
-            map.put("paymentType", paymentMethod);
-            map.put("pmtRefNo", pmtRefNo);
-            map.put("paymentDate", Formatter.formatDateTime(new Date(), Formatter.DATE_EMAIL_DAY));
-            map.put("paymentAmount", Formatter.formatNumber(amount));
-            map.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-            String mesContext = null;
-            try {
-                mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), map);
-            } catch (IOException | TemplateException e) {
-                log.error(e.getMessage(), e);
-            }
-            EmailDto emailDto = new EmailDto();
-            emailDto.setContent(mesContext);
-            emailDto.setSubject(subject);
-            emailDto.setSender(mailSender);
-            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-            if (appSubmissionDto.getAppGrpId() != null) {
-                emailDto.setClientQueryCode(appSubmissionDto.getAppGrpId());
-                //send email
-                appSubmissionService.feSendEmail(emailDto);
-            }
-
-            //send message
-            HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-            List<String> serviceCodeList = IaisCommonUtils.genNewArrayList();
-            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            if (appSvcRelatedInfoDtoList != null) {
-                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
-                    String serviceId = appSvcRelatedInfoDto.getServiceId();
-                    HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-                    if (serviceDto != null) {
-                        serviceCodeList.add(serviceDto.getSvcCode());
-                    }
-                }
-                String serviceCodeString = getServiceCodeString(serviceCodeList);
-                if (!StringUtil.isEmpty(serviceCodeString)) {
-                    sendMessageHelper(subject, MessageConstants.MESSAGE_TYPE_NOTIFICATION, AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY, serviceCodeString, licenseeId, mesContext, maskParams);
-                }
-            }
-        }
-    }
-
     private String getServiceCodeString(List<String> serviceCodeList) {
         StringBuilder serviceCodeString = new StringBuilder(10);
         for (String code : serviceCodeList) {
