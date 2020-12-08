@@ -12,7 +12,7 @@ COPY docker/server.xml /usr/local/tomcat/conf/server.xml
 RUN chmod +x /usr/local/tomcat/bin/setenv.sh
 
 COPY --chown=iais:iais target/hcsa-licence-web.war /usr/local/tomcat/webapps/hcsa-licence-web.war
-
+COPY --chown=iais:iais target/classes/log4j2.xml /etc/log4j2.xml
 COPY --chown=iais:iais docker/run.sh /run.sh
 COPY --chown=iais:iais docker/admin.json /admin.json
 COPY --chown=iais:iais glowroot /glowroot
