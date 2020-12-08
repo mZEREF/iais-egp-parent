@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -29,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.jwt.JwtEncoder;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -36,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
@@ -50,15 +53,8 @@ import com.ecquaria.cloud.moh.iais.service.InboxService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -66,6 +62,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Author: Hc
@@ -90,6 +94,9 @@ public class InterInboxDelegator {
     }
     @Autowired
     AppInboxClient appInboxClient;
+    @Autowired
+    JwtEncoder jwtEncoder;
+
     private static String msgStatus[] = {
             MessageConstants.MESSAGE_STATUS_READ,
             MessageConstants.MESSAGE_STATUS_UNREAD,
@@ -139,16 +146,23 @@ public class InterInboxDelegator {
         }
     }
 
-    public void toElis(BaseProcessClass bpc){
+    public void toElis(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("Step ---> toElis"));
         HttpServletRequest request = bpc.request;
-        String initpage = ParamUtil.getRequestString(request,"initPage");
-        if (!StringUtil.isEmpty(initpage)){
-            ParamUtil.setRequestAttr(request,"init_to_page",initpage);
-        }else {
-            ParamUtil.setRequestAttr(request, "init_to_page", "");
-        }
+        String privateKey = ConfigHelper.getString("halp.elis.private.key");
+        LoginContext loginContext = AccessUtil.getLoginUser(request);
+        Claims claims = Jwts.claims();
+        claims.put("uid", loginContext.getLoginId());
+        claims.put("uen", loginContext.getUenNo());
+        String iso8601ExpDateString  = Formatter.formatDateTime(new Date(),Formatter.ISO_8601);
+        iso8601ExpDateString = iso8601ExpDateString.substring(0, 22) + ":" +iso8601ExpDateString.substring(22);
+        claims.put("iat", iso8601ExpDateString);
+        String jwtStr = jwtEncoder.encode(claims, privateKey);
+        String elisUrl = ConfigHelper.getString("moh.elis.url");
+        bpc.response.setHeader("authToken", jwtStr);
+        bpc.response.sendRedirect(elisUrl);
     }
+
     /**
      *
      * @param bpc
