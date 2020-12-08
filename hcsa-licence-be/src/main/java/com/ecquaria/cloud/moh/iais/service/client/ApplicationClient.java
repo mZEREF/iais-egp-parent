@@ -326,4 +326,7 @@ public interface ApplicationClient {
 
     @GetMapping(value = "/iais-application-be/getHistory/{applicationNo}/{decision}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getHistoryByAppNoAndDecision(@PathVariable("applicationNo") String applicationNo, @PathVariable("decision") String decision);
+
+    @PostMapping(value = "/iais-application-be/apptype-apps/status-apptype",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getApplicationsByApplicationTypeAndStatusIn(@RequestParam("appType")String appType,@RequestBody List<String> statuses);
 }
