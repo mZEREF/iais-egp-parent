@@ -681,7 +681,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         if(licenceDto != null){
                             int migrated = licenceDto.getMigrated();
                             if(0 != migrated){
-                                licenceFeeDto.setOldLicenceId(licenceDto.getOriginLicenceId());
+                                licenceFeeDto.setOldLicenceId(licenceDto.getId());
                                 licenceFeeDto.setMigrated(migrated);
                             }
                         }
