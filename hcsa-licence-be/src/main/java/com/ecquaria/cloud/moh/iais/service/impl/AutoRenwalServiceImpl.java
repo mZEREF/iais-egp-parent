@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -90,23 +91,40 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
     @Autowired
     private SystemParamConfig systemParamConfig;
-
     @Autowired
     private NotificationHelper notificationHelper;
 
     private static final String EMAIL_SUBJECT="MOH IAIS – REMINDER TO RENEW LICENCE";
     private static final String EMAIL_TO_OFFICER_SUBJECT="MOH IAIS – Licence is due to expiry";
+    private static final String F_180="E418B2D1-AD35-EA11-BE7D-000C29F371DC";
+    private static final String S_150="08ED7E7E-4359-EA11-BE7F-000C29F371DC";
+    private static final String T_120="09ED7E7E-4359-EA11-BE7F-000C29F371DC";
+    private static final String F_90="0AED7E7E-4359-EA11-BE7F-000C29F371DC";
+    private static final String F_60="0BED7E7E-4359-EA11-BE7F-000C29F371DC";
+    private static final String S_45="0CED7E7E-4359-EA11-BE7F-000C29F371DC";
+    private static final String S_30="BBF06A97-4359-EA11-BE7F-000C29F371DC";
+    private static final String MONTH_DAY="TPOF00005";
+    private static final String WEEK_DAY="TPOF00004";
+    private static final String REMINDER_DAY="TPOF00012";
+    private static final String INT="INT";
     @Override
     public void startRenwal() {
         List<Integer> dayList= IaisCommonUtils.genNewArrayList();
         dayList.add(-1);
-        dayList.add(systemParamConfig.getSeventhLicenceReminder());
-        dayList.add(systemParamConfig.getSixthLicenceReminder());
-        dayList.add(systemParamConfig.getFifthLicenceReminder());
-        dayList.add(systemParamConfig.getFourthLicenceReminder());
-        dayList.add(systemParamConfig.getThirdLicenceReminder());
-        dayList.add(systemParamConfig.getSecondLicenceReminder());
-        dayList.add(systemParamConfig.getLicenceIsEligible());
+        SystemParameterDto systemParameterDto = systemBeLicClient.getParameterByRowguid(F_180).getEntity();
+        SystemParameterDto systemParameterDto1 = systemBeLicClient.getParameterByRowguid(S_150).getEntity();
+        SystemParameterDto systemParameterDto2 = systemBeLicClient.getParameterByRowguid(T_120).getEntity();
+        SystemParameterDto systemParameterDto3 = systemBeLicClient.getParameterByRowguid(F_90).getEntity();
+        SystemParameterDto systemParameterDto4 = systemBeLicClient.getParameterByRowguid(F_60).getEntity();
+        SystemParameterDto systemParameterDto5 = systemBeLicClient.getParameterByRowguid(S_45).getEntity();
+        SystemParameterDto systemParameterDto6 = systemBeLicClient.getParameterByRowguid(S_30).getEntity();
+        dayList.add(getDay(systemParameterDto6));
+        dayList.add(getDay(systemParameterDto5));
+        dayList.add(getDay(systemParameterDto4));
+        dayList.add(getDay(systemParameterDto3));
+        dayList.add(getDay(systemParameterDto2));
+        dayList.add(getDay(systemParameterDto1));
+        dayList.add(getDay(systemParameterDto));
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(dayList)+"dayList"));
         Map<String, List<LicenceDto>> entity = hcsaLicenClient.licenceRenwal(dayList).getEntity();
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(entity+"------entity")));
@@ -157,7 +175,31 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     }
 
 
-
+    private int getDay(SystemParameterDto systemParameterDto){
+        String value = systemParameterDto.getValue();
+        String valueType = systemParameterDto.getValueType();
+        String paramType = systemParameterDto.getParamType();
+        if(INT.equals(valueType)){
+            int i = Integer.parseInt(value);
+            //month
+            Calendar c=Calendar.getInstance();
+            c.setTime(new Date());
+            if(MONTH_DAY.equals(paramType)){
+                Calendar calendar=Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.add(Calendar.MONTH,i);
+                return (int)(calendar.getTimeInMillis()-c.getTimeInMillis())/(24*60*60*1000);
+            }else if(WEEK_DAY.equals(paramType)){//week
+                Calendar calendar=Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.add(Calendar.WEEK_OF_MONTH,i);
+                return (int)(calendar.getTimeInMillis()-c.getTimeInMillis())/(24*60*60*1000);
+            }else if(REMINDER_DAY.equals(paramType)){
+                return i;
+            }
+        }
+        return 0;
+    }
 
     /****************/
 /*

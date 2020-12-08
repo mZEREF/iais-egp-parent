@@ -348,7 +348,14 @@ public class AppealServiceImpl implements AppealService {
         }
         String appealingFor = ParamUtil.getMaskedString(request, APPEALING_FOR);
         String type = request.getParameter(TYPE);
-        initRfi(request, appealingFor);
+        AppPremiseMiscDto appPremiseMiscDto = initRfi(request, appealingFor);
+        if(appPremiseMiscDto!=null){
+            if(ApplicationConsts.APPEAL_TYPE_APPLICAITON.equals(appPremiseMiscDto.getAppealType())){
+                type=APPLICATION;
+            }else if(ApplicationConsts.APPEAL_TYPE_LICENCE.equals(appPremiseMiscDto.getAppealType())){
+                type=LICENCE;
+            }
+        }
         typeApplicationOrLicence(request, type, appealingFor);
         request.getSession().setAttribute(APPEALING_FOR, appealingFor);
         request.getSession().setAttribute(TYPE, type);

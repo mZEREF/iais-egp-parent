@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
@@ -92,7 +93,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
@@ -517,6 +520,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         log.info(StringUtil.changeForLog(requestForInfListString +"updateTaskList size" +updateTaskList .size()));
         log.info(StringUtil.changeForLog(requestForInfListString +"cessionOrwith size" +cessionOrwith .size()));
         ApplicationNewAndRequstDto applicationNewAndRequstDto=new ApplicationNewAndRequstDto();
+        withdrow(listApplicationDto);
+        withdrow(requestForInfList);
+        withdrow(cessionOrwith);
         applicationNewAndRequstDto.setListNewApplicationDto(listApplicationDto);
         applicationNewAndRequstDto.setRequestForInfList(requestForInfList);
         applicationNewAndRequstDto.setUpdateTaskList(updateTaskList);
@@ -539,7 +545,30 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     }
 
+    private List<ApplicationDto> withdrow(List<ApplicationDto> applicationDtos){
+        log.info("withdrow function start");
+        ListIterator<ApplicationDto> applicationDtoListIterator = applicationDtos.listIterator();
+        while (applicationDtoListIterator.hasNext()){
+            ApplicationDto next = applicationDtoListIterator.next();
+            String status = next.getStatus();
+            if(!ApplicationConsts.PENDING_ASO_REPLY.equals(status)&&
+               !ApplicationConsts.PENDING_PSO_REPLY.equals(status)&&
+               !ApplicationConsts.PENDING_INP_REPLY.equals(status)){
+                List<AppPremiseMiscDto> entity = applicationClient.getAppPremiseMiscDtoRelateId(next.getId()).getEntity();
+                if(!entity.isEmpty()){
+                    Iterator<AppPremiseMiscDto> iterator = entity.iterator();
+                    while (iterator.hasNext()){
+                        AppPremiseMiscDto next1 = iterator.next();
+                        if(ApplicationConsts.WITHDROW_TYPE_APPLICATION.equals(next1.getAppealType())){
+                            applicationDtoListIterator.remove();
+                        }
+                    }
+                }
+            }
 
+        }
+        return applicationDtos;
+    }
 
     /*
     *

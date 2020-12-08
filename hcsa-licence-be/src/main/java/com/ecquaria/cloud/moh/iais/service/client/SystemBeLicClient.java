@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -78,4 +79,6 @@ public interface SystemBeLicClient {
 
     @GetMapping(value = "/group-licence-change-no")
     FeignResponseEntity<String> groupLicenceByGroupLicenceNo(@RequestParam("groupLicencNo") String groupLicencNo,@RequestParam("runningNumber") String runningNumber,@RequestParam("premisesNumber") Integer premisesNumber);
+    @GetMapping(value = "/system-parameter/{id}")
+    FeignResponseEntity<SystemParameterDto> getParameterByRowguid(@PathVariable(name = "id") String rowguid);
 }

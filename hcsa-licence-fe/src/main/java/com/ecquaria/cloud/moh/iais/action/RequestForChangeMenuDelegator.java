@@ -242,7 +242,7 @@ public class RequestForChangeMenuDelegator {
             premisesListQueryDto.setSvcId(stringBuilder.toString().substring(0, stringBuilder.toString().lastIndexOf(',')));
         }
         if (rows.isEmpty()) {
-            bpc.request.setAttribute("GENERAL_ACK018", MessageUtil.getMessageDesc("GENERAL_ACK018"));
+            bpc.request.setAttribute("ACK018", MessageUtil.getMessageDesc("GENERAL_ACK018"));
         }
         ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, (Serializable) rows);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Premises List");

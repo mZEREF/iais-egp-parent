@@ -61,6 +61,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -1027,9 +1028,18 @@ public class InterInboxDelegator {
         }
         List<AppPremiseMiscDto> entity = appInboxClient.getAppPremiseMiscDtoRelateId(appId).getEntity();
         if(!entity.isEmpty()){
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("APPEAL_ERR003"));
-            ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",Boolean.FALSE);
-            return;
+            ListIterator<AppPremiseMiscDto> appPremiseMiscDtoListIterator = entity.listIterator();
+            while(appPremiseMiscDtoListIterator.hasNext()){
+                AppPremiseMiscDto next = appPremiseMiscDtoListIterator.next();
+                if(!ApplicationConsts.APPEAL_TYPE_APPLICAITON.equals(next.getAppealType()) && !ApplicationConsts.APPEAL_TYPE_LICENCE.equals(next.getAppealType())){
+                    appPremiseMiscDtoListIterator.remove();
+                }
+            }
+            if(!entity.isEmpty()){
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("APPEAL_ERR003"));
+                ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",Boolean.FALSE);
+                return;
+            }
         }
         List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(appId);
         if(!draftByLicAppId.isEmpty()){
