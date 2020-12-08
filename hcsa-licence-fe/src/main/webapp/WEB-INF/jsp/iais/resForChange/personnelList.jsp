@@ -51,9 +51,9 @@
                     <c:choose>
                         <c:when test="${noRecord == 'Y'}">
                             <tbody>
-                            <tr>
-                                <td>No record found.</td>
-                            </tr>
+                            <td colspan="6">
+                                <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                            </td>
                             </tbody>
                         </c:when>
                         <c:otherwise>
