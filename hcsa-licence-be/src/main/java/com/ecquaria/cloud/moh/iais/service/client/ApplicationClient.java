@@ -4,13 +4,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppLastInsGroup;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.HfsmsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
@@ -329,4 +323,7 @@ public interface ApplicationClient {
 
     @PostMapping(value = "/iais-application-be/apptype-apps/status-apptype",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getApplicationsByApplicationTypeAndStatusIn(@RequestParam("appType")String appType,@RequestBody List<String> statuses);
+
+    @PostMapping(value = "/iais-application-be/apptype-apps/status-apptype-audit",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AuditRiskDto>> getApplicationsByApplicationTypeAndStatusInOnlyForAuditRisk(@RequestParam("appType")String appType, @RequestBody List<String> statuses);
 }

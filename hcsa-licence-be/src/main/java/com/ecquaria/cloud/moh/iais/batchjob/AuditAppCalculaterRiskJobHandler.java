@@ -5,11 +5,14 @@ import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AuditRiskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,6 +35,11 @@ public class AuditAppCalculaterRiskJobHandler extends IJobHandler {
 
     @Autowired
     private ApplicationClient applicationClient;
+    @Autowired
+    private GenerateIdClient generateIdClient;
+    @Autowired
+    private EventBusHelper eventBusHelper;
+
     @Override
     public ReturnT<String> execute(String s) {
         logAbout("AuditAppCalculaterRiskJobHandler");
@@ -40,13 +48,22 @@ public class AuditAppCalculaterRiskJobHandler extends IJobHandler {
             List<String> statuses = new ArrayList<>(2);
             statuses.add( ApplicationConsts.APPLICATION_STATUS_APPROVED);
             // statuses.add(ApplicationConsts.APPLICATION_STATUS_REJECTED);
-            List<ApplicationDto> applicationDtos = applicationClient.getApplicationsByApplicationTypeAndStatusIn(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK,statuses).getEntity();
-           if(IaisCommonUtils.isEmpty(applicationDtos)){
+            List< AuditRiskDto> auditRiskDtoList = applicationClient.getApplicationsByApplicationTypeAndStatusInOnlyForAuditRisk(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK,statuses).getEntity();
+           if(IaisCommonUtils.isEmpty(auditRiskDtoList)){
                logAbout("apps is null");
            }else {
-               for(ApplicationDto applicationDto : applicationDtos){
-                   logAbout(StringUtil.changeForLog("start app risk appno :" + applicationDto.getApplicationNo()));
-                   //
+               for(AuditRiskDto auditRiskDto : auditRiskDtoList){
+                   logAbout(StringUtil.changeForLog("start app risk appno :" +  auditRiskDto.getApplicationDto().getApplicationNo()));
+                   //event bus save risk to db
+                   auditRiskDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
+                   String submitId = generateIdClient.getSeqId().getEntity();
+                   auditRiskDto.setEventRefNo(submitId);
+                   try {
+                       eventBusHelper.submitAsyncRequest( auditRiskDto,submitId, EventBusConsts.SERVICE_NAME_LICENCESAVE,EventBusConsts.OPERATION_AUDIT_RISK_SAVE, auditRiskDto.getEventRefNo(),null);
+                       eventBusHelper.submitAsyncRequest(auditRiskDto,submitId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts.OPERATION_AUDIT_RISK_SAVE,auditRiskDto.getEventRefNo(),null);
+                   } catch (Exception e) {
+                       log.error(e.getMessage(), e);
+                   }
                }
            }
         }catch (Exception e){

@@ -4,13 +4,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppLastInsGroup;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.HfsmsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
@@ -821,6 +815,14 @@ public class ApplicationClientFallback implements ApplicationClient{
 
     @Override
     public FeignResponseEntity<List<ApplicationDto>> getApplicationsByApplicationTypeAndStatusIn(String appType, List<String> statuses) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AuditRiskDto>> getApplicationsByApplicationTypeAndStatusInOnlyForAuditRisk(String appType, List<String> statuses) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
