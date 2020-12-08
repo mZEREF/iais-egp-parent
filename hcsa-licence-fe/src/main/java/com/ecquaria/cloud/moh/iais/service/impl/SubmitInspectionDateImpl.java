@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.service.SubmitInspectionDate;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
  **/
 
 @Service
+@Slf4j
 public class SubmitInspectionDateImpl implements SubmitInspectionDate {
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
@@ -104,7 +106,13 @@ public class SubmitInspectionDateImpl implements SubmitInspectionDate {
         //save to fe
         applicationFeClient.doUpDate(applicationGroupDto);
 
-        //save to be
-        feEicGatewayClient.saveAppGroupSysnEic(applicationGroupDto);
+        try {
+            //save to be
+            feEicGatewayClient.saveAppGroupSysnEic(applicationGroupDto);
+        }catch (Exception e){
+            //when be don't have group
+            log.error(e.getMessage());
+        }
+
     }
 }
