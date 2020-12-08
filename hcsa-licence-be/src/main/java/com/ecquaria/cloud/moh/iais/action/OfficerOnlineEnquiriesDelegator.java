@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -223,7 +222,7 @@ public class OfficerOnlineEnquiriesDelegator {
                             licenseeIds.add(r.getId());
                         }
                         if(licenseeIds.size()==0){
-                            licenseeIds.add(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ID);
+                            licenseeIds.add(UUID.randomUUID().toString());
                         }
                     }
                     break;
@@ -829,7 +828,7 @@ public class OfficerOnlineEnquiriesDelegator {
                         licenseeIds.add(r.getId());
                     }
                     if(licenseeIds.size()==0){
-                        licenseeIds.add(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ID);
+                        licenseeIds.add(UUID.randomUUID().toString());
                     }
                 }
                 if(!StringUtil.isEmpty(licenseeRegnNo)){
@@ -1451,7 +1450,7 @@ public class OfficerOnlineEnquiriesDelegator {
                         licenseeIds.add(r.getId());
                     }
                     if(licenseeIds.size()==0){
-                        licenseeIds.add(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ID);
+                        licenseeIds.add(UUID.randomUUID().toString());
                     }
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("licenseeRegnNo"))){
