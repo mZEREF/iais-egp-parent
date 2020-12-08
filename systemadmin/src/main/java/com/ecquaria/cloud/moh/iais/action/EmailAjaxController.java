@@ -50,10 +50,19 @@ public class EmailAjaxController {
         if(!serviceCode.isEmpty()){
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(serviceCode);
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = distributionListService.roleByServiceId(hcsaServiceDto.getId(),AppConsts.COMMON_STATUS_ACTIVE);
+            selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE,"Licensee"));
             for (HcsaSvcPersonnelDto item:hcsaSvcPersonnelDtoList
             ) {
                 selectOptions.add(new SelectOption(item.getPsnType(),roleName(item.getPsnType())));
             }
+        }else{
+            selectOptions.add(new SelectOption("Licensee","Licensee"));
+            selectOptions.add(new SelectOption("Authorised Person","Authorised Person"));
+            selectOptions.add(new SelectOption("Principal Officer","Principal Officer"));
+            selectOptions.add(new SelectOption("Deputy Principal Officer","Deputy Principal Officer"));
+            selectOptions.add(new SelectOption("Clinical Governance Officer","Clinical Governance Officer"));
+            selectOptions.add(new SelectOption("Service Personnel","Service Personnel"));
+            selectOptions.add(new SelectOption("MedAlert","MedAlert"));
         }
         Map<String, String> result = new HashMap<>();
         Map<String,String> roleAttr = IaisCommonUtils.genNewHashMap();
@@ -73,11 +82,20 @@ public class EmailAjaxController {
         if(!serviceCode.isEmpty()){
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(serviceCode);
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = distributionListService.roleByServiceId(hcsaServiceDto.getId(),AppConsts.COMMON_STATUS_ACTIVE);
+            selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE,"Licensee"));
             for (HcsaSvcPersonnelDto item:hcsaSvcPersonnelDtoList
             ) {
                 selectOptions.add(new SelectOption(item.getPsnType(),roleName(item.getPsnType())));
             }
-        }
+        }else{
+        selectOptions.add(new SelectOption("Licensee","Licensee"));
+        selectOptions.add(new SelectOption("Authorised Person","Authorised Person"));
+        selectOptions.add(new SelectOption("Principal Officer","Principal Officer"));
+        selectOptions.add(new SelectOption("Deputy Principal Officer","Deputy Principal Officer"));
+        selectOptions.add(new SelectOption("Clinical Governance Officer","Clinical Governance Officer"));
+        selectOptions.add(new SelectOption("Service Personnel","Service Personnel"));
+        selectOptions.add(new SelectOption("MedAlert","MedAlert"));
+    }
         Map<String, String> result = new HashMap<>();
         Map<String,String> roleAttr = IaisCommonUtils.genNewHashMap();
         roleAttr.put("class", "role");

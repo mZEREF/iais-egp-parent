@@ -512,6 +512,7 @@ public class MassEmailDelegator {
             ) {
                 selectOptions.add(new SelectOption(item.getPsnType(),roleName(item.getPsnType())));
             }
+            selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE,"Licensee"));
         }else{
             selectOptions.add(new SelectOption("Licensee","Licensee"));
             selectOptions.add(new SelectOption("Authorised Person","Authorised Person"));
@@ -536,6 +537,7 @@ public class MassEmailDelegator {
                 ) {
                     selectOptions.add(new SelectOption(item.getPsnType(),roleName(item.getPsnType())));
                 }
+                selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE,"Licensee"));
             }
         }else{
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE,"Licensee"));
