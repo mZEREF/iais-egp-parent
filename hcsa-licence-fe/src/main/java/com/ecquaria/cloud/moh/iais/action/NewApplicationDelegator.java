@@ -3410,56 +3410,6 @@ public class NewApplicationDelegator {
         feMessageClient.createInboxMessage(interMessageDto);
     }
 
-    private void sendNewApplicationPaymentGIROEmail(AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) {
-        String GIROAccountNumber = "xxxxxxxx";
-        Double amount = appSubmissionDto.getAmount();
-        String licenseeId = appSubmissionDto.getLicenseeId();
-        LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeDtoById(licenseeId).getEntity();
-        List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
-        List<String> serviceNames = IaisCommonUtils.genNewArrayList();
-        String appGrpNo = appSubmissionDto.getAppGrpNo();
-        String clientQueryCode = appSubmissionDto.getAppGrpId();
-        for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
-            String svcName = hcsaServiceDto.getSvcName();
-            if (!StringUtil.isEmpty(svcName)) {
-                serviceNames.add(svcName);
-            }
-        }
-        String appType = appSubmissionDto.getAppType();
-        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
-            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-            map.put("Applicant", licenseeDto.getName());
-            map.put("serviceNames", serviceNames);
-            map.put("paymentAmount", Formatter.formatNumber(amount));
-            map.put("GIROAccountNumber", GIROAccountNumber);
-            map.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-
-            String subject = appGrpNo;
-            //send email
-            String mesContext = sendEmailHelper(map, MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ID, subject, licenseeId, clientQueryCode);
-
-            //send message
-            HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-            List<String> serviceCodeList = IaisCommonUtils.genNewArrayList();
-            MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ID);
-            subject = " " + msgTemplateDto.getTemplateName() + " " + appGrpNo;
-            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            if (appSvcRelatedInfoDtoList != null) {
-                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
-                    String serviceId = appSvcRelatedInfoDto.getServiceId();
-                    HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-                    if (serviceDto != null) {
-                        serviceCodeList.add(serviceDto.getSvcCode());
-                    }
-                }
-                String serviceCodeString = getServiceCodeString(serviceCodeList);
-                if (!StringUtil.isEmpty(serviceCodeString)) {
-                    sendMessageHelper(subject, MessageConstants.MESSAGE_TYPE_NOTIFICATION, AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY, serviceCodeString, licenseeId, mesContext, maskParams);
-                }
-            }
-        }
-    }
-
     //send email helper
     private String sendEmailHelper(Map<String, Object> tempMap, String msgTemplateId, String subject, String licenseeId, String clientQueryCode) {
         MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById(msgTemplateId);
