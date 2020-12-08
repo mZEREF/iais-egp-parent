@@ -95,8 +95,6 @@ public class InterInboxDelegator {
     }
     @Autowired
     AppInboxClient appInboxClient;
-    @Autowired
-    JwtEncoder jwtEncoder;
 
     private static String msgStatus[] = {
             MessageConstants.MESSAGE_STATUS_READ,
@@ -158,6 +156,7 @@ public class InterInboxDelegator {
         String iso8601ExpDateString  = Formatter.formatDateTime(new Date(),Formatter.ISO_8601);
         iso8601ExpDateString = iso8601ExpDateString.substring(0, 22) + ":" +iso8601ExpDateString.substring(22);
         claims.put("iat", iso8601ExpDateString);
+        JwtEncoder jwtEncoder = new JwtEncoder();
         String jwtStr = jwtEncoder.encode(claims, privateKey);
         String elisUrl = ConfigHelper.getString("moh.elis.url");
         bpc.response.setHeader("authToken", jwtStr);
