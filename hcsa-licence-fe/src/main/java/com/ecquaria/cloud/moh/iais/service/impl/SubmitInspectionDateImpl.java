@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.SubmitInspectionDate;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class SubmitInspectionDateImpl implements SubmitInspectionDate {
+    @Autowired
+    private FeEicGatewayClient feEicGatewayClient;
 
     @Autowired
     private ApplicationFeClient applicationFeClient;
@@ -97,6 +100,11 @@ public class SubmitInspectionDateImpl implements SubmitInspectionDate {
         applicationGroupDto.setId(groupId);
         applicationGroupDto.setPrefInspStartDate(sDate);
         applicationGroupDto.setPrefInspEndDate(eDate);
+
+        //save to fe
         applicationFeClient.doUpDate(applicationGroupDto);
+
+        //save to be
+        feEicGatewayClient.saveAppGroupSysnEic(applicationGroupDto);
     }
 }

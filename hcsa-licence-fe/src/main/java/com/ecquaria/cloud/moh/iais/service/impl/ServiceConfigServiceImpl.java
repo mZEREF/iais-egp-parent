@@ -534,15 +534,12 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     }
     @Override
     public String saveAppGroupGiroSysnEic(ApplicationGroupDto applicationGroupDto){
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         try {
             EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, ServiceConfigServiceImpl.class.getName(),
                     "saveAppGroupGiroSysnEic",currentApp + "-" + currentDomain
                     , ApplicationGroupDto.class.getName(), JsonUtil.parseToJson(applicationGroupDto));
             String eicRefNo = eicRequestTrackingDto.getRefNo();
-            String saveSuccess = feEicGatewayClient.saveAppGroupGiroSysnEic(applicationGroupDto, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
+            String saveSuccess = feEicGatewayClient.saveAppGroupSysnEic(applicationGroupDto).getEntity();
             //get eic record
             eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
             //update eic record status

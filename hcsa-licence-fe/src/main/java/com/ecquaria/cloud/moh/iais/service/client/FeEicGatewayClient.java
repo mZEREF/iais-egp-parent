@@ -22,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
@@ -250,9 +249,11 @@ public class FeEicGatewayClient {
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, HcsaSvcRoutingStageDto.class);
     }
 
-    public FeignResponseEntity<String> saveAppGroupGiroSysnEic(ApplicationGroupDto applicationGroupDto, String date, String authorization, String dateSec, String authorizationSec) {
+    public FeignResponseEntity<String> saveAppGroupSysnEic(ApplicationGroupDto applicationGroupDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/app-group", HttpMethod.PUT, applicationGroupDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(), String.class);
     }
 
     public FeignResponseEntity<RecallApplicationDto> withdrawAppChangeTask(RecallApplicationDto recallApplicationDto,

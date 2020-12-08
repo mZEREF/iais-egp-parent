@@ -151,7 +151,6 @@ public class SubmitInspectionDateDelegator {
         Date eDate =  (Date)  ParamUtil.getRequestAttr(bpc.request,"inspEndDate");
 
         submitInspectionDate.submitInspStartDateAndEndDate(groupId, sDate, eDate);
-
         ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.getMessageDesc("NEW_ACK014"));
 
     }
