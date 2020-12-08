@@ -8,8 +8,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -114,20 +116,30 @@ public class LicenceViewDelegator {
                         //set primary doc info
                         requestForChangeService.svcDocToPresmise(appSubmissionDto);
                         //set doc info
-//                        List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
                         List<HcsaSvcDocConfigDto> primaryDocConfig = null;
                         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
                         if(appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
                             primaryDocConfig = serviceConfigService.getPrimaryDocConfigById(appGrpPrimaryDocDtos.get(0).getSvcComDocId());
                         }
                         List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(hcsaServiceDto.getId());
-                        //List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
                         List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                         NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, appSvcDocDtos, primaryDocConfig, svcDocConfig);
                         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
                         //set service scope info
-                        List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = serviceConfigService.loadLaboratoryDisciplines(hcsaServiceDto.getId());
-                        NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto,hcsaSvcSubtypeOrSubsumedDtos);
+                        List<AppSvcLaboratoryDisciplinesDto> laboratoryDisciplinesDtos = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+                        List<String> svcScopeIdList = IaisCommonUtils.genNewArrayList();
+                        if(!IaisCommonUtils.isEmpty(laboratoryDisciplinesDtos)){
+                            for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:laboratoryDisciplinesDtos){
+                                List<AppSvcChckListDto> svcScopeList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+                                if(!IaisCommonUtils.isEmpty(svcScopeList)){
+                                    for(AppSvcChckListDto svcScope:svcScopeList){
+                                        svcScopeIdList.add(svcScope.getChkLstConfId());
+                                    }
+                                }
+                            }
+                        }
+                        List<HcsaSvcSubtypeOrSubsumedDto> oldHcsaSvcSubtypeOrSubsumedDtos = serviceConfigService.getSvcSubtypeOrSubsumedByIdList(svcScopeIdList);
+                        NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto,oldHcsaSvcSubtypeOrSubsumedDtos);
                         //set po dpo
                         NewApplicationHelper.setPreviewPo(appSvcRelatedInfoDto,bpc.request);
                         appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);

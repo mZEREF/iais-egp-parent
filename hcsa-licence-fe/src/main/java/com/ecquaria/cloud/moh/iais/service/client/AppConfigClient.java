@@ -203,4 +203,7 @@ public interface AppConfigClient {
 
     @GetMapping(value = "/iais-hcsa-service/active-service-correlation",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceCorrelationDto>> getActiveSvcCorrelation();
+
+    @GetMapping(value = "/iais-hcsa-service/subtype-subsumed-list",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> getSvcSubtypeOrSubsumedByIdList(@RequestBody List<String> ids);
 }

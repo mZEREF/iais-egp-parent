@@ -254,7 +254,9 @@ public class WithOutRenewalDelegator {
                 appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
                 //set AppSvcRelatedInfoDtoList chkName
                 List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = serviceConfigService.loadLaboratoryDisciplines(svcId);
-                NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto, hcsaSvcSubtypeOrSubsumedDtos);
+//                NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto, hcsaSvcSubtypeOrSubsumedDtos);
+                //use new config id
+                appSubmissionService.changeSvcScopeIdByConfigName(hcsaSvcSubtypeOrSubsumedDtos,appSubmissionDto);
                 Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
                 reloadDisciplineAllocationMapList.add(reloadDisciplineAllocationMap);
                 //set svc step

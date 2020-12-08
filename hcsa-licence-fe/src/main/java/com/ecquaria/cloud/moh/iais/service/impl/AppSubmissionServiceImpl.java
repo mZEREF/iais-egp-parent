@@ -45,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -1514,6 +1515,72 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
     }
 
+    @Override
+    public void changeSvcScopeIdByConfigName(List<HcsaSvcSubtypeOrSubsumedDto> newConfigInfo,AppSubmissionDto appSubmissionDto) throws CloneNotSupportedException {
+        log.debug(StringUtil.changeForLog("do changeSvcScopeIdByConfigName start ..."));
+        log.debug(StringUtil.changeForLog("newConfigInfo size :"+ newConfigInfo.size()));
+        Map<String, HcsaSvcSubtypeOrSubsumedDto> newSvcScopeNameMap = IaisCommonUtils.genNewHashMap();
+        turnName(newConfigInfo,newSvcScopeNameMap);
+        Map<String, HcsaSvcSubtypeOrSubsumedDto> newSvcScopeIdMap = IaisCommonUtils.genNewHashMap();
+        turnId(newConfigInfo,newSvcScopeIdMap);
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                List<AppSvcLaboratoryDisciplinesDto> laboratoryDisciplinesDtos = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+                List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtos = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
+                if(!IaisCommonUtils.isEmpty(laboratoryDisciplinesDtos)){
+                    for(AppSvcLaboratoryDisciplinesDto laboratoryDisciplinesDto:laboratoryDisciplinesDtos){
+                        List<AppSvcChckListDto> svcScopeList = laboratoryDisciplinesDto.getAppSvcChckListDtoList();
+                        if(!IaisCommonUtils.isEmpty(svcScopeList)){
+                            List<String> svcScopeIdList = IaisCommonUtils.genNewArrayList();
+                            for(AppSvcChckListDto svcScope:svcScopeList){
+                                svcScopeIdList.add(svcScope.getChkLstConfId());
+                            }
+                            List<HcsaSvcSubtypeOrSubsumedDto> oldHcsaSvcSubtypeOrSubsumedDtos = serviceConfigService.getSvcSubtypeOrSubsumedByIdList(svcScopeIdList);
+                            List<String> newSvcScopeIdList = IaisCommonUtils.genNewArrayList();
+                            List<AppSvcChckListDto> newSvcScopeList = IaisCommonUtils.genNewArrayList();
+                            for(AppSvcChckListDto svcScope:svcScopeList){
+                                for(HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto:oldHcsaSvcSubtypeOrSubsumedDtos){
+                                    if(svcScope.getChkLstConfId().equals(hcsaSvcSubtypeOrSubsumedDto.getId())){
+                                        HcsaSvcSubtypeOrSubsumedDto newHcsaSvcSubtypeOrSubsumedDto = newSvcScopeNameMap.get(hcsaSvcSubtypeOrSubsumedDto.getName());
+                                        if(newHcsaSvcSubtypeOrSubsumedDto != null){
+                                            turnTurn(newSvcScopeIdMap,newHcsaSvcSubtypeOrSubsumedDto.getId(),newSvcScopeIdList,newSvcScopeList);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            laboratoryDisciplinesDto.setAppSvcChckListDtoList(newSvcScopeList);
+                        }
+                    }
+                }
+                if(!IaisCommonUtils.isEmpty(appSvcDisciplineAllocationDtos)){
+                    List<String> svcScopeIdList = IaisCommonUtils.genNewArrayList();
+                    List<AppSvcDisciplineAllocationDto> newDisciplineAllocationDtoList = IaisCommonUtils.genNewArrayList();
+                    for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto:appSvcDisciplineAllocationDtos){
+                        svcScopeIdList.add(appSvcDisciplineAllocationDto.getChkLstConfId());
+                    }
+                    List<HcsaSvcSubtypeOrSubsumedDto> oldHcsaSvcSubtypeOrSubsumedDtos = serviceConfigService.getSvcSubtypeOrSubsumedByIdList(svcScopeIdList);
+                    for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto:appSvcDisciplineAllocationDtos){
+                        for(HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto:oldHcsaSvcSubtypeOrSubsumedDtos){
+                            if(appSvcDisciplineAllocationDto.getChkLstConfId().equals(hcsaSvcSubtypeOrSubsumedDto.getId())){
+                                HcsaSvcSubtypeOrSubsumedDto newHcsaSvcSubtypeOrSubsumedDto = newSvcScopeNameMap.get(hcsaSvcSubtypeOrSubsumedDto.getName());
+                                if(newHcsaSvcSubtypeOrSubsumedDto != null){
+                                    AppSvcDisciplineAllocationDto newDisciplineAllocationDto = (AppSvcDisciplineAllocationDto) CopyUtil.copyMutableObject(appSvcDisciplineAllocationDto);
+                                    newDisciplineAllocationDto.setChkLstConfId(newHcsaSvcSubtypeOrSubsumedDto.getId());
+                                    newDisciplineAllocationDto.setChkLstName(newHcsaSvcSubtypeOrSubsumedDto.getName());
+                                    newDisciplineAllocationDtoList.add(newDisciplineAllocationDto);
+                                }
+                            }
+                        }
+                    }
+                    appSvcRelatedInfoDto.setAppSvcDisciplineAllocationDtoList(newDisciplineAllocationDtoList);
+                }
+            }
+        }
+        log.debug(StringUtil.changeForLog("do changeSvcScopeIdByConfigName end ..."));
+    }
+
     private static void doSvcDocument(Map<String, String> map, List<AppSvcDocDto> appSvcDocDtoLit, String serviceId, StringBuilder sB, int uploadFileLimit, String sysFileType) {
         if (appSvcDocDtoLit != null) {
             for (AppSvcDocDto appSvcDocDto : appSvcDocDtoLit) {
@@ -2172,6 +2239,52 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             appSubmissionDto = new AppSubmissionDto();
         }
         return appSubmissionDto;
+    }
+
+    private void turnName(List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos, Map<String, HcsaSvcSubtypeOrSubsumedDto> allCheckListMap) {
+
+        for (HcsaSvcSubtypeOrSubsumedDto dto : hcsaSvcSubtypeOrSubsumedDtos) {
+            allCheckListMap.put(dto.getName(), dto);
+            if (dto.getList() != null && dto.getList().size() > 0) {
+                turnName(dto.getList(), allCheckListMap);
+            }
+        }
+    }
+
+    private void turnId(List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos, Map<String, HcsaSvcSubtypeOrSubsumedDto> allCheckListMap) {
+
+        for (HcsaSvcSubtypeOrSubsumedDto dto : hcsaSvcSubtypeOrSubsumedDtos) {
+            allCheckListMap.put(dto.getId(), dto);
+            if (dto.getList() != null && dto.getList().size() > 0) {
+                turnId(dto.getList(), allCheckListMap);
+            }
+        }
+    }
+
+    private void turnTurn(Map<String, HcsaSvcSubtypeOrSubsumedDto> map,String targetSvcScopeId,List<String> svcScopeIdList,List<AppSvcChckListDto> newSvcScopeList){
+        HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto = map.get(targetSvcScopeId);
+        if(hcsaSvcSubtypeOrSubsumedDto != null){
+            String id = hcsaSvcSubtypeOrSubsumedDto.getId();
+            if(!svcScopeIdList.contains(id)){
+                //check this parent checkbox
+                AppSvcChckListDto appSvcChckListDto = new AppSvcChckListDto();
+                appSvcChckListDto.setChkLstConfId(id);
+                appSvcChckListDto.setChkLstType(hcsaSvcSubtypeOrSubsumedDto.getType());
+                appSvcChckListDto.setChkName(hcsaSvcSubtypeOrSubsumedDto.getName());
+                appSvcChckListDto.setParentName(hcsaSvcSubtypeOrSubsumedDto.getParentId());
+                appSvcChckListDto.setChildrenName(hcsaSvcSubtypeOrSubsumedDto.getChildrenId());
+                newSvcScopeList.add(appSvcChckListDto);
+                svcScopeIdList.add(id);
+            }
+            String parentId  = hcsaSvcSubtypeOrSubsumedDto.getParentId();
+            if(!StringUtil.isEmpty(parentId)){
+                if(!svcScopeIdList.contains(parentId)){
+                    //turn
+                    turnTurn(map,parentId,svcScopeIdList,newSvcScopeList);
+                }
+            }
+        }
+
     }
 
 }

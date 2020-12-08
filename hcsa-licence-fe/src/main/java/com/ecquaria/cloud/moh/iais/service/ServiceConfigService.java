@@ -66,4 +66,5 @@ public interface ServiceConfigService {
     void sysnSaveGroupToBe();
     String saveAppGroupGiroSysnEic(ApplicationGroupDto applicationGroupDto);
     List<HcsaServiceCorrelationDto> getActiveSvcCorrelation();
+    List<HcsaSvcSubtypeOrSubsumedDto> getSvcSubtypeOrSubsumedByIdList(List<String> idList);
 }

@@ -617,7 +617,10 @@ public class RequestForChangeDelegator {
                 //set laboratory disciplines info
                 if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)){
                     List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(hcsaServiceDtoList.get(0).getId());
-                    NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto,hcsaSvcSubtypeOrSubsumedDtos);
+//                    NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto,hcsaSvcSubtypeOrSubsumedDtos);
+                    //use new config id
+                    appSubmissionService.changeSvcScopeIdByConfigName(hcsaSvcSubtypeOrSubsumedDtos,appSubmissionDto);
+
                     ParamUtil.setSessionAttr(bpc.request, "SvcId",hcsaServiceDtoList.get(0).getId());
                 }
                 //set doc info
