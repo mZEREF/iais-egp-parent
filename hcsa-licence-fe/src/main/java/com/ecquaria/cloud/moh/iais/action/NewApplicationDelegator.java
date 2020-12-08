@@ -3488,64 +3488,6 @@ public class NewApplicationDelegator {
         return mesContext;
     }
 
-    private void inspectionDateSendNewApplicationPaymentOnlineEmail(AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) {
-        MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ONLINE_ID);
-        if (msgTemplateDto != null) {
-            Double amount = appSubmissionDto.getAmount();
-            String licenseeId = appSubmissionDto.getLicenseeId();
-            LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeDtoById(licenseeId).getEntity();
-            List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
-            List<String> serviceNames = new ArrayList<String>();
-            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
-                String svcName = hcsaServiceDto.getSvcName();
-                if (!StringUtil.isEmpty(svcName)) {
-                    serviceNames.add(svcName);
-                }
-            }
-            String appGrpNo = appSubmissionDto.getAppGrpNo();
-            String subject = " " + msgTemplateDto.getTemplateName() + " " + appGrpNo;
-            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-            map.put("Applicant", licenseeDto.getName());
-            map.put("serviceNames", serviceNames);
-            map.put("paymentAmount", Formatter.formatNumber(amount));
-            map.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-            String mesContext = null;
-            try {
-                mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), map);
-            } catch (IOException | TemplateException e) {
-                log.error(e.getMessage(), e);
-            }
-            EmailDto emailDto = new EmailDto();
-            emailDto.setContent(mesContext);
-            emailDto.setSubject(subject);
-            emailDto.setSender(mailSender);
-            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-            if (appSubmissionDto.getAppGrpId() != null) {
-                emailDto.setClientQueryCode(appSubmissionDto.getAppGrpId());
-                //send email
-                appSubmissionService.feSendEmail(emailDto);
-            }
-
-            //send message
-            HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-            List<String> serviceCodeList = IaisCommonUtils.genNewArrayList();
-            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            if (appSvcRelatedInfoDtoList != null) {
-                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
-                    String serviceId = appSvcRelatedInfoDto.getServiceId();
-                    HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-                    if (serviceDto != null) {
-                        serviceCodeList.add(serviceDto.getSvcCode());
-                    }
-                }
-                String serviceCodeString = getServiceCodeString(serviceCodeList);
-                if (!StringUtil.isEmpty(serviceCodeString)) {
-                    sendMessageHelper(subject, MessageConstants.MESSAGE_TYPE_NOTIFICATION, AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY, serviceCodeString, licenseeId, mesContext, maskParams);
-                }
-            }
-        }
-    }
-
     private Map<String, String> doComChange(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) throws Exception {
         Map<String, String> result = IaisCommonUtils.genNewHashMap();
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
