@@ -154,7 +154,7 @@
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Actions</p>
                                     <c:choose>
-                                        <c:when test="${app.applicationType == 'APTY002' || app.applicationType == 'APTY004' || app.applicationType == 'APTY005'}">
+                                        <c:when test="${app.applicationType == 'APTY002' || app.applicationType == 'APTY004' || app.applicationType == 'APTY005' || app.applicationType == 'APTY009'}">
                                             <c:if test="${app.status == 'APST005' || app.status == 'APST006' || app.status =='APST075' ||  app.status == 'APST050'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
