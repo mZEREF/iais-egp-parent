@@ -80,6 +80,7 @@
             LEFT JOIN PREMISES Prem ON Prem.ID = licPrem.PREMISES_ID
             LEFT JOIN LIC_KEY_PERSONNEL licKeyPsn ON licKeyPsn.LICENCE_ID = lic.ID
             LEFT JOIN KEY_PERSONNEL_EXT keyPsnExt ON keyPsnExt.ID = licKeyPsn.PSN_EXT_ID
+            LEFT JOIN lic_premises_scope licSvcScope ON licSvcScope.LIC_PREM_ID = licPrem.ID
             WHERE 1=1
             <#if licence_status??> AND lic.STATUS = :licence_status</#if>
             <#if start_date??> AND lic.start_date >= convert(date,:start_date)</#if>
@@ -96,10 +97,10 @@
             <#if svc_name??> AND lic.SVC_NAME = :svc_name</#if>
             <#if licenseeRegnNo??> AND charindex( :licenseeRegnNo,keyPsnExt.PROF_REG_NO )>0</#if>
             <#if licenseeId??> AND ${licenseeId}</#if>
+            <#if serviceSubTypeName??>AND licSvcScope.SCOPE_NAME = :serviceSubTypeName</#if>
 
             <#if licenseeIdNo??>AND :licenseeIdNo = :licenseeIdNo</#if>
             <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
-            <#if serviceSubTypeName??>AND :serviceSubTypeName = :serviceSubTypeName</#if>
             <#if id??>AND :id = :id</#if>
             <#if appType??>AND :appType = :appType</#if>
             <#if appNo??>AND :appNo = :appNo</#if>

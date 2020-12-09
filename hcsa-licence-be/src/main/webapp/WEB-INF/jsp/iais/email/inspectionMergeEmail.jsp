@@ -121,7 +121,7 @@
                                                                        varStatus="index"><input type="checkbox" name="revise${index.index+1}"
                                                                        value="${revise}"/>&nbsp;${revise}&nbsp;
                                                             </c:forEach>
-                                                            <br>
+                                                            <div class="row">&nbsp;</div>
                                                             <span id="selectDecisionMsgRevise"  style="display: none; font-size: 1.6rem; color: #D22727;">Need Revise is mandatory</span>
                                                         </iais:value>
                                                     </iais:row>

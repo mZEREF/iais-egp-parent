@@ -202,7 +202,11 @@ public class ClientReschedulingDelegator {
         rescheduleParameter.setPageNo(1);
     }
     public void doPage(BaseProcessClass bpc)  {
+        int pageSize = rescheduleParameter.getPageSize();
         SearchResultHelper.doPage(bpc.request,rescheduleParameter);
+        if(rescheduleParameter.getPageSize()!=pageSize){
+            rescheduleParameter.setPageNo(1);
+        }
     }
 
     public void doReschedule(BaseProcessClass bpc)  {
