@@ -2201,6 +2201,7 @@ public class HcsaApplicationDelegator {
                                 Double fee = 0.0;
                                 applicationService.closeTaskWhenWhAppApprove(withdrawApplicationDto.getId());
                                 List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
+                                applicationDtoList.add(oldApplication);
                                 List<ApplicationDto> applicationDtoList2 = hcsaConfigClient.returnFee(applicationDtoList).getEntity();
                                 applicationDtoList2.add(applicationDto);
                                 if (!IaisCommonUtils.isEmpty(applicationDtoList2)){
