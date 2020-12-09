@@ -743,11 +743,11 @@ public class RequestForChangeMenuDelegator {
             }
         }
         //save
-        requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);
+        List<AppSubmissionDto> appSubmissionDtos2 = requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);
         ParamUtil.setRequestAttr(bpc.request, "action_type", "bank");
         appSubmissionDtos1.get(0).setLicenceNo(null);
         ParamUtil.setSessionAttr(bpc.request, "AppSubmissionDto", appSubmissionDtos1.get(0));
-        bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtos1);
+        bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtos2);
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit end ...."));
     }
 
@@ -1142,13 +1142,12 @@ public class RequestForChangeMenuDelegator {
         SearchResultHelper.doPage(bpc.request, filterParameter);
     }
 
-    public void preparePersonnelBank(BaseProcessClass bpc) {
+    public void preparePersonnelBank(BaseProcessClass bpc) throws IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do prePayment start ...."));
         PersonnelListDto personnelEditDto = (PersonnelListDto) ParamUtil.getSessionAttr(bpc.request, "personnelEditDto");
         String emailAddr = personnelEditDto.getEmailAddr();
         try {
             List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
-
             if(appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
                 AppSubmissionDto ackPageAppSubmissionDto;
                 List<AppSubmissionDto> appSubmissionDtos1=IaisCommonUtils.genNewArrayList();
@@ -1163,7 +1162,7 @@ public class RequestForChangeMenuDelegator {
                     log.info(e.getMessage(),e);
                     appSubmissionDtos1=appSubmissionDtos;
                 }
-                requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos1,null);
+                requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos1);
             }
         } catch (Exception e) {
             log.info(e.getMessage(), e);
