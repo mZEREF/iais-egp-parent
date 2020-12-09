@@ -175,9 +175,9 @@ public class FESingpassLandingDelegator {
                     licenseeInfo.setBlkNo(myInfoDto.getBlockNo());
                     licenseeInfo.setBuildingName(myInfoDto.getBuildingName());
                     licenseeInfo.setStreetName(myInfoDto.getStreetName());
-                    userSession.setLicenseeDto(licenseeInfo);
+                    ParamUtil.setSessionAttr(request, UserConstants.SESSION_LICENSEE_INFO_ATTR, licenseeInfo);
                 }else {
-                    ParamUtil.setRequestAttr(request,"myinfoServiceDown", "Y");
+                    ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, "Y");
                 }
             }
 
@@ -231,6 +231,8 @@ public class FESingpassLandingDelegator {
                 organization.setUenNo(userSession.getUenNo());
                 organization.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 organization.setFeUserDto(userSession);
+                LicenseeDto licenseeInfo = (LicenseeDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_LICENSEE_INFO_ATTR);
+                organization.setLicenseeDto(licenseeInfo);
 
                 FeUserDto createdUser = orgUserManageService.createSingpassAccount(organization);
                 User user = new User();

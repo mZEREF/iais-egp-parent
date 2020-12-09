@@ -26,9 +26,11 @@ public class UserConstants {
 
     public static final String SESSION_USER_DTO   = "inter_user_attr";
     public static final String SESSION_CAN_EDIT_USERINFO   = "canEditFlag";
+    public static final String SESSION_LICENSEE_INFO_ATTR   = "licensee_info_attr";
     public static final String IS_FIRST_LOGIN   = "isFirstLogin";
     public static final String IS_ADMIN   = "isAdminRole";
     public static final String IS_NEED_VALIDATE_FIELD   = "isNeedValidateField";
+    public static final String MY_INFO_SERVICE_OPEN_FLAG   = "myinfoServiceDown";
 
 
 }
