@@ -1024,6 +1024,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }
                 }
             } else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+                log.info(StringUtil.changeForLog("=============="+k.getGroupNo()));
                 if(autoRfc) {
                     k.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
                 }else {
