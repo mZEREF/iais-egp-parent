@@ -551,6 +551,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     licenceFeeDto.setServiceName(hcsaServiceDto.getSvcName());
                     licenceFeeDto.setPremises(premisessTypes);
                     licenceFeeDto.setCharity(isCharity);
+                    Boolean existingOnSiteLic = licenceClient.existingOnSiteOrConveLic(appSvcRelatedInfoDto.getServiceName(),appSubmissionDto.getLicenseeId()).getEntity();
+                    licenceFeeDto.setExistOnsite(existingOnSiteLic);
                     if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                         String licenceId = appSubmissionDto.getLicenceId();
                         LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
