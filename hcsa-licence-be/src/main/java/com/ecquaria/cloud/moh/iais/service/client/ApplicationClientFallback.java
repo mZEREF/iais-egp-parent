@@ -814,7 +814,7 @@ public class ApplicationClientFallback implements ApplicationClient{
     }
 
     @Override
-    public FeignResponseEntity<List<ApplicationDto>> getApplicationsByApplicationTypeAndStatusIn(String appType, List<String> statuses) {
+    public FeignResponseEntity<List<ApplicationDto>> getApplicationsByApplicationTypeAndStatusIn(SearchAuditRiskDto searchAuditRiskDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -822,7 +822,7 @@ public class ApplicationClientFallback implements ApplicationClient{
     }
 
     @Override
-    public FeignResponseEntity<List<AuditRiskDto>> getApplicationsByApplicationTypeAndStatusInOnlyForAuditRisk(String appType, List<String> statuses) {
+    public FeignResponseEntity<List<AuditRiskDto>> getApplicationsByApplicationTypeAndStatusInOnlyForAuditRisk(SearchAuditRiskDto searchAuditRiskDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

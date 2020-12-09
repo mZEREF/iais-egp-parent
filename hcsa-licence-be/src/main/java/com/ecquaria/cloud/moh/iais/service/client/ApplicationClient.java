@@ -322,10 +322,10 @@ public interface ApplicationClient {
     FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getHistoryByAppNoAndDecision(@PathVariable("applicationNo") String applicationNo, @PathVariable("decision") String decision);
 
     @PostMapping(value = "/iais-application-be/apptype-apps/status-apptype",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<ApplicationDto>> getApplicationsByApplicationTypeAndStatusIn(@RequestParam("appType")String appType,@RequestBody List<String> statuses);
+    FeignResponseEntity<List<ApplicationDto>> getApplicationsByApplicationTypeAndStatusIn(@RequestBody SearchAuditRiskDto searchAuditRiskDto);
 
     @PostMapping(value = "/iais-application-be/apptype-apps/status-apptype-audit",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AuditRiskDto>> getApplicationsByApplicationTypeAndStatusInOnlyForAuditRisk(@RequestParam("appType")String appType, @RequestBody List<String> statuses);
+    FeignResponseEntity<List<AuditRiskDto>> getApplicationsByApplicationTypeAndStatusInOnlyForAuditRisk( @RequestBody SearchAuditRiskDto searchAuditRiskDto);
     @GetMapping(value = "/iais-appeal/app-be-premise-misc-dto-relate-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscDtoRelateId(@RequestParam("relateId") String relateId);
 }

@@ -7,6 +7,7 @@ import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AuditRiskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SearchAuditRiskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -45,10 +46,13 @@ public class AuditAppCalculaterRiskJobHandler extends IJobHandler {
         logAbout("AuditAppCalculaterRiskJobHandler");
         try{
             AuditTrailHelper.setupBatchJobAuditTrail(this);
-            List<String> statuses = new ArrayList<>(2);
+            List<String>  statuses= new ArrayList<>(2);
             statuses.add( ApplicationConsts.APPLICATION_STATUS_APPROVED);
             // statuses.add(ApplicationConsts.APPLICATION_STATUS_REJECTED);
-            List< AuditRiskDto> auditRiskDtoList = applicationClient.getApplicationsByApplicationTypeAndStatusInOnlyForAuditRisk(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK,statuses).getEntity();
+            SearchAuditRiskDto searchAuditRiskDto = new SearchAuditRiskDto();
+            searchAuditRiskDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK);
+            searchAuditRiskDto.setStatuses(statuses);
+            List< AuditRiskDto> auditRiskDtoList = applicationClient.getApplicationsByApplicationTypeAndStatusInOnlyForAuditRisk(searchAuditRiskDto).getEntity();
            if(IaisCommonUtils.isEmpty(auditRiskDtoList)){
                logAbout("apps is null");
            }else {
