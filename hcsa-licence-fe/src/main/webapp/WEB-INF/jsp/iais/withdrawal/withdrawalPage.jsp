@@ -160,7 +160,7 @@
                     </div>
                 </div>
                 <c:if test="${isDoView != 'Y'}">
-                    <div class="center-content" style="padding-bottom: 2%">
+                    <div class="center-content">
                         <div class="components">
                             <a class="btn btn-primary" style="float:right" onclick="doSubmit()" href="javascript:void(0);">Submit</a>
                             <span style="float:right">&nbsp;</span>
