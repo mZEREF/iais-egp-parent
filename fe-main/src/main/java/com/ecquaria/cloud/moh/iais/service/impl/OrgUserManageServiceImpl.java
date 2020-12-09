@@ -86,11 +86,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public FeUserDto addAdminAccount(FeUserDto feUserDto){
-        return feAdminClient.addAdminAccount(feUserDto).getEntity();
-    }
-
-    @Override
     public FeUserDto getUserAccount(String userId){
         return feUserClient.getUserAccount(userId).getEntity();
     }
@@ -112,31 +107,13 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public Boolean validateSingpassId(String nric, String pwd) {
-
-        //TODO : call egp api to do validation
-
-        return Boolean.TRUE;
-    }
-
-    @Override
-    public Boolean isKeyappointment(String uen, String nricNumber){
-        return Boolean.FALSE;
-    }
-
-    @Override
-    public List<String> getUenListByIdAndType(String nric, String idType) {
-        return feUserClient.getUenListByIdAndType(nric, idType).getEntity();
-    }
-
-    @Override
-    public OrganizationDto createSingpassAccount(OrganizationDto organizationDto) {
+    public FeUserDto createSingpassAccount(OrganizationDto organizationDto) {
         FeignResponseEntity<OrganizationDto> result = feUserClient.createHalpAccount(organizationDto);
         int status = result.getStatusCode();
         if (status == HttpStatus.SC_OK){
             OrganizationDto postCreate = result.getEntity();
             syncAccountInformationToBackend(postCreate);
-            return postCreate;
+            return postCreate.getFeUserDto();
         }else {
             return null;
         }
@@ -144,7 +121,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     public void callFeEicCreateAccount(OrganizationDto organizationDto){
         eicGatewayFeMainClient.syncAccountDataFormFe(organizationDto);
-
     }
 
     private FeUserDto syncAccountInformationToBackend(OrganizationDto postCreate){
@@ -448,6 +424,11 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
+    public Boolean isNotExistUserAccount(String orgId) {
+        return feUserClient.isNotExistUserAccount(orgId).getEntity();
+    }
+
+    @Override
     public List<LicenseeDto> getLicenseeByOrgId(String orgId){
         return feAdminClient.getLicenseeByOrgId(orgId).getEntity();
     }
@@ -471,11 +452,4 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     public Boolean validatePwd(FeUserDto feUserDto) {
         return feUserClient.validatePwd(feUserDto).getEntity();
     }
-
-    @Override
-    public OrganizationDto createHalpAccount(OrganizationDto organizationDto) {
-        return null;
-    }
-
-
 }

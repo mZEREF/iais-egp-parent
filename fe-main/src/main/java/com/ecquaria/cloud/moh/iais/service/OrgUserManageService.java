@@ -14,22 +14,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import java.util.List;
 
 public interface OrgUserManageService {
-
     SearchResult<FeUserQueryDto> getFeUserList(SearchParam searchParam);
+
     OrganizationDto getOrganizationById(String id);
-    FeUserDto addAdminAccount(FeUserDto feUserDto);
+
     FeUserDto getUserAccount(String userId);
+
     FeUserDto editUserAccount(FeUserDto feUserDto);
+
     String ChangeActiveStatus(String userId, String targetStatus);
+
     OrgUserRoleDto addUserRole(OrgUserRoleDto orgUserRoleDto);
 
-    Boolean validateSingpassId(String nric, String pwd);
-
-    Boolean isKeyappointment(String uen, String nricNumber);
-
-    List<String> getUenListByIdAndType(String nric, String idType);
-
-    OrganizationDto createSingpassAccount(OrganizationDto organizationDto);
+    FeUserDto createSingpassAccount(OrganizationDto organizationDto);
 
     FeUserDto createCorpPassUser(OrganizationDto organizationDto);
 
@@ -44,13 +41,17 @@ public interface OrgUserManageService {
     FeUserDto getFeUserAccountByNricAndType(String nric, String idType);
 
     void createClientUser(FeUserDto userDto);
+
     void updateEgpUser(FeUserDto feUserDto);
 
     OrganizationDto findOrganizationByUen(String uen);
 
     void updateUserBe(OrganizationDto organizationDto);
+
     LicenseeDto getLicenseeById(String id);
+
     List<LicenseeDto> getLicenseeByOrgId(String orgId);
+
     List<LicenseeKeyApptPersonDto> getPersonById(String id);
 
     IaisApiResult<Void> checkIssueUen(String idNo, String idType);
@@ -59,7 +60,7 @@ public interface OrgUserManageService {
 
     Boolean validatePwd(FeUserDto feUserDto);
 
-    OrganizationDto createHalpAccount(OrganizationDto organizationDto);
-
     LicenseeDto saveMyinfoDataByFeUserDtoAndLicenseeDto( LicenseeDto licenseeDto, FeUserDto feUserDto, MyInfoDto myInfoDto,boolean amendLicensee);
+
+    Boolean isNotExistUserAccount(String orgId);
 }

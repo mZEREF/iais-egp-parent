@@ -26,6 +26,7 @@ public final class LoginHelper {
         SessionManager.getInstance(request).initSopLoginInfo(request);
 
         AccessUtil.initLoginUserInfo(request);
+
         AuditTrailDto auditTrailDto = new AuditTrailDto();
         auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
         auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN);
@@ -33,6 +34,7 @@ public final class LoginHelper {
         auditTrailDto.setModule("Internet Login");
         auditTrailDto.setFunctionName("Internet Login");
         auditTrailDto.setLoginTime(new Date());
+
         IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
         AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
     }

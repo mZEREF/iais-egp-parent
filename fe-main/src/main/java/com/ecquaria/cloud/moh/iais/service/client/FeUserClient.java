@@ -72,4 +72,7 @@ public interface FeUserClient {
 
     @PostMapping(path = "/iais-internet-user/validate-pwd", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> validatePwd(@RequestBody  FeUserDto feUserDto);
+
+    @GetMapping(path = "/iais-internet-user/not-exist/user-account/in/{orgId}")
+    FeignResponseEntity<Boolean> isNotExistUserAccount(@PathVariable("orgId") String orgId);
 }
