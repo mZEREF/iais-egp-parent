@@ -80,7 +80,7 @@ public final class HcsaServiceCacheHelper {
 	}
 
 
-	public static void receiveServiceMapping(){
+	public static void flushServiceMapping(){
 		HcsaServiceClient serviceClient = SpringContextHelper.getContext().getBean(HcsaServiceClient.class);
 		if (serviceClient != null){
 			FeignResponseEntity<List<HcsaServiceDto>> result = serviceClient.getActiveServices();
@@ -105,7 +105,7 @@ public final class HcsaServiceCacheHelper {
 		if(!IaisCommonUtils.isEmpty(list)){
 			return list;
 		}else {
-			receiveServiceMapping();
+			flushServiceMapping();
 			return redisCacheHelper.get(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE, RedisNameSpaceConstant.KEY_NAME_HCSA_SERVICE_LIST);
 		}
 	}

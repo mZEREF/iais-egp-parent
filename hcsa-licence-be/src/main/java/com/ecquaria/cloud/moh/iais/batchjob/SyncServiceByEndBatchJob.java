@@ -63,7 +63,7 @@ public class SyncServiceByEndBatchJob {
                 }
             }
             hcsaConfigClient.saveServiceList(updateServiceList);
-            HcsaServiceCacheHelper.receiveServiceMapping();
+            HcsaServiceCacheHelper.flushServiceMapping();
         } else {
             log.info(StringUtil.changeForLog("hcsaServiceDtos is Null"));
         }
@@ -84,7 +84,7 @@ public class SyncServiceByEndBatchJob {
                 }
             }
             hcsaConfigClient.saveServiceList(updateServiceList);
-            HcsaServiceCacheHelper.receiveServiceMapping();
+            HcsaServiceCacheHelper.flushServiceMapping();
         } else {
             log.info(StringUtil.changeForLog("hcsaServiceDtoList is Null"));
         }

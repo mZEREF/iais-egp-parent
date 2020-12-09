@@ -52,7 +52,7 @@ public class SyncServiceByEndJobHandler extends MohJobHandler {
                     }
                 }
                 hcsaConfigClient.saveServiceList(updateServiceList);
-                HcsaServiceCacheHelper.receiveServiceMapping();
+                HcsaServiceCacheHelper.flushServiceMapping();
             } else {
                 log.info(StringUtil.changeForLog("hcsaServiceDtos is Null"));
                 JobLogger.log(StringUtil.changeForLog("hcsaServiceDtos is Null"));
@@ -75,7 +75,7 @@ public class SyncServiceByEndJobHandler extends MohJobHandler {
                     }
                 }
                 hcsaConfigClient.saveServiceList(updateServiceList);
-                HcsaServiceCacheHelper.receiveServiceMapping();
+                HcsaServiceCacheHelper.flushServiceMapping();
             } else {
                 log.info(StringUtil.changeForLog("hcsaServiceDtoList is Null"));
             }

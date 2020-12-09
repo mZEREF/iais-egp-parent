@@ -59,7 +59,7 @@ public class AppInitializer implements ServletContextListener {
             //system admin
             initMessages();
             MasterCodeUtil.refreshCache();
-            HcsaServiceCacheHelper.receiveServiceMapping();
+            HcsaServiceCacheHelper.flushServiceMapping();
         } catch (Exception ex) {
             log.error("Failed to initialize the application by system admin.", ex);
         }

@@ -58,7 +58,7 @@ public class SyncFeServiceByEndJobHandler extends IJobHandler {
                     }
                 }
                 hcsaConfigFeClient.saveServiceList(updateServiceList);
-                HcsaServiceCacheHelper.receiveServiceMapping();
+                HcsaServiceCacheHelper.flushServiceMapping();
             } else {
                 log.info(StringUtil.changeForLog("hcsaServiceDtos is Null"));
                 JobLogger.log(StringUtil.changeForLog("hcsaServiceDtos is Null"));
@@ -82,7 +82,7 @@ public class SyncFeServiceByEndJobHandler extends IJobHandler {
                     }
                 }
                 hcsaConfigFeClient.saveServiceList(updateServiceList);
-                HcsaServiceCacheHelper.receiveServiceMapping();
+                HcsaServiceCacheHelper.flushServiceMapping();
             } else {
                 log.info(StringUtil.changeForLog("hcsaServiceDtoList is Null"));
                 JobLogger.log(StringUtil.changeForLog("hcsaServiceDtoList is Null"));

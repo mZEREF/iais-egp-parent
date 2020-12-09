@@ -99,7 +99,7 @@ public class RequestForChangeDelegator {
      */
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
-        HcsaServiceCacheHelper.receiveServiceMapping();
+        HcsaServiceCacheHelper.flushServiceMapping();
         String licenceId = ParamUtil.getMaskedString(bpc.request, "licenceId");
         ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, null);
         ParamUtil.setSessionAttr(bpc.request,"SvcName",null);
@@ -589,7 +589,7 @@ public class RequestForChangeDelegator {
     }
 
     private void init(BaseProcessClass bpc, String licenceId) throws CloneNotSupportedException {
-        HcsaServiceCacheHelper.receiveServiceMapping();
+        HcsaServiceCacheHelper.flushServiceMapping();
         ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, licenceId);
 
         //load data

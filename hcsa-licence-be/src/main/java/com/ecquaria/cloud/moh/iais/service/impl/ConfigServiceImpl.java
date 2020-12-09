@@ -220,7 +220,7 @@ public class ConfigServiceImpl implements ConfigService {
         hcsaServiceDto.setEffectiveDate(format);
         hcsaServiceConfigDto = hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto).getEntity();
         eicGateway(hcsaServiceConfigDto);
-        HcsaServiceCacheHelper.receiveServiceMapping();
+        HcsaServiceCacheHelper.flushServiceMapping();
         // todo send email
         request.setAttribute("option","added");
         request.setAttribute("serviceName",hcsaServiceDto.getSvcName());
@@ -344,7 +344,7 @@ public class ConfigServiceImpl implements ConfigService {
                  eicGateway(hcsaServiceConfigDto);
                  request.setAttribute("crud_action_type", "save");
                  //todo send email update (if start date or end date change need send  Effective Start/End )
-                 HcsaServiceCacheHelper.receiveServiceMapping();
+                 HcsaServiceCacheHelper.flushServiceMapping();
          /*   request.setAttribute("option","updated");
             request.setAttribute("serviceName",hcsaServiceDto.getSvcName());
             try {

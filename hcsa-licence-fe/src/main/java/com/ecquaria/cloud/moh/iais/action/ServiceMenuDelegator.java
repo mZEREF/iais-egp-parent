@@ -131,7 +131,7 @@ public class ServiceMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request,LIC_ALIGN_SEARCH_RESULT,null);
         ParamUtil.setSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST,null);
         ParamUtil.setSessionAttr(bpc.request,BASE_SVC_PREMISES_MAP,null);
-        HcsaServiceCacheHelper.receiveServiceMapping();
+        HcsaServiceCacheHelper.flushServiceMapping();
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
         log.debug(StringUtil.changeForLog("the  doStart end 1...."));
     }
