@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.bcel.generic.IF_ACMPEQ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -98,6 +99,7 @@ public class WithdrawalDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_WITHDRAWAL, AuditTrailConsts.FUNCTION_WITHDRAWAL);
         if (!StringUtil.isEmpty(rfiWithdrawAppNo)){
             WithdrawnDto withdrawnDto = withdrawalService.getWithdrawAppInfo(rfiWithdrawAppNo);
+            ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawAppNo", rfiWithdrawAppNo);
             ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", withdrawnDto);
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "doRfi");
         }else{
@@ -163,9 +165,16 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY001","APST011"});
 
         List<WithdrawApplicationDto> withdrawAppList =  withdrawalService.getCanWithdrawAppList(applicationTandS,loginContext.getLicenseeId());
+
         String applicationNo =  (String)ParamUtil.getSessionAttr(bpc.request, "withdrawAppNo");
         if(withdrawAppList != null && withdrawAppList.size() > 0){
-            withdrawAppList.removeIf(h -> applicationNo.equals(h.getApplicationNo()));
+            if(StringUtil.isEmpty(applicationNo)){
+                applicationNo = (String)ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawAppNo");
+            }
+        }
+        String finalApplicationNo = applicationNo;
+        if (!StringUtil.isEmpty(finalApplicationNo)){
+            withdrawAppList.removeIf(h -> finalApplicationNo.equals(h.getApplicationNo()));
         }
         PaginationHandler<WithdrawApplicationDto> handler = new PaginationHandler<>("withdrawPagDiv", "withdrawBodyDiv");
         handler.setAllData(withdrawAppList);
@@ -191,9 +200,18 @@ public class WithdrawalDelegator {
 
     public void withdrawDoRfi(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("****The withdrawDoRfi Step****"));
+        wdIsValid = IaisEGPConstant.YES;
         List<WithdrawnDto> withdrawnDtoList = getWithdrawAppList(bpc);
         if ((withdrawnDtoList != null) && (withdrawnDtoList.size() > 0) && IaisEGPConstant.YES.equals(wdIsValid)){
 //            withdrawalService.saveWithdrawn(withdrawnDtoList);
+            String replaceStr = "";
+            StringBuilder sb = new StringBuilder();
+            withdrawnDtoList.forEach(h -> sb.append(h.getApplicationNo()).append(','));
+            if (sb.toString().length() > 1){
+                replaceStr = sb.toString().substring(0,sb.toString().length() - 1);
+            }
+            String ackMsg = MessageUtil.replaceMessage("WDL_ACK001",replaceStr,"Application No");
+            ParamUtil.setRequestAttr(bpc.request,"WITHDRAW_ACKMSG",ackMsg);
             withdrawalService.saveRfiWithdrawn(withdrawnDtoList);
         }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,wdIsValid);
@@ -202,6 +220,7 @@ public class WithdrawalDelegator {
     public void prepareRfiDate(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("****The saveDateStep Step****"));
         prepareDate(bpc);
+        ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo",null);
         WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
         withdrawnDto.setLicenseeId(loginContext.getLicenseeId());
         ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", withdrawnDto);
@@ -267,18 +286,24 @@ public class WithdrawalDelegator {
             }
         }
         String applicationNo =  (String)ParamUtil.getSessionAttr(bpc.request, "withdrawAppNo");
+        String rfiApplicationNo = (String)ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawAppNo");
         List<WithdrawnDto> addWithdrawnDtoList = IaisCommonUtils.genNewArrayList();
         addWithdrawnDtoList.addAll(withdrawnDtoList);
-        addWithdrawnDtoList.removeIf(h -> applicationNo.equals(h.getApplicationNo()));
-        for (WithdrawnDto withdrawnDto : addWithdrawnDtoList) {
-            if (!applicationFeClient.isApplicationWithdrawal(withdrawnDto.getApplicationId()).getEntity()) {
-                String withdrawalError = MessageUtil.replaceMessage("WDL_EER002","appNo",withdrawnDto.getApplicationNo());
-                ParamUtil.setRequestAttr(bpc.request,"appIsWithdrawal",Boolean.TRUE);
-                bpc.request.setAttribute(InboxConst.APP_RECALL_RESULT,withdrawalError);
-                wdIsValid = IaisEGPConstant.NO;
-                break;
+        if (StringUtil.isEmpty(applicationNo)){
+            addWithdrawnDtoList.removeIf(h -> rfiApplicationNo.equals(h.getApplicationNo()));
+        }else{
+            addWithdrawnDtoList.removeIf(h -> applicationNo.equals(h.getApplicationNo()));
+            for (WithdrawnDto withdrawnDto : addWithdrawnDtoList) {
+                if (!applicationFeClient.isApplicationWithdrawal(withdrawnDto.getApplicationId()).getEntity()) {
+                    String withdrawalError = MessageUtil.replaceMessage("WDL_EER002","appNo",withdrawnDto.getApplicationNo());
+                    ParamUtil.setRequestAttr(bpc.request,"appIsWithdrawal",Boolean.TRUE);
+                    bpc.request.setAttribute(InboxConst.APP_RECALL_RESULT,withdrawalError);
+                    wdIsValid = IaisEGPConstant.NO;
+                    break;
+                }
             }
         }
+
 
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,wdIsValid);
         ParamUtil.setRequestAttr(bpc.request, "addWithdrawnDtoList",addWithdrawnDtoList);

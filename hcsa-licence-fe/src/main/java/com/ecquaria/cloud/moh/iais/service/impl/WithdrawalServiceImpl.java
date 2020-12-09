@@ -147,7 +147,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                         applicationDto.setStatus(appStatus);
                     }
                 }
-
             }
             applicationFeClient.updateApplicationList(applicationDtoList);
             h.setNewApplicationId(applicationDtoList.get(0).getId());
@@ -364,7 +363,12 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             licIds.add(originLicenceId);
             AppSubmissionDto appSubmissionDto = applicationFeClient.getAppSubmissionDtoByAppNo(applicationDto.getApplicationNo()).getEntity();
             try {
-                transformRfi(appSubmissionDto, h.getLicenseeId(), applicationDto);
+                appSubmissionDto = transformRfi(appSubmissionDto, h.getLicenseeId(), applicationDto);
+                List<ApplicationDto> applicationDtos = appSubmissionDto.getApplicationDtos();
+                if (applicationDtos != null && applicationDtos.size() > 0){
+                    ApplicationDto applicationDto1 = applicationDtos.get(0);
+                    h.setNewApplicationId(applicationDto1.getId());
+                }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
@@ -379,7 +383,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
     }
 
-    private void transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) throws Exception {
+    private AppSubmissionDto transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) throws Exception {
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
@@ -423,7 +427,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         }
         appSubmissionRequestInformationDto.setRfiStatus(applicationDto.getStatus());
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
-        applicationFeClient.saveRfcWithdrawSubmission(appSubmissionRequestInformationDto).getEntity();
+        return applicationFeClient.saveRfcWithdrawSubmission(appSubmissionRequestInformationDto).getEntity();
     }
 
     @Override
