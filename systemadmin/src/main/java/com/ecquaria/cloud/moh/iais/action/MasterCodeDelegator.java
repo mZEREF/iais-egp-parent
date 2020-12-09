@@ -686,6 +686,11 @@ public class MasterCodeDelegator {
                 masterCodeService.updateMasterCode(masterCodeDto);
             } else {
                 masterCodeService.deleteMasterCodeById(masterCodeId);
+                List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
+                masterCodeDto.setUpdateAt(new Date());
+                masterCodeDto.setNeedDelete(true);
+                syncMasterCodeList.add(masterCodeDto);
+                masterCodeService.syncMasterCodeFe(syncMasterCodeList);
             }
         }
         Date date = new Date();
