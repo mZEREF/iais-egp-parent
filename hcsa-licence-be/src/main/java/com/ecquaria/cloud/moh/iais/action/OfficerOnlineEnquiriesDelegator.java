@@ -1235,7 +1235,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 String[] appIdSplit=appId.split("\\|");
                 String is = appIdSplit[1];
                 String isActive = appIdSplit[3];
-                if ("1".equals(is)) {
+                if ("1".equals(is)&&"Active".equals(isActive)) {
                     licIdsSet.add(appIdSplit[2]);
                 }
                 if ("Active".equals(isActive)) {
