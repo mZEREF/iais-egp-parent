@@ -579,7 +579,7 @@ public class AppealApproveBatchjob {
             ApplicationGroupDto entity1 = applicationClient.getAppById(entity.getAppGrpId()).getEntity();
             if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT .equals(entity1.getPayMethod())) {
                 paymentMethodName = "onlinePayment";
-                paymentMode = ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT;
+                paymentMode = "Credit / Debit Card";
             }else if(ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(entity1.getPayMethod())){
                 paymentMethodName = "onlinePayment";
                 paymentMode = ApplicationConsts.PAYMENT_METHOD_NAME_NETS;
