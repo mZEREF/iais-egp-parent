@@ -5,6 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IaisUENDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
+import java.util.List;
+
 /**
  * AcraUenBeClientFallback
  *
@@ -22,6 +24,14 @@ public class AcraUenBeClientFallback implements AcraUenBeClient{
 
     @Override
     public FeignResponseEntity<Void> generateUen(IaisUENDto iaisUENDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Void> acraDeregister(List<String> licenseeIdList) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

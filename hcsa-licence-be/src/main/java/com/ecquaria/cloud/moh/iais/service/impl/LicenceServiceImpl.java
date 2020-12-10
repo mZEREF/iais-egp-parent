@@ -237,6 +237,11 @@ public class LicenceServiceImpl implements LicenceService {
     }
 
     @Override
+    public List<String> getLicenceOutDate(int outMonth){
+        return hcsaLicenceClient.getLicenceOutDate(outMonth).getEntity();
+    }
+
+    @Override
     public List<LicenceGroupDto> createSuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
         SubmitResp submitResp = eventBusHelper.submitAsyncRequest(eventBusLicenceGroupDtos,
                 generateIdClient.getSeqId().getEntity(),

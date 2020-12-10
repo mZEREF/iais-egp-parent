@@ -166,6 +166,9 @@ public interface HcsaLicenceClient {
     @GetMapping(value = "/hcsa-licence/licence-bylicence-byNo",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto> getLicBylicNo(@RequestParam(value = "licenceNo")String licenceNo);
 
+    @GetMapping(value = "/hcsa-licence/licence-out-date",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getLicenceOutDate(@RequestParam(value = "outDateMonth")int outDateMonth);
+
     @GetMapping(value = "/hcsa-licence/premise-cessation-id", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PremisesDto> getLicPremisesDtoById(@RequestParam(value = "id")String id);
 

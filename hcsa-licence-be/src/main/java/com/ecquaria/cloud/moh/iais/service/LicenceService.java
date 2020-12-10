@@ -38,7 +38,7 @@ public interface LicenceService {
     KeyPersonnelDto getLatestVersionKeyPersonnelByIdNoAndOrgId(String idNo,String orgId);
     LicenceDto getLicenceDto(String licenceId);
     LicenceDto getLicenceDtoByLicNo(String licNo);
-
+    List<String> getLicenceOutDate(int outMonth);
     List<LicenceGroupDto> createSuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos);
     EventBusLicenceGroupDtos createFESuperLicDto(String eventRefNum,String submissionId);
 

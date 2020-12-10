@@ -208,4 +208,11 @@ public class BeEicGatewayClient {
         return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/app-premises-sync", HttpMethod.PUT, appGrpPremisesEntityDtos,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, AppGrpPremisesEntityDto.class);
     }
+
+    public FeignResponseEntity<List> deRegisterAcra(List<String> licenseeIds,
+                                                     String date, String authorization, String dateSec,
+                                                     String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/acra-deregister", HttpMethod.PUT, licenseeIds,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
+    }
 }
