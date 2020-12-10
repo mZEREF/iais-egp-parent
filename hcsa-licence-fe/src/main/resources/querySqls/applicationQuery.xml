@@ -119,7 +119,7 @@
           FROM LICENCE T1
           JOIN LIC_PREMISES T2 on T2.LICENCE_ID = T1.id
           JOIN PREMISES T3 on T2.PREMISES_ID = T3.id
-          where T1.status in ('LICEST001','LICEST007')
+          where T1.status in ('LICEST001')
           <#if serName??> and T1.SVC_NAME IN ${serName} </#if>
           <#if licenseeId??> AND T1.LICENSEE_ID = :licenseeId</#if>
         ]]>
