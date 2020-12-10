@@ -1066,7 +1066,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             emailMap.put("ServiceLicenceName", serviceName);
                             emailMap.put("ApplicationDate", Formatter.formatDate(applicationGroupDto.getSubmitDt()));
                             emailMap.put("Licensee", licenseeDto.getName());
-                            emailMap.put("LicenceNumber", licenceDto.getLicenceNo());
+                            if(licenceDto!=null&&licenceDto.getLicenceNo()!=null){
+                                emailMap.put("LicenceNumber", licenceDto.getLicenceNo());
+                            }else {
+                                emailMap.put("LicenceNumber", "");
+                            }
                             StringBuilder stringBuilder = new StringBuilder();
                             List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(application.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
                             if(appEditSelectDtos!=null&&appEditSelectDtos.size()!=0){
