@@ -23,16 +23,19 @@
     });
 
     function doEdit(mcId){
+        showWaiting();
         $("[name='crud_action_value']").val(mcId);
         submit('doEdit');
     }
 
     function doDeleteOrDeactivate(mcId){
+        showWaiting();
         $("[name='crud_action_value']").val(mcId);
         submit('doDelete');
     }
 
     function doCreate(){
+        showWaiting();
         submit('doCreateCode');
     }
     function jumpToPagechangePage() {
@@ -57,10 +60,12 @@
     });
 
     $("#MCUploadFile").click(function () {
+        showWaiting();
         submit('doUpload');
     });
 
     function doCreateCategory(mcId) {
+        showWaiting();
         $("[name='crud_action_value']").val(mcId);
         submit('createCode');
     }

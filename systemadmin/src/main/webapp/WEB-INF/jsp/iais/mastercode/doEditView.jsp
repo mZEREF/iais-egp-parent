@@ -154,6 +154,7 @@
     }
 
     function doEdit(mcId){
+        showWaiting();
         $("[name='crud_action_value']").val(mcId);
         submit("edit");
     }

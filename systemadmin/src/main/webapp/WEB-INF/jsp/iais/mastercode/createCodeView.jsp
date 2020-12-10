@@ -125,6 +125,7 @@
 
 <script>
     function submitCategoryAction(action){
+        showWaiting();
         $("[name='crud_action_type']").val(action);
         $("#MasterCodeCategoryCreateForm").submit();
     }

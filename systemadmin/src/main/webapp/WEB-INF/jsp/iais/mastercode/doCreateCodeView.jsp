@@ -128,6 +128,7 @@
 
 <script>
     function submitAction(action) {
+        showWaiting();
         $("[name='crud_action_type']").val(action);
         $("#MasterCodeCreateForm").submit();
     }
