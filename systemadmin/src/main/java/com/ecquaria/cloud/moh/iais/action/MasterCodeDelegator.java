@@ -691,6 +691,7 @@ public class MasterCodeDelegator {
                 masterCodeDto.setNeedDelete(true);
                 syncMasterCodeList.add(masterCodeDto);
                 masterCodeService.syncMasterCodeFe(syncMasterCodeList);
+                MasterCodeUtil.refreshCache();
             }
         }
         Date date = new Date();
@@ -775,6 +776,7 @@ public class MasterCodeDelegator {
         msDto.setUpdateAt(new Date());
         syncMasterCodeList.add(msDto);
         masterCodeService.syncMasterCodeFe(syncMasterCodeList);
+        MasterCodeUtil.refreshCache();
         ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
         Date date = new Date();
         String dateStr = Formatter.formatDateTime(date);
@@ -940,6 +942,7 @@ public class MasterCodeDelegator {
             masterCodeDto1.setUpdateAt(now);
         }
         masterCodeService.syncMasterCodeFe(syncMasterCodeList);
+        MasterCodeUtil.refreshCache();
 
         ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
         Date date = new Date();
