@@ -19,17 +19,18 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.Date;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * BackendLoginDelegator
@@ -131,35 +132,13 @@ public class BackendLoginDelegator {
 
         if (orgUserDto==null||orgUserDto.getUserDomain().equals(AppConsts.USER_DOMAIN_INTERNET)) {
             // Add Audit Trail -- Start
-            AuditTrailDto auditTrailDto = new AuditTrailDto();
-            auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN_FAIL);
-            auditTrailDto.setMohUserId(userId);
-            auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTRANET);
-            auditTrailDto.setLoginType(AuditTrailConsts.LOGIN_TYPE_MOH);
-            auditTrailDto.setModule("Intranet Login");
-            auditTrailDto.setFailReason("LOGIN_ERR001");
-            auditTrailDto.setFunctionName("Intranet Login");
-            auditTrailDto.setLoginTime(new Date());
-
-            IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
-            AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
+            AuditTrailHelper.insertLoginFailureAuditTrail(request, null, userId, "LOGIN_ERR001");
             // End Audit Trail -- End
             errMap.put("login","LOGIN_ERR001");
         }
         if (orgUserDto!=null&&orgUserDto.getUserRoles().size()==0) {
             // Add Audit Trail -- Start
-            AuditTrailDto auditTrailDto = new AuditTrailDto();
-            auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN_FAIL);
-            auditTrailDto.setMohUserId(userId);
-            auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTRANET);
-            auditTrailDto.setLoginType(AuditTrailConsts.LOGIN_TYPE_MOH);
-            auditTrailDto.setModule("Intranet Login");
-            auditTrailDto.setFailReason("LOGIN_ERR002");
-            auditTrailDto.setFunctionName("Intranet Login");
-            auditTrailDto.setLoginTime(new Date());
-
-            IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
-            AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
+            AuditTrailHelper.insertLoginFailureAuditTrail(request, null, userId, "LOGIN_ERR002");
             // End Audit Trail -- End
             errMap.put("login","LOGIN_ERR002");
         }

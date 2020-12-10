@@ -37,7 +37,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
 @PowerMockIgnore("javax.management.*")
-@PrepareForTest({LoginHelper.class, SessionManager.class, AccessUtil.class, IaisEGPHelper.class,
+@PrepareForTest({FeLoginHelper.class, SessionManager.class, AccessUtil.class, IaisEGPHelper.class,
         SpringContextHelper.class, ApplicationContext.class, SubmissionClient.class, AuditLogUtil.class,
         HttpServletResponse.class})
 public class LoginHelperTest {
@@ -73,7 +73,7 @@ public class LoginHelperTest {
         when(applicationContext.getBean(SubmissionClient.class)).thenReturn(submissionClient);
         PowerMockito.mockStatic(AuditLogUtil.class);
         doNothing().when(AuditLogUtil.class, "callWithEventDriven", new Object[] {anyObject(), anyObject()});
-        LoginHelper.initUserInfo(request, response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
+        FeLoginHelper.initUserInfo(request, response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
         assertNotNull(user);
     }
 
@@ -81,8 +81,8 @@ public class LoginHelperTest {
     public void testPrivate() throws NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException {
 
-        Class cls = LoginHelper.class;
-        Constructor<LoginHelper> con = cls.getDeclaredConstructor(null);
+        Class cls = FeLoginHelper.class;
+        Constructor<FeLoginHelper> con = cls.getDeclaredConstructor(null);
         con.setAccessible(true);
         con.newInstance(null);
     }

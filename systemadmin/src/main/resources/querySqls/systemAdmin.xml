@@ -111,9 +111,9 @@
             case  operation
             when 1 then 'Login'
             when 2 then 'Logout'
-            when 3 then 'Login fail'
+            when 3 then 'Login Failure'
             when 4 then 'View Record'
-            when 5 then 'Validation fail'
+            when 5 then 'Data Validation Failure'
             when 6 then 'Insert'
             when 7 then 'Update'
             when 8 then 'Delete'
@@ -169,9 +169,9 @@
             case  operation
             when 1 then 'Login'
             when 2 then 'Logout'
-            when 3 then 'Login fail'
+            when 3 then 'Login Failure'
             when 4 then 'View Record'
-            when 5 then 'Validation fail'
+            when 5 then 'Data Validation Failure'
             when 6 then 'Insert'
             when 7 then 'Update'
             when 8 then 'Delete'
@@ -503,7 +503,7 @@
         ]]>
     </sql>
 
-    <sql key="failEmail"  remarks="failEmail">
+    <sql key="FailureEmail"  remarks="FailureEmail">
         <![CDATA[
 			SELECT DISTINCT
             T1.notification_id,T1.REQUEST_REF_NO,SUBSTRING(RECIPIENT_VALUE_ALL,1, LEN(RECIPIENT_VALUE_ALL) - 1) recipient,T1.sender,T1.subject,T1.status,T3.log_msg,T3.sent_time,T1.client_query_code

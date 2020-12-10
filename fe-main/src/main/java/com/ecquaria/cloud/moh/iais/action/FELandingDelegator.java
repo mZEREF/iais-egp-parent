@@ -5,8 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.FeLoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
 import com.ncs.secureconnect.sim.lite.SIMUtil;
 import com.ncs.secureconnect.sim.lite.SIMUtil4Corpass;
 import lombok.extern.slf4j.Slf4j;
@@ -92,7 +92,7 @@ public class FELandingDelegator {
 		}catch (Exception e){
 			log.error("Error initializing Login ");
 			log.error(e.getMessage(), e);
-			IaisEGPHelper.sendRedirect(bpc.request, bpc.response, LoginHelper.MAIN_WEB_URL);
+			IaisEGPHelper.sendRedirect(bpc.request, bpc.response, FeLoginHelper.MAIN_WEB_URL);
 		}
 	}
 
@@ -110,7 +110,7 @@ public class FELandingDelegator {
 		} catch (Exception e) {
 			log.error("Error initializing Login ");
 			log.error(e.getMessage(), e);
-			IaisEGPHelper.sendRedirect(bpc.request, bpc.response, LoginHelper.MAIN_WEB_URL);
+			IaisEGPHelper.sendRedirect(bpc.request, bpc.response, FeLoginHelper.MAIN_WEB_URL);
 		}
 	}
 }

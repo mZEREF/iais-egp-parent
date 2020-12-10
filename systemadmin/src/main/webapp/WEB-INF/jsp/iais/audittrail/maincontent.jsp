@@ -301,7 +301,7 @@
                                                   Data Read
                                                 </c:when>
                                                 <c:when test="${resultRow.operation == 6}">
-                                                    Data Added
+                                                    Data Inserted
                                                 </c:when>
                                                 <c:when test="${resultRow.operation == 7}">
                                                    Data Updated

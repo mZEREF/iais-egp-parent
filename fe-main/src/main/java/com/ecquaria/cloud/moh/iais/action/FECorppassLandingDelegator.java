@@ -14,8 +14,8 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.FeLoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
@@ -60,7 +60,7 @@ public class FECorppassLandingDelegator {
      * @throws
      */
     public void redirectToInbox(BaseProcessClass bpc){
-        IaisEGPHelper.sendRedirect(bpc.request, bpc.response, LoginHelper.INBOX_URL);
+        IaisEGPHelper.sendRedirect(bpc.request, bpc.response, FeLoginHelper.INBOX_URL);
     }
 
     /**
@@ -82,7 +82,7 @@ public class FECorppassLandingDelegator {
         String identityNo;
         String scp = null;
 
-        String testMode = LoginHelper.getTestMode(request);
+        String testMode = FeLoginHelper.getTestMode(request);
         if (FELandingDelegator.LOGIN_MODE_REAL.equals(testMode)) {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
             LoginInfo oLoginInfo = SIMUtil4Corpass.doCorpPassArtifactResolution(request, samlArt);
@@ -113,7 +113,7 @@ public class FECorppassLandingDelegator {
 
         if (StringUtil.isEmpty(identityNo)){
             log.info(StringUtil.changeForLog("identityNo ====>>>>>>>>>" + identityNo));
-            LoginHelper.insertLoginFailureAuditTrail(uen, identityNo);
+            AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, uen, identityNo);
             return;
         }
 
@@ -148,13 +148,13 @@ public class FECorppassLandingDelegator {
 
     public void validatePwd(BaseProcessClass bpc){
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO);
-        String testMode = LoginHelper.getTestMode(bpc.request);
+        String testMode = FeLoginHelper.getTestMode(bpc.request);
         if (FELandingDelegator.LOGIN_MODE_DUMMY_WITHPASS.equals(testMode)) {
             boolean scpCorrect = orgUserManageService.validatePwd(userSession);
             if (!scpCorrect) {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "The account or password is incorrect");
                 ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "Y");
-                LoginHelper.insertLoginFailureAuditTrail(userSession.getUenNo(), userSession.getIdentityNo());
+                AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, userSession.getUenNo(), userSession.getIdentityNo());
                 return;
             }
         }
@@ -200,10 +200,10 @@ public class FECorppassLandingDelegator {
             user.setUserDomain(userSession.getUserDomain());
             user.setId(userSession.getUserId());
             user.setIdentityNo(userSession.getIdentityNo());
-            LoginHelper.initUserInfo(bpc.request, bpc.response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
+            FeLoginHelper.initUserInfo(bpc.request, bpc.response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
         }else {
             // Add Audit Trail -- Start
-            LoginHelper.insertLoginFailureAuditTrail(uen, identityNo);
+            AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, uen, identityNo);
             // End Audit Trail -- End
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", MessageUtil.getMessageDesc("GENERAL_ERR0012"));
             ParamUtil.setRequestAttr(bpc.request, UserConstants.IS_ADMIN, "N");
@@ -263,7 +263,7 @@ public class FECorppassLandingDelegator {
                 user.setDisplayName(postUpdate.getDisplayName());
                 user.setUserDomain(postUpdate.getUserDomain());
                 user.setId(postUpdate.getUserId());
-                LoginHelper.initUserInfo(request, response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
+                FeLoginHelper.initUserInfo(request, response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
 
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }

@@ -156,10 +156,10 @@ public class AuditTrailDelegator {
         ParamUtil.setRequestAttr(request, "operationValueTypeSelect", operationList);
 
         List<SelectOption> dataActivites =  IaisCommonUtils.genNewArrayList();
+        dataActivites.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_VIEW_RECORD), "Data Read"));
         dataActivites.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_INSERT), "Data Inserted"));
-        dataActivites.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_UPDATE), "Data Before Update"));
-        dataActivites.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_UPDATE), "Data After Update"));
-        dataActivites.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_DELETE), "Data After Delete"));
+        dataActivites.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_UPDATE), "Data Updated"));
+        dataActivites.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_DELETE), "Data Deleted"));
         ParamUtil.setRequestAttr(request, "dataActivitesTypeSelect", dataActivites);
     }
 

@@ -17,9 +17,11 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.SessionDurationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -35,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -181,5 +184,47 @@ public class AuditTrailHelper {
 
     private AuditTrailHelper() {
         throw new IllegalStateException("Utility class");
+    }
+
+
+
+    public static void insertLoginFailureAuditTrail(HttpServletRequest request, String identityNo){
+        insertLoginFailureAuditTrail(request, null, identityNo);
+    }
+
+    public static void insertLoginFailureAuditTrail(HttpServletRequest request, String identityNo, String reason){
+        insertLoginFailureAuditTrail(request, null, identityNo, reason);
+    }
+
+    public static void insertLoginFailureAuditTrail(HttpServletRequest request, String uen, String identityNo, String reason){
+        AuditTrailDto atd = new AuditTrailDto();
+        SystemParamConfig config = SpringContextHelper.getContext().getBean(SystemParamConfig.class);
+        String cyd = config.getCurSysDomain();
+        atd.setClientIp(MiscUtil.getClientIp(request));
+        atd.setUserAgent(AccessUtil.getBrowserInfo(request));
+        atd.setFailReason(reason);
+        if (AppConsts.USER_DOMAIN_INTRANET.equalsIgnoreCase(cyd)){
+            atd.setModule("Intranet Login");
+            atd.setFunctionName("Intranet Login");
+            atd.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTRANET);
+            atd.setMohUserId(identityNo);
+            atd.setLoginType(AuditTrailConsts.LOGIN_TYPE_MOH);
+        }else if (AppConsts.USER_DOMAIN_INTERNET.equalsIgnoreCase(cyd)){
+            atd.setModule("Internet Login");
+            atd.setFunctionName("Internet Login");
+            atd.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
+            atd.setUenId(uen);
+            atd.setMohUserId(identityNo);
+            atd.setNricNumber(identityNo);
+            atd.setLoginType(StringUtil.isEmpty(uen) ? AuditTrailConsts.LOGIN_TYPE_SING_PASS : AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
+            if (OrganizationConstants.ID_TYPE_FIN.equals(IaisEGPHelper.checkIdentityNoType(identityNo))){
+                //for audit trail page display, issue 67866
+                atd.setEntityId(identityNo);
+            }
+        }
+
+        atd.setLoginTime(new Date());
+        atd.setOperation(AuditTrailConsts.OPERATION_LOGIN_FAIL);
+        AuditTrailHelper.callSaveAuditTrail(atd);
     }
 }

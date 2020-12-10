@@ -16,8 +16,8 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.FeLoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
@@ -55,7 +55,7 @@ public class FESingpassLandingDelegator {
     }
 
     public void redirectToCorppass(BaseProcessClass bpc){
-        IaisEGPHelper.sendRedirect(bpc.request, bpc.response, LoginHelper.MAIN_WEB_URL);
+        IaisEGPHelper.sendRedirect(bpc.request, bpc.response, FeLoginHelper.MAIN_WEB_URL);
     }
 
     /**
@@ -72,7 +72,7 @@ public class FESingpassLandingDelegator {
         String identityNo;
         String scp = null;
 
-        String testMode = LoginHelper.getTestMode(request);
+        String testMode = FeLoginHelper.getTestMode(request);
         if (FELandingDelegator.LOGIN_MODE_REAL.equals(testMode)) {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
             LoginInfo oLoginInfo = SIMUtil.doSingPassArtifactResolution(request, samlArt);
@@ -107,13 +107,13 @@ public class FESingpassLandingDelegator {
         HttpServletRequest request = bpc.request;
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO);
 
-        String testMode = LoginHelper.getTestMode(bpc.request);
+        String testMode = FeLoginHelper.getTestMode(bpc.request);
         if (FELandingDelegator.LOGIN_MODE_DUMMY_WITHPASS.equals(testMode)){
             boolean scpCorrect = orgUserManageService.validatePwd(userSession);
             if (!scpCorrect) {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "The account or password is incorrect");
                 ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
-                LoginHelper.insertLoginFailureAuditTrail(userSession.getIdentityNo());
+                AuditTrailHelper.insertLoginFailureAuditTrail(request, userSession.getIdentityNo());
                 return;
             }
         }
@@ -135,7 +135,7 @@ public class FESingpassLandingDelegator {
         if (iaisApiResult.isHasError()){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", MessageUtil.getMessageDesc("GENERAL_ERR0013"));
             ParamUtil.setRequestAttr(bpc.request, "hasMohIssueUen", IaisEGPConstant.YES);
-            LoginHelper.insertLoginFailureAuditTrail(identityNo);
+            AuditTrailHelper.insertLoginFailureAuditTrail(request, identityNo);
         }else {
             ParamUtil.setRequestAttr(bpc.request, "hasMohIssueUen", IaisEGPConstant.NO);
         }
@@ -239,7 +239,7 @@ public class FESingpassLandingDelegator {
                 user.setDisplayName(createdUser.getDisplayName());
                 user.setUserDomain(createdUser.getUserDomain());
                 user.setId(createdUser.getUserId());
-                LoginHelper.initUserInfo(request, response, user, AuditTrailConsts.LOGIN_TYPE_SING_PASS);
+                FeLoginHelper.initUserInfo(request, response, user, AuditTrailConsts.LOGIN_TYPE_SING_PASS);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }
 
@@ -257,7 +257,7 @@ public class FESingpassLandingDelegator {
      * @throws
      */
     public void redirectToInbox(BaseProcessClass bpc){
-        IaisEGPHelper.sendRedirect(bpc.request, bpc.response, LoginHelper.INBOX_URL);
+        IaisEGPHelper.sendRedirect(bpc.request, bpc.response, FeLoginHelper.INBOX_URL);
     }
 
     public void initLoginInfo(BaseProcessClass bpc){
@@ -273,7 +273,7 @@ public class FESingpassLandingDelegator {
             user.setUserDomain(userSession.getUserDomain());
             user.setId(userSession.getUserId());
             user.setIdentityNo(userSession.getIdentityNo());
-            LoginHelper.initUserInfo(request, response, user, AuditTrailConsts.LOGIN_TYPE_SING_PASS);
+            FeLoginHelper.initUserInfo(request, response, user, AuditTrailConsts.LOGIN_TYPE_SING_PASS);
         }
         log.info("initLoginInfo===========>>>End");
     }
@@ -285,6 +285,6 @@ public class FESingpassLandingDelegator {
      * @throws
      */
     public void step1(BaseProcessClass bpc){
-        IaisEGPHelper.sendRedirect(bpc.request, bpc.response, LoginHelper.MAIN_WEB_URL);
+        IaisEGPHelper.sendRedirect(bpc.request, bpc.response, FeLoginHelper.MAIN_WEB_URL);
     }
 }

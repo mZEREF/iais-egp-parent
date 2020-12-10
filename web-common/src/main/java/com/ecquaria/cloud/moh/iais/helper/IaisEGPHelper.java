@@ -255,7 +255,10 @@ public final class IaisEGPHelper extends EGPHelper {
             dto.setUserDomain(SessionManager.getInstance(request).getCurrentUserDomain());
         }
 
-        dto.setSessionId(session.getId());
+        if (AuditTrailConsts.OPERATION_LOGIN_FAIL != dto.getOperation()){
+            dto.setSessionId(session.getId());
+        }
+
         dto.setClientIp(MiscUtil.getClientIp(request));
         dto.setUserAgent(AccessUtil.getBrowserInfo(request));
 
