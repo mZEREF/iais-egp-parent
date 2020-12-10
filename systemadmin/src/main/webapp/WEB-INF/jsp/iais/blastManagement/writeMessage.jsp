@@ -162,14 +162,12 @@
         if(fileV == null || fileV == "" ||file==null|| file==undefined){
             currentFileSize = 0;
         }else{
-            var tempSize = file.size + allSize;
-            var fileSize = (Math.round(tempSize * 100 / (1024 * 1024)) / 100).toString();
-            currentFileSize = parseInt(fileSize);
-            console.log('currentFileSize1 : ' + currentFileSize);
+            currentFileSize = (Math.round(file.size / (1024 * 1024))) + allSize;
+            console.log('test currentFileSize1 : ' + currentFileSize);
         }
         console.log('currentFileSize2 : ' + currentFileSize);
         console.log('all size : ' + allSize);
-        return allSize;
+        return currentFileSize;
     }
 
     function writeMessageDeleteFile(deleteWriteMessageFileId){
