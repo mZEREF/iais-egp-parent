@@ -81,7 +81,7 @@ public class PostInspectionBatchJob {
                     entity.setAuditTrailDto(auditTrailDto);
                     entity.setPreInspection(true);
                     entity.setRequirement(true);
-                    entity.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
+                    entity.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT);
                     entity.setEventRefNo(grpNo);
                     List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = entity.getAppSvcRelatedInfoDtoList();
                     String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
@@ -110,9 +110,9 @@ public class PostInspectionBatchJob {
             //app
             eventBusHelper.submitAsyncRequest(postInspectionDto, submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                     EventBusConsts.OPERATION_POST_INSPECTION_APP_LIC, grpNo, bpc.process);
-//            //licence
-            eventBusHelper.submitAsyncRequest(postInspectionDto, submissionId, EventBusConsts.SERVICE_NAME_LICENCESAVE,
-                    EventBusConsts.OPERATION_POST_INSPECTION_APP_LIC, grpNo, bpc.process);
+            //licence
+//            eventBusHelper.submitAsyncRequest(postInspectionDto, submissionId, EventBusConsts.SERVICE_NAME_LICENCESAVE,
+//                    EventBusConsts.OPERATION_POST_INSPECTION_APP_LIC, grpNo, bpc.process);
             log.debug(StringUtil.changeForLog("=============  event bus end ================"));
         });
     }
