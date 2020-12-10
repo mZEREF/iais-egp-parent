@@ -684,6 +684,10 @@ public class MasterCodeDelegator {
                 masterCodeDto.setCodeCategory(codeCategory);
                 masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                 masterCodeService.updateMasterCode(masterCodeDto);
+                List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
+                masterCodeDto.setUpdateAt(new Date());
+                syncMasterCodeList.add(masterCodeDto);
+                masterCodeService.syncMasterCodeFe(syncMasterCodeList);
             } else {
                 masterCodeService.deleteMasterCodeById(masterCodeId);
                 List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
@@ -691,8 +695,8 @@ public class MasterCodeDelegator {
                 masterCodeDto.setNeedDelete(true);
                 syncMasterCodeList.add(masterCodeDto);
                 masterCodeService.syncMasterCodeFe(syncMasterCodeList);
-                MasterCodeUtil.refreshCache();
             }
+            MasterCodeUtil.refreshCache();
         }
         Date date = new Date();
         String dateStr = Formatter.formatDateTime(date);
