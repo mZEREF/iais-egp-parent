@@ -1491,8 +1491,8 @@ public class HalpAssessmentGuideDelegator {
                     h.setPremisesDtoList(addressList);
                 }
             });
-            ParamUtil.setSessionAttr(bpc.request, "amendHCISearchParam", amendDetailsSearchParam);
-            ParamUtil.setRequestAttr(bpc.request, "amendHCISearchResult", amendHCISearchResult);
+            ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_DETAILS_SEARCH_PARAM, amendDetailsSearchParam);
+            ParamUtil.setRequestAttr(bpc.request, GuideConsts.AMEND_DETAILS_SEARCH_RESULT, amendHCISearchResult);
             ArrayList<PremisesListQueryDto> newList = IaisCommonUtils.genNewArrayList(amendHCISearchResult.getRowCount());
             for (SelfPremisesListQueryDto se : amendHCISearchResult.getRows()) {
                 newList.add(MiscUtil.transferEntityDto(se, PremisesListQueryDto.class));
