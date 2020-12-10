@@ -198,11 +198,6 @@ public class OfficerOnlineEnquiriesDelegator {
         Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
         List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
-        Date dueDate;
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.YEAR,1);
-        dueDate =calendar.getTime();
-        filter.put("expiry_date",Formatter.formatDate(dueDate));
         if(searchNo!=null) {
             switch (count) {
                 case "2":
