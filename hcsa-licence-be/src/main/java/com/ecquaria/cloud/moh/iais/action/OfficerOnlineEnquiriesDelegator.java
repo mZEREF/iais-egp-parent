@@ -75,8 +75,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -196,6 +198,11 @@ public class OfficerOnlineEnquiriesDelegator {
         Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
         List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
+        Date dueDate;
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.YEAR,1);
+        dueDate =calendar.getTime();
+        filter.put("expiry_date",Formatter.formatDate(dueDate));
         if(searchNo!=null) {
             switch (count) {
                 case "2":
@@ -356,7 +363,6 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(lic.getAppId()!=null){
                         filter.put("id", lic.getAppId());
 
-                        filter.remove("svc_names");
                         applicationParameter.setFilters(filter);
 
                         SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
@@ -712,6 +718,13 @@ public class OfficerOnlineEnquiriesDelegator {
         List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
 
+        if(StringUtil.isEmpty(appSubToDate)&&StringUtil.isEmpty(appSubDate)&&StringUtil.isEmpty(licStaDate)&&StringUtil.isEmpty(licStaToDate)&&StringUtil.isEmpty(licExpDate)&&StringUtil.isEmpty(licExpToDate)){
+            Date dueDate;
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.YEAR,1);
+            dueDate =calendar.getTime();
+            filters.put("expiry_date",Formatter.formatDate(dueDate));
+        }
         String count=ParamUtil.getString(request,"searchChk");
         if(count==null){
             count= (String) ParamUtil.getSessionAttr(request,"count");
@@ -1444,6 +1457,19 @@ public class OfficerOnlineEnquiriesDelegator {
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
         String count=(String) ParamUtil.getSessionAttr(request,"count");
         SearchParam parm = (SearchParam) ParamUtil.getSessionAttr(request,"SearchParam");
+        String appSubToDate= (String) parm.getFilters().get("toDate");
+        String appSubDate= (String) parm.getFilters().get("subDate");
+        String licStaDate= (String) parm.getFilters().get("start_date");
+        String licStaToDate= (String) parm.getFilters().get("start_to_date");
+        String licExpDate= (String) parm.getFilters().get("expiry_start_date");
+        String licExpToDate= (String) parm.getFilters().get("expiry_date");
+        if(StringUtil.isEmpty(appSubToDate)&&StringUtil.isEmpty(appSubDate)&&StringUtil.isEmpty(licStaDate)&&StringUtil.isEmpty(licStaToDate)&&StringUtil.isEmpty(licExpDate)&&StringUtil.isEmpty(licExpToDate)){
+            Date dueDate;
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.YEAR,1);
+            dueDate =calendar.getTime();
+            filters.put("expiry_date",Formatter.formatDate(dueDate));
+        }
         switch (count) {
             case "2":
             case "3":
