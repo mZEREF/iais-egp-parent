@@ -79,6 +79,14 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
     }
 
     @Override
+    public FeignResponseEntity<Map<String, List<LicenceDto>>> unsendEmail(List<Integer> days) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<LicPremisesDto>> getlicPremisesCorrelationsByPremises(String licCorreId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

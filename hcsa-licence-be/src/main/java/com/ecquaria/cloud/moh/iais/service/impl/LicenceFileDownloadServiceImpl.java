@@ -560,7 +560,16 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     while (iterator.hasNext()){
                         AppPremiseMiscDto next1 = iterator.next();
                         if(ApplicationConsts.WITHDROW_TYPE_APPLICATION.equals(next1.getAppealType())){
-                            applicationDtoListIterator.remove();
+                            String appPremCorreId = next1.getAppPremCorreId();
+                            List<String> corrIds=new ArrayList<>(1);
+                            corrIds.add(appPremCorreId);
+                            List<ApplicationDto> applicationDtoList = applicationClient.getApplicationDtoByCorrIds(corrIds).getEntity();
+                            if(applicationDtoList!=null&&!applicationDtoList.isEmpty()){
+                                String status1 = applicationDtoList.get(0).getStatus();
+                                if(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(status1)){
+                                    applicationDtoListIterator.remove();
+                                }
+                            }
                         }
                     }
                 }

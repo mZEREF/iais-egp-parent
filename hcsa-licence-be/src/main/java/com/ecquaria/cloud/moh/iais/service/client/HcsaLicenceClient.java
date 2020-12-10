@@ -46,7 +46,8 @@ public interface HcsaLicenceClient {
     @RequestMapping(value = "/hcsa-licence-fe-date",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE,
             method = RequestMethod.POST)
     FeignResponseEntity<Map<String, List<LicenceDto>>> licenceRenwal(@RequestBody List<Integer>  days);
-
+    @PostMapping (value = "/hcsa-licence-unsend-email",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Map<String,List<LicenceDto>>> unsendEmail(@RequestBody List<Integer>  days);
     @GetMapping(value = "/hcsa-licence/licPremisesCorrelationsByPremises/{licCorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicPremisesDto>> getlicPremisesCorrelationsByPremises(@PathVariable("licCorrId") String licCorreId);
 

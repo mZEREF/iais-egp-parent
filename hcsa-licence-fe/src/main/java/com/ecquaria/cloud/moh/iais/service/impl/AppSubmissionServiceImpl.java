@@ -2231,6 +2231,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         continue;
                     }
                     String svcComDocId = appGrpPrimaryDocDto.getSvcComDocId();
+                    if(!comm.getId().equals(svcComDocId)&&comm.getDocTitle().equals(appGrpPrimaryDocDto.getSvcComDocName())){
+                        appGrpPrimaryDocDto.setSvcComDocId(comm.getId());
+                        svcComDocId=comm.getId();
+                    }
                     if (comm.getId().equals(svcComDocId)) {
                         flag = Boolean.TRUE;
                         break;

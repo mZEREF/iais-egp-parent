@@ -155,6 +155,7 @@ public class WithOutRenewalDelegator {
 
     public void start(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info("**** the non auto renwal  start ******");
+        HcsaServiceCacheHelper.flushServiceMapping();
         String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
         //init session
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_RENEW, AuditTrailConsts.FUNCTION_RENEW);

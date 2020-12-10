@@ -103,6 +103,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     private static final String F_60="0BED7E7E-4359-EA11-BE7F-000C29F371DC";
     private static final String S_45="0CED7E7E-4359-EA11-BE7F-000C29F371DC";
     private static final String S_30="BBF06A97-4359-EA11-BE7F-000C29F371DC";
+    private static final String DAY="TPOF00006";
     private static final String MONTH_DAY="TPOF00005";
     private static final String WEEK_DAY="TPOF00004";
     private static final String REMINDER_DAY="TPOF00012";
@@ -110,7 +111,6 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     @Override
     public void startRenwal() {
         List<Integer> dayList= IaisCommonUtils.genNewArrayList();
-        dayList.add(-1);
         SystemParameterDto systemParameterDto = systemBeLicClient.getParameterByRowguid(F_180).getEntity();
         SystemParameterDto systemParameterDto1 = systemBeLicClient.getParameterByRowguid(S_150).getEntity();
         SystemParameterDto systemParameterDto2 = systemBeLicClient.getParameterByRowguid(T_120).getEntity();
@@ -118,16 +118,24 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         SystemParameterDto systemParameterDto4 = systemBeLicClient.getParameterByRowguid(F_60).getEntity();
         SystemParameterDto systemParameterDto5 = systemBeLicClient.getParameterByRowguid(S_45).getEntity();
         SystemParameterDto systemParameterDto6 = systemBeLicClient.getParameterByRowguid(S_30).getEntity();
-        dayList.add(getDay(systemParameterDto6));
-        dayList.add(getDay(systemParameterDto5));
-        dayList.add(getDay(systemParameterDto4));
-        dayList.add(getDay(systemParameterDto3));
-        dayList.add(getDay(systemParameterDto2));
-        dayList.add(getDay(systemParameterDto1));
-        dayList.add(getDay(systemParameterDto));
+        Map<String,String> mouth=IaisCommonUtils.genNewHashMap();
+        dayList.add(getDay(systemParameterDto6,mouth));
+        dayList.add(getDay(systemParameterDto5 ,mouth ));
+        dayList.add(getDay(systemParameterDto4, mouth));
+        dayList.add(getDay(systemParameterDto3,mouth));
+        dayList.add(getDay(systemParameterDto2,mouth));
+        dayList.add(getDay(systemParameterDto1,mouth));
+        dayList.add(getDay(systemParameterDto,mouth));
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(dayList)+"dayList"));
         Map<String, List<LicenceDto>> entity = hcsaLicenClient.licenceRenwal(dayList).getEntity();
+        Map<String, List<LicenceDto>> entity1 = hcsaLicenClient.unsendEmail(dayList).getEntity();
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(entity+"------entity")));
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(entity1 + "-----entity1")));
+        sendEmail(entity,mouth);
+        sendEmail(entity1,mouth);
+    }
+
+    private void sendEmail( Map<String, List<LicenceDto>> entity,Map<String,String> map){
         entity.forEach((k, v) -> {
             for(int i=0;i<v.size();i++){
                 String licenceNo = v.get(i).getLicenceNo();
@@ -137,7 +145,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 if(autoOrNon){
 
                     try {
-                        isAuto(v.get(i),k);
+                        isAuto(v.get(i),k,map);
 
                     } catch (Exception e) {
                         log.info(e.getMessage(),e);
@@ -145,7 +153,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 }else {
 
                     try {
-                        isNoAuto(v.get(i),k);
+                        isNoAuto(v.get(i),k,map);
                     } catch (Exception e) {
                         log.error(e.getMessage(),e);
                     }
@@ -171,11 +179,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 //                }
             }
         });
-
     }
-
-
-    private int getDay(SystemParameterDto systemParameterDto){
+    private Integer getDay(SystemParameterDto systemParameterDto,Map<String ,String> map){
         String value = systemParameterDto.getValue();
         String valueType = systemParameterDto.getValueType();
         String paramType = systemParameterDto.getParamType();
@@ -188,13 +193,21 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 Calendar calendar=Calendar.getInstance();
                 calendar.setTime(new Date());
                 calendar.add(Calendar.MONTH,i);
-                return (int)(calendar.getTimeInMillis()-c.getTimeInMillis())/(24*60*60*1000);
+                int i1 = Integer.parseInt(String.valueOf((calendar.getTimeInMillis() - c.getTimeInMillis()) / (24 * 60 * 60 * 1000)));
+                map.put(i1+"",MONTH_DAY+i);
+                return i1;
             }else if(WEEK_DAY.equals(paramType)){//week
                 Calendar calendar=Calendar.getInstance();
                 calendar.setTime(new Date());
                 calendar.add(Calendar.WEEK_OF_MONTH,i);
-                return (int)(calendar.getTimeInMillis()-c.getTimeInMillis())/(24*60*60*1000);
+                int i1 = Integer.parseInt(String.valueOf((calendar.getTimeInMillis() - c.getTimeInMillis()) / (24 * 60 * 60 * 1000)));
+                map.put(i1+"",WEEK_DAY+i);
+                return i1;
             }else if(REMINDER_DAY.equals(paramType)){
+                map.put(i+"",REMINDER_DAY+i);
+                return i;
+            }else if(DAY.equals(paramType)){
+                map.put(i+"",DAY+i);
                 return i;
             }
         }
@@ -247,7 +260,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     * non auto to send
     *
     * */
-    private void  isNoAuto(LicenceDto licenceDto ,String time) throws IOException, TemplateException {
+    private void  isNoAuto(LicenceDto licenceDto ,String time,Map<String,String> mounth) throws IOException, TemplateException {
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId());
         log.info(StringUtil.changeForLog(licenseeEmailAddrs.toString()+"----------"));
         log.info(StringUtil.changeForLog(licenceDto.getLicenseeId()+"licenseeId"));
@@ -255,6 +268,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
         String id = licenceDto.getId();
         log.info(StringUtil.changeForLog(time+"time"));
+        String s = mounth.get(time);
+        log.info(s+"-----------mounth-------------");
         log.info(id);
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(licenceDto)));
         boolean b = checkEmailIsSend(id, "IS_NO_AUTO" + time);
@@ -533,7 +548,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     *
     * auto to send
     * */
-    private void isAuto(LicenceDto licenceDto ,String time ) throws IOException, TemplateException {
+    private void isAuto(LicenceDto licenceDto ,String time ,Map<String,String> mouth) throws IOException, TemplateException {
         /*Name of Service*/
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId());
 
@@ -668,15 +683,20 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         systemBeLicClient.createJobRemindMsgTrackingDtos(jobRemindMsgTrackingDtos).getEntity();
     }
     private boolean checkEmailIsSend(String licence,String magKey){
+        try {
+            JobRemindMsgTrackingDto auto_renew = systemBeLicClient.getJobRemindMsgTrackingDto(licence, magKey).getEntity();
+            if(auto_renew==null){
+                return true;
+            }else {
+                log.info(StringUtil.changeForLog(JsonUtil.parseToJson(auto_renew+"auto_renew")));
+                return false;
+            }
 
-        JobRemindMsgTrackingDto auto_renew = systemBeLicClient.getJobRemindMsgTrackingDto(licence, magKey).getEntity();
-        if(auto_renew==null){
-            return true;
-        }else {
-            log.info(StringUtil.changeForLog(JsonUtil.parseToJson(auto_renew+"auto_renew")));
+        }catch (Exception e){
+            log.info(e.getMessage(),e+"-----have error---");
+
             return false;
         }
-
     }
         /*
         * message id
