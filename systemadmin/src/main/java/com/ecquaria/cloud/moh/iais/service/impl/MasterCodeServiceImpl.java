@@ -64,7 +64,11 @@ public class MasterCodeServiceImpl implements MasterCodeService {
 
     @Override
     public MasterCodeDto findMasterCodeByMcId(String id) {
-        return saMasterCodeClient.getMasterCodeById(id).getEntity();
+        MasterCodeDto entity = saMasterCodeClient.getMasterCodeById(id).getEntity();
+        if (entity == null){
+            return null;
+        }
+        return entity;
     }
 
     @Override

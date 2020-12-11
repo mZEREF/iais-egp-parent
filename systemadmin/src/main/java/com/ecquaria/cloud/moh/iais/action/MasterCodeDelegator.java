@@ -159,8 +159,10 @@ public class MasterCodeDelegator {
         String masterCodeId = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_VALUE);
         if (!StringUtil.isEmpty(masterCodeId)) {
             MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
-            masterCodeDto.setFilterValue(masterCodeDto.getCodeValue());
-            ParamUtil.setSessionAttr(request, "MasterCodeView", masterCodeDto);
+            if(masterCodeDto != null){
+                masterCodeDto.setFilterValue(masterCodeDto.getCodeValue());
+                ParamUtil.setSessionAttr(request, "MasterCodeView", masterCodeDto);
+            }
         }
     }
 
@@ -679,24 +681,26 @@ public class MasterCodeDelegator {
         if ("doDelete".equals(type)) {
             String masterCodeId = ParamUtil.getString(bpc.request, SystemAdminBaseConstants.CRUD_ACTION_VALUE);
             MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
-            if (masterCodeDto.getEffectiveFrom().before(new Date())) {
-                String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
-                masterCodeDto.setCodeCategory(codeCategory);
-                masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                masterCodeService.updateMasterCode(masterCodeDto);
-                List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
-                masterCodeDto.setUpdateAt(new Date());
-                syncMasterCodeList.add(masterCodeDto);
-                masterCodeService.syncMasterCodeFe(syncMasterCodeList);
-            } else {
-                masterCodeService.deleteMasterCodeById(masterCodeId);
-                List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
-                masterCodeDto.setUpdateAt(new Date());
-                masterCodeDto.setNeedDelete(true);
-                syncMasterCodeList.add(masterCodeDto);
-                masterCodeService.syncMasterCodeFe(syncMasterCodeList);
+            if (masterCodeDto != null){
+                if (masterCodeDto.getEffectiveFrom().before(new Date())) {
+                    String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
+                    masterCodeDto.setCodeCategory(codeCategory);
+                    masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                    masterCodeService.updateMasterCode(masterCodeDto);
+                    List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
+                    masterCodeDto.setUpdateAt(new Date());
+                    syncMasterCodeList.add(masterCodeDto);
+                    masterCodeService.syncMasterCodeFe(syncMasterCodeList);
+                } else {
+                    masterCodeService.deleteMasterCodeById(masterCodeId);
+                    List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
+                    masterCodeDto.setUpdateAt(new Date());
+                    masterCodeDto.setNeedDelete(true);
+                    syncMasterCodeList.add(masterCodeDto);
+                    masterCodeService.syncMasterCodeFe(syncMasterCodeList);
+                }
+                MasterCodeUtil.refreshCache();
             }
-            MasterCodeUtil.refreshCache();
         }
         Date date = new Date();
         String dateStr = Formatter.formatDateTime(date);
