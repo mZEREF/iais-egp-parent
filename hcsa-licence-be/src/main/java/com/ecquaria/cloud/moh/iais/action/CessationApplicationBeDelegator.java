@@ -83,7 +83,7 @@ public class CessationApplicationBeDelegator {
 
 
     public void start(BaseProcessClass bpc) {
-        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>CessationApplicationDelegator");
+        log.debug("=======>>>>>startStep>>>>>>>>>>>>>>>>CessationApplicationDelegator");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CESSATION, AuditTrailConsts.FUNCTION_CESSATION);
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, null);
         ParamUtil.setSessionAttr(bpc.request, "specLicInfo", null);
@@ -130,7 +130,7 @@ public class CessationApplicationBeDelegator {
     }
 
     public void prepareData(BaseProcessClass bpc) {
-        log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>CessationApplicationDelegator");
+        log.debug("=======>>>>>prepareData>>>>>>>>>>>>>>>>CessationApplicationDelegator");
     }
 
     public void valiant(BaseProcessClass bpc) throws IOException {
