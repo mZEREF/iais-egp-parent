@@ -2,6 +2,9 @@
 <footer class="footerlogin">
     <div class="container">
         <div class="row">
+            <div class="col-xs-12" style="margin-bottom: 5px;">
+                <span style="color: #9a9a9a"> Best viewed using the current and previous release of Chrome and Safari</span>
+            </div>
             <div class="col-xs-12 col-md-7">
                 <div class="footer-link">
                     <ul class="list-inline">
