@@ -30,9 +30,4 @@ public class INTRANET___MohCessationApplication___1 extends BaseProcessClass {
 	public void saveData_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "saveData", this);
 	}
-
-	public void response_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "response", this);
-	}
-
 }
