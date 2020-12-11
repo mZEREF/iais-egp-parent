@@ -198,6 +198,8 @@
             $(this).find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
             $(this).find('.addOperational').addClass('hidden');
             $(this).find('.opDel').addClass('hidden');
+            $(this).find('button.addPubHolDay').addClass('hidden');
+            $(this).find('.removePhBtn').addClass('hidden');
         });
         </c:if>
 
@@ -208,6 +210,8 @@
             $(this).find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
             $(this).find('.addOperational').addClass('hidden');
             $(this).find('.opDel').addClass('hidden');
+            $(this).find('button.addPubHolDay').addClass('hidden');
+            $(this).find('.removePhBtn').addClass('hidden');
         });
         </c:if>
 

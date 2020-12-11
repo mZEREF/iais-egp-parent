@@ -360,6 +360,8 @@
 
             premContent.find('.addOperational').removeClass('hidden');
             premContent.find('.opDel').removeClass('hidden');
+            premContent.find('button.addPubHolDay').removeClass('hidden');
+            premContent.find('.removePhBtn').removeClass('hidden');
         });
     }
 

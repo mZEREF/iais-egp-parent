@@ -4310,6 +4310,7 @@ public class NewApplicationDelegator {
                         List<AppPremisesOperationalUnitDto> operationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
                         if(!IaisCommonUtils.isEmpty(operationalUnitDtos)){
                             for(AppPremisesOperationalUnitDto operationalUnitDto:operationalUnitDtos){
+                                operationalUnitDto.setId(null);
                                 operationalUnitDto.setPremisesId(null);
                             }
                         }
