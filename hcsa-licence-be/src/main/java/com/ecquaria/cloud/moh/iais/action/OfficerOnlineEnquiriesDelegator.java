@@ -1454,19 +1454,6 @@ public class OfficerOnlineEnquiriesDelegator {
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
         String count=(String) ParamUtil.getSessionAttr(request,"count");
         SearchParam parm = (SearchParam) ParamUtil.getSessionAttr(request,"SearchParam");
-        String appSubToDate= (String) parm.getFilters().get("toDate");
-        String appSubDate= (String) parm.getFilters().get("subDate");
-        String licStaDate= (String) parm.getFilters().get("start_date");
-        String licStaToDate= (String) parm.getFilters().get("start_to_date");
-        String licExpDate= (String) parm.getFilters().get("expiry_start_date");
-        String licExpToDate= (String) parm.getFilters().get("expiry_date");
-        if(StringUtil.isEmpty(appSubToDate)&&StringUtil.isEmpty(appSubDate)&&StringUtil.isEmpty(licStaDate)&&StringUtil.isEmpty(licStaToDate)&&StringUtil.isEmpty(licExpDate)&&StringUtil.isEmpty(licExpToDate)){
-            Date dueDate;
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.YEAR,1);
-            dueDate =calendar.getTime();
-            filters.put("expiry_date",Formatter.formatDate(dueDate));
-        }
         switch (count) {
             case "2":
             case "3":
@@ -1612,8 +1599,8 @@ public class OfficerOnlineEnquiriesDelegator {
             applicationParameter.setFilters(filters);
             SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
             if (appParam != null) {
-            appParam.setPageNo(0);
-
+            appParam.setPageNo(1);
+            appParam.setPageSize(200);
             if(parm.getFilters().get("appStatus")!=null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
                 appParam.addParam("appStatus_APPROVED", "(app.status = 'APST005' OR app.status = 'APST050')");
             }
@@ -1687,7 +1674,9 @@ public class OfficerOnlineEnquiriesDelegator {
 
             licenceParameter.setFilters(filters);
             SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
-            licParam.setPageNo(0);
+
+            licParam.setPageNo(1);
+            licParam.setPageSize(200);
             if(licenseeIds.size()!=0){
                 String typeStr = SqlHelper.constructInCondition("lic.licensee_id",licenseeIds.size());
                 int indx = 0;

@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public interface RequestForInformationService {
     List<String> getActionBysByLicPremCorrId(String licPremCorrId);
     SearchResult<RfiApplicationQueryDto> appDoQuery(SearchParam searchParam);
     SearchResult<RfiLicenceQueryDto> licenceDoQuery(SearchParam searchParam);
+    SearchResult<ApplicationLicenceQueryDto> appLicenceDoQuery(SearchParam searchParam);
     List<String> getSvcNamesByType();
     LicPremisesReqForInfoDto updateLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
     LicPremisesReqForInfoDto createFeRfiLicDto(LicPremisesReqForInfoDto licPremisesReqForInfoDto);

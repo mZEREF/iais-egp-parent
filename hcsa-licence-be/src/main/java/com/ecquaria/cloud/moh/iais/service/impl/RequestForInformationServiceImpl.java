@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -260,6 +261,12 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     public SearchResult<RfiLicenceQueryDto> licenceDoQuery(SearchParam searchParam) {
 
         return requestForInformationClient.searchRfiLicence(searchParam).getEntity();
+    }
+
+    @Override
+    @SearchTrack(catalog = "ReqForInfoQuery", key = "appLicenceQuery")
+    public SearchResult<ApplicationLicenceQueryDto> appLicenceDoQuery(SearchParam searchParam) {
+        return applicationClient.searchAppLic(searchParam).getEntity();
     }
 
     @Override
