@@ -2559,6 +2559,10 @@ public class NewApplicationHelper {
                 }else if(!StringUtil.isEmpty(preferredMode)){
                     person.setPreferredMode(preferredMode);
                 }*/
+                String preferredMode = selPerson.getPreferredMode();
+                if(!StringUtil.isEmpty(preferredMode)){
+                    person.setPreferredMode(preferredMode);
+                }
                 //sync other field
                 String designation = selPerson.getDesignation();
                 String professionType = selPerson.getProfessionType();
