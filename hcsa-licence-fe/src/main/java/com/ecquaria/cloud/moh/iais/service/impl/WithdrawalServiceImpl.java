@@ -199,7 +199,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 applicationTruckDto.setApplicationDtoList(updateWithdrawApp);
                 autoApproveApplicationDtoList.add(h);
                 /**
-                 * TODO: SAVE FE APP DATA TO BE
+                 *  SAVE FE APP DATA TO BE
                  */
                 List<ApplicationGroupDto> applicationGroupDtoList = IaisCommonUtils.genNewArrayList();
                 String newApplicationGroupId = newApplication.getAppGrpId();
