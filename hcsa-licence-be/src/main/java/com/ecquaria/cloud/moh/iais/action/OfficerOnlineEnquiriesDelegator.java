@@ -792,10 +792,12 @@ public class OfficerOnlineEnquiriesDelegator {
                         }
                     }
                 }
-                if(appCount>=licCount){
-                    count="2";
-                }else {
-                    count="3";
+                if(appCount!=licCount){
+                    if(appCount>licCount){
+                        count="2";
+                    }else {
+                        count="3";
+                    }
                 }
                 ParamUtil.setSessionAttr(request,"count",count);
                 break;
@@ -1538,10 +1540,12 @@ public class OfficerOnlineEnquiriesDelegator {
                         }
                     }
                 }
-                if(appCount>=licCount){
-                    count="2";
-                }else {
-                    count="3";
+                if(appCount!=licCount){
+                    if(appCount>licCount){
+                        count="2";
+                    }else {
+                        count="3";
+                    }
                 }
                 break;
             case "1":
@@ -1634,7 +1638,7 @@ public class OfficerOnlineEnquiriesDelegator {
                             for (RfiLicenceQueryDto lic:licResult.getRows()
                             ) {
                                 ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
-                                rfiApplicationQueryDtoToReqForInfoSearchListDtoDownload(rfiApplicationQueryDto,reqForInfoSearchListDto,lic.getId());
+                                rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto,lic.getId());
                                 String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
                                 reqForInfoSearchListDto.setLicenceId(lic.getId());
                                 licenceIds.add(lic.getId());
@@ -1734,7 +1738,7 @@ public class OfficerOnlineEnquiriesDelegator {
                         if(appResult.getRowCount()!=0){
                             for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
                             ) {
-                                rfiApplicationQueryDtoToReqForInfoSearchListDtoDownload(rfiApplicationQueryDto,reqForInfoSearchListDto,lic.getId());
+                                rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto,lic.getId());
                                 List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(lic.getId()).getEntity();
                                 if(StringUtil.isEmpty(reqForInfoSearchListDto.getHciCode())){
                                     for (PremisesDto p :premisesDtoList
@@ -1807,7 +1811,13 @@ public class OfficerOnlineEnquiriesDelegator {
             for (int i = 0; i < info.getAddress().size(); i++) {
                 sb.append(info.getAddress().get(i)).append(',');
             }
-            info.setAddresses(sb.toString().substring(0,sb.toString().length()-1));
+            try {
+                info.setAddresses(sb.toString().substring(0,sb.toString().length()-1));
+
+            }catch (Exception e){
+                info.setAddresses("-");
+                log.debug("Addresse is null");
+            }
         }
 
         queryList = searchListDtoSearchResult.getRows();
