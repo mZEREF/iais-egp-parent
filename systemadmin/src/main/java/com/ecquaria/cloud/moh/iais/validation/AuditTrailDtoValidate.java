@@ -2,7 +2,7 @@ package com.ecquaria.cloud.moh.iais.validation;
 
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.audit.AuditTrailConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.audit.AuditTrailConstant;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -31,10 +31,10 @@ public class AuditTrailDtoValidate implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
 		String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-		String startDate = ParamUtil.getRequestString(request, AuditTrailConstants.PARAM_STARTDATE);
-		String endDate = ParamUtil.getRequestString(request, AuditTrailConstants.PARAM_ENDDATE);
+		String startDate = ParamUtil.getRequestString(request, AuditTrailConstant.PARAM_STARTDATE);
+		String endDate = ParamUtil.getRequestString(request, AuditTrailConstant.PARAM_ENDDATE);
 		switch (currentAction){
-			case AuditTrailConstants.ACTION_QUERY:
+			case AuditTrailConstant.ACTION_QUERY:
 				if (!StringUtils.isEmpty(startDate)
 						&& !StringUtils.isEmpty(endDate)){
 					try {

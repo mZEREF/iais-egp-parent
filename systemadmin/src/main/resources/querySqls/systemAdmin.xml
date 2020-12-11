@@ -156,7 +156,9 @@
             <#if startDate??> and action_time >= :startDate </#if>
             <#if endDate??> and action_time <= :endDate </#if>
             <#if operationType??> and [domain] = :operationType </#if>
-            <#if user??> and moh_user_id = :user </#if>
+            <#if interUser??> and nric_number = :interUser </#if>
+            <#if intraUser??> and moh_user_id = :intraUser </#if>
+            <#if batchJob??> and charindex(:batchJob, entity_id) >0 </#if>
         ]]>
     </sql>
 
@@ -214,7 +216,9 @@
             <#if startDate??> and action_time >= :startDate </#if>
             <#if endDate??> and action_time <= :endDate </#if>
             <#if operationType??> and [domain] = :operationType </#if>
-            <#if user??> and moh_user_id = :user </#if>
+            <#if interUser??> and nric_number = :interUser </#if>
+            <#if intraUser??> and moh_user_id = :intraUser </#if>
+            <#if batchJob??> and charindex(:batchJob, entity_id) >0 </#if>
         ]]>
     </sql>
 
