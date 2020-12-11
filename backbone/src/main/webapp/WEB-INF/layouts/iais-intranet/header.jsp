@@ -28,7 +28,7 @@
                 <span>You are here:</span>
                 <div class="page-breadcrumb">
                     <ol class="breadcrumb">
-                        <li><a href="/main-web/eservice/INTRANET/MohBackendInbox">Home</a></li>
+                       <!-- <li><a href="/main-web/eservice/INTRANET/MohBackendInbox">Home</a></li> -->
                         <li><a href="#"><c:out value="${iais_Audit_Trail_dto_Attr.functionName}"/></a></li>
                         <li class="active">Processing Page</li>
                     </ol>
