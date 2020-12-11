@@ -228,7 +228,6 @@ public class CessationEffectiveDateBatchjob {
                 licenceDto.setAuditTrailDto(auditTrailDto);
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
                 licenceDto.setEndDate(date);
-                String licenseeId = licenceDto.getLicenseeId();
                 updateLicenceDtos.add(licenceDto);
                 String svcName = licenceDto.getSvcName();
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
