@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.SaMasterCodeClient;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,11 +65,11 @@ public class MasterCodeServiceImpl implements MasterCodeService {
 
     @Override
     public MasterCodeDto findMasterCodeByMcId(String id) {
-        MasterCodeDto entity = saMasterCodeClient.getMasterCodeById(id).getEntity();
-        if (entity == null){
+        FeignResponseEntity<MasterCodeDto> masterCodeById = saMasterCodeClient.getMasterCodeById(id);
+        if (masterCodeById == null){
             return null;
         }
-        return entity;
+        return masterCodeById.getEntity();
     }
 
     @Override
