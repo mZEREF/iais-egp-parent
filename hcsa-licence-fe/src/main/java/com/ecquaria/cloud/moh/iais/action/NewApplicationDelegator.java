@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
@@ -95,6 +96,7 @@ import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -190,7 +192,8 @@ public class NewApplicationDelegator {
 
     @Autowired
     private OrganizationLienceseeClient organizationLienceseeClient;
-
+    @Autowired
+    private IaisSystemClient iaisSystemClient;
     @Autowired
     private CessationClient cessationClient;
     @Autowired
@@ -1350,7 +1353,12 @@ public class NewApplicationDelegator {
             ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
             if(applicationDto != null) {
                 if (ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(applicationDto.getStatus())) {
-                    InterMessageDto interMessageBySubjectLike = appSubmissionService.getInterMessageBySubjectLike(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION + applicationDto.getApplicationNo(), MessageConstants.MESSAGE_STATUS_RESPONSE);
+                    MsgTemplateDto autoEntity = iaisSystemClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APP_RFI_MSG).getEntity();
+                    Map<String,Object> subjectMap = IaisCommonUtils.genNewHashMap();
+                    subjectMap.put("ApplicationType",MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+                    subjectMap.put("ApplicationNumber",StringUtil.viewHtml(appNo));
+                    String msgSubject = MsgUtil.getTemplateMessageByContent(autoEntity.getTemplateName(),subjectMap);
+                    InterMessageDto interMessageBySubjectLike = appSubmissionService.getInterMessageBySubjectLike(msgSubject.trim(), MessageConstants.MESSAGE_STATUS_RESPONSE);
                     if (interMessageBySubjectLike.getId() != null) {
                         List<AppEditSelectDto> entity = applicationFeClient.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFI).getEntity();
                         String url = "";

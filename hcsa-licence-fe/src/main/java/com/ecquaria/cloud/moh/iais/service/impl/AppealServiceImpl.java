@@ -347,6 +347,9 @@ public class AppealServiceImpl implements AppealService {
             return;
         }
         String appealingFor = ParamUtil.getMaskedString(request, APPEALING_FOR);
+        if(request.getAttribute("appealRfi")!=null){
+             appealingFor =(String)request.getAttribute("applicationId");
+        }
         String type = request.getParameter(TYPE);
         AppPremiseMiscDto appPremiseMiscDto = initRfi(request, appealingFor);
         if(appPremiseMiscDto!=null){

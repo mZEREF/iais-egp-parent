@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
@@ -582,14 +583,18 @@ public class ConfigServiceImpl implements ConfigService {
             String pageMaximumCount = hcsaSvcPersonnelDtos.get(i).getPageMaximumCount();
             if (StringUtil.isEmpty(psnType)) {
                 errorMap.put("psnType" + i, "CHKLMD001_ERR001");
-        }
+            }
             if (StringUtil.isEmpty(pageMandatoryCount)) {
                 errorMap.put("mandatoryCount" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Minimum Count","field"));
-            }else  {
+            }  else  {
                 if(pageMandatoryCount.matches("^[0-9]+$")){
                     int i1 = Integer.parseInt(pageMandatoryCount);
                     if (i1<0){
-                        errorMap.put("mandatoryCountCGO", "GENERAL_ERR0002");
+                        errorMap.put("mandatoryCount"+i, "GENERAL_ERR0002");
+                    }else if("PO".equals(psnType)&&i1>1){
+                        String sc_err013 = MessageUtil.getMessageDesc("SC_ERR013");
+                        sc_err013=sc_err013.replace("{prsType}","PO");
+                        errorMap.put("mandatoryCount"+i, sc_err013);
                     }
                 }else {
                     errorMap.put("mandatoryCount"+i,"GENERAL_ERR0002");
@@ -602,6 +607,10 @@ public class ConfigServiceImpl implements ConfigService {
                     int i1 = Integer.parseInt(pageMandatoryCount);
                     if(i1<0){
                         errorMap.put("maximumCount"+i,"GENERAL_ERR0002");
+                    }else if("PO".equals(psnType)&&i1>1){
+                        String sc_err012 = MessageUtil.getMessageDesc("SC_ERR012");
+                        sc_err012 = sc_err012.replace("{prsType}", "PO");
+                        errorMap.put("maximumCount"+i,sc_err012);
                     }
                 }else {
                     errorMap.put("maximumCount"+i,"GENERAL_ERR0002");

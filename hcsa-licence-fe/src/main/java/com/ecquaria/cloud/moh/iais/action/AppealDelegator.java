@@ -4,9 +4,13 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -19,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import java.io.IOException;
 import java.io.Serializable;
@@ -45,6 +50,8 @@ public class AppealDelegator {
     @Autowired
     private AppealService appealService;
     @Autowired
+    private ApplicationFeClient applicationFeClient;
+    @Autowired
     private SystemParamConfig systemParamConfig;
 
     public void preparetionData(BaseProcessClass bpc){
@@ -53,8 +60,21 @@ public class AppealDelegator {
         if(loginContext!=null){
             bpc.request.getSession().setAttribute("loginContext",loginContext);
         }
+        String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
+        ApplicationDto entity = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
+        if(entity!=null){
+            if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(entity.getStatus())){
+                bpc.request.setAttribute("appealRfi",ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
+                AppPremisesCorrelationDto entity1 = applicationFeClient.getCorrelationByAppNo(entity.getApplicationNo()).getEntity();
+                AppPremiseMiscDto entity2 = applicationFeClient.getAppPremisesMisc(entity1.getId()).getEntity();
+                bpc.request.setAttribute("applicationId",entity2.getRelateRecId());
+                appealService.getMessage(bpc.request);
+                bpc. request.setAttribute("crud_action_type","");
+                return;
+            }
+        }
         String crud_action_type = bpc.request.getParameter("crud_action_type");
-        if("inbox".equals(crud_action_type)){
+        if("inboxTo".equals(crud_action_type)){
             bpc. request.setAttribute("crud_action_type","inbox");
             return;
         }
