@@ -129,7 +129,9 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY002","APST012"});
         applicationTandS.add(new String[]{"APTY002","APST039"});
         applicationTandS.add(new String[]{"APTY002","APST011"});
-        applicationTandS.add(new String[]{"APTY002","APST004"});
+        applicationTandS.add(new String[]{"APTY002","APST071"});
+        applicationTandS.add(new String[]{"APTY002","APST069"});
+        applicationTandS.add(new String[]{"APTY002","APST040"});
 
         applicationTandS.add(new String[]{"APTY004","APST007"});
         applicationTandS.add(new String[]{"APTY004","APST028"});
