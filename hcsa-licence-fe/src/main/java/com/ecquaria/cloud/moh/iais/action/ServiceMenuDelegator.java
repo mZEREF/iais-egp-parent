@@ -630,6 +630,7 @@ public class ServiceMenuDelegator {
                     List<MenuLicenceDto> newAppLicDtos = removePendAndExistPrem(chkBase,searchResult.getRows(),licenseeId);
                     //pagination
                     if(!IaisCommonUtils.isEmpty(newAppLicDtos)){
+                        log.debug(StringUtil.changeForLog("newAppLicDtos size:"+newAppLicDtos.size()));
                         initPaginationHandler(newAppLicDtos);
                     }
 
