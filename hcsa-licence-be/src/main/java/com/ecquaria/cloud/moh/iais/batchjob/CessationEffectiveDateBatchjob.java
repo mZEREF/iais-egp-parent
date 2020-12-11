@@ -12,9 +12,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -250,11 +250,11 @@ public class CessationEffectiveDateBatchjob {
                     }
                 }
                 String groupId = licGrpMap.get(licId);
-                LicenseeDto licenseeDto = inspEmailService.getLicenseeDtoById(licenseeId);
-                String displayName = licenseeDto.getName();
                 StringBuilder appNos = new StringBuilder();
+                OrgUserDto orgUserDto = null;
                 if (!StringUtil.isEmpty(groupId)) {
                     List<ApplicationDto> applicationDtos = applicationClient.getAppDtosByAppGrpId(groupId).getEntity();
+                    orgUserDto = organizationClient.retrieveOrgUserAccountById(groupId).getEntity();
                     for (ApplicationDto applicationDto : applicationDtos) {
                         String appId = applicationDto.getId();
                         String applicationNo = applicationDto.getApplicationNo();
@@ -268,7 +268,7 @@ public class CessationEffectiveDateBatchjob {
                         }
                     }
                 }
-                emailMap.put("ApplicantName", displayName);
+                emailMap.put("ApplicantName", orgUserDto.getDisplayName());
                 emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_CESSATION}).get(0).getText());
                 emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
                 emailMap.put("ApplicationNumber", appNos.toString());
