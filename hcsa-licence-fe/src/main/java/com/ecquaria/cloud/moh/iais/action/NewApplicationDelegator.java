@@ -4257,7 +4257,7 @@ public class NewApplicationDelegator {
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
                 if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
                     for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                        List<AppSvcDocDto> appSvcDocDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDocDtoLit();
+                        List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                         if (!IaisCommonUtils.isEmpty(appSvcDocDtos)) {
                             for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
                                 appSvcDocDto.setId(null);
