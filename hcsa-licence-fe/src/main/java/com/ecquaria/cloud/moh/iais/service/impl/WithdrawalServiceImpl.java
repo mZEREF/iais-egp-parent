@@ -168,6 +168,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             recallApplicationDto.setRefNo(refNoList);
             recallApplicationDto.setAppGrpId(oldApplication.getAppGrpId());
             recallApplicationDto.setNewAppId(h.getNewApplicationId());
+            recallApplicationDto.setNeedReturnFee(true);
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             try {
