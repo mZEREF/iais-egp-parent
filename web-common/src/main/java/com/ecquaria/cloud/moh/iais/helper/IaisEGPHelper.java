@@ -224,7 +224,7 @@ public final class IaisEGPHelper extends EGPHelper {
             if (AppConsts.USER_DOMAIN_INTERNET.equals(loginContext.getUserDomain())) {
                 dto.setNricNumber(nricNum);
                 dto.setUenId(uenNo);
-                dto.setMohUserId(nricNum);
+                dto.setMohUserId(mohUserId);
                 operationType = AuditTrailConsts.OPERATION_TYPE_INTERNET;
 
                 if (OrganizationConstants.ID_TYPE_FIN.equals(IaisEGPHelper.checkIdentityNoType(nricNum))){
