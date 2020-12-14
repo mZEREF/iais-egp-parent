@@ -250,6 +250,13 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         clientUser.setPasswordChallengeQuestion("A");
         clientUser.setPasswordChallengeAnswer("A");
 
+        Date activeDate = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(activeDate);
+        calendar.add(Calendar.DAY_OF_YEAR, 999);
+        clientUser.setAccountActivateDatetime(activeDate);
+        clientUser.setAccountDeactivateDatetime(calendar.getTime());
+
         OrgUserRoleDto userRoleDto = userDto.getUserRoleDto();
         EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
         String roleName = userRoleDto.getRoleName();
