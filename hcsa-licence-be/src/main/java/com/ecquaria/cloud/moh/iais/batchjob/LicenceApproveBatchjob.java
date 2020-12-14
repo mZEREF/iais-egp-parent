@@ -420,7 +420,7 @@ public class LicenceApproveBatchjob {
             }
             if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
                 if(lastToCreatLicence){
-                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED_CEASED);
                 }else {
                     applicationDto.setStatus(status);
                 }
