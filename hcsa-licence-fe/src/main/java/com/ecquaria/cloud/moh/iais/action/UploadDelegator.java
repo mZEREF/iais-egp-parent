@@ -81,7 +81,7 @@ public class UploadDelegator {
                 Map<String,List<String>> errorMap=new HashMap();
                 List<String> newStatus=IaisCommonUtils.genNewArrayList();
                 List<String> errorOldStatus= IaisCommonUtils.genNewArrayList();
-                errorOldStatus.add(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+                errorOldStatus.add(ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP);
                 newStatus.add(ApplicationConsts.APPLICATION_GROUP_ERROR_ZIP);
                 errorMap.put("oldStatus",errorOldStatus);
                 errorMap.put("newStatus",newStatus);

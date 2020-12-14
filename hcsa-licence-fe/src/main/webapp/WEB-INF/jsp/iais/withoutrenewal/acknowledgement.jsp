@@ -91,12 +91,24 @@
                                                                     </c:otherwise>
                                                                 </c:choose>
                                                             </td>
-                                                            <td><c:out value="${txnDt}"/></td>
+                                                            <td>
+                                                                <c:choose>
+                                                                    <c:when test="${empty txnDt}">
+                                                                        N/A
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <c:out value="${txnDt}"/>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                             </td>
                                                             <td><c:out value="${totalStr}"/></td>
                                                             <td>
                                                                 <c:choose>
                                                                     <c:when test="${'Credit'==AppSubmissionDto.paymentMethod}">
                                                                         Credit Card
+                                                                    </c:when>
+                                                                    <c:when test="${empty AppSubmissionDto.paymentMethod}">
+                                                                        N/A
                                                                     </c:when>
                                                                     <c:otherwise>
                                                                         <c:out value="${AppSubmissionDto.paymentMethod}"/>

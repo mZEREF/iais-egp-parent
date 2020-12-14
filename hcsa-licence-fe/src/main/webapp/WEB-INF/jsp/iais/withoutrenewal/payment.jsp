@@ -102,7 +102,15 @@
                                     </tr>
                                     </tbody>
                                 </table>
-                                <%@include file="../newApplication/paymentMethod.jsp"%>
+                                <c:choose>
+                                    <c:when test="${totalStr=='$0'}">
+                                        <input type="hidden" value="${totalStr}" id="renewNoNeedPay" name="renewNoNeedPay">
+                                        <%@include file="../newApplication/noNeedPayment.jsp.jsp"%>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <%@include file="../newApplication/paymentMethod.jsp"%>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                     </div>
@@ -124,10 +132,17 @@
     });
 
     $('#proceed').click(function () {
-        if(validatePayment()){
-            $('[name="switch_value"]').val('doPayment');
+        var val = $('#renewNoNeedPay').val();
+        if('$0'==val){
+            $('[name="switch_value"]').val('doAcknowledgement');
             $('#menuListForm').submit();
+        }else{
+            if(validatePayment()){
+                $('[name="switch_value"]').val('doPayment');
+                $('#menuListForm').submit();
+            }
         }
+
     });
 
     function validatePayment(){

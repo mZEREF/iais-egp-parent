@@ -1982,9 +1982,9 @@ public class NewApplicationDelegator {
                                 if (0.0 == amount) {
                                     appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
                                     if(isAutoRfc){
-                                        appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                                        appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
                                     }else {
-                                        appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                                        appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
                                     }
 
                                 } else {
@@ -2030,11 +2030,11 @@ public class NewApplicationDelegator {
         appSubmissionService.setRiskToDto(appSubmissionDto);
         if (0.0 == amount) {
             if(isAutoRfc){
-                appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
+                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
             }else {
-                appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
+                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
             }
 
         } else {
@@ -2258,7 +2258,7 @@ public class NewApplicationDelegator {
             appSubmissionDtoList.addAll(appSubmissionDtos1);
             appSubmissionDto.setAppGrpId(appSubmissionDtos1.get(0).getAppGrpId());
         }
-        if(amount==0.0){
+       /* if(amount==0.0){
             if(draftNo!=null){
                 AppSubmissionDto draftAppSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
                 if(draftAppSubmissionDto!=null){
@@ -2285,7 +2285,7 @@ public class NewApplicationDelegator {
                 }
             }
 
-        }
+        }*/
         if(autoSaveAppsubmission.isEmpty()&&notAutoSaveAppsubmission.isEmpty()){
             bpc.request.setAttribute("RFC_ERROR_NO_CHANGE",MessageUtil.getMessageDesc("RFC_ERR014"));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
@@ -2553,13 +2553,13 @@ public class NewApplicationDelegator {
             appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
             requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
             appSubmissionDtoByLicenceId.setAutoRfc(true);
-            appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+            appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
             appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.NO);
             for(AppGrpPremisesDto appGrpPremisesDto : appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList()){
                 appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
                 appGrpPremisesDto.setSelfAssMtFlag(4);
             }
-            appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+            appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
             appSubmissionDtoList.add(appSubmissionDtoByLicenceId);
         }
 
@@ -2794,13 +2794,13 @@ public class NewApplicationDelegator {
             }
         }
         if (b) {
-            changePerson.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+            changePerson.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
             appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
         } else {
             appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-            changePerson.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+            changePerson.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
         }
         changePerson.setAmount(0.0);
         changePerson.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
@@ -3229,7 +3229,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do prepareAckPage start ...."));
         String txnRefNo = (String) bpc.request.getSession().getAttribute("txnDt");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        Object ackPageAppSubmissionDto = ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
+        List<AppSubmissionDto> ackPageAppSubmissionDto =(List<AppSubmissionDto>)ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenceId = "";
         String draftNo = "";
@@ -3243,6 +3243,39 @@ public class NewApplicationDelegator {
                 List<AppSubmissionDto> ackPageAppSubmission=new ArrayList<>(1);
                 ackPageAppSubmission.add(appSubmissionDto);
                 bpc.request.getSession().setAttribute("ackPageAppSubmissionDto",ackPageAppSubmission);
+            }else {
+                for(AppSubmissionDto appSubmissionDto1 : ackPageAppSubmissionDto){
+                    Double amount = appSubmissionDto1.getAmount();
+                    boolean autoRfc = appSubmissionDto1.isAutoRfc();
+                    if(0.0==amount && autoRfc){
+                        String appGrpNo = appSubmissionDto1.getAppGrpNo();
+                        List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
+                        if(entity!=null &&!entity.isEmpty()){
+                            for(ApplicationDto applicationDto : entity){
+                                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                            }
+                            String grpId = entity.get(0).getAppGrpId();
+                            ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(grpId).getEntity();
+                            applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                            applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
+                            applicationFeClient.saveApplicationDtos(entity);
+                        }
+                    }else if(0.0==amount && !autoRfc){
+                        String appGrpNo = appSubmissionDto1.getAppGrpNo();
+                        List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
+                        if(entity!=null &&!entity.isEmpty()){
+                            for(ApplicationDto applicationDto : entity){
+                                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                            }
+                            String grpId = entity.get(0).getAppGrpId();
+                            ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(grpId).getEntity();
+                            applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                            applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
+                            applicationFeClient.saveApplicationDtos(entity);
+                        }
+
+                    }
+                }
             }
         }
         if(draftNo!=null){

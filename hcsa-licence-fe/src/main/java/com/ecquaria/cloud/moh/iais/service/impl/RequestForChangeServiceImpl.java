@@ -628,7 +628,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         if (StringUtil.isEmpty(hciName)) {
                             errorMap.put("hciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of HCI", "field"));
                         } else {
-
+                            if(hciName.length()>100){
+                                String general_err0041 = MessageUtil.getMessageDesc("GENERAL_ERR0041");
+                                general_err0041=repLength(general_err0041,"{field}","Name of HCI");
+                                general_err0041=repLength(general_err0041,"{maxlength}","100");
+                                errorMap.put("hciName" + i, general_err0041);
+                            }
                             if (masterCodeDto != null) {
                                 String[] s = masterCodeDto.split(" ");
                                 for (int index = 0; index < s.length; index++) {
@@ -1307,6 +1312,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         return errorMap;
     }
 
+    public static String repLength(String message,String  arg,String result){
+      return message.replace(arg,result);
+    }
     @Override
     public void svcDocToPresmise(AppSubmissionDto appSubmissionDto) {
         if (appSubmissionDto == null) {

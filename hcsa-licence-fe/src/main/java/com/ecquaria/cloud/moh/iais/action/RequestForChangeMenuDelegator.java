@@ -66,6 +66,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -118,7 +119,8 @@ public class RequestForChangeMenuDelegator {
     private EventBusHelper eventBusHelper;
     @Autowired
     private GenerateIdClient generateIdClient;
-
+    @Autowired
+    private ApplicationFeClient applicationFeClient;
     /**
      * @param bpc
      * @Decription start
@@ -1196,6 +1198,39 @@ public class RequestForChangeMenuDelegator {
     public void PrepareAckPage(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do prepareAckPage start ...."));
         Date createDate = (Date) ParamUtil.getRequestAttr(bpc.request, "createDate");
+        List<AppSubmissionDto> appSubmissionDtos =(List<AppSubmissionDto>)ParamUtil.getSessionAttr(bpc.request,"appSubmissionDtos");
+        if(appSubmissionDtos!=null){
+            for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
+                Double amount = appSubmissionDto.getAmount();
+                if(0.0==amount&&appSubmissionDto.isAutoRfc()){
+                    String appGrpNo = appSubmissionDto.getAppGrpNo();
+                    List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
+                    if(entity!=null&&!entity.isEmpty()){
+                        for(ApplicationDto applicationDto : entity){
+                            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                        }
+                        applicationFeClient.saveApplicationDtos(entity);
+                        String grpId = entity.get(0).getAppGrpId();
+                        ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(grpId).getEntity();
+                        applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                        applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
+                    }
+                }else if(0.0==amount && !appSubmissionDto.isAutoRfc()){
+                    String appGrpNo = appSubmissionDto.getAppGrpNo();
+                    List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
+                    if(entity!=null&&!entity.isEmpty()){
+                        for(ApplicationDto applicationDto : entity){
+                            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                        }
+                        applicationFeClient.saveApplicationDtos(entity);
+                        String grpId = entity.get(0).getAppGrpId();
+                        ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(grpId).getEntity();
+                        applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                        applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
+                    }
+                }
+            }
+        }
         if (createDate == null) {
             ParamUtil.setRequestAttr(bpc.request, "createDate", new Date());
         }
@@ -1543,8 +1578,8 @@ public class RequestForChangeMenuDelegator {
                 }
                 appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
                 if(0==total){
-                    appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-                    appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                    appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
+//                    appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                 }else {
                     appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
                 }
@@ -1624,9 +1659,9 @@ public class RequestForChangeMenuDelegator {
                 }
                 appSubmissionDtoByLicenceId.setGroupLic(grpLic);
                 appSubmissionDtoByLicenceId.setPartPremise(grpLic);
-                if (0.0 == total) {
+            /*    if (0.0 == total) {
                     appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-                }
+                }*/
                 appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
                 oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
                 requestForChangeService.svcDocToPresmise(appSubmissionDtoByLicenceId);

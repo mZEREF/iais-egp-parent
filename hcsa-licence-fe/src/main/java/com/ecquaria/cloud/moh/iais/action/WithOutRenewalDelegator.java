@@ -1452,8 +1452,57 @@ public class WithOutRenewalDelegator {
     //doAcknowledgement
     public void doAcknowledgement(BaseProcessClass bpc) throws Exception {
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
+        String totalStr =(String)ParamUtil.getSessionAttr(bpc.request, "totalStr");
         if ("Credit".equals(payMethod)) {
 
+        } else if("$0".equals(totalStr)){
+            RenewDto renewDto= (RenewDto)bpc.request.getSession().getAttribute(RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
+            if(renewDto!=null){
+                List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
+                if(appSubmissionDtos!=null){
+                    for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
+                        String appGrpNo = appSubmissionDto.getAppGrpNo();
+                        boolean autoRfc = appSubmissionDto.isAutoRfc();
+                        List<ApplicationDto> applicationDtos = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
+                        if(applicationDtos!=null&&!applicationDtos.isEmpty()){
+                            for(ApplicationDto applicationDto : applicationDtos){
+                                if(autoRfc){
+                                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                                }else {
+                                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                                }
+                            }
+                            applicationFeClient.updateApplicationList(applicationDtos);
+                            String grpId = applicationDtos.get(0).getAppGrpId();
+                            ApplicationGroupDto entity = applicationFeClient.getApplicationGroup(grpId).getEntity();
+                            entity.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                            applicationFeClient.updateAppGrpPmtStatus(entity);
+                        }
+                    }
+                }
+            }
+            List<AppSubmissionDto> rfcAppSubmissionDtos=(List<AppSubmissionDto>)bpc.request.getSession().getAttribute("rfcAppSubmissionDtos");
+            if(rfcAppSubmissionDtos!=null){
+                for(AppSubmissionDto appSubmissionDto : rfcAppSubmissionDtos){
+                    String appGrpNo = appSubmissionDto.getAppGrpNo();
+                    boolean autoRfc = appSubmissionDto.isAutoRfc();
+                    List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
+                    if(entity!=null&& !entity.isEmpty()){
+                        for(ApplicationDto applicationDto : entity){
+                            if(autoRfc){
+                                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                            }else {
+                                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                            }
+                        }
+                        String grpId = entity.get(0).getAppGrpId();
+                        ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(grpId).getEntity();
+                        applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                        applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
+                    }
+                }
+            }
+            ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE4);
         } else {
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);
             return;

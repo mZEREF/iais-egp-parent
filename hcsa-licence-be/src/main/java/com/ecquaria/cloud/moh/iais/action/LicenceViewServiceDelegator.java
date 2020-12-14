@@ -74,6 +74,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -1155,6 +1156,8 @@ public class LicenceViewServiceDelegator {
         if(appGrpPrimaryDocDtos==null){
             appGrpPrimaryDocDtos=new ArrayList<>();
         }
+        removePriDocFileIdIsNull(oldAppGrpPrimaryDocDtos);
+        removePriDocFileIdIsNull(appGrpPrimaryDocDtos);
         copyPremiseDoc(appGrpPrimaryDocDtos,oldAppGrpPrimaryDocDtos);
 
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
@@ -1169,6 +1172,8 @@ public class LicenceViewServiceDelegator {
         if(oldAppSvcDocDtoLit==null){
             oldAppSvcDocDtoLit=new ArrayList<>();
         }
+        removeSvcDocFileIdIsNull(appSvcDocDtoLit);
+        removeSvcDocFileIdIsNull(oldAppSvcDocDtoLit);
         copyServiceDoc(appSvcDocDtoLit,oldAppSvcDocDtoLit);
 
         Map<String,String> docMapService = IaisCommonUtils.genNewHashMap();
@@ -1452,6 +1457,27 @@ public class LicenceViewServiceDelegator {
         }
     }
 
+    private void removePriDocFileIdIsNull( List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos ){
+        ListIterator<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoListIterator = appGrpPrimaryDocDtos.listIterator();
+        while(appGrpPrimaryDocDtoListIterator.hasNext()){
+            AppGrpPrimaryDocDto next = appGrpPrimaryDocDtoListIterator.next();
+            String fileRepoId = next.getFileRepoId();
+            if(fileRepoId==null){
+                appGrpPrimaryDocDtoListIterator.remove();
+            }
+        }
+    }
+
+    private void removeSvcDocFileIdIsNull( List<AppSvcDocDto> appSvcDocDtoLit){
+        ListIterator<AppSvcDocDto> appSvcDocDtoListIterator = appSvcDocDtoLit.listIterator();
+        while(appSvcDocDtoListIterator.hasNext()){
+            AppSvcDocDto next = appSvcDocDtoListIterator.next();
+            String fileRepoId = next.getFileRepoId();
+            if(fileRepoId==null){
+                appSvcDocDtoListIterator.remove();
+            }
+        }
+    }
     private void setCopyAppSvcDisciplineAllocationDtoList(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList ,List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList, List<AppSvcDisciplineAllocationDto> copyAppSvcDisciplineAllocationDtoList,List<AppSvcDisciplineAllocationDto> copyOldAppSvcDisciplineAllocationDtoList,String premiseVal) throws  Exception{
         for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
             String chkLstConfId = appSvcDisciplineAllocationDto.getChkLstConfId();
