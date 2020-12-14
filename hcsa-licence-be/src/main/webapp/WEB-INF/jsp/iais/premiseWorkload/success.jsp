@@ -16,7 +16,7 @@
         <div class="intranet-content">
           <div class="bg-title">
             <h2>
-              <span>The record has been updated successfully.</span>
+              <span><iais:message key="LLARM_ACK001" escape="true"></iais:message></span>
             </h2>
           </div>
           <div class="row">
