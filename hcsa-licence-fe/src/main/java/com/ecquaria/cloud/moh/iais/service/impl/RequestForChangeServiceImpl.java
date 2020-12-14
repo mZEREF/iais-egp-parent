@@ -721,7 +721,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 if (!StringUtil.isEmpty(stringBuilder.toString())) {
                                     stringBuilder.append(postalCode);
                                     if (list.contains(stringBuilder.toString())) {
-                                        errorMap.put("postalCode" + i, "There is a duplicated entry for this premises address");
+                                        errorMap.put("postalCode" + i, "NEW_ACK010");
 
                                     } else {
                                         list.add(stringBuilder.toString());
@@ -981,7 +981,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 if (!StringUtil.isEmpty(stringBuilder.toString())) {
                                     stringBuilder.append(conveyancePostalCode);
                                     if (list.contains(stringBuilder.toString())) {
-                                        errorMap.put("conveyancePostalCode" + i, "There is a duplicated entry for this premises address.");
+                                        errorMap.put("conveyancePostalCode" + i, "NEW_ACK010");
                                     } else {
                                         list.add(stringBuilder.toString());
                                     }
@@ -1089,7 +1089,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 if (!StringUtil.isEmpty(stringBuilder.toString())) {
                                     stringBuilder.append(offSitePostalCode);
                                     if (list.contains(stringBuilder.toString())) {
-                                        errorMap.put("offSitePostalCode" + i, "There is a duplicated entry for this premises address");
+                                        errorMap.put("offSitePostalCode" + i, "NEW_ACK010");
 
                                     } else {
                                         list.add(stringBuilder.toString());
