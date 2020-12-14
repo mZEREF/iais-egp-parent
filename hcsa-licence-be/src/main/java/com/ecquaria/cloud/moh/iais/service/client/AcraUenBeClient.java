@@ -6,7 +6,6 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +29,7 @@ public interface AcraUenBeClient {
     @PostMapping(value = "/iais-acraUen/entity", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> generateUen(@RequestBody IaisUENDto iaisUENDto);
 
-    @PutMapping(value = "/iais-licensee-be/acra-deregister")
+    @PutMapping(value = "/iais-licensee-be/acra-deregister",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> acraDeregister(@RequestBody List<String> licenseeIdList);
 
 }
