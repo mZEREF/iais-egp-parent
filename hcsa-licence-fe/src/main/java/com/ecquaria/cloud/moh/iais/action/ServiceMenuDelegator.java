@@ -442,7 +442,7 @@ public class ServiceMenuDelegator {
                 Map<String,List<String>> baseRelSpe = baseRelSpe(allBaseSvcId,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
                 if (baseRelSpe.size() == 0){
                     nextstep = currentPage;
-                    err = "There is no base service in specified services.";
+                    err = MessageUtil.getMessageDesc("NEW_ERR0002");
                     ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
                     //set audit
                     Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
