@@ -699,7 +699,7 @@ public class ConfigServiceImpl implements ConfigService {
                     errorMap.put("manhourCount"+k+i,replace);
                     errorMap.put(k,"error");
                 }else if(!stringManhourCount.matches("^[0-9]+$")){
-                    errorMap.put("manhourCount"+k+i,"NEW_ERR0003");
+                    errorMap.put("manhourCount"+k+i,"GENERAL_ERR0002");
                     errorMap.put(k,"error");
                 }
             }
@@ -708,13 +708,13 @@ public class ConfigServiceImpl implements ConfigService {
         if(StringUtil.isEmpty(numberDocument)){
             errorMap.put("NumberDocument",MessageUtil.replaceMessage("GENERAL_ERR0006","Number of Service-Related Document to be uploaded","field"));
         }else if(!numberDocument.matches("^[0-9]+$")){
-            errorMap.put("NumberDocument","NEW_ERR0003");
+            errorMap.put("NumberDocument","GENERAL_ERR0002");
         }
         String numberfields = hcsaServiceConfigDto.getServiceDocSize();
         if(StringUtil.isEmpty(numberfields)){
             errorMap.put("Numberfields",MessageUtil.replaceMessage("GENERAL_ERR0006","Number of Service-Related General Info fields to be captured","field"));
         }else if(!numberfields.matches("^[0-9]+$")){
-            errorMap.put("Numberfields","NEW_ERR0003");
+            errorMap.put("Numberfields","GENERAL_ERR0002");
         }
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = (List<HcsaSvcDocConfigDto>)request.getAttribute("serviceDoc");
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtoList = ( List<HcsaSvcDocConfigDto>)request.getAttribute("comDoc");
