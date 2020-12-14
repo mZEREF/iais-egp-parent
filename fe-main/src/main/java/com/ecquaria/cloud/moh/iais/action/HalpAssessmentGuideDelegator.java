@@ -774,7 +774,7 @@ public class HalpAssessmentGuideDelegator {
             }else{
                 //no spe err
                 nextstep = currentPage;
-                err = "Please select at least one service.";
+                err = MessageUtil.getMessageDesc("NEW_ERR0001");
                 ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
             }
         }else{
