@@ -129,8 +129,8 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     @Override
     public void saveWithdrawn(List<WithdrawnDto> withdrawnDtoList) {
         List<WithdrawnDto> autoApproveApplicationDtoList = IaisCommonUtils.genNewArrayList();
+        String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity();
         withdrawnDtoList.forEach(h -> {
-            String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity();
             String licenseeId = h.getLicenseeId();
             AppSubmissionDto appSubmissionDto = applicationFeClient.gainSubmissionDto(h.getApplicationNo()).getEntity();
             transform(appSubmissionDto,licenseeId);
@@ -166,6 +166,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             ApplicationDto oldApplication = applicationFeClient.getApplicationById(oldApplicationId).getEntity();
             recallApplicationDto.setAppId(oldApplicationId);
             recallApplicationDto.setRefNo(refNoList);
+            recallApplicationDto.setAppNo(newApplication.getApplicationNo());
             recallApplicationDto.setAppGrpId(oldApplication.getAppGrpId());
             recallApplicationDto.setNewAppId(h.getNewApplicationId());
             recallApplicationDto.setNeedReturnFee(true);

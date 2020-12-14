@@ -111,14 +111,14 @@ public class WithdrawalDelegator {
     public void prepareDate(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("****The prepareDate Step****"));
         List<SelectOption> withdrawalReason = IaisCommonUtils.genNewArrayList();
-        withdrawalReason.add(new SelectOption("", "Please select a withdrawal reason"));
+        withdrawalReason.add(new SelectOption("", "Please select"));
         withdrawalReason.add(new SelectOption("WDR001", "Duplicate Application"));
         withdrawalReason.add(new SelectOption("WDR002", "Wrong Application"));
         withdrawalReason.add(new SelectOption("WDR003", "Failure to obtain pre requisite licence from other agency(ies)"));
         withdrawalReason.add(new SelectOption("WDR004", "No longer wish to provide the service"));
         withdrawalReason.add(new SelectOption("WDR005", "Others"));
         ParamUtil.setRequestAttr(bpc.request, "withdrawalReasonList", withdrawalReason);
-        List<String[]> applicationTandS = new ArrayList<>(41);
+        List<String[]> applicationTandS = new ArrayList<>(100);
         applicationTandS.add(new String[]{"APTY002","APST007"});
         applicationTandS.add(new String[]{"APTY002","APST028"});
         applicationTandS.add(new String[]{"APTY002","APST003"});
