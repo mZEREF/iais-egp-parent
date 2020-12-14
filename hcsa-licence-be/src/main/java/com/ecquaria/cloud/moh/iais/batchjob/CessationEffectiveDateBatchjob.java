@@ -223,6 +223,9 @@ public class CessationEffectiveDateBatchjob {
         List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
         AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         for (LicenceDto licenceDto : licenceDtos) {
+            if(licenceDto == null){
+                continue;
+            }
             try {
                 List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
                 licenceDto.setAuditTrailDto(auditTrailDto);
@@ -267,7 +270,12 @@ public class CessationEffectiveDateBatchjob {
                         }
                     }
                 }
-                emailMap.put("ApplicantName", orgUserDto.getDisplayName());
+                if(orgUserDto != null) {
+                    emailMap.put("ApplicantName", orgUserDto.getDisplayName());
+                } else {
+                    emailMap.put("ApplicantName", "");
+                    log.info(StringUtil.changeForLog("updateLicencesStatusAndSendMails Function: orgUserDto is null------->LicenceId =" + licenceDto.getId()));
+                }
                 emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_CESSATION}).get(0).getText());
                 emailMap.put("ServiceLicenceName", svcNameLicNo.toString());
                 emailMap.put("ApplicationNumber", appNos.toString());
