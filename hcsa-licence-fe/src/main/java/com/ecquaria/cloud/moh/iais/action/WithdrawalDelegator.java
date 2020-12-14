@@ -26,7 +26,6 @@ import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.bcel.generic.IF_ACMPEQ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -173,11 +172,12 @@ public class WithdrawalDelegator {
             if(StringUtil.isEmpty(applicationNo)){
                 applicationNo = (String)ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawAppNo");
             }
+            String finalApplicationNo = applicationNo;
+            if (!StringUtil.isEmpty(finalApplicationNo)){
+                withdrawAppList.removeIf(h -> finalApplicationNo.equals(h.getApplicationNo()));
+            }
         }
-        String finalApplicationNo = applicationNo;
-        if (!StringUtil.isEmpty(finalApplicationNo)){
-            withdrawAppList.removeIf(h -> finalApplicationNo.equals(h.getApplicationNo()));
-        }
+
         PaginationHandler<WithdrawApplicationDto> handler = new PaginationHandler<>("withdrawPagDiv", "withdrawBodyDiv");
         handler.setAllData(withdrawAppList);
         handler.preLoadingPage();
