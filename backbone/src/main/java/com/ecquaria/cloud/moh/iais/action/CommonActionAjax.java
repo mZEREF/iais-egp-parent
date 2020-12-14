@@ -1,10 +1,12 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.base.TableRowHtmlGenerater;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PageRecords;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,17 +25,18 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/commonAjax/*")
+@Slf4j
 public class CommonActionAjax {
     @RequestMapping(value="changeMemoryPage.do", method = RequestMethod.GET)
     public @ResponseBody Map<String,Object> changeMemoryPage(HttpServletRequest request,
                                    HttpServletResponse response)  {
-
+        log.info(StringUtil.changeForLog("changeMemoryPage.do start ..."));
 
         int pageNo = ParamUtil.getInt(request, "pageNum", 1);
         String pageDiv = ParamUtil.getString(request, "pageDiv");
         String checkIdStr = ParamUtil.getString(request, "checkId");
         PaginationHandler<?> handler = (PaginationHandler<?>) ParamUtil.getSessionAttr(request, pageDiv + "__SessionAttr");
-
+        log.info(StringUtil.changeForLog("handler:" + JsonUtil.parseToJson(handler)));
         Map<String,Object> map = changeMemoryPageImpl(pageNo, pageDiv, checkIdStr, handler);
         ParamUtil.setSessionAttr(request, pageDiv + "__SessionAttr", handler);
 
