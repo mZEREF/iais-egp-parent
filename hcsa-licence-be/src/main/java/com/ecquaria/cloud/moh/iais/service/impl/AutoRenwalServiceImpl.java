@@ -269,7 +269,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         String id = licenceDto.getId();
         log.info(StringUtil.changeForLog(time+"time"));
         String s = mounth.get(time);
-        log.info(s+"-----------mounth-------------");
+        log.info(StringUtil.changeForLog(s+"-----------mounth-------------"));
         log.info(id);
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(licenceDto)));
         boolean b = checkEmailIsSend(id, "IS_NO_AUTO" + time);
@@ -693,8 +693,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             }
 
         }catch (Exception e){
-            log.info(e.getMessage(),e+"-----have error---");
-
+            log.info(e.getMessage(),e);
+            log.info(StringUtil.changeForLog("-----have error---"));
             return false;
         }
     }
