@@ -510,9 +510,9 @@ public class ServiceMenuDelegator {
                                 String specSvcName = HcsaServiceCacheHelper.getServiceById(specSvcId).getSvcName();
 //                                    String errMsg = "You are not allowed to apply for <service name> as you do not have the required base service licence, please apply for <base service name>";
                                 String errMsg = MessageUtil.getMessageDesc("NEW_ERR0008");
-                                errMsg =  errMsg.replace("<service name>",specSvcName);
+                                errMsg =  errMsg.replace("{service name}",specSvcName);
                                 String baseNameStr = baseSvcNameList.stream().collect(Collectors.joining(","));
-                                errMsg = errMsg.replace("<base service name>",baseNameStr);
+                                errMsg = errMsg.replace("{base service name}",baseNameStr);
                                 errMsgList.add(errMsg);
                             }
                             i++;

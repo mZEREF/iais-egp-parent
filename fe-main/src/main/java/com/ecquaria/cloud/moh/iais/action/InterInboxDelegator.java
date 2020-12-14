@@ -55,6 +55,15 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -63,14 +72,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Author: Hc
@@ -543,7 +544,7 @@ public class InterInboxDelegator {
                 }
             }else {
                 String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
-                String replace = ack030.replace("<draft application no>", stringBuilder.toString());
+                String replace = ack030.replace("{draft application no}", stringBuilder.toString());
                 bpc.request.setAttribute("draftByLicAppId",replace);
                 bpc.request.setAttribute("isAppealShow","1");
                 List<String> licIdValues = IaisCommonUtils.genNewArrayList();
@@ -614,7 +615,7 @@ public class InterInboxDelegator {
                     }
                 }else {
                     String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
-                    String replace = ack030.replace("<draft application no>", stringBuilder.toString());
+                    String replace = ack030.replace("{draft application no}", stringBuilder.toString());
                     bpc.request.setAttribute("draftByLicAppId",replace);
                     bpc.request.setAttribute("isShow","1");
                     return;
@@ -668,7 +669,7 @@ public class InterInboxDelegator {
                         }
                     }else {
                         String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
-                        String replace = ack030.replace("<draft application no>", stringBuilder.toString());
+                        String replace = ack030.replace("{draft application no}", stringBuilder.toString());
                         bpc.request.setAttribute("draftByLicAppId",replace);
                         bpc.request.setAttribute("isRenewShow","1");
                         ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
@@ -756,7 +757,7 @@ public class InterInboxDelegator {
                     }
                 }else {
                     String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
-                    String replace = ack030.replace("<draft application no>", stringBuilder.toString());
+                    String replace = ack030.replace("{draft application no}", stringBuilder.toString());
                     bpc.request.setAttribute("draftByLicAppId",replace);
                     bpc.request.setAttribute("isCeaseShow","1");
                     bpc.request.setAttribute("appealApplication",licIdValue.get(0));
@@ -1052,7 +1053,7 @@ public class InterInboxDelegator {
                 }
             }else {
                 String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
-                String replace = ack030.replace("<draft application no>", stringBuilder.toString());
+                String replace = ack030.replace("{draft application no}", stringBuilder.toString());
                 bpc.request.setAttribute("draftByLicAppId",replace);
                 bpc.request.setAttribute("isAppealApplicationShow","1");
                 bpc.request.setAttribute("appealApplication",appId);

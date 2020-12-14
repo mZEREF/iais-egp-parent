@@ -849,9 +849,9 @@ public class HalpAssessmentGuideDelegator {
                                 String specSvcName = HcsaServiceCacheHelper.getServiceById(specSvcId).getSvcName();
 //                                    String errMsg = "You are not allowed to apply for <service name> as you do not have the required base service licence, please apply for <base service name>";
                                 String errMsg = MessageUtil.getMessageDesc("NEW_ERR0008");
-                                errMsg =  errMsg.replace("<service name>",specSvcName);
+                                errMsg =  errMsg.replace("{service name}",specSvcName);
                                 String baseNameStr = baseSvcNameList.stream().collect(Collectors.joining(","));
-                                errMsg = errMsg.replace("<base service name>",baseNameStr);
+                                errMsg = errMsg.replace("{base service name}",baseNameStr);
                                 errMsgList.add(errMsg);
                             }
                             i++;
@@ -1370,7 +1370,7 @@ public class HalpAssessmentGuideDelegator {
                     }
                 }else {
                     String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
-                    String replace = ack030.replace("<draft application no>", stringBuilder.toString());
+                    String replace = ack030.replace("{draft application no}", stringBuilder.toString());
                     bpc.request.setAttribute("draftByLicAppId",replace);
                     bpc.request.setAttribute("isAppealShow","1");
                     bpc.request.setAttribute("appealApplication",licIdValue.get(0));
@@ -1736,7 +1736,7 @@ public class HalpAssessmentGuideDelegator {
                 }
             }else {
                 String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
-                String replace = ack030.replace("<draft application no>", stringBuilder.toString());
+                String replace = ack030.replace("{draft application no}", stringBuilder.toString());
                 bpc.request.setAttribute("draftByLicAppId",replace);
                 bpc.request.setAttribute("isCeasedShow","1");
                 bpc.request.setAttribute("appealApplication",licIdValue.get(0));
@@ -1945,7 +1945,7 @@ public class HalpAssessmentGuideDelegator {
                     }
                 }else {
                     String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
-                    String replace = ack030.replace("<draft application no>", stringBuilder.toString());
+                    String replace = ack030.replace("{draft application no}", stringBuilder.toString());
                     bpc.request.setAttribute("draftByLicAppId",replace);
                     bpc.request.setAttribute("isAmendShow","1");
                     bpc.request.setAttribute("appealApplication",licIdValue);

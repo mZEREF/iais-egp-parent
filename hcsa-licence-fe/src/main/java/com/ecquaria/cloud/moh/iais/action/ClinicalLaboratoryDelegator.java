@@ -2514,7 +2514,7 @@ public class ClinicalLaboratoryDelegator {
                     if (substring.contains(",")) {
                         error = error.replaceFirst("is", "are");
                     }
-                    String replace = error.replace("<CGO Name>", substring);
+                    String replace = error.replace("{CGO Name}", substring);
                     map.put("CGO", replace);
                 }
             }
