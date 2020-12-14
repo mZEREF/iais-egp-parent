@@ -140,11 +140,12 @@ function initMemoryPage(paginationDiv, checkType, pageNo) {
         pageDiv : paginationDiv,
         pageNum : pageNo
     };
+    var getTimestamp=new Date().getTime();
     $.ajax({
         data:data,
         type:"GET",
         dataType: 'json',
-        url:BASE_CONTEXT_PATH + "/commonAjax/changeMemoryPage.do",
+        url:BASE_CONTEXT_PATH + "/commonAjax/changeMemoryPage.do?timestamp="+getTimestamp,
         error:function(res){
             $("#iaisErrorFlag").val('Error:Exception');
         },
