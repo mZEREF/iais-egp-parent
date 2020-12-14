@@ -33,7 +33,7 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
 
     private void fillUpVad(HttpServletRequest request, Map<String, String> errMap) {
         if(!( serviceFillUpVad(request, errMap)& adhocFillUpVad(request, errMap)&commFillUpVad(request, errMap))){
-            errMap.put("fillchkl","UC_INSTA004_ERR008");
+            errMap.put("fillchkl","UC_INSTA004_ERR009");
         }
     }
 
