@@ -27,12 +27,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
@@ -591,7 +589,7 @@ public class ConfigServiceImpl implements ConfigService {
                     int i1 = Integer.parseInt(pageMandatoryCount);
                     if (i1<0){
                         errorMap.put("mandatoryCount"+i, "GENERAL_ERR0002");
-                    }else if("PO".equals(psnType)&&i1>1){
+                    }else if(i1>1 && "PO".equals(psnType)){
                         String sc_err013 = MessageUtil.getMessageDesc("SC_ERR013");
                         sc_err013=sc_err013.replace("{prsType}","PO");
                         errorMap.put("mandatoryCount"+i, sc_err013);
@@ -607,7 +605,7 @@ public class ConfigServiceImpl implements ConfigService {
                     int i1 = Integer.parseInt(pageMandatoryCount);
                     if(i1<0){
                         errorMap.put("maximumCount"+i,"GENERAL_ERR0002");
-                    }else if("PO".equals(psnType)&&i1>1){
+                    }else if(i1>1 && "PO".equals(psnType)){
                         String sc_err012 = MessageUtil.getMessageDesc("SC_ERR012");
                         sc_err012 = sc_err012.replace("{prsType}", "PO");
                         errorMap.put("maximumCount"+i,sc_err012);
