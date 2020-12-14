@@ -2189,7 +2189,8 @@ public class HcsaApplicationDelegator {
                             String applicationNo = oldApplication.getApplicationNo();
                             String applicationType1 = oldApplication.getApplicationType();
                             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-                            ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+                            ApplicationGroupDto applicationGroupDto = applicationClient.getAppGrpByNo(applicationNo).getEntity();
+//                            ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
                             OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
                             if(orgUserDto != null){
                                 applicantName = orgUserDto.getDisplayName();

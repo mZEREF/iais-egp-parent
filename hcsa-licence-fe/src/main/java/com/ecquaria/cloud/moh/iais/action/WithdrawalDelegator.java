@@ -117,7 +117,7 @@ public class WithdrawalDelegator {
         withdrawalReason.add(new SelectOption("WDR004", "No longer wish to provide the service"));
         withdrawalReason.add(new SelectOption("WDR005", "Others"));
         ParamUtil.setRequestAttr(bpc.request, "withdrawalReasonList", withdrawalReason);
-        List<String[]> applicationTandS = new ArrayList<>(100);
+        List<String[]> applicationTandS = new ArrayList<>(43);
         applicationTandS.add(new String[]{"APTY002","APST007"});
         applicationTandS.add(new String[]{"APTY002","APST028"});
         applicationTandS.add(new String[]{"APTY002","APST003"});

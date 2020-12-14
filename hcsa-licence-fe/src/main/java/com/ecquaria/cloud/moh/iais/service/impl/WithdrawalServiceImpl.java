@@ -249,7 +249,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         AppSubmissionDto appSubmissionDto = applicationFeClient.gainSubmissionDto(withdrawnDto.getApplicationNo()).getEntity();
         ApplicationDto oldApplicationDto = applicationFeClient.getApplicationById(withdrawnDto.getApplicationId()).getEntity();
         ApplicationDto newApplicationDto = applicationFeClient.getApplicationById(withdrawnDto.getNewApplicationId()).getEntity();
-        ApplicationGroupDto applicationGroupDto =  applicationFeClient.getApplicationGroup(newApplicationDto.getAppGrpId()).getEntity();
+        ApplicationGroupDto applicationGroupDto =  applicationFeClient.getApplicationGroup(oldApplicationDto.getAppGrpId()).getEntity();
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
         if (appSubmissionDto != null){
