@@ -265,6 +265,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             }
             List<ApplicationDto> applicationDtoList2 = hcsaConfigFeClient.returnFee(applicationDtoList).getEntity();
             if (!IaisCommonUtils.isEmpty(applicationDtoList2)){
+
                 fee = applicationDtoList2.get(0).getReturnFee();
             }
 
