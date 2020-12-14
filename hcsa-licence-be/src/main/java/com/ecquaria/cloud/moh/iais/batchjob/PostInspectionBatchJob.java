@@ -62,7 +62,15 @@ public class PostInspectionBatchJob {
         AuditTrailHelper.setupBatchJobAuditTrail(this);
     }
 
+
+
     public void doBatchJob(BaseProcessClass bpc) {
+        AuditTrailHelper.setupBatchJobAuditTrail(this);
+        log.debug(StringUtil.changeForLog("The prepareCeaastion is do ..."));
+        jobExecute();
+    }
+
+    public void jobExecute(){
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         Map<String, List<String>> map = hcsaLicenceClient.getPostInspectionMap().getEntity();
@@ -109,7 +117,7 @@ public class PostInspectionBatchJob {
             log.debug(StringUtil.changeForLog("=============event bus start ================"));
             //app
             eventBusHelper.submitAsyncRequest(postInspectionDto, submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                    EventBusConsts.OPERATION_POST_INSPECTION_APP_LIC, grpNo, bpc.process);
+                    EventBusConsts.OPERATION_POST_INSPECTION_APP_LIC, grpNo, null);
             //licence
 //            eventBusHelper.submitAsyncRequest(postInspectionDto, submissionId, EventBusConsts.SERVICE_NAME_LICENCESAVE,
 //                    EventBusConsts.OPERATION_POST_INSPECTION_APP_LIC, grpNo, bpc.process);
