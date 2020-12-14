@@ -2614,7 +2614,7 @@ public class NewApplicationHelper {
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = licPersonMap.get(personKey);
             if(appSvcPersonAndExtDto != null){
                 String errMsg = MessageUtil.getMessageDesc("NEW_ERR0006");
-                errMsg = errMsg.replace("<ID No.>",idNo);
+                errMsg = errMsg.replace("{ID No.}",idNo);
                 errMap.put(errKey,errMsg);
             }
         }
