@@ -24,6 +24,7 @@
                     <div class="pop-up">
                         <div class="pop-up-body">
                             <c:forEach var="appGrpPrimaryDocDto" items="${AppSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
+                                <c:if test="${!empty appGrpPrimaryDocDto.docName && !empty appGrpPrimaryDocDto.fileRepoId}">
                                 <div class="content-body fileUploadContainer">
                                     <div class="field col-sm-4 control-label formtext"><label>  ${appGrpPrimaryDocDto.svcComDocName}</label></div>
                                     <span class="fileType" style="display:none">Docment1</span><span class="fileFilter" style="display:none">png</span><span class="fileMandatory" style="display:none">Yes</span>
@@ -42,6 +43,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                </c:if>
                             </c:forEach>
                         </div>
                     </div>
