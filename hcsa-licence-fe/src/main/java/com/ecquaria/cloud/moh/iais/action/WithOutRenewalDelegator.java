@@ -1211,6 +1211,7 @@ public class WithOutRenewalDelegator {
             jumpYeMian(bpc.request, bpc.response);
             return;
         }
+        String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldAppSubmissionDto");
         List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
@@ -1303,7 +1304,6 @@ public class WithOutRenewalDelegator {
                             for(AppGrpPremisesDto appGrpPremisesDto : oldAppSubmissionDtoAppGrpPremisesDtoList){
                                 boolean configIsChange = requestForChangeService.serviceConfigIsChange(serviceIds, appGrpPremisesDto.getPremisesType());
                                 if(!configIsChange){
-                                    String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
                                     rfc_err020=rfc_err020.replace("{ServiceName}",licenceById.getSvcName());
                                     bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
                                     ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
@@ -1326,7 +1326,6 @@ public class WithOutRenewalDelegator {
                                             serviceIds.add(hcsaServiceDto.getId());
                                             boolean configIsChange = requestForChangeService.serviceConfigIsChange(serviceIds, appGrpPremisesDtoList.get(i).getPremisesType());
                                             if(!configIsChange){
-                                                String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
                                                 rfc_err020=rfc_err020.replace("{ServiceName}",licenceDto.getSvcName());
                                                 bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
                                                 ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
@@ -1361,7 +1360,6 @@ public class WithOutRenewalDelegator {
                             for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
                                 boolean configIsChange = requestForChangeService.serviceConfigIsChange(serviceIds, appGrpPremisesDto.getPremisesType());
                                 if(!configIsChange){
-                                    String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
                                     rfc_err020=rfc_err020.replace("{ServiceName}",licenceById.getSvcName());
                                     bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
                                     ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);

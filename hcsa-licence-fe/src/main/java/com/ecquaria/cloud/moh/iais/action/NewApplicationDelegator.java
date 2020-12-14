@@ -1754,6 +1754,7 @@ public class NewApplicationDelegator {
                 strList.add(v);
             }
         });
+        String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
         String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");
         strList.add(serviceConfig);
         appSubmissionDto.setStepColor(strList);
@@ -1823,7 +1824,6 @@ public class NewApplicationDelegator {
                     String premisesType = appGrpPremisesDto.getPremisesType();
                     boolean b = requestForChangeService.serviceConfigIsChange(serviceIds, premisesType);
                     if(!b){
-                        String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
                         rfc_err020=rfc_err020.replace("{ServiceName}",licenceById.getSvcName());
                         bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
                         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
@@ -1885,7 +1885,6 @@ public class NewApplicationDelegator {
                                 serviceIds.add(activeHcsaServiceDtoByName.getId()   );
                                 boolean configIsChange = requestForChangeService.serviceConfigIsChange(serviceIds, appGrpPremisesDtoList.get(i).getPremisesType());
                                 if(!configIsChange){
-                                    String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
                                     rfc_err020=rfc_err020.replace("{ServiceName}",licenceById.getSvcName());
                                     bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
                                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
