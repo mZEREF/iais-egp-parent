@@ -460,6 +460,7 @@ public class InsRepServiceImpl implements InsRepService {
             } else if (REJECT.equals(recommendation)) {
                 oldAppPremisesRecommendationDto.setId(null);
                 oldAppPremisesRecommendationDto.setRecomDecision(appPremisesRecommendationDto.getRecomDecision());
+                oldAppPremisesRecommendationDto.setRecomInNumber(0);
                 oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
                 return;
