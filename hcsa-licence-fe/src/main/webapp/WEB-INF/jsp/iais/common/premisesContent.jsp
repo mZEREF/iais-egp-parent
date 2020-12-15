@@ -252,6 +252,10 @@
                         <div class="col-xs-9 col-sm-5 col-md-5">
                             <input id="siteSafefyNo" maxlength="66" name="onSiteScdfRefNo" type="text" value="${appGrpPremisesDto.scdfRefNo}">
                         </div>
+                        <label class="col-xs-12 col-md-4 control-label"></label>
+                        <div class="col-xs-9 col-sm-5 col-md-5">
+                            <span id="error_ScdfRefNo${status.index}" name="iaisErrorMsg" class="error-msg"></span>
+                        </div>
                     </div>
                     <iais:row>
                         <iais:field value="Fire Safety Certificate Issued Date" width="12"/>
@@ -355,7 +359,7 @@
                         <iais:field value="Building Name" width="12"/>
                         <iais:value width="11" cssClass="col-md-5">
                             <iais:input cssClass="siteBuildingName" maxLength="66" type="text" name="onSiteBuildingName" id="siteBuildingName" value="${appGrpPremisesDto.buildingName}"></iais:input>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_buildingName"></span>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_buildingName${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -642,7 +646,7 @@
                         <iais:field value="Building Name " width="12"/>
                         <iais:value cssClass="col-xs-11 col-sm-7 col-md-5 ">
                             <iais:input maxLength="66" cssClass="conveyanceBuildingName" type="text" name="conveyanceBuildingName" id="conveyanceBuildingName" value="${appGrpPremisesDto.conveyanceBuildingName}"></iais:input>
-                            <span  class="error-msg"></span>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceBuildingName${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <div class="form-group">
@@ -896,7 +900,7 @@
                         <iais:field value="Building Name " width="12"/>
                         <iais:value cssClass="col-xs-11 col-sm-7 col-md-5 ">
                             <iais:input maxLength="66" cssClass="offSiteBuildingName" type="text" name="offSiteBuildingName" id="offSiteBuildingName" value="${appGrpPremisesDto.offSiteBuildingName}"></iais:input>
-                            <span  class="error-msg"></span>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteBuildingName${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <div class="form-group">
