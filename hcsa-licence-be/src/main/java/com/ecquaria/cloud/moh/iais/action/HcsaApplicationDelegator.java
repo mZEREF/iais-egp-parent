@@ -2180,6 +2180,7 @@ public class HcsaApplicationDelegator {
                  */
                 if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(withdrawApplicationDto.getApplicationType())){
                     String applicantName = "";
+                    boolean charity = false;
                     String serviceId = applicationViewDto.getApplicationDto().getServiceId();
                     AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
                     if (premiseMiscDto != null){
@@ -2192,6 +2193,14 @@ public class HcsaApplicationDelegator {
                             ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(oldApplication.getAppGrpId()).getEntity();
 //                            ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
                             OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+                            String licenseeId1 = applicationGroupDto.getLicenseeId();
+                            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId1).getEntity();
+                            if(licenseeDto != null) {
+                                LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
+                                if (licenseeEntityDto != null){
+                                    charity = "CC".equalsIgnoreCase(licenseeEntityDto.getEntityType());
+                                }
+                            }
                             if(orgUserDto != null){
                                 applicantName = orgUserDto.getDisplayName();
                             }
@@ -2216,20 +2225,26 @@ public class HcsaApplicationDelegator {
                                 msgInfoMap.put("S_LName",serviceName);
                                 msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
                                 msgInfoMap.put("ApplicationDate",applicationViewDto.getSubmissionDate().split(" ")[0]);
-                                msgInfoMap.put("returnMount",fee);
-                                if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(paymentMethod)){
-                                    msgInfoMap.put("paymentMode","GIRO");
-                                    msgInfoMap.put("paymentType","0");
-                                }else if(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(paymentMethod)){
-                                    msgInfoMap.put("paymentType","1");
-                                    msgInfoMap.put("paymentMode","Credit / Debit Card");
-                                }else if (ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(paymentMethod)){
-                                    msgInfoMap.put("paymentType","1");
-                                    msgInfoMap.put("paymentMode","NETS");
-                                }
-                                else{
-                                    msgInfoMap.put("paymentMode","Online Payment");
-                                    msgInfoMap.put("paymentType","1");
+                                if (charity){
+                                    msgInfoMap.put("returnMount",0.0);
+                                    msgInfoMap.put("paymentMode","");
+                                    msgInfoMap.put("paymentType","2");
+                                }else{
+                                    msgInfoMap.put("returnMount",fee);
+                                    if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(paymentMethod)){
+                                        msgInfoMap.put("paymentMode","GIRO");
+                                        msgInfoMap.put("paymentType","0");
+                                    }else if(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(paymentMethod)){
+                                        msgInfoMap.put("paymentType","1");
+                                        msgInfoMap.put("paymentMode","Credit / Debit Card");
+                                    }else if (ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(paymentMethod)){
+                                        msgInfoMap.put("paymentType","1");
+                                        msgInfoMap.put("paymentMode","NETS");
+                                    }
+                                    else{
+                                        msgInfoMap.put("paymentMode","Online Payment");
+                                        msgInfoMap.put("paymentType","1");
+                                    }
                                 }
                                 msgInfoMap.put("adminFee","100");
                                 msgInfoMap.put("systemLink",loginUrl);
