@@ -223,7 +223,11 @@ public class PublicHolidayDelegate {
                     String[] end = list.get(count).split(":");
                     count = count + 6;
                     String[] name = list.get(count).split(":");
-                    publicHolidayDto.setPhCode(getPublicCode(name[1]));
+                    String phcode = getPublicCode(name[1],publicHolidayDtos);
+                    publicHolidayDto.setPhCode(phcode);
+                    if(StringUtil.isEmpty(publicHolidayDto.getPhCode())){
+                        continue;
+                    }
                     publicHolidayDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     count ++;
@@ -268,14 +272,25 @@ public class PublicHolidayDelegate {
 
     }
 
-    private String getPublicCode(String text){
-        List<SelectOption> list = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
-        Map<String, String> phCodeMap = IaisCommonUtils.genNewHashMap();
-        for (SelectOption item:list
-             ) {
-            phCodeMap.put(item.getText(),item.getValue());
+    private String getPublicCode(String text,List<PublicHolidayDto> publicHolidayDtos){
+        if("Chinese New Year".equals(text)){
+            for (PublicHolidayDto item:publicHolidayDtos
+                 ) {
+                if("PUHD012".equals(item.getPhCode())){
+                    return "PUHD002";
+                }
+            }
+            return "PUHD012";
+        }else{
+            List<SelectOption> list = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
+            Map<String, String> phCodeMap = IaisCommonUtils.genNewHashMap();
+            for (SelectOption item:list
+            ) {
+                phCodeMap.put(item.getText(),item.getValue());
+            }
+            return phCodeMap.get(text);
         }
-        return phCodeMap.get(text);
+
     }
 
     /**
