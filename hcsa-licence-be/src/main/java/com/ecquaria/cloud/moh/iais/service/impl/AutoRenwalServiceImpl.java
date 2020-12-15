@@ -132,7 +132,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(entity+"------entity")));
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(entity1 + "-----entity1")));
         sendEmail(entity,mouth);
-        sendEmail(entity1,mouth);
+      /*  sendEmail(entity1,mouth);*/
     }
 
     private void sendEmail( Map<String, List<LicenceDto>> entity,Map<String,String> map){
@@ -194,20 +194,20 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 calendar.setTime(new Date());
                 calendar.add(Calendar.MONTH,i);
                 int i1 = Integer.parseInt(String.valueOf((calendar.getTimeInMillis() - c.getTimeInMillis()) / (24 * 60 * 60 * 1000)));
-                map.put(i1+"",MONTH_DAY+i);
+                map.put(systemParameterDto.getId(),i1+"");
                 return i1;
             }else if(WEEK_DAY.equals(paramType)){//week
                 Calendar calendar=Calendar.getInstance();
                 calendar.setTime(new Date());
                 calendar.add(Calendar.WEEK_OF_MONTH,i);
                 int i1 = Integer.parseInt(String.valueOf((calendar.getTimeInMillis() - c.getTimeInMillis()) / (24 * 60 * 60 * 1000)));
-                map.put(i1+"",WEEK_DAY+i);
+                map.put(systemParameterDto.getId(),i1+"");
                 return i1;
             }else if(REMINDER_DAY.equals(paramType)){
-                map.put(i+"",REMINDER_DAY+i);
+                map.put(systemParameterDto.getId(),i+"");
                 return i;
             }else if(DAY.equals(paramType)){
-                map.put(i+"",DAY+i);
+                map.put(systemParameterDto.getId(),i+"");
                 return i;
             }
         }
@@ -268,23 +268,54 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
         String id = licenceDto.getId();
         log.info(StringUtil.changeForLog(time+"time"));
-        String s = mounth.get(time);
+        String s = mounth.get(F_180);
+        String s1 = mounth.get(S_150);
+        String s2 = mounth.get(T_120);
+        String s3 = mounth.get(F_90);
+        String s4 = mounth.get(F_60);
+        String s5 = mounth.get(S_45);
+        String s6 = mounth.get(S_30);
         log.info(StringUtil.changeForLog(s+"-----------mounth-------------"));
         log.info(id);
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(licenceDto)));
-        boolean b = checkEmailIsSend(id, "IS_NO_AUTO" + time);
-        String lastReminderString = systemParamConfig.getSeventhLicenceReminder()+"";
-        String firstReminderString = systemParamConfig.getLicenceIsEligible()+"";
-        String secondReminderString = systemParamConfig.getSecondLicenceReminder()+"";
-        String thirdReminderString = systemParamConfig.getThirdLicenceReminder()+"";
-        String fourthReminderString = systemParamConfig.getFourthLicenceReminder()+"";
-        String fifthReminderString = systemParamConfig.getFifthLicenceReminder()+"";
-        String sixthReminderString = systemParamConfig.getSixthLicenceReminder()+"";
+        boolean b = false;
+        String emailTime="1";
+        String emailSendTime=time;
+        if(time.equals(s)){
+            b = checkEmailIsSend(id, "IS_NO_AUTO" + F_180);
+            emailSendTime=F_180;
+            emailTime="7";
+        }else if(time.equals(s1)){
+            b = checkEmailIsSend(id, "IS_NO_AUTO" + S_150);
+            emailTime="6";
+            emailSendTime=S_150;
+        }else if(time.equals(s2)){
+            b = checkEmailIsSend(id, "IS_NO_AUTO" + T_120);
+            emailTime="5";
+            emailSendTime=T_120;
+        }else if(time.equals(s3)){
+            b = checkEmailIsSend(id, "IS_NO_AUTO" + F_90);
+            emailTime="4";
+            emailSendTime=F_90;
+        }else if(time.equals(s4)){
+            b = checkEmailIsSend(id, "IS_NO_AUTO" + F_60);
+            emailTime="3";
+            emailSendTime=F_60;
+        }else if(time.equals(s5)){
+            b = checkEmailIsSend(id, "IS_NO_AUTO" + S_45);
+            emailTime="2";
+            emailSendTime=S_45;
+        }else if(time.equals(s6)){
+            b = checkEmailIsSend(id, "IS_NO_AUTO" + S_30);
+            emailTime="1";
+            emailSendTime=S_30;
+        }
+
         log.info(StringUtil.changeForLog(b+"-------type"));
         if(!b){
             return;
         }
-        saveMailJob(id,"IS_NO_AUTO"+time);
+        saveMailJob(id,"IS_NO_AUTO"+emailSendTime);
         String serviceName = licenceDto.getSvcName();
         String serviceCode = hcsaConfigClient.getServiceCodeByName(serviceName).getEntity();
         List<String> serviceCodeList = IaisCommonUtils.genNewArrayList();
@@ -301,7 +332,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             map.put("serviceName", serviceName);
             map.put("systemLink", loginUrl);
             map.put("email", systemAddressOne);
-            if(lastReminderString.equals(time)){
+            if("1".equals(emailTime)){
                 //last
                 log.info(StringUtil.changeForLog("send renewal application last reminder"));
                 Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
@@ -373,33 +404,33 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 map.put("expireDate", expireDateString);
                 //first - sixth reminder
                 log.info(StringUtil.changeForLog("send renewal application first - sixth reminder"));
-                if(firstReminderString.equals(time)){
+                if("7".equals(emailTime)){
 
-                }else if(secondReminderString.equals(time)){
+                }else if("6".equals(emailTime)){
 //                    subject = "MOH HALP - 2nd Renewal Notice: Your "+ serviceName +" is due for renewal";
                     subMap.put("count", "2nd");
                     emailSubject = getEmailSubject(emailTemplateDto,subMap);
                     smsSubject = getEmailSubject(smsTemplateDto,subMap);
                     messageSubject = getEmailSubject(messageTemplateDto,subMap);
-                }else if(thirdReminderString.equals(time)){
+                }else if("5".equals(emailTime)){
 //                    subject = "MOH HALP - 3rd Renewal Notice: Your "+ serviceName +" is due for renewal";
                     subMap.put("count", "3rd");
                     emailSubject = getEmailSubject(emailTemplateDto,subMap);
                     smsSubject = getEmailSubject(smsTemplateDto,subMap);
                     messageSubject = getEmailSubject(messageTemplateDto,subMap);
-                }else if(fourthReminderString.equals(time)){
+                }else if("4".equals(emailTime)){
 //                    subject = "MOH HALP - 4th Renewal Notice: Your "+ serviceName +" is due for renewal";
                     subMap.put("count", "4th");
                     emailSubject = getEmailSubject(emailTemplateDto,subMap);
                     smsSubject = getEmailSubject(smsTemplateDto,subMap);
                     messageSubject = getEmailSubject(messageTemplateDto,subMap);
-                }else if(fifthReminderString.equals(time)){
+                }else if("3".equals(emailTime)){
 //                    subject = "MOH HALP - 5th Renewal Notice: Your "+ serviceName +" is due for renewal";
                     subMap.put("count", "5th");
                     emailSubject = getEmailSubject(emailTemplateDto,subMap);
                     smsSubject = getEmailSubject(smsTemplateDto,subMap);
                     messageSubject = getEmailSubject(messageTemplateDto,subMap);
-                }else if(sixthReminderString.equals(time)){
+                }else if("2".equals(emailTime)){
 //                    subject = "MOH HALP - 6th Renewal Notice: Your "+ serviceName +" is due for renewal";
                     subMap.put("count", "6th");
                     emailSubject = getEmailSubject(emailTemplateDto,subMap);

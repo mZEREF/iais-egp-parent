@@ -535,15 +535,23 @@ public class ConfigServiceImpl implements ConfigService {
 
         if (StringUtil.isEmpty(svcCode)) {
             errorMap.put("svcCode", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Code","field"));
+        }else if(svcCode.length()>3){
+
         }
         if (StringUtil.isEmpty(svcName)) {
             errorMap.put("svcName", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Name","field"));
+        }else  if(svcName.length()>100){
+
         }
         if (StringUtil.isEmpty(svcDisplayDesc)) {
             errorMap.put("svcDisplayDesc", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Display Description","field"));
+        }else if(svcDisplayDesc.length()>255){
+
         }
         if (StringUtil.isEmpty(svcDesc)) {
             errorMap.put("svcDesc", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Description","field"));
+        }else if(svcDesc.length()>255){
+
         }
         if (StringUtil.isEmpty(svcType)) {
             errorMap.put("svcType", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Type","field"));
@@ -602,14 +610,15 @@ public class ConfigServiceImpl implements ConfigService {
                 errorMap.put("maximumCount" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Maximum Count","field"));
             }else {
                 if(pageMaximumCount.matches("^[0-9]+$")){
-                    int i1 = Integer.parseInt(pageMandatoryCount);
+                    int i1 = Integer.parseInt(pageMaximumCount);
+                    boolean b = "RDS".equals(svcCode) || "BLB".equals(svcCode);
                     if(i1<0){
                         errorMap.put("maximumCount"+i,"GENERAL_ERR0002");
                     }else if(i1>1 && "PO".equals(psnType)){
                         String sc_err012 = MessageUtil.getMessageDesc("SC_ERR012");
                         sc_err012 = sc_err012.replace("{prsType}", "PO");
                         errorMap.put("maximumCount"+i,sc_err012);
-                    }else if(("RDS".equals(svcCode) || "BLB".equals(svcCode)) && i1>1 && "CGO".equals(psnType)){
+                    }else if(b && i1>1 && "CGO".equals(psnType)){
                         String sc_err012 = MessageUtil.getMessageDesc("SC_ERR012");
                         sc_err012 = sc_err012.replace("{prsType}", "CGO");
                         errorMap.put("maximumCount"+i,sc_err012);
@@ -711,12 +720,16 @@ public class ConfigServiceImpl implements ConfigService {
         String numberDocument = hcsaServiceConfigDto.getComDocSize();
         if(StringUtil.isEmpty(numberDocument)){
             errorMap.put("NumberDocument",MessageUtil.replaceMessage("GENERAL_ERR0006","Number of Service-Related Document to be uploaded","field"));
+        }else if(numberDocument.length()>2){
+
         }else if(!numberDocument.matches("^[0-9]+$")){
             errorMap.put("NumberDocument","GENERAL_ERR0002");
         }
         String numberfields = hcsaServiceConfigDto.getServiceDocSize();
         if(StringUtil.isEmpty(numberfields)){
             errorMap.put("Numberfields",MessageUtil.replaceMessage("GENERAL_ERR0006","Number of Service-Related General Info fields to be captured","field"));
+        }else if(numberfields.length()>2){
+
         }else if(!numberfields.matches("^[0-9]+$")){
             errorMap.put("Numberfields","GENERAL_ERR0002");
         }
@@ -728,6 +741,8 @@ public class ConfigServiceImpl implements ConfigService {
                 String docTitle = hcsaSvcDocConfigDtos.get(i).getDocTitle();
                 if(StringUtil.isEmpty(docTitle)){
                     errorMap.put("serviceDoc"+i,Name_of_Info_Field);
+                }else if(docTitle.length()>255){
+
                 }
             }
         }
@@ -736,6 +751,8 @@ public class ConfigServiceImpl implements ConfigService {
                 String docTitle = hcsaSvcDocConfigDtoList.get(i).getDocTitle();
                 if(StringUtil.isEmpty(docTitle)){
                     errorMap.put("commonDoc"+i,Name_of_Info_Field); //NOSONAR
+                }else if(docTitle.length()>255){
+
                 }
             }
         }

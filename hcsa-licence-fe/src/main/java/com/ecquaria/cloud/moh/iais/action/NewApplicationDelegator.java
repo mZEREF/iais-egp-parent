@@ -2374,11 +2374,12 @@ public class NewApplicationDelegator {
             List<AppSvcChckListDto> list1=IaisCommonUtils.genNewArrayList();
             for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList){
                 List<AppSvcChckListDto> appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
-                list.addAll(appSvcChckListDtoList);
+                list.addAll(copyAppSvcChckListDto(appSvcChckListDtoList));
             }
             for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : oldAppSvcLaboratoryDisciplinesDtoList){
                 List<AppSvcChckListDto> appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
-                list1.addAll(appSvcChckListDtoList);
+
+                list1.addAll(copyAppSvcChckListDto(appSvcChckListDtoList));
             }
             flag1=list.equals(list1);
         }else {
@@ -2407,7 +2408,18 @@ public class NewApplicationDelegator {
         }
         return false;
     }
-
+    private List<AppSvcChckListDto> copyAppSvcChckListDto(List<AppSvcChckListDto> appSvcChckListDtos){
+        List<AppSvcChckListDto> list=IaisCommonUtils.genNewArrayList();
+        if(appSvcChckListDtos!=null){
+            for(AppSvcChckListDto appSvcChckListDto : appSvcChckListDtos){
+                AppSvcChckListDto svcChckListDto=new AppSvcChckListDto();
+                svcChckListDto.setChkLstConfId(appSvcChckListDto.getChkLstConfId());
+                svcChckListDto.setChkName(appSvcChckListDto.getChkName());
+                list.add(svcChckListDto) ;
+            }
+        }
+        return list;
+    }
     private boolean eqSvcDoc( List<AppSvcDocDto> appSvcDocDtoLit, List<AppSvcDocDto> oldAppSvcDocDtoLit){
         if(appSvcDocDtoLit==null){
             appSvcDocDtoLit=new ArrayList<>();
