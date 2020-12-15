@@ -3,7 +3,7 @@
         <br/>
         <div class="row">
             <br/>
-            <c:if test="${!empty confirmDtos}">
+            <c:if test="${not empty confirmDtos}">
                 <c:forEach items="${confirmDtos}" var="appCess" varStatus="num">
                     <div class="col-lg-12 col-xs-12 cesform-box">
                         <div class="row">
@@ -173,7 +173,7 @@
                                 </div>
                             </c:forEach>
                         </div>
-                        <c:if test="${!empty specLicInfo }">
+                        <c:if test="${not empty specLicInfo }">
                             <div><h4>The following specified healthcare services will also be ceased as their
                                 underlying licensable healthcare service(s) is/are listed above.</h4></div>
                             <table class="table-gp tablebox">
