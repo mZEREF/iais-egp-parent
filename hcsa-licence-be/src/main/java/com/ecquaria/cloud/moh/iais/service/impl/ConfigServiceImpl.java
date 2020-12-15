@@ -609,6 +609,10 @@ public class ConfigServiceImpl implements ConfigService {
                         String sc_err012 = MessageUtil.getMessageDesc("SC_ERR012");
                         sc_err012 = sc_err012.replace("{prsType}", "PO");
                         errorMap.put("maximumCount"+i,sc_err012);
+                    }else if(("RDS".equals(svcCode) || "BLB".equals(svcCode)) && i1>1 && "CGO".equals(psnType)){
+                        String sc_err012 = MessageUtil.getMessageDesc("SC_ERR012");
+                        sc_err012 = sc_err012.replace("{prsType}", "CGO");
+                        errorMap.put("maximumCount"+i,sc_err012);
                     }
                 }else {
                     errorMap.put("maximumCount"+i,"GENERAL_ERR0002");

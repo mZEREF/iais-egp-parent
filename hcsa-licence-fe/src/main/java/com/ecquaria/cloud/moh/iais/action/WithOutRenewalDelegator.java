@@ -1502,6 +1502,8 @@ public class WithOutRenewalDelegator {
                     }
                 }
             }
+            String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
+            ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
             ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE4);
         } else {
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);

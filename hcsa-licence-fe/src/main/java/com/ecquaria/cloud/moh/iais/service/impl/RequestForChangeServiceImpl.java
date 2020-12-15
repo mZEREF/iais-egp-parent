@@ -629,9 +629,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             errorMap.put("hciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of HCI", "field"));
                         } else {
                             if(hciName.length()>100){
-                                String general_err0041 = MessageUtil.getMessageDesc("GENERAL_ERR0041");
-                                general_err0041=repLength(general_err0041,"{field}","Name of HCI");
-                                general_err0041=repLength(general_err0041,"{maxlength}","100");
+                                String general_err0041=repLength("Name of HCI","100");
                                 errorMap.put("hciName" + i, general_err0041);
                             }
                             if (masterCodeDto != null) {
@@ -663,6 +661,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String streetName = appGrpPremisesDtoList.get(i).getStreetName();
                         if (StringUtil.isEmpty(streetName)) {
                             errorMap.put("streetName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Street Name", "field"));
+                        }else if(streetName.length() > 32){
+                            String s = repLength("Street Name", "32");
+
                         }
 
                         String addrType = appGrpPremisesDtoList.get(i).getAddrType();
@@ -922,6 +923,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String cStreetName = appGrpPremisesDtoList.get(i).getConveyanceStreetName();
                         if (StringUtil.isEmpty(cStreetName)) {
                             errorMap.put("conveyanceStreetName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Street Name ", "field"));
+                        }else if(cStreetName.length() > 32){
+
                         }
                         boolean addrTypeFlag = true;
                         String conveyanceAddressType = appGrpPremisesDtoList.get(i).getConveyanceAddressType();
@@ -937,14 +940,20 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 if (empty) {
                                     addrTypeFlag = false;
                                     errorMap.put("conveyanceFloorNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
+                                }else if(appGrpPremisesDtoList.get(i).getConveyanceFloorNo().length()>3){
+
                                 }
                                 if (empty1) {
                                     addrTypeFlag = false;
                                     errorMap.put("conveyanceBlockNos" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
+                                }else if(appGrpPremisesDtoList.get(i).getConveyanceBlockNo().length()>10){
+
                                 }
                                 if (empty2) {
                                     addrTypeFlag = false;
                                     errorMap.put("conveyanceUnitNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
+                                }else if(appGrpPremisesDtoList.get(i).getConveyanceUnitNo().length()>5){
+
                                 }
 
                             }
@@ -1032,6 +1041,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String offSiteStreetName = appGrpPremisesDtoList.get(i).getOffSiteStreetName();
                         if (StringUtil.isEmpty(offSiteStreetName)) {
                             errorMap.put("offSiteStreetName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Street Name", "field"));
+                        }else if(offSiteStreetName.length() > 45){
+
                         }
 
                         String offSiteAddressType = appGrpPremisesDtoList.get(i).getOffSiteAddressType();
@@ -1312,8 +1323,40 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         return errorMap;
     }
 
-    public static String repLength(String message,String  arg,String result){
-      return message.replace(arg,result);
+    public static String repLength(String ... ars ) {
+        int length = ars.length;
+        String general_err0041 = MessageUtil.getMessageDesc("GENERAL_ERR0041");
+        if(length==0){
+            repLength(general_err0041);
+        }else if(length==1){
+                String field = ars[0].replace("{field}", "field");
+                field=field.replace("{maxlength}","100");
+                return field;
+            }else if(length==2){
+                general_err0041=general_err0041.replace("{field}",ars[0]);
+                general_err0041=general_err0041.replace("{maxlength}",ars[1]);
+                return general_err0041;
+            }else if(length==3){
+                String messageDesc = MessageUtil.getMessageDesc(ars[0]);
+                messageDesc=messageDesc.replace("{field}",ars[0]);
+                messageDesc=messageDesc.replace("{maxlength}",ars[1]);
+                return messageDesc;
+            }else if(length==4){
+                general_err0041=general_err0041.replace(ars[0],ars[1]);
+                general_err0041=general_err0041.replace(ars[2],ars[3]);
+                return general_err0041;
+            }else if(length==5){
+                String messageDesc = MessageUtil.getMessageDesc(ars[0]);
+                if(messageDesc!=null){
+                    messageDesc=messageDesc.replace(ars[1],ars[2]);
+                    messageDesc=messageDesc.replace(ars[3],ars[4]);
+                }
+                return messageDesc;
+            }else {
+                return general_err0041;
+            }
+
+        return general_err0041;
     }
     @Override
     public void svcDocToPresmise(AppSubmissionDto appSubmissionDto) {

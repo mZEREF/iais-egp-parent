@@ -61,21 +61,24 @@ public class AppealDelegator {
             bpc.request.getSession().setAttribute("loginContext",loginContext);
         }
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
-        ApplicationDto entity = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
-        if(entity!=null){
-            if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(entity.getStatus())){
-                bpc.request.setAttribute("appealRfi",ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
-                AppPremisesCorrelationDto entity1 = applicationFeClient.getCorrelationByAppNo(entity.getApplicationNo()).getEntity();
-                AppPremiseMiscDto entity2 = applicationFeClient.getAppPremisesMisc(entity1.getId()).getEntity();
-                bpc.request.setAttribute("applicationId",entity2.getRelateRecId());
-                appealService.getMessage(bpc.request);
-                bpc. request.setAttribute("crud_action_type","");
-                return;
+        if(appNo!=null){
+            ApplicationDto entity = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
+            if(entity!=null){
+                if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(entity.getStatus())){
+                    bpc.request.setAttribute("appealRfi",ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
+                    AppPremisesCorrelationDto entity1 = applicationFeClient.getCorrelationByAppNo(entity.getApplicationNo()).getEntity();
+                    AppPremiseMiscDto entity2 = applicationFeClient.getAppPremisesMisc(entity1.getId()).getEntity();
+                    bpc.request.setAttribute("applicationId",entity2.getRelateRecId());
+                    appealService.getMessage(bpc.request);
+                    bpc. request.setAttribute("crud_action_type","");
+                    return;
+                }
             }
         }
         String crud_action_type = bpc.request.getParameter("crud_action_type");
         if("inboxTo".equals(crud_action_type)){
             bpc. request.setAttribute("crud_action_type","inbox");
+            inbox(bpc);
             return;
         }
         appealService.getMessage(bpc.request);
@@ -84,7 +87,7 @@ public class AppealDelegator {
     }
 
     public void appealFrom(BaseProcessClass bpc){
-
+        log.info("-----");
     }
     public void switchProcess(BaseProcessClass bpc ){
         log.info("start**************switchProcess************");

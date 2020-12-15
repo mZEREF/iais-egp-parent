@@ -1580,9 +1580,9 @@ public class RequestForChangeMenuDelegator {
                 if(0==total){
                     appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
 //                    appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-                }else {
+                }/*else {
                     appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-                }
+                }*/
                 appSubmissionDtoByLicenceId.setAmount(total);
                 AppGrpPremisesDto o = (AppGrpPremisesDto)CopyUtil.copyMutableObject(appGrpPremisesDtoList1.get(0));
                 List<AppGrpPremisesDto> appGrpPremise= new ArrayList<>(1);
