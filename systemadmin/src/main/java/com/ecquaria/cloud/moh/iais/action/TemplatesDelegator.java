@@ -205,7 +205,7 @@ public class TemplatesDelegator {
                 errorMap.put("messageContent",MessageUtil.replaceMessage("EMM_ERR005","8000","num"));
             }
             if (contentSize < 2) {
-                errorMap.put("messageContent", MessageUtil.getMessageDesc("EMM_ERR0010"));
+                errorMap.put("messageContent", MessageUtil.replaceMessage("GENERAL_ERR0006","Message Content","field"));
             }
             Boolean needRecipient = (Boolean) ParamUtil.getSessionAttr(request,"needRecipient");
             if(needRecipient) {

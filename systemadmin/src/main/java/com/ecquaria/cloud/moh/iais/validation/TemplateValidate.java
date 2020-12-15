@@ -28,7 +28,7 @@ public class TemplateValidate implements CustomizeValidator {
             }
         }
         if(msgTemplateDto.getTemplateName() == null){
-            errMap.put("templateName", MessageUtil.getMessageDesc("EMM_ERR0010"));
+            errMap.put("templateName", MessageUtil.replaceMessage("GENERAL_ERR0006","Template Name","field"));
         }
         if(msgTemplateDto.getEffectiveFrom() == null){
             errMap.put("effectiveFrom", MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field"));
