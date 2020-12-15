@@ -105,10 +105,8 @@ public class PostInspectionBatchJob {
                     continue;
                 }
             }
-            //applicationClient.savePostSubmision(appSubmissionDtos).getEntity();
             insGrpIds.add(insGrpId);
             List<LicInspectionGroupDto> licInspectionGroupDtos = hcsaLicenceClient.getLicInsGrpByIds(insGrpIds).getEntity();
-            //hcsaLicenceClient.testLicence(licInspectionGroupDtos).getEntity();
             PostInspectionDto postInspectionDto = new PostInspectionDto();
             String submissionId = generateIdClient.getSeqId().getEntity();
             postInspectionDto.setSubmissionDtos(appSubmissionDtos);
@@ -118,9 +116,6 @@ public class PostInspectionBatchJob {
             //app
             eventBusHelper.submitAsyncRequest(postInspectionDto, submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                     EventBusConsts.OPERATION_POST_INSPECTION_APP_LIC, grpNo, null);
-            //licence
-//            eventBusHelper.submitAsyncRequest(postInspectionDto, submissionId, EventBusConsts.SERVICE_NAME_LICENCESAVE,
-//                    EventBusConsts.OPERATION_POST_INSPECTION_APP_LIC, grpNo, bpc.process);
             log.debug(StringUtil.changeForLog("=============  event bus end ================"));
         });
     }

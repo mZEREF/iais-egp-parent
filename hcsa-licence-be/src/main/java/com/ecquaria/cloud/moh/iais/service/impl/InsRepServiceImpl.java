@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
@@ -32,16 +31,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
-import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -1081,33 +1077,12 @@ public class InsRepServiceImpl implements InsRepService {
         log.info(StringUtil.changeForLog("================== taskDtos ===================>>>>>"+taskDtos.size()));
         log.info(StringUtil.changeForLog("==================  eventBus Start  ===================>>>>>"));
             eventBusHelper.submitAsyncRequest(taskDtos, submissionId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK, EventBusConsts.OPERATION_POST_INSPECTION_TASK, eventRefNum, null);
-        //taskService.createTasks(taskDtos);
         log.info(StringUtil.changeForLog("=======================taskDtos ===================>>>>>Success"));
-        AppSubmissionForAuditDto appSubmissionForAuditDto = applicationClient.getAppSubmissionForAuditDto(eventRefNum).getEntity();
-        appSubmissionForAuditDto.setIsCancel(Boolean.FALSE);
-        appSubmissionForAuditDto.setAuditTrailDto(auditTrailDto);
         log.info(StringUtil.changeForLog("==================  eventBus End  ===================>>>>>"));
-        EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.LICENCE_CLIENT, AuditSystemListServiceImpl.class.getName(),
-                "saveAppForAuditToFeAndCreateTrack", currentApp + "-" + currentDomain,
-                AppSubmissionForAuditDto.class.getName(), JsonUtil.parseToJson(appSubmissionForAuditDto));
-        FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getLicEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
-        try{
-            if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
-                EicRequestTrackingDto entity = fetchResult.getEntity();
-                if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
-                    auditSystemListService.saveAppForAuditToFeAndCreateTrack(appSubmissionForAuditDto);
-                    entity.setProcessNum(1);
-                    Date now = new Date();
-                    entity.setFirstActionAt(now);
-                    entity.setLastActionAt(now);
-                    entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                    eicRequestTrackingHelper.getLicEicClient().saveEicTrack(entity);
-                }
-            }
-        }catch (Exception e){
-            log.error(StringUtil.changeForLog(e.getMessage()));
-        }
-        log.info(StringUtil.changeForLog("==================  eic End  ===================>>>>>"));
+        //create fe app
+        List<ApplicationDto> applicationDtos = applicationClient.getPostAppsByGrpNo(eventRefNum).getEntity();
+
+
     }
 
     @Override
