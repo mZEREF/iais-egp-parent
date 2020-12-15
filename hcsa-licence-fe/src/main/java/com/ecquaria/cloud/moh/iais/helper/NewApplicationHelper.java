@@ -2285,7 +2285,41 @@ public class NewApplicationHelper {
         }
     }
 
+    public static String repLength(String ... ars ) {
+        int length = ars.length;
+        String general_err0041 = MessageUtil.getMessageDesc("GENERAL_ERR0041");
+        if(length==0){
+            repLength(general_err0041);
+        }else if(length==1){
+            String field = ars[0].replace("{field}", "field");
+            field=field.replace("{maxlength}","100");
+            return field;
+        }else if(length==2){
+            general_err0041=general_err0041.replace("{field}",ars[0]);
+            general_err0041=general_err0041.replace("{maxlength}",ars[1]);
+            return general_err0041;
+        }else if(length==3){
+            String messageDesc = MessageUtil.getMessageDesc(ars[0]);
+            messageDesc=messageDesc.replace("{field}",ars[0]);
+            messageDesc=messageDesc.replace("{maxlength}",ars[1]);
+            return messageDesc;
+        }else if(length==4){
+            general_err0041=general_err0041.replace(ars[0],ars[1]);
+            general_err0041=general_err0041.replace(ars[2],ars[3]);
+            return general_err0041;
+        }else if(length==5){
+            String messageDesc = MessageUtil.getMessageDesc(ars[0]);
+            if(messageDesc!=null){
+                messageDesc=messageDesc.replace(ars[1],ars[2]);
+                messageDesc=messageDesc.replace(ars[3],ars[4]);
+            }
+            return messageDesc;
+        }else {
+            return general_err0041;
+        }
 
+        return general_err0041;
+    }
     //=============================================================================
     //private method
     //=============================================================================
