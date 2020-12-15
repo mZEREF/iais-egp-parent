@@ -408,7 +408,8 @@ public class NewApplicationHelper {
                     if(StringUtil.isEmpty(name)){
                         oneErrorMap.put("name"+poIndex, errName);
                     }else if (name.length()>66){
-
+                        String general_err0041=repLength("Name","66");
+                        oneErrorMap.put("name" + poIndex, general_err0041);
                     }
                     if(StringUtil.isEmpty(salutation)){
                         oneErrorMap.put("salutation"+poIndex, errSalutation);
@@ -417,6 +418,10 @@ public class NewApplicationHelper {
                         oneErrorMap.put("designation"+poIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field"));
                     }
                     if(!StringUtil.isEmpty(idNo)){
+                        if(idNo.length() > 9){
+                            String general_err0041=repLength("ID No.","9");
+                            oneErrorMap.put("poNRICFIN" + poIndex, general_err0041);
+                        }
                         if("FIN".equals(idType)){
                             boolean b = SgNoValidator.validateFin(idNo);
                             if(!b){
@@ -445,7 +450,10 @@ public class NewApplicationHelper {
                         oneErrorMap.put("poNRICFIN"+poIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","ID No. ","field"));
                     }
                     if(!StringUtil.isEmpty(mobileNo)){
-
+                        if(mobileNo.length() > 8){
+                            String general_err0041=repLength("Mobile No.","8");
+                            oneErrorMap.put("mobileNo" + poIndex, general_err0041);
+                        }
                         if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                             oneErrorMap.put("mobileNo"+poIndex, "GENERAL_ERR0007");
                         }
@@ -456,12 +464,17 @@ public class NewApplicationHelper {
                         if (!  ValidationUtils.isEmail(emailAddr)) {
                             oneErrorMap.put("emailAddr"+poIndex, "GENERAL_ERR0014");
                         }else if(emailAddr.length()>66){
-
+                            String general_err0041=repLength("Email Address","66");
+                            oneErrorMap.put("emailAddr" + poIndex, general_err0041);
                         }
                     }else {
                         oneErrorMap.put("emailAddr"+poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address ","field"));
                     }
                     if(!StringUtil.isEmpty(officeTelNo)) {
+                        if(officeTelNo.length() > 8){
+                            String general_err0041=repLength("Office Telephone No.","8");
+                            oneErrorMap.put("officeTelNo" + poIndex, general_err0041);
+                        }
                         if (!officeTelNo.matches("^[6][0-9]{7}$")) {
                             oneErrorMap.put("officeTelNo"+poIndex, "GENERAL_ERR0015");
                         }
@@ -518,47 +531,62 @@ public class NewApplicationHelper {
                     if(StringUtil.isEmpty(name)){
                         oneErrorMap.put("deputyName"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field"));
                     }else if(name.length()>66){
-
+                        String general_err0041=repLength("Name","66");
+                        oneErrorMap.put("deputyName" + dpoIndex, general_err0041);
                     }
                     if(StringUtil.isEmpty(officeTelNo)){
                         oneErrorMap.put("deputyofficeTelNo"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Office Telephone No.","field"));
                     }else {
+                        if(officeTelNo.length() > 8){
+                            String general_err0041=repLength("Office Telephone No.","8");
+                            oneErrorMap.put("deputyofficeTelNo" + dpoIndex, general_err0041);
+                        }
                         if(!officeTelNo.matches("^[6][0-9]{7}$")){
                             oneErrorMap.put("deputyofficeTelNo"+dpoIndex,"GENERAL_ERR0015");
                         }
                     }
                     if(StringUtil.isEmpty(idNo)){
                         oneErrorMap.put("deputyIdNo"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.","field"));
-                    }
-                    if("FIN".equals(idType)){
-                        boolean b = SgNoValidator.validateFin(idNo);
-                        if(!b){
-                            oneErrorMap.put("deputyIdNo"+dpoIndex,"RFC_ERR0012");
-                        }else {
-                            stringBuilder.append(idType).append(idNo);
-                            String s = stringBuilder.toString();
-                            if(stringList.contains(s)){
-                                oneErrorMap.put("deputyIdNo"+dpoIndex,"NEW_ERR0012");
+                    }else{
+                        if(idNo.length() > 9){
+                            String general_err0041=repLength("ID No.","66");
+                            oneErrorMap.put("deputyIdNo" + dpoIndex, general_err0041);
+                        }
+                        if("FIN".equals(idType)){
+                            boolean b = SgNoValidator.validateFin(idNo);
+                            if(!b){
+                                oneErrorMap.put("deputyIdNo"+dpoIndex,"RFC_ERR0012");
+                            }else {
+                                stringBuilder.append(idType).append(idNo);
+                                String s = stringBuilder.toString();
+                                if(stringList.contains(s)){
+                                    oneErrorMap.put("deputyIdNo"+dpoIndex,"NEW_ERR0012");
+                                }
+                            }
+                        }
+                        if("NRIC".equals(idType)){
+                            boolean b1 = SgNoValidator.validateNric(idNo);
+                            if(!b1){
+                                oneErrorMap.put("deputyIdNo"+dpoIndex,"RFC_ERR0012");
+                            }else {
+                                stringBuilder.append(idType).append(idNo);
+                                String s = stringBuilder.toString();
+                                if(stringList.contains(s)){
+                                    oneErrorMap.put("deputyIdNo"+dpoIndex,"NEW_ERR0012");
+                                }
                             }
                         }
                     }
-                    if("NRIC".equals(idType)){
-                        boolean b1 = SgNoValidator.validateNric(idNo);
-                        if(!b1){
-                            oneErrorMap.put("deputyIdNo"+dpoIndex,"RFC_ERR0012");
-                        }else {
-                            stringBuilder.append(idType).append(idNo);
-                            String s = stringBuilder.toString();
-                            if(stringList.contains(s)){
-                                oneErrorMap.put("deputyIdNo"+dpoIndex,"NEW_ERR0012");
-                            }
-                        }
-                    }
+
 
                     if(StringUtil.isEmpty(mobileNo)){
                         oneErrorMap.put("deputyMobileNo"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Mobile No.","field"));
                     }
                     else {
+                        if(mobileNo.length() > 8){
+                            String general_err0041=repLength("Mobile No.","8");
+                            oneErrorMap.put("deputyMobileNo" + dpoIndex, general_err0041);
+                        }
                         if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                             oneErrorMap.put("deputyMobileNo"+dpoIndex, "GENERAL_ERR0007");
                         }
@@ -566,6 +594,10 @@ public class NewApplicationHelper {
                     if(StringUtil.isEmpty(emailAddr)){
                         oneErrorMap.put("deputyEmailAddr"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address ","field"));
                     }else {
+                        if(emailAddr.length() > 8){
+                            String general_err0041=repLength("Email Address","66");
+                            oneErrorMap.put("deputyEmailAddr" + dpoIndex, general_err0041);
+                        }
                         if (!ValidationUtils.isEmail(emailAddr)) {
                             oneErrorMap.put("deputyEmailAddr"+dpoIndex, "GENERAL_ERR0014");
                         }else if(emailAddr.length()>66){
