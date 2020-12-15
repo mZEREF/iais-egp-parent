@@ -1,6 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 
 /**
  * @author weilu
@@ -8,5 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
  */
 public interface PaymentService {
 
-    PaymentDto savePayment (PaymentDto paymentDto);
+
+
+    void retrieveNetsPayment(PaymentRequestDto paymentRequestDto) throws Exception;
 }

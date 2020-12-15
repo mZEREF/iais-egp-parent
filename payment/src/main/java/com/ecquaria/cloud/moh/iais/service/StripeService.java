@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.Refund;
@@ -21,5 +22,6 @@ public interface StripeService {
     PaymentIntent retrievePaymentIntent(String pi);
     Refund createRefund(String pi,Long amount) throws StripeException;
     Refund retrieveRefund(String ri) throws StripeException;
+    void retrievePayment(PaymentRequestDto paymentRequestDto) throws StripeException;
 }
 

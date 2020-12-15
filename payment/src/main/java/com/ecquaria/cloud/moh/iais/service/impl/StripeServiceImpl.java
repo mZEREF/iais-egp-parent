@@ -1,6 +1,13 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.service.StripeService;
+import com.ecquaria.cloud.moh.iais.service.client.PaymentAppGrpClient;
+import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
+import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -11,6 +18,7 @@ import com.stripe.net.RequestOptions;
 import com.stripe.param.RefundCreateParams;
 import com.stripe.param.checkout.SessionCreateParams;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,7 +30,10 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class StripeServiceImpl implements StripeService {
-
+    @Autowired
+    PaymentClient paymentClient;
+    @Autowired
+    PaymentAppGrpClient paymentAppGrpClient;
     @Override
     public Session createSession(SessionCreateParams params) throws StripeException {
         // Set your secret key. Remember to switch to your live secret key in production!
@@ -104,6 +115,34 @@ public class StripeServiceImpl implements StripeService {
     public Refund retrieveRefund(String ri) throws StripeException {
         Stripe.apiKey = GatewayConfig.stripeKey;
         return Refund.retrieve(ri);
+    }
+
+    @Override
+    public void retrievePayment(PaymentRequestDto paymentRequestDto) throws StripeException {
+        Session session=retrieveSession(paymentRequestDto.getQueryCode());
+        PaymentIntent paymentIntent=retrievePaymentIntent(session.getPaymentIntent());
+
+        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();
+        String appGrpNo=paymentRequestDto.getReqRefNo().substring(0,'_');
+        ApplicationGroupDto applicationGroupDto=paymentAppGrpClient.paymentUpDateByGrpNo(appGrpNo).getEntity();
+        if(paymentDto!=null){
+            if(paymentIntent!=null && "succeeded".equals(paymentIntent.getStatus())){
+                paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
+                paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
+                applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+            }else if(paymentIntent!=null && "canceled".equals(paymentIntent.getStatus())){
+                paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+            }
+            paymentClient.saveHcsaPayment(paymentDto);
+            paymentClient.updatePaymentResquset(paymentRequestDto);
+        }else if(paymentIntent!=null && "succeeded".equals(paymentIntent.getStatus())){
+            applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
+        }else {
+            applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+        }
+        paymentAppGrpClient.doUpDate(applicationGroupDto);
     }
 
 
