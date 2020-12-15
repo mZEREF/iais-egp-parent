@@ -246,6 +246,8 @@ public class CessationEffectiveDateBatchjob {
                         LicenceDto specLicDto = hcsaLicenceClient.getLicDtoById(specLicId).getEntity();
                         String svcName1 = specLicDto.getSvcName();
                         String licenceNo1 = specLicDto.getLicenceNo();
+                        serviceCodes.add("<br/>");
+                        svcNameLicNo.append("<br/>");
                         svcNameLicNo.append(svcName1).append(" : ").append(licenceNo1);
                         HcsaServiceDto hcsaServiceDto1 = HcsaServiceCacheHelper.getServiceByServiceName(svcName1);
                         serviceCodes.add(hcsaServiceDto1.getSvcCode());
@@ -255,19 +257,12 @@ public class CessationEffectiveDateBatchjob {
                 StringBuilder appNos = new StringBuilder();
                 OrgUserDto orgUserDto = null;
                 if (!StringUtil.isEmpty(groupId)) {
+                    ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(groupId).getEntity();
+                    orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
                     List<ApplicationDto> applicationDtos = applicationClient.getAppDtosByAppGrpId(groupId).getEntity();
-                    orgUserDto = organizationClient.retrieveOrgUserAccountById(groupId).getEntity();
                     for (ApplicationDto applicationDto : applicationDtos) {
-                        String appId = applicationDto.getId();
                         String applicationNo = applicationDto.getApplicationNo();
-                        String status = applicationDto.getStatus();
-                        List<AppPremiseMiscDto> appPremiseMiscDtos = cessationClient.getAppPremiseMiscDtoListByAppId(appId).getEntity();
-                        if (!IaisCommonUtils.isEmpty(applicationDtos)) {
-                            Date effectiveDate = appPremiseMiscDtos.get(0).getEffectiveDate();
-                            if (effectiveDate.compareTo(new Date()) <= 0 && ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE.equals(status)) {
-                                appNos.append(applicationNo);
-                            }
-                        }
+                        appNos.append(applicationNo);
                     }
                 }
                 if(orgUserDto != null) {
