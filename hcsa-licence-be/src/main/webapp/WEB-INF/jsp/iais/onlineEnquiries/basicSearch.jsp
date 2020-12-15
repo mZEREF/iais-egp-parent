@@ -398,20 +398,19 @@
         chk.each(function () {
             dropIds.push($(this).val());
         });
-        var flog = false;
+        var flog = true;
         for (var i = 0; i < dropIds.length; i++) {
             var str3 = dropIds[i].split('|')[3];
             var str1 = dropIds[i].split('|')[1];
-            if (str1 === '1'&& str3 === 'Active') {
-                flog = true;
-            }
             if(!(str1 === '1')){
                 $("#selectDecisionMsg").show();
                 $("#selectDecisionMsgActive").hide();
+                flog = false;
             }
             if(!(str3 === 'Active')){
                 $("#selectDecisionMsgActive").show();
                 $("#selectDecisionMsg").hide();
+                flog = false;
             }
         }
         if (flog) {
