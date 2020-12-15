@@ -713,13 +713,7 @@ public class OfficerOnlineEnquiriesDelegator {
         List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
 
-        if(StringUtil.isEmpty(appSubToDate)&&StringUtil.isEmpty(appSubDate)&&StringUtil.isEmpty(licStaDate)&&StringUtil.isEmpty(licStaToDate)&&StringUtil.isEmpty(licExpDate)&&StringUtil.isEmpty(licExpToDate)){
-            Date dueDate;
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.YEAR,1);
-            dueDate =calendar.getTime();
-            filters.put("expiry_date",Formatter.formatDate(dueDate));
-        }
+
         String count=ParamUtil.getString(request,"searchChk");
         if(count==null){
             count= (String) ParamUtil.getSessionAttr(request,"count");
