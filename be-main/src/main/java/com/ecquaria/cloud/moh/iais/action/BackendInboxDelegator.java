@@ -850,7 +850,7 @@ public class BackendInboxDelegator {
         if(appPremisesRecommendationDto!= null && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
             if(!ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
                 Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
-                if(null != recomInNumber && recomInNumber == 0){
+                if(null == recomInNumber || recomInNumber == 0){
                     appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
                 }
             }else{
@@ -927,9 +927,9 @@ public class BackendInboxDelegator {
                 applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),null,null,decision,taskDto.getRoleId());
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
         //update application status
+        applicationDto.setStatus(appStatus);
         broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
         String oldStatus = applicationDto.getStatus();
-        applicationDto.setStatus(appStatus);
 
         broadcastApplicationDto.setApplicationDto(applicationDto);
         if(!StringUtil.isEmpty(stageId)){
