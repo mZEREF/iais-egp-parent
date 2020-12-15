@@ -1061,6 +1061,10 @@ public class NewApplicationHelper {
                 if(StringUtil.isEmpty(idNo)){
                     errMap.put("idNo"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.","field"));
                 }else {
+                    if(idNo.length()>9){
+                        String general_err0041=repLength("ID No.","9");
+                        errMap.put("idNo" + i, general_err0041);
+                    }
                     if("FIN".equals(idTyp)){
                         boolean b = SgNoValidator.validateFin(idNo);
                         if(!b){
@@ -1092,7 +1096,8 @@ public class NewApplicationHelper {
                     errMap.put("name"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field"));
                 }else {
                     if(name.length()>66){
-
+                        String general_err0041=repLength("Name","66");
+                        errMap.put("name" + i, general_err0041);
                     }
                 }
 
@@ -1100,6 +1105,10 @@ public class NewApplicationHelper {
                 if(StringUtil.isEmpty(mobileNo)){
                     errMap.put("mobileNo"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Mobile No. ","field"));
                 }else if (!StringUtil.isEmpty(mobileNo)) {
+                    if(mobileNo.length()>8){
+                        String general_err0041=repLength("Mobile No.","8");
+                        errMap.put("mobileNo" + i, general_err0041);
+                    }
                     if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                         errMap.put("mobileNo"+i, "GENERAL_ERR0007");
                     }
@@ -1109,6 +1118,10 @@ public class NewApplicationHelper {
                 if(StringUtil.isEmpty(emailAddr)){
                     errMap.put("emailAddr"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address","field"));
                 }else if (!StringUtil.isEmpty(emailAddr)) {
+                    if(mobileNo.length()>66){
+                        String general_err0041=repLength("Email Address","66");
+                        errMap.put("emailAddr" + i, general_err0041);
+                    }
                     if (! ValidationUtils.isEmail(emailAddr)) {
                         errMap.put("emailAddr"+i, "GENERAL_ERR0014");
                     }else if(emailAddr.length()>66) {
