@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row">
             <div class="col-xs-12" style="margin-bottom: 5px;">
-                <span style="color: #9a9a9a"> Best viewed using the current and previous release of Chrome and Safari</span>
+                <span style="color: #9a9a9a"> Best viewed using the current and previous release of Chrome and Safari  <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" title="" data-original-title="Chrome 87.0.4280.88 (Latest),<br> Chrome 86.0.4240.75 (2nd Latest),<br> Firefox 83.0 (Latest),<br> Firefox 82.0.3 (2nd Latest),<br> IE 11.0.19041.0 (Latest), <br>IE 11.0.18362.997 (2nd Latest),<br> Edge 87.0.664.57 (Latest),<br> Edge 87.0.664.55 (2nd Latest),<br> Safari 14.0.1 (Latest),<br> Safari 14.0 (2nd Latest)"><i class="fa fa-question-circle"></i></a></span>
             </div>
             <div class="col-xs-12 col-md-7">
                 <div class="footer-link">
