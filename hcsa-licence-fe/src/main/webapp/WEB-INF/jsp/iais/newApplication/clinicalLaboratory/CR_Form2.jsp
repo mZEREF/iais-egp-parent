@@ -538,7 +538,7 @@
                         </div>
                     </td>
                 </tr>
-                <c:if test="${'BLB'!=currentSvcCode && 'RDS'!=currentSvcCode && requestInformationConfig==null}">
+                <c:if test="${ requestInformationConfig==null}">
                     <c:choose>
                         <c:when test="${!empty GovernanceOfficersList}">
                             <c:set var="cgoDtoLength" value="${GovernanceOfficersList.size()}"/>
