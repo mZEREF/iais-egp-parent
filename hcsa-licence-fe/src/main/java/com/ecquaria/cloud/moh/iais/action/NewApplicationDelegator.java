@@ -1380,7 +1380,9 @@ public class NewApplicationDelegator {
                     ParamUtil.setRequestAttr(bpc.request, "reasonOption", reasonOption);
                     ParamUtil.setRequestAttr(bpc.request, "patientsOption", patientsOption);
                     ParamUtil.setRequestAttr(bpc.request, "applicationDto", applicationDto);
-                    ParamUtil.setRequestAttr(bpc.request, "confirmDtos", appCessDtosByLicIds);
+                    List<AppCessLicDto> confirmDtos = IaisCommonUtils.genNewArrayList();
+                    confirmDtos.add(appCessDtosByLicIds.get(0));
+                    ParamUtil.setRequestAttr(bpc.request, "confirmDtos", confirmDtos);
                     return;
                 }
                 AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDto(appNo);
