@@ -271,9 +271,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
             Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
             msgInfoMap.put("Applicant", applicantName);
-            msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(newApplicationDto.getApplicationType()));
-            msgInfoMap.put("ApplicationNumber", newApplicationDto.getApplicationNo());
-            msgInfoMap.put("reqAppNo", newApplicationDto.getApplicationNo());
+            msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(oldApplicationDto.getApplicationType()));
+            msgInfoMap.put("ApplicationNumber", oldApplicationDto.getApplicationNo());
+            msgInfoMap.put("reqAppNo", oldApplicationDto.getApplicationNo());
             msgInfoMap.put("S_LName",serviceName);
             msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
             msgInfoMap.put("ApplicationDate",Formatter.formatDate(applicationGroupDto.getSubmitDt()));
@@ -295,10 +295,10 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             msgInfoMap.put("systemLink",loginUrl);
             msgInfoMap.put("emailAddress",systemAddressOne);
             try {
-                sendInboxMessage(newApplicationDto,serviceId,msgInfoMap,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_MESSAGE);
-                EmailParam emailParamSms = sendSms(msgInfoMap,newApplicationDto,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS);
+                sendInboxMessage(oldApplicationDto,serviceId,msgInfoMap,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_MESSAGE);
+                EmailParam emailParamSms = sendSms(msgInfoMap,oldApplicationDto,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS);
                 notificationHelper.sendNotification(emailParamSms);
-                EmailParam emailParam = sendNotification(msgInfoMap,newApplicationDto,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_EMAIL);
+                EmailParam emailParam = sendNotification(msgInfoMap,oldApplicationDto,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_EMAIL);
                 notificationHelper.sendNotification(emailParam);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
@@ -334,10 +334,10 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 msgInfoMap.put("Applicant", applicantName);
                 if (isByGIRO == 0 && (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())
                         || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType()))){
-                    msgInfoMap.put("paymentStatus","0");
+                    msgInfoMap.put("paymentType","0");
                     msgInfoMap.put("returnMount",fee);
                 }else{
-                    msgInfoMap.put("paymentStatus","1");
+                    msgInfoMap.put("paymentType","1");
                     msgInfoMap.put("returnMount",fee);
                 }
                 msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
