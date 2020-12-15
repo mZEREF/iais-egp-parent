@@ -196,7 +196,7 @@ public class WithdrawalDelegator {
             }
             String ackMsg = MessageUtil.replaceMessage("WDL_ACK001",replaceStr,"Application No");
             ParamUtil.setRequestAttr(bpc.request,"WITHDRAW_ACKMSG",ackMsg);
-            withdrawalService.saveWithdrawn(withdrawnDtoList);
+            withdrawalService.saveWithdrawn(withdrawnDtoList,bpc.request);
         }
     }
 
@@ -214,7 +214,7 @@ public class WithdrawalDelegator {
             }
             String ackMsg = MessageUtil.replaceMessage("WDL_ACK001",replaceStr,"Application No");
             ParamUtil.setRequestAttr(bpc.request,"WITHDRAW_ACKMSG",ackMsg);
-            withdrawalService.saveRfiWithdrawn(withdrawnDtoList);
+            withdrawalService.saveRfiWithdrawn(withdrawnDtoList,bpc.request);
         }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,wdIsValid);
     }

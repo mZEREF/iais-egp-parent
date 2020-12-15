@@ -36,12 +36,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
@@ -62,6 +57,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -127,7 +123,8 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     private String systemAddressOne;
 
     @Override
-    public void saveWithdrawn(List<WithdrawnDto> withdrawnDtoList) {
+    public void saveWithdrawn(List<WithdrawnDto> withdrawnDtoList, HttpServletRequest httpServletRequest) {
+        boolean charity = NewApplicationHelper.isCharity(httpServletRequest);
         List<WithdrawnDto> autoApproveApplicationDtoList = IaisCommonUtils.genNewArrayList();
         String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity();
         withdrawnDtoList.forEach(h -> {
@@ -169,7 +166,11 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             recallApplicationDto.setAppNo(newApplication.getApplicationNo());
             recallApplicationDto.setAppGrpId(oldApplication.getAppGrpId());
             recallApplicationDto.setNewAppId(h.getNewApplicationId());
-            recallApplicationDto.setNeedReturnFee(true);
+            if (!charity){
+                recallApplicationDto.setNeedReturnFee(true);
+            }else{
+                recallApplicationDto.setNeedReturnFee(false);
+            }
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             try {
@@ -234,15 +235,14 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(withdrawnList)){
             withdrawnDtoList.forEach(h -> {
-                sendNMS(h,applicationDtoList);
+                sendNMS(h,applicationDtoList,charity);
             });
         }
-        autoApproveApplicationDtoList.forEach(h -> {
-            sendWithdrawApproveNMS(h);
+        autoApproveApplicationDtoList.forEach(h -> { sendWithdrawApproveNMS(h,charity);
         });
     }
 
-    private void sendWithdrawApproveNMS(WithdrawnDto withdrawnDto){
+    private void sendWithdrawApproveNMS(WithdrawnDto withdrawnDto,boolean charity){
         Double fee = 0.0;
         String applicantName = "";
         List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
@@ -265,7 +265,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             }
             List<ApplicationDto> applicationDtoList2 = hcsaConfigFeClient.returnFee(applicationDtoList).getEntity();
             if (!IaisCommonUtils.isEmpty(applicationDtoList2)){
-
                 fee = applicationDtoList2.get(0).getReturnFee();
             }
 
@@ -277,36 +276,43 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             msgInfoMap.put("S_LName",serviceName);
             msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
             msgInfoMap.put("ApplicationDate",Formatter.formatDate(applicationGroupDto.getSubmitDt()));
-            msgInfoMap.put("returnMount",fee);
-            if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(isByGIRO)){
-                msgInfoMap.put("paymentType","0");
-                msgInfoMap.put("paymentMode","GIRO");
-            }else if(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(isByGIRO)){
-                msgInfoMap.put("paymentType","1");
-                msgInfoMap.put("paymentMode","Credit / Debit Card");
-            }else if (ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(isByGIRO)){
-                msgInfoMap.put("paymentType","1");
-                msgInfoMap.put("paymentMode","NETS");
+            if (charity){
+                msgInfoMap.put("paymentType","2");
+                msgInfoMap.put("paymentMode","");
+                msgInfoMap.put("returnMount",0.0);
             }else {
-                msgInfoMap.put("paymentType","1");
-                msgInfoMap.put("paymentMode","Online Payment");
+                msgInfoMap.put("returnMount", fee);
+                if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(isByGIRO)) {
+                    msgInfoMap.put("paymentType", "0");
+                    msgInfoMap.put("paymentMode", "GIRO");
+                } else if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(isByGIRO)) {
+                    msgInfoMap.put("paymentType", "1");
+                    msgInfoMap.put("paymentMode", "Credit / Debit Card");
+                } else if (ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(isByGIRO)) {
+                    msgInfoMap.put("paymentType", "1");
+                    msgInfoMap.put("paymentMode", "NETS");
+                } else {
+                    msgInfoMap.put("paymentType", "1");
+                    msgInfoMap.put("paymentMode", "Online Payment");
+                }
             }
-            msgInfoMap.put("adminFee","100");
-            msgInfoMap.put("systemLink",loginUrl);
-            msgInfoMap.put("emailAddress",systemAddressOne);
+            msgInfoMap.put("adminFee", "100");
+            msgInfoMap.put("systemLink", loginUrl);
+            msgInfoMap.put("emailAddress", systemAddressOne);
             try {
-                sendInboxMessage(oldApplicationDto,serviceId,msgInfoMap,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_MESSAGE);
-                EmailParam emailParamSms = sendSms(msgInfoMap,oldApplicationDto,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS);
+                sendInboxMessage(oldApplicationDto, serviceId, msgInfoMap, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_MESSAGE);
+                EmailParam emailParamSms = sendSms(msgInfoMap, oldApplicationDto, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS);
                 notificationHelper.sendNotification(emailParamSms);
-                EmailParam emailParam = sendNotification(msgInfoMap,oldApplicationDto,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_EMAIL);
+                EmailParam emailParam = sendNotification(msgInfoMap, oldApplicationDto, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_EMAIL);
                 notificationHelper.sendNotification(emailParam);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
+
         }
     }
 
-    private void sendNMS(WithdrawnDto withdrawnDto,List<ApplicationDto> applicationDtoList){
+    private void sendNMS(WithdrawnDto withdrawnDto,List<ApplicationDto> applicationDtoList,boolean charity){
         AppSubmissionDto appSubmissionDto = applicationFeClient.gainSubmissionDto(withdrawnDto.getApplicationNo()).getEntity();
         if (appSubmissionDto != null){
             ApplicationDto applicationDto = applicationFeClient.getApplicationById(withdrawnDto.getApplicationId()).getEntity();
@@ -336,9 +342,14 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                         || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType()))){
                     msgInfoMap.put("paymentType","0");
                     msgInfoMap.put("returnMount",fee);
-                }else{
+                }else if (charity){
+                    msgInfoMap.put("paymentType","2");
+                    msgInfoMap.put("returnMount",0.0);
+                }
+                else{
                     msgInfoMap.put("paymentType","1");
                     msgInfoMap.put("returnMount",fee);
+
                 }
                 msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
                 msgInfoMap.put("emailAddress",systemAddressOne);
@@ -357,7 +368,8 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     }
 
     @Override
-    public void saveRfiWithdrawn(List<WithdrawnDto> withdrawnDtoList) {
+    public void saveRfiWithdrawn(List<WithdrawnDto> withdrawnDtoList,HttpServletRequest httpRequest) {
+        boolean charity = NewApplicationHelper.isCharity(httpRequest);
         withdrawnDtoList.forEach(h -> {
             String appId = h.getNewApplicationId();
             ApplicationDto applicationDto = applicationFeClient.getApplicationById(appId).getEntity();
@@ -380,7 +392,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(withdrawnList)){
             withdrawnDtoList.forEach(h -> {
-                sendNMS(h,applicationDtoList);
+                sendNMS(h,applicationDtoList,charity);
             });
         }
 
