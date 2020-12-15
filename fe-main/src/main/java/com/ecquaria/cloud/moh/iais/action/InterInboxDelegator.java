@@ -1248,7 +1248,7 @@ public class InterInboxDelegator {
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication/")
                     .append("?appNo=")
                     .append(MaskUtil.maskValue("appNo",appNo))
-                    .append("&crud_action_type=inboxTo");
+                    .append("&crud_action_type=inbox");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }else if (InboxConst.APP_DO_DRAFT_TYPE_WITHDRAWAL.equals(appType)){

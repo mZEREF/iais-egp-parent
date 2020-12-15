@@ -76,7 +76,7 @@ public class AppealDelegator {
             }
         }
         String crud_action_type = bpc.request.getParameter("crud_action_type");
-        if("inboxTo".equals(crud_action_type)){
+        if("inbox".equals(crud_action_type)){
             bpc. request.setAttribute("crud_action_type","inbox");
             inbox(bpc);
             return;
