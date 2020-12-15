@@ -52,6 +52,7 @@ public class FESingpassLandingDelegator {
      */
     public void startStep(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_SINGPASS_CORPASS);
+
     }
 
     public void redirectToCorppass(BaseProcessClass bpc){
@@ -67,6 +68,7 @@ public class FESingpassLandingDelegator {
     public void singpassCallBack(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         log.info("singpassCallBack===========>>>Start");
+        ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_ENTRANCE, "entrance_singpass");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_SINGPASS_CORPASS);
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
         String identityNo;
@@ -239,7 +241,7 @@ public class FESingpassLandingDelegator {
                 user.setDisplayName(createdUser.getDisplayName());
                 user.setUserDomain(createdUser.getUserDomain());
                 user.setId(createdUser.getUserId());
-                FeLoginHelper.initUserInfo(request, response, user, AuditTrailConsts.LOGIN_TYPE_SING_PASS);
+                FeLoginHelper.initUserInfo(request, user);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }
 
@@ -273,7 +275,7 @@ public class FESingpassLandingDelegator {
             user.setUserDomain(userSession.getUserDomain());
             user.setId(userSession.getUserId());
             user.setIdentityNo(userSession.getIdentityNo());
-            FeLoginHelper.initUserInfo(request, response, user, AuditTrailConsts.LOGIN_TYPE_SING_PASS);
+            FeLoginHelper.initUserInfo(request, user);
         }
         log.info("initLoginInfo===========>>>End");
     }

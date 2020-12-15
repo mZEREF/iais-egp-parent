@@ -73,7 +73,7 @@ public class LoginHelperTest {
         when(applicationContext.getBean(SubmissionClient.class)).thenReturn(submissionClient);
         PowerMockito.mockStatic(AuditLogUtil.class);
         doNothing().when(AuditLogUtil.class, "callWithEventDriven", new Object[] {anyObject(), anyObject()});
-        FeLoginHelper.initUserInfo(request, response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
+        FeLoginHelper.initUserInfo(request, user);
         assertNotNull(user);
     }
 

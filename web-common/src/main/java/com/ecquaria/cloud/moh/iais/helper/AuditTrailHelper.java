@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailWbClient;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
@@ -216,7 +217,10 @@ public class AuditTrailHelper {
             atd.setUenId(uen);
             atd.setMohUserId(identityNo);
             atd.setNricNumber(identityNo);
-            atd.setLoginType(StringUtil.isEmpty(uen) ? AuditTrailConsts.LOGIN_TYPE_SING_PASS : AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
+
+            int loginType = (int) ParamUtil.getSessionAttr(request, IaisEGPConstant.SESSION_ENTRANCE);
+            atd.setLoginType(loginType);
+
             if (OrganizationConstants.ID_TYPE_FIN.equals(IaisEGPHelper.checkIdentityNoType(identityNo))){
                 //for audit trail page display, issue 67866
                 atd.setEntityId(identityNo);

@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.FeLoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -50,6 +51,7 @@ public class FELandingDelegator {
 	 * @throws
 	 */
 	public void preload(BaseProcessClass bpc){
+		ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_ENTRANCE, null);
 		LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
 		if (loginContext != null && AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(loginContext.getUserDomain())){
 			StringBuilder url = new StringBuilder();

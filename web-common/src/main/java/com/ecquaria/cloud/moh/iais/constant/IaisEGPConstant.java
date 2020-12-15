@@ -35,6 +35,8 @@ public class IaisEGPConstant {
     public static final String PROCESS_DOWNLOAD_FILE_BYTE_DATA = "processDownloadFileByteData";
     public static final String PROCESS_DOWNLOAD_FILE_NAME = "processDownloadFileName";
 
+    public static final String SESSION_ENTRANCE   = "session_entrance";
+
 
 
 

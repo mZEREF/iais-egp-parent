@@ -50,6 +50,7 @@ public class FECorppassLandingDelegator {
      * @throws
      */
     public void startStep(BaseProcessClass bpc){
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_SINGPASS_CORPASS);
 
     }
 
@@ -73,6 +74,8 @@ public class FECorppassLandingDelegator {
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
         log.info("corppassCallBack===========>>>Start");
+
+        ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_ENTRANCE, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
 
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION,
@@ -200,7 +203,7 @@ public class FECorppassLandingDelegator {
             user.setUserDomain(userSession.getUserDomain());
             user.setId(userSession.getUserId());
             user.setIdentityNo(userSession.getIdentityNo());
-            FeLoginHelper.initUserInfo(bpc.request, bpc.response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
+            FeLoginHelper.initUserInfo(bpc.request, user);
         }else {
             // Add Audit Trail -- Start
             AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, uen, identityNo);
@@ -263,7 +266,7 @@ public class FECorppassLandingDelegator {
                 user.setDisplayName(postUpdate.getDisplayName());
                 user.setUserDomain(postUpdate.getUserDomain());
                 user.setId(postUpdate.getUserId());
-                FeLoginHelper.initUserInfo(request, response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
+                FeLoginHelper.initUserInfo(request, user);
 
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }
