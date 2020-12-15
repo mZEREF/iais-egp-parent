@@ -82,6 +82,7 @@
              AND B.STATUS != 'APST079'
              AND B.STATUS != 'APST080'
              AND B.STATUS != 'APST081'
+             AND B.STATUS != 'APST083'
              AND B.APP_TYPE != 'APTY007'
             <#if id??> AND CHARINDEX(:id, app.id) >0</#if>
             <#if appType??> AND B.app_type = :appType</#if>
