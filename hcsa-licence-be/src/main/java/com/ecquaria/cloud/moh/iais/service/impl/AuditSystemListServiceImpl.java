@@ -609,25 +609,12 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         licPremisesAuditDto.setAuditType(temp.getAuditType());
         licPremisesAuditDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         // create audit event bus
-        //licPremisesAuditDto = hcsaLicenceClient.createLicPremAudit(licPremisesAuditDto).getEntity();
         LicPremisesAuditInspectorDto audinspDto = new LicPremisesAuditInspectorDto();
         audinspDto.setInspectorId(temp.getInspectorId());
         audinspDto.setAuditId(licPremisesAuditDto.getId());
         audinspDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-         //hcsaLicenceClient.createLicPremisesAuditInspector(audinspDto);
-        LicInspectionGroupDto dto = new LicInspectionGroupDto();
-        dto.setId(generateIdClient.getSeqId().getEntity());
-        dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        dto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        LicPremInspGrpCorrelationDto dtocorre = new LicPremInspGrpCorrelationDto();
-        dtocorre.setInsGrpId(dto.getId());
-        dtocorre.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        dtocorre.setLicPremId(temp.getId());
-        dtocorre.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         auditCombinationDto.setLicPremisesAuditDto(licPremisesAuditDto);
         auditCombinationDto.setLicPremisesAuditInspectorDto(audinspDto);
-        auditCombinationDto.setLicInspectionGroupDto(dto);
-        auditCombinationDto.setLicPremInspGrpCorrelationDto(dtocorre);
         log.info("========================>>>>> create audit !!!!");
         try {
             eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_LICENCESAVE,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,auditCombinationDto.getEventRefNo(),null);

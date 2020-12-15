@@ -351,21 +351,5 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         licPremisesAuditDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
         licPremisesAuditDto.setAuditTrailDto(intranet);
         hcsaLicenceClient.createLicPremAudit(licPremisesAuditDto);
-        LicInspectionGroupDto licInspectionGroupDto =  new LicInspectionGroupDto();
-        licInspectionGroupDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-        licInspectionGroupDto.setAuditTrailDto(intranet);
-        if(StringUtil.isEmpty(auditTaskDataFillterDto.getInsGrpId()) || StringUtil.isEmpty(auditTaskDataFillterDto.getLicPremGrpCorId())){
-            log.info(StringUtil.changeForLog("----dirty data aduit id is "+ auditTaskDataFillterDto.getAuditId() +"----------"));
-            return;
-        }
-        licInspectionGroupDto.setId(auditTaskDataFillterDto.getInsGrpId());
-        hcsaLicenceClient.createLicInspectionGroup(licInspectionGroupDto);
-        LicPremInspGrpCorrelationDto licPremInspGrpCorrelationDto = new LicPremInspGrpCorrelationDto();
-        licPremInspGrpCorrelationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-        licPremInspGrpCorrelationDto.setInsGrpId(auditTaskDataFillterDto.getInsGrpId());
-        licPremInspGrpCorrelationDto.setId(auditTaskDataFillterDto.getLicPremGrpCorId());
-        licPremInspGrpCorrelationDto.setLicPremId(auditTaskDataFillterDto.getId());
-        licPremInspGrpCorrelationDto.setAuditTrailDto(intranet);
-        hcsaLicenceClient.createLicInspectionGroupCorre(licPremInspGrpCorrelationDto);
     }
 }
