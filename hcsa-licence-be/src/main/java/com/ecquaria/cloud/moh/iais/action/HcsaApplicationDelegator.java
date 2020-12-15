@@ -3123,7 +3123,7 @@ public class HcsaApplicationDelegator {
             licIds.add(originLicenceId);
             List<String> corrIds = IaisCommonUtils.genNewArrayList();
             corrIds.add(correlationId);
-            List<AppCessLicDto> appCessDtosByLicIds = cessationBeService.getAppCessDtosByLicIds(licIds);
+            List<AppCessLicDto> appCessDtosByLicIds = cessationBeService.getAppCessDtosByLicIdsForView(licIds);
             List<AppCessMiscDto> appCessMiscDtos = cessationClient.getAppCessMiscDtosByCorrIds(corrIds).getEntity();
             if (!IaisCommonUtils.isEmpty(appCessDtosByLicIds)) {
                 AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);

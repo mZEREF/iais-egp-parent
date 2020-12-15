@@ -85,6 +85,49 @@ public class CessationBeServiceImpl implements CessationBeService {
         if (licIds != null && !licIds.isEmpty()) {
             for (String licId : licIds) {
                 AppCessLicDto appCessDto = new AppCessLicDto();
+                LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licId).getEntity();
+                List<PremisesDto> premisesDtos = hcsaLicenceClient.getPremisess(licId).getEntity();
+                String svcName = licenceDto.getSvcName();
+                String licenceNo = licenceDto.getLicenceNo();
+                appCessDto.setLicenceNo(licenceNo);
+                appCessDto.setSvcName(svcName);
+                appCessDto.setLicenceId(licId);
+                List<AppCessHciDto> appCessHciDtos = IaisCommonUtils.genNewArrayList();
+                if (premisesDtos != null && !premisesDtos.isEmpty()) {
+                    for (PremisesDto premisesDto : premisesDtos) {
+                        String blkNo = premisesDto.getBlkNo();
+                        String premisesId = premisesDto.getId();
+                        String streetName = premisesDto.getStreetName();
+                        String buildingName = premisesDto.getBuildingName();
+                        String floorNo = premisesDto.getFloorNo();
+                        String unitNo = premisesDto.getUnitNo();
+                        String postalCode = premisesDto.getPostalCode();
+                        String hciCode = premisesDto.getHciCode();
+                        String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
+                        AppCessHciDto appCessHciDto = new AppCessHciDto();
+                        String hciName = premisesDto.getHciName();
+                        appCessHciDto.setHciCode(hciCode);
+                        appCessHciDto.setHciName(hciName);
+                        appCessHciDto.setPremiseId(premisesId);
+                        appCessHciDto.setHciAddress(hciAddress);
+                        appCessHciDtos.add(appCessHciDto);
+                    }
+                }
+                appCessDto.setAppCessHciDtos(appCessHciDtos);
+                appCessDtos.add(appCessDto);
+            }
+            return appCessDtos;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<AppCessLicDto> getAppCessDtosByLicIdsForView(List<String> licIds) {
+        List<AppCessLicDto> appCessDtos = IaisCommonUtils.genNewArrayList();
+        if (licIds != null && !licIds.isEmpty()) {
+            for (String licId : licIds) {
+                AppCessLicDto appCessDto = new AppCessLicDto();
                 LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
                 List<PremisesDto> premisesDtos = hcsaLicenceClient.getPremisess(licId).getEntity();
                 String svcName = licenceDto.getSvcName();
