@@ -11,7 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 import java.util.List;
 import java.util.Map;
@@ -430,7 +430,7 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
         return entity;
     }
     @Override
-    public FeignResponseEntity<PremisesDto> getHciCodePremises(@RequestBody AppGrpPremisesEntityDto appGrpPremisesEntityDto){
+    public FeignResponseEntity<PremisesDto> getHciCodePremises(AppGrpPremisesEntityDto appGrpPremisesEntityDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -548,4 +548,21 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<PostInsGroupDto> getPostInsGroupDto(String licId, String corrId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<PostInsGroupDto> savePostInsGroupDto(PostInsGroupDto postInsGroupDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 }

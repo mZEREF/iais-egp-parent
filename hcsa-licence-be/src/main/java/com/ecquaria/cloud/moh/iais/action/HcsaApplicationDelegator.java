@@ -1848,6 +1848,8 @@ public class HcsaApplicationDelegator {
                 applicationDto.setSelfAssMtFlag(4);
             }
         }
+         //if do finish audit ,no need to do post
+        licenceService.changePostInsForTodoAudit(applicationViewDto);
         //appeal save return fee
         try{
             if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){

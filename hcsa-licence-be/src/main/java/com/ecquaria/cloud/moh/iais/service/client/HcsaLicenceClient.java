@@ -219,4 +219,10 @@ public interface HcsaLicenceClient {
     @GetMapping(value = "/hcsa-licence/LicBaseSpecifiedCorrelation/{svcType}/{originLicenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicBaseSpecifiedCorrelationDto>> getLicBaseSpecifiedCorrelationDtos(@PathVariable("svcType") String svcType,
                                                                                                  @PathVariable("originLicenceId") String originLicenceId);
+
+    @GetMapping(value = "/hcsa-licence/licence-orgId-corrId/get-postInsGroupDto",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PostInsGroupDto> getPostInsGroupDto(@RequestParam(name = "licId") String licId, @RequestParam(name = "corrId") String  corrId);
+
+    @PostMapping(value = "/hcsa-licence/licence-orgId-corrId/savePostInsGroupDto",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PostInsGroupDto> savePostInsGroupDto(@RequestBody PostInsGroupDto postInsGroupDto);
 }
