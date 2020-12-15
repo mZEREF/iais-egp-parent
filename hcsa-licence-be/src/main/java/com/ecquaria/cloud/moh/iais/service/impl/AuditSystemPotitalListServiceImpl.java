@@ -294,19 +294,19 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
      if (!StringUtil.isEmpty(dto.getTypeOfRisk())){
       if("RT001".equalsIgnoreCase(dto.getTypeOfRisk())){
           sql=  sql.replace("replaceSql","t8.risk_type_fir_ins_socre");
-          sort = "risk_type_fir_ins_socre";
+          sort = "fir_ins_socre";
       }else if("RT002".equalsIgnoreCase(dto.getTypeOfRisk())){
           sql=sql.replace("replaceSql"," t8.risk_type_sec_ins_socre");
-          sort="risk_type_sec_ins_socre";
+          sort="sec_ins_socre";
       }else if("RT003".equalsIgnoreCase(dto.getTypeOfRisk())){
           sql= sql.replace("replaceSql"," t8.risk_type_financial_score");
-          sort="risk_type_financial_score";
+          sort="financial_score";
       } else if("RT004".equalsIgnoreCase(dto.getTypeOfRisk())){
          sql= sql.replace("replaceSql","t8.risk_type_leadership_score");
-          sort="risk_type_leadership_score";
+          sort="leadership_score";
       }else if("RT005".equalsIgnoreCase(dto.getTypeOfRisk())){
          sql= sql.replace("replaceSql","t8.risk_type_legislative_breaches_score");
-          sort="risk_type_legislative_breaches_score";
+          sort="legislative_breaches_score";
       }else if("RT006".equalsIgnoreCase(dto.getTypeOfRisk())){
         sql=  sql.replace("replaceSql","t8.risk_score");
           sort="risk_score";
