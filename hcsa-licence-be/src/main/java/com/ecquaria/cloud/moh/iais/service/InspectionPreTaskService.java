@@ -84,8 +84,9 @@ public interface InspectionPreTaskService {
       * @Param: null
       * @return: List<SelectOption>
       * @Descripation: get Application checkbox and Self-Checklist checkbox
+     * @param applicationType
       */
-    List<SelectOption> getRfiCheckOption();
+    List<SelectOption> getRfiCheckOption(String applicationType);
 
     /**
       * @author: shicheng

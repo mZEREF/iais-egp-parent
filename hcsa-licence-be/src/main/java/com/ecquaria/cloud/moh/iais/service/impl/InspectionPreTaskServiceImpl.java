@@ -158,6 +158,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         String[] processDecArr;
         if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)) {
             processDecArr = new String[]{InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
+        } else if (ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType)){
+            processDecArr = new String[]{InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION, InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
         } else {
             Integer rfiCount =  applicationService.getAppBYGroupIdAndStatus(applicationDto.getAppGrpId(),
                     ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
@@ -468,11 +470,13 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     @Override
-    public List<SelectOption> getRfiCheckOption() {
+    public List<SelectOption> getRfiCheckOption(String applicationType) {
         List<SelectOption> rfiCheckOption = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption(InspectionConstants.SWITCH_ACTION_APPLICATION, "Application");
+        if (!ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType)) {
+            SelectOption so1 = new SelectOption(InspectionConstants.SWITCH_ACTION_APPLICATION, "Application");
+            rfiCheckOption.add(so1);
+        }
         SelectOption so2 = new SelectOption(InspectionConstants.SWITCH_ACTION_SELF, "Self-Assessment Checklists");
-        rfiCheckOption.add(so1);
         rfiCheckOption.add(so2);
         return rfiCheckOption;
     }
