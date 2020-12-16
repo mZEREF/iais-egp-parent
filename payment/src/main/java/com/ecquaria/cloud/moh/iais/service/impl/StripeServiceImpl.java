@@ -100,7 +100,12 @@ public class StripeServiceImpl implements StripeService {
         PaymentIntent paymentIntent=retrievePaymentIntent(session.getPaymentIntent());
 
         PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();
-        String appGrpNo=paymentRequestDto.getReqRefNo().substring(0,'_');
+        String appGrpNo;
+        try{
+            appGrpNo=paymentRequestDto.getReqRefNo().substring(0,'_');
+        }catch (Exception e){
+            appGrpNo=paymentRequestDto.getReqRefNo();
+        }
         ApplicationGroupDto applicationGroupDto=paymentAppGrpClient.paymentUpDateByGrpNo(appGrpNo).getEntity();
         if(paymentDto!=null){
             if(paymentIntent!=null && "succeeded".equals(paymentIntent.getStatus())){

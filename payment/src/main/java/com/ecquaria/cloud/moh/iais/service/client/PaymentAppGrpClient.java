@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @author junyu
  * @date 2020/7/22
  */
-@FeignClient(name = "iais-application", configuration = {FeignConfiguration.class},
+@FeignClient(name = "hcsa-application", configuration = {FeignConfiguration.class},
         fallback = PaymentAppGrpClientFallBack.class)
 public interface PaymentAppGrpClient {
     @PutMapping(value = "/iais-application/app-grp-by-no",consumes = MediaType.APPLICATION_JSON_VALUE)

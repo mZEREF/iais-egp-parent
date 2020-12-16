@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.service.PaymentService;
 import com.ecquaria.cloud.moh.iais.service.StripeService;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentAppGrpClient;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
+import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -34,21 +35,25 @@ public class PaymentCheckNotResultFromBankJob {
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
     }
 
-    public void action(BaseProcessClass bpc)  {
+    public void endStep(BaseProcessClass bpc)  {
         log.debug(StringUtil.changeForLog("the do action start ...."));
         List<PaymentRequestDto> paymentRequestDtos=paymentClient.getAllPayingPaymentRequestDto().getEntity();
         for (PaymentRequestDto payReq:paymentRequestDtos
              ) {
             try {
-                PaymentRequestDto paymentRequestDto=paymentClient.getPaymentRequestDtoByReqRefNo(payReq.getReqRefNo()).getEntity();
-                if("stripe".equals(paymentRequestDto.getPayMethod())){
-                    stripeService.retrievePayment(paymentRequestDto);
-                }
-                if("eNets".equals(paymentRequestDto.getPayMethod())){
-                    paymentService.retrieveNetsPayment(paymentRequestDto);
+                if("stripe".equals(payReq.getPayMethod())&&payReq.getQueryCode()!=null&&payReq.getQueryCode().contains("cs_")){
+                    stripeService.retrievePayment(payReq);
+                }else
+                if("eNets".equals(payReq.getPayMethod())&&payReq.getMerchantTxnRef()!=null){
+                    paymentService.retrieveNetsPayment(payReq);
+                }else {
+                    payReq.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                    paymentClient.updatePaymentResquset(payReq);
                 }
             }catch (Exception e){
-                     log.info(e.getMessage(),e);
+                payReq.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                paymentClient.updatePaymentResquset(payReq);
+                log.info(e.getMessage(),e);
             }
         }
 

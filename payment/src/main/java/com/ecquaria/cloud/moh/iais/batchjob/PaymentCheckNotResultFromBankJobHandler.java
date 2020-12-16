@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.service.PaymentService;
 import com.ecquaria.cloud.moh.iais.service.StripeService;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
+import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,15 +40,19 @@ public class PaymentCheckNotResultFromBankJobHandler extends IJobHandler {
             for (PaymentRequestDto payReq:paymentRequestDtos
             ) {
                 try {
-                    PaymentRequestDto paymentRequestDto=paymentClient.getPaymentRequestDtoByReqRefNo(payReq.getReqRefNo()).getEntity();
-                    if("stripe".equals(paymentRequestDto.getPayMethod())){
-                        stripeService.retrievePayment(paymentRequestDto);
-                    }
-                    if("eNets".equals(paymentRequestDto.getPayMethod())){
-                        paymentService.retrieveNetsPayment(paymentRequestDto);
+                    if("stripe".equals(payReq.getPayMethod())&&payReq.getQueryCode()!=null&&payReq.getQueryCode().contains("cs_")){
+                        stripeService.retrievePayment(payReq);
+                    }else
+                    if("eNets".equals(payReq.getPayMethod())&&payReq.getMerchantTxnRef()!=null){
+                        paymentService.retrieveNetsPayment(payReq);
+                    }else {
+                        payReq.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                        paymentClient.updatePaymentResquset(payReq);
                     }
                 }catch (Exception e){
                     log.info(e.getMessage(),e);
+                    payReq.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                    paymentClient.updatePaymentResquset(payReq);
                 }
             }
             return ReturnT.SUCCESS;

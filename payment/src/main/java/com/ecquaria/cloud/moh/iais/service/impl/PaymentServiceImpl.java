@@ -53,7 +53,12 @@ public class PaymentServiceImpl implements PaymentService {
         String status=sendTxnQueryReqToGW(strGWPostURL,secretKey,keyId,soapiTxnQueryReq);
 
         PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();
-        String appGrpNo=paymentRequestDto.getReqRefNo().substring(0,'_');
+        String appGrpNo;
+        try{
+            appGrpNo=paymentRequestDto.getReqRefNo().substring(0,'_');
+        }catch (Exception e){
+            appGrpNo=paymentRequestDto.getReqRefNo();
+        }
         ApplicationGroupDto applicationGroupDto=paymentAppGrpClient.paymentUpDateByGrpNo(appGrpNo).getEntity();
         if(paymentDto!=null){
             if( "0".equals(status)){
