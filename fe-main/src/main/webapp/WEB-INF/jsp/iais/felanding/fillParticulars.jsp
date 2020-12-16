@@ -32,7 +32,7 @@
                         <div class="tab-pane active" id="premisesTab" role="tabpanel">
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <h2>Particulars Form</h2>
+                                    <h2>Licensee Particulars Form</h2>
                                         <div class="form-horizontal">
                                                 <%@include file="/WEB-INF/jsp/iais/common/userForm.jsp"%>
                                         </div>
