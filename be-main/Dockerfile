@@ -11,7 +11,7 @@ COPY docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
 COPY docker/server.xml /usr/local/tomcat/conf/server.xml
 RUN chmod +x /usr/local/tomcat/bin/setenv.sh
 
-COPY --chown=iais:iais target/main-web.war /usr/local/tomcat/webapps/main-web.war
+COPY --chown=iais:iais target/main-web /usr/local/tomcat/webapps/main-web
 
 COPY --chown=iais:iais docker/run.sh /run.sh
 COPY --chown=iais:iais docker/admin.json /admin.json
