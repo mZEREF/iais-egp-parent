@@ -68,7 +68,7 @@ public class FESingpassLandingDelegator {
     public void singpassCallBack(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         log.info("singpassCallBack===========>>>Start");
-        ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_ENTRANCE, "entrance_singpass");
+        ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_ENTRANCE, AuditTrailConsts.LOGIN_TYPE_SING_PASS);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_SINGPASS_CORPASS);
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
         String identityNo;
