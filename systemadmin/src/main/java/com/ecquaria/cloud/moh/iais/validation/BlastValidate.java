@@ -64,7 +64,7 @@ public class BlastValidate implements CustomizeValidator {
             double filesSize = 0;
             for (AttachmentDto item:blastManagementDto.getAttachmentDtos()
             ) {
-                if (Double.parseDouble(item.getDocSize()) <= 0){
+                if (Double.parseDouble(item.getDocSize()) < 0){
                     errMap.put(FILE_UPLOAD_ERROR, "GENERAL_ERR0004");
                 }
                 filesSize += Double.parseDouble(item.getDocSize());

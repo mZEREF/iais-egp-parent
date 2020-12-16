@@ -667,6 +667,7 @@ public class BlastManagementDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "invalid");
             }else{
                 blastManagementListService.saveBlast(blastManagementDto);
+                ParamUtil.setSessionAttr(bpc.request,"blastManagementDto",null);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "save");
             }
         }else{

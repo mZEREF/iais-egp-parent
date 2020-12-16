@@ -138,9 +138,9 @@
 
     function validateAllFileSize(){
         var maxSize = $('#configFileSize').val();
-        var fileSize = getAllFileSize().toString();
-        fileSize = parseInt(fileSize);
-        if(fileSize>= maxSize){
+        var fileSize = (Math.floor(getAllFileSize() / 1024));
+        console.log('all file size : ' + fileSize);
+        if(fileSize >= maxSize){
             return "N";
             console.log('validate all fileSize flag : N');
         }
@@ -151,18 +151,19 @@
     function getAllFileSize(){
         var allSize = 0;
         $('input[name="fileSize"]').each(function(){
-            allSize += Math.round($(this).val())/1024;
+            allSize += Math.round($(this).val());
         });
         var fileId= '#selectFile';
         var fileV = $(fileId).val();
         var file = $(fileId).get(0).files[0];
         console.log(fileV)
         console.log(file)
+        console.log(file.size / (1024))
         var currentFileSize = 0;
         if(fileV == null || fileV == "" ||file==null|| file==undefined){
             currentFileSize = 0;
         }else{
-            currentFileSize = (Math.round(file.size / (1024 * 1024))) + allSize;
+            currentFileSize = Math.round(file.size / (1024)) + Math.round(allSize);
             console.log('test currentFileSize1 : ' + currentFileSize);
         }
         console.log('currentFileSize2 : ' + currentFileSize);
