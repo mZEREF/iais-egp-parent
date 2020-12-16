@@ -122,6 +122,14 @@ public class BelicationClientFallback implements BelicationClient{
     }
 
     @Override
+    public FeignResponseEntity<List<ApplicationGroupDto>> getAppGrpsByLicenseeId(String licenseeId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<BroadcastApplicationDto> createBroadcast(BroadcastApplicationDto broadcastApplicationDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
