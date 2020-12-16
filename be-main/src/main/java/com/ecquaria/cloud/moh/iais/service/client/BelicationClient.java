@@ -62,6 +62,9 @@ public interface BelicationClient {
     @GetMapping(value = "/iais-application-be/application/premises-scope/{correId}")
     FeignResponseEntity<List<AppSvcPremisesScopeDto>> getAppSvcPremisesScopeListByCorreId(@PathVariable(name = "correId") String correId);
 
+    @GetMapping(value = "/iais-application-be/app-group-by-licensee-id/{licenseeId}")
+    FeignResponseEntity<List<ApplicationGroupDto>> getAppGrpsByLicenseeId(@PathVariable(name = "licenseeId") String licenseeId);
+
     @RequestMapping(path = "/iais-broadcast",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<BroadcastApplicationDto> createBroadcast(@RequestBody BroadcastApplicationDto broadcastApplicationDto);
 

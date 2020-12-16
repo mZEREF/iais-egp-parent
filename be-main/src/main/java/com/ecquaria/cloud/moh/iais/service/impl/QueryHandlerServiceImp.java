@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.QueryHelperResultDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.QueryHandlerService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
@@ -56,5 +57,14 @@ public class QueryHandlerServiceImp implements QueryHandlerService {
             resultDto = systemBeLicMainClient.doQuery(querySql).getEntity();
         }
         return resultDto;
+    }
+
+    @Override
+    public LicenseeDto getLicenseeByUserAccountInfo(String userAccountString) {
+        LicenseeDto licenseeDto = null;
+        if(!StringUtil.isEmpty(userAccountString)){
+            licenseeDto = organizationMainClient.getLicenseeByUserAccountInfo(userAccountString).getEntity();
+        }
+        return licenseeDto;
     }
 }
