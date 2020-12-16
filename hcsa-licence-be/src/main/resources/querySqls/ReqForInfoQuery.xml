@@ -43,6 +43,7 @@
             <#if appCorrId??>AND  T2.ID = :appCorrId</#if>
             <#if serviceSubTypeName??>AND appSvcScope.SCOPE_NAME = :serviceSubTypeName</#if>
             <#if licenseeRegnNo??>AND appGrpPerExt.PROF_REG_NO = :licenseeRegnNo</#if>
+            <#if APPLICATION_IDS??>AND ${APPLICATION_IDS}</#if>
 
             <#if licence_status??>AND :licence_status = :licence_status</#if>
             <#if start_date??>AND :start_date = :start_date</#if>
@@ -98,6 +99,7 @@
             <#if licenseeRegnNo??> AND charindex( :licenseeRegnNo,keyPsnExt.PROF_REG_NO )>0</#if>
             <#if licenseeId??> AND ${licenseeId}</#if>
             <#if serviceSubTypeName??>AND licSvcScope.SCOPE_NAME = :serviceSubTypeName</#if>
+            <#if APPLICATION_IDS??>AND ${APPLICATION_IDS}</#if>
 
             <#if licenseeIdNo??>AND :licenseeIdNo = :licenseeIdNo</#if>
             <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
