@@ -67,7 +67,14 @@
                         <div class=" form-group form-horizontal formgap">
                           <div class="col-sm-6 control-label formtext col-md-4">
                             <div class="cgo-header" style="font-size: 18px;">
-                              <strong>Principal Officer <label class="assign-psn-item">${status.index+1}</label></strong>
+                              <c:choose>
+                                <c:when test="${status.first}">
+                                  <strong>Principal Officer </strong>
+                                </c:when>
+                                <c:otherwise>
+                                  <strong>Principal Officer <label class="assign-psn-item">${status.index+1}</label></strong>
+                                </c:otherwise>
+                              </c:choose>
                             </div>
                           </div>
                           <div class="col-sm-5 col-md-8 text-right" >
