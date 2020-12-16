@@ -3,16 +3,18 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.QueryHelperResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.QueryHandlerService;
+import com.ecquaria.cloud.moh.iais.service.client.BelicationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -29,8 +31,14 @@ public class DeleteHelperDelegator {
     
     @Autowired
     private QueryHandlerService queryHandlerService;
+
+    @Autowired
+    private BelicationClient belicationClient;
     
     private final String MIMA = "P@ssword$";
+
+    private final String HCSA_APPLICATION_SQL_FILE = "be_hacsa_application_delete.sql";
+
     public void start(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("deleteHelperDelegator do cleanSession start ...."));
         ParamUtil.setSessionAttr(bpc.request,"queryResult","E");
@@ -43,7 +51,59 @@ public class DeleteHelperDelegator {
     public void doDelete(BaseProcessClass bpc){
         String userAccountString = ParamUtil.getString(bpc.request,"userAccountString");
         LicenseeDto licenseeDto = queryHandlerService.getLicenseeByUserAccountInfo(userAccountString);
+        if(licenseeDto != null){
+            List<ApplicationGroupDto> groupDtos = belicationClient.getAppGrpsByLicenseeId(licenseeDto.getId()).getEntity();
 
+        }else{
+            log.debug(StringUtil.changeForLog("licenseeDto is null"));
+        }
+    }
+
+    private int deleteLicence(List<ApplicationGroupDto> groupDtos){
+        int flag = 1;
+        if(!IaisCommonUtils.isEmpty(groupDtos)){
+            for(ApplicationGroupDto applicationGroupDto : groupDtos){
+                String groupNo = applicationGroupDto.getGroupNo();
+                try{
+                    String sql = getRunSql(HCSA_APPLICATION_SQL_FILE, groupNo, "AN200512000809C");
+                }catch (Exception e){
+                    flag = -1;
+                    break;
+                }
+
+            }
+        }else{
+            flag = 0;
+        }
+
+        return flag;
+    }
+
+    private String getRunSql(String sqlPath, String replaceNo, String targetString) throws Exception{
+        String sql = "";
+        if(!StringUtil.isEmpty(sqlPath) && !StringUtil.isEmpty(replaceNo)){
+            File file = new File("/" + sqlPath);
+            log.debug(StringUtil.changeForLog("file path : " + file.getPath()));
+            log.debug(StringUtil.changeForLog("file absolute path : " + file.getAbsolutePath()));
+            sql = readFile(file,replaceNo,targetString);
+        }
+        return sql.toString();
+    }
+
+    private String readFile(File file,String replaceNo, String targetString) throws Exception{
+        StringBuffer sql = new StringBuffer();
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+        String temp = null;
+        while((temp = br.readLine())!=null){
+            if(temp.contains(targetString)){
+                temp.replaceAll(targetString,replaceNo);
+            }
+            sql.append(temp);
+            sql.append(System.lineSeparator());
+        }
+        br.close();
+
+        return sql.toString();
     }
 
     public void doLogin(BaseProcessClass bpc){

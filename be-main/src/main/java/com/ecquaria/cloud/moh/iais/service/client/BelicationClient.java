@@ -88,4 +88,7 @@ public interface BelicationClient {
 
     @GetMapping(value = "/iais-application-be/doQuery",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<QueryHelperResultDto> doQuery(@RequestParam("sql") String sql);
+
+    @GetMapping(value = "/iais-application-be/doDelete",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> doDeleteBySql(@RequestParam("sql") String sql);
 }
