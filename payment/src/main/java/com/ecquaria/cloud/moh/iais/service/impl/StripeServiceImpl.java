@@ -136,12 +136,16 @@ public class StripeServiceImpl implements StripeService {
                 applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
             }
             paymentClient.saveHcsaPayment(paymentDto);
-            paymentClient.updatePaymentResquset(paymentRequestDto);
-        }else if(paymentIntent!=null && "succeeded".equals(paymentIntent.getStatus())){
-            applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
-        }else {
-            applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+        }else{
+            if(paymentIntent!=null && "succeeded".equals(paymentIntent.getStatus())){
+                paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
+                applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
+            }else {
+                paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+            }
         }
+        paymentClient.updatePaymentResquset(paymentRequestDto);
         paymentAppGrpClient.doUpDate(applicationGroupDto);
     }
 

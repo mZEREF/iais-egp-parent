@@ -125,6 +125,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 			paymentRequestDto.setPayMethod("eNets");
 			paymentRequestDto.setReqDt(new Date());
 			paymentRequestDto.setReqRefNo(reqNo);
+			paymentRequestDto.setMerchantTxnRef(merchantTxnRef);
 			paymentRequestDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 			PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
 

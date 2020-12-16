@@ -47,7 +47,7 @@ public class PaymentServiceImpl implements PaymentService {
         soapiTxnQueryReq.setSs("1");
         SoapiS2S.Msg msg=new SoapiS2S.Msg();
         msg.setNetsMid(GatewayConfig.eNetsUmId);
-        msg.setMerchantTxnRef(paymentRequestDto.getQueryCode());
+        msg.setMerchantTxnRef(paymentRequestDto.getMerchantTxnRef());
         msg.setNetsMidIndicator("U");
         soapiTxnQueryReq.setMsg(msg);
         String status=sendTxnQueryReqToGW(strGWPostURL,secretKey,keyId,soapiTxnQueryReq);
@@ -66,12 +66,16 @@ public class PaymentServiceImpl implements PaymentService {
                 applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
             }
             paymentClient.saveHcsaPayment(paymentDto);
-            paymentClient.updatePaymentResquset(paymentRequestDto);
-        }else if( "0".equals(status)){
-            applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
-        }else {
-            applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+        }else{
+            if( "0".equals(status)){
+                paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
+                applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
+            }else {
+                paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+            }
         }
+        paymentClient.updatePaymentResquset(paymentRequestDto);
         paymentAppGrpClient.doUpDate(applicationGroupDto);
     }
 
