@@ -56,20 +56,26 @@
                             </div>
                             <div class="row">
                                 <label class="col-xs-9 col-md-3 control-label">
-                                    <input type="checkbox" onchange="checkInfo()" value="information" name = "info" <c:if test="${newRfi.infoChk!=null}">checked</c:if> />&nbsp;Information
+                                    <input type="checkbox"  <c:if test="${rfiMulNum>0}">onchange="checkInfo()"</c:if> value="information" name = "info" <c:if test="${newRfi.infoChk!=null}">checked</c:if> />&nbsp;Information
                                 </label>
                             </div>
                             <div class="row">
                                 <label class="col-xs-9 col-md-3 control-label">
-                                    <input type="checkbox" onchange="checkDoc()" value="documents" name = "doc" <c:if test="${newRfi.docChk!=null}">checked</c:if> />&nbsp;Supporting Documents
+                                    <input type="checkbox"  <c:if test="${rfiMulNum>0}">onchange="checkDoc()"</c:if> value="documents" name = "doc" <c:if test="${newRfi.docChk!=null}">checked</c:if> />&nbsp;Supporting Documents
                                 </label>
                             </div>
                             <div class="row">
                                 <label class="col-xs-9 col-md-6 control-label" ><span class="error-msg" name="iaisErrorMsg" style="font-weight:normal;" id="error_rfiSelect"></span></label>
                             </div>
+                            <c:if test="${rfiMulNum<=0}" >
+                                <div class="row">
+                                    <label class="col-xs-9 col-md-10 control-label" >
+                                        <span style="font-weight:normal; color: #D22727; "  >Create 0 information and supporting document requests in a single form and the multiple requests</span>
+                                    </label>
+                                </div>
+                            </c:if>
 
-
-                            <div id="infohidden" <c:if test="${ newRfi.infoChk==null}">class="hidden" </c:if> >
+                            <div id="infohidden" <c:if test="${ newRfi.infoChk==null or rfiMulNum<=0}">class="hidden" </c:if> >
                                 <div class="reqForInfoContentInfo">
                                     <input type="hidden" name="lengthsInfo" value="0" />
                                     <div class="col-xs-9 col-sm-5 col-md-1">
@@ -149,7 +155,7 @@
                                 </div>
                             </div>
 
-                            <div id="dochidden" <c:if test="${ newRfi.docChk==null}">class="hidden"</c:if> >
+                            <div id="dochidden" <c:if test="${ newRfi.docChk==null or rfiMulNum<=0}">class="hidden"</c:if> >
                                 <div class="reqForInfoContent">
                                     <input type="hidden" name="lengths" value="0" />
                                     <div class="col-xs-9 col-sm-5 col-md-1">
@@ -234,7 +240,7 @@
                 <div class="row">
                     <iais:action style="text-align:right;">
                         <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Cancel</button>
-                        <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit()">Submit</button>
+                        <button class="btn btn-primary" type="button"  <c:if test="${rfiMulNum>0}"> onclick="javascript:doSubmit() </c:if > ">Submit</button>
                     </iais:action>
                 </div>
                 <iais:row >
