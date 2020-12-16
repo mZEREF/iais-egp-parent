@@ -12,10 +12,8 @@ import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
-import com.stripe.model.Refund;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.RequestOptions;
-import com.stripe.param.RefundCreateParams;
 import com.stripe.param.checkout.SessionCreateParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,28 +92,7 @@ public class StripeServiceImpl implements StripeService {
         return paymentIntent;
     }
 
-    @Override
-    public Refund createRefund(String pi, Long amount) throws StripeException {
-        Stripe.apiKey = GatewayConfig.stripeKey;
-        Refund refund;
-        if(amount==null){
-             refund = Refund.create(RefundCreateParams.builder()
-                    .setPaymentIntent(pi)
-                    .build());
-        }else {
-             refund = Refund.create(RefundCreateParams.builder()
-                    .setAmount(amount)
-                    .setPaymentIntent(pi)
-                    .build());
-        }
-        return refund;
-    }
 
-    @Override
-    public Refund retrieveRefund(String ri) throws StripeException {
-        Stripe.apiKey = GatewayConfig.stripeKey;
-        return Refund.retrieve(ri);
-    }
 
     @Override
     public void retrievePayment(PaymentRequestDto paymentRequestDto) throws StripeException {
