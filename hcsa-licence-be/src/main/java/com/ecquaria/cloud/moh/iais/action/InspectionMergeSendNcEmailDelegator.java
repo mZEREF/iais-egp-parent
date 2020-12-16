@@ -192,8 +192,15 @@ public class InspectionMergeSendNcEmailDelegator {
 
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= new InspectionEmailTemplateDto();
-        String mesContext;
-        {
+        if(appPremisesCorrelationDtos.size()==1){
+            if(ParamUtil.getSessionAttr(request,INS_EMAIL_DTO)!=null){
+                inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
+            }
+            else {
+                inspectionEmailTemplateDto=inspEmailService.getInsertEmail(appPremisesCorrelationDtos.get(0).getId());
+            }
+        }else {
+
             List<String> leads = organizationClient.getInspectionLead(taskDto.getWkGrpId()).getEntity();
             OrgUserDto leadDto=organizationClient.retrieveOrgUserAccountById(leads.get(0)).getEntity();
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
@@ -294,18 +301,18 @@ public class InspectionMergeSendNcEmailDelegator {
                 msgTemplateDto.setMessageContent(msgTemplateDto.getMessageContent().replaceFirst(replaceStr,  index + "."));
                 index++;
             }
-            mesContext= msgTemplateDto.getMessageContent();
             inspectionEmailTemplateDto.setSubject(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),mapTemplate));
+
+            inspectionEmailTemplateDto.setAppPremCorrId(applicationViewDto.getAppPremisesCorrelationId());
+            inspectionEmailTemplateDto.setMessageContent(msgTemplateDto.getMessageContent());
         }
-        inspectionEmailTemplateDto.setAppPremCorrId(applicationViewDto.getAppPremisesCorrelationId());
-        inspectionEmailTemplateDto.setMessageContent(mesContext);
 
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT});
 
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
         ParamUtil.setSessionAttr(request,"appPremCorrIds", (Serializable) appPremCorrIds);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
-        ParamUtil.setSessionAttr(request,MSG_CON, mesContext);
+        ParamUtil.setSessionAttr(request,MSG_CON, inspectionEmailTemplateDto.getMessageContent());
         ParamUtil.setRequestAttr(request,"svcNames",svcNames);
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,applicationViewDto);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
