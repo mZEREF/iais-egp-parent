@@ -326,4 +326,7 @@ public interface ApplicationClient {
 
     @PostMapping(value = "/iais-application-be/postInspection-allApps",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> fileAll(@RequestBody List<String> grpids);
+
+    @GetMapping(value = "/iais-application-group-be/userId-licenseeId")
+    FeignResponseEntity<String> getUserIdBylicenseeId(@RequestParam("licenseeId") String licenseeId);
 }

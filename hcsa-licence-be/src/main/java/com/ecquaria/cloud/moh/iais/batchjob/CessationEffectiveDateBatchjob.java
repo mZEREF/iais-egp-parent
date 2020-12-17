@@ -7,10 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
@@ -33,7 +30,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author weilu
@@ -111,7 +111,7 @@ public class CessationEffectiveDateBatchjob {
                                 String originLicenceId = applicationDtos.get(0).getOriginLicenceId();
                                 LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
                                 if (licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())) {
-                                    if(!filterLicenceId.contains(licenceDto.getId())){
+                                    if (!filterLicenceId.contains(licenceDto.getId())) {
                                         licenceDtos.add(licenceDto);
                                         filterLicenceId.add(licenceDto.getId());
                                         licGrpMap.put(originLicenceId, appGrpId);
@@ -125,13 +125,13 @@ public class CessationEffectiveDateBatchjob {
                                     String status = applicationDto.getStatus();
                                     AppPremiseMiscDto appPremiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
                                     if ((ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE.equals(status) || ApplicationConsts.APPLICATION_STATUS_CESSATION_TEMPORARY_LICENCE.equals(status))) {
-                                        if(appPremiseMiscDto!=null){
+                                        if (appPremiseMiscDto != null) {
                                             Date effectiveDate = appPremiseMiscDto.getEffectiveDate();
                                             if (effectiveDate.compareTo(date) <= 0) {
                                                 String originLicenceId = applicationDto.getOriginLicenceId();
                                                 LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(originLicenceId).getEntity();
                                                 if (licenceDto != null) {
-                                                    if(!filterLicenceId.contains(licenceDto.getId())) {
+                                                    if (!filterLicenceId.contains(licenceDto.getId())) {
                                                         filterLicenceId.add(licenceDto.getId());
                                                         licenceDtos.add(licenceDto);
                                                         applicationGroupDtosCesead.add(applicationGroupDto);
@@ -140,11 +140,11 @@ public class CessationEffectiveDateBatchjob {
                                                 }
                                                 break;
                                             }
-                                        }else {
+                                        } else {
                                             String originLicenceId = applicationDto.getOriginLicenceId();
                                             LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(originLicenceId).getEntity();
                                             if (licenceDto != null) {
-                                                if(!filterLicenceId.contains(licenceDto.getId())) {
+                                                if (!filterLicenceId.contains(licenceDto.getId())) {
                                                     filterLicenceId.add(licenceDto.getId());
                                                     licenceDtos.add(licenceDto);
                                                     applicationGroupDtosCesead.add(applicationGroupDto);
@@ -238,12 +238,12 @@ public class CessationEffectiveDateBatchjob {
         for (LicenceDto licenceDto : licenceDtos) {
             String licId = licenceDto.getId();
             List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
-            if(!IaisCommonUtils.isEmpty(specLicIds)){
+            if (!IaisCommonUtils.isEmpty(specLicIds)) {
                 specLicIdsAll.addAll(specLicIds);
             }
         }
         for (LicenceDto licenceDto : licenceDtos) {
-            if(licenceDto == null){
+            if (licenceDto == null) {
                 continue;
             }
             try {
@@ -252,7 +252,7 @@ public class CessationEffectiveDateBatchjob {
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
                 licenceDto.setEndDate(date);
                 updateLicenceDtos.add(licenceDto);
-                if(specLicIdsAll.contains(licenceDto.getId())){
+                if (specLicIdsAll.contains(licenceDto.getId())) {
                     continue;
                 }
                 String svcName = licenceDto.getSvcName();
@@ -281,18 +281,30 @@ public class CessationEffectiveDateBatchjob {
                 OrgUserDto orgUserDto = null;
                 if (!StringUtil.isEmpty(groupId)) {
                     ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(groupId).getEntity();
-                    orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+                    String groupNo = applicationGroupDto.getGroupNo();
+                    groupNo = groupNo + "-01";
+                    boolean isBeCessationFlow = false;
+                    List<AppPremisesRoutingHistoryDto> temp = applicationClient.getHistoryByAppNoAndDecision(groupNo, ApplicationConsts.APPLICATION_STATUS_CESSATION_BE_DECISION).getEntity();
+                    if (!IaisCommonUtils.isEmpty(temp) && temp.size() < 2) {
+                        isBeCessationFlow = true;
+                    }
+                    if(isBeCessationFlow){
+                        String userId = applicationClient.getUserIdBylicenseeId(applicationGroupDto.getLicenseeId()).getEntity();
+                        orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
+                    }else {
+                        orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+                    }
                     List<ApplicationDto> applicationDtos = applicationClient.getAppDtosByAppGrpId(groupId).getEntity();
                     for (ApplicationDto applicationDto : applicationDtos) {
                         String applicationNo = applicationDto.getApplicationNo();
                         String status = applicationDto.getStatus();
-                        if(ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE.equals(status)){
+                        if (ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE.equals(status)) {
                             appNos.append(" ");
                             appNos.append(applicationNo);
                         }
                     }
                 }
-                if(orgUserDto != null) {
+                if (orgUserDto != null) {
                     emailMap.put("ApplicantName", orgUserDto.getDisplayName());
                 } else {
                     emailMap.put("ApplicantName", "");
