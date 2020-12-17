@@ -71,15 +71,15 @@
                     <table class="table table-bordered" style="margin-bottom: 0">
                         <tbody>
                         <tr>
-                            <td class="col-xs-6" align="right">HCI Code</td>
+                            <td class="col-xs-6" align="right">Healthcare Institution Code</td>
                             <td class="col-xs-6" style="padding-left : 20px">${applicationViewDto.hciCode == null || applicationViewDto.hciCode == "" ? '-' : applicationViewDto.hciCode}</td>
                         </tr>
                         <tr>
-                            <td align="right">HCI Name</td>
+                            <td align="right">Healthcare Institution Name</td>
                             <td style="padding-left : 20px">${applicationViewDto.hciName == null || applicationViewDto.hciName == "" ? '-' : applicationViewDto.hciName}</td>
                         </tr>
                         <tr>
-                            <td align="right">HCI Address</td>
+                            <td align="right">Healthcare Institution Address</td>
                             <td style="padding-left : 20px">${applicationViewDto.hciAddress == null || applicationViewDto.hciAddress == "" ? '-' : applicationViewDto.hciAddress}</td>
                         </tr>
                         <tr>

@@ -254,12 +254,12 @@ public class ReCessationApplicationBeDelegator {
         }
         if ("yes".equals(patRadio) && !StringUtil.isEmpty(patientSelect)) {
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect) && StringUtil.isEmpty(patHciName)) {
-                errorMap.put(PATHCINAME, MessageUtil.replaceMessage(ERROR, "HCI Name", "field"));
+                errorMap.put(PATHCINAME, MessageUtil.replaceMessage(ERROR, "Healthcare Institution Name", "field"));
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect) && !StringUtil.isEmpty(patHciName)) {
                 List<String> hciName = cessationBeService.listHciName();
                 if (!hciName.contains(patHciName)) {
-                    errorMap.put("patHciName", "HCI Name cannot be found.");
+                    errorMap.put("patHciName", "Healthcare Institution Name cannot be found.");
                 }
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect) && StringUtil.isEmpty(patRegNo)) {
@@ -316,7 +316,7 @@ public class ReCessationApplicationBeDelegator {
 
     private List<SelectOption> getPatientsOption() {
         List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, "HCI");
+        SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, "Healthcare Institution");
         SelectOption so2 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, "Professional Regn No.");
         SelectOption so3 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER, "Others");
         riskLevelResult.add(so1);

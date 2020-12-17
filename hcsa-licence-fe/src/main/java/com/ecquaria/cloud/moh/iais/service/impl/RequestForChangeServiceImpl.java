@@ -638,10 +638,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
                         String hciName = appGrpPremisesDtoList.get(i).getHciName();
                         if (StringUtil.isEmpty(hciName)) {
-                            errorMap.put("hciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of HCI", "field"));
+                            errorMap.put("hciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of Healthcare Institution", "field"));
                         } else {
                             if(hciName.length()>100){
-                                String general_err0041=NewApplicationHelper.repLength("Name of HCI","100");
+                                String general_err0041=NewApplicationHelper.repLength("Name of Healthcare Institution","100");
                                 errorMap.put("hciName" + i, general_err0041);
                             }
                             if (masterCodeDto != null) {

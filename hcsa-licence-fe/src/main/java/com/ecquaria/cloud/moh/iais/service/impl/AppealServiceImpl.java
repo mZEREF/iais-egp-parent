@@ -836,7 +836,7 @@ public class AppealServiceImpl implements AppealService {
             }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME.equals(appealReason)){
                 String proposedHciName = request.getParameter("proposedHciName");
                 if(StringUtil.isEmpty(proposedHciName)){
-                    map.put("proposedHciName", MessageUtil.replaceMessage("GENERAL_ERR0006", "Proposed HCI Name","field"));
+                    map.put("proposedHciName", MessageUtil.replaceMessage("GENERAL_ERR0006", "Proposed Healthcare Institution Name","field"));
                 }
             }
         }
