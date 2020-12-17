@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.action.HcsaApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -21,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcCateWrkgrpCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
@@ -33,10 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
@@ -199,7 +196,7 @@ public class InsRepServiceImpl implements InsRepService {
             applicationDto.setRiskScore(riskScore);
         }
         List<String> serviceSubTypeName = getServiceSubTypeName(appPremisesCorrelationId);
-        if(IaisCommonUtils.isEmpty(serviceSubTypeName)){
+        if (IaisCommonUtils.isEmpty(serviceSubTypeName)) {
             serviceSubTypeName.add("-");
         }
         inspectionReportDto.setSubsumedServices(serviceSubTypeName);
@@ -231,9 +228,9 @@ public class InsRepServiceImpl implements InsRepService {
                 for (AppPremisesPreInspectionNcItemDto preInspNc : listAppPremisesPreInspectionNcItemDtos) {
                     String adhocQuestion = preInspNc.getAdhocQuestion();
                     ReportNcRectifiedDto reportNcRectifiedDto = new ReportNcRectifiedDto();
-                    if(!StringUtil.isEmpty(adhocQuestion)){
+                    if (!StringUtil.isEmpty(adhocQuestion)) {
                         reportNcRectifiedDto.setNc(adhocQuestion);
-                    }else {
+                    } else {
                         ChecklistItemDto cDto = hcsaChklClient.getChklItemById(preInspNc.getItemId()).getEntity();
                         reportNcRectifiedDto.setNc(cDto.getChecklistItem());
                     }
@@ -350,15 +347,15 @@ public class InsRepServiceImpl implements InsRepService {
         return inspectionReportDto;
     }
 
-    private List<String> getServiceSubTypeName(String correlationId){
+    private List<String> getServiceSubTypeName(String correlationId) {
         List<String> serviceSubtypeName = IaisCommonUtils.genNewArrayList();
         List<AppSvcPremisesScopeDto> scopeList = insRepClient.getAppSvcPremisesScopeListByCorreId(correlationId).getEntity();
-        for (AppSvcPremisesScopeDto appSvcPremisesScopeDto : scopeList){
+        for (AppSvcPremisesScopeDto appSvcPremisesScopeDto : scopeList) {
             boolean isSubService = appSvcPremisesScopeDto.isSubsumedType();
-            if (isSubService){
+            if (isSubService) {
                 String serviceId = appSvcPremisesScopeDto.getScopeName();
                 HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
-                if(hcsaServiceDto!=null){
+                if (hcsaServiceDto != null) {
                     String svcName = hcsaServiceDto.getSvcName();
                     serviceSubtypeName.add(svcName);
                 }
@@ -366,9 +363,6 @@ public class InsRepServiceImpl implements InsRepService {
         }
         return serviceSubtypeName;
     }
-
-
-
 
 
     @Override
@@ -493,7 +487,7 @@ public class InsRepServiceImpl implements InsRepService {
             appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             appPremisesRecommendationDto.setAuditTrailDto(currentAuditTrailDto);
             insRepClient.saveRecommendationData(appPremisesRecommendationDto);
-        } else  {
+        } else {
             oldAppPremisesRecommendationDto.setAuditTrailDto(currentAuditTrailDto);
             oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
@@ -592,7 +586,7 @@ public class InsRepServiceImpl implements InsRepService {
                 }
             }
         }
-        log.info(StringUtil.changeForLog("-----getPeriodDefault end-----" + "defaultOption :" +defaultOption));
+        log.info(StringUtil.changeForLog("-----getPeriodDefault end-----" + "defaultOption :" + defaultOption));
         return defaultOption;
     }
 
@@ -683,7 +677,7 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     @Override
-    public void routingTaskToAo2(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks,String newCorrelationId) throws Exception {
+    public void routingTaskToAo2(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks, String newCorrelationId) throws Exception {
         String serviceId = applicationDto.getServiceId();
         List<String> list = IaisCommonUtils.genNewArrayList();
         list.add(serviceId);
@@ -714,25 +708,25 @@ public class InsRepServiceImpl implements InsRepService {
             updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
             createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
             List<ApplicationDto> saveApplicationDtoList = IaisCommonUtils.genNewArrayList();
-            CopyUtil.copyMutableObjectList(applicationDtoList,saveApplicationDtoList);
-            saveApplicationDtoList = removeCurrentApplicationDto(saveApplicationDtoList,applicationDto.getId());
-            boolean flag = taskService.checkCompleteTaskByApplicationNo(saveApplicationDtoList,newCorrelationId);
-            if(flag){
-                updateCurrentApplicationStatus(applicationDtoList,applicationDto.getId(),ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+            CopyUtil.copyMutableObjectList(applicationDtoList, saveApplicationDtoList);
+            saveApplicationDtoList = removeCurrentApplicationDto(saveApplicationDtoList, applicationDto.getId());
+            boolean flag = taskService.checkCompleteTaskByApplicationNo(saveApplicationDtoList, newCorrelationId);
+            if (flag) {
+                updateCurrentApplicationStatus(applicationDtoList, applicationDto.getId(), ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
                 List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
                 List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
                 List<ApplicationDto> creatTaskApplicationList = ao2AppList;
                 String stageId = HcsaConsts.ROUTING_STAGE_AO3;
                 String roleId = RoleConsts.USER_ROLE_AO3;
-                if(IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)){
+                if (IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)) {
                     creatTaskApplicationList = ao3AppList;
-                }else{
+                } else {
                     stageId = HcsaConsts.ROUTING_STAGE_AO2;
                     roleId = RoleConsts.USER_ROLE_AO2;
                 }
-                if(!IaisCommonUtils.isEmpty(creatTaskApplicationList)){
+                if (!IaisCommonUtils.isEmpty(creatTaskApplicationList)) {
                     TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                            stageId,roleId,IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId());
+                            stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(), taskDto.getRoleId());
                     List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                     List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
                     createHistoryList(appPremisesRoutingHistoryDtos);
@@ -742,36 +736,36 @@ public class InsRepServiceImpl implements InsRepService {
         }
     }
 
-    private void updateCurrentApplicationStatus(List<ApplicationDto> applicationDtos,String applicationId,String status){
-        if(!IaisCommonUtils.isEmpty(applicationDtos) && !StringUtil.isEmpty(applicationId)){
-            for (ApplicationDto applicationDto : applicationDtos){
-                if(applicationId.equals(applicationDto.getId())){
+    private void updateCurrentApplicationStatus(List<ApplicationDto> applicationDtos, String applicationId, String status) {
+        if (!IaisCommonUtils.isEmpty(applicationDtos) && !StringUtil.isEmpty(applicationId)) {
+            for (ApplicationDto applicationDto : applicationDtos) {
+                if (applicationId.equals(applicationDto.getId())) {
                     applicationDto.setStatus(status);
                 }
             }
         }
     }
 
-    private void createHistoryList(List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos){
-        if(!IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtos)){
-            for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtos){
+    private void createHistoryList(List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos) {
+        if (!IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtos)) {
+            for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtos) {
                 appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
             }
         }
     }
 
 
-    private List<ApplicationDto> getStatusAppList(List<ApplicationDto> applicationDtos, String status){
-        if(IaisCommonUtils.isEmpty(applicationDtos) || StringUtil.isEmpty(status)){
+    private List<ApplicationDto> getStatusAppList(List<ApplicationDto> applicationDtos, String status) {
+        if (IaisCommonUtils.isEmpty(applicationDtos) || StringUtil.isEmpty(status)) {
             return null;
         }
         List<ApplicationDto> applicationDtoList = null;
-        for(ApplicationDto applicationDto : applicationDtos){
-            if(status.equals(applicationDto.getStatus())){
-                if(applicationDtoList == null){
+        for (ApplicationDto applicationDto : applicationDtos) {
+            if (status.equals(applicationDto.getStatus())) {
+                if (applicationDtoList == null) {
                     applicationDtoList = IaisCommonUtils.genNewArrayList();
                     applicationDtoList.add(applicationDto);
-                }else{
+                } else {
                     applicationDtoList.add(applicationDto);
                 }
             }
@@ -780,12 +774,12 @@ public class InsRepServiceImpl implements InsRepService {
         return applicationDtoList;
     }
 
-    private List<ApplicationDto> removeCurrentApplicationDto(List<ApplicationDto> applicationDtoList, String currentId){
+    private List<ApplicationDto> removeCurrentApplicationDto(List<ApplicationDto> applicationDtoList, String currentId) {
         List<ApplicationDto> result = null;
-        if(!IaisCommonUtils.isEmpty(applicationDtoList) && !StringUtil.isEmpty(currentId)){
+        if (!IaisCommonUtils.isEmpty(applicationDtoList) && !StringUtil.isEmpty(currentId)) {
             result = IaisCommonUtils.genNewArrayList();
-            for(ApplicationDto applicationDto : applicationDtoList){
-                if(currentId.equals(applicationDto.getId())){
+            for (ApplicationDto applicationDto : applicationDtoList) {
+                if (currentId.equals(applicationDto.getId())) {
                     continue;
                 }
                 result.add(applicationDto);
@@ -807,7 +801,7 @@ public class InsRepServiceImpl implements InsRepService {
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
         String groupId = hcsaSvcStageWorkingGroupDto1.getGroupId();
         String userId = getRollbackInspectorId(taskDto.getRefNo());
-        List<TaskDto> taskDtos = prepareBackTaskList(taskDto, userId,applicationDto);
+        List<TaskDto> taskDtos = prepareBackTaskList(taskDto, userId, applicationDto);
         taskService.createTasks(taskDtos);
         createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_REVISE_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId, subStage);
         createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO1, groupId, subStage);
@@ -870,7 +864,7 @@ public class InsRepServiceImpl implements InsRepService {
             if ("N".equals(componentValue)) {
                 ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                 List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(serviceId,
-                        stageId, applicationType,applicationGroupDto.getIsPreInspection());
+                        stageId, applicationType, applicationGroupDto.getIsPreInspection());
                 if (hcsaSvcRoutingStageDtoList != null) {
                     HcsaSvcRoutingStageDto nextStage = hcsaSvcRoutingStageDtoList.get(0);
                     String stageCode = nextStage.getStageCode();
@@ -994,7 +988,7 @@ public class InsRepServiceImpl implements InsRepService {
             String workId = null;
             for (String id : wkGrpIds) {
                 WorkingGroupDto entity = organizationClient.getWrkGrpById(id).getEntity();
-                if(entity != null){
+                if (entity != null) {
                     String groupDomain = entity.getGroupDomain();
                     if ("hcsa".equals(groupDomain)) {
                         workId = entity.getId();
@@ -1028,67 +1022,65 @@ public class InsRepServiceImpl implements InsRepService {
 
 
     @Override
-    public void sendPostInsTaskFeData(String eventRefNum,String submissionId)  {
+    public void sendPostInsTaskFeData(String eventRefNum, String submissionId) {
         log.info("post inspection call back start ===================>>>>>");
-        log.info(StringUtil.changeForLog("post inspection start eventRefNum groNo ===================>>>>>"+eventRefNum));
+        log.info(StringUtil.changeForLog("post inspection start eventRefNum groNo ===================>>>>>" + eventRefNum));
         List<ApplicationDto> postInspectionApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
         AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         //appGrp --------app -------task    submissionId   operation yiyang    update licPremise
         List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
         List<String> grpLicIds = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(postInspectionApps)) {
-            for(ApplicationDto applicationDto : postInspectionApps)
-            {
+            for (ApplicationDto applicationDto : postInspectionApps) {
                 String appGrpId = applicationDto.getAppGrpId();
                 grpLicIds.add(appGrpId);
+                try {
+                    String corrId = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity().getId();
+                    String serviceId = applicationDto.getServiceId();
+                    String applicationNo = applicationDto.getApplicationNo();
+                    String wrkGrpId = null;
+                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+                    String categoryId = hcsaServiceDto.getCategoryId();
+                    List<HcsaSvcCateWrkgrpCorrelationDto> entity = hcsaConfigClient.getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(categoryId).getEntity();
+                    for (HcsaSvcCateWrkgrpCorrelationDto dto : entity) {
+                        String stageId = dto.getStageId();
+                        if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
+                            wrkGrpId = dto.getWrkGrpId();
+                            break;
+                        }
+                    }
+                    TaskDto taskDto = new TaskDto();
+                    taskDto.setApplicationNo(applicationNo);
+                    taskDto.setRefNo(corrId);
+                    taskDto.setPriority(0);
+                    taskDto.setWkGrpId(wrkGrpId);
+                    taskDto.setAuditTrailDto(auditTrailDto);
+                    taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
+                    taskDto.setDateAssigned(new Date());
+                    taskDto.setSlaDateCompleted(null);
+                    taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+                    taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
+                    taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE);
+                    taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
+                    taskDto.setSlaAlertInDays(0);
+                    taskDto.setScore(0);
+                    taskDto.setSlaInDays(0);
+                    taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    taskDto.setEventRefNo(corrId);
+                    //history
+                    createPostRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, InspectionConstants.INSPECTION_STATUS_PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN, null, null);
+                    createPostRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, null, RoleConsts.USER_ROLE_INSPECTIOR, wrkGrpId, null);
+                    taskDtos.add(taskDto);
+                } catch (Exception e) {
+                    log.info(e.getMessage());
+                    continue;
+                }
             }
-//                try {
-//                    String corrId = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity().getId();
-//                    String serviceId = applicationDto.getServiceId();
-//                    String applicationNo = applicationDto.getApplicationNo();
-//                    String wrkGrpId = null ;
-//                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-//                    String categoryId = hcsaServiceDto.getCategoryId();
-//                    List<HcsaSvcCateWrkgrpCorrelationDto> entity = hcsaConfigClient.getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(categoryId).getEntity();
-//                    for(HcsaSvcCateWrkgrpCorrelationDto dto : entity){
-//                        String stageId = dto.getStageId();
-//                        if(HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
-//                            wrkGrpId = dto.getWrkGrpId();
-//                            break;
-//                        }
-//                    }
-//                    TaskDto taskDto = new TaskDto();
-//                    taskDto.setApplicationNo(applicationNo);
-//                    taskDto.setRefNo(corrId);
-//                    taskDto.setPriority(0);
-//                    taskDto.setWkGrpId(wrkGrpId);
-//                    taskDto.setAuditTrailDto(auditTrailDto);
-//                    taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
-//                    taskDto.setDateAssigned(new Date());
-//                    taskDto.setSlaDateCompleted(null);
-//                    taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
-//                    taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
-//                    taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE);
-//                    taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
-//                    taskDto.setSlaAlertInDays(0);
-//                    taskDto.setScore(0);
-//                    taskDto.setSlaInDays(0);
-//                    taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-//                    taskDto.setEventRefNo(corrId);
-//                    //history
-//                    createPostRoutingHistory(applicationNo,applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, InspectionConstants.INSPECTION_STATUS_PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN,null , null);
-//                    createPostRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, null, RoleConsts.USER_ROLE_INSPECTIOR, wrkGrpId, null);
-//                    taskDtos.add(taskDto);
-//                }catch (Exception e){
-//                    log.info(e.getMessage());
-//                    continue;
-//                }
-//            }
         }
-        log.info(StringUtil.changeForLog("================== taskDtos ===================>>>>>"+taskDtos.size()));
+        log.info(StringUtil.changeForLog("================== taskDtos ===================>>>>>" + taskDtos.size()));
         log.info(StringUtil.changeForLog("==================  eventBus Start  ===================>>>>>"));
-        //taskService.createTasks(taskDtos);
-            eventBusHelper.submitAsyncRequest(taskDtos, submissionId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK, EventBusConsts.OPERATION_POST_INSPECTION_TASK, eventRefNum, null);
+        taskService.createTasks(taskDtos);
+        //eventBusHelper.submitAsyncRequest(taskDtos, submissionId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK, EventBusConsts.OPERATION_POST_INSPECTION_TASK, eventRefNum, null);
         log.info(StringUtil.changeForLog("=======================taskDtos ===================>>>>>Success"));
         log.info(StringUtil.changeForLog("==================  eventBus End  ===================>>>>>"));
         //create fe app
@@ -1097,7 +1089,7 @@ public class InsRepServiceImpl implements InsRepService {
         ApplicationListFileDto applicationListFileDto = JsonUtil.parseToObject(apps, ApplicationListFileDto.class);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        beEicGatewayClient.saveFePostApplicationDtos(applicationListFileDto,signature.date(), signature.authorization(),
+        beEicGatewayClient.saveFePostApplicationDtos(applicationListFileDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
         log.info(StringUtil.changeForLog("==================  create fe app End  ===================>>>>>"));
     }
@@ -1164,7 +1156,7 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     private AppPremisesRoutingHistoryDto createPostRoutingHistory(String appNo, String appStatus,
-                                                                         String stageId, String internalRemarks, String processDec, String roleId, String wrkGroupId, String subStage) {
+                                                                  String stageId, String internalRemarks, String processDec, String roleId, String wrkGroupId, String subStage) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(stageId);
@@ -1202,14 +1194,14 @@ public class InsRepServiceImpl implements InsRepService {
         String groupId = dto.getGroupId();
         if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ROUND.equals(schemeType)) {
             TaskDto taskDto1 = taskService.getUserIdForWorkGroup(groupId);
-            if(taskDto1!=null){
+            if (taskDto1 != null) {
                 userId = taskDto1.getUserId();
             }
-            if(StringUtil.isEmpty(userId)){
+            if (StringUtil.isEmpty(userId)) {
                 List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
-                if(!IaisCommonUtils.isEmpty(orgUserDtos)){
+                if (!IaisCommonUtils.isEmpty(orgUserDtos)) {
                     userId = orgUserDtos.get(0).getId();
-                    taskService.sendNoteToAdm(appNo,taskDto.getRefNo(),orgUserDtos.get(0));
+                    taskService.sendNoteToAdm(appNo, taskDto.getRefNo(), orgUserDtos.get(0));
                 }
             }
             taskDto.setUserId(userId);
@@ -1217,7 +1209,7 @@ public class InsRepServiceImpl implements InsRepService {
         } else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_COMMON.equals(schemeType)) {
             taskDto.setUserId(null);
             taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
-        }else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ASSIGN.equals(schemeType)) {
+        } else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ASSIGN.equals(schemeType)) {
             taskDto.setUserId(null);
             taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION_SUPER);
         }
@@ -1235,7 +1227,7 @@ public class InsRepServiceImpl implements InsRepService {
         return list;
     }
 
-    private List<TaskDto> prepareBackTaskList(TaskDto taskDto, String userId,ApplicationDto applicationDto) {
+    private List<TaskDto> prepareBackTaskList(TaskDto taskDto, String userId, ApplicationDto applicationDto) {
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         applicationDtos.add(applicationDto);
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
@@ -1280,10 +1272,10 @@ public class InsRepServiceImpl implements InsRepService {
             hcsaSvcStageWorkingGroupDto.setStageId(stageId);
             hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
             hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
-            if(appGrpPremisesEntityDto != null){
+            if (appGrpPremisesEntityDto != null) {
                 hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
-            }else{
-                log.error(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos this APP do not have the premise :"+applicationDto.getApplicationNo()));
+            } else {
+                log.error(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos this APP do not have the premise :" + applicationDto.getApplicationNo()));
             }
             hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
         }
