@@ -516,7 +516,7 @@ public class NewApplicationHelper {
 //                }
                 String assignSelect = poDto.get(i).getAssignSelect();
                 if(StringUtil.isEmpty(assignSelect)||"-1".equals(assignSelect)){
-                    oneErrorMap.put("deputyAssignSelect"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Assign a Deputy Principal Officer ","field"));
+                    oneErrorMap.put("deputyAssignSelect"+dpoIndex,MessageUtil.getMessageDesc("NEW_ERR0018"));
                 }else {
                     if(StringUtil.isEmpty(designation)||"-1".equals(designation)){
                         oneErrorMap.put("deputyDesignation"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field"));

@@ -255,7 +255,8 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         if (appSubmissionDto != null){
             String serviceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceId();
             String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-            String isByGIRO = applicationGroupDto.getPayMethod();
+            String payMethod = applicationGroupDto.getPayMethod();
+            String isNeedPay = applicationGroupDto.getPmtStatus();
             if (orgUserDto != null){
                 applicantName = orgUserDto.getDisplayName();
             }
@@ -267,7 +268,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             if (!IaisCommonUtils.isEmpty(applicationDtoList2)){
                 fee = applicationDtoList2.get(0).getReturnFee();
             }
-
             Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
             msgInfoMap.put("Applicant", applicantName);
             msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(oldApplicationDto.getApplicationType()));
@@ -276,27 +276,21 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             msgInfoMap.put("S_LName",serviceName);
             msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
             msgInfoMap.put("ApplicationDate",Formatter.formatDate(applicationGroupDto.getSubmitDt()));
-            if (charity){
+            if (StringUtil.isEmpty(payMethod)){
                 msgInfoMap.put("paymentType","2");
                 msgInfoMap.put("paymentMode","");
                 msgInfoMap.put("returnMount",0.0);
-            }else {
+            }else{
                 msgInfoMap.put("returnMount", fee);
-                if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(isByGIRO)) {
+                if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
                     msgInfoMap.put("paymentType", "0");
-                    msgInfoMap.put("paymentMode", "GIRO");
-                } else if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(isByGIRO)) {
+                    msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO));
+                }else{
                     msgInfoMap.put("paymentType", "1");
-                    msgInfoMap.put("paymentMode", "Credit / Debit Card");
-                } else if (ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(isByGIRO)) {
-                    msgInfoMap.put("paymentType", "1");
-                    msgInfoMap.put("paymentMode", "NETS");
-                } else {
-                    msgInfoMap.put("paymentType", "1");
-                    msgInfoMap.put("paymentMode", "Online Payment");
+                    msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(payMethod));
                 }
             }
-            msgInfoMap.put("adminFee", "100");
+            msgInfoMap.put("adminFee", ApplicationConsts.PAYMRNT_ADMIN_FEE);
             msgInfoMap.put("systemLink", loginUrl);
             msgInfoMap.put("emailAddress", systemAddressOne);
             try {

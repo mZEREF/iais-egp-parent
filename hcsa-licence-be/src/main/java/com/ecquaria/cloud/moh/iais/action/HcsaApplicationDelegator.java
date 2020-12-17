@@ -2195,14 +2195,14 @@ public class HcsaApplicationDelegator {
                             ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(oldApplication.getAppGrpId()).getEntity();
 //                            ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
                             OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
-                            String licenseeId1 = applicationGroupDto.getLicenseeId();
-                            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId1).getEntity();
-                            if(licenseeDto != null) {
-                                LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
-                                if (licenseeEntityDto != null){
-                                    charity = "CC".equalsIgnoreCase(licenseeEntityDto.getEntityType());
-                                }
-                            }
+//                            String licenseeId1 = applicationGroupDto.getLicenseeId();
+//                            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId1).getEntity();
+//                            if(licenseeDto != null) {
+//                                LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
+//                                if (licenseeEntityDto != null){
+//                                    charity = "CC".equalsIgnoreCase(licenseeEntityDto.getEntityType());
+//                                }
+//                            }
                             if(orgUserDto != null){
                                 applicantName = orgUserDto.getDisplayName();
                             }
@@ -2227,28 +2227,21 @@ public class HcsaApplicationDelegator {
                                 msgInfoMap.put("S_LName",serviceName);
                                 msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
                                 msgInfoMap.put("ApplicationDate",applicationViewDto.getSubmissionDate().split(" ")[0]);
-                                if (charity){
-                                    msgInfoMap.put("returnMount",0.0);
-                                    msgInfoMap.put("paymentMode","");
+                                if (StringUtil.isEmpty(paymentMethod)){
                                     msgInfoMap.put("paymentType","2");
+                                    msgInfoMap.put("paymentMode","");
+                                    msgInfoMap.put("returnMount",0.0);
                                 }else{
-                                    msgInfoMap.put("returnMount",fee);
+                                    msgInfoMap.put("returnMount", fee);
                                     if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(paymentMethod)){
-                                        msgInfoMap.put("paymentMode","GIRO");
-                                        msgInfoMap.put("paymentType","0");
-                                    }else if(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(paymentMethod)){
-                                        msgInfoMap.put("paymentType","1");
-                                        msgInfoMap.put("paymentMode","Credit / Debit Card");
-                                    }else if (ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(paymentMethod)){
-                                        msgInfoMap.put("paymentType","1");
-                                        msgInfoMap.put("paymentMode","NETS");
-                                    }
-                                    else{
-                                        msgInfoMap.put("paymentMode","Online Payment");
-                                        msgInfoMap.put("paymentType","1");
+                                        msgInfoMap.put("paymentType", "0");
+                                        msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO));
+                                    }else{
+                                        msgInfoMap.put("paymentType", "1");
+                                        msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(paymentMethod));
                                     }
                                 }
-                                msgInfoMap.put("adminFee","100");
+                                msgInfoMap.put("adminFee", ApplicationConsts.PAYMRNT_ADMIN_FEE);
                                 msgInfoMap.put("systemLink",loginUrl);
                                 msgInfoMap.put("emailAddress",systemAddressOne);
                                 sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_EMAIL,msgInfoMap,oldApplication);
