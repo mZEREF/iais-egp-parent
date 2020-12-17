@@ -149,9 +149,16 @@
                 html += data.roleSelect;
                 html += ' <span id="error_role" name="iaisErrorMsg" class="error-msg"></span></div>';
                 $("#serviceDivByrole").html(html);
+                $("div.premSelect->ul").mCustomScrollbar({
+                        advanced:{
+                            updateOnContentResize: true
+                        }
+                    }
+                );
             }
         });
     })
+
 
     $("#mode").change(function () {
         if($(this).val() =="Email"){
