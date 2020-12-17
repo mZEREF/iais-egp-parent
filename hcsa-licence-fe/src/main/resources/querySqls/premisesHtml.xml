@@ -608,28 +608,25 @@
         <![CDATA[
             <div class="operationDiv">
                 <div class="form-group">
-                    <label class="col-xs-12 col-md-4 control-label">Floor No.</label>
+                    <label class="col-xs-12 col-md-4 control-label"></label>
                     <div class=" col-xs-7 col-sm-4 col-md-5 ">
-                        <input class="floorNo" type="text" name="${premIndex}${premType}FloorNo${opCount}" maxlength="3" autocomplete="off">
-                        <span class="error-msg"></span>
-                    </div>
-                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
-                        <p>(Additional)</p>
+                        <div class="row">
+                            <div class=" col-xs-12 col-md-5 ">
+                                <input type="text" name="0onSiteFloorNo0" class="floorNo" value="" maxlength="3" autocomplete="off">
+                            </div>
+                            <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                            <div class=" col-xs-12 col-md-5 ">
+                                <input type="text" name="0onSiteUnitNo0" class="unitNo" value="" maxlength="5" autocomplete="off">
+                            </div>
+                        </div>
                     </div>
                     <div class=" col-xs-7 col-sm-4 col-md-1 ">
-                        <p class="text-danger opDel" style="position: absolute;margin-top: 48px;margin-left: -40px;"><em class="fa fa-times-circle"></em></p>
+                        <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-md-4 control-label">Unit No.</label>
-                    <div class=" col-xs-7 col-sm-4 col-md-5 ">
-                        <input class="unitNo" type="text" name="${premIndex}${premType}UnitNo${opCount}" maxlength="5" autocomplete="off">
-                        <span class="error-msg"></span>
+                    <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
+                        <p class="text-danger opDel"><em class="fa fa-times-circle"></em></p>
                     </div>
-                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
-                        <p>(Additional)</p>
-                    </div>
-                </div>
+                <div class="clear"></div></div>
             </div>
         ]]>
     </sql>

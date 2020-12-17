@@ -296,17 +296,19 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Floor No." width="12"/>
+                        <iais:field value="Floor / Unit No." width="12"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                            <iais:input maxLength="3" type="text" name="onSiteFloorNo" id="siteFloorNo" value="${appGrpPremisesDto.floorNo}"></iais:input>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_floorNo${status.index}"></span>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row>
-                        <iais:field value="Unit No." width="12"/>
-                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                            <iais:input maxLength="5" type="text" name="onSiteUnitNo" id="siteUnitNo" value="${appGrpPremisesDto.unitNo}"></iais:input>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_unitNo${status.index}"></span>
+                            <div class="row">
+                                <iais:value cssClass="col-xs-12 col-md-5 ">
+                                    <iais:input maxLength="3" type="text" name="onSiteFloorNo" id="siteFloorNo" value="${appGrpPremisesDto.floorNo}"></iais:input>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_floorNo${status.index}"></span>
+                                </iais:value>
+                                <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                                <iais:value cssClass="col-xs-12 col-md-5 ">
+                                    <iais:input maxLength="5" type="text" name="onSiteUnitNo" id="siteUnitNo" value="${appGrpPremisesDto.unitNo}"></iais:input>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_unitNo${status.index}"></span>
+                                </iais:value>
+                            </div>
                         </iais:value>
                     </iais:row>
                     <div class="operationDivGroup">
@@ -314,27 +316,26 @@
                             <c:forEach var="operationDto" items="${appGrpPremisesDto.appPremisesOperationalUnitDtos}" varStatus="opStat">
                                 <div class="operationDiv">
                                     <iais:row>
-                                        <iais:field value="Floor No." width="12"/>
+                                        <iais:field value="" width="12"/>
                                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                                            <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}onSiteFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
-                                            <span class="error-msg" name="iaisErrorMsg" id="error_opFloorNo${premValue}${opStat.index}"></span>
-                                        </iais:value>
-                                        <div class=" col-xs-7 col-sm-4 col-md-2 ">
-                                            <p>(Additional)</p>
-                                        </div>
-                                        <div class=" col-xs-7 col-sm-4 col-md-1 ">
-                                            <p class="text-danger opDel" style="position: absolute;margin-top: 48px;margin-left: -40px;"><em class="fa fa-times-circle"></em></p>
-                                        </div>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Unit No." width="12"/>
-                                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                                            <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}onSiteUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
-                                            <span class="error-msg" name="iaisErrorMsg" id="error_opUnitNo${premValue}${opStat.index}"></span>
+                                            <div class="row">
+                                                <iais:value cssClass="col-xs-12 col-md-5 ">
+                                                    <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}onSiteFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
+                                                    <span class="error-msg" name="iaisErrorMsg" id="error_opFloorNo${premValue}${opStat.index}"></span>
+                                                </iais:value>
+                                                <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                                                <iais:value cssClass="col-xs-12 col-md-5 ">
+                                                    <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}onSiteUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
+                                                    <span class="error-msg" name="iaisErrorMsg" id="error_opUnitNo${premValue}${opStat.index}"></span>
+                                                </iais:value>
+                                            </div>
                                             <span class="error-msg" name="iaisErrorMsg" id="error_floorUnit${premValue}${opStat.index}"></span>
                                         </iais:value>
-                                        <div class=" col-xs-7 col-sm-4 col-md-2 ">
-                                            <p>(Additional)</p>
+                                        <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                                            <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                                        </div>
+                                        <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
+                                            <p class="text-danger opDel"><em class="fa fa-times-circle"></em></p>
                                         </div>
                                     </iais:row>
                                 </div>
@@ -583,17 +584,19 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Floor No." width="12"/>
+                        <iais:field value="Floor / Unit No." width="12"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                            <iais:input maxLength="3" type="text" name="conveyanceFloorNo" id="conveyanceFloorNo" value="${appGrpPremisesDto.conveyanceFloorNo}"></iais:input>
-                            <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceFloorNo${status.index}"></span>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row>
-                        <iais:field value="Unit No." width="12"/>
-                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                            <iais:input maxLength="5" type="text" name="conveyanceUnitNo"  value="${appGrpPremisesDto.conveyanceUnitNo}"></iais:input>
-                            <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceUnitNo${status.index}"></span>
+                            <div class="row">
+                                <iais:value cssClass="col-xs-12 col-md-5 ">
+                                    <iais:input maxLength="3" type="text" name="conveyanceFloorNo" id="conveyanceFloorNo" value="${appGrpPremisesDto.conveyanceFloorNo}"></iais:input>
+                                    <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceFloorNo${status.index}"></span>
+                                </iais:value>
+                                <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                                <iais:value cssClass="col-xs-12 col-md-5 ">
+                                    <iais:input maxLength="5" type="text" name="conveyanceUnitNo"  value="${appGrpPremisesDto.conveyanceUnitNo}"></iais:input>
+                                    <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceUnitNo${status.index}"></span>
+                                </iais:value>
+                            </div>
                         </iais:value>
                     </iais:row>
                     <div class="operationDivGroup">
@@ -601,27 +604,26 @@
                         <c:forEach var="operationDto" items="${appGrpPremisesDto.appPremisesOperationalUnitDtos}" varStatus="opStat">
                             <div class="operationDiv">
                                 <iais:row>
-                                    <iais:field value="Floor No." width="12"/>
+                                    <iais:field value="" width="12"/>
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                                        <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}conveyanceFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_opConvFloorNo${premValue}${opStat.index}"></span>
-                                    </iais:value>
-                                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
-                                        <p>(Additional)</p>
-                                    </div>
-                                    <div class=" col-xs-7 col-sm-4 col-md-1 ">
-                                        <p class="text-danger opDel" style="position: absolute;margin-top: 48px;margin-left: -40px;"><em class="fa fa-times-circle"></em></p>
-                                    </div>
-                                </iais:row>
-                                <iais:row>
-                                    <iais:field value="Unit No." width="12"/>
-                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                                        <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}conveyanceUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_opConvUnitNo${premValue}${opStat.index}"></span>
+                                        <div class="row">
+                                            <iais:value cssClass="col-xs-12 col-md-5 ">
+                                                <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}conveyanceFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
+                                                <span class="error-msg" name="iaisErrorMsg" id="error_opConvFloorNo${premValue}${opStat.index}"></span>
+                                            </iais:value>
+                                            <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                                            <iais:value cssClass="col-xs-12 col-md-5 ">
+                                                <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}conveyanceUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
+                                                <span class="error-msg" name="iaisErrorMsg" id="error_opConvUnitNo${premValue}${opStat.index}"></span>
+                                            </iais:value>
+                                        </div>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_ConvFloorUnit${premValue}${opStat.index}"></span>
                                     </iais:value>
-                                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
-                                        <p>(Additional)</p>
+                                    <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                                        <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                                    </div>
+                                    <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
+                                        <p class="text-danger opDel"><em class="fa fa-times-circle"></em></p>
                                     </div>
                                 </iais:row>
                             </div>
@@ -837,17 +839,19 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Floor No." width="12"/>
+                        <iais:field value="Floor / Unit No." width="12"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                            <iais:input maxLength="3" type="text" name="offSiteFloorNo" id="offSiteFloorNo" value="${appGrpPremisesDto.offSiteFloorNo}"></iais:input>
-                            <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteFloorNo${status.index}"></span>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row>
-                        <iais:field value="Unit No." width="12"/>
-                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                            <iais:input maxLength="5" type="text" name="offSiteUnitNo"  value="${appGrpPremisesDto.offSiteUnitNo}"></iais:input>
-                            <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteUnitNo${status.index}"></span>
+                            <div class="row">
+                                <iais:value cssClass="col-xs-12 col-md-5 ">
+                                    <iais:input maxLength="3" type="text" name="offSiteFloorNo" id="offSiteFloorNo" value="${appGrpPremisesDto.offSiteFloorNo}"></iais:input>
+                                    <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteFloorNo${status.index}"></span>
+                                </iais:value>
+                                <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                                <iais:value cssClass="col-xs-12 col-md-5 ">
+                                    <iais:input maxLength="5" type="text" name="offSiteUnitNo"  value="${appGrpPremisesDto.offSiteUnitNo}"></iais:input>
+                                    <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteUnitNo${status.index}"></span>
+                                </iais:value>
+                            </div>
                         </iais:value>
                     </iais:row>
                     <div class="operationDivGroup">
@@ -855,27 +859,26 @@
                         <c:forEach var="operationDto" items="${appGrpPremisesDto.appPremisesOperationalUnitDtos}" varStatus="opStat">
                             <div class="operationDiv">
                                 <iais:row>
-                                    <iais:field value="Floor No." width="12"/>
+                                    <iais:field value="" width="12"/>
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                                        <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}offSiteFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_opOffFloorNo${premValue}${opStat.index}"></span>
-                                    </iais:value>
-                                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
-                                        <p>(Additional)</p>
-                                    </div>
-                                    <div class=" col-xs-7 col-sm-4 col-md-1 ">
-                                        <p class="text-danger opDel" style="position: absolute;margin-top: 48px;margin-left: -40px;"><em class="fa fa-times-circle"></em></p>
-                                    </div>
-                                </iais:row>
-                                <iais:row>
-                                    <iais:field value="Unit No." width="12"/>
-                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                                        <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}offSiteUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_opOffUnitNo${premValue}${opStat.index}"></span>
+                                        <div class="row">
+                                            <iais:value cssClass="col-xs-12 col-md-5 ">
+                                                <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}offSiteFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
+                                                <span class="error-msg" name="iaisErrorMsg" id="error_opOffFloorNo${premValue}${opStat.index}"></span>
+                                            </iais:value>
+                                            <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                                            <iais:value cssClass="col-xs-12 col-md-5 ">
+                                                <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}offSiteUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
+                                                <span class="error-msg" name="iaisErrorMsg" id="error_opOffUnitNo${premValue}${opStat.index}"></span>
+                                            </iais:value>
+                                        </div>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_offFloorUnit${premValue}${opStat.index}"></span>
                                     </iais:value>
-                                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
-                                        <p>(Additional)</p>
+                                    <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                                        <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                                    </div>
+                                    <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
+                                        <p class="text-danger opDel"><em class="fa fa-times-circle"></em></p>
                                     </div>
                                 </iais:row>
                             </div>

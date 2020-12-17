@@ -1883,7 +1883,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 if(flag){
                     String floorUnitStr = operationalUnitDto.getFloorNo() + operationalUnitDto.getUnitNo();
                     if(floorUnitList.contains(floorUnitStr)){
-                        errorMap.put(unitErrName + opLength, "NEW_ERR0017");
+                        errorMap.put(floorUnitErrName + opLength, "NEW_ERR0017");
                     }else{
                         floorUnitList.add(floorUnitStr);
                     }
