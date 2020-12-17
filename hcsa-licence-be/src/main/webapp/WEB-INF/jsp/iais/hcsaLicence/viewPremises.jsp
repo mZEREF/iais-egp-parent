@@ -119,7 +119,7 @@
                                   <c:if test="${'ONSITE'==appGrpPremDto.premisesType}">
                                     <div class="row">
                                       <div class="col-md-6">
-                                        Fire Safety & Shelter Bureau Ref No.
+                                        Fire Safety & Shelter Bureau Ref. No.
                                       </div>
                                       <div class="col-md-6">
                                         <div class="col-md-6">

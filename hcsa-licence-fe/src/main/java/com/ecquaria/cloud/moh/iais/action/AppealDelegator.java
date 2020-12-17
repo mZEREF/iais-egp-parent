@@ -53,7 +53,7 @@ public class AppealDelegator {
     @Autowired
     private SystemParamConfig systemParamConfig;
 
-    public void preparetionData(BaseProcessClass bpc){
+    public void preparetionData(BaseProcessClass bpc) throws IOException {
         log.info("start**************preparetionData************");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(loginContext!=null){
@@ -69,7 +69,7 @@ public class AppealDelegator {
                     AppPremiseMiscDto entity2 = applicationFeClient.getAppPremisesMisc(entity1.getId()).getEntity();
                     bpc.request.setAttribute("applicationId",entity2.getRelateRecId());
                     appealService.getMessage(bpc.request);
-                    bpc. request.setAttribute("crud_action_type","");
+                    bpc. request.setAttribute("crud_action_type","appeal");
                     return;
                 }
             }
@@ -77,12 +77,11 @@ public class AppealDelegator {
         String crud_action_type = bpc.request.getParameter("crud_action_type");
         if("inbox".equals(crud_action_type)){
             bpc. request.setAttribute("crud_action_type","inbox");
-            inbox(bpc);
             return;
         }
         appealService.getMessage(bpc.request);
         log.info("end**************preparetionData************");
-        bpc. request.setAttribute("crud_action_type","");
+        bpc. request.setAttribute("crud_action_type","appeal");
     }
 
     public void appealFrom(BaseProcessClass bpc){

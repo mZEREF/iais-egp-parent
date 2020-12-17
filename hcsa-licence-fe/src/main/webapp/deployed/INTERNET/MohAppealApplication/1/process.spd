@@ -148,10 +148,10 @@
    <Description/>
    <SwitchCase component="/Steps/InvokeStep/cancel" value="&quot;cancel&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/Step6" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="220" y="120">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="220" y="120">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/Step5" value="&quot;inbox&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Step6" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/Step6" value="&quot;appeal&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

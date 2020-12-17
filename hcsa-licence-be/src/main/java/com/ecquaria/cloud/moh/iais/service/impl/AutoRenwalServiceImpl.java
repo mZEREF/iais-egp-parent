@@ -184,6 +184,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         String value = systemParameterDto.getValue();
         String valueType = systemParameterDto.getValueType();
         String paramType = systemParameterDto.getParamType();
+        String id = systemParameterDto.getId();
         if(INT.equals(valueType)){
             int i = Integer.parseInt(value);
             //month
@@ -197,12 +198,77 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 map.put(systemParameterDto.getId(),i1+"");
                 return i1;
             }else if(WEEK_DAY.equals(paramType)){//week
-                Calendar calendar=Calendar.getInstance();
-                calendar.setTime(new Date());
-                calendar.add(Calendar.WEEK_OF_MONTH,i);
-                int i1 = Integer.parseInt(String.valueOf((calendar.getTimeInMillis() - c.getTimeInMillis()) / (24 * 60 * 60 * 1000)));
-                map.put(systemParameterDto.getId(),i1+"");
-                return i1;
+                SystemParameterDto systemParameterDto4 = systemBeLicClient.getParameterByRowguid(F_60).getEntity();
+                if(S_45.equals(id)){
+                    Calendar calendar =Calendar.getInstance();
+                    calendar.setTime(new Date());
+                    Calendar calendar1=Calendar.getInstance();
+                    calendar1.setTime(new Date());
+                    calendar1.add(Calendar.WEEK_OF_MONTH,i);
+                    if(MONTH_DAY.equals(systemParameterDto4.getParamType())){
+                        calendar.add(Calendar.MONTH,Integer.parseInt(systemParameterDto4.getValue()));
+                        int i1 = Integer.parseInt(String.valueOf((calendar.getTimeInMillis() - c.getTimeInMillis()) / (24 * 60 * 60 * 1000)));
+                        int i2 = Integer.parseInt(String.valueOf((calendar1.getTimeInMillis() - c.getTimeInMillis()) / (24 * 60 * 60 * 1000)));
+                        int i3 = i1 - i2;
+                        if(i3>0){
+                            map.put(systemParameterDto.getId(),i3+"");
+                            return i3;
+                        }else if(i3<=0){
+                            map.put(systemParameterDto.getId(),0+"");
+                            return 0;
+                        }
+                    }else if(WEEK_DAY.equals(systemParameterDto4.getParamType())){
+                        calendar.add(Calendar.WEEK_OF_MONTH,Integer.parseInt(systemParameterDto4.getValue()));
+                        int i1 = Integer.parseInt(String.valueOf((calendar.getTimeInMillis() - c.getTimeInMillis()) / (24 * 60 * 60 * 1000)));
+                        int i2 = Integer.parseInt(String.valueOf((calendar1.getTimeInMillis() - c.getTimeInMillis()) / (24 * 60 * 60 * 1000)));
+                        int i3 = i1 - i2;
+                        if(i3>0){
+                            map.put(systemParameterDto.getId(),i3+"");
+                            return i3;
+                        }else if(i3<=0){
+                            map.put(systemParameterDto.getId(),0+"");
+                            return 0;
+                        }
+                    }
+                }else if(S_30.equals(id)){
+                    SystemParameterDto systemParameterDto5 = systemBeLicClient.getParameterByRowguid(S_45).getEntity();
+                    Calendar calendar=Calendar.getInstance();
+                    calendar.setTime(new Date());
+                    Calendar calendar1=Calendar.getInstance();
+                    calendar1.setTime(new Date());
+                    calendar1.add(Calendar.WEEK_OF_MONTH,i);
+                    Calendar calendar2=Calendar.getInstance();
+                    calendar2.setTime(new Date());
+                    calendar2.add(Calendar.MONTH,Integer.parseInt(systemParameterDto.getValue()));
+                    if(MONTH_DAY.equals(systemParameterDto5.getParamType())){
+                        calendar.add(Calendar.MONTH,Integer.parseInt(systemParameterDto5.getValue()));
+                        int i1 = Integer.parseInt(String.valueOf((calendar.getTimeInMillis() - c.getTimeInMillis()) / (24 * 60 * 60 * 1000)));
+                        int i2 = Integer.parseInt(String.valueOf((calendar1.getTimeInMillis() - c.getTimeInMillis()) / (24 * 60 * 60 * 1000)));
+                        int i4 = Integer.parseInt(String.valueOf((calendar2.getTimeInMillis() - c.getTimeInMillis()) / (24 * 60 * 60 * 1000)));
+                        int i3 = i4 - i1 - i2;
+                        if(i3>0){
+                            map.put(systemParameterDto.getId(),i3+"");
+                            return i3;
+                        }else if(i3<=0){
+                            map.put(systemParameterDto.getId(),0+"");
+                            return 0;
+                        }
+
+                    }else if(WEEK_DAY.equals(systemParameterDto5.getParamType())){
+                        calendar.add(Calendar.WEEK_OF_MONTH,Integer.parseInt(systemParameterDto5.getValue()));
+                        int i1 = Integer.parseInt(String.valueOf((calendar.getTimeInMillis() - c.getTimeInMillis()) / (24 * 60 * 60 * 1000)));
+                        int i2 = Integer.parseInt(String.valueOf((calendar1.getTimeInMillis() - c.getTimeInMillis()) / (24 * 60 * 60 * 1000)));
+                        int i4 = Integer.parseInt(String.valueOf((calendar2.getTimeInMillis() - c.getTimeInMillis()) / (24 * 60 * 60 * 1000)));
+                        int i3 = i4 - i1 - i2;
+                        if(i3>0){
+                            map.put(systemParameterDto.getId(),i3+"");
+                            return i3;
+                        }else if(i3<=0){
+                            map.put(systemParameterDto.getId(),0+"");
+                            return 0;
+                        }
+                    }
+                }
             }else if(REMINDER_DAY.equals(paramType)){
                 map.put(systemParameterDto.getId(),i+"");
                 return i;

@@ -128,6 +128,7 @@ public class RequestForChangeMenuDelegator {
     public void start(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do start start ...."));
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
+        HcsaServiceCacheHelper.flushServiceMapping();
         premiseFilterParameter.setPageSize(SysParamUtil.getDefaultPageSize());
         premiseFilterParameter.setPageNo(1);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_PREMISES_LIST);

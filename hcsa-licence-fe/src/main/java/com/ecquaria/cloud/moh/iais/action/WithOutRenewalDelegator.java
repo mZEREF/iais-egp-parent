@@ -565,7 +565,7 @@ public class WithOutRenewalDelegator {
         appEditSelectDto.setDocEdit(true);
         appEditSelectDto.setPoEdit(true);
         appEditSelectDto.setDocEdit(true);
-        AppFeeDetailsDto appFeeDetailsDto = new AppFeeDetailsDto();
+        List<AppFeeDetailsDto> appFeeDetailsDto = IaisCommonUtils.genNewArrayList();
         String hasSubmit = (String) ParamUtil.getSessionAttr(bpc.request, "hasAppSubmit");
         if ("Y".equals(hasSubmit)) {
             return;
@@ -725,7 +725,6 @@ public class WithOutRenewalDelegator {
 //                log.error(StringUtil.changeForLog("feeDto detailFeeDtos null"));
 //            }
             //Double amount = feeDto.getTotal();
-            appFeeDetailsDto.setAdmentFee(0.0);
             //appFeeDetailsDto.setLaterFee(lateFee);
             //appFeeDetailsDto.setBaseFee(amount - lateFee);
             //appSubmissionDto.setLateFee(lateFee);
@@ -929,8 +928,17 @@ public class WithOutRenewalDelegator {
         for(AppSubmissionDto appSubmissionDto : noAutoAppSubmissionDtos){
             appSubmissionDto.setAppGrpNo(appGrpNo);
         }
-        appFeeDetailsDto.setApplicationNo(appGrpNo + "-01");
-        appSubmissionService.saveAppFeeDetails(appFeeDetailsDto);
+        int i=0;
+        for( AppFeeDetailsDto detailsDto : appFeeDetailsDto){
+            i=i+1;
+            if(i<10){
+                detailsDto.setApplicationNo(appGrpNo+"-0"+i);
+            }else {
+                detailsDto.setApplicationNo(appGroupNo+"-"+i);
+            }
+            appSubmissionService.saveAppFeeDetails(detailsDto);
+        }
+
 
         appSubmissionDtos1.addAll(noAutoAppSubmissionDtos);
         AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
@@ -1011,7 +1019,7 @@ public class WithOutRenewalDelegator {
         ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
     }
 
-    private void setSubmissionAmount(List<AppSubmissionDto> appSubmissionDtoList,FeeDto feeDto,AppFeeDetailsDto appFeeDetailsDto,BaseProcessClass bpc){
+    private void setSubmissionAmount(List<AppSubmissionDto> appSubmissionDtoList,FeeDto feeDto,List<AppFeeDetailsDto> appFeeDetailsDto,BaseProcessClass bpc){
         List<FeeExtDto> detailFeeDtoList = feeDto.getDetailFeeDto();
         Double total = feeDto.getTotal();
         String totalString = Formatter.formatterMoney(total);
@@ -1022,6 +1030,7 @@ public class WithOutRenewalDelegator {
         }
         int index = 0;
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
+            AppFeeDetailsDto appFeeDetailsDto1=new AppFeeDetailsDto();
             FeeExtDto feeExtDto = detailFeeDtoList.get(index);
             Double lateFeeAmount = feeExtDto.getLateFeeAmoumt();
             Double amount = feeExtDto.getAmount();
@@ -1029,13 +1038,13 @@ public class WithOutRenewalDelegator {
             appSubmissionDto.setLateFeeStr(Formatter.formatterMoney(lateFeeAmount));
             appSubmissionDto.setAmount(amount);
             appSubmissionDto.setAmountStr(Formatter.formatterMoney(amount));
-            appFeeDetailsDto.setBaseFee(amount);
+            appFeeDetailsDto1.setBaseFee(amount);
             if(StringUtil.isEmpty(lateFeeAmount)){
-                appFeeDetailsDto.setLaterFee(0.0);
+                appFeeDetailsDto1.setLaterFee(0.0);
             }else {
-                appFeeDetailsDto.setLaterFee(lateFeeAmount);
+                appFeeDetailsDto1.setLaterFee(lateFeeAmount);
             }
-            appFeeDetailsDto.setAdmentFee(total);
+            appFeeDetailsDto1.setAdmentFee(total);
             index ++;
         }
     }

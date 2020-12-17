@@ -564,7 +564,10 @@ public class AppealApproveBatchjob {
             AppPremiseMiscDto premiseMiscDto = premiseMiscDtoList.get(0);
             String oldAppId = premiseMiscDto.getRelateRecId();
             oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
-            appType =  MasterCodeUtil.getCodeDesc(oldApplication.getApplicationType());
+            if(oldApplication!=null){
+                appType =  MasterCodeUtil.getCodeDesc(oldApplication.getApplicationType());
+            }
+
         }
         if(StringUtil.isEmpty(appType)){
             appType = "Licence";

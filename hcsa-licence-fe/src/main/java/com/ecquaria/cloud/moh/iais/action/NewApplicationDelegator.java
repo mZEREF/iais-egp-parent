@@ -176,6 +176,7 @@ public class NewApplicationDelegator {
      */
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the do Start start ...."));
+        HcsaServiceCacheHelper.flushServiceMapping();
         //fro draft loading
         String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
         //for rfi loading

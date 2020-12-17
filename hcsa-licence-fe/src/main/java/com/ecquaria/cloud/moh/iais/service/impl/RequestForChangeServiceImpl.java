@@ -626,7 +626,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         }
                         String ScdfRefNo = appGrpPremisesDtoList.get(i).getScdfRefNo();
                         if(!StringUtil.isEmpty(ScdfRefNo) && ScdfRefNo.length() > 66){
-                            String general_err0041=NewApplicationHelper.repLength("Fire Safety & Shelter Bureau Ref No.","66");
+                            String general_err0041=NewApplicationHelper.repLength("Fire Safety & Shelter Bureau Ref. No.","66");
                             errorMap.put("ScdfRefNo" + i, general_err0041);
                         }
 
