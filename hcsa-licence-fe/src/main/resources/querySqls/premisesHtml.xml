@@ -102,20 +102,21 @@
                   <span class="error-msg"></span>
                 </div>
               <div class="clear"></div></div>
+
               <div class="form-group">
-                <label class="col-xs-12 col-md-4 control-label">Floor No.</label>
+                <label class="col-xs-12 col-md-4 control-label">Floor / Unit No.</label>
                 <div class=" col-xs-7 col-sm-4 col-md-5 ">
-                  <input type="text" id="siteFloorNo" name="onSiteFloorNo" maxlength="3" autocomplete="off">
-                  <span class="error-msg"></span>
+                    <div class="row">
+                        <div class=" col-xs-12 col-md-5 ">
+                            <input type="text" id="siteFloorNo" name="onSiteFloorNo" value="" maxlength="3" autocomplete="off">
+                        </div>
+                        <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                        <div class=" col-xs-12 col-md-5 ">
+                            <input type="text" id="siteUnitNo" name="onSiteUnitNo" value="" maxlength="5" autocomplete="off">
+                        </div>
+                    </div>
                 </div>
-              <div class="clear"></div></div>
-              <div class="form-group">
-                <label class="col-xs-12 col-md-4 control-label">Unit No.</label>
-                <div class=" col-xs-7 col-sm-4 col-md-5 ">
-                  <input type="text" id="siteUnitNo" name="onSiteUnitNo" maxlength="5" autocomplete="off">
-                  <span class="error-msg"></span>
-                </div>
-              <div class="clear"></div></div>
+                <div class="clear"></div></div>
 
               <div class="operationDivGroup">
                   <div class="form-group addOpDiv">
@@ -278,18 +279,21 @@
                   <input type="text" id="conveyanceBlkNo" name="conveyanceBlkNo" class="conveyanceBlkNo" maxlength="10" autocomplete="off">
                 </div>
               <div class="clear"></div></div>
-              <div class="form-group">
-                <label class="col-xs-12 col-md-4 control-label">Floor No.</label>
-                <div class=" col-xs-7 col-sm-4 col-md-5 ">
-                  <input type="text" id="conveyanceFloorNo" name="conveyanceFloorNo" maxlength="3" autocomplete="off">
+
+          <div class="form-group">
+            <label class="col-xs-12 col-md-4 control-label">Floor / Unit No.</label>
+            <div class=" col-xs-7 col-sm-4 col-md-5 ">
+                <div class="row">
+                    <div class=" col-xs-12 col-md-5 ">
+                        <input type="text" id="siteFloorNo" name="conveyanceFloorNo" value="" maxlength="3" autocomplete="off">
+                    </div>
+                    <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                    <div class=" col-xs-12 col-md-5 ">
+                        <input type="text" id="siteUnitNo" name="conveyanceUnitNo" value="" maxlength="5" autocomplete="off">
+                    </div>
                 </div>
-              <div class="clear"></div></div>
-              <div class="form-group">
-                <label class="col-xs-12 col-md-4 control-label">Unit No.</label>
-                <div class=" col-xs-7 col-sm-4 col-md-5 ">
-                  <input type="text" id="conveyanceUnitNo" name="conveyanceUnitNo" maxlength="5" autocomplete="off">
-                </div>
-              <div class="clear"></div></div>
+            </div>
+            <div class="clear"></div></div>
 
             <div class="operationDivGroup">
               <div class="form-group addOpDiv">
@@ -425,23 +429,21 @@
                         </div>
                         <div class="clear"></div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-xs-12 col-md-4 control-label">Floor No.</label>
-                        <div class=" col-xs-7 col-sm-4 col-md-5 ">
-                            <input type="text" id="offSiteFloorNo" name="offSiteFloorNo" maxlength="3"
-                                   autocomplete="off">
-                        </div>
-                        <div class="clear"></div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-12 col-md-4 control-label">Unit No.</label>
-                        <div class=" col-xs-7 col-sm-4 col-md-5 ">
-                            <input type="text" id="offSiteUnitNo" name="offSiteUnitNo" maxlength="5"
-                                   autocomplete="off">
-                        </div>
-                        <div class="clear"></div>
-                    </div>
 
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Floor / Unit No.</label>
+                        <div class=" col-xs-7 col-sm-4 col-md-5 ">
+                            <div class="row">
+                                <div class=" col-xs-12 col-md-5 ">
+                                    <input type="text" id="siteFloorNo" name="offSiteFloorNo" value="" maxlength="3" autocomplete="off">
+                                </div>
+                                <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                                <div class=" col-xs-12 col-md-5 ">
+                                    <input type="text" id="siteUnitNo" name="offSiteUnitNo" value="" maxlength="5" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div></div>
                     <div class="operationDivGroup">
                         <div class="form-group addOpDiv">
                            <label class="col-xs-12 col-md-4 control-label"></label>
@@ -612,11 +614,11 @@
                     <div class=" col-xs-7 col-sm-4 col-md-5 ">
                         <div class="row">
                             <div class=" col-xs-12 col-md-5 ">
-                                <input type="text" name="0onSiteFloorNo0" class="floorNo" value="" maxlength="3" autocomplete="off">
+                                <input type="text" name="${premIndex}${premType}FloorNo${opCount}" class="floorNo" value="" maxlength="3" autocomplete="off">
                             </div>
                             <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
                             <div class=" col-xs-12 col-md-5 ">
-                                <input type="text" name="0onSiteUnitNo0" class="unitNo" value="" maxlength="5" autocomplete="off">
+                                <input type="text" name="${premIndex}${premType}UnitNo${opCount}" class="unitNo" value="" maxlength="5" autocomplete="off">
                             </div>
                         </div>
                     </div>
