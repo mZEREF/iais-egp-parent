@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -17,6 +18,8 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -36,10 +39,15 @@ public class DeleteHelperDelegator {
 
     @Autowired
     private BelicationClient belicationClient;
+
+    @Autowired
+    private LicenceClient licenceClient;
     
     private final String MIMA = "P@ssword$";
 
     private final String HCSA_APPLICATION_SQL_FILE = "be_hacsa_application_delete.sql";
+
+    private final String HCSA_LICENCE_SQL_FILE = "be_hacsa_licence_delete.sql";
 
     public void start(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("deleteHelperDelegator do cleanSession start ...."));
@@ -54,42 +62,71 @@ public class DeleteHelperDelegator {
         String userAccountString = ParamUtil.getString(bpc.request,"userAccountString");
         LicenseeDto licenseeDto = queryHandlerService.getLicenseeByUserAccountInfo(userAccountString);
         if(licenseeDto != null){
-            List<ApplicationGroupDto> groupDtos = belicationClient.getAppGrpsByLicenseeId(licenseeDto.getId()).getEntity();
+            String licenseeId = licenseeDto.getId();
 
+            List<ApplicationGroupDto> groupDtos = belicationClient.getAppGrpsByLicenseeId(licenseeId).getEntity();
+            deleteApplication(groupDtos);
+
+            List<LicenceDto> licenceDtos = licenceClient.getLicenceDtosByLicenseeId(licenseeId).getEntity();
+            deleteLicence(licenceDtos);
         }else{
             log.debug(StringUtil.changeForLog("licenseeDto is null"));
         }
     }
 
-    private int deleteLicence(List<ApplicationGroupDto> groupDtos){
+    private int deleteLicence(List<LicenceDto> licenceDtos){
+        int flag = 1;
+        if(!IaisCommonUtils.isEmpty(licenceDtos)){
+            for(LicenceDto licenceDto : licenceDtos){
+                String licenceNo = licenceDto.getLicenceNo();
+                try{
+                    String sql = getRunSql(HCSA_LICENCE_SQL_FILE, licenceNo, "AN200512000809C");
+                    log.debug("delete hacsa licence be sql : " + sql);
+                    belicationClient.doDeleteBySql(sql);
+                }catch (Exception e){
+                    flag = -1;
+                    break;
+                }
+            }
+        }else{
+            flag = 0;
+        }
+        return flag;
+    }
+
+    private int deleteApplication(List<ApplicationGroupDto> groupDtos){
         int flag = 1;
         if(!IaisCommonUtils.isEmpty(groupDtos)){
             for(ApplicationGroupDto applicationGroupDto : groupDtos){
                 String groupNo = applicationGroupDto.getGroupNo();
                 try{
                     String sql = getRunSql(HCSA_APPLICATION_SQL_FILE, groupNo, "AN200512000809C");
+                    log.debug("delete hacsa application be sql : " + sql);
+                    belicationClient.doDeleteBySql(sql);
                 }catch (Exception e){
                     flag = -1;
                     break;
                 }
-
             }
         }else{
             flag = 0;
         }
-
         return flag;
     }
 
     private String getRunSql(String sqlPath, String replaceNo, String targetString) throws Exception{
         String sql = "";
         if(!StringUtil.isEmpty(sqlPath) && !StringUtil.isEmpty(replaceNo)){
-            File file = new File("/" + sqlPath);
+            File file = IaisCommonUtils.getFile("querySqls/" + sqlPath);
             log.debug(StringUtil.changeForLog("file path : " + file.getPath()));
             log.debug(StringUtil.changeForLog("file absolute path : " + file.getAbsolutePath()));
-            sql = readFile(file,replaceNo,targetString);
+            if(file.exists()){
+                sql = readFile(file,replaceNo,targetString);
+            }else{
+                log.error("file no exists");
+            }
         }
-        return sql.toString();
+        return sql;
     }
 
     private String readFile(File file,String replaceNo, String targetString) throws Exception{
@@ -104,7 +141,6 @@ public class DeleteHelperDelegator {
             sql.append(System.lineSeparator());
         }
         br.close();
-
         return sql.toString();
     }
 

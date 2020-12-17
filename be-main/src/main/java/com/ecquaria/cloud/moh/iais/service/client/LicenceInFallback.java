@@ -55,6 +55,14 @@ public class LicenceInFallback implements LicenceClient {
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<List<LicenceDto>> getLicenceDtosByLicenseeId(String licenseeId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 
     @Override
     public FeignResponseEntity<PostInsGroupDto> getPostInsGroupDto(String licId, String corrId) {
