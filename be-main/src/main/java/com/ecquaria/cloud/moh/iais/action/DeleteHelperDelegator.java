@@ -98,7 +98,7 @@ public class DeleteHelperDelegator {
         String temp = null;
         while((temp = br.readLine())!=null){
             if(temp.contains(targetString)){
-                temp= temp.replaceAll(targetString,replaceNo);
+                temp = temp.replaceAll(targetString,replaceNo);
             }
             sql.append(temp);
             sql.append(System.lineSeparator());
