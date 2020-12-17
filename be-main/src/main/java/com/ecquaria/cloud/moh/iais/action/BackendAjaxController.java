@@ -239,6 +239,10 @@ public class BackendAjaxController {
                 boolean canApprove = checkCanApproveStage(canApproveStageDto);
                 if(canApprove){
                     approveCheck = 1;
+                }else
+                {
+                    approveCheck = 0;
+                    break;
                 }
             }
         }
