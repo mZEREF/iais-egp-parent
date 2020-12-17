@@ -1708,7 +1708,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         boolean flag = false;
         String errName = MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field");
         String errDesignation = MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field");
-        String errRegnNo = MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn No.","field");
+        String errRegnNo = MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn. No.","field");
         String errWrkExpYear = MessageUtil.replaceMessage("GENERAL_ERR0006","Relevant working experience (Years)","field");
         String errQualification = MessageUtil.replaceMessage("GENERAL_ERR0006","Qualification","field");
         String errSelSvcPsnel = MessageUtil.replaceMessage("GENERAL_ERR0006","Select Service Personnel","field");

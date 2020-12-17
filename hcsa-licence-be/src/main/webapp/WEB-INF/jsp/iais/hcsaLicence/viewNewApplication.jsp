@@ -275,7 +275,7 @@
                 </tr>
                 <tr>
                   <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn No.</p>
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn. No.</p>
                   </td>
                   <td>
                     <div class="col-xs-6 img-show">
@@ -305,7 +305,7 @@
                           <label style="font-weight: normal">The Professional has existing disciplinary records in PRS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
                           <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                             <tr>
-                              <td>Professional Regn No.</td>
+                              <td>Professional Regn. No.</td>
                               <td>Complaints</td>
                               <td>Final Outcome</td>
                               <td>Fine Amounts</td>
@@ -344,7 +344,7 @@
                           <label style="font-weight: normal">The Professional has existing disciplinary records in PRS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
                           <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                             <tr>
-                              <td>Professional Regn No.</td>
+                              <td>Professional Regn. No.</td>
                               <td width="10%">Complaints</td>
                               <td>Final Outcome</td>
                               <td>Fine Amounts</td>
@@ -624,7 +624,7 @@
                       </tr>
                       <tr>
                         <td class="col-xs-6">
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn No.</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn. No.</p>
                         </td>
                         <td>
                           <div class="col-xs-6 img-show">
@@ -653,7 +653,7 @@
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in PRS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
                                 <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                   <tr>
-                                    <td>Professional Regn No.</td>
+                                    <td>Professional Regn. No.</td>
                                     <td >Complaints</td>
                                     <td>Final Outcome</td>
                                     <td>Fine Amounts</td>
@@ -692,7 +692,7 @@
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in PRS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
                                 <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                   <tr>
-                                    <td>Professional Regn No.</td>
+                                    <td>Professional Regn. No.</td>
                                     <td>Complaints</td>
                                     <td>Final Outcome</td>
                                     <td>Fine Amounts</td>
@@ -978,7 +978,7 @@
                       </tr>
                       <tr>
                         <td class="col-xs-6">
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn No.</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn. No.</p>
                         </td>
                         <td>
 
@@ -1009,7 +1009,7 @@
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in PRS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
                                 <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                   <tr>
-                                    <td>Professional Regn No.</td>
+                                    <td>Professional Regn. No.</td>
                                     <td >Complaints</td>
                                     <td>Final Outcome</td>
                                     <td>Fine Amounts</td>
@@ -1048,7 +1048,7 @@
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in PRS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
                                 <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                   <tr>
-                                    <td>Professional Regn No.</td>
+                                    <td>Professional Regn. No.</td>
                                     <td >Complaints</td>
                                     <td>Final Outcome</td>
                                     <td>Fine Amounts</td>

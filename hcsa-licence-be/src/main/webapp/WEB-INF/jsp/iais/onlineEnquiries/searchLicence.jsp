@@ -227,7 +227,7 @@
                                         </div >
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="Licensee Professional Regn No."/>
+                                        <iais:field value="Licensee Professional Regn. No."/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             
                                                 <input type="text" maxlength="20" style=" font-weight:normal;" name="licensee_regn_no" value="${SearchParam.filters['licenseeRegnNo']}" />
@@ -277,7 +277,7 @@
                                         </div >
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="Service Personnel Professional Regn No."/>
+                                        <iais:field value="Service Personnel Professional Regn. No."/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             
                                                 <input type="text" maxlength="20" style=" font-weight:normal;" name="personnelRegnNo" value="${SearchParam.filters['personnelRegnNo']}" />

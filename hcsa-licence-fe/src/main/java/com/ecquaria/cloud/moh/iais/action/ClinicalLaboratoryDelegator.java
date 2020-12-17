@@ -1459,7 +1459,7 @@ public class ClinicalLaboratoryDelegator {
                                             signature2.date(), signature2.authorization()).getEntity();
                                     String name = professionalResponseDtos.get(0).getName();
                                     if(StringUtil.isEmpty(name)){
-                                        errorMap.put("regnNo" + i,"Professional Regn No. is not correct.");
+                                        errorMap.put("regnNo" + i,"Professional Regn. No. is not correct.");
 //                            appSvcCgoDto.setSubSpeciality(null);
 //                            appSvcCgoDto.setSpeciality(null);
                                     }else {
@@ -1753,13 +1753,13 @@ public class ClinicalLaboratoryDelegator {
     private static void doValidatetionServicePerson(Map<String, String> errorMap, List<AppSvcPersonnelDto> appSvcPersonnelDtos, String svcCode) {
         String errName = MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field");
         String errDesignation = MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field");
-        String errRegnNo = MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn No.","field");
+        String errRegnNo = MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn. No.","field");
         String errWrkExpYear = MessageUtil.replaceMessage("GENERAL_ERR0006","Relevant working experience (Years)","field");
         String errQualification = MessageUtil.replaceMessage("GENERAL_ERR0006","Qualification","field");
         String errSelSvcPsnel = MessageUtil.replaceMessage("GENERAL_ERR0006","Select Service Personnel","field");
 
         String errLengthName = NewApplicationHelper.repLength("Name","66");
-        String errLengthRegnNo = NewApplicationHelper.repLength("Professional Regn No.","20");
+        String errLengthRegnNo = NewApplicationHelper.repLength("Professional Regn. No.","20");
         String errLengthWrkExpYear = NewApplicationHelper.repLength("Relevant working experience (Years)","2");
         String errLengthQualification = NewApplicationHelper.repLength("Qualification","100");
         for (int i = 0; i < appSvcPersonnelDtos.size(); i++) {

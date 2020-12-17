@@ -186,12 +186,12 @@ public class NewApplicationHelper {
                 String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
                 String qualification = appSvcCgoList.get(i).getSubSpeciality();
                 if(StringUtil.isEmpty(professionRegoNo)){
-                    errMap.put("professionRegoNo"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn No.","field"));
+                    errMap.put("professionRegoNo"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn. No.","field"));
                     if(StringUtil.isEmpty(qualification)){
                         errMap.put("qualification"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Subspecialty or relevant qualification ","field"));
                     }
                 }else if(professionRegoNo.length() > 20){
-                    String general_err0041=repLength("Professional Regn No.","20");
+                    String general_err0041=repLength("Professional Regn. No.","20");
                     errMap.put("professionRegoNo" + i, general_err0041);
                 }
 

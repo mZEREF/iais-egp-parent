@@ -156,7 +156,7 @@
                                             </div>
                                             <div id="patRegNo" hidden>
                                                 <iais:row>
-                                                    <iais:field value="Professional Regn No."/>
+                                                    <iais:field value="Professional Regn. No."/>
                                                     <iais:value width="7">
                                                         <iais:input needDisabled="true" cssClass="disabled"
                                                                     type="text"

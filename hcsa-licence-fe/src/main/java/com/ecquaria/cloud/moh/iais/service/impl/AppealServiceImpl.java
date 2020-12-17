@@ -735,7 +735,7 @@ public class AppealServiceImpl implements AppealService {
                         }
                         String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
                         if (StringUtil.isEmpty(professionRegoNo)) {
-                            map.put("professionRegoNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn No.  ","field"));
+                            map.put("professionRegoNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn. No.  ","field"));
                         }else {
                             if("Y".equals(prsFlag)){
                                 ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
