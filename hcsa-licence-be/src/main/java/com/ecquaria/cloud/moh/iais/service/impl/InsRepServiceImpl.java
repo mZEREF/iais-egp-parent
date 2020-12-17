@@ -21,19 +21,22 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcCateWrkgrpCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
@@ -98,15 +101,17 @@ public class InsRepServiceImpl implements InsRepService {
     @Autowired
     InspEmailService inspEmailService;
     @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
-    @Value("${spring.application.name}")
-    private String currentApp;
-    @Value("${iais.current.domain}")
-    private String currentDomain;
-    @Autowired
-    private AuditSystemListServiceImpl auditSystemListService;
-    @Autowired
     private EventBusHelper eventBusHelper;
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     private final String APPROVAL = "Approval";
     private final String REJECT = "Reject";
@@ -1025,65 +1030,76 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public void sendPostInsTaskFeData(String eventRefNum,String submissionId)  {
         log.info("post inspection call back start ===================>>>>>");
-        log.info(StringUtil.changeForLog("post inspection start eventRefNum ===================>>>>>"+eventRefNum));
+        log.info(StringUtil.changeForLog("post inspection start eventRefNum groNo ===================>>>>>"+eventRefNum));
         List<ApplicationDto> postInspectionApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
         AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         //appGrp --------app -------task    submissionId   operation yiyang    update licPremise
         List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+        List<String> grpLicIds = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(postInspectionApps)) {
-            for(ApplicationDto applicationDto : postInspectionApps){
-                try {
-                    String corrId = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity().getId();
-                    String serviceId = applicationDto.getServiceId();
-                    String applicationNo = applicationDto.getApplicationNo();
-                    String wrkGrpId = null ;
-                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-                    String categoryId = hcsaServiceDto.getCategoryId();
-                    List<HcsaSvcCateWrkgrpCorrelationDto> entity = hcsaConfigClient.getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(categoryId).getEntity();
-                    for(HcsaSvcCateWrkgrpCorrelationDto dto : entity){
-                        String stageId = dto.getStageId();
-                        if(HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
-                            wrkGrpId = dto.getWrkGrpId();
-                            break;
-                        }
-                    }
-                    TaskDto taskDto = new TaskDto();
-                    taskDto.setApplicationNo(applicationNo);
-                    taskDto.setRefNo(corrId);
-                    taskDto.setPriority(0);
-                    taskDto.setWkGrpId(wrkGrpId);
-                    taskDto.setAuditTrailDto(auditTrailDto);
-                    taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
-                    taskDto.setDateAssigned(new Date());
-                    taskDto.setSlaDateCompleted(null);
-                    taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
-                    taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
-                    taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE);
-                    taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
-                    taskDto.setSlaAlertInDays(0);
-                    taskDto.setScore(0);
-                    taskDto.setSlaInDays(0);
-                    taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    taskDto.setEventRefNo(corrId);
-                    //history
-                    createPostRoutingHistory(applicationNo,applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, InspectionConstants.INSPECTION_STATUS_PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN,null , null);
-                    createPostRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, null, RoleConsts.USER_ROLE_INSPECTIOR, wrkGrpId, null);
-                    taskDtos.add(taskDto);
-                }catch (Exception e){
-                    log.info(e.getMessage());
-                    continue;
-                }
+            for(ApplicationDto applicationDto : postInspectionApps)
+            {
+                String appGrpId = applicationDto.getAppGrpId();
+                grpLicIds.add(appGrpId);
             }
+//                try {
+//                    String corrId = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity().getId();
+//                    String serviceId = applicationDto.getServiceId();
+//                    String applicationNo = applicationDto.getApplicationNo();
+//                    String wrkGrpId = null ;
+//                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+//                    String categoryId = hcsaServiceDto.getCategoryId();
+//                    List<HcsaSvcCateWrkgrpCorrelationDto> entity = hcsaConfigClient.getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(categoryId).getEntity();
+//                    for(HcsaSvcCateWrkgrpCorrelationDto dto : entity){
+//                        String stageId = dto.getStageId();
+//                        if(HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
+//                            wrkGrpId = dto.getWrkGrpId();
+//                            break;
+//                        }
+//                    }
+//                    TaskDto taskDto = new TaskDto();
+//                    taskDto.setApplicationNo(applicationNo);
+//                    taskDto.setRefNo(corrId);
+//                    taskDto.setPriority(0);
+//                    taskDto.setWkGrpId(wrkGrpId);
+//                    taskDto.setAuditTrailDto(auditTrailDto);
+//                    taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
+//                    taskDto.setDateAssigned(new Date());
+//                    taskDto.setSlaDateCompleted(null);
+//                    taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+//                    taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
+//                    taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE);
+//                    taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
+//                    taskDto.setSlaAlertInDays(0);
+//                    taskDto.setScore(0);
+//                    taskDto.setSlaInDays(0);
+//                    taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+//                    taskDto.setEventRefNo(corrId);
+//                    //history
+//                    createPostRoutingHistory(applicationNo,applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, InspectionConstants.INSPECTION_STATUS_PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN,null , null);
+//                    createPostRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, null, RoleConsts.USER_ROLE_INSPECTIOR, wrkGrpId, null);
+//                    taskDtos.add(taskDto);
+//                }catch (Exception e){
+//                    log.info(e.getMessage());
+//                    continue;
+//                }
+//            }
         }
         log.info(StringUtil.changeForLog("================== taskDtos ===================>>>>>"+taskDtos.size()));
         log.info(StringUtil.changeForLog("==================  eventBus Start  ===================>>>>>"));
+        //taskService.createTasks(taskDtos);
             eventBusHelper.submitAsyncRequest(taskDtos, submissionId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK, EventBusConsts.OPERATION_POST_INSPECTION_TASK, eventRefNum, null);
         log.info(StringUtil.changeForLog("=======================taskDtos ===================>>>>>Success"));
         log.info(StringUtil.changeForLog("==================  eventBus End  ===================>>>>>"));
         //create fe app
-        List<ApplicationDto> applicationDtos = applicationClient.getPostAppsByGrpNo(eventRefNum).getEntity();
-
-
+        log.info(StringUtil.changeForLog("==================  create fe app Start  ===================>>>>>"));
+        String apps = applicationClient.fileAll(grpLicIds).getEntity();
+        ApplicationListFileDto applicationListFileDto = JsonUtil.parseToObject(apps, ApplicationListFileDto.class);
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        beEicGatewayClient.saveFePostApplicationDtos(applicationListFileDto,signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
+        log.info(StringUtil.changeForLog("==================  create fe app End  ===================>>>>>"));
     }
 
     @Override

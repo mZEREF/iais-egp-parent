@@ -5,12 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionForAuditDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataRequest;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataResponse;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SyncDataBody;
@@ -214,5 +209,12 @@ public class BeEicGatewayClient {
                                                      String authorizationSec) {
         return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/acra-deregister", HttpMethod.PUT, licenseeIds,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
+    }
+
+    public FeignResponseEntity<Void> saveFePostApplicationDtos(ApplicationListFileDto applicationListFileDto,
+                                                               String date, String authorization, String dateSec,
+                                                               String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/post-inspection", HttpMethod.POST, applicationListFileDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Void.class);
     }
 }

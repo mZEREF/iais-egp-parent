@@ -148,6 +148,7 @@ public class RequestForChangeMenuDelegator {
         bpc.getSession().removeAttribute("payMethod");
         bpc.getSession().removeAttribute("premiseDoSearch");
         bpc.getSession().removeAttribute("doSearch");
+        bpc.getSession().removeAttribute("personnelListDtos");
     }
 
     /**

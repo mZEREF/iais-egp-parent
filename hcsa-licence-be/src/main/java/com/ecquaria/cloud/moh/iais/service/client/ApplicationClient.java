@@ -324,6 +324,6 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-appeal/app-be-premise-misc-dto-relate-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscDtoRelateId(@RequestParam("relateId") String relateId);
 
-    @GetMapping(value = "/iais-application-be/get-apps-appGrpNo",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<ApplicationDto>> getPostAppsByGrpNo(@RequestParam("appGrpNo") String appGrpNo);
+    @PostMapping(value = "/iais-application-be/postInspection-allApps",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> fileAll(@RequestBody List<String> grpids);
 }

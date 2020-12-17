@@ -149,6 +149,7 @@ public class CessationEffectiveDateBatchjob {
                                                     licenceDtos.add(licenceDto);
                                                     applicationGroupDtosCesead.add(applicationGroupDto);
                                                     licGrpMap.put(originLicenceId, appGrpId);
+                                                    break;
                                                 }
                                             }
                                         }
