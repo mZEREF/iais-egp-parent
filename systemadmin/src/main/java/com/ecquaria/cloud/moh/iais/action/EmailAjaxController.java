@@ -53,7 +53,9 @@ public class EmailAjaxController {
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE,"Licensee"));
             for (HcsaSvcPersonnelDto item:hcsaSvcPersonnelDtoList
             ) {
-                selectOptions.add(new SelectOption(item.getPsnType(),roleName(item.getPsnType())));
+                if(item.getMandatoryCount() != 0){
+                    selectOptions.add(new SelectOption(item.getPsnType(),roleName(item.getPsnType())));
+                }
             }
         }else{
             selectOptions.add(new SelectOption("Licensee","Licensee"));
