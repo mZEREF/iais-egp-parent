@@ -175,6 +175,7 @@ public class FESingpassLandingDelegator {
                     licenseeInfo.setPostalCode(myInfoDto.getPostalCode());
                     licenseeInfo.setUnitNo(myInfoDto.getUnitNo());
                     licenseeInfo.setBlkNo(myInfoDto.getBlockNo());
+                    licenseeInfo.setName(myInfoDto.getUserName());
                     licenseeInfo.setBuildingName(myInfoDto.getBuildingName());
                     licenseeInfo.setStreetName(myInfoDto.getStreetName());
                     ParamUtil.setSessionAttr(request, UserConstants.SESSION_LICENSEE_INFO_ATTR, licenseeInfo);
