@@ -36,7 +36,6 @@
         // error, display the localized error message to your customer
         // using `result.error.message`.
     });
-    window.location.href=url;
 
 </script>
 
