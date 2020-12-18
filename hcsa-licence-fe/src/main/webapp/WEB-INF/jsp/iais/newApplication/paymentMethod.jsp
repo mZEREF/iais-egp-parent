@@ -2,17 +2,17 @@
 <h2>Payment Method</h2>
 <div class="col-xs-12">
     <div class="col-xs-3">
-        <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="Credit">
-        <label class="form-check-label" ><span class="check-circle"></span>Credit / Debit Card</label>
+        <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="PMDE002">
+        <label class="form-check-label" ><span class="check-circle"></span><iais:code code="PMDE002"/></label>
     </div>
     <div class="col-xs-2">
-        <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="NETS">
-        <label class="form-check-label" ><span class="check-circle"></span>NETS</label>
+        <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="PMDE003">
+        <label class="form-check-label" ><span class="check-circle"></span><iais:code code="PMDE003"/></label>
     </div>
     <c:if test="${empty RetriggerGiro && IsGiroAcc}">
         <div class="col-xs-3">
-            <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="GIRO">
-            <label class="form-check-label" ><span class="check-circle"></span>GIRO</label>
+            <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="PMDE001">
+            <label class="form-check-label" ><span class="check-circle"></span><iais:code code="PMDE001"/></label>
         </div>
     </c:if>
 
