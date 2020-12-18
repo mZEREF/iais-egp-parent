@@ -28,6 +28,9 @@ public interface LicenceClient {
     @GetMapping(value = "/hcsa-licence/doQuery",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<QueryHelperResultDto> doQuery(@RequestParam("sql") String sql);
 
+    @GetMapping(value = "/hcsa-licence/doDelete",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> doDeleteBySql(@RequestParam("sql") String sql);
+
     @GetMapping(value = "/hcsa-licence/baseLicId-list-specLicId",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getActSpecIdByActBaseId(@RequestParam("licId") String licId);
 

@@ -189,6 +189,14 @@ public class OrganizationMainClientFallback implements OrganizationMainClient{
     }
 
     @Override
+    public FeignResponseEntity<Void> doDeleteBySql(String sql) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<LicenseeDto> getLicenseeByUserAccountInfo(String userAccountString) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

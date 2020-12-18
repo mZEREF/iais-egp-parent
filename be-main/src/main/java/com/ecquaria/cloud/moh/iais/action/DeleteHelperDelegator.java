@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -20,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -42,12 +44,17 @@ public class DeleteHelperDelegator {
 
     @Autowired
     private LicenceClient licenceClient;
+
+    @Autowired
+    private OrganizationMainClient organizationMainClient;
     
     private final String MIMA = "P@ssword$";
 
     private final String HCSA_APPLICATION_SQL_FILE = "be_hacsa_application_delete.sql";
 
     private final String HCSA_LICENCE_SQL_FILE = "be_hacsa_licence_delete.sql";
+
+    private final String HCSA_ORGANIZATION_SQL_FILE = "be_hacsa_organication_delete.sql";
 
     public void start(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("deleteHelperDelegator do cleanSession start ...."));
@@ -63,12 +70,15 @@ public class DeleteHelperDelegator {
         LicenseeDto licenseeDto = queryHandlerService.getLicenseeByUserAccountInfo(userAccountString);
         if(licenseeDto != null){
             String licenseeId = licenseeDto.getId();
+            String organizationId = licenseeDto.getOrganizationId();
 
             List<ApplicationGroupDto> groupDtos = belicationClient.getAppGrpsByLicenseeId(licenseeId).getEntity();
             deleteApplication(groupDtos);
 
             List<LicenceDto> licenceDtos = licenceClient.getLicenceDtosByLicenseeId(licenseeId).getEntity();
             deleteLicence(licenceDtos);
+
+            deleteOrganization(organizationId);
         }else{
             log.debug(StringUtil.changeForLog("licenseeDto is null"));
         }
@@ -82,7 +92,7 @@ public class DeleteHelperDelegator {
                 try{
                     String sql = getRunSql(HCSA_LICENCE_SQL_FILE, licenceNo, "AN200512000809C");
                     log.debug("delete hacsa licence be sql : " + sql);
-                    belicationClient.doDeleteBySql(sql);
+                    licenceClient.doDeleteBySql(sql);
                 }catch (Exception e){
                     flag = -1;
                     break;
@@ -91,6 +101,24 @@ public class DeleteHelperDelegator {
         }else{
             flag = 0;
         }
+        log.debug("delete hacsa licence be flag : " + flag);
+        return flag;
+    }
+
+    private int deleteOrganization(String organizationId){
+        int flag = 1;
+        if(!StringUtil.isEmpty(organizationId)){
+            try{
+                String sql = getRunSql(HCSA_ORGANIZATION_SQL_FILE, organizationId, "AN200512000809C");
+                log.debug("delete hacsa organication be sql : " + sql);
+                organizationMainClient.doDeleteBySql(sql);
+            }catch (Exception e){
+                flag = -1;
+            }
+        }else{
+            flag = 0;
+        }
+        log.debug("delete hacsa organication be flag : " + flag);
         return flag;
     }
 
@@ -111,6 +139,7 @@ public class DeleteHelperDelegator {
         }else{
             flag = 0;
         }
+        log.debug("delete hacsa application be flag : " + flag);
         return flag;
     }
 
@@ -154,17 +183,7 @@ public class DeleteHelperDelegator {
     }
 
     public void prepareDelete(BaseProcessClass bpc){
-        List<SelectOption> moduleNameList = IaisCommonUtils.genNewArrayList();
-        moduleNameList.add(new SelectOption("email-sms","email-sms"));
-        moduleNameList.add(new SelectOption("event-bus","event-bus"));
-        moduleNameList.add(new SelectOption("hsca-application-be","hsca-application-be"));
-        moduleNameList.add(new SelectOption("audit-trail","audit-trail"));
-        moduleNameList.add(new SelectOption("iais-appointment","iais-appointment"));
-        moduleNameList.add(new SelectOption("hcsa-licence-be","hcsa-licence-be"));
-        moduleNameList.add(new SelectOption("organization-be","organization-be"));
-        moduleNameList.add(new SelectOption("hcsa-config","hcsa-config"));
-        moduleNameList.add(new SelectOption("system-admin","system-admin"));
-        ParamUtil.setSessionAttr(bpc.request, "moduleNameDropdown", (Serializable)moduleNameList);
+
     }
 
     private String getCurrentPassword(){
