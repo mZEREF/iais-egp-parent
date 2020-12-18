@@ -10,17 +10,6 @@
   int timeout = 30;  // in minute
   int warning = 25;  // in minute
 %>
-<div id="timeoutDlg" class="dialog">
-  <div class="form" style="margin-top:4px;">
-    <div style="line-height:18px;">Your session will be invalid in <label id="countdownLbl">0<%=(timeout - warning)%>:00</label> minute(s). You can only extend the session by clicking Extend button.</div>
-  </div>
-  <div class="spacer" style="margin:10px 0;"></div>
-  <div class="action">
-    <a onclick="javascript:doLogout();" style="float:right" name="filterBtn" class="btn btn-secondary btn-md" data-toggle="collapse" data-target="#commonPool">Logout</a>
-    <span style="float:right">&nbsp;</span>
-    <input class="btn btn-secondary btn-md" id="interTimeOutLogout" style="float:right" type="button" onclick="javascript:doExtend();" value="Extend"/>
-  </div>
-</div>
 <div id="timeoutDlg" class="modal fade in dialog" tabindex="-1" role="dialog" aria-labelledby="rejectDate"
      style="left: 50%; top: 50%; transform: translate(-50%, -50%); min-width: 80%; overflow: visible; bottom: inherit; right: inherit; display: block; padding-right: 17px;">
   <div class="modal-dialog" role="document">
@@ -32,13 +21,14 @@
         <div class="row">
           <input type="hidden" name="fangDuoJirejectDate" id="fangDuoJirejectDate">
           <div class="col-md-8 col-md-offset-2">
-            <div style="line-height:18px;">Your session will be invalid in <label id="countdownLbl">0<%=(timeout - warning)%>:00</label> minute(s). You can only extend the session by clicking Extend button.</div>
+            <div style="line-height:18px;">Your session will be invalid in <label style="margin-bottom: 0px;" id="countdownLbl">0<%=(timeout - warning)%>:00</label> minute(s). You can only extend the session by clicking Extend button.</div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <input class="btn btn-secondary btn-md" type="button" onclick="javascript:doExtend();" value="Extend"/>
-        <a onclick="javascript:doLogout();" id="intraTimeOutLogout" name="filterBtn" class="btn btn-secondary btn-md">Logout</a>
+        <a onclick="javascript:doLogout();" style="float:right" name="filterBtn" class="btn btn-secondary">Logout</a>
+        <span style="float:right">&nbsp;</span>
+        <input class="btn btn-secondary" id="interTimeOutLogout" style="float:right" type="button" onclick="javascript:doExtend();" value="Extend"/>
       </div>
     </div>
   </div>
@@ -49,7 +39,6 @@
             autoOpen: false,
             modal: true,
             resizable: false,
-            title: 'Timeout'
         });
 
         initSessionTimeout();
