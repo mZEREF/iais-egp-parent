@@ -11,10 +11,6 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.submission.client.model.ServiceStatus;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.kafka.GlobalConstants;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +18,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
 
 /**
  * EventbusCallBackDelegate
@@ -118,7 +119,7 @@ public class EventbusCallBackDelegate {
                     "com.ecquaria.cloud.moh.iais.service.impl.LicenceFileDownloadServiceImpl",
                     "sendTask");
             log.info("***send task callback end *****");
-        } else if(EventBusConsts.OPERATION_POST_INSPECTION_TASK.equals(operation)) {
+        } else if(EventBusConsts.OPERATION_POST_INSPECTION_APP_LIC.equals(operation)) {
             log.info("send post inspection task  *****");
             log.info(StringUtil.changeForLog("send post inspection task eventRefNum *****"+eventRefNum));
             invokeMethod(submissionId,eventRefNum,
