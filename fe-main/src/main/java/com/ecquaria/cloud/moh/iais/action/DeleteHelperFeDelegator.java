@@ -101,7 +101,7 @@ public class DeleteHelperFeDelegator {
                 try{
                     String sql = getRunSql(HCSA_LICENCE_SQL_FILE, licenceNo, "AN200512000809C");
                     log.debug("delete hacsa licence be sql : " + sql);
-//                    licenceInboxClient.doDeleteBySql(sql);
+                    licenceInboxClient.doDeleteBySql(sql);
                 }catch (Exception e){
                     flag = -1;
                     break;
@@ -120,7 +120,7 @@ public class DeleteHelperFeDelegator {
             try{
                 String sql = getRunSql(HCSA_ORGANIZATION_SQL_FILE, organizationId, "AN200512000809C");
                 log.debug("delete hacsa organication be sql : " + sql);
-//                feAdminClient.doDeleteBySql(sql);
+                feAdminClient.doDeleteBySql(sql);
             }catch (Exception e){
                 flag = -1;
             }
@@ -139,7 +139,7 @@ public class DeleteHelperFeDelegator {
                 try{
                     String sql = getRunSql(HCSA_APPLICATION_SQL_FILE, groupNo, "AN200512000809C");
                     log.debug("delete hacsa application be sql : " + sql);
-//                    appInboxClient.doDeleteBySql(sql);
+                    appInboxClient.doDeleteBySql(sql);
                 }catch (Exception e){
                     flag = -1;
                     break;
