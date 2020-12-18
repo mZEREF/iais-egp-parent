@@ -1,5 +1,5 @@
 function showWaiting() {
-    $.blockUI({message: '<div style="padding:3px;">We are processing your request now, please do not click the Back or Refresh buttons in the browser.</div>',
+    $.blockUI({message: '<div style="padding:3px;">We are processing your request now; Please do not click the Back or Refresh button in the browser.</div>',
         css: {width: '25%', border: '1px solid #aaa'},
         overlayCSS: {opacity: 0.2}});
 }
