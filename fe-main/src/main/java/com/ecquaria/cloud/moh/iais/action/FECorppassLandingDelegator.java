@@ -72,7 +72,6 @@ public class FECorppassLandingDelegator {
      */
     public void corppassCallBack(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        HttpServletResponse response = bpc.response;
         log.info("corppassCallBack===========>>>Start");
 
         ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_ENTRANCE, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
@@ -88,16 +87,16 @@ public class FECorppassLandingDelegator {
         String testMode = FeLoginHelper.getTestMode(request);
         if (FELandingDelegator.LOGIN_MODE_REAL.equals(testMode)) {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
-            LoginInfo oLoginInfo = SIMUtil4Corpass.doCorpPassArtifactResolution(request, samlArt);
+            LoginInfo loginInfo = SIMUtil4Corpass.doCorpPassArtifactResolution(request, samlArt);
 
-            if (oLoginInfo == null) {
+            if (loginInfo == null) {
                 log.info("<== oLoginInfo is empty ==>");
                 return;
             }
 
-            log.debug(StringUtil.changeForLog("oLoginInfo" + JsonUtil.parseToJson(oLoginInfo)));
+            log.debug(StringUtil.changeForLog("oLoginInfo" + JsonUtil.parseToJson(loginInfo)));
 
-            UserInfoToken userInfoToken = oLoginInfo.getUserInfo();
+            UserInfoToken userInfoToken = loginInfo.getUserInfo();
 
             if (userInfoToken == null) {
                 log.info("<== userInfoToken is empty ==>");
@@ -131,10 +130,10 @@ public class FECorppassLandingDelegator {
 
         Optional<OrganizationDto> optional = Optional.ofNullable(orgUserManageService.findOrganizationByUen(uen));
         if (optional.isPresent()) {
-            OrganizationDto organization = optional.get();
-            userSession.setOrgId(organization.getId());
+            OrganizationDto orgn = optional.get();
+            userSession.setOrgId(orgn.getId());
             //If no account under uen, register according to the current nric
-            boolean isNotExistUser = orgUserManageService.isNotExistUserAccount(organization.getId());
+            boolean isNotExistUser = orgUserManageService.isNotExistUserAccount(orgn.getId());
             if (isNotExistUser){
                 ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
             }else {
@@ -251,17 +250,15 @@ public class FECorppassLandingDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             } else {
-                OrganizationDto organizationDto = new OrganizationDto();
-                organizationDto.setId(userSession.getOrgId());
-                organizationDto.setDoMain(AppConsts.USER_DOMAIN_INTERNET);
-                organizationDto.setOrgType(UserConstants.ORG_TYPE);
-                organizationDto.setUenNo(userSession.getUenNo());
-                organizationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                OrganizationDto orgn = new OrganizationDto();
+                orgn.setId(userSession.getOrgId());
+                orgn.setDoMain(AppConsts.USER_DOMAIN_INTERNET);
+                orgn.setOrgType(UserConstants.ORG_TYPE);
+                orgn.setUenNo(userSession.getUenNo());
+                orgn.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                orgn.setFeUserDto(userSession);
 
-                organizationDto.setFeUserDto(userSession);
-
-                FeUserDto postUpdate = orgUserManageService.createCorpPassUser(organizationDto);
-
+                FeUserDto postUpdate = orgUserManageService.createCorpPassUser(orgn);
                 User user = new User();
                 user.setDisplayName(postUpdate.getDisplayName());
                 user.setUserDomain(postUpdate.getUserDomain());

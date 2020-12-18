@@ -170,15 +170,15 @@ public class FESingpassLandingDelegator {
                     userSession.setEmail(myInfoDto.getEmail());
                     userSession.setMobileNo(myInfoDto.getMobileNo());
                     userSession.setDisplayName(myInfoDto.getUserName());
-                    LicenseeDto licenseeInfo = new LicenseeDto();
-                    licenseeInfo.setFloorNo(myInfoDto.getFloor());
-                    licenseeInfo.setPostalCode(myInfoDto.getPostalCode());
-                    licenseeInfo.setUnitNo(myInfoDto.getUnitNo());
-                    licenseeInfo.setBlkNo(myInfoDto.getBlockNo());
-                    licenseeInfo.setName(myInfoDto.getUserName());
-                    licenseeInfo.setBuildingName(myInfoDto.getBuildingName());
-                    licenseeInfo.setStreetName(myInfoDto.getStreetName());
-                    ParamUtil.setSessionAttr(request, UserConstants.SESSION_LICENSEE_INFO_ATTR, licenseeInfo);
+                    LicenseeDto liceInfo = new LicenseeDto();
+                    liceInfo.setFloorNo(myInfoDto.getFloor());
+                    liceInfo.setPostalCode(myInfoDto.getPostalCode());
+                    liceInfo.setUnitNo(myInfoDto.getUnitNo());
+                    liceInfo.setBlkNo(myInfoDto.getBlockNo());
+                    liceInfo.setName(myInfoDto.getUserName());
+                    liceInfo.setBuildingName(myInfoDto.getBuildingName());
+                    liceInfo.setStreetName(myInfoDto.getStreetName());
+                    ParamUtil.setSessionAttr(request, UserConstants.SESSION_LICENSEE_INFO_ATTR, liceInfo);
                 }else {
                     ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, "Y");
                 }
@@ -228,16 +228,16 @@ public class FESingpassLandingDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             } else {
-                OrganizationDto organization = new OrganizationDto();
-                organization.setDoMain(AppConsts.USER_DOMAIN_INTERNET);
-                organization.setOrgType(UserConstants.ORG_TYPE);
-                organization.setUenNo(userSession.getUenNo());
-                organization.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                organization.setFeUserDto(userSession);
-                LicenseeDto licenseeInfo = (LicenseeDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_LICENSEE_INFO_ATTR);
-                organization.setLicenseeDto(licenseeInfo);
+                OrganizationDto orgn = new OrganizationDto();
+                orgn.setDoMain(AppConsts.USER_DOMAIN_INTERNET);
+                orgn.setOrgType(UserConstants.ORG_TYPE);
+                orgn.setUenNo(userSession.getUenNo());
+                orgn.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                orgn.setFeUserDto(userSession);
+                LicenseeDto liceInfo = (LicenseeDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_LICENSEE_INFO_ATTR);
+                orgn.setLicenseeDto(liceInfo);
 
-                FeUserDto createdUser = orgUserManageService.createSingpassAccount(organization);
+                FeUserDto createdUser = orgUserManageService.createSingpassAccount(orgn);
                 User user = new User();
                 user.setDisplayName(createdUser.getDisplayName());
                 user.setUserDomain(createdUser.getUserDomain());

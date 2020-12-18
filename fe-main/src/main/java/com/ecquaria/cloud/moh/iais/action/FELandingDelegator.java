@@ -52,8 +52,8 @@ public class FELandingDelegator {
 	 */
 	public void preload(BaseProcessClass bpc){
 		ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_ENTRANCE, null);
-		LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-		if (loginContext != null && AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(loginContext.getUserDomain())){
+		LoginContext lc = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+		if (lc != null && AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(lc.getUserDomain())){
 			StringBuilder url = new StringBuilder();
 			url.append("https://").append(bpc.request.getServerName())
 					.append("/main-web/eservice/INTERNET/MohInternetInbox");
@@ -62,10 +62,10 @@ public class FELandingDelegator {
 
 		ParamUtil.setSessionAttr(bpc.request, "openTestMode", openTestMode);
 
-		List<String> mohIssueUenList = (List<String>) ParamUtil.getSessionAttr(bpc.request, "uenList");
+		List<String> issueUenList = (List<String>) ParamUtil.getSessionAttr(bpc.request, "uenList");
 		ParamUtil.setSessionAttr(bpc.request, "uenList", null);
-		if (!IaisCommonUtils.isEmpty(mohIssueUenList)){
-			ParamUtil.setRequestAttr(bpc.request, "uenList", mohIssueUenList);
+		if (!IaisCommonUtils.isEmpty(issueUenList)){
+			ParamUtil.setRequestAttr(bpc.request, "uenList", issueUenList);
 		}
 	}
 
