@@ -5,7 +5,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
@@ -17,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -25,11 +23,6 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +32,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Wenkang
@@ -225,6 +224,7 @@ public class AppealDelegator {
         //salutation
         List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
         Map<String,String> salutationAttr = IaisCommonUtils.genNewHashMap();
+        salutationAttr.put("class", "salutationSel");
         salutationAttr.put("name", "salutation");
         salutationAttr.put("style", "display: none;");
         String salutationSelectStr = getHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
@@ -232,6 +232,7 @@ public class AppealDelegator {
         //ID Type
         List<SelectOption> idTypeList = getIdTypeSelOp();
         Map<String,String>  idTypeAttr = IaisCommonUtils.genNewHashMap();
+        idTypeAttr.put("class", "idTypeSel");
         idTypeAttr.put("name", "idType");
         idTypeAttr.put("style", "display: none;");
         String idTypeSelectStr = getHtml(idTypeAttr, idTypeList, null);
@@ -239,6 +240,7 @@ public class AppealDelegator {
         //Designation
         List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
         Map<String,String> designationAttr = IaisCommonUtils.genNewHashMap();
+        designationAttr.put("class", "designationSel");
         designationAttr.put("name", "designation");
         designationAttr.put("style", "display: none;");
         String designationSelectStr = getHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
@@ -246,6 +248,7 @@ public class AppealDelegator {
         //Professional Regn Type
         List<SelectOption> proRegnTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE);
         Map<String,String> proRegnTypeAttr = IaisCommonUtils.genNewHashMap();
+        proRegnTypeAttr.put("class", "professionTypeSel");
         proRegnTypeAttr.put("name", "professionType");
         proRegnTypeAttr.put("style", "display: none;");
         String proRegnTypeSelectStr = getHtml(proRegnTypeAttr, proRegnTypeList, NewApplicationDelegator.FIRESTOPTION);
