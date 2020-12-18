@@ -10,24 +10,34 @@
   int timeout = 2;  // in minute
   int warning = 1;  // in minute
 %>
-<div id="timeoutDlg" class="dialog">
-  <div class="form" style="margin-top:4px;">
-    <div style="line-height:18px;">Your session will be invalid in <label id="countdownLbl">0<%=(timeout - warning)%>:00</label> minute(s). You can only extend the session by clicking Extend button.</div>
-  </div>
-  <div class="spacer" style="margin:10px 0;"></div>
-  <div class="action">
-    <input class="btn btn-secondary btn-md" type="button" onclick="javascript:doExtend();" value="Extend"/>
-    <a onclick="javascript:doLogout();" id="intraTimeOutLogout" name="filterBtn" class="btn btn-secondary btn-md">Logout</a>
+<div id="timeoutDlg" class="modal fade in dialog" tabindex="-1" role="dialog" aria-labelledby="rejectDate"
+     style="left: 50%; top: 50%; transform: translate(-50%, -50%); min-width: 80%; overflow: visible; bottom: inherit; right: inherit; display: block; padding-right: 17px;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="gridSystemModalLabel">Timeout</h3>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <input type="hidden" name="fangDuoJirejectDate" id="fangDuoJirejectDate">
+          <div class="col-md-8 col-md-offset-2">
+            <div style="line-height:18px;">Your session will be invalid in <label id="countdownLbl">0<%=(timeout - warning)%>:00</label> minute(s). You can only extend the session by clicking Extend button.</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input class="btn btn-secondary btn-md" type="button" onclick="javascript:doExtend();" value="Extend"/>
+        <a onclick="javascript:doLogout();" id="intraTimeOutLogout" name="filterBtn" class="btn btn-secondary btn-md">Logout</a>
+      </div>
+    </div>
   </div>
 </div>
-
 <script type="text/javascript">
     $(document).ready(function() {
         $('#timeoutDlg').dialog({
             autoOpen: false,
             modal: true,
             resizable: false,
-            title: 'Timeout'
         });
 
         initSessionTimeout();
