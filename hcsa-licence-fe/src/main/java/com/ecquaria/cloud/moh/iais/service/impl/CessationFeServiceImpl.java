@@ -321,6 +321,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                 String originLicenceId = applicationDto.getOriginLicenceId();
                 if (licId.equals(originLicenceId)) {
                     baseAppNo = appNo;
+                    break;
                 }
             }
             for (String id : appIds) {

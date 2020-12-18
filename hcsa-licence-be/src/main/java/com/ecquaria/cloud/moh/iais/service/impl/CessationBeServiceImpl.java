@@ -261,6 +261,17 @@ public class CessationBeServiceImpl implements CessationBeService {
             List<String> appIds = appIdPremisesMap.get(premiseId);
             String applicationNo = null;
             String appId = null;
+            String baseAppNo = null ;
+            List<ApplicationDto> specApplicationDtos = IaisCommonUtils.genNewArrayList();
+            for(String id : appIds) {
+                ApplicationDto applicationDto = applicationClient.getApplicationById(id).getEntity();
+                String appNo = applicationDto.getApplicationNo();
+                String originLicenceId = applicationDto.getOriginLicenceId();
+                if(licId.equals(originLicenceId)){
+                    baseAppNo = appNo ;
+                    break;
+                }
+            }
             for(String id : appIds){
                 ApplicationDto applicationDto = applicationClient.getApplicationById(id).getEntity();
                 applicationNo = applicationDto.getApplicationNo();
@@ -268,7 +279,9 @@ public class CessationBeServiceImpl implements CessationBeService {
                 if(licId.equals(originLicenceId)){
                     applicationDtos.add(applicationDto);
                     appId = id;
-                    break;
+                }else {
+                    applicationDto.setBaseApplicationNo(baseAppNo);
+                    specApplicationDtos.add(applicationDto);
                 }
             }
             List<AppCessLicDto> appCessDtosByLicIds = getAppCessDtosByLicIds(licIds);
