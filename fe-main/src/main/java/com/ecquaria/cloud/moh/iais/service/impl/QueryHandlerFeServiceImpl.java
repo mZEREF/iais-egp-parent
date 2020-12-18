@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 
 import com.ecquaria.cloud.moh.iais.common.dto.QueryHelperResultDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.QueryHandlerFeService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
@@ -64,5 +65,14 @@ public class QueryHandlerFeServiceImpl implements QueryHandlerFeService {
             resultDto = fePaymentClient.doQuery(querySql).getEntity();
         }
         return resultDto;
+    }
+
+    @Override
+    public LicenseeDto getLicenseeByUserAccountInfo(String userAccountString) {
+        LicenseeDto licenseeDto = null;
+        if(!StringUtil.isEmpty(userAccountString)){
+            licenseeDto = feAdminClient.getLicenseeByUserAccountInfo(userAccountString).getEntity();
+        }
+        return licenseeDto;
     }
 }

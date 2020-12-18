@@ -19,57 +19,11 @@
         <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
             <div id="processingDecision">
                 <iais:row>
-<%--                    <input type="text" maxlength="999" name="querySql" id="querySql">--%>
-                    <textarea style="width: 627px;height: 160px;" maxlength="999" name="querySql" id="querySql">
-                        <c:out value="${querySql}"></c:out>
-                    </textarea>
-                    <iais:value width="10">
-                        <iais:select cssClass="moduleNameDropdown" name="moduleNameDropdown" id="moduleNameDropdown"
-                                     options="moduleNameDropdown" value="${moduleNameDropdownValue}"></iais:select>
-                    </iais:value>
+                    <input id="userAccountString" name="userAccountString" value="" type="text"/>
                     <button name="submitBtn" id="submitButton" type="button" class="btn btn-primary">
                         Query
                     </button>
                 </iais:row>
-            </div>
-            <div class="tab-content">
-                <c:if test="${queryResult == N}">
-                    <tr>
-                        <td colspan="5" align="center">
-                            <iais:message key="GENERAL_ACK018"
-                                          escape="true"/>
-                        </td>
-                    </tr>
-                </c:if>
-                <c:if test="${!empty QueryHelperResultDto.columnNameList}">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th width="20%">index</th>
-                            <c:forEach items="${QueryHelperResultDto.columnNameList}"
-                                       var="columnName">
-                                <th width="20%"><c:out value="${columnName}"></c:out></th>
-                            </c:forEach>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <c:forEach items="${QueryHelperResultDto.searchResult}"
-                                   var="resultList" varStatus="index">
-                            <tr>
-                                <td width="20%">
-                                    <p><c:out value="${index.count}"></c:out></p>
-                                </td>
-                                <c:forEach items="${resultList}"
-                                           var="result">
-                                    <td width="20%">
-                                        <p><c:out value="${result}"></c:out></p>
-                                    </td>
-                                </c:forEach>
-                            </tr>
-                        </c:forEach>
-                        </tbody>
-                    </table>
-                </c:if>
             </div>
         </form>
 
@@ -89,14 +43,14 @@
             document.getElementById("mainForm").submit();
             $("#submitButton").attr("disabled", true);
         }else{
-            alert('sql is null');
+            alert('null');
         }
     });
 
     function queryValidate(){
-        var sql = $('#querySql').val();
+        var info = $('#userAccountString').val();
         var flag = true;
-        if(sql == null || sql == undefined || sql == ''){
+        if(info == null || info == undefined || info == ''){
             flag = false;
         }
         return flag;

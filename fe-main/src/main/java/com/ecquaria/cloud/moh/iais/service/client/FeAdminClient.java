@@ -58,4 +58,10 @@ public interface FeAdminClient {
 
     @GetMapping(value = "/iais-licensee/doQuery",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<QueryHelperResultDto> doQuery(@RequestParam("sql") String sql);
+
+    @GetMapping(value = "/iais-licensee/doDelete",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> doDeleteBySql(@RequestParam("sql") String sql);
+
+    @GetMapping(value = "/iais-licensee/licensee-by-user-info/{userAccountString}")
+    FeignResponseEntity<LicenseeDto> getLicenseeByUserAccountInfo (@PathVariable("userAccountString") String userAccountString);
 }

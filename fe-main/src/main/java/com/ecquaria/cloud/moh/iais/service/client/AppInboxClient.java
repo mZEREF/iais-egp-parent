@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -99,6 +100,12 @@ public interface AppInboxClient {
 
     @GetMapping(value = "/iais-application/doQuery",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<QueryHelperResultDto> doQuery(@RequestParam("sql") String sql);
+
+    @GetMapping(value = "/iais-application/doDelete",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> doDeleteBySql(@RequestParam("sql") String sql);
+
+    @GetMapping(value = "/iais-application/app-group-by-licensee-id/{licenseeId}")
+    FeignResponseEntity<List<ApplicationGroupDto>> getAppGrpsByLicenseeId(@PathVariable(name = "licenseeId") String licenseeId);
 
     @GetMapping(value = "/iais-application/application/grp/{groupId}")
     FeignResponseEntity<ApplicationGroupDto> getApplicationGroup(@PathVariable(name = "groupId")String groupId);
