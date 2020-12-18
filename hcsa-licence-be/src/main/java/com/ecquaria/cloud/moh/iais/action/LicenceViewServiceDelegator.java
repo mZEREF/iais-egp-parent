@@ -335,6 +335,9 @@ public class LicenceViewServiceDelegator {
                 svcDocToPresmise(oldAppSubmissionDto);
             }
         }
+        if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)|| ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType)){
+            oldAppSubmission(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto());
+        }
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         if (appGrpPrimaryDocDtos != null) {
             List<AppGrpPrimaryDocDto> delteList=IaisCommonUtils.genNewArrayList();
@@ -909,6 +912,10 @@ public class LicenceViewServiceDelegator {
                         }
                         if (appSvcChckListDtoList != null && appSvcChckListDtoList.size() > 0) {
                             for (AppSvcChckListDto appSvcChckListDto : appSvcChckListDtoList) {
+                                boolean check = appSvcChckListDto.isCheck();
+                                if(!check){
+                                    continue;
+                                }
                                 HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto = getHcsaSvcSubtypeOrSubsumedDtoById(hcsaSvcSubtypeOrSubsumedDtos, appSvcChckListDto.getChkLstConfId());
                                 if (hcsaSvcSubtypeOrSubsumedDto != null) {
                                     appSvcChckListDto.setChkName(hcsaSvcSubtypeOrSubsumedDto.getName());
@@ -924,9 +931,15 @@ public class LicenceViewServiceDelegator {
                         //set selCgoName
                         List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
                         if (appSvcCgoDtoList != null && appSvcCgoDtoList.size() > 0) {
+                            boolean check = appSvcDisciplineAllocationDto.isCheck();
                             for (AppSvcCgoDto appSvcCgoDto : appSvcCgoDtoList) {
                                 if (idNo.equals(appSvcCgoDto.getIdNo())) {
-                                    appSvcDisciplineAllocationDto.setCgoSelName(appSvcCgoDto.getName());
+                                    if (idNo.equals(appSvcCgoDto.getIdNo())) {
+                                        appSvcDisciplineAllocationDto.setCgoSelName(appSvcCgoDto.getName());
+                                    }
+                                    if(!appSvcDisciplineAllocationDto.isCheck()){
+                                        appSvcDisciplineAllocationDto.setCgoSelName(null);
+                                    }
                                 }
                             }
                         }
@@ -1030,6 +1043,10 @@ public class LicenceViewServiceDelegator {
                             }
                             if (appSvcChckListDtoList != null && !appSvcChckListDtoList.isEmpty()) {
                                 for (AppSvcChckListDto appSvcChckListDto : appSvcChckListDtoList) {
+                                    boolean check = appSvcChckListDto.isCheck();
+                                    if(!check){
+                                        continue;
+                                    }
                                     HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto = getHcsaSvcSubtypeOrSubsumedDtoById(hcsaSvcSubtypeOrSubsumedDtos, appSvcChckListDto.getChkLstConfId());
                                     if (hcsaSvcSubtypeOrSubsumedDto != null) {
                                         appSvcChckListDto.setChkName(hcsaSvcSubtypeOrSubsumedDto.getName());
@@ -1529,6 +1546,8 @@ public class LicenceViewServiceDelegator {
                    map.put(appSvcChckListDto.getChkLstConfId(),appSvcChckListDto.getChkName());
                }
                creatAppsvcChckList(appSvcChckListDtos,oldAppSvcChckListDtos);
+               appSvcLaboratoryDisciplinesDtoList.get(i).setAppSvcChckListDtoList(appSvcChckListDtos);
+               oldAppSvcLaboratoryDisciplinesDtoList.get(i).setAppSvcChckListDtoList(oldAppSvcChckListDtos);
            }
        }
     }

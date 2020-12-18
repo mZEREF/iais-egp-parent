@@ -262,21 +262,25 @@
 
                                   <div class="row">
                                     <div class="col-md-6">
-                                      Floor No.
+                                      Floor / Unit No.
                                     </div>
                                     <div class="col-md-6">
                                       <div class="col-md-6">
-                                           <span class="newVal " attr="${appGrpPremDto.floorNo}"><c:out value="${appGrpPremDto.floorNo}"/></span>
+                                           <span class="newVal " attr="${appGrpPremDto.floorNo}${appGrpPremDto.unitNo}">
+                                             <c:out value="${appGrpPremDto.floorNo}-${appGrpPremDto.unitNo}"/>
+                                           </span>
 
                                       </div>
                                       <div class="col-md-6">
-                                             <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}" style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}"/></span>
+                                             <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo}" style="display: none">
+                                               <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}-${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo}"/>
+                                             </span>
                                       </div>
                                     </div>
                                   </div>
 
 
-                                  <div class="row">
+                               <%--   <div class="row">
                                     <div class="col-md-6">
                                       Unit No.
                                     </div>
@@ -290,35 +294,38 @@
                                       </div>
                                     </div>
                                   </div>
-
+--%>
                                   <c:forEach items="${appGrpPremDto.appPremisesOperationalUnitDtos}" var="appPremisesOperationalUnitDto" varStatus="unitIndex">
                                     <div class="row">
                                       <div class="col-md-6">
-                                        Floor No.
+
                                       </div>
                                       <div class="col-md-6">
                                         <div class="col-md-6">
-                                          <span class="newVal " attr="${appPremisesOperationalUnitDto.floorNo}"><c:out value="${appPremisesOperationalUnitDto.floorNo}"/></span>
+                                          <span class="newVal " attr="${appPremisesOperationalUnitDto.floorNo}${appPremisesOperationalUnitDto.unitNo}">
+                                            <c:choose>
+                                              <c:when test="${appPremisesOperationalUnitDto.floorNo!=null &&  appPremisesOperationalUnitDto.unitNo!=null}">
+                                                <c:out value="${appPremisesOperationalUnitDto.floorNo}-${appPremisesOperationalUnitDto.unitNo}"/>
+                                              </c:when>
+                                              <c:otherwise>
+                                                <c:out value="${appPremisesOperationalUnitDto.floorNo}${appPremisesOperationalUnitDto.unitNo}"/>
+                                              </c:otherwise>
+                                            </c:choose>
 
+                                          </span>
                                         </div>
                                         <div class="col-md-6">
-                                          <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremisesOperationalUnitDtos[unitIndex.index].floorNo}" style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremisesOperationalUnitDtos[unitIndex.index].floorNo}"/></span>
-                                        </div>
-                                      </div>
-                                    </div>
+                                          <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremisesOperationalUnitDtos[unitIndex.index].floorNo}${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremisesOperationalUnitDtos[unitIndex.index].unitNo}" style="display: none">
+                                            <c:choose>
+                                              <c:when test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremisesOperationalUnitDtos[unitIndex.index].floorNo!=null && appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremisesOperationalUnitDtos[unitIndex.index].unitNo!=null}">
+                                                <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremisesOperationalUnitDtos[unitIndex.index].floorNo}-${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremisesOperationalUnitDtos[unitIndex.index].unitNo}"/>
+                                              </c:when>
+                                              <c:otherwise>
+                                                <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremisesOperationalUnitDtos[unitIndex.index].floorNo}${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremisesOperationalUnitDtos[unitIndex.index].unitNo}"/>
+                                              </c:otherwise>
+                                            </c:choose>
 
-
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        Unit No.
-                                      </div>
-                                      <div class="col-md-6">
-                                        <div class="col-md-6"><span class="newVal " attr="${appPremisesOperationalUnitDto.unitNo}"><c:out value="${appPremisesOperationalUnitDto.unitNo}"/></span>
-
-                                        </div>
-                                        <div class="col-md-6">
-                                              <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremisesOperationalUnitDtos[unitIndex.index].unitNo}"
-                                                    style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremisesOperationalUnitDtos[unitIndex.index].unitNo}"/></span>
+                                          </span>
                                         </div>
                                       </div>
                                     </div>

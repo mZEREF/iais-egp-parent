@@ -1425,6 +1425,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         appGrpPrimaryDocDto.setVersion(appSvcDocDto.getVersion());
                         appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
                         appSvcDocDtos.add(appSvcDocDto);
+                    }else {
+                        appSvcDocDto.setUpFileName(entity.getDocTitle());
                     }
                 }
             }

@@ -737,22 +737,36 @@ public class ConfigServiceImpl implements ConfigService {
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtoList = ( List<HcsaSvcDocConfigDto>)request.getAttribute("comDoc");
         String Name_of_Info_Field = MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of Info Field", "field");
         if(hcsaSvcDocConfigDtos!=null){
+            StringBuilder stringBuilder=new StringBuilder();
             for(int i = 0; i < hcsaSvcDocConfigDtos.size(); i++){
                 String docTitle = hcsaSvcDocConfigDtos.get(i).getDocTitle();
                 if(StringUtil.isEmpty(docTitle)){
                     errorMap.put("serviceDoc"+i,Name_of_Info_Field);
                 }else if(docTitle.length()>255){
 
+                }else {
+                    if(stringBuilder.toString().contains(docTitle)){
+                        errorMap.put("serviceDoc"+i,"SC_ERR011");
+                    }else {
+                        stringBuilder.append(docTitle);
+                    }
                 }
             }
         }
         if(hcsaSvcDocConfigDtoList!=null){
+            StringBuilder stringBuilder=new StringBuilder();
             for(int i = 0;i<hcsaSvcDocConfigDtoList.size();i++){
                 String docTitle = hcsaSvcDocConfigDtoList.get(i).getDocTitle();
                 if(StringUtil.isEmpty(docTitle)){
                     errorMap.put("commonDoc"+i,Name_of_Info_Field); //NOSONAR
                 }else if(docTitle.length()>255){
+                    errorMap.put("commonDoc"+i,"SC_ERR011"); //NOSONAR
+                }else {
+                    if(stringBuilder.toString().contains(docTitle)){
 
+                    }else {
+                        stringBuilder.append(docTitle);
+                    }
                 }
             }
         }

@@ -132,7 +132,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(entity+"------entity")));
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(entity1 + "-----entity1")));
         sendEmail(entity,mouth);
-      /*  sendEmail(entity1,mouth);*/
+        sendEmail(entity1,mouth);
     }
 
     private void sendEmail( Map<String, List<LicenceDto>> entity,Map<String,String> map){

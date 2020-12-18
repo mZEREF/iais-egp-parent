@@ -559,13 +559,19 @@ public class AppealApproveBatchjob {
 
         List<AppPremiseMiscDto> premiseMiscDtoList = cessationClient.getAppPremiseMiscDtoListByAppId(applicationDto.getId()).getEntity();
         String appType = "Licence";
+        String subNo="";
         ApplicationDto oldApplication = new ApplicationDto();
         if(premiseMiscDtoList != null){
             AppPremiseMiscDto premiseMiscDto = premiseMiscDtoList.get(0);
             String oldAppId = premiseMiscDto.getRelateRecId();
             oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
             if(oldApplication!=null){
-                appType =  MasterCodeUtil.getCodeDesc(oldApplication.getApplicationType());
+                appType ="Application";
+                subNo=oldApplication.getApplicationNo();
+            }
+            LicenceDto entity = hcsaLicenceClient.getLicenceDtoById(oldAppId).getEntity();
+            if(entity!=null){
+                subNo=entity.getLicenceNo();
             }
 
         }
@@ -660,7 +666,7 @@ public class AppealApproveBatchjob {
         MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPEAL_APPROVE_MSG).getEntity();
         Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
         subMap.put("ApplicationType", appType);
-        subMap.put("ApplicationNo", applicationDto.getApplicationNo());
+        subMap.put("ApplicationNo", subNo);
         String emailSubject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
         String smsSubject = MsgUtil.getTemplateMessageByContent(smsTemplateDto.getTemplateName(),subMap);
         String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),subMap);
