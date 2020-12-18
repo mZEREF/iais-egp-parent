@@ -16,7 +16,7 @@
     <%-- BEGIN additional header --%>
     <layout:insertAttribute name="header-ext" ignore="true" />
     <%-- END additional header --%>
-
+    <%@ include file="/WEB-INF/layouts/time-out/sessionInterTimeOut.jsp" %>
 </head>
 <body style="font-size:16px;">
 <jsp:include page="header.jsp" />

@@ -7,8 +7,8 @@
 --%>
 <!-- session timeout handling - START -->
 <%
-  int timeout = 2;  // in minute
-  int warning = 1;  // in minute
+  int timeout = 30;  // in minute
+  int warning = 25;  // in minute
 %>
 <div id="timeoutDlg" class="dialog">
   <div class="form" style="margin-top:4px;">
@@ -16,8 +16,9 @@
   </div>
   <div class="spacer" style="margin:10px 0;"></div>
   <div class="action">
-    <input class="btn btn-secondary btn-md" type="button" onclick="javascript:doExtend();" value="Extend"/>
-    <a onclick="javascript:doLogout();" id="intraTimeOutLogout" name="filterBtn" class="btn btn-secondary btn-md">Logout</a>
+    <a onclick="javascript:doLogout();" style="float:right" name="filterBtn" class="btn btn-secondary btn-md" data-toggle="collapse" data-target="#commonPool">Logout</a>
+    <span style="float:right">&nbsp;</span>
+    <input class="btn btn-secondary btn-md" id="interTimeOutLogout" style="float:right" type="button" onclick="javascript:doExtend();" value="Extend"/>
   </div>
 </div>
 
@@ -77,19 +78,19 @@
         // call AJAX to extend the current session
         $.ajax({
             type: "POST",
-            url: '/web-common/time-out/intranet.extend',
+            url: '/web-common/time-out/internet.extend',
             async: false
         });
         initSessionTimeout();
     }
 
     function doLogout() {
-        window.location.replace("${pageContext.request.contextPath}/eservice/INTRANET/IntraLogout");
+        window.location.replace("${pageContext.request.contextPath}/eservice/INTERNET/InterLogout");
         $('#timeoutDlg').dialog('close');
         // call AJAX to logout the current session
         $.ajax({
             type: "POST",
-            url: '/web-common/time-out/intranet.logout',
+            url: '/web-common/time-out/internet.logout',
             async: false
         });
     }

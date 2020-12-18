@@ -29,7 +29,7 @@
 	<%
 		}
 	%>
-
+	<%@ include file="/WEB-INF/layouts/time-out/sessionTimeOut.jsp" %>
 </head>
 <body>
 <div class="wrapper">
