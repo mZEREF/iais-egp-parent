@@ -1761,14 +1761,17 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         //msg
         try {
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_MSG);
-            String svcName=appSubmissionDto.getServiceName();
-            if(svcName==null){
-                LicenceDto licenceDto= licenceClient.getLicBylicNo(appSubmissionDto.getLicenceNo()).getEntity();
-                svcName=licenceDto.getSvcName();
-            }
-            List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(svcName)).getEntity();
+
             List<String> svcCode=IaisCommonUtils.genNewArrayList();
-            svcCode.add(svcDto.get(0).getSvcCode());
+            for (AppSubmissionDto appSubmissionDto1:appSubmissionDtos){
+                String svcName=appSubmissionDto1.getServiceName();
+                if(svcName==null){
+                    LicenceDto licenceDto= licenceClient.getLicBylicNo(appSubmissionDto1.getLicenceNo()).getEntity();
+                    svcName=licenceDto.getSvcName();
+                }
+                List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(svcName)).getEntity();
+                svcCode.add(svcDto.get(0).getSvcCode());
+            }
             rfiEmailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_MSG).getEntity();
             subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
             emailParam.setSubject(subject);

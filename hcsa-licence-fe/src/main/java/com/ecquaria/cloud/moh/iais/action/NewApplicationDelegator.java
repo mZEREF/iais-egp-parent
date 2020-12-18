@@ -1135,7 +1135,17 @@ public class NewApplicationDelegator {
             if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
                 log.info("credit card payment success");
                 //todo validate payment is success
-
+                try {
+                    if(appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                        if(appSubmissionDtos==null||appSubmissionDtos.size()==0){
+                            appSubmissionDtos=IaisCommonUtils.genNewArrayList();
+                            appSubmissionDtos.add(appSubmissionDto);
+                        }
+                        requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos, appSubmissionDto.getPaymentMethod());
+                    }
+                } catch (Exception e) {
+                    log.info(e.getMessage(), e);
+                }
                 if (appSubmissionDtos != null) {
                     for (AppSubmissionDto appSubmissionDto1 : appSubmissionDtos) {
                         Double amount = appSubmissionDto1.getAmount();
@@ -3090,18 +3100,7 @@ public class NewApplicationDelegator {
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
         String noNeedPayment = bpc.request.getParameter("noNeedPayment");
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        try {
-            if(appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
-                List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("appSubmissionDtos");
-                if(appSubmissionDtos==null||appSubmissionDtos.size()==0){
-                    appSubmissionDtos=IaisCommonUtils.genNewArrayList();
-                    appSubmissionDtos.add(appSubmissionDto);
-                }
-                requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos, payMethod);
-            }
-        } catch (Exception e) {
-            log.info(e.getMessage(), e);
-        }
+
         //68099
         List<AppSubmissionDto> ackPageAppSubmissionDto = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
         if(!IaisCommonUtils.isEmpty(ackPageAppSubmissionDto)){

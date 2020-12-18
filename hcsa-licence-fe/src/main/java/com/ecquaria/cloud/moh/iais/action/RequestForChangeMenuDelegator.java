@@ -1302,26 +1302,7 @@ public class RequestForChangeMenuDelegator {
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
         String noNeedPayment = bpc.request.getParameter("noNeedPayment");
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
-        try {
-            if(appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
-                AppSubmissionDto ackPageAppSubmissionDto;
-                List<AppSubmissionDto> appSubmissionDtos1=IaisCommonUtils.genNewArrayList();
-                try {
-                    ackPageAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
-                    if(ackPageAppSubmissionDto==null){
-                        appSubmissionDtos1=appSubmissionDtos;
-                    }else {
-                        appSubmissionDtos1.add(ackPageAppSubmissionDto);
-                    }
-                }catch (Exception e){
-                    log.info(e.getMessage(),e);
-                    appSubmissionDtos1=appSubmissionDtos;
-                }
-                requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos1,payMethod);
-            }
-        } catch (Exception e) {
-            log.info(e.getMessage(), e);
-        }
+
         if (StringUtil.isEmpty(payMethod)&&StringUtil.isEmpty(noNeedPayment)) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, "prePayment");
             return;
@@ -1446,6 +1427,13 @@ public class RequestForChangeMenuDelegator {
                 appGrp.setPayMethod(pmtMethod);
                 serviceConfigService.updatePaymentStatus(appGrp);
                 bpc.request.setAttribute("createDate", new Date());
+                try {
+                    if(appSubmissionDtos != null &&appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                        requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos,appSubmissionDtos.get(0).getPaymentMethod());
+                    }
+                } catch (Exception e) {
+                    log.info(e.getMessage(), e);
+                }
             }else{
                 switchValue = "loading";
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"prePayment");
