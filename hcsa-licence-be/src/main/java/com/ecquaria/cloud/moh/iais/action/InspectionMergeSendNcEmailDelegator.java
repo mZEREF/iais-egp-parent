@@ -313,7 +313,7 @@ public class InspectionMergeSendNcEmailDelegator {
         ParamUtil.setSessionAttr(request,"appPremCorrIds", (Serializable) appPremCorrIds);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setSessionAttr(request,MSG_CON, inspectionEmailTemplateDto.getMessageContent());
-        ParamUtil.setRequestAttr(request,"svcNames",svcNames);
+        ParamUtil.setSessionAttr(request,"svcNames", (Serializable) svcNames);
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,applicationViewDto);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
 
@@ -601,9 +601,13 @@ public class InspectionMergeSendNcEmailDelegator {
                 notificationHelper.sendNotification(emailParam);
                 //emailClient.sendNotification(emailDto).getEntity();
                 //msg
-                HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId()).getEntity();
                 List<String> svcCode=IaisCommonUtils.genNewArrayList();
-                svcCode.add(svcDto.getSvcCode());
+                List<String> svcNames= (List<String>) ParamUtil.getSessionAttr(request,"svcNames");
+                for (String svcName:svcNames
+                     ) {
+                    HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(svcName).getEntity();
+                    svcCode.add(svcDto.getSvcCode());
+                }
                 emailParam.setSvcCodeList(svcCode);
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_INSPECTOR_EMAIL_MSG);
                 emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
