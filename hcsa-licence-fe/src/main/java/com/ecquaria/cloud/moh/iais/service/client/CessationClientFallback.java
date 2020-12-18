@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
@@ -85,6 +86,11 @@ public class CessationClientFallback implements CessationClient {
 
     @Override
     public FeignResponseEntity<AppCessMiscDto> getAppMiscDtoByAppId(String appId) {
+        return null;
+    }
+
+    @Override
+    public FeignResponseEntity<ApplicationDto> getAppByBaseAppNo(String appNo) {
         return null;
     }
 

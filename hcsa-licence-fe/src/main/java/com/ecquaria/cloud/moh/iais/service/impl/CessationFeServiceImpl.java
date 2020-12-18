@@ -225,6 +225,7 @@ public class CessationFeServiceImpl implements CessationFeService {
             }
             appIdsPremisesMap.putAll(baseMap);
         });
+
         appIdsPremisesMap.forEach((premiseId, appIds) -> {
             for (AppCessationDto appCessationDto : appCessationDtos) {
                 String premiseId1 = appCessationDto.getPremiseId();
@@ -299,6 +300,7 @@ public class CessationFeServiceImpl implements CessationFeService {
         List<AppCessatonConfirmDto> appCessationDtosConfirms = IaisCommonUtils.genNewArrayList();
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+        List<ApplicationDto> specApplicationDtos = IaisCommonUtils.genNewArrayList();
         AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         for (int i = 0; i < appCessationDtos.size(); i++) {
             List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
@@ -312,6 +314,15 @@ public class CessationFeServiceImpl implements CessationFeService {
             List<String> appIds = appIdPremisesMap.get(premiseId);
             String applicationNo = null;
             String appId = null;
+            String baseAppNo = null ;
+            for (String id : appIds) {
+                ApplicationDto applicationDto = applicationFeClient.getApplicationById(id).getEntity();
+                String appNo = applicationDto.getApplicationNo();
+                String originLicenceId = applicationDto.getOriginLicenceId();
+                if (licId.equals(originLicenceId)) {
+                    baseAppNo = appNo;
+                }
+            }
             for (String id : appIds) {
                 ApplicationDto applicationDto = applicationFeClient.getApplicationById(id).getEntity();
                 applicationNo = applicationDto.getApplicationNo();
@@ -319,7 +330,9 @@ public class CessationFeServiceImpl implements CessationFeService {
                 if (licId.equals(originLicenceId)) {
                     applicationDtos.add(applicationDto);
                     appId = id;
-                    break;
+                }else {
+                    applicationDto.setBaseApplicationNo(baseAppNo);
+                    specApplicationDtos.add(applicationDto);
                 }
             }
             ApplicationDto applicationDto = applicationFeClient.getApplicationById(appId).getEntity();
@@ -497,6 +510,7 @@ public class CessationFeServiceImpl implements CessationFeService {
             }
         }
         applicationFeClient.updateApplicationList(applicationDtos);
+        applicationFeClient.updateApplicationList(specApplicationDtos);
         String serviceId = applicationDtos.get(0).getServiceId();
         String appStatus = getStageId(serviceId, ApplicationConsts.APPLICATION_TYPE_CESSATION);
         List<String> licNos = IaisCommonUtils.genNewArrayList();

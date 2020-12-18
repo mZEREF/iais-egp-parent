@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
@@ -1371,27 +1372,26 @@ public class NewApplicationDelegator {
                     appCessHciDtos.add(appCessHciDto);
                     appCessLicDto.setAppCessHciDtos(appCessHciDtos);
                     //spec
-                    //List<String> specLicIds = licenceClient.getActSpecIdByActBaseId(originLicenceId).getEntity();
-//                    if (!IaisCommonUtils.isEmpty(specLicIds)) {
-//                        List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
-//                        LicenceDto baseLic = licenceClient.getLicDtoById(originLicenceId).getEntity();
-//                        for (String specLicId : specLicIds) {
-//                            AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
-//                            LicenceDto specLicenceDto = licenceClient.getLicDtoById(specLicId).getEntity();
-//                            if (specLicenceDto != null) {
-//                                String specLicenceNo = specLicenceDto.getLicenceNo();
-//                                String licenceDtoId = specLicenceDto.getId();
-//                                String specSvcName = specLicenceDto.getSvcName();
-//                                appSpecifiedLicDto.setBaseLicNo(baseLic.getLicenceNo());
-//                                appSpecifiedLicDto.setBaseSvcName(baseLic.getSvcName());
-//                                appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
-//                                appSpecifiedLicDto.setSpecSvcName(specSvcName);
-//                                appSpecifiedLicDto.setSpecLicId(licenceDtoId);
-//                                appSpecifiedLicDtos.add(appSpecifiedLicDto);
-//                            }
-//                        }
-//                        ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) appSpecifiedLicDtos);
-//                    }
+                    String applicationNo = applicationDto.getApplicationNo();
+                    ApplicationDto specApp = cessationClient.getAppByBaseAppNo(applicationNo).getEntity();
+                    List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
+                    if(specApp!=null){
+                        String specId = specApp.getOriginLicenceId();
+                        LicenceDto specLicenceDto = licenceClient.getLicDtoById(specId).getEntity();
+                        if (specLicenceDto != null) {
+                            AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
+                            LicenceDto baseLic = licenceClient.getLicDtoById(originLicenceId).getEntity();
+                            String specLicenceNo = specLicenceDto.getLicenceNo();
+                            String licenceDtoId = specLicenceDto.getId();
+                            String specSvcName = specLicenceDto.getSvcName();
+                            appSpecifiedLicDto.setBaseLicNo(baseLic.getLicenceNo());
+                            appSpecifiedLicDto.setBaseSvcName(baseLic.getSvcName());
+                            appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
+                            appSpecifiedLicDto.setSpecSvcName(specSvcName);
+                            appSpecifiedLicDto.setSpecLicId(licenceDtoId);
+                            appSpecifiedLicDtos.add(appSpecifiedLicDto);
+                        }
+                    }
                     List<SelectOption> reasonOption = getReasonOption();
                     List<SelectOption> patientsOption = getPatientsOption();
                     ParamUtil.setRequestAttr(bpc.request, "reasonOption", reasonOption);
@@ -1400,6 +1400,7 @@ public class NewApplicationDelegator {
                     List<AppCessLicDto> appCessLicDtos = IaisCommonUtils.genNewArrayList();
                     appCessLicDtos.add(appCessLicDto);
                     ParamUtil.setRequestAttr(bpc.request, "confirmDtos", appCessLicDtos);
+                    ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) appSpecifiedLicDtos);
                     return;
                 }
                 AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDto(appNo);
