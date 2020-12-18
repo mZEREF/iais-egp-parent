@@ -362,7 +362,7 @@
                                                                             <div class="col-sm-4 control-label formtext ">
                                                                                 <label id="control--runtime--31--label"
                                                                                        class="control-label control-set-font control-font-label">
-                                                                                    Professional Regn No.
+                                                                                    Professional Regn. No.
                                                                                 </label>
                                                                                 <span class="mandatory">*</span>
                                                                                 <span class="upload_controls"></span>

@@ -158,7 +158,7 @@
                                                 </div>
                                                 <div id="${num.count}patRegNo${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value="Professional Regn No." mandatory="true"/>
+                                                        <iais:field value="Professional Regn. No." mandatory="true"/>
                                                         <iais:value width="7">
                                                             <iais:input type="text" maxLength="20"
                                                                         name="${num.count}patRegNo${uid.count}"
