@@ -654,9 +654,7 @@ public class AppealApproveBatchjob {
             templateContent.put("licenceEndDate", Formatter.formatDate(licenceDto.getExpiryDate()));
             templateContent.put("newEndDate", Formatter.formatDate(expiryDate));
         }else{
-            if(!StringUtil.isEmpty(appPremiseMiscDto.getOtherReason())){
-                templateContent.put("content", "<p>num_rep&nbsp;" + appPremiseMiscDto.getOtherReason() + "</p>");
-            }
+            templateContent.put("content", appPremiseMiscDto.getOtherReason());
         }
 
         log.info(StringUtil.changeForLog("templateContent :" +JsonUtil.parseToJson(templateContent)));
