@@ -34,10 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author weilu
@@ -591,8 +588,12 @@ public class CessationBeServiceImpl implements CessationBeService {
         String userId = userIdForWorkGroup.getUserId();
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_AO3);
         hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-
         for (ApplicationDto applicationDto : applicationDtos) {
+            Set<String> ao3 = taskService.getInspectiors(applicationDto.getApplicationNo(), TaskConsts.TASK_PROCESS_URL_MAIN_FLOW, RoleConsts.USER_ROLE_AO3);
+            if(!IaisCommonUtils.isEmpty(ao3)){
+                Iterator<String> iterator = ao3.iterator();
+                userId = iterator.next();
+            }
             int score = getConfigScoreForService(hcsaSvcStageWorkingGroupDtos, applicationDto.getServiceId(),
                     HcsaConsts.ROUTING_STAGE_AO3, applicationDto.getApplicationType());
             List<AppPremisesCorrelationDto> appPremisesCorrelations = getAppPremisesCorrelationId(applicationDto.getId());
