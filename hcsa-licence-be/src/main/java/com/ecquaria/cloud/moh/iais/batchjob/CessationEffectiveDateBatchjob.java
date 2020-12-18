@@ -203,7 +203,7 @@ public class CessationEffectiveDateBatchjob {
                                             String svcType = hcsaServiceDto.getSvcType();
                                             List<LicenceDto> specLicenceDto;
                                             if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
-                                                List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(originLicenceId).getEntity();
+                                                List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(originLicenceId).getEntity();
                                                 if (specLicIds != null && !specLicIds.isEmpty()) {
                                                     specLicenceDto = hcsaLicenceClient.retrieveLicenceDtos(specLicIds).getEntity();
                                                     updateLicence(specLicenceDto, date);
@@ -237,7 +237,7 @@ public class CessationEffectiveDateBatchjob {
         List<String> specLicIdsAll = IaisCommonUtils.genNewArrayList();
         for (LicenceDto licenceDto : licenceDtos) {
             String licId = licenceDto.getId();
-            List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
+            List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
             if (!IaisCommonUtils.isEmpty(specLicIds)) {
                 specLicIdsAll.addAll(specLicIds);
             }
@@ -263,7 +263,7 @@ public class CessationEffectiveDateBatchjob {
                 Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                 StringBuilder svcNameLicNo = new StringBuilder();
                 svcNameLicNo.append(svcName).append(" : ").append(licenceNo);
-                List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
+                List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
                 if (!IaisCommonUtils.isEmpty(specLicIds)) {
                     for (String specLicId : specLicIds) {
                         LicenceDto specLicDto = hcsaLicenceClient.getLicDtoById(specLicId).getEntity();

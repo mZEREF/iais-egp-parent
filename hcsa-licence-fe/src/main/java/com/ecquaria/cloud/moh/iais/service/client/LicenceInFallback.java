@@ -258,7 +258,7 @@ public class LicenceInFallback implements LicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<List<String>> getSpecIdsByBaseId(String licId) {
+    public FeignResponseEntity<List<String>> getActSpecIdByActBaseId(String licId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

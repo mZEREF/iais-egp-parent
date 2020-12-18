@@ -19,8 +19,6 @@ public interface CessationBeService {
 
     List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds);
 
-    List<AppCessLicDto> getAppCessDtosByLicIdsForView(List<String> licIds);
-
     Map<String, List<String>> saveCessations(List<AppCessationDto> appCessationDtos);
 
     Map<String,Boolean> listResultCeased(List<String> licIds);

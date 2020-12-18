@@ -1963,7 +1963,7 @@ public class HcsaApplicationDelegator {
                 AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(applicationDtoId).getEntity();
                 String hciCode = appGrpPremisesDto.getHciCode();
                 String originLicenceId = applicationDto.getOriginLicenceId();
-                List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(originLicenceId).getEntity();
+                List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(originLicenceId).getEntity();
                 if(!IaisCommonUtils.isEmpty(specLicIds)){
                     List<ApplicationDto> specApplicationDtos = cessationClient.getAppsByLicId(specLicIds.get(0)).getEntity();
                     if(!IaisCommonUtils.isEmpty(specApplicationDtos)){
@@ -1995,7 +1995,7 @@ public class HcsaApplicationDelegator {
             String applicationDtoId = applicationDto.getId();
             AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(applicationDtoId).getEntity();
             String hciCode = appGrpPremisesDto.getHciCode();
-            List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(originLicenceId).getEntity();
+            List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(originLicenceId).getEntity();
             if(!IaisCommonUtils.isEmpty(specLicIds)){
                 List<ApplicationDto> specApplicationDtos = cessationClient.getAppsByLicId(specLicIds.get(0)).getEntity();
                 if(!IaisCommonUtils.isEmpty(specApplicationDtos)){
@@ -3118,7 +3118,7 @@ public class HcsaApplicationDelegator {
             licIds.add(originLicenceId);
             List<String> corrIds = IaisCommonUtils.genNewArrayList();
             corrIds.add(correlationId);
-            List<AppCessLicDto> appCessDtosByLicIds = cessationBeService.getAppCessDtosByLicIdsForView(licIds);
+            List<AppCessLicDto> appCessDtosByLicIds = cessationBeService.getAppCessDtosByLicIds(licIds);
             List<AppCessMiscDto> appCessMiscDtos = cessationClient.getAppCessMiscDtosByCorrIds(corrIds).getEntity();
             if (!IaisCommonUtils.isEmpty(appCessDtosByLicIds)) {
                 AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);

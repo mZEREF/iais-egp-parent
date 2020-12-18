@@ -120,7 +120,7 @@ public interface LicenceClient {
     FeignResponseEntity<PremisesDto> getLicPremisesDtoById(@RequestParam(value = "id")String id);
 
     @GetMapping(value = "/hcsa-licence/baseLicId-list-specLicId",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<String>> getSpecIdsByBaseId(@RequestParam("licId") String licId);
+    FeignResponseEntity<List<String>> getActSpecIdByActBaseId(@RequestParam("licId") String licId);
 
     @GetMapping(value = "/hcsa-licence/lic-premises",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getPremisesByLicseeIdAndSvcName(@RequestParam("licenseeId") String licenseeId, @RequestParam("svcNameStr") String svcNameStr);

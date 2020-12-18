@@ -122,48 +122,6 @@ public class CessationBeServiceImpl implements CessationBeService {
         }
     }
 
-    @Override
-    public List<AppCessLicDto> getAppCessDtosByLicIdsForView(List<String> licIds) {
-        List<AppCessLicDto> appCessDtos = IaisCommonUtils.genNewArrayList();
-        if (licIds != null && !licIds.isEmpty()) {
-            for (String licId : licIds) {
-                AppCessLicDto appCessDto = new AppCessLicDto();
-                LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
-                List<PremisesDto> premisesDtos = hcsaLicenceClient.getPremisess(licId).getEntity();
-                String svcName = licenceDto.getSvcName();
-                String licenceNo = licenceDto.getLicenceNo();
-                appCessDto.setLicenceNo(licenceNo);
-                appCessDto.setSvcName(svcName);
-                appCessDto.setLicenceId(licId);
-                List<AppCessHciDto> appCessHciDtos = IaisCommonUtils.genNewArrayList();
-                if (premisesDtos != null && !premisesDtos.isEmpty()) {
-                    for (PremisesDto premisesDto : premisesDtos) {
-                        String blkNo = premisesDto.getBlkNo();
-                        String premisesId = premisesDto.getId();
-                        String streetName = premisesDto.getStreetName();
-                        String buildingName = premisesDto.getBuildingName();
-                        String floorNo = premisesDto.getFloorNo();
-                        String unitNo = premisesDto.getUnitNo();
-                        String postalCode = premisesDto.getPostalCode();
-                        String hciCode = premisesDto.getHciCode();
-                        String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
-                        AppCessHciDto appCessHciDto = new AppCessHciDto();
-                        String hciName = premisesDto.getHciName();
-                        appCessHciDto.setHciCode(hciCode);
-                        appCessHciDto.setHciName(hciName);
-                        appCessHciDto.setPremiseId(premisesId);
-                        appCessHciDto.setHciAddress(hciAddress);
-                        appCessHciDtos.add(appCessHciDto);
-                    }
-                }
-                appCessDto.setAppCessHciDtos(appCessHciDtos);
-                appCessDtos.add(appCessDto);
-            }
-            return appCessDtos;
-        } else {
-            return null;
-        }
-    }
 
     @Override
     public Map<String, List<String>> saveCessations(List<AppCessationDto> appCessationDtos) {
@@ -187,7 +145,7 @@ public class CessationBeServiceImpl implements CessationBeService {
             licIds.clear();
             licIds.add(licId);
             AppSubmissionDto appSubmissionDto = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity().get(0);
-            List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
+            List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
             Map<String, List<String>> baseMap = transform(appSubmissionDto, premiseIds);
             if (!IaisCommonUtils.isEmpty(specLicIds)) {
                 AppSubmissionDto appSubmissionDtoSpec = hcsaLicenceClient.getAppSubmissionDtos(specLicIds).getEntity().get(0);
@@ -235,10 +193,7 @@ public class CessationBeServiceImpl implements CessationBeService {
             LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
-            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
-            String svcType = hcsaServiceDto.getSvcType();
-            if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
-                List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
+                List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
                 if (!IaisCommonUtils.isEmpty(specLicIds)) {
                     for (String specLicId : specLicIds) {
                         AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
@@ -255,7 +210,6 @@ public class CessationBeServiceImpl implements CessationBeService {
                             appSpecifiedLicDtos.add(appSpecifiedLicDto);
                         }
                     }
-                }
             }
         }
         return appSpecifiedLicDtos;
@@ -270,12 +224,7 @@ public class CessationBeServiceImpl implements CessationBeService {
             return specLicIds;
         }
         for (String licId : licIds) {
-            LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
-            String svcName = licenceDto.getSvcName();
-            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
-            String svcType = hcsaServiceDto.getSvcType();
-            if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
-                List<String> specIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
+                List<String> specIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
                 if (!IaisCommonUtils.isEmpty(specIds)) {
                     for (String specLicId : specIds) {
                         LicenceDto specLicenceDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
@@ -286,7 +235,6 @@ public class CessationBeServiceImpl implements CessationBeService {
                     }
                 }
             }
-        }
         if (!IaisCommonUtils.isEmpty(specLicIds)) {
             for (String specId : specLicIds) {
                 if (licIds.contains(specId)) {

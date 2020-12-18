@@ -132,12 +132,11 @@ public class LicenceExpiredBatchJob {
             String licId = licenceDto.getId();
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
-            String licenseeId = licenceDto.getLicenseeId();
             StringBuilder svcNameLicNo = new StringBuilder();
             svcNameLicNo.append(svcName).append(" : ").append(licenceNo);
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
             serviceCodes.add(hcsaServiceDto.getSvcCode());
-            List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
+            List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
             if(!IaisCommonUtils.isEmpty(specLicIds)){
                 for(String specLicId :specLicIds){
                     LicenceDto specLicDto = hcsaLicenceClient.getLicDtoById(specLicId).getEntity();

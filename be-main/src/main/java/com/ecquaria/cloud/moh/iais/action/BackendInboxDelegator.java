@@ -1083,7 +1083,7 @@ public class BackendInboxDelegator {
             //cessation
             if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)) {
                 String originLicenceId = applicationDto.getOriginLicenceId();
-                List<String> specLicIds = licenceClient.getSpecIdsByBaseId(originLicenceId).getEntity();
+                List<String> specLicIds = licenceClient.getActSpecIdByActBaseId(originLicenceId).getEntity();
                 if (!IaisCommonUtils.isEmpty(specLicIds)) {
                     List<ApplicationDto> specApplicationDtos = applicationMainClient.getAppsByLicId(specLicIds.get(0)).getEntity();
                     if (!IaisCommonUtils.isEmpty(specApplicationDtos)) {
