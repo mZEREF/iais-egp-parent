@@ -81,35 +81,27 @@
 
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Floor No.</span></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Floor / Unit No.</span></p>
                                 </div>
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.floorNo}</span></p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Unit No.</span></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.unitNo}</span></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology">
+                                        <span>
+                                            <c:out value="${appGrpPremDto.floorNo}"/>-<c:out value="${appGrpPremDto.unitNo}"/>
+                                        </span>
+                                    </p>
                                 </div>
                             </div>
                             <c:forEach var="appPremisesOperationalUnit" items="${appGrpPremDto.appPremisesOperationalUnitDtos}">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Floor No.</span></p>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span></span></p>
                                     </div>
                                     <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>${appPremisesOperationalUnit.floorNo}</span></p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Unit No.</span></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>${appPremisesOperationalUnit.unitNo}</span></p>
+                                        <p class="form-check-label" aria-label="premise-1-cytology">
+                                            <span>
+                                                <c:out value="${appPremisesOperationalUnit.floorNo}"/>-<c:out value="${appPremisesOperationalUnit.unitNo}"/>
+                                            </span>
+                                        </p>
                                     </div>
                                 </div>
                             </c:forEach>
@@ -310,35 +302,28 @@
 
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Floor No.</span></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Floor / Unit No.</span></p>
                                 </div>
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.conveyanceFloorNo}</span></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology">
+                                        <span>
+                                            <c:out value="${appGrpPremDto.conveyanceFloorNo}"/>-<c:out value="${appGrpPremDto.conveyanceUnitNo}"/>
+                                        </span>
+                                    </p>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Unit No.</span></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.conveyanceUnitNo}</span></p>
-                                </div>
-                            </div>
+
                             <c:forEach var="appPremisesOperationalUnit" items="${appGrpPremDto.appPremisesOperationalUnitDtos}">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Floor No.</span></p>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span></span></p>
                                     </div>
                                     <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>${appPremisesOperationalUnit.floorNo}</span></p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Unit No.</span></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>${appPremisesOperationalUnit.unitNo}</span></p>
+                                        <p class="form-check-label" aria-label="premise-1-cytology">
+                                            <span>
+                                                <c:out value="${appPremisesOperationalUnit.floorNo}"/>-<c:out value="${appPremisesOperationalUnit.unitNo}"/>
+                                            </span>
+                                        </p>
                                     </div>
                                 </div>
                             </c:forEach>
@@ -497,35 +482,27 @@
 
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Floor No.</span></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Floor / Unit No.</span></p>
                                 </div>
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.offSiteFloorNo}</span></p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Unit No.</span></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.offSiteUnitNo}</span></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology">
+                                        <span>
+                                            <c:out value="${appGrpPremDto.offSiteFloorNo}"/>-<c:out value="${appGrpPremDto.offSiteUnitNo}"/>
+                                        </span>
+                                    </p>
                                 </div>
                             </div>
                             <c:forEach var="appPremisesOperationalUnit" items="${appGrpPremDto.appPremisesOperationalUnitDtos}">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Floor No.</span></p>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span></span></p>
                                     </div>
                                     <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>${appPremisesOperationalUnit.floorNo}</span></p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Unit No.</span></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>${appPremisesOperationalUnit.unitNo}</span></p>
+                                        <p class="form-check-label" aria-label="premise-1-cytology">
+                                            <span>
+                                                <c:out value="${appPremisesOperationalUnit.floorNo}"/>-<c:out value="${appPremisesOperationalUnit.unitNo}"/>
+                                            </span>
+                                        </p>
                                     </div>
                                 </div>
                             </c:forEach>
