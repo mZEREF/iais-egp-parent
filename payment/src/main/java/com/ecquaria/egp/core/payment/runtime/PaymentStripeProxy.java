@@ -95,6 +95,30 @@ public class PaymentStripeProxy extends PaymentProxy {
 		ParamUtil.setSessionAttr(bpc.request,"failUrl",failUrl);
 
 		try {
+			String appGrgNo=reqNo.substring(0,reqNo.indexOf('_'));
+			List<PaymentRequestDto> paymentRequestDto1s = PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNoLike(appGrgNo).getEntity();
+			for(PaymentRequestDto paymentRequestDto1:paymentRequestDto1s){
+				if("stripe".equals(paymentRequestDto1.getPayMethod())&&paymentRequestDto1.getQueryCode()!=null){
+					Session session=PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDto.getQueryCode());
+					PaymentIntent paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentIntent(session.getPaymentIntent());
+					if("succeeded".equals(paymentIntent.getStatus())){
+						paymentRequestDto1.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
+						PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto1);
+						try {
+							results="?result="+ MaskUtil.maskValue("result",PaymentTransactionEntity.TRANS_STATUS_SUCCESS)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",reqNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",this.getPaymentData().getPaymentTrans().getTransNo());
+							failUrl =AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+returnUrl+results;
+							RedirectUtil.redirect(failUrl, bpc.request, bpc.response);
+						} catch (IOException ex) {
+							log.info(ex.getMessage(),ex);
+						}
+					}
+				}
+			}
+		}catch (Exception e){
+			log.debug(e.getMessage(),e);
+		}
+
+		try {
 			RequestOptions requestOptions=PaymentBaiduriProxyUtil.getStripeService().authentication();
 			PaymentBaiduriProxyUtil.getStripeService().connectedAccounts("acct_1Gnz03BQeqajk1lG");
 			SessionCreateParams createParams =
@@ -127,7 +151,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 			try {
 				RedirectUtil.redirect(failUrl, bpc.request, bpc.response);
 			} catch (IOException ex) {
-				log.info(e.getMessage(),ex);
+				log.info(ex.getMessage(),ex);
 			}
 		}
 		if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(reqNo)) {

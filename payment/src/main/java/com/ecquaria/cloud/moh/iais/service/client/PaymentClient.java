@@ -42,7 +42,7 @@ public interface PaymentClient {
     FeignResponseEntity<PaymentRequestDto> getPaymentRequestDtoByReqRefNo(@RequestBody String reqRefNo);
 
     @PostMapping(value = "/iais-payment/payment-request-reqRefNoLike",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<PaymentRequestDto> getPaymentRequestDtoByReqRefNoLike(@RequestBody String reqRefNo);
+    FeignResponseEntity<List<PaymentRequestDto>> getPaymentRequestDtoByReqRefNoLike(@RequestBody String reqRefNo);
 
     @GetMapping(value = "/iais-payment/paying-payment-requests")
     FeignResponseEntity<List<PaymentRequestDto>> getAllPayingPaymentRequestDto();
