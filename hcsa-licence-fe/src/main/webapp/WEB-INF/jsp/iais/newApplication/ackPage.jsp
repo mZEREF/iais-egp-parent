@@ -90,14 +90,11 @@
                                                     </td>
                                                     <td>
                                                         <c:choose>
-                                                            <c:when test="${'Credit'==AppSubmissionDto.paymentMethod}">
-                                                                Credit Card
+                                                            <c:when test="${ackPageAppSubmission.paymentMethod==null}">
+                                                                N/A
                                                             </c:when>
                                                             <c:otherwise>
-                                                                <c:if test="${ackPageAppSubmission.paymentMethod==null}">N/A</c:if>
-                                                                <c:if test="${ackPageAppSubmission.paymentMethod!=null}">
-                                                                    <c:out value="${ackPageAppSubmission.paymentMethod}"/>
-                                                                </c:if>
+                                                                <iais:code code="${ackPageAppSubmission.paymentMethod}"/>
                                                             </c:otherwise>
                                                         </c:choose>
                                                     </td>
@@ -128,14 +125,11 @@
                                                 </td>
                                                 <td>
                                                     <c:choose>
-                                                        <c:when test="${'Credit'==AppSubmissionDto.paymentMethod}">
-                                                            Credit Card
+                                                        <c:when test="${AppSubmissionDto.paymentMethod==null}">
+                                                            N/A
                                                         </c:when>
                                                         <c:otherwise>
-                                                            <c:if test="${AppSubmissionDto.paymentMethod==null}">N/A</c:if>
-                                                            <c:if test="${AppSubmissionDto.paymentMethod!=null}">
-                                                                <c:out value="${AppSubmissionDto.paymentMethod}"/>
-                                                            </c:if>
+                                                            <iais:code code="${AppSubmissionDto.paymentMethod}"/>
 
                                                         </c:otherwise>
                                                     </c:choose>

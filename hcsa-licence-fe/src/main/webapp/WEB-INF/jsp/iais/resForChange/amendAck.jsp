@@ -74,8 +74,7 @@
                                     <td>
                                         <c:choose>
                                             <c:when test="${empty payMethod}">N/A</c:when>
-                                            <c:when test="${'Credit'== payMethod}">Credit Card</c:when>
-                                            <c:otherwise> ${payMethod}</c:otherwise>
+                                            <c:otherwise> <iais:code code="${payMethod}"/></c:otherwise>
                                         </c:choose>
                                     </td>
                                 </tr>

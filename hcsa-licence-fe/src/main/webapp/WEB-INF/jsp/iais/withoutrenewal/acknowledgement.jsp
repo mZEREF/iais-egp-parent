@@ -104,14 +104,11 @@
                                                             <td><c:out value="${totalStr}"/></td>
                                                             <td>
                                                                 <c:choose>
-                                                                    <c:when test="${'Credit'==AppSubmissionDto.paymentMethod}">
-                                                                        Credit Card
-                                                                    </c:when>
                                                                     <c:when test="${empty AppSubmissionDto.paymentMethod}">
                                                                         N/A
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <c:out value="${AppSubmissionDto.paymentMethod}"/>
+                                                                        <iais:code code="${AppSubmissionDto.paymentMethod}"/>
                                                                     </c:otherwise>
                                                                 </c:choose>
                                                             </td>
