@@ -107,10 +107,19 @@
                             <iais:field value="Message Content" required="true"/>
                         </div>
                         <div class="form-group">
-                            <textarea rows="40" name="messageContent" class="textarea" id="htmlEditor"
-                                      title="content">
-                                ${MsgTemplateDto.messageContent}
-                            </textarea>
+                            <c:choose>
+                                <c:when test="${'DEMD002' eq MsgTemplateDto.deliveryMode}">
+                                    <textarea  rows="20" cols="140" name="messageContent" class="textarea" id="msgContentTxtArea">
+                                            ${MsgTemplateDto.messageContent}
+                                    </textarea>
+                                </c:when>
+                                <c:otherwise>
+                                    <textarea rows="40" name="messageContent" class="textarea" id="htmlEditor"
+                                              title="content">
+                                            ${MsgTemplateDto.messageContent}
+                                    </textarea>
+                                </c:otherwise>
+                            </c:choose>
                             <span id="error_messageContent" name="iaisErrorMsg" class="error-msg"></span>
                         </div>
                         <div class="form-group">
@@ -153,6 +162,8 @@
             $(this).attr("disabled",false);
         });
     }
+
+    $("#msgContentTxtArea")
 
     function cancel() {
         $('#support').modal('hide');
