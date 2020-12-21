@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskInspectionComplianceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -54,6 +55,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
+import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
@@ -98,6 +100,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private LicenseeService licenseeService;
 
     @Autowired
     private NotificationHelper notificationHelper;
@@ -273,8 +278,15 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
         String applicantId = applicationGroupDto.getSubmitBy();
-        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
-        String applicantName = orgUserDto.getDisplayName();
+        String applicantName;
+        if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationDto.getApplicationType())) {
+            String licenseeId = applicationGroupDto.getLicenseeId();
+            LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
+            applicantName = licenseeDto.getName();
+        }else{
+            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
+            applicantName = orgUserDto.getDisplayName();
+        }
         String applicationNo = applicationDto.getApplicationNo();
         createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskDto.getTaskKey(), reMarks, InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION, RoleConsts.USER_ROLE_INSPECTIOR, taskDto.getWkGrpId(), null);
 
