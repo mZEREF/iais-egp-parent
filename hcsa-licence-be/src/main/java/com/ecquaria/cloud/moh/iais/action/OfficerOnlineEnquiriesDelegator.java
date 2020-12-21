@@ -234,7 +234,6 @@ public class OfficerOnlineEnquiriesDelegator {
         }
 
         if(COUNTS.contains(count)){
-            SearchResultHelper.doPage(request,applicationParameter);
             applicationParameter.setFilters(filter);
             SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
             CrudHelper.doPaging(appParam,bpc.request);
@@ -345,7 +344,6 @@ public class OfficerOnlineEnquiriesDelegator {
             ParamUtil.setSessionAttr(request,"SearchParam", appParam);
         }
         else if(COUNTS1.contains(count)){
-            SearchResultHelper.doPage(request,licenceParameter);
             licenceParameter.setFilters(filter);
             SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
             if(licenseeIds.size()!=0){
@@ -903,7 +901,6 @@ public class OfficerOnlineEnquiriesDelegator {
             if(svcIds.size()!=0){
                 filters.put("svc_ids", svcIds);
             }
-            SearchResultHelper.doPage(request,applicationParameter);
             applicationParameter.setFilters(filters);
             SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
             CrudHelper.doPaging(appParam,bpc.request);
@@ -1019,7 +1016,6 @@ public class OfficerOnlineEnquiriesDelegator {
             if(!StringUtil.isEmpty(hciCode)){
                 ParamUtil.setSessionAttr(request,"count","1");
             }
-            SearchResultHelper.doPage(request,licenceParameter);
             licenceParameter.setFilters(filters);
             SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
             if(licenseeIds.size()!=0){
