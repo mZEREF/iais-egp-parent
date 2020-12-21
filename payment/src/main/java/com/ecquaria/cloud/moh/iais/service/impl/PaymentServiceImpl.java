@@ -9,10 +9,12 @@ import com.ecquaria.cloud.moh.iais.service.client.PaymentAppGrpClient;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
+import com.ecquaria.egp.core.payment.api.config.GatewayNetsConfig;
 import com.ecquaria.egp.core.payment.runtime.PaymentNetsProxy;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,8 +22,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import javax.annotation.Resource;
 
 /**
  * @author weilu
@@ -35,12 +35,13 @@ public class PaymentServiceImpl implements PaymentService {
     private PaymentClient paymentClient;
     @Autowired
     private PaymentAppGrpClient paymentAppGrpClient;
-    @Resource
-    private RestTemplate restTemplate;
+
+    @Qualifier(value = "iaisRestTemplate")
+    private RestTemplate restTemplate=new RestTemplate();
 
     @Override
     public void retrieveNetsPayment(PaymentRequestDto paymentRequestDto) throws Exception {
-        String strGWPostURL="https://uat-api.nets.com.sg/GW2/TxnQuery";
+        String strGWPostURL= GatewayNetsConfig.nets_gateway_post_url;
         String keyId= GatewayConfig.eNetsKeyId;
         String secretKey=GatewayConfig.eNetsSecretKey ;
         SoapiS2S soapiTxnQueryReq=new SoapiS2S();

@@ -43,8 +43,10 @@ public class GatewayNetsConfig {
 	
 	//"http://192.168.6.80:8088/egp/process/EGOV/PaymentGatewayService?";
 	public static final String common_gateway_service_url = properties.getProperty("eNets.payment.gateway.service.url");
-	
-	
+
+	//strGWPostURL - https://<domain-name>/GW2/TxnQuery;
+	public static final String nets_gateway_post_url = properties.getProperty("eNets.payment.gateway.post.url");
+
 	//"D:\\alipay_log_" + System.currentTimeMillis() + ".txt";
 	public static final String log_path = properties.getProperty("eNets.payment.log.path");
 
