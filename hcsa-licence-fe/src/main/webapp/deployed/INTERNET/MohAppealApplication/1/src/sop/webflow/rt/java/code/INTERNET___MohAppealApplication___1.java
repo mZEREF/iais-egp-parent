@@ -56,4 +56,9 @@ public class INTERNET___MohAppealApplication___1 extends BaseProcessClass {
         EngineHelper.delegate(DELEGATOR, "appealFrom", this);
     }
 
+    public void step7_OnStepProcess_0() throws Exception {
+    // 		Step7->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "ackPage", this);
+    }
+
 }

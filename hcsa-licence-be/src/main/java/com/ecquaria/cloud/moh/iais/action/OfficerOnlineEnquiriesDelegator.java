@@ -417,9 +417,10 @@ public class OfficerOnlineEnquiriesDelegator {
                         }
                     }
                     List<String> addressList = IaisCommonUtils.genNewArrayList();
-                    for (PremisesDto premisesDto:premisesDtoList
-                    ) {
-                        addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                    if(premisesDtoList!=null){
+                        for (PremisesDto premisesDto:premisesDtoList) {
+                            addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                        }
                     }
                     reqForInfoSearchListDto.setAddress(addressList);
 
@@ -1087,10 +1088,12 @@ public class OfficerOnlineEnquiriesDelegator {
                         }
                     }
                     List<String> addressList = IaisCommonUtils.genNewArrayList();
-                    for (PremisesDto premisesDto:premisesDtoList
-                    ) {
-                        addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                    if(premisesDtoList!=null){
+                        for (PremisesDto premisesDto:premisesDtoList) {
+                            addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                        }
                     }
+
                     reqForInfoSearchListDto.setAddress(addressList);
 
                     searchListDtoSearchResultMap.put(lic.getId(),reqForInfoSearchListDto);

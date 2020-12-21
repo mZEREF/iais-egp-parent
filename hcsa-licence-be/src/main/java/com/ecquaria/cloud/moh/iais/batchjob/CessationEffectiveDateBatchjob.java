@@ -299,7 +299,7 @@ public class CessationEffectiveDateBatchjob {
                         String applicationNo = applicationDto.getApplicationNo();
                         String status = applicationDto.getStatus();
                         if (ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE.equals(status)) {
-                            appNos.append(" ");
+                            appNos.append(' ');
                             appNos.append(applicationNo);
                         }
                     }

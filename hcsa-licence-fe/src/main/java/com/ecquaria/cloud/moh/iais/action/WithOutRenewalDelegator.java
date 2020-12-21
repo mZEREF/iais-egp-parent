@@ -1029,8 +1029,8 @@ public class WithOutRenewalDelegator {
             return;
         }
         int index = 0;
+        AppFeeDetailsDto appFeeDetailsDto1=new AppFeeDetailsDto();
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
-            AppFeeDetailsDto appFeeDetailsDto1=new AppFeeDetailsDto();
             FeeExtDto feeExtDto = detailFeeDtoList.get(index);
             Double lateFeeAmount = feeExtDto.getLateFeeAmoumt();
             Double amount = feeExtDto.getAmount();

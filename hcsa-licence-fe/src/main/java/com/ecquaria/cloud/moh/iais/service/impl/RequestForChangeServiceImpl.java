@@ -1793,8 +1793,42 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         notificationHelper.sendNotification(emailParam);
     }
 
+    @Override
+    public  void updateSvcDoc(List<AppSvcDocDto> appSvcDocDtos,List<HcsaSvcDocConfigDto> svcDocConfigDtos){
+        if(appSvcDocDtos==null || svcDocConfigDtos==null || appSvcDocDtos.isEmpty() || svcDocConfigDtos.isEmpty()){
+            return;
+        }
+        for(AppSvcDocDto appSvcDocDto : appSvcDocDtos){
+            String docName = appSvcDocDto.getDocName();
+            if(docName==null){
+                String svcDocId = appSvcDocDto.getSvcDocId();
+                if(svcDocId==null){
+                    continue;
+                }else {
+                    HcsaSvcDocConfigDto entity = appConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
+                    if(entity!=null && entity.getId()!=null){
+                        appSvcDocDto.setDocName(entity.getDocTitle());
+                        docName=entity.getDocTitle();
+                        for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto : svcDocConfigDtos){
+                            String docTitle = hcsaSvcDocConfigDto.getDocTitle();
+                            if(docName.equals(docTitle)){
+                                appSvcDocDto.setSvcDocId(hcsaSvcDocConfigDto.getId());
+                            }
+                        }
+                    }
+                }
+            }else {
+                for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto : svcDocConfigDtos){
+                    String docTitle = hcsaSvcDocConfigDto.getDocTitle();
+                    if(docName.equals(docTitle)){
+                        appSvcDocDto.setSvcDocId(hcsaSvcDocConfigDto.getId());
+                        break;
+                    }
+                }
+            }
+        }
 
-
+    }
 
 
     private void validateVehicleNo(Map<String, String> errorMap, Set<String> distinctVehicleNo, int numberCount, String conveyanceVehicleNo) {

@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.PaymentService;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentAppGrpClient;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
@@ -108,7 +109,7 @@ public class PaymentServiceImpl implements PaymentService {
                 headers);
         ResponseEntity<String> response =
                 restTemplate.exchange(strGWPostURL, HttpMethod.POST, entity, String.class);
-        log.info("S2S response status : " + response.getStatusCodeValue());
+        log.info(StringUtil.changeForLog("S2S response status : " + response.getStatusCodeValue()));
         String stringBody = response.getBody();
         String hmacResponseFromGW = response.getHeaders().getFirst("hmac");
         String hmacForResponseGenerated = PaymentNetsProxy.generateSignature(stringBody,

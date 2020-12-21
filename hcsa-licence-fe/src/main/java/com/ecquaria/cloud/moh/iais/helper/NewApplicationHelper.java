@@ -2359,22 +2359,23 @@ public class NewApplicationHelper {
             return field;
         }else if(length==2){
             general_err0041=general_err0041.replace("{field}",ars[0]);
-            general_err0041=general_err0041.replace("{maxlength}",ars[1]);
+            general_err0041=general_err0041.replace("{maxlength}",ars[1]); //NOSONAR
+
             return general_err0041;
         }else if(length==3){
             String messageDesc = MessageUtil.getMessageDesc(ars[0]);
-            messageDesc=messageDesc.replace("{field}",ars[0]);
-            messageDesc=messageDesc.replace("{maxlength}",ars[1]);
+            messageDesc=messageDesc.replace("{field}",ars[0]);//NOSONAR
+            messageDesc=messageDesc.replace("{maxlength}",ars[1]);//NOSONAR
             return messageDesc;
         }else if(length==4){
-            general_err0041=general_err0041.replace(ars[0],ars[1]);
-            general_err0041=general_err0041.replace(ars[2],ars[3]);
+            general_err0041=general_err0041.replace(ars[0],ars[1]);//NOSONAR
+            general_err0041=general_err0041.replace(ars[2],ars[3]);//NOSONAR
             return general_err0041;
         }else if(length==5){
             String messageDesc = MessageUtil.getMessageDesc(ars[0]);
             if(messageDesc!=null){
-                messageDesc=messageDesc.replace(ars[1],ars[2]);
-                messageDesc=messageDesc.replace(ars[3],ars[4]);
+                messageDesc=messageDesc.replace(ars[1],ars[2]);//NOSONAR
+                messageDesc=messageDesc.replace(ars[3],ars[4]);//NOSONAR
             }
             return messageDesc;
         }else {

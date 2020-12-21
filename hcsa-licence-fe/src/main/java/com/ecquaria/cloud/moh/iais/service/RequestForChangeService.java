@@ -4,8 +4,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import freemarker.template.TemplateException;
 
@@ -95,6 +97,6 @@ public interface RequestForChangeService {
     LicenceDto getLicenceDtoByLicNo(String licenceNo);
     boolean serviceConfigIsChange(List<String> serviceId ,String presmiseType);
     boolean eqChangeConfigPresmiseType(List<LicenceDto> list,List<String> presmiseType);
-
+    void updateSvcDoc(List<AppSvcDocDto> appSvcDocDtos, List<HcsaSvcDocConfigDto> svcDocConfigDtos);
     void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos) ;
     }

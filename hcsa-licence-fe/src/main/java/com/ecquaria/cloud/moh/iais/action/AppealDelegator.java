@@ -77,10 +77,18 @@ public class AppealDelegator {
             return;
         }
         appealService.getMessage(bpc.request);
+        Object rfi = bpc.request.getSession().getAttribute("rfi");
+        Object type = bpc.request.getSession().getAttribute("type");
+        if("rfi".equals(rfi)&&"".equals(type)){
+            bpc. request.setAttribute("crud_action_type","ackPage");
+            return;
+        }
         log.info("end**************preparetionData************");
         bpc. request.setAttribute("crud_action_type","appeal");
     }
-
+    public void ackPage(BaseProcessClass bpc){
+        log.info("-----");
+    }
     public void appealFrom(BaseProcessClass bpc){
         log.info("-----");
     }

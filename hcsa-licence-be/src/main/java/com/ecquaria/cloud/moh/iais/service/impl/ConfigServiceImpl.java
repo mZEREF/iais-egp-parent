@@ -612,14 +612,13 @@ public class ConfigServiceImpl implements ConfigService {
                 if(pageMaximumCount.matches("^[0-9]+$")){
                     int i1 = Integer.parseInt(pageMaximumCount);
                     boolean b = "RDS".equals(svcCode) || "BLB".equals(svcCode);
+                    String sc_err012 = MessageUtil.getMessageDesc("SC_ERR012");
                     if(i1<0){
                         errorMap.put("maximumCount"+i,"GENERAL_ERR0002");
                     }else if(i1>1 && "PO".equals(psnType)){
-                        String sc_err012 = MessageUtil.getMessageDesc("SC_ERR012");
                         sc_err012 = sc_err012.replace("{prsType}", "PO");
                         errorMap.put("maximumCount"+i,sc_err012);
                     }else if(b && i1>1 && "CGO".equals(psnType)){
-                        String sc_err012 = MessageUtil.getMessageDesc("SC_ERR012");
                         sc_err012 = sc_err012.replace("{prsType}", "CGO");
                         errorMap.put("maximumCount"+i,sc_err012);
                     }

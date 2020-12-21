@@ -64,6 +64,13 @@
     <JavaCode defClass="" executor="" methodName="step6_OnStepProcess_0" name="step6_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Step7" x="230" y="-10">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step7_OnStepProcess_0" name="step7_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="appealFrom" stageIndicator="" x="480" y="120">
@@ -79,6 +86,12 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="inbox" stageIndicator="" x="430" y="350">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ack" stageIndicator="" x="440" y="-10">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -135,6 +148,12 @@
   <SynchronousLink destinationName="/Pages/WebPage/appealFrom" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step6" style="rectanular">
    <position>{(380,140)(500,140)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step7" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(240,140)(250,10)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step7" style="rectanular">
+   <position>{(250,10)(460,10)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
@@ -152,6 +171,7 @@
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/Step5" value="&quot;inbox&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Step6" value="&quot;appeal&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Step7" value="&quot;ackPage&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

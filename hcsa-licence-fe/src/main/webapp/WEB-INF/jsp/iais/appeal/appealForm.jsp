@@ -178,7 +178,6 @@
 
 </style>
 <script  type="text/javascript">
-
   $(document).ready(function () {
       if($('#saveDraftSuccess').val()=='success'){
           $('#saveDraft').modal('show');

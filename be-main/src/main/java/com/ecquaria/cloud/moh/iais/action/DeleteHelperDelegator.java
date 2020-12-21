@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.service.client.BelicationClient;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.Calendar;
@@ -91,7 +92,7 @@ public class DeleteHelperDelegator {
                 String licenceNo = licenceDto.getLicenceNo();
                 try{
                     String sql = getRunSql(HCSA_LICENCE_SQL_FILE, licenceNo, "AN200512000809C");
-                    log.debug("delete hacsa licence be sql : " + sql);
+                    log.info(StringUtil.changeForLog("delete hacsa licence be sql : " + sql));
                     licenceClient.doDeleteBySql(sql);
                 }catch (Exception e){
                     flag = -1;
@@ -101,7 +102,7 @@ public class DeleteHelperDelegator {
         }else{
             flag = 0;
         }
-        log.debug("delete hacsa licence be flag : " + flag);
+        log.info(StringUtil.changeForLog("delete hacsa licence be flag : " + flag));
         return flag;
     }
 
@@ -110,7 +111,7 @@ public class DeleteHelperDelegator {
         if(!StringUtil.isEmpty(organizationId)){
             try{
                 String sql = getRunSql(HCSA_ORGANIZATION_SQL_FILE, organizationId, "AN200512000809C");
-                log.debug("delete hacsa organication be sql : " + sql);
+                log.debug(StringUtil.changeForLog("delete hacsa organication be sql : " + sql));
                 organizationMainClient.doDeleteBySql(sql);
             }catch (Exception e){
                 flag = -1;
@@ -118,7 +119,7 @@ public class DeleteHelperDelegator {
         }else{
             flag = 0;
         }
-        log.debug("delete hacsa organication be flag : " + flag);
+        log.debug(StringUtil.changeForLog("delete hacsa organication be flag : " + flag));
         return flag;
     }
 
@@ -129,7 +130,7 @@ public class DeleteHelperDelegator {
                 String groupNo = applicationGroupDto.getGroupNo();
                 try{
                     String sql = getRunSql(HCSA_APPLICATION_SQL_FILE, groupNo, "AN200512000809C");
-                    log.debug("delete hacsa application be sql : " + sql);
+                    log.debug(StringUtil.changeForLog("delete hacsa application be sql : " + sql));
                     belicationClient.doDeleteBySql(sql);
                 }catch (Exception e){
                     flag = -1;
@@ -139,7 +140,7 @@ public class DeleteHelperDelegator {
         }else{
             flag = 0;
         }
-        log.debug("delete hacsa application be flag : " + flag);
+        log.debug(StringUtil.changeForLog("delete hacsa application be flag : " + flag));
         return flag;
     }
 
@@ -158,18 +159,21 @@ public class DeleteHelperDelegator {
         return sql;
     }
 
-    private String readFile(File file,String replaceNo, String targetString) throws Exception{
-        StringBuffer sql = new StringBuffer();
-        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-        String temp = null;
-        while((temp = br.readLine())!=null){
-            if(temp.contains(targetString)){
-                temp = temp.replaceAll(targetString,replaceNo);
+    private synchronized String readFile(File file,String replaceNo, String targetString) {
+        StringBuilder sql = new StringBuilder();
+        try ( BufferedReader br= new BufferedReader(new InputStreamReader(new FileInputStream(file)));) {
+            String temp = null;
+            while((temp = br.readLine())!=null){
+                if(temp.contains(targetString)){
+                    temp = temp.replaceAll(targetString,replaceNo);
+                }
+                sql.append(temp);
+                sql.append(System.lineSeparator());
             }
-            sql.append(temp);
-            sql.append(System.lineSeparator());
+        }catch (IOException e){
+            log.error(e.getMessage(),e);
         }
-        br.close();
+
         return sql.toString();
     }
 
