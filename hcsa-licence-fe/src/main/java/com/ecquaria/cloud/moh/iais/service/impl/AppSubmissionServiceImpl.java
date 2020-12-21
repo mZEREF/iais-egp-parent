@@ -1671,6 +1671,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 String substring = docName.substring(docName.lastIndexOf('.') + 1);
                 if (docSize/1024 > uploadFileLimit) {
                     sB.append(serviceId);
+                    map.put("svcDocError","error");
                 }
 
                 String[] sysFileTypeArr = FileUtils.fileTypeToArray(sysFileType);
@@ -1681,6 +1682,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
                 if (!flag) {
                     sB.append(serviceId);
+                    map.put("svcDocError","error");
                 }
             }
 
