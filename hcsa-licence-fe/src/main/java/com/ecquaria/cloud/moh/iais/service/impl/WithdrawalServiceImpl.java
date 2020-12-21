@@ -9,15 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationTruckDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
@@ -211,6 +203,21 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 applicationGroupDtoList.add(newApplicationGroupDto);
                 applicationGroupDtoList.add(oldApplicationGroupDto);
                 applicationTruckDto.setApplicationGroupDtoList(applicationGroupDtoList);
+
+                List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtoList = IaisCommonUtils.genNewArrayList();
+                AppGrpPremisesEntityDto oldAppGrpPremisesEntityDto = applicationFeClient.getPremisesByAppNo(oldApplication.getApplicationNo()).getEntity();
+                AppGrpPremisesEntityDto newAppGrpPremisesEntityDto = applicationFeClient.getPremisesByAppNo(newApplication.getApplicationNo()).getEntity();
+                appGrpPremisesEntityDtoList.add(newAppGrpPremisesEntityDto);
+                appGrpPremisesEntityDtoList.add(oldAppGrpPremisesEntityDto);
+                applicationTruckDto.setAppGrpPremisesEntityDtoList(appGrpPremisesEntityDtoList);
+
+                List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList1 = IaisCommonUtils.genNewArrayList();
+                AppPremisesCorrelationDto oldAppPremisesCorrelationDto = applicationFeClient.getCorrelationByAppNo(oldApplication.getApplicationNo()).getEntity();
+                AppPremisesCorrelationDto newAppPremisesCorrelationDto = applicationFeClient.getCorrelationByAppNo(newApplication.getApplicationNo()).getEntity();
+                appPremisesCorrelationDtoList1.add(oldAppPremisesCorrelationDto);
+                appPremisesCorrelationDtoList1.add(newAppPremisesCorrelationDto);
+                applicationTruckDto.setAppPremisesCorrelationDtoList(appPremisesCorrelationDtoList1);
+
                 try {
                     EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.WithdrawalServiceImpl", "saveWithdrawn",
                             "hcsa-license-web", InspRectificationSaveDto.class.getName(), JsonUtil.parseToJson(applicationTruckDto));
