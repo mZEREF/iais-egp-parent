@@ -106,22 +106,22 @@ public class SystemParameterDelegator {
      */
     public void doQuery(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"doQuery".equals(currentAction)){
+        String curAct = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(!"doQuery".equals(curAct)){
             return;
         }
 
-        SystemParameterQueryDto queryDto = new SystemParameterQueryDto();
+        SystemParameterQueryDto systemParameterQuery = new SystemParameterQueryDto();
 
         String domainType = ParamUtil.getString(request, SystemParameterConstant.PARAM_DOMAIN_TYPE);
         String module = ParamUtil.getString(request, SystemParameterConstant.PARAM_MODULE);
         String status = ParamUtil.getString(request, SystemParameterConstant.PARAM_STATUS);
         String description = ParamUtil.getString(request, SystemParameterConstant.PARAM_DESCRIPTION);
 
-        queryDto.setDomainType(domainType);
-        queryDto.setModule(module);
-        queryDto.setStatus(status);
-        queryDto.setDescription(description);
+        systemParameterQuery.setDomainType(domainType);
+        systemParameterQuery.setModule(module);
+        systemParameterQuery.setStatus(status);
+        systemParameterQuery.setDescription(description);
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 
         ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_DOMAIN_TYPE, domainType);
@@ -129,7 +129,7 @@ public class SystemParameterDelegator {
         ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_STATUS, status);
         ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_DESCRIPTION, description);
 
-        ValidationResult validationResult = WebValidationHelper.validateProperty(queryDto, "search");
+        ValidationResult validationResult = WebValidationHelper.validateProperty(systemParameterQuery, "search");
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -167,8 +167,8 @@ public class SystemParameterDelegator {
      */
     public void doEdit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"doEdit".equals(currentAction)){
+        String curAct = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(!"doEdit".equals(curAct)){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
             return;
         }
@@ -177,8 +177,8 @@ public class SystemParameterDelegator {
         String description = ParamUtil.getString(request, SystemParameterConstant.PARAM_DESCRIPTION);
 
         SystemParameterDto editDto = (SystemParameterDto) ParamUtil.getSessionAttr(request, SystemParameterConstant.PARAMETER_REQUEST_DTO);
-        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-        editDto.setAuditTrailDto(auditTrailDto);
+        AuditTrailDto att = IaisEGPHelper.getCurrentAuditTrailDto();
+        editDto.setAuditTrailDto(att);
         editDto.setValue(value);
         editDto.setDescription(description);
         ValidationResult validationResult = WebValidationHelper.validateProperty(editDto, "edit");

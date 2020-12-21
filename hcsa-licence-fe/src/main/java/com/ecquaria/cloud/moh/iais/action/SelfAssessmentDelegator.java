@@ -75,19 +75,19 @@ public class SelfAssessmentDelegator {
 
         ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID, groupId);
 
-        String applicationNumber;
+        String appNo;
         try {
-            applicationNumber = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER);
+            appNo = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER);
         }catch (Exception e){
             log.error("====>>>>>>>message back receive value >>>>applicationNumber>>>>>>");
             log.error(e.getMessage(), e);
-            applicationNumber = ParamUtil.getString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER);
+            appNo = ParamUtil.getString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER);
         }
 
-        ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER, applicationNumber);
-        if (!StringUtils.isEmpty(applicationNumber)){
-            log.info(StringUtil.changeForLog("when self ass rfi , the application number is " + applicationNumber));
-            AppPremisesCorrelationDto correlation = selfAssessmentService.getCorrelationByAppNo(applicationNumber);
+        ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER, appNo);
+        if (!StringUtils.isEmpty(appNo)){
+            log.info(StringUtil.changeForLog("when self ass rfi , the application number is " + appNo));
+            AppPremisesCorrelationDto correlation = selfAssessmentService.getCorrelationByAppNo(appNo);
             if (correlation != null){
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID, correlation.getId());
             }
@@ -101,7 +101,7 @@ public class SelfAssessmentDelegator {
             ParamUtil.setSessionAttr(request,"IAIS_MSG_CONTENT",interMessageDto.getMsgContent());
         }
 
-        AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_SELF_ASSESSMENT, applicationNumber);
+        AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_SELF_ASSESSMENT, appNo);
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_FLAG, null);
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_ERROR_MSG, null);
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_MAP, null);

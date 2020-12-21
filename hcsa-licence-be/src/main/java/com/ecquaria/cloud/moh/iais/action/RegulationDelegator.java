@@ -244,9 +244,9 @@ public class RegulationDelegator {
 
         File toFile = FileUtils.multipartFileToFile(file);
         try {
-            List<HcsaChklSvcRegulationDto> regulationDtoList = FileUtils.transformToJavaBean(toFile, HcsaChklSvcRegulationDto.class);
-            regulationDtoList.forEach(i -> i.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto()));
-            List<ErrorMsgContent> errorMsgContentList = regulationService.submitUploadRegulation(regulationDtoList);
+            List<HcsaChklSvcRegulationDto> reglList = FileUtils.transformToJavaBean(toFile, HcsaChklSvcRegulationDto.class);
+            reglList.forEach(i -> i.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto()));
+            List<ErrorMsgContent> errorMsgContentList = regulationService.submitUploadRegulation(reglList);
 
             FileUtils.deleteTempFile(toFile);
 
@@ -312,16 +312,16 @@ public class RegulationDelegator {
 
         String clauseNo = ParamUtil.getString(bpc.request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE);
         String clause = ParamUtil.getString(bpc.request, HcsaChecklistConstants.PARAM_REGULATION_DESC);
-        HcsaChklSvcRegulationDto dto = (HcsaChklSvcRegulationDto) ParamUtil.getSessionAttr(bpc.request, "regulationAttr");
-        if (dto == null){
-            dto = new HcsaChklSvcRegulationDto();
+        HcsaChklSvcRegulationDto regulation = (HcsaChklSvcRegulationDto) ParamUtil.getSessionAttr(bpc.request, "regulationAttr");
+        if (regulation == null){
+            regulation = new HcsaChklSvcRegulationDto();
         }
 
-        dto.setClauseNo(clauseNo);
-        dto.setClause(clause);
-        dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        ParamUtil.setRequestAttr(bpc.request, "regulationAttr", dto);
-        ValidationResult validationResult = WebValidationHelper.validateProperty(dto, action);
+        regulation.setClauseNo(clauseNo);
+        regulation.setClause(clause);
+        regulation.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        ParamUtil.setRequestAttr(bpc.request, "regulationAttr", regulation);
+        ValidationResult validationResult = WebValidationHelper.validateProperty(regulation, action);
         if (validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -331,11 +331,11 @@ public class RegulationDelegator {
             IaisApiResult<HcsaChklSvcRegulationDto> apiResult = null;
             switch (action){
                 case "update":
-                    apiResult =  regulationService.updateRegulation(dto);
+                    apiResult =  regulationService.updateRegulation(regulation);
                     ParamUtil.setRequestAttr(bpc.request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ERR023"));
                     break;
                 case "create":
-                    apiResult =  regulationService.createRegulation(dto);
+                    apiResult =  regulationService.createRegulation(regulation);
                     ParamUtil.setRequestAttr(bpc.request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ERR024"));
                     break;
                 default:

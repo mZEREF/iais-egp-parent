@@ -103,11 +103,11 @@ public class AuditTrailDelegator {
     public void prepareData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
 
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request,
+        LoginContext lc = (LoginContext) ParamUtil.getSessionAttr(request,
                 AppConsts.SESSION_ATTR_LOGIN_USER);
 
-        if (!Optional.ofNullable(loginContext).isPresent()){
-            log.info(StringUtil.changeForLog("===>> don't have loginContext" + loginContext));
+        if (!Optional.ofNullable(lc).isPresent()){
+            log.info(StringUtil.changeForLog("===>> don't have loginContext" + lc));
         }
 
         boolean isAdmin = AccessUtil.isAdministrator();
@@ -134,8 +134,8 @@ public class AuditTrailDelegator {
         HttpServletRequest request = bpc.request;
 
         String auditId = ParamUtil.getMaskedString(request, "auditId");
-        AuditTrailDto auditTrail = auditTrailService.getAuditTrailById(auditId);
-        ParamUtil.setRequestAttr(request, AuditTrailConstant.PARAM_ACTION_DATA, auditTrail);
+        AuditTrailDto att = auditTrailService.getAuditTrailById(auditId);
+        ParamUtil.setRequestAttr(request, AuditTrailConstant.PARAM_ACTION_DATA, att);
         log.info(StringUtil.changeForLog("audit id........" + auditId));
     }
 
@@ -193,40 +193,40 @@ public class AuditTrailDelegator {
                 String mohUserId = i.getMohUserId();
                 String entityId = i.getEntityId();
 
-                AuditTrailExcelDto etExcel = new AuditTrailExcelDto();
+                AuditTrailExcelDto atExcel = new AuditTrailExcelDto();
                 if (AuditTrailConsts.OPERATION_TYPE_BATCH_JOB == domain){
-                    etExcel.setBatchjobId(entityId);
-                    etExcel.setCreateBy(nricNum);
+                    atExcel.setBatchjobId(entityId);
+                    atExcel.setCreateBy(nricNum);
                 }else if (AuditTrailConsts.OPERATION_TYPE_INTRANET == domain){
-                    etExcel.setMohUserId(mohUserId);
-                    etExcel.setCreateBy(mohUserId);
-                    etExcel.setAdId(mohUserId);
+                    atExcel.setMohUserId(mohUserId);
+                    atExcel.setCreateBy(mohUserId);
+                    atExcel.setAdId(mohUserId);
                 }else if (AuditTrailConsts.OPERATION_TYPE_INTERNET == domain){
                     if (AuditTrailConsts.LOGIN_TYPE_SING_PASS == loginType){
-                        etExcel.setSingpassId(nricNum);
+                        atExcel.setSingpassId(nricNum);
                     }else if (AuditTrailConsts.LOGIN_TYPE_CORP_PASS == loginType){
-                        etExcel.setCorppassId(nricNum);
-                        etExcel.setCorppassNric(nricNum);
-                        etExcel.setUen(uenId);
+                        atExcel.setCorppassId(nricNum);
+                        atExcel.setCorppassNric(nricNum);
+                        atExcel.setUen(uenId);
                     }
 
-                    etExcel.setCreateBy(nricNum);
+                    atExcel.setCreateBy(nricNum);
                 }
-                etExcel.setOperation(i.getOperationDesc());
-                etExcel.setOperationType(i.getDomainDesc());
-                etExcel.setActionTime(i.getActionTime());
-                etExcel.setClientIp(i.getClientIp());
-                etExcel.setUserAgent(i.getUserAgent());
-                etExcel.setSessionId(i.getSessionId());
-                etExcel.setTotalSessionDuration(i.getTotalSessionDuration());
-                etExcel.setApplicationId(i.getAppNum());
-                etExcel.setLicenseNum(i.getLicenseNum());
-                etExcel.setModule(i.getModule());
-                etExcel.setFunctionName(i.getFunctionName());
-                etExcel.setProgrammeName(i.getProgrammeName());
-                etExcel.setDataActivities(i.getOperationDesc());
-                etExcel.setCreateDate(i.getActionTime());
-                etList.add(etExcel);
+                atExcel.setOperation(i.getOperationDesc());
+                atExcel.setOperationType(i.getDomainDesc());
+                atExcel.setActionTime(i.getActionTime());
+                atExcel.setClientIp(i.getClientIp());
+                atExcel.setUserAgent(i.getUserAgent());
+                atExcel.setSessionId(i.getSessionId());
+                atExcel.setTotalSessionDuration(i.getTotalSessionDuration());
+                atExcel.setApplicationId(i.getAppNum());
+                atExcel.setLicenseNum(i.getLicenseNum());
+                atExcel.setModule(i.getModule());
+                atExcel.setFunctionName(i.getFunctionName());
+                atExcel.setProgrammeName(i.getProgrammeName());
+                atExcel.setDataActivities(i.getOperationDesc());
+                atExcel.setCreateDate(i.getActionTime());
+                etList.add(atExcel);
             }
             File file = ExcelWriter.writerToExcel(etList, AuditTrailExcelDto.class, "Audit Trail Logging");
             FileUtils.writeFileResponseContent(response, file);
@@ -250,8 +250,8 @@ public class AuditTrailDelegator {
     */
     public void doQuery(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!AuditTrailConstant.ACTION_QUERY.equals(currentAction)){
+        String curAct = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(!AuditTrailConstant.ACTION_QUERY.equals(curAct)){
             return;
         }
 

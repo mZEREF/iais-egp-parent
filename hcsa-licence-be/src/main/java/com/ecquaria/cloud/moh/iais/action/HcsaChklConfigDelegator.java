@@ -189,29 +189,28 @@ public class HcsaChklConfigDelegator {
         }
 
         try {
-            ChecklistConfigDto configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
-            if(configDto != null){
-                List<ChecklistSectionDto> sectionDtos = configDto.getSectionDtos();
-                if(sectionDtos == null){
-                    sectionDtos = IaisCommonUtils.genNewArrayList();
+            ChecklistConfigDto conf = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
+            if(conf != null){
+                List<ChecklistSectionDto> secList = conf.getSectionDtos();
+                if(secList == null){
+                    secList = IaisCommonUtils.genNewArrayList();
                 }
 
-                ChecklistSectionDto checklistSectionDto = new ChecklistSectionDto();
+                ChecklistSectionDto cs = new ChecklistSectionDto();
 
                 //going to clear it in submit method
-                checklistSectionDto.setId(UUID.randomUUID().toString());
+                cs.setId(UUID.randomUUID().toString());
 
-                checklistSectionDto.setSection(section);
-                checklistSectionDto.setDescription(sectionDesc);
-                checklistSectionDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                sectionDtos.add(checklistSectionDto);
-                sectionDtos.sort(Comparator.comparing(ChecklistSectionDto::getOrder, Comparator.nullsFirst(Comparator.naturalOrder())));
-                configDto.setSectionDtos(sectionDtos);
-
+                cs.setSection(section);
+                cs.setDescription(sectionDesc);
+                cs.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                secList.add(cs);
+                secList.sort(Comparator.comparing(ChecklistSectionDto::getOrder, Comparator.nullsFirst(Comparator.naturalOrder())));
+                conf.setSectionDtos(secList);
                 curSecName.add(section);
             }
 
-            ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, configDto);
+            ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, conf);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         }catch (IaisRuntimeException e){
             log.error(e.getMessage(), e);
@@ -227,20 +226,20 @@ public class HcsaChklConfigDelegator {
     private void preSelectOption(HttpServletRequest request){
         this.subtypeNames =  hcsaChklService.listSubTypeName();
         this.svcNames = hcsaChklService.listServiceName();
-        List<SelectOption> subtypeSelect = IaisCommonUtils.genNewArrayList();
-        List<SelectOption> svcNameSelect = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> subTypeOptList = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> svcNameOptList = IaisCommonUtils.genNewArrayList();
 
         for(String sn : subtypeNames){
-            subtypeSelect.add(new SelectOption(sn, sn));
+            subTypeOptList.add(new SelectOption(sn, sn));
         }
 
-        ParamUtil.setSessionAttr(request, "subtypeSelect", (Serializable) subtypeSelect);
+        ParamUtil.setSessionAttr(request, "subtypeSelect", (Serializable) subTypeOptList);
 
         for (String s : svcNames){
-            svcNameSelect.add(new SelectOption(s,s));
+            svcNameOptList.add(new SelectOption(s,s));
         }
 
-        ParamUtil.setSessionAttr(request, "svcNameSelect", (Serializable) svcNameSelect);
+        ParamUtil.setSessionAttr(request, "svcNameSelect", (Serializable) svcNameOptList);
 
     }
 
@@ -258,17 +257,14 @@ public class HcsaChklConfigDelegator {
         }
 
         String common = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE);
-
-        String[] moduleCheckBox = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE_CHECKBOX);
-        String[] typeCheckBox = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE_CHECKBOX);
-
+        String[] mcb = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE_CHECKBOX);
+        String[] tcb = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE_CHECKBOX);
         String svcName = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE);
         String svcSubType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE);
 
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE, common);
-        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE_CHECKBOX, moduleCheckBox);
-        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE_CHECKBOX, typeCheckBox);
-
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE_CHECKBOX, mcb);
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE_CHECKBOX, tcb);
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 
@@ -285,23 +281,23 @@ public class HcsaChklConfigDelegator {
             searchParam.addFilter(HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE, svcSubType, true);
         }
 
-        if (moduleCheckBox!= null){
+        if (mcb!= null){
             //<#if module??> and ${module} </#if>
-            String moduleStr = SqlHelper.constructInCondition("svc.module", moduleCheckBox.length);
+            String moduleStr = SqlHelper.constructInCondition("svc.module", mcb.length);
             searchParam.addParam("module", moduleStr);
             int indx = 0;
-            for (String s : moduleCheckBox){
+            for (String s : mcb){
                 searchParam.addFilter("svc.module"+indx, s);
                 indx++;
             }
         }
 
-        if (typeCheckBox!= null){
+        if (tcb!= null){
             //<#if type??> and ${type} </#if>
-            String typeStr = SqlHelper.constructInCondition("svc.type", typeCheckBox.length);
+            String typeStr = SqlHelper.constructInCondition("svc.type", tcb.length);
             searchParam.addParam("type", typeStr);
             int indx = 0;
-            for (String s : typeCheckBox){
+            for (String s : tcb){
                 searchParam.addFilter("svc.type"+indx, s);
                 indx++;
             }
@@ -329,12 +325,15 @@ public class HcsaChklConfigDelegator {
      */
     public void cloneConfig(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+
         preSelectOption(request);
-        String cloneConfigId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.CURRENT_MASK_ID);
 
-        ParamUtil.setSessionAttr(request, "configIdAttr", cloneConfigId);
+        String cloneConfId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.CURRENT_MASK_ID);
 
-        setToSession(request, cloneConfigId);
+        ParamUtil.setSessionAttr(request, "configIdAttr", cloneConfId);
+
+        setToSession(request, cloneConfId);
+
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.ACTION_OPERATIONTYPE, HcsaChecklistConstants.ACTION_CLONE);
     }
 
@@ -342,14 +341,14 @@ public class HcsaChklConfigDelegator {
         if (!StringUtils.isEmpty(value)){
             ChecklistConfigDto configDto = hcsaChklService.getChecklistConfigById(value);
 
-            List<String> selectedItemIdToConfig = IaisCommonUtils.genNewArrayList();
+            List<String> selectedItemIdList = IaisCommonUtils.genNewArrayList();
             configDto.getSectionDtos().forEach(i -> {
                 i.getChecklistItemDtos().forEach(j -> {
-                    selectedItemIdToConfig.add(j.getItemId());
+                    selectedItemIdList.add(j.getItemId());
                 });
             });
 
-            ParamUtil.setSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, (Serializable) selectedItemIdToConfig);
+            ParamUtil.setSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, (Serializable) selectedItemIdList);
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, configDto);
         }
     }
@@ -362,8 +361,8 @@ public class HcsaChklConfigDelegator {
      */
     public void addConfigNextAction(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if ("backLastPage".equals(currentAction)){
+        String curAct = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if ("backLastPage".equals(curAct)){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
             return;
         }
@@ -386,65 +385,65 @@ public class HcsaChklConfigDelegator {
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_END_DATE, eftEndDate);
 
         try {
-            ChecklistConfigDto configDto;
+            ChecklistConfigDto conf;
             String operationType = (String) ParamUtil.getSessionAttr(request, "operationType");
             if (!StringUtils.isEmpty(operationType) && HcsaChecklistConstants.ACTION_CLONE.equals(operationType)){
-                configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
-                configDto.setSvcName(null);
-                configDto.setEftStartDate(null);
-                configDto.setEftEndDate(null);
-                configDto.setSvcSubType(null);
-                configDto.setCommon(false);
-                configDto.setId(null);
-                configDto.setHciCode(null);
-                configDto.setModule(null);
-                configDto.setVersion(null);
-                configDto.setSvcCode(null);
-                configDto.setType(null);
+                conf = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
+                conf.setSvcName(null);
+                conf.setEftStartDate(null);
+                conf.setEftEndDate(null);
+                conf.setSvcSubType(null);
+                conf.setCommon(false);
+                conf.setId(null);
+                conf.setHciCode(null);
+                conf.setModule(null);
+                conf.setVersion(null);
+                conf.setSvcCode(null);
+                conf.setType(null);
             }else {
-                configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
-                if(configDto == null){
-                    configDto = new ChecklistConfigDto();
+                conf = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
+                if(conf == null){
+                    conf = new ChecklistConfigDto();
                 }
             }
 
             if ("1".equals(common)) {
-                configDto.setCommon(true);
+                conf.setCommon(true);
                 ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_COMMON, "1");
             }else {
                 ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_COMMON, null);
             }
 
             if (module != null){
-                configDto.setModule(MasterCodeUtil.getCodeDesc(module));
+                conf.setModule(MasterCodeUtil.getCodeDesc(module));
             }
 
             if (type != null){
-                configDto.setType(MasterCodeUtil.getCodeDesc(type));
+                conf.setType(MasterCodeUtil.getCodeDesc(type));
             }
 
-            configDto.setSvcName(svcName);
-            configDto.setSvcSubType(svcSubType);
-            configDto.setHciCode(hciCode);
-            configDto.setEftStartDate(eftStartDate);
-            configDto.setEftEndDate(eftEndDate);
-            configDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            conf.setSvcName(svcName);
+            conf.setSvcSubType(svcSubType);
+            conf.setHciCode(hciCode);
+            conf.setEftStartDate(eftStartDate);
+            conf.setEftEndDate(eftEndDate);
+            conf.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
             //field validate
-            ValidationResult validationResult = WebValidationHelper.validateProperty(configDto, common == null ? "save" : "commonSave");
+            ValidationResult validationResult = WebValidationHelper.validateProperty(conf, common == null ? "save" : "commonSave");
             if(validationResult != null && validationResult.isHasErrors()){
                 Map<String,String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
                 return;
             }else {
-                ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, configDto);
+                ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, conf);
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
             }
 
             //record validate
-            boolean existsRecord = hcsaChklService.isExistsRecord(configDto);
-            if (existsRecord){
+            boolean isExistsRecord = hcsaChklService.isExistsRecord(conf);
+            if (isExistsRecord){
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("configCustomValidation", "CHKL_ERR019"));
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             }
@@ -463,11 +462,11 @@ public class HcsaChklConfigDelegator {
      */
     public void deleteRecord(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String configId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.CURRENT_MASK_ID);
+        String confId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.CURRENT_MASK_ID);
 
-        if (!StringUtils.isEmpty(configId)){
-            boolean canDelete = hcsaChklService.deleteRecord(configId);
-            if (!canDelete){
+        if (!StringUtils.isEmpty(confId)){
+            boolean delSuccess = hcsaChklService.deleteRecord(confId);
+            if (!delSuccess){
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("configCustomValidation", "CHKL_ERR022"));
             }
         }
@@ -480,9 +479,9 @@ public class HcsaChklConfigDelegator {
      */
     public void doView(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String configId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.CURRENT_MASK_ID);
-        if(!StringUtil.isEmpty(configId)){
-            ChecklistConfigDto checklistConfigById = hcsaChklService.getChecklistConfigById(configId);
+        String confId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.CURRENT_MASK_ID);
+        if(!StringUtil.isEmpty(confId)){
+            ChecklistConfigDto checklistConfigById = hcsaChklService.getChecklistConfigById(confId);
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, checklistConfigById);
             ParamUtil.setSessionAttr(request, "actionBtn", "dataView");
         }
@@ -498,9 +497,9 @@ public class HcsaChklConfigDelegator {
         HttpServletRequest request = bpc.request;
         String value = ParamUtil.getMaskedString(request, HcsaChecklistConstants.PARAM_PAGE_INDEX);
 
-        ChecklistConfigDto configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
-        if (configDto != null){
-            List<ChecklistSectionDto> sectionDtos = configDto.getSectionDtos();
+        ChecklistConfigDto conf = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
+        if (conf != null){
+            List<ChecklistSectionDto> sectionDtos = conf.getSectionDtos();
             Iterator<ChecklistSectionDto> iter = sectionDtos.iterator();
             while (iter.hasNext()){
                 String sectionId = iter.next().getId();
@@ -509,7 +508,7 @@ public class HcsaChklConfigDelegator {
                 }
             }
         }
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, configDto);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, conf);
     }
 
     /**
@@ -520,14 +519,14 @@ public class HcsaChklConfigDelegator {
      */
     public void removeSectionItem(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String currentSectionId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.PARAM_PAGE_INDEX);
+        String curSecId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.PARAM_PAGE_INDEX);
         String value = ParamUtil.getMaskedString(bpc.request,"sectionItemid");
 
-        ChecklistConfigDto configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
-        if (configDto != null){
-            List<ChecklistSectionDto> sectionDtos = configDto.getSectionDtos();
-            for (ChecklistSectionDto sec : sectionDtos){
-                if (currentSectionId.equals(sec.getId())){
+        ChecklistConfigDto conf = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
+        if (conf != null){
+            List<ChecklistSectionDto> sectionList = conf.getSectionDtos();
+            for (ChecklistSectionDto sec : sectionList){
+                if (curSecId.equals(sec.getId())){
                     List<ChecklistItemDto> itemDtoList = sec.getChecklistItemDtos();
                     Iterator<ChecklistItemDto> iter = itemDtoList.iterator();
                     while (iter.hasNext()){
@@ -540,7 +539,7 @@ public class HcsaChklConfigDelegator {
                 }
             }
         }
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, configDto);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, conf);
     }
 
 
@@ -553,28 +552,28 @@ public class HcsaChklConfigDelegator {
     public void submitEditData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
 
-        ChecklistConfigDto configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
-        if (configDto == null){
+        ChecklistConfigDto conf = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
+        if (conf == null){
             return;
         }
 
         String type = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE);
         String module = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE);
-        configDto.setModule(module);
-        configDto.setType(type);
+        conf.setModule(module);
+        conf.setType(type);
 
-        ValidationResult validationResult = WebValidationHelper.validateProperty(configDto, "update");
+        ValidationResult validationResult = WebValidationHelper.validateProperty(conf, "update");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }else {
-            configDto.setType(MasterCodeUtil.getCodeDesc(type));
-            configDto.setModule(MasterCodeUtil.getCodeDesc(module));
-            generateOrderIndex(request, configDto.getSectionDtos());
+            conf.setType(MasterCodeUtil.getCodeDesc(type));
+            conf.setModule(MasterCodeUtil.getCodeDesc(module));
+            generateOrderIndex(request, conf.getSectionDtos());
 
-            configDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            ChecklistConfigDto checklistConfigDto = hcsaChklService.submitConfig(configDto);
+            conf.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            ChecklistConfigDto checklistConfigDto = hcsaChklService.submitConfig(conf);
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, checklistConfigDto);
             ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ACK004"));
         }
@@ -588,10 +587,10 @@ public class HcsaChklConfigDelegator {
      */
     public void loadEditData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String configId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.CURRENT_MASK_ID);
-        ParamUtil.setSessionAttr(request, "configIdAttr", configId);
+        String confId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.CURRENT_MASK_ID);
+        ParamUtil.setSessionAttr(request, "configIdAttr", confId);
 
-        setToSession(request, configId);
+        setToSession(request, confId);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.ACTION_OPERATIONTYPE, HcsaChecklistConstants.ACTION_EDIT);
     }
 
@@ -618,7 +617,6 @@ public class HcsaChklConfigDelegator {
      */
     public void backToPage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
         String operationType = (String) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.ACTION_OPERATIONTYPE);
         if (HcsaChecklistConstants.ACTION_EDIT.equals(operationType)){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
@@ -639,12 +637,10 @@ public class HcsaChklConfigDelegator {
     public void prepareConfigSectionInfo(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         List<SelectOption> subtypeSelects = IaisCommonUtils.genNewArrayList();
-
         List<String> subtypeNames = hcsaChklService.listSubTypeName();
         for(String s : subtypeNames){
             subtypeSelects.add(new SelectOption(s, s));
         }
-
         ParamUtil.setRequestAttr(request, "subtypeSelect", subtypeSelects);
     }
 
@@ -657,15 +653,14 @@ public class HcsaChklConfigDelegator {
     public void addChecklistItemNextAction(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         try {
-            String[] checkBoxItemId = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
-            if(checkBoxItemId == null || checkBoxItemId.length <= 0){
+            String[] ckbItemId = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
+            if(ckbItemId == null || ckbItemId.length <= 0){
                 return;
             }
 
-            List<ChecklistItemDto> necessary = hcsaChklService.listChklItemByItemId(Arrays.asList(checkBoxItemId));
+            List<ChecklistItemDto> necessary = hcsaChklService.listChklItemByItemId(Arrays.asList(ckbItemId));
             ChecklistConfigDto disposition = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
             String currentValidateId = (String) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.PARAM_PAGE_INDEX);
-
             List<String> selectedItemIdToConfig = (List<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG);
             if (IaisCommonUtils.isEmpty(selectedItemIdToConfig)){
                 selectedItemIdToConfig = IaisCommonUtils.genNewArrayList();
@@ -689,7 +684,7 @@ public class HcsaChklConfigDelegator {
 
             }
 
-            selectedItemIdToConfig.addAll(Arrays.asList(checkBoxItemId));
+            selectedItemIdToConfig.addAll(Arrays.asList(ckbItemId));
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, (Serializable) selectedItemIdToConfig);
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, disposition);
 
@@ -705,7 +700,6 @@ public class HcsaChklConfigDelegator {
             String orderStr = ParamUtil.getString(request, section);
             int order =Integer.parseInt(orderStr);
             sec.setOrder(order + 1);
-
             List<ChecklistItemDto> checklistItemDtos = sec.getChecklistItemDtos();
             if (!IaisCommonUtils.isEmpty(checklistItemDtos)){
                 for (ChecklistItemDto item : checklistItemDtos){
@@ -727,14 +721,14 @@ public class HcsaChklConfigDelegator {
     public void preViewConfig(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
 
-        ChecklistConfigDto preViewConfig = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
-        if (IaisCommonUtils.isEmpty(preViewConfig.getSectionDtos())){
+        ChecklistConfigDto preViewConf = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
+        if (IaisCommonUtils.isEmpty(preViewConf.getSectionDtos())){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("configErrorMsg", "CHKL_ERR018"));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             return;
         }
 
-        List<ChecklistSectionDto> checklistSectionDtoList = preViewConfig.getSectionDtos();
+        List<ChecklistSectionDto> checklistSectionDtoList = preViewConf.getSectionDtos();
         for (ChecklistSectionDto sectionDto : checklistSectionDtoList){
             if (IaisCommonUtils.isEmpty(sectionDto.getChecklistItemDtos())){
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("configErrorMsg", "CHKL_ERR017"));
@@ -744,9 +738,9 @@ public class HcsaChklConfigDelegator {
         }
 
         ParamUtil.setSessionAttr(request, "actionBtn", "submitView");
-        generateOrderIndex(request, preViewConfig.getSectionDtos());
-        preViewConfig.getSectionDtos().sort(Comparator.comparing(ChecklistSectionDto::getOrder));
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, preViewConfig);
+        generateOrderIndex(request, preViewConf.getSectionDtos());
+        preViewConf.getSectionDtos().sort(Comparator.comparing(ChecklistSectionDto::getOrder));
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, preViewConf);
         ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
 
     }
@@ -754,18 +748,18 @@ public class HcsaChklConfigDelegator {
 
     /**
      * @AutoStep: routeToItemProcess
-     * @param:
+     * @param: curValhId : current validate id
      * @return:
      * @author: yichen
      */
     public void routeToItemProcess(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        String curAct = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
 
         // go checklist checklist item page
-        String currentValidateId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.PARAM_PAGE_INDEX);
-        ParamUtil.setSessionAttr(request, "routeToItemProcess", currentAction);
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_PAGE_INDEX, currentValidateId);
+        String curValhId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.PARAM_PAGE_INDEX);
+        ParamUtil.setSessionAttr(request, "routeToItemProcess", curAct);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_PAGE_INDEX, curValhId);
     }
 
     /**
@@ -775,7 +769,6 @@ public class HcsaChklConfigDelegator {
      */
     public void doSort(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doSorting(searchParam,bpc.request);
     }
@@ -787,7 +780,6 @@ public class HcsaChklConfigDelegator {
      */
     public void doPage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doPaging(searchParam,bpc.request);
     }
@@ -800,7 +792,6 @@ public class HcsaChklConfigDelegator {
      */
     public void preUploadData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
         ParamUtil.setSessionAttr(request, "switchUploadPage", "Checklist Config Upload");
     }
 
@@ -832,7 +823,6 @@ public class HcsaChklConfigDelegator {
      */
     public void preUploadTemplate(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
         ParamUtil.setSessionAttr(request, "switchUploadPage", "Checklist Config Upload");
     }
 
@@ -845,7 +835,6 @@ public class HcsaChklConfigDelegator {
      */
     public void updateTemplate(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         MultipartFile file = mulReq.getFile("selectedFile");
 
@@ -870,11 +859,9 @@ public class HcsaChklConfigDelegator {
             }
 
             List<ConfigExcelItemDto> item = FileUtils.transformToJavaBean(toFile, ConfigExcelItemDto.class);
-            List<String> configInfo = FileUtils.transformToList(toFile, 1, excelConfigValueIndex);
-
+            List<String> confInfoList = FileUtils.transformToList(toFile, 1, excelConfigValueIndex);
             log.info(StringUtil.changeForLog("update config template ids" + ids));
-
-            ChecklistConfigDto excelTemplate = convertToConfigByTemplate(configInfo);
+            ChecklistConfigDto excelTemplate = convertToConfigByTemplate(confInfoList);
             excelTemplate.setNextId(nextId);
             excelTemplate.setVersion(Integer.valueOf(version));
             excelTemplate.setWebAction(HcsaChecklistConstants.UPDATE);
@@ -888,10 +875,10 @@ public class HcsaChklConfigDelegator {
                 return;
             }
 
-            List<ErrorMsgContent> errorMsgContentList = hcsaChklService.updateConfigTemplate(excelTemplate);
-            errorMsgContentList = errorMsgContentList.stream().filter(i -> !i.getErrorMsgList().isEmpty()).collect(Collectors.toList());
-            ChecklistHelper.replaceErrorMsgContentMasterCode(errorMsgContentList);
-            ParamUtil.setRequestAttr(request, "messageContent", errorMsgContentList);
+            List<ErrorMsgContent> errMsgContentList = hcsaChklService.updateConfigTemplate(excelTemplate);
+            errMsgContentList = errMsgContentList.stream().filter(i -> !i.getErrorMsgList().isEmpty()).collect(Collectors.toList());
+            ChecklistHelper.replaceErrorMsgContentMasterCode(errMsgContentList);
+            ParamUtil.setRequestAttr(request, "messageContent", errMsgContentList);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         } catch (Exception e) {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
@@ -910,10 +897,10 @@ public class HcsaChklConfigDelegator {
      */
     public void exportConfigTemplate(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String configId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.CURRENT_MASK_ID);
-        log.info(StringUtil.changeForLog("exportConfigTemplate ++++++++ config id" + configId));
-        if (!StringUtils.isEmpty(configId)){
-            ChecklistConfigDto config = hcsaChklService.getChecklistConfigById(configId);
+        String confId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.CURRENT_MASK_ID);
+        log.info(StringUtil.changeForLog("exportConfigTemplate ++++++++ config id" + confId));
+        if (!StringUtils.isEmpty(confId)){
+            ChecklistConfigDto config = hcsaChklService.getChecklistConfigById(confId);
             try {
                 String[] val = {config.isCommon() ? "Yes" : "No", config.getModule(), config.getType(), config.getSvcName(), config.getSvcSubType(), config.getHciCode(), config.getEftStartDate(), config.getEftEndDate()};
 
@@ -953,26 +940,25 @@ public class HcsaChklConfigDelegator {
     }
 
     private ChecklistConfigDto convertToConfigByTemplate(List<String> data){
-        ChecklistConfigDto excelTemplate = new ChecklistConfigDto();
-
+        ChecklistConfigDto excelTpl = new ChecklistConfigDto();
         boolean isCommon = "Yes".equals(data.get(0)) ? true : false;
         if (isCommon){
-            excelTemplate.setCommon(true);
+            excelTpl.setCommon(true);
         }else {
-            excelTemplate.setModule(data.get(1));
-            excelTemplate.setType(data.get(2));
-            excelTemplate.setSvcName(data.get(3));
-            excelTemplate.setSvcSubType(data.get(4));
-            excelTemplate.setHciCode(data.get(5));
+            excelTpl.setModule(data.get(1));
+            excelTpl.setType(data.get(2));
+            excelTpl.setSvcName(data.get(3));
+            excelTpl.setSvcSubType(data.get(4));
+            excelTpl.setHciCode(data.get(5));
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(data.get(3));
             if (hcsaServiceDto != null){
-                excelTemplate.setSvcCode(hcsaServiceDto.getSvcCode());
+                excelTpl.setSvcCode(hcsaServiceDto.getSvcCode());
             }
         }
 
-        excelTemplate.setEftStartDate(data.get(6));
-        excelTemplate.setEftEndDate(data.get(7));
-        return excelTemplate;
+        excelTpl.setEftStartDate(data.get(6));
+        excelTpl.setEftEndDate(data.get(7));
+        return excelTpl;
     }
 
     /**
@@ -994,30 +980,30 @@ public class HcsaChklConfigDelegator {
 
         try {
             File toFile = FileUtils.multipartFileToFile(file);
-            List<ConfigExcelItemDto> excelItemDtos = FileUtils.transformToJavaBean(toFile, ConfigExcelItemDto.class);
+            List<ConfigExcelItemDto> confItemExcelTpl = FileUtils.transformToJavaBean(toFile, ConfigExcelItemDto.class);
             List<String> configInfo = FileUtils.transformToList(toFile, 1, excelConfigValueIndex);
             FileUtils.deleteTempFile(toFile);
 
             //uncheck ArrayIndexOutOfBoundsException
-            ChecklistConfigDto excelTemplate = convertToConfigByTemplate(configInfo);
-            excelTemplate.setExcelTemplate(excelItemDtos);
-            excelTemplate.setWebAction(HcsaChecklistConstants.CREATE);
+            ChecklistConfigDto confExcelTpl = convertToConfigByTemplate(configInfo);
+            confExcelTpl.setExcelTemplate(confItemExcelTpl);
+            confExcelTpl.setWebAction(HcsaChecklistConstants.CREATE);
 
-            boolean hasTemplateError = ChecklistHelper.validateTemplate(request, excelTemplate);
+            boolean hasTemplateError = ChecklistHelper.validateTemplate(request, confExcelTpl);
             if (hasTemplateError){
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
                 return;
             }
 
             //record validate
-            boolean existsRecord = hcsaChklService.isExistsRecord(excelTemplate);
+            boolean existsRecord = hcsaChklService.isExistsRecord(confExcelTpl);
             if (existsRecord){
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR019"));
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
                 return;
             }
 
-            List<ErrorMsgContent> errorMsgContentList = hcsaChklService.createConfigTemplate(excelTemplate);
+            List<ErrorMsgContent> errorMsgContentList = hcsaChklService.createConfigTemplate(confExcelTpl);
             errorMsgContentList = errorMsgContentList.stream().filter(i -> !i.getErrorMsgList().isEmpty()).collect(Collectors.toList());
             ChecklistHelper.replaceErrorMsgContentMasterCode(errorMsgContentList);
             ParamUtil.setRequestAttr(request, "messageContent", errorMsgContentList);
@@ -1042,22 +1028,22 @@ public class HcsaChklConfigDelegator {
     public void submitConfig(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         try {
-            ChecklistConfigDto configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
-            if(configDto != null){
+            ChecklistConfigDto conf = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
+            if(conf != null){
                 String operationType = (String) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.ACTION_OPERATIONTYPE);
                 if (HcsaChecklistConstants.ACTION_CLONE.equals(operationType)){
                     ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ACK004"));
-                    configDto.setWebAction(HcsaChecklistConstants.CLONE);
+                    conf.setWebAction(HcsaChecklistConstants.CLONE);
                 }else if (HcsaChecklistConstants.ACTION_EDIT.equals(operationType)){
                     ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ERR021"));
-                    configDto.setWebAction(HcsaChecklistConstants.UPDATE);
+                    conf.setWebAction(HcsaChecklistConstants.UPDATE);
                 }else if (HcsaChecklistConstants.ACTION_CREATE.equals(operationType)){
-                    configDto.setWebAction(HcsaChecklistConstants.CREATE);
+                    conf.setWebAction(HcsaChecklistConstants.CREATE);
                     ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ACK004"));
                 }
 
-                configDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                ChecklistConfigDto checklistConfigDto = hcsaChklService.submitConfig(configDto);
+                conf.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                ChecklistConfigDto checklistConfigDto = hcsaChklService.submitConfig(conf);
                 ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, checklistConfigDto);
             }
 

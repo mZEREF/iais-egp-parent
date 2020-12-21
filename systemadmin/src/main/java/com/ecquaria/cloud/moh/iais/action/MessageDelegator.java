@@ -114,11 +114,11 @@ public class MessageDelegator {
      */
     public void doEdit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(MessageConstants.ACTION_CANCEL.equals(currentAction)){
+        String curAct = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(MessageConstants.ACTION_CANCEL.equals(curAct)){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
             return;
-        }else if(!MessageConstants.ACTION_EDIT.equals(currentAction)){
+        }else if(!MessageConstants.ACTION_EDIT.equals(curAct)){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
             return;
         }
@@ -188,8 +188,8 @@ public class MessageDelegator {
      */
     public void doSearch(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!MessageConstants.ACTION_SEARCH.equals(currentAction)){
+        String curAct = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(!MessageConstants.ACTION_SEARCH.equals(curAct)){
             return;
         }
         String domainType = ParamUtil.getString(request, MessageConstants.PARAM_DOMAIN_TYPE);

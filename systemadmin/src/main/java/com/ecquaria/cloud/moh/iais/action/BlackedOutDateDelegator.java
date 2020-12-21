@@ -90,15 +90,14 @@ public class BlackedOutDateDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_ATTR, null);
         //userid -->> current user group , find it lead to group
-        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        LoginContext lc = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
 
-        if (loginContext == null){
+        if (lc == null){
             log.info("can not find current user");
             return;
         }
 
-        String userId = loginContext.getUserId();
-
+        String userId = lc.getUserId();
         Map<String, String> groupNameToIdMap = IaisCommonUtils.genNewHashMap();
         SearchParam workingGroupQuery = new SearchParam(WorkingGroupQueryDto.class.getName());
         workingGroupQuery.addParam("userId", userId);
