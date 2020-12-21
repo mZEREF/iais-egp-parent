@@ -198,17 +198,17 @@ public class CessationEffectiveDateBatchjob {
                                             applicationGroupDtosCesead.add(applicationGroupDto);
                                             licenceDtos.add(licenceDto);
                                             licGrpMap.put(originLicenceId, appGrpId);
-                                            String svcName = licenceDto.getSvcName();
-                                            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
-                                            String svcType = hcsaServiceDto.getSvcType();
-                                            List<LicenceDto> specLicenceDto;
-                                            if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
-                                                List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(originLicenceId).getEntity();
-                                                if (specLicIds != null && !specLicIds.isEmpty()) {
-                                                    specLicenceDto = hcsaLicenceClient.retrieveLicenceDtos(specLicIds).getEntity();
-                                                    updateLicence(specLicenceDto, date);
-                                                }
-                                            }
+//                                            String svcName = licenceDto.getSvcName();
+//                                            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
+//                                            String svcType = hcsaServiceDto.getSvcType();
+//                                            List<LicenceDto> specLicenceDto;
+//                                            if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
+//                                                List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(originLicenceId).getEntity();
+//                                                if (specLicIds != null && !specLicIds.isEmpty()) {
+//                                                    specLicenceDto = hcsaLicenceClient.retrieveLicenceDtos(specLicIds).getEntity();
+//                                                    updateLicence(specLicenceDto, date);
+//                                                }
+//                                            }
                                         }
                                     }
                                 }

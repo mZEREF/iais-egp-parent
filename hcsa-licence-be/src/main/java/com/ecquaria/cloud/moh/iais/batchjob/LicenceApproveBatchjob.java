@@ -930,7 +930,7 @@ public class LicenceApproveBatchjob {
         if (originLicenceDto != null) {
             //67406
             if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)){
-                originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
+
             }else if(ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)){
                 if(ApplicationConsts.GROUP_LICENCE_FLAG_ORIGIN.equals(groupLicenceFlag) || ApplicationConsts.GROUP_LICENCE_FLAG_All_TRANSFER.equals(groupLicenceFlag)){
                     originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
