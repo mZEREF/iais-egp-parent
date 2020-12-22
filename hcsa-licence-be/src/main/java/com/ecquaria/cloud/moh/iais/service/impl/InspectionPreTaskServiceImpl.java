@@ -702,8 +702,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         //get history
         AppPremisesRoutingHistoryDto asoHistory = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNoAndStageId(applicationNo, HcsaConsts.ROUTING_STAGE_ASO).getEntity();
         AppPremisesRoutingHistoryDto psoHistory = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNoAndStageId(applicationNo, HcsaConsts.ROUTING_STAGE_PSO).getEntity();
+        String asoUserId = asoHistory.getActionby();
         if(psoHistory != null){
-            String asoUserId = asoHistory.getActionby();
             String psoUserId = psoHistory.getActionby();
             OrgUserDto aso = organizationClient.retrieveOrgUserAccountById(asoUserId).getEntity();
             OrgUserDto pso = organizationClient.retrieveOrgUserAccountById(psoUserId).getEntity();
@@ -714,7 +714,6 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             userIdMap.put(RoleConsts.USER_ROLE_ASO, asoUserId);
             userIdMap.put(RoleConsts.USER_ROLE_PSO, psoUserId);
         } else {
-            String asoUserId = asoHistory.getActionby();
             OrgUserDto aso = organizationClient.retrieveOrgUserAccountById(asoUserId).getEntity();
             SelectOption asoSo = new SelectOption(RoleConsts.USER_ROLE_ASO, aso.getDisplayName() + " (" + RoleConsts.USER_ROLE_ASO + ")");
             preInspRbOption.add(asoSo);
