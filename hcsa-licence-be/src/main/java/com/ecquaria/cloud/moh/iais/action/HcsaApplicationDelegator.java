@@ -2633,11 +2633,6 @@ public class HcsaApplicationDelegator {
             //update inspector status
             updateInspectionStatus(applicationViewDto.getAppPremisesCorrelationId(),InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
         }
-        //DMS go to main flow
-        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(appStatus)){
-            taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
-            TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
-        }
         //be cessation flow
         if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())){
             List<AppPremisesRoutingHistoryDto> rollBackHistroyList = applicationClient.getHistoryByAppNoAndDecision(applicationDto.getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_CESSATION_BE_DECISION).getEntity();
@@ -2645,7 +2640,11 @@ public class HcsaApplicationDelegator {
                 TaskUrl = TaskConsts.TASK_PROCESS_URL_RESCHEDULING_CESSATION_RFI;
             }
         }
-
+        //DMS go to main flow
+        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(appStatus)){
+            taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
+            TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
+        }
         TaskDto newTaskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),stageId,taskType,
                 taskDto.getRefNo(),wrkGpId, userId,new Date(),0,TaskUrl,roleId,
                 IaisEGPHelper.getCurrentAuditTrailDto());
@@ -3532,6 +3531,9 @@ public class HcsaApplicationDelegator {
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Approve"));
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REJECT,"Reject"));
             if(isBeCessationFlow){
+                if(hasRollBackHistoryList && RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
+                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Trigger to DMS"));
+                }
                 finalStage = true;
             }
         }

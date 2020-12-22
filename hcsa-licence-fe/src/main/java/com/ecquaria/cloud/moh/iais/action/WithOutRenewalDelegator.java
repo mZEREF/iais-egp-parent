@@ -753,8 +753,13 @@ public class WithOutRenewalDelegator {
             renewalAmount = appSubmissionService.getRenewalAmount(appSubmissionDtos,isCharity);
         }
         setSubmissionAmount(appSubmissionDtos,renewalAmount,appFeeDetailsDto,bpc);
-        HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = getLaterFeeDetailsMap(renewalAmount.getDetailFeeDto());
+
+        List<FeeExtDto> gradualFeeList = IaisCommonUtils.genNewArrayList();
+        HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = getLaterFeeDetailsMap(renewalAmount.getDetailFeeDto(),gradualFeeList);
         ParamUtil.setRequestAttr(bpc.request, "laterFeeDetailsMap", laterFeeDetailsMap);
+        if(!IaisCommonUtils.isEmpty(gradualFeeList)){
+            ParamUtil.setRequestAttr(bpc.request, "gradualFeeList", gradualFeeList);
+        }
         requestForChangeService.premisesDocToSvcDoc(oldAppSubmissionDto);
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
@@ -1040,6 +1045,7 @@ public class WithOutRenewalDelegator {
         AppFeeDetailsDto appFeeDetailsDto1=new AppFeeDetailsDto();
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
             FeeExtDto feeExtDto = detailFeeDtoList.get(index);
+            feeExtDto.setAppGroupNo(appSubmissionDto.getAppGrpNo());
             Double lateFeeAmount = feeExtDto.getLateFeeAmoumt();
             Double amount = feeExtDto.getAmount();
             appSubmissionDto.setLateFee(lateFeeAmount);
@@ -1057,7 +1063,7 @@ public class WithOutRenewalDelegator {
         }
     }
 
-    public static HashMap<String, List<FeeExtDto>> getLaterFeeDetailsMap(List<FeeExtDto> laterFeeDetails){
+    public static HashMap<String, List<FeeExtDto>> getLaterFeeDetailsMap(List<FeeExtDto> laterFeeDetails,List<FeeExtDto> gradualFeeList){
         HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = IaisCommonUtils.genNewHashMap();
         if(laterFeeDetails == null || laterFeeDetails.size() == 0){
             return null;
@@ -1066,6 +1072,12 @@ public class WithOutRenewalDelegator {
         for(FeeExtDto laterFeeDetail : laterFeeDetails){
             String targetLaterFeeType = laterFeeDetail.getLateFeeType();
             if(StringUtil.isEmpty(targetLaterFeeType)){
+                continue;
+            }else if("gradualFee".equals(targetLaterFeeType)){
+                Double amount = laterFeeDetail.getAmount();
+                if(amount != null && amount != 0d){
+                    gradualFeeList.add(laterFeeDetail);
+                }
                 continue;
             }
 
@@ -1081,6 +1093,16 @@ public class WithOutRenewalDelegator {
             }
         }
         return laterFeeDetailsMap;
+    }
+
+    private void setGradualFeeValue(FeeExtDto laterFeeDetail){
+        if(laterFeeDetail != null){
+            String targetLaterFeeType = laterFeeDetail.getLateFeeType();
+            if("gradualFee".equals(targetLaterFeeType)){
+
+            }
+
+        }
     }
 
     private boolean eqGrpPremises(List<AppGrpPremisesDto> appGrpPremisesDtoList, List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
