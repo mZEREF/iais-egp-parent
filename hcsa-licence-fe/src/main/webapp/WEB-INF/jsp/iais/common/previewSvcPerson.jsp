@@ -196,6 +196,32 @@
                     </td>
                   </tr>
                 </c:when>
+                <c:otherwise>
+                  <tr>
+                    <td class="col-xs-8">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-8">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification </p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.qualification}</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-8">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) </p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}</p>
+                    </td>
+                  </tr>
+                </c:otherwise>
               </c:choose>
             </table>
           </div>
