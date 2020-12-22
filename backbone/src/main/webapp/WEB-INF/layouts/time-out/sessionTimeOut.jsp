@@ -11,7 +11,7 @@
   int warning = 25;  // in minute
 %>
 <div id="timeoutDlg" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="timeoutDlg"
-     style="left: 50%; top: 50%; transform: translate(-50%, -50%); min-width: 80%; overflow: visible; bottom: inherit; right: inherit; display: block; padding-right: 17px;">
+     style="left: 50%; top: 50%; transform: translate(-50%, -50%); min-width: 80%; overflow: visible; bottom: inherit; right: inherit;">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
