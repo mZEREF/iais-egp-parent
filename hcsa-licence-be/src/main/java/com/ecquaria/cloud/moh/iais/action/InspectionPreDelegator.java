@@ -157,7 +157,8 @@ public class InspectionPreDelegator {
         //get process decision
         List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption(applicationDto);
         //Audit application doesn't do back and rfi
-        if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationDto.getApplicationType())) {
+        if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationDto.getApplicationType()) &&
+                !ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationDto.getApplicationType())) {
             //get Request For Information
             List<SelectOption> rfiCheckOption = inspectionPreTaskService.getRfiCheckOption(applicationDto.getApplicationType());
             //set stage and userId map
