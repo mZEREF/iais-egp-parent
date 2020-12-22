@@ -87,8 +87,8 @@
 
         // call AJAX to extend the current session
         $.ajax({
-            type: "POST",
-            url: '/web-common/time-out/intranet.extend',
+            type:"GET",
+            url:BASE_CONTEXT_PATH + "/time-out/intranet.extend",
             async: false
         });
         initSessionTimeout();
@@ -97,12 +97,6 @@
     function doLogout() {
         window.location.replace("${pageContext.request.contextPath}/eservice/INTRANET/IntraLogout");
         $('#timeoutDlg').dialog('close');
-        // call AJAX to logout the current session
-        $.ajax({
-            type: "POST",
-            url: '/web-common/time-out/intranet.logout',
-            async: false
-        });
     }
 </script>
 <!-- session timeout handling - END -->

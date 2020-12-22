@@ -91,18 +91,17 @@
             url: '/web-common/time-out/internet.extend',
             async: false
         });
+        $.ajax({
+            type:"GET",
+            url:BASE_CONTEXT_PATH + "/time-out/internet.extend",
+            async: false
+        });
         initSessionTimeout();
     }
 
     function doLogout() {
         window.location.replace("${pageContext.request.contextPath}/eservice/INTERNET/InterLogout");
         $('#timeoutDlg').dialog('close');
-        // call AJAX to logout the current session
-        $.ajax({
-            type: "POST",
-            url: '/web-common/time-out/internet.logout',
-            async: false
-        });
     }
 </script>
 <!-- session timeout handling - END -->

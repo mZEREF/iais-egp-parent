@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.ajax;
+package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import java.util.Map;
 @RequestMapping("/time-out")
 public class InterTimeOutAjaxController {
 
-    @RequestMapping(value = "internet.extend", method = RequestMethod.POST)
+    @RequestMapping(value = "internet.extend", method = RequestMethod.GET)
     public @ResponseBody
     Map<String, Object> interTimeOutExtend(HttpServletRequest request) {
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
@@ -27,27 +27,11 @@ public class InterTimeOutAjaxController {
         return map;
     }
 
-    @RequestMapping(value = "internet.logout", method = RequestMethod.POST)
-    public @ResponseBody
-    Map<String, Object> interTimeOutLogout(HttpServletRequest request) {
-        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        log.info("internet.logout ok!!!!!!!");
-        return map;
-    }
-
-    @RequestMapping(value = "intranet.extend", method = RequestMethod.POST)
+    @RequestMapping(value = "intranet.extend", method = RequestMethod.GET)
     public @ResponseBody
     Map<String, Object> intraTimeOutExtend(HttpServletRequest request) {
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         log.info("intranet.extend ok!!!!!!!");
-        return map;
-    }
-
-    @RequestMapping(value = "intranet.logout", method = RequestMethod.POST)
-    public @ResponseBody
-    Map<String, Object> intraTimeOutLogout(HttpServletRequest request) {
-        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        log.info("intranet.logout ok!!!!!!!");
         return map;
     }
 }
