@@ -51,8 +51,6 @@ public class FESingpassLandingDelegator {
      * @throws
      */
     public void startStep(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_SINGPASS_CORPASS);
-
     }
 
     public void redirectToCorppass(BaseProcessClass bpc){

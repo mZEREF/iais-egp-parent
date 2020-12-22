@@ -50,8 +50,6 @@ public class FECorppassLandingDelegator {
      * @throws
      */
     public void startStep(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_SINGPASS_CORPASS);
-
     }
 
     /**
@@ -156,7 +154,7 @@ public class FECorppassLandingDelegator {
             if (!scpCorrect) {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "The account or password is incorrect");
                 ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "Y");
-                AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, userSession.getUenNo(), userSession.getIdentityNo());
+                AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, userSession.getUenNo(), userSession.getIdentityNo(), "The account or password is incorrect");
                 return;
             }
         }
@@ -205,7 +203,7 @@ public class FECorppassLandingDelegator {
             FeLoginHelper.initUserInfo(bpc.request, user);
         }else {
             // Add Audit Trail -- Start
-            AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, uen, identityNo);
+            AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, uen, identityNo, "GENERAL_ERR0012");
             // End Audit Trail -- End
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", MessageUtil.getMessageDesc("GENERAL_ERR0012"));
             ParamUtil.setRequestAttr(bpc.request, UserConstants.IS_ADMIN, "N");

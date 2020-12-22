@@ -188,13 +188,12 @@ public class AuditTrailHelper {
     }
 
 
-
     public static void insertLoginFailureAuditTrail(HttpServletRequest request, String identityNo){
-        insertLoginFailureAuditTrail(request, null, identityNo);
+        insertLoginFailureAuditTrail(request, null, identityNo, null);
     }
 
-    public static void insertLoginFailureAuditTrail(HttpServletRequest request, String identityNo, String reason){
-        insertLoginFailureAuditTrail(request, null, identityNo, reason);
+    public static void insertLoginFailureAuditTrail(HttpServletRequest request, String uen, String identityNo){
+        insertLoginFailureAuditTrail(request, uen, identityNo, null);
     }
 
     public static void insertLoginFailureAuditTrail(HttpServletRequest request, String uen, String identityNo, String reason){
@@ -215,6 +214,7 @@ public class AuditTrailHelper {
             atd.setFunctionName("Internet Login");
             atd.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
             atd.setUenId(uen);
+
             atd.setMohUserId(identityNo);
             atd.setNricNumber(identityNo);
 
