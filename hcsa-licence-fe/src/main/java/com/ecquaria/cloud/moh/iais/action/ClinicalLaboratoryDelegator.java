@@ -2810,8 +2810,8 @@ public class ClinicalLaboratoryDelegator {
             designation.add(sp007);
             designation.add(sp008);
             designation.add(sp009);
-            designation.add(sp010);
             designation.add(designationOp1);
+            designation.add(sp010);
         } else if (AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(currentSvcCod)) {
 
         }
