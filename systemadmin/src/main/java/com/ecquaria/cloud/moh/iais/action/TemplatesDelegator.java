@@ -168,7 +168,13 @@ public class TemplatesDelegator {
             ParamUtil.setSessionAttr(bpc.request,"ccrecipientString", ccrecipientString);
             ParamUtil.setSessionAttr(bpc.request,"bccrecipientString", bccrecipientString);
             ParamUtil.setSessionAttr(bpc.request, "deliveryModeSelect", (Serializable) deliveryModeSelectList);
-
+            String errMsg = "";
+            if (MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_SMS.equals(deliveryMode)){
+                errMsg = MessageUtil.replaceMessage("EMM_ERR005","160","num");
+            }else{
+                errMsg = MessageUtil.replaceMessage("EMM_ERR005","8000","num");
+            }
+            ParamUtil.setSessionAttr(bpc.request, "confirm_err_msg",errMsg);
 
         }
     }
@@ -177,6 +183,7 @@ public class TemplatesDelegator {
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request,SystemAdminBaseConstants.CRUD_ACTION_TYPE);
         Integer contentSize = ParamUtil.getInt(request,SystemAdminBaseConstants.TEMPLATE_CONTENT_SIZE);
+        String delivery = ParamUtil.getString(request,SystemAdminBaseConstants.CRUD_ACTION_DELIVERY_MODE);
         if (!SystemAdminBaseConstants.EDIT_ACTION.equals(type)){
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
             return;

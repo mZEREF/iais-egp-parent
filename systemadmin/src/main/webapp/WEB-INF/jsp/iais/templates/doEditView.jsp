@@ -16,6 +16,7 @@
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
+        <input type="hidden" name="crud_action_delivery_mode" value="">
         <input type="hidden" id="template_content_size" name="template_content_size" value="-1">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
@@ -127,7 +128,7 @@
                                 <a href="/system-admin-web/eservice/INTRANET/MohAlertNotificationTemplate"><em class="fa fa-angle-left"></em> Back</a>
                             </div>
                             <div class="col-xs-10 col-sm-10 text-right">
-                                <button type="button" class="btn btn-primary " onclick="doEdit('${MsgTemplateDto.id}')">
+                                <button type="button" class="btn btn-primary " onclick="doEdit('${MsgTemplateDto.id}','${MsgTemplateDto.deliveryMode}')">
                                     SUBMIT
                                 </button>
                             </div>
@@ -136,7 +137,8 @@
                 </div>
             </div>
         </div>
-<iais:confirm msg="EMM_ERR005"  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
+
+    <iais:confirm msg="${confirm_err_msg}" needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
     </form>
     <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>
@@ -163,20 +165,33 @@
         });
     }
 
-    $("#msgContentTxtArea")
-
     function cancel() {
         $('#support').modal('hide');
     }
 
-    function doEdit(mcId) {
-        var length = tinymce_getContentLength();
-        if(length > 8000){
-            $('#support').modal('show');
-        }else {
-            $("#template_content_size").val(length)
-            $("[name='crud_action_value']").val(mcId);
-            submit("edit");
+    function doEdit(mcId,deliveryMode) {
+        var deliveryMode = deliveryMode;
+        console.log("deliveryMode-->"+deliveryMode);
+        if ('DEMD002' == deliveryMode) {
+            var length = $("#msgContentTxtArea").val().length;
+            if (length > 160) {
+                $('#support').modal('show');
+            }else{
+                $("#template_content_size").val(length);
+                $("[name='crud_action_value']").val(mcId);
+                $("[name='crud_action_delivery_mode']").val(deliveryMode);
+                submit("edit");
+            }
+        }else{
+            var length = tinymce_getContentLength();
+            if(length > 8000){
+                $('#support').modal('show');
+            }else {
+                $("#template_content_size").val(length);
+                $("[name='crud_action_value']").val(mcId);
+                $("[name='crud_action_delivery_mode']").val(deliveryMode);
+                submit("edit");
+            }
         }
     }
 
