@@ -2772,35 +2772,46 @@ public class ClinicalLaboratoryDelegator {
 
     public static List<SelectOption> genPersonnelDesignSel(String currentSvcCod) {
         List<SelectOption> designation = IaisCommonUtils.genNewArrayList();
-        List<SelectOption> commonDes = IaisCommonUtils.genNewArrayList();
         String des005 = MasterCodeUtil.getCodeDesc("DES005");
         String des006 = MasterCodeUtil.getCodeDesc("DES006");
         String des007 = MasterCodeUtil.getCodeDesc("DES007");
         String des008 = MasterCodeUtil.getCodeDesc("DES008");
         String des009 = MasterCodeUtil.getCodeDesc("DES009");
         String des010 = MasterCodeUtil.getCodeDesc("DES010");
-        commonDes.add(new SelectOption(des005,des005));
-        commonDes.add(new SelectOption(des006,des006));
-        commonDes.add(new SelectOption(des007,des007));
-        commonDes.add(new SelectOption(des008,des008));
-        commonDes.add(new SelectOption(des009,des009));
-        commonDes.add(new SelectOption(des010,des010));
+
+        SelectOption sp005 =  new SelectOption(des005,des005);
+        SelectOption sp006 =  new SelectOption(des006,des006);
+        SelectOption sp007 =  new SelectOption(des007,des007);
+        SelectOption sp008 =  new SelectOption(des008,des008);
+        SelectOption sp009 =  new SelectOption(des009,des009);
+        SelectOption sp010 =  new SelectOption(des010,des010);
+
         if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)) {
             SelectOption designationOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_DIAGNOSTIC_RADIOGRAPHER, ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_DIAGNOSTIC_RADIOGRAPHER);
             SelectOption designationOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_RADIATION_THERAPIST, ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_RADIATION_THERAPIST);
             SelectOption designationOp3 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_NUCLEAR_MEDICINE_TECHNOLOGIST, ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_NUCLEAR_MEDICINE_TECHNOLOGIST);
+            designation.add(sp005);
+            designation.add(sp006);
+            designation.add(sp007);
+            designation.add(sp008);
+            designation.add(sp009);
+            designation.add(sp010);
             designation.add(designationOp1);
-            designation.add(designationOp2);
             designation.add(designationOp3);
-            designation.addAll(commonDes);
+            designation.add(designationOp2);
         } else if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(currentSvcCod)) {
 
         } else if (AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(currentSvcCod)) {
             SelectOption designationOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_MEDICAL_PRACTITIONER, ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_MEDICAL_PRACTITIONER);
             SelectOption designationOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_CLINICAL_NURSE_LEADER, ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_CLINICAL_NURSE_LEADER);
-            designation.add(designationOp1);
+            designation.add(sp005);
+            designation.add(sp006);
             designation.add(designationOp2);
-            designation.addAll(commonDes);
+            designation.add(sp007);
+            designation.add(sp008);
+            designation.add(sp009);
+            designation.add(sp010);
+            designation.add(designationOp1);
         } else if (AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(currentSvcCod)) {
 
         }
