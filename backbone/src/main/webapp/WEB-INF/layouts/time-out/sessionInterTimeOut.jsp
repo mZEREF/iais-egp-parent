@@ -87,11 +87,6 @@
 
         // call AJAX to extend the current session
         $.ajax({
-            type: "POST",
-            url: '/web-common/time-out/internet.extend',
-            async: false
-        });
-        $.ajax({
             type:"GET",
             url:BASE_CONTEXT_PATH + "/time-out/internet.extend",
             async: false
