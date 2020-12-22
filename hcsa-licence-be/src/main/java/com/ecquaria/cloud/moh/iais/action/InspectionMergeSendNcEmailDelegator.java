@@ -199,6 +199,7 @@ public class InspectionMergeSendNcEmailDelegator {
             else {
                 inspectionEmailTemplateDto=inspEmailService.getInsertEmail(appPremisesCorrelationDtos.get(0).getId());
             }
+            svcNames.add(inspectionService.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId()).getSvcName());
         }else {
 
             List<String> leads = organizationClient.getInspectionLead(taskDto.getWkGrpId()).getEntity();
