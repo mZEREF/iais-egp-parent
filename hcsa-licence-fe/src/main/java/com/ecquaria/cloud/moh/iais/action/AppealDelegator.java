@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -13,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -22,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +55,8 @@ public class AppealDelegator {
     private ApplicationFeClient applicationFeClient;
     @Autowired
     private SystemParamConfig systemParamConfig;
-
+    @Autowired
+    private LicFeInboxClient licFeInboxClient;
     public void preparetionData(BaseProcessClass bpc) throws IOException {
         log.info("start**************preparetionData************");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -79,7 +83,8 @@ public class AppealDelegator {
         appealService.getMessage(bpc.request);
         Object rfi = bpc.request.getSession().getAttribute("rfi");
         Object type = bpc.request.getSession().getAttribute("type");
-        if("rfi".equals(rfi)&&"".equals(type)){
+        if(rfi==null && "".equals(type)){
+            bpc.request.setAttribute("INBOX_ERR001", MessageUtil.getMessageDesc("INBOX_ERR001"));
             bpc. request.setAttribute("crud_action_type","ackPage");
             return;
         }
@@ -136,11 +141,17 @@ public class AppealDelegator {
         log.info(StringUtil.changeForLog("substring substring : " + substring));
         bpc.request.setAttribute("substring",substring);
         bpc.request.setAttribute("newApplicationNo",s);
+        String attribute = (String)bpc.request.getSession().getAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+        if(attribute!=null){
+            licFeInboxClient.updateMsgStatusTo(attribute, MessageConstants.MESSAGE_STATUS_RESPONSE);
+            bpc.request.getSession().removeAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+        }
         log.info("end**************submit************");
     }
 
     public void cancel(BaseProcessClass bpc) throws IOException {
         log.info("start**************cancel************");
+        bpc.request.getSession().removeAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         StringBuilder url = new StringBuilder();
         url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);

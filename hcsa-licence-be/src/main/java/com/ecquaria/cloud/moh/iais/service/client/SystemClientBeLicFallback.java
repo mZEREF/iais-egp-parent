@@ -105,6 +105,14 @@ public class SystemClientBeLicFallback implements SystemBeLicClient{
     }
 
     @Override
+    public FeignResponseEntity<List<JobRemindMsgTrackingDto>> getJobRemindMsgTrackingDtos(String msgKey) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<String> groupLicence(String hscaCode,
                                              String yearLength,
                                              String licence,

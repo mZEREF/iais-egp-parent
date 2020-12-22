@@ -73,6 +73,8 @@ public interface SystemBeLicClient {
 
     @GetMapping(value = "/iais-jobmsg-track/job-rem-msg-tra/{refNo}/{msgKey}")
     FeignResponseEntity<JobRemindMsgTrackingDto> getJobRemindMsgTrackingDto(@PathVariable(name = "refNo") String refNo, @PathVariable(name = "msgKey") String msgKey);
+    @GetMapping(value = "/iais-jobmsg-track/job-msg-by-key",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<JobRemindMsgTrackingDto>> getJobRemindMsgTrackingDtos(@RequestParam("msgKey") String msgKey);
 
     @GetMapping(value = "/iais-jobmsg-track/job-rem-msg-tra/msgkey-createBy/{refNo}/{msgKey}")
     FeignResponseEntity<JobRemindMsgTrackingDto> getJobRemindMsgTrackingDtoByMsgAAndCreatedAt( @PathVariable(name = "refNo") String refNo,@PathVariable(name = "msgKey") String msgKey);

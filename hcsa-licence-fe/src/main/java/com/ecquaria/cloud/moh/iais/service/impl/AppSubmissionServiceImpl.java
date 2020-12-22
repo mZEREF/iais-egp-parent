@@ -197,6 +197,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String payMethod = appSubmissionDto.getPaymentMethod();
             if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
                 paymentMethodName = "GIRO";
+                templateContent.put("usualDeduction","next 7 working days");
+                OrgGiroAccountInfoDto entity = organizationLienceseeClient.getGiroAccByLicenseeId(appSubmissionDto.getLicenseeId()).getEntity();
+                templateContent.put("accountNumber",entity.getAcctNo());
                 //need change giro
             }else if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
                     || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)

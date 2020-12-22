@@ -119,8 +119,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         SystemParameterDto systemParameterDto5 = systemBeLicClient.getParameterByRowguid(S_45).getEntity();
         SystemParameterDto systemParameterDto6 = systemBeLicClient.getParameterByRowguid(S_30).getEntity();
         Map<String,String> mouth=IaisCommonUtils.genNewHashMap();
-        dayList.add(getDay(systemParameterDto6,mouth));
-        dayList.add(getDay(systemParameterDto5 ,mouth ));
+       /* dayList.add(getDay(systemParameterDto6,mouth));
+        dayList.add(getDay(systemParameterDto5 ,mouth ));*/
         dayList.add(getDay(systemParameterDto4, mouth));
         dayList.add(getDay(systemParameterDto3,mouth));
         dayList.add(getDay(systemParameterDto2,mouth));
@@ -133,8 +133,43 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(entity1 + "-----entity1")));
         sendEmail(entity,mouth);
         sendEmail(entity1,mouth);
+        List<LicenceDto> licence = getLicence("IS_NO_AUTO" + F_60, "IS_NO_AUTO" + F_60,systemParameterDto5);
+        List<LicenceDto> licence1 = getLicence("IS_NO_AUTO" + S_45, "IS_NO_AUTO" + S_45,systemParameterDto6);
+        entity.clear();
+        mouth.put(S_45,"-1");
+        mouth.put(S_30,"-2");
+        entity.put("-1",licence);
+        entity.put("-2",licence1);
+        sendEmail(entity,mouth);
     }
 
+    private List<LicenceDto> getLicence(String msgKey,String selectKey,  SystemParameterDto systemParameterDto){
+        List<JobRemindMsgTrackingDto> entity = systemBeLicClient.getJobRemindMsgTrackingDtos(msgKey).getEntity();
+        List<LicenceDto> licenceDtos=IaisCommonUtils.genNewArrayList();
+        String paramType = systemParameterDto.getParamType();
+        String value = systemParameterDto.getValue();
+        Calendar calendar=Calendar.getInstance();
+        if(entity!=null && !entity.isEmpty()){
+            for(JobRemindMsgTrackingDto jobRemindMsgTrackingDto : entity){
+                String refNo = jobRemindMsgTrackingDto.getRefNo();
+                Date createTime = jobRemindMsgTrackingDto.getCreateTime();
+                calendar.setTime(createTime);
+                if(WEEK_DAY.equals(paramType)){
+                  calendar.add(Calendar.WEEK_OF_MONTH,Integer.parseInt(value));
+                }
+                LicenceDto licenceDto = hcsaLicenClient.getLicenceDtoById(refNo).getEntity();
+                if(licenceDto!=null&&ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
+                    boolean b = checkEmailIsSend(refNo, selectKey);
+                    if(!b){
+                        if(new Date().after(calendar.getTime()) ){
+                            licenceDtos.add(licenceDto);
+                        }
+                    }
+                }
+            }
+        }
+        return licenceDtos;
+    }
     private void sendEmail( Map<String, List<LicenceDto>> entity,Map<String,String> map){
         entity.forEach((k, v) -> {
             for(int i=0;i<v.size();i++){
@@ -376,7 +411,6 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             emailTime="1";
             emailSendTime=S_30;
         }
-
         log.info(StringUtil.changeForLog(b+"-------type"));
         if(!b){
             return;

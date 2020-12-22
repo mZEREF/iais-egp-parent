@@ -16,7 +16,7 @@
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <div class="row" style="margin-left:5px">
-      <h2>this application have submit to rfi </h2>
+      <h2>${INBOX_ERR001}</h2>
     </div>
   </form>
 </div>

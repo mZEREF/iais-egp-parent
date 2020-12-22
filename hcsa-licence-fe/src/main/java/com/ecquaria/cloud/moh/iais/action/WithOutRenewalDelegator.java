@@ -1042,8 +1042,8 @@ public class WithOutRenewalDelegator {
             return;
         }
         int index = 0;
-        AppFeeDetailsDto appFeeDetailsDto1=new AppFeeDetailsDto();
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
+            AppFeeDetailsDto appFeeDetailsDto1=new AppFeeDetailsDto();
             FeeExtDto feeExtDto = detailFeeDtoList.get(index);
             feeExtDto.setAppGroupNo(appSubmissionDto.getAppGrpNo());
             Double lateFeeAmount = feeExtDto.getLateFeeAmoumt();
@@ -1058,6 +1058,7 @@ public class WithOutRenewalDelegator {
             }else {
                 appFeeDetailsDto1.setLaterFee(lateFeeAmount);
             }
+            appFeeDetailsDto.add(appFeeDetailsDto1);
             appFeeDetailsDto1.setAdmentFee(total);
             index ++;
         }
