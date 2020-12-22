@@ -97,7 +97,7 @@ public class RequestForChangeDelegator {
      * @param bpc
      * @Decription doStart
      */
-    public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
+    public void doStart(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
         HcsaServiceCacheHelper.flushServiceMapping();
         String licenceId = ParamUtil.getMaskedString(bpc.request, "licenceId");
@@ -588,7 +588,7 @@ public class RequestForChangeDelegator {
         return true;
     }
 
-    private void init(BaseProcessClass bpc, String licenceId) throws CloneNotSupportedException {
+    private void init(BaseProcessClass bpc, String licenceId) throws Exception {
         HcsaServiceCacheHelper.flushServiceMapping();
         ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, licenceId);
 
@@ -636,8 +636,16 @@ public class RequestForChangeDelegator {
                         String currentSvcId = appSvcRelatedInfoDto.getServiceId();
                         if(!StringUtil.isEmpty(currentSvcId)){
                             List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                            List<String> svcDocConfigIdList = IaisCommonUtils.genNewArrayList();
+                            if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
+                                for(AppSvcDocDto appSvcDocDto:appSvcDocDtos){
+                                    svcDocConfigIdList.add(appSvcDocDto.getSvcDocId());
+                                }
+                            }
+                            List<HcsaSvcDocConfigDto>  oldSvcDocConfigDtos = serviceConfigService.getPrimaryDocConfigByIds(svcDocConfigIdList);
                             List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
-                            NewApplicationHelper.setDocInfo(null,appSvcDocDtos,null,svcDocConfig);
+                            appSvcDocDtos = requestForChangeService.updateSvcDoc(appSvcDocDtos,oldSvcDocConfigDtos,svcDocConfig);
+                            appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
                         }
                     }
                 }

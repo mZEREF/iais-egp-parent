@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -1794,40 +1795,30 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public  void updateSvcDoc(List<AppSvcDocDto> appSvcDocDtos,List<HcsaSvcDocConfigDto> svcDocConfigDtos){
-        if(appSvcDocDtos==null || svcDocConfigDtos==null || appSvcDocDtos.isEmpty() || svcDocConfigDtos.isEmpty()){
-            return;
-        }
-        for(AppSvcDocDto appSvcDocDto : appSvcDocDtos){
-            String docName = appSvcDocDto.getDocName();
-            if(docName==null){
-                String svcDocId = appSvcDocDto.getSvcDocId();
-                if(svcDocId==null){
-                    continue;
-                }else {
-                    HcsaSvcDocConfigDto entity = appConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
-                    if(entity!=null && entity.getId()!=null){
-                        appSvcDocDto.setDocName(entity.getDocTitle());
-                        docName=entity.getDocTitle();
-                        for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto : svcDocConfigDtos){
-                            String docTitle = hcsaSvcDocConfigDto.getDocTitle();
-                            if(docName.equals(docTitle)){
-                                appSvcDocDto.setSvcDocId(hcsaSvcDocConfigDto.getId());
+    public  List<AppSvcDocDto> updateSvcDoc(List<AppSvcDocDto> appSvcDocDtos,List<HcsaSvcDocConfigDto> oldSvcDocConfigDtos,List<HcsaSvcDocConfigDto> svcDocConfigDtos) throws Exception {
+
+        List<AppSvcDocDto> newAppSvcDocDtoList =  IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(appSvcDocDtos) && !IaisCommonUtils.isEmpty(oldSvcDocConfigDtos) && !IaisCommonUtils.isEmpty(svcDocConfigDtos)){
+            for(AppSvcDocDto appSvcDocDto : appSvcDocDtos){
+                for(HcsaSvcDocConfigDto oldSvcDocConfigDto:oldSvcDocConfigDtos){
+                    if(appSvcDocDto.getSvcDocId().equals(oldSvcDocConfigDto.getId())){
+                        String titleName = oldSvcDocConfigDto.getDocTitle();
+                        if(!StringUtil.isEmpty(titleName)){
+                            for(HcsaSvcDocConfigDto svcDocConfigDto:svcDocConfigDtos){
+                                if(titleName.equals(svcDocConfigDto.getDocTitle())){
+                                    AppSvcDocDto newAppSvcDocDto = (AppSvcDocDto) CopyUtil.copyMutableObject(appSvcDocDto);
+                                    newAppSvcDocDto.setSvcDocId(svcDocConfigDto.getId());
+                                    newAppSvcDocDtoList.add(newAppSvcDocDto);
+                                    break;
+                                }
                             }
                         }
-                    }
-                }
-            }else {
-                for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto : svcDocConfigDtos){
-                    String docTitle = hcsaSvcDocConfigDto.getDocTitle();
-                    if(docName.equals(docTitle)){
-                        appSvcDocDto.setSvcDocId(hcsaSvcDocConfigDto.getId());
                         break;
                     }
                 }
             }
         }
-
+        return newAppSvcDocDtoList;
     }
 
 

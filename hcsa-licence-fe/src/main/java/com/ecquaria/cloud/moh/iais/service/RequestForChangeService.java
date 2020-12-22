@@ -97,6 +97,6 @@ public interface RequestForChangeService {
     LicenceDto getLicenceDtoByLicNo(String licenceNo);
     boolean serviceConfigIsChange(List<String> serviceId ,String presmiseType);
     boolean eqChangeConfigPresmiseType(List<LicenceDto> list,List<String> presmiseType);
-    void updateSvcDoc(List<AppSvcDocDto> appSvcDocDtos, List<HcsaSvcDocConfigDto> svcDocConfigDtos);
+    List<AppSvcDocDto> updateSvcDoc(List<AppSvcDocDto> appSvcDocDtos,List<HcsaSvcDocConfigDto> oldSvcDocConfigDtos,List<HcsaSvcDocConfigDto> svcDocConfigDtos) throws Exception;
     void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos) ;
     }
