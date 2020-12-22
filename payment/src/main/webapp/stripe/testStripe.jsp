@@ -31,9 +31,7 @@
         sessionId: cSessionId
     }).then(function (result) {
         console.error(result.error.message);
-        if(result.error.message!=null){
-            window.location.href=url;
-        }
+        window.location.href=url;
         // If `redirectToCheckout` fails due to a browser or network
         // error, display the localized error message to your customer
         // using `result.error.message`.
