@@ -216,7 +216,7 @@
 
 <style>
     .col-md-5 {
-        width: 26%;
+        width: 31%;
     }
 
     .col-md-4 {
