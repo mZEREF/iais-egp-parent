@@ -507,7 +507,7 @@
         ]]>
     </sql>
 
-    <sql key="FailureEmail"  remarks="FailureEmail">
+    <sql key="failEmail"  remarks="failEmail">
         <![CDATA[
 			SELECT DISTINCT
             T1.notification_id,T1.REQUEST_REF_NO,SUBSTRING(RECIPIENT_VALUE_ALL,1, LEN(RECIPIENT_VALUE_ALL) - 1) recipient,T1.sender,T1.subject,T1.status,T3.log_msg,T3.sent_time,T1.client_query_code
