@@ -549,7 +549,7 @@ public class NewApplicationHelper {
                         oneErrorMap.put("deputyIdNo"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.","field"));
                     }else{
                         if(idNo.length() > 9){
-                            String general_err0041=repLength("ID No.","66");
+                            String general_err0041=repLength("ID No.","9");
                             oneErrorMap.put("deputyIdNo" + dpoIndex, general_err0041);
                         }
                         if("FIN".equals(idType)){
