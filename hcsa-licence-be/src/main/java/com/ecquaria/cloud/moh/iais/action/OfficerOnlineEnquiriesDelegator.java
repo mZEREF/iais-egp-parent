@@ -17,7 +17,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComplianceHistoryDto;
@@ -73,7 +72,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -903,25 +901,7 @@ public class OfficerOnlineEnquiriesDelegator {
         addressList.add(MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),rfiApplicationQueryDto.getPostalCode()));
         reqForInfoSearchListDto.setAddress(addressList);
 
-        try {
-            HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
-            hcsaRiskScoreDto.setAppType(rfiApplicationQueryDto.getApplicationType());
-            hcsaRiskScoreDto.setLicId(rfiApplicationQueryDto.getLicenceId());
-            List<ApplicationDto> applicationDtos = new ArrayList<>(1);
-            if(applicationDto!=null&&rfiApplicationQueryDto.getLicenceId()!=null){
-                applicationDto.setNeedInsp(true);
-                applicationDtos.add(applicationDto);
-                hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
-                hcsaRiskScoreDto.setServiceId(rfiApplicationQueryDto.getSvcId());
-                hcsaRiskScoreDto.setBeExistAppId(applicationDto.getId());
-                HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
-                String riskLevel = entity.getRiskLevel();
-                reqForInfoSearchListDto.setCurrentRiskTagging(MasterCodeUtil.retrieveOptionsByCodes(new String[]{riskLevel}).get(0).getText());
-            }
-        }catch (Exception e){
-            reqForInfoSearchListDto.setCurrentRiskTagging("-");
-            log.info(e.getMessage(),e);
-        }
+        reqForInfoSearchListDto.setCurrentRiskTagging(rfiApplicationQueryDto.getRiskScore());
 
         if(rfiApplicationQueryDto.getLicenseeId()!=null){
             reqForInfoSearchListDto.setLicenseeId(rfiApplicationQueryDto.getLicenseeId());

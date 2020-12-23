@@ -141,7 +141,8 @@
                 oev.LicSTATUS as LicSTATUS,
                 oev.start_date as start_date,
                 oev.expiry_date as expiry_date,
-                oev.lic_licensee_id as lic_licensee_id
+                oev.lic_licensee_id as lic_licensee_id,
+                oev.RISK_SCORE
             FROM onlineEnquiryView oev
             WHERE 1=1
             <#if licence_status??> AND oev.LicSTATUS = :licence_status</#if>
