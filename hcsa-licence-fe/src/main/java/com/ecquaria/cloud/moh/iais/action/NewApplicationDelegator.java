@@ -1138,11 +1138,12 @@ public class NewApplicationDelegator {
                 //todo validate payment is success
                 try {
                     if(appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
-                        if(appSubmissionDtos==null||appSubmissionDtos.size()==0){
-                            appSubmissionDtos=IaisCommonUtils.genNewArrayList();
-                            appSubmissionDtos.add(appSubmissionDto);
+                        List<AppSubmissionDto> appSubmissionDtos1 = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
+                        if(appSubmissionDtos1==null||appSubmissionDtos1.size()==0){
+                            appSubmissionDtos1=IaisCommonUtils.genNewArrayList();
+                            appSubmissionDtos1.add(appSubmissionDto);
                         }
-                        requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos, appSubmissionDto.getPaymentMethod());
+                        requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos1, appSubmissionDto.getPaymentMethod());
                     }
                 } catch (Exception e) {
                     log.info(e.getMessage(), e);
