@@ -306,7 +306,7 @@
                                                                 <td>&nbsp;${personnel.keyPersonnelExtDto.professionType}<c:if test="${empty personnel.keyPersonnelExtDto.professionType}">-</c:if></td>
                                                             </tr>
                                                             <tr>
-                                                                <td align="right">Professional Regn No</td>
+                                                                <td align="right">Professional Regn. No.</td>
                                                                 <td>&nbsp;${personnel.keyPersonnelExtDto.profRegNo}<c:if test="${empty personnel.keyPersonnelExtDto.profRegNo}">-</c:if></td>
                                                             </tr>
                                                             <tr>
