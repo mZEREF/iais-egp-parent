@@ -132,10 +132,26 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY002","APST071"});
         applicationTandS.add(new String[]{"APTY002","APST069"});
         applicationTandS.add(new String[]{"APTY002","APST040"});
+        applicationTandS.add(new String[]{"APTY002","APST077"});
+        applicationTandS.add(new String[]{"APTY002","APST019"});
+        applicationTandS.add(new String[]{"APTY002","APST031"});
+        applicationTandS.add(new String[]{"APTY002","APST020"});
+        applicationTandS.add(new String[]{"APTY002","APST021"});
+        applicationTandS.add(new String[]{"APTY002","APST022"});
+        applicationTandS.add(new String[]{"APTY002","APST037"});
+        applicationTandS.add(new String[]{"APTY002","APST067"});
+        applicationTandS.add(new String[]{"APTY002","APST032"});
+        applicationTandS.add(new String[]{"APTY002","APST033"});
+        applicationTandS.add(new String[]{"APTY002","APST034"});
+        applicationTandS.add(new String[]{"APTY002","APST092"});
+        applicationTandS.add(new String[]{"APTY002","APST001"});
+        applicationTandS.add(new String[]{"APTY002","APST001"});
+        applicationTandS.add(new String[]{"APTY002","APST049"});
 
         applicationTandS.add(new String[]{"APTY004","APST007"});
         applicationTandS.add(new String[]{"APTY004","APST028"});
         applicationTandS.add(new String[]{"APTY004","APST003"});
+        applicationTandS.add(new String[]{"APTY004","APST004"});
         applicationTandS.add(new String[]{"APTY004","APST001"});
         applicationTandS.add(new String[]{"APTY004","APST029"});
         applicationTandS.add(new String[]{"APTY004","APST023"});
@@ -144,10 +160,25 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY004","APST039"});
         applicationTandS.add(new String[]{"APTY004","APST011"});
         applicationTandS.add(new String[]{"APTY004","APST004"});
+        applicationTandS.add(new String[]{"APTY004","APST077"});
+        applicationTandS.add(new String[]{"APTY004","APST019"});
+        applicationTandS.add(new String[]{"APTY004","APST031"});
+        applicationTandS.add(new String[]{"APTY004","APST020"});
+        applicationTandS.add(new String[]{"APTY004","APST021"});
+        applicationTandS.add(new String[]{"APTY004","APST022"});
+        applicationTandS.add(new String[]{"APTY004","APST037"});
+        applicationTandS.add(new String[]{"APTY004","APST067"});
+        applicationTandS.add(new String[]{"APTY004","APST032"});
+        applicationTandS.add(new String[]{"APTY004","APST033"});
+        applicationTandS.add(new String[]{"APTY004","APST034"});
+        applicationTandS.add(new String[]{"APTY004","APST092"});
+        applicationTandS.add(new String[]{"APTY004","APST001"});
+        applicationTandS.add(new String[]{"APTY004","APST049"});
 
         applicationTandS.add(new String[]{"APTY005","APST007"});
         applicationTandS.add(new String[]{"APTY005","APST028"});
         applicationTandS.add(new String[]{"APTY005","APST003"});
+        applicationTandS.add(new String[]{"APTY005","APST004"});
         applicationTandS.add(new String[]{"APTY005","APST001"});
         applicationTandS.add(new String[]{"APTY005","APST029"});
         applicationTandS.add(new String[]{"APTY005","APST023"});
@@ -156,6 +187,20 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY005","APST039"});
         applicationTandS.add(new String[]{"APTY005","APST011"});
         applicationTandS.add(new String[]{"APTY005","APST004"});
+        applicationTandS.add(new String[]{"APTY005","APST077"});
+        applicationTandS.add(new String[]{"APTY005","APST019"});
+        applicationTandS.add(new String[]{"APTY005","APST031"});
+        applicationTandS.add(new String[]{"APTY005","APST020"});
+        applicationTandS.add(new String[]{"APTY005","APST021"});
+        applicationTandS.add(new String[]{"APTY005","APST022"});
+        applicationTandS.add(new String[]{"APTY005","APST037"});
+        applicationTandS.add(new String[]{"APTY005","APST067"});
+        applicationTandS.add(new String[]{"APTY005","APST032"});
+        applicationTandS.add(new String[]{"APTY005","APST033"});
+        applicationTandS.add(new String[]{"APTY005","APST034"});
+        applicationTandS.add(new String[]{"APTY005","APST092"});
+        applicationTandS.add(new String[]{"APTY005","APST001"});
+        applicationTandS.add(new String[]{"APTY005","APST049"});
 
         applicationTandS.add(new String[]{"APTY001","APST007"});
         applicationTandS.add(new String[]{"APTY001","APST002"});
@@ -165,6 +210,14 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY001","APST023"});
         applicationTandS.add(new String[]{"APTY001","APST039"});
         applicationTandS.add(new String[]{"APTY001","APST011"});
+        applicationTandS.add(new String[]{"APTY001","APST004"});
+        applicationTandS.add(new String[]{"APTY001","APST067"});
+        applicationTandS.add(new String[]{"APTY001","APST032"});
+        applicationTandS.add(new String[]{"APTY001","APST033"});
+        applicationTandS.add(new String[]{"APTY001","APST034"});
+        applicationTandS.add(new String[]{"APTY001","APST092"});
+        applicationTandS.add(new String[]{"APTY001","APST001"});
+        applicationTandS.add(new String[]{"APTY001","APST049"});
 
         List<WithdrawApplicationDto> withdrawAppList =  withdrawalService.getCanWithdrawAppList(applicationTandS,loginContext.getLicenseeId());
 
