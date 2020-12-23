@@ -1911,11 +1911,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     }
                 }
                 if(flag){
-                    String floorUnitStr = operationalUnitDto.getFloorNo() + operationalUnitDto.getUnitNo();
-                    if(floorUnitList.contains(floorUnitStr)){
-                        errorMap.put(floorUnitErrName + opLength, "NEW_ERR0017");
-                    }else{
-                        floorUnitList.add(floorUnitStr);
+                    if(!StringUtil.isEmpty(operationalUnitDto.getFloorNo()) && !StringUtil.isEmpty(operationalUnitDto.getUnitNo())){
+                        String floorUnitStr = operationalUnitDto.getFloorNo() + operationalUnitDto.getUnitNo();
+                        if(floorUnitList.contains(floorUnitStr)){
+                            errorMap.put(floorUnitErrName + opLength, "NEW_ERR0017");
+                        }else{
+                            floorUnitList.add(floorUnitStr);
+                        }
                     }
                 }
                 opLength++;
