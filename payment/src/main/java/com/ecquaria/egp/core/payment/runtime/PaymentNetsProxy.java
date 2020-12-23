@@ -67,7 +67,6 @@ public class PaymentNetsProxy extends PaymentProxy {
 		if (StringHelper.isEmpty(bigsURL)) {
 			throw new PaymentException("Nets.url is not set.");
 		}
-
 		Map<String, String> fields = null;
 		try {
 			fields = getFieldsMap(bpc);

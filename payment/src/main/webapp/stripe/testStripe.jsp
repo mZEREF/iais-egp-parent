@@ -5,6 +5,7 @@
 <%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc"%>
 <!DOCTYPE html>
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    　　　　　　<meta http-equiv="refresh" content="30;url=${failUrl}">
 
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
     <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
