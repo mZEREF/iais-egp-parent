@@ -1360,7 +1360,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
             serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
             List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig = serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
-            Map<String, String> map = doCheckBox(bpc, sB, allSvcAllPsnConfig, currentSvcAllPsnConfig, dto.get(i),systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType());
+            Map<String, String> map = doCheckBox(bpc, sB, allSvcAllPsnConfig, currentSvcAllPsnConfig, dto.get(i),systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType(),appSubmissionDto.getAppGrpPremisesDtoList());
             if (!map.isEmpty()) {
                 previewAndSubmitMap.putAll(map);
                 previewAndSubmitMap.put("service", MessageUtil.replaceMessage("GENERAL_ERR0006","service","field"));
@@ -1389,6 +1389,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
         bpc.request.getSession().setAttribute("coMap", coMap);
 
+        String errIcon = (String) bpc.request.getSession().getAttribute("serviceConfig");
+        if(!StringUtil.isEmpty(errIcon)){
+            sB.append(errIcon);
+        }
+        bpc.request.getSession().setAttribute("serviceConfig",sB.toString());
         return previewAndSubmitMap;
     }
 
@@ -1409,7 +1414,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public Map<String, String> doCheckBox(BaseProcessClass bpc, StringBuilder sB, Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig, List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig, AppSvcRelatedInfoDto dto, int uploadFileLimit, String sysFileType) {
+    public Map<String, String> doCheckBox(BaseProcessClass bpc, StringBuilder sB, Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig, List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig, AppSvcRelatedInfoDto dto, int uploadFileLimit, String sysFileType,List<AppGrpPremisesDto> appGrpPremisesDtos) {
         String serviceId = dto.getServiceId();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : currentSvcAllPsnConfig) {
@@ -1505,6 +1510,24 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         log.info(sB.toString());
         List<AppSvcDocDto> appSvcDocDtoLit = dto.getAppSvcDocDtoLit();
         doSvcDocument(errorMap, appSvcDocDtoLit, serviceId, sB,uploadFileLimit,sysFileType);
+        List<HcsaSvcDocConfigDto> svcDocConfigDtos = IaisCommonUtils.genNewArrayList();
+        List<HcsaSvcDocConfigDto> premServiceDocConfigDtos = IaisCommonUtils.genNewArrayList();
+        List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(dto.getServiceId());
+        if (!IaisCommonUtils.isEmpty(hcsaSvcDocDtos)) {
+            for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocDtos){
+                if ("0".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
+                    svcDocConfigDtos.add(hcsaSvcDocConfigDto);
+                } else if ("1".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
+                    premServiceDocConfigDtos.add(hcsaSvcDocConfigDto);
+                }
+            }
+        }
+        Map<String,String> svcDocErrMap = IaisCommonUtils.genNewHashMap();
+        NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos,premServiceDocConfigDtos,dto.getAppSvcDocDtoLit(),appGrpPremisesDtos,svcDocErrMap);
+        if(svcDocErrMap.size() > 0){
+            sB.append(serviceId);
+            errorMap.put("svcDoc", "error");
+        }
         log.info(sB.toString());
 
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap)));
@@ -2211,7 +2234,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(null);
             }
             if (hcsaSvcDocDtos != null) {
-                List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigDto = IaisCommonUtils.genNewArrayList();
+                List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigDto  = IaisCommonUtils.genNewArrayList();
                 for (HcsaSvcDocConfigDto hcsaSvcDocConfigDto : hcsaSvcDocDtos) {
                     if ("0".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
                         commonHcsaSvcDocConfigDto.add(hcsaSvcDocConfigDto);

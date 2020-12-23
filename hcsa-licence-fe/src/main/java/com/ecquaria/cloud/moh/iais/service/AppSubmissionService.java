@@ -93,7 +93,7 @@ public interface AppSubmissionService {
     List<AppGrpPrimaryDocDto> handlerPrimaryDoc(List<AppGrpPremisesDto> appGrpPremisesDtos,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos);
     Map<String, String> doPreviewAndSumbit(BaseProcessClass bpc);
     Map<String, List<HcsaSvcPersonnelDto>> getAllSvcAllPsnConfig(HttpServletRequest request);
-    Map<String, String> doCheckBox(BaseProcessClass bpc, StringBuilder sB, Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig, List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig, AppSvcRelatedInfoDto dto, int uploadFileLimit, String sysFileType);
+    Map<String, String> doCheckBox(BaseProcessClass bpc, StringBuilder sB, Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig, List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig, AppSvcRelatedInfoDto dto, int uploadFileLimit, String sysFileType,List<AppGrpPremisesDto> appGrpPremisesDtos);
     List<AppGrpPrimaryDocDto> documentValid(HttpServletRequest request, Map<String, String> errorMap);
     Map<String,String> doPreviewSubmitValidate(Map<String,String> previewAndSubmitMap,AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto,BaseProcessClass bpc);
     boolean isGiroAccount(String licenseeId);

@@ -723,7 +723,7 @@ public class ClinicalLaboratoryDelegator {
             List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
             serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
             List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig = serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
-            map = appSubmissionService.doCheckBox(bpc, sB, svcAllPsnConfig, currentSvcAllPsnConfig, dto.get(i),systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType());
+            map = appSubmissionService.doCheckBox(bpc, sB, svcAllPsnConfig, currentSvcAllPsnConfig, dto.get(i),systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType(),appSubmissionDto.getAppGrpPremisesDtoList());
         }
 
         if (!StringUtil.isEmpty(sB.toString())) {
@@ -1225,6 +1225,7 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
             if ("next".equals(crud_action_values)) {
                 appSvcDocDtoList = doValidateSvcDocument(appSvcDocDtoList, errorMap);
+                NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos,premServiceDocConfigDtos,appSvcDocDtoList,appGrpPremisesDtos,errorMap);
                 if(!IaisCommonUtils.isEmpty(appSvcDocDtoList) && !IaisCommonUtils.isEmpty(commonsMultipartFileMap)){
                     for (AppSvcDocDto appSvcDocDto1 : appSvcDocDtoList) {
                         String key = appSvcDocDto1.getPremisesVal()+ appSvcDocDto1.getSvcDocId();
@@ -1237,6 +1238,7 @@ public class ClinicalLaboratoryDelegator {
                 }
             }else{
                 appSvcDocDtoList = doValidateSvcDocument(appSvcDocDtoList, errorMap);
+                NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos,premServiceDocConfigDtos,appSvcDocDtoList,appGrpPremisesDtos,errorMap);
                 if(!IaisCommonUtils.isEmpty(appSvcDocDtoList) && !IaisCommonUtils.isEmpty(commonsMultipartFileMap)){
                     for (AppSvcDocDto appSvcDocDto1 : appSvcDocDtoList) {
                         String errName = "";

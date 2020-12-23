@@ -2348,6 +2348,61 @@ public class NewApplicationHelper {
         }
     }
 
+    public static void svcDocMandatoryValidate(List<HcsaSvcDocConfigDto> svcDocConfigDtos, List<HcsaSvcDocConfigDto> premSvcDocConfigDtos, List<AppSvcDocDto> appSvcDocDtos, List<AppGrpPremisesDto> appGrpPremisesDtos,Map<String, String> errorMap) {
+
+        String err006 = MessageUtil.replaceMessage("GENERAL_ERR0006", "Document", "field");
+        if(!IaisCommonUtils.isEmpty(svcDocConfigDtos)){
+            for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:svcDocConfigDtos){
+                String errKey = hcsaSvcDocConfigDto.getId();
+                Boolean isMandatory = hcsaSvcDocConfigDto.getIsMandatory();
+                boolean mandatoryFlag = false;
+                if (isMandatory && IaisCommonUtils.isEmpty(svcDocConfigDtos)) {
+
+                } else if (isMandatory && !IaisCommonUtils.isEmpty(svcDocConfigDtos)) {
+                    for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
+                        String svcDocId = appSvcDocDto.getSvcDocId();
+                        if (hcsaSvcDocConfigDto.getId().equals(svcDocId)) {
+                            mandatoryFlag = true;
+                            break;
+                        }
+                    }
+                    if (!mandatoryFlag) {
+                        errorMap.put(errKey, err006);
+                    }
+                }
+            }
+        }
+
+        if(!IaisCommonUtils.isEmpty(premSvcDocConfigDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                String premIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+                String premType = appGrpPremisesDto.getPremisesType();
+                for (HcsaSvcDocConfigDto premHcasDocConfig : premSvcDocConfigDtos) {
+                    String errKey = "prem" + premHcasDocConfig.getId()+ premIndexNo;
+                    Boolean isMandatory = premHcasDocConfig.getIsMandatory();
+                    boolean mandatoryFlag = false;
+                    if (isMandatory && IaisCommonUtils.isEmpty(appSvcDocDtos)) {
+
+                    } else if (isMandatory && !IaisCommonUtils.isEmpty(appSvcDocDtos)) {
+                        for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
+                            String docPremVal = appSvcDocDto.getPremisesVal();
+                            String docPremType = appSvcDocDto.getPremisesType();
+                            if (!StringUtil.isEmpty(docPremVal) && !StringUtil.isEmpty(docPremType)) {
+                                if (docPremVal.equals(premIndexNo) && docPremType.equals(premType)) {
+                                    mandatoryFlag = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (!mandatoryFlag) {
+                        errorMap.put(errKey, err006);
+                    }
+                }
+            }
+        }
+    }
+
     public static String repLength(String ... ars ) {
         int length = ars.length;
         String general_err0041 = MessageUtil.getMessageDesc("GENERAL_ERR0041");
