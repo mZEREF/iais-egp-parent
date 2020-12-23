@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
@@ -354,29 +353,13 @@ public class CessationEffectiveDateBatchjob {
             }
         }
 
-        if (!IaisCommonUtils.isEmpty(updateLicenceDtos)) {
-            hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
-        }
-    }
-
-    private void updateLicence(List<LicenceDto> licenceDtos, Date date) {
-        if (!IaisCommonUtils.isEmpty(licenceDtos)) {
-            AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
-            for (LicenceDto licenceDto : licenceDtos) {
-                licenceDto.setAuditTrailDto(auditTrailDto);
-                licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
-                licenceDto.setEndDate(date);
-            }
-            hcsaLicenceClient.updateLicences(licenceDtos).getEntity();
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            gatewayClient.updateFeLicDto(licenceDtos, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
-        }
+//        if (!IaisCommonUtils.isEmpty(updateLicenceDtos)) {
+//            hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
+//            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+//            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+//            gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
+//                    signature2.date(), signature2.authorization());
+//        }
     }
 
     private void updateAppGroups(List<ApplicationGroupDto> applicationGroupDtos) {
