@@ -360,7 +360,7 @@
                               <h4 class="text-danger"><em class="fa fa-times-circle removeDpoBtn cursorPointer"></em></h4>
                             </c:if>
                           </div>
-                          <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null) && '1' == DeputyPoFlag }">
+                          <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null) && '1' == DeputyPoFlag  &&'-1' != deputy.assignSelect}">
                             <div class="col-sm-10">
                               <label class="control-font-label">${deputy.name}, ${deputy.idNo} (${deputy.idType})</label>
                             </div>
@@ -376,7 +376,7 @@
                       </div>
                     </div>
                     <div class="row">
-                      <div class="control control-caption-horizontal <c:if test="${'true' == canEditDpoEdit && '1' == DeputyPoFlag}">hidden</c:if>">
+                      <div class="control control-caption-horizontal <c:if test="${'true' == canEditDpoEdit && '1' == DeputyPoFlag && '-1' != deputy.assignSelect}">hidden</c:if>">
                         <div class=" form-group form-horizontal formgap">
                           <div class="col-sm-6 control-label formtext col-md-4" style="font-size: 1.6rem;">
                             Assign a Deputy Principal Officer
