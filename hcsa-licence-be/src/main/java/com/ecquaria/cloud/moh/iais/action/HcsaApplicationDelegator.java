@@ -237,6 +237,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,"chooseInspectionChecked","N");
         ParamUtil.setSessionAttr(bpc.request,"AppLastInsGroup",null);
         ParamUtil.setSessionAttr(bpc.request,"appealRecommendationValueOnlyShow","");
+        ParamUtil.setSessionAttr(bpc.request,"isDMS",null);
         log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
 
         initData(bpc);
