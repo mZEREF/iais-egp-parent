@@ -439,7 +439,6 @@ public class InsRepServiceImpl implements InsRepService {
 
     @Override
     public void updateRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
-        String recommendation = appPremisesRecommendationDto.getRecommendation();
         //update old data
         String appPremCorreId = appPremisesRecommendationDto.getAppPremCorreId();
         AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
@@ -449,31 +448,14 @@ public class InsRepServiceImpl implements InsRepService {
             oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             oldAppPremisesRecommendationDto.setAuditTrailDto(currentAuditTrailDto);
             insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
-            if (APPROVAL.equals(recommendation)) {
-                oldAppPremisesRecommendationDto.setId(null);
-                oldAppPremisesRecommendationDto.setRecomDecision(appPremisesRecommendationDto.getRecomDecision());
-                oldAppPremisesRecommendationDto.setVersion(newVersion);
-                oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
-                return;
-            } else if (REJECT.equals(recommendation)) {
-                oldAppPremisesRecommendationDto.setId(null);
-                oldAppPremisesRecommendationDto.setRecomDecision(appPremisesRecommendationDto.getRecomDecision());
-                oldAppPremisesRecommendationDto.setRecomInNumber(0);
-                oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
-                return;
-            } else {
-                appPremisesRecommendationDto.setVersion(newVersion);
-                appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                insRepClient.saveRecommendationData(appPremisesRecommendationDto);
-                return;
-            }
+            appPremisesRecommendationDto.setVersion(newVersion);
+            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            insRepClient.saveRecommendationData(appPremisesRecommendationDto);
         } else {
             appPremisesRecommendationDto.setVersion(1);
             saveRecommendation(appPremisesRecommendationDto);
-            return;
         }
+        return;
     }
 
     @Override
@@ -1068,8 +1050,8 @@ public class InsRepServiceImpl implements InsRepService {
                     taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     taskDto.setEventRefNo(corrId);
                     //history
-                    createPostRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, InspectionConstants.INSPECTION_STATUS_PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN, null, null);
-                    createPostRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, null, RoleConsts.USER_ROLE_INSPECTIOR, wrkGrpId, null);
+                    createPostRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, InspectionConstants.INSPECTION_STATUS_PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN, null, null,auditTrailDto);
+                    createPostRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, null, RoleConsts.USER_ROLE_INSPECTIOR, wrkGrpId, null,auditTrailDto);
                     taskDtos.add(taskDto);
                 } catch (Exception e) {
                     log.info(e.getMessage());
@@ -1156,13 +1138,14 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     private AppPremisesRoutingHistoryDto createPostRoutingHistory(String appNo, String appStatus,
-                                                                  String stageId, String internalRemarks, String processDec, String roleId, String wrkGroupId, String subStage) {
+                                                                  String stageId, String internalRemarks, String processDec, String roleId, String wrkGroupId, String subStage,AuditTrailDto auditTrailDto) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-        appPremisesRoutingHistoryDto.setActionby("6FBF1C5D-FEE0-EA11-BE85-000C29F371DC");
-        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appPremisesRoutingHistoryDto.setAuditTrailDto(auditTrailDto);
+        appPremisesRoutingHistoryDto.setActionby(auditTrailDto == null ? AppConsts.USER_ID_SYSTEM : auditTrailDto.getMohUserGuid());
+        appPremisesRoutingHistoryDto.setRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setProcessDecision(processDec);
         appPremisesRoutingHistoryDto.setRoleId(roleId);

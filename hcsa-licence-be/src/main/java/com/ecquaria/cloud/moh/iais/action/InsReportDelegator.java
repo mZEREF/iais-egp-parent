@@ -252,14 +252,18 @@ public class InsReportDelegator {
         String enforcementRemarks = ParamUtil.getRequestString(bpc.request, "enforcementRemarks");
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
-            appPremisesRecommendationDto.setRemarks(remarks);
-            appPremisesRecommendationDto.setRecommendation(recommendationRfc);
-            appPremisesRecommendationDto.setRecomDecision(recommendationRfc);
-            appPremisesRecommendationDto.setRecomInDate(licDate);
-            appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-            appPremisesRecommendationDto.setRecomInNumber(6);
-            appPremisesRecommendationDto.setPeriod(AppointmentConstants.RECURRENCE_MONTH);
-            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
+           if(InspectionReportConstants.RFC_APPROVED.equals(recommendationRfc)){
+               appPremisesRecommendationDto.setRecomInNumber(6);
+           }else {
+               appPremisesRecommendationDto.setRecomInNumber(0);
+           }
+           appPremisesRecommendationDto.setRemarks(remarks);
+           appPremisesRecommendationDto.setRecommendation(recommendationRfc);
+           appPremisesRecommendationDto.setRecomDecision(recommendationRfc);
+           appPremisesRecommendationDto.setRecomInDate(licDate);
+           appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+           appPremisesRecommendationDto.setPeriod(AppointmentConstants.RECURRENCE_MONTH);
+           appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
         } else {
             appPremisesRecommendationDto.setRemarks(remarks);
             appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
