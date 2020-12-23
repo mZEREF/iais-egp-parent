@@ -2216,6 +2216,9 @@ public class HcsaApplicationDelegator {
                                 applicationDtoList.add(oldApplication);
                                 List<ApplicationDto> applicationDtoList2 = hcsaConfigClient.returnFee(applicationDtoList).getEntity();
                                 applicationDtoList2.add(applicationDto);
+                                for(ApplicationDto applicationDto1 : applicationDtoList){
+                                    applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                                }
                                 if (!IaisCommonUtils.isEmpty(applicationDtoList2)){
                                     fee = applicationDtoList2.get(0).getReturnFee();
                                 }
