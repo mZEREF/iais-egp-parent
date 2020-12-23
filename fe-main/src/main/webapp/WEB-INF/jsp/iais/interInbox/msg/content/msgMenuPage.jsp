@@ -98,7 +98,7 @@
         <div class="dropdown profile-dropdown" style="width: 142%;margin-left: -43%"><a class="profile-btn btn" id="profileBtn" data-toggle="dropdown"
                                                   aria-haspopup="true" aria-expanded="false" href="javascript:;" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">${iais_Login_User_Info_Attr.userName}</a>
             <ol class="dropdown-menu" aria-labelledby="profileBtn">
-                <li class="management-account"><a href="#">Manage Account</a></li>
+                <li class="management-account"><a href="/main-web/eservice/INTERNET/MohFeAdminUserManagement">Manage Account</a></li>
                 <li class="logout"><a href="${pageContext.request.contextPath}/eservice/INTERNET/InterLogout">Logout</a></li>
             </ol>
         </div>
