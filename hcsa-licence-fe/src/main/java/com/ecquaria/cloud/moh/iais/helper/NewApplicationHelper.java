@@ -2355,7 +2355,12 @@ public class NewApplicationHelper {
             for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:svcDocConfigDtos){
                 String errKey = hcsaSvcDocConfigDto.getId();
                 Boolean isMandatory = hcsaSvcDocConfigDto.getIsMandatory();
-                boolean mandatoryFlag = false;
+                boolean mandatoryFlag;
+                if(isMandatory){
+                    mandatoryFlag = false;
+                }else{
+                    mandatoryFlag = true;
+                }
                 if (isMandatory && IaisCommonUtils.isEmpty(appSvcDocDtos)) {
 
                 } else if (isMandatory && !IaisCommonUtils.isEmpty(appSvcDocDtos)) {
@@ -2380,7 +2385,12 @@ public class NewApplicationHelper {
                 for (HcsaSvcDocConfigDto premHcasDocConfig : premSvcDocConfigDtos) {
                     String errKey = "prem" + premHcasDocConfig.getId()+ premIndexNo;
                     Boolean isMandatory = premHcasDocConfig.getIsMandatory();
-                    boolean mandatoryFlag = false;
+                    boolean mandatoryFlag;
+                    if(isMandatory){
+                        mandatoryFlag = false;
+                    }else{
+                        mandatoryFlag = true;
+                    }
                     if (isMandatory && IaisCommonUtils.isEmpty(appSvcDocDtos)) {
 
                     } else if (isMandatory && !IaisCommonUtils.isEmpty(appSvcDocDtos)) {
