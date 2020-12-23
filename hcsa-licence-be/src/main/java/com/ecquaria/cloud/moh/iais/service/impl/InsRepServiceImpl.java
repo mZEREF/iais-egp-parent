@@ -1145,6 +1145,7 @@ public class InsRepServiceImpl implements InsRepService {
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
         appPremisesRoutingHistoryDto.setAuditTrailDto(auditTrailDto);
         appPremisesRoutingHistoryDto.setActionby(auditTrailDto == null ? AppConsts.USER_ID_SYSTEM : auditTrailDto.getMohUserGuid());
+        log.info(StringUtil.changeForLog("==================  actionBy  ===================>>>>>"+appPremisesRoutingHistoryDto.getActionby()));
         appPremisesRoutingHistoryDto.setRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setProcessDecision(processDec);
