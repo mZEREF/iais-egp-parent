@@ -594,7 +594,7 @@ public class NewApplicationHelper {
                     if(StringUtil.isEmpty(emailAddr)){
                         oneErrorMap.put("deputyEmailAddr"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address ","field"));
                     }else {
-                        if(emailAddr.length() > 8){
+                        if(emailAddr.length() > 66){
                             String general_err0041=repLength("Email Address","66");
                             oneErrorMap.put("deputyEmailAddr" + dpoIndex, general_err0041);
                         }
