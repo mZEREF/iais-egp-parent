@@ -22,7 +22,7 @@
                     <h1 style="color: red">example : uen_nric  or   nric</h1>
                     <input id="userAccountString" name="userAccountString" value="" type="text"/>
                     <button name="submitBtn" id="submitButton" type="button" class="btn btn-primary">
-                        Query
+                        Delete
                     </button>
                 </iais:row>
             </div>
