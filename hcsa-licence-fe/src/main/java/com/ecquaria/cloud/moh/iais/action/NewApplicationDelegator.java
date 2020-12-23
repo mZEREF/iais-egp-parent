@@ -119,7 +119,8 @@ public class NewApplicationDelegator {
     public static final String CURR_ORG_USER_ACCOUNT = "currOrgUserAccount";
     @Autowired
     private ServiceConfigService serviceConfigService;
-
+    @Autowired
+    private HcsaConfigFeClient hcsaConfigFeClient;
     @Autowired
     private AppSubmissionService appSubmissionService;
     @Autowired
@@ -1420,7 +1421,8 @@ public class NewApplicationDelegator {
                     if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())) {
                         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())
                                 || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())
-                                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())) {
+                                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())
+                                || ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationDto.getApplicationType())) {
                             AppGrpPremisesEntityDto rfiPremises = appSubmissionService.getPremisesByAppNo(appNo);
                             String premHci = IaisCommonUtils.genPremisesKey(rfiPremises.getPostalCode(), rfiPremises.getBlkNo(), rfiPremises.getFloorNo(), rfiPremises.getUnitNo());
                             if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(rfiPremises.getPremisesType())) {
@@ -1498,9 +1500,29 @@ public class NewApplicationDelegator {
                             }
                             String premises = appGrpPremisesDto.getPremisesIndexNo();
                             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+                            List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
                             List<String> premiseStr = IaisCommonUtils.genNewArrayList();
                             if(appSvcLaboratoryDisciplinesDtoList != null && appSvcLaboratoryDisciplinesDtoList.size() >0){
                                 appSvcLaboratoryDisciplinesDtoList.removeIf(appSvcLaboratoryDisciplinesDto -> !appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(premises));
+                                for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList){
+                                    List<AppSvcChckListDto> appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+                                    if(appSvcChckListDtoList!=null){
+                                        List<AppSvcChckListDto> entity = hcsaConfigFeClient.getAppSvcChckListDto(appSvcChckListDtoList).getEntity();
+                                        if(appSvcDisciplineAllocationDtoList!=null){
+                                            for(AppSvcChckListDto appSvcChckListDto : entity){
+                                                for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
+                                                    String chkLstConfId = appSvcDisciplineAllocationDto.getChkLstConfId();
+                                                    if(appSvcChckListDto.getChkLstConfId().equals(chkLstConfId)){
+                                                        appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getChkName());
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        appSvcLaboratoryDisciplinesDto.setAppSvcChckListDtoList(entity);
+                                    }
+                                }
+
                                 appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
                             }
                         }
@@ -1509,7 +1531,8 @@ public class NewApplicationDelegator {
                     ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
                 }
                 if(appSubmissionDto!=null){
-                    if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+                    if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
+                            || ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appSubmissionDto.getAppType())){
                         requestForChangeService.svcDocToPresmise(appSubmissionDto);
                     }
                 }

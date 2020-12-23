@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -76,10 +77,19 @@ public class WithdrawalDelegator {
 
 
    //     String withdrawAppId = ParamUtil.getMaskedString(bpc.request, "withdrawAppId");
+        ApplicationDto entity=null;
         if (!StringUtil.isEmpty(withdrawAppNo)){
             ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", withdrawAppNo);
+            entity = applicationFeClient.getApplicationDtoByAppNo(withdrawAppNo).getEntity();
         }
-
+        String rfiWithdrawAppNo = ParamUtil.getMaskedString(bpc.request,"rfiWithdrawAppNo");
+        if(entity!=null){
+            String status = entity.getStatus();
+            if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
+                isDoView="N";
+                rfiWithdrawAppNo= withdrawAppNo;
+            }
+        }
         // just view, so direct return
         if ("Y".equals(isDoView)){
             WithdrawnDto withdrawnDto = withdrawalService.getWithdrawAppInfo(withdrawAppNo);
@@ -94,7 +104,6 @@ public class WithdrawalDelegator {
             return;
         }
 
-        String rfiWithdrawAppNo = ParamUtil.getMaskedString(bpc.request,"rfiWithdrawAppNo");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_WITHDRAWAL, AuditTrailConsts.FUNCTION_WITHDRAWAL);
         if (!StringUtil.isEmpty(rfiWithdrawAppNo)){
             WithdrawnDto withdrawnDto = withdrawalService.getWithdrawAppInfo(rfiWithdrawAppNo);

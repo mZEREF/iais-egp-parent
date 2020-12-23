@@ -122,6 +122,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             AppSubmissionDto appSubmissionDto = applicationFeClient.gainSubmissionDto(h.getApplicationNo()).getEntity();
             transform(appSubmissionDto,licenseeId);
             appSubmissionDto.setAppGrpNo(grpNo);
+            log.info(StringUtil.changeForLog(JsonUtil.parseToJson(appSubmissionDto.getAppSvcRelatedInfoDtoList())+"-----appSubmissionDto-------"));
             AppSubmissionDto newAppSubmissionDto = applicationFeClient.saveSubmision(appSubmissionDto).getEntity();
             List<ApplicationDto> applicationDtoList = newAppSubmissionDto.getApplicationDtos();
             for (ApplicationDto applicationDto:applicationDtoList
@@ -129,6 +130,8 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = newAppSubmissionDto.getAppSvcRelatedInfoDtoList();
                 if (appSvcRelatedInfoDtoList != null && appSvcRelatedInfoDtoList.size() >0){
                     String serviceId = appSvcRelatedInfoDtoList.get(0).getServiceId();
+                    log.info(StringUtil.changeForLog(JsonUtil.parseToJson(appSvcRelatedInfoDtoList)+"-----appSvcRelatedInfoDtoList"));
+                    log.info(StringUtil.changeForLog(serviceId)+"-------serviceId");
                     String appStatus = getAppStatus(serviceId,ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
                     if (!StringUtil.isEmpty(appStatus)){
                         applicationDto.setStatus(appStatus);
@@ -515,10 +518,14 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         String serviceId = appSvcRelatedInfoDtoList.get(0).getServiceId();
-        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-        String svcId = hcsaServiceDto.getId();
-        HcsaServiceDto hcsaServiceDto1 = appConfigClient.getActiveHcsaServiceDtoById(svcId).getEntity();
-        String svcCode = hcsaServiceDto.getSvcCode();
+        HcsaServiceDto hcsaServiceDto1 = appConfigClient.getActiveHcsaServiceDtoById(serviceId).getEntity();
+        if(hcsaServiceDto1!=null){
+            log.info(StringUtil.changeForLog(JsonUtil.parseToJson(hcsaServiceDto1)+"hcsaServiceDto1"));
+        }else {
+            log.info(StringUtil.changeForLog("hcsaServiceDto1 is null"));
+        }
+
+        String svcCode = hcsaServiceDto1.getSvcCode();
         appSvcRelatedInfoDtoList.get(0).setServiceId(hcsaServiceDto1.getId());
         appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
         appSubmissionDto.setAppGrpId(null);

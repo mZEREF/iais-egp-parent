@@ -568,10 +568,10 @@ public class AppealApproveBatchjob {
             if(oldApplication!=null){
                 appType ="Application";
                 subNo=oldApplication.getApplicationNo();
-            }
-            LicenceDto entity = hcsaLicenceClient.getLicenceDtoById(oldAppId).getEntity();
-            if(entity!=null){
-                subNo=entity.getLicenceNo();
+            }else {
+                if(licenceDto!=null){
+                    subNo= licenceDto.getLicenceNo();
+                }
             }
 
         }
@@ -615,7 +615,7 @@ public class AppealApproveBatchjob {
         OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
         templateContent.put("ApplicantName", orgUserDto.getDisplayName());
         templateContent.put("ApplicationType",  appType);
-        templateContent.put("ApplicationNo", applicationDto.getApplicationNo());
+        templateContent.put("ApplicationNo", subNo);
         templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date(),"dd/MM/yyyy"));
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         templateContent.put("newSystem", loginUrl);

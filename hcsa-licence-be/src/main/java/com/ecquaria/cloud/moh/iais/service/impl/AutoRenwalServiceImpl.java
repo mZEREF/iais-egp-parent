@@ -131,10 +131,13 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         Map<String, List<LicenceDto>> entity1 = hcsaLicenClient.unsendEmail(dayList).getEntity();
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(entity+"------entity")));
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(entity1 + "-----entity1")));
+        clearDouble(entity,entity1);
         sendEmail(entity,mouth);
-        sendEmail(entity1,mouth);
+       /* sendEmail(entity1,mouth);*/
         List<LicenceDto> licence = getLicence("IS_NO_AUTO" + F_60, "IS_NO_AUTO" + F_60,systemParameterDto5);
         List<LicenceDto> licence1 = getLicence("IS_NO_AUTO" + S_45, "IS_NO_AUTO" + S_45,systemParameterDto6);
+        log.info("======"+StringUtil.changeForLog(JsonUtil.parseToJson(licence)));
+        log.info("======"+StringUtil.changeForLog(JsonUtil.parseToJson(licence1)));
         entity.clear();
         mouth.put(S_45,"-1");
         mouth.put(S_30,"-2");
@@ -143,6 +146,16 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         sendEmail(entity,mouth);
     }
 
+    private  void clearDouble(Map<String, List<LicenceDto>> entity ,Map<String, List<LicenceDto>> entity1 ){
+        entity.forEach((k,v)->{
+            List<LicenceDto> licenceDtos = entity1.get(k);
+            for(LicenceDto l : v){
+                if(licenceDtos.contains(l)){
+                    licenceDtos.remove(l);
+                }
+            }
+        });
+    }
     private List<LicenceDto> getLicence(String msgKey,String selectKey,  SystemParameterDto systemParameterDto){
         List<JobRemindMsgTrackingDto> entity = systemBeLicClient.getJobRemindMsgTrackingDtos(msgKey).getEntity();
         List<LicenceDto> licenceDtos=IaisCommonUtils.genNewArrayList();
@@ -819,7 +832,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             if(auto_renew==null){
                 return true;
             }else {
-                log.info(StringUtil.changeForLog(JsonUtil.parseToJson(auto_renew+"auto_renew")));
+                log.info(StringUtil.changeForLog(JsonUtil.parseToJson(auto_renew)+"auto_renew"));
                 return false;
             }
 
