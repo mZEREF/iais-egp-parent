@@ -209,13 +209,17 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         List<SelectOption> selectOptions= IaisCommonUtils.genNewArrayList();
         for (HcsaServiceSubTypeDto subTypeName:subTypeNames
         ) {
-            if( "Pre-implantation Genetic Diagnosis".equals(subTypeName.getSubtypeName())|| "Pre-implantation Genetic Screening".equals(subTypeName.getSubtypeName())||"HIV Testing".equals(subTypeName.getSubtypeName())||"HIV Confirmation".equals(subTypeName.getSubtypeName())||"HIV Screening".equals(subTypeName.getSubtypeName())){
+            if( "Pre-implantation Genetic Diagnosis".equals(subTypeName.getSubtypeName())|| "Pre-implantation Genetic Screening".equals(subTypeName.getSubtypeName())){
                 SelectOption selectOption=new SelectOption();
                 selectOption.setText(subTypeName.getSubtypeName());
                 selectOption.setValue(subTypeName.getId());
                 selectOptions.add(selectOption);
             }
         }
+        SelectOption selectOption=new SelectOption();
+        selectOption.setText("Human Immunodeficiency Virus");
+        selectOption.setValue("HIV");
+        selectOptions.add(selectOption);
         selectOptions.sort(Comparator.comparing(SelectOption::getText));
         return selectOptions;
     }

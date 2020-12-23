@@ -373,7 +373,6 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             }
         }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        String appId = applicationDto.getId();
         String appGrpId = applicationDto.getAppGrpId();
         String status = applicationDto.getStatus();
         String appTypeCode = applicationDto.getApplicationType();
