@@ -2366,9 +2366,9 @@ public class NewApplicationHelper {
                             break;
                         }
                     }
-                    if (!mandatoryFlag) {
-                        errorMap.put(errKey, err006);
-                    }
+                }
+                if (!mandatoryFlag) {
+                    errorMap.put(errKey, err006);
                 }
             }
         }
