@@ -360,9 +360,11 @@
                               <h4 class="text-danger"><em class="fa fa-times-circle removeDpoBtn cursorPointer"></em></h4>
                             </c:if>
                           </div>
-                          <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null) && '1' == DeputyPoFlag  &&'-1' != deputy.assignSelect}">
+                          <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null) && '1' == DeputyPoFlag }">
                             <div class="col-sm-10">
+                              <c:if test="${'-1' != deputy.assignSelect}">
                               <label class="control-font-label">${deputy.name}, ${deputy.idNo} (${deputy.idType})</label>
+                              </c:if>
                             </div>
                             <div class="col-sm-2 text-right">
                               <div class="edit-content">
@@ -926,7 +928,10 @@
             $contentEle.find('input[type="text"]').css('border-color','');
             $contentEle.find('input[type="text"]').css('color','');
             //get data from page
-            $contentEle.find('select[name="deputyPoSelect"] option[value="newOfficer"]').prop('selected',true);
+            var deputyPoSelectVal = $contentEle.find('select[name="deputyPoSelect"]').val();
+            if('-1' != deputyPoSelectVal){
+                $contentEle.find('select[name="deputyPoSelect"] option[value="newOfficer"]').prop('selected',true);
+            }
             $('#isEditDpoHiddenVal').val('1');
         });
     }
