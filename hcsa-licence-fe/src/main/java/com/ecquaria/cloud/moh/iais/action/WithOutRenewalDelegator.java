@@ -1042,10 +1042,22 @@ public class WithOutRenewalDelegator {
             return;
         }
         int index = 0;
+        int mix_g = 0;
+        int mix_n = 0;
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
             AppFeeDetailsDto appFeeDetailsDto1=new AppFeeDetailsDto();
             FeeExtDto feeExtDto = detailFeeDtoList.get(index);
             feeExtDto.setAppGroupNo(appSubmissionDto.getAppGrpNo());
+            String lateFeeType = feeExtDto.getLateFeeType();
+            if("gradualFee".equals(lateFeeType)){
+                mix_g ++;
+            }else{
+                mix_n ++;
+            }
+            if(mix_g > 0 && mix_n >0){
+                ParamUtil.setRequestAttr(bpc.request,"mix","mix");
+            }
+            appSubmissionDto.setRenewalFeeType(lateFeeType);
             Double lateFeeAmount = feeExtDto.getLateFeeAmoumt();
             Double amount = feeExtDto.getAmount();
             appSubmissionDto.setLateFee(lateFeeAmount);
