@@ -2353,7 +2353,7 @@ public class NewApplicationHelper {
         String err006 = MessageUtil.replaceMessage("GENERAL_ERR0006", "Document", "field");
         if(!IaisCommonUtils.isEmpty(svcDocConfigDtos)){
             for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:svcDocConfigDtos){
-                String errKey = hcsaSvcDocConfigDto.getId();
+                String errKey = hcsaSvcDocConfigDto.getId()+"selectedFile";
                 Boolean isMandatory = hcsaSvcDocConfigDto.getIsMandatory();
                 boolean mandatoryFlag;
                 if(isMandatory){
