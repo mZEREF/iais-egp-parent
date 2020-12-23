@@ -2356,9 +2356,9 @@ public class NewApplicationHelper {
                 String errKey = hcsaSvcDocConfigDto.getId();
                 Boolean isMandatory = hcsaSvcDocConfigDto.getIsMandatory();
                 boolean mandatoryFlag = false;
-                if (isMandatory && IaisCommonUtils.isEmpty(svcDocConfigDtos)) {
+                if (isMandatory && IaisCommonUtils.isEmpty(appSvcDocDtos)) {
 
-                } else if (isMandatory && !IaisCommonUtils.isEmpty(svcDocConfigDtos)) {
+                } else if (isMandatory && !IaisCommonUtils.isEmpty(appSvcDocDtos)) {
                     for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
                         String svcDocId = appSvcDocDto.getSvcDocId();
                         if (hcsaSvcDocConfigDto.getId().equals(svcDocId)) {
