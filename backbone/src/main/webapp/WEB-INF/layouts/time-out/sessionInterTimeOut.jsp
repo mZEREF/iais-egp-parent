@@ -26,7 +26,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <a onclick="javascript:doLogout();" style="float:right" name="filterBtn" class="btn btn-secondary">Logout</a>
+        <a onclick="javascript:doLogout();" style="float:right" class="btn btn-secondary">Logout</a>
         <span style="float:right">&nbsp;</span>
         <input class="btn btn-secondary" id="interTimeOutLogout" style="float:right" type="button" onclick="javascript:doExtend();" value="Extend"/>
       </div>
