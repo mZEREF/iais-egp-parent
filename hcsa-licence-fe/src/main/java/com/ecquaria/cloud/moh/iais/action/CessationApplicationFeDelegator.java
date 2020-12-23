@@ -117,7 +117,6 @@ public class CessationApplicationFeDelegator {
         }
         if(!IaisCommonUtils.isEmpty(licIds)){
             boolean isGrpLicence = cessationFeService.isGrpLicence(licIds);
-            appCessDtosByLicIds = cessationFeService.getAppCessDtosByLicIds(licIds);
             //specLid in licIds
             List<String> specLicIds = cessationFeService.filtrateSpecLicIds(licIds);
             List<AppSpecifiedLicDto> specLicInfo = cessationFeService.getSpecLicInfo(licIds);
@@ -126,7 +125,8 @@ public class CessationApplicationFeDelegator {
                 for(AppSpecifiedLicDto appSpecifiedLicDto : specLicInfo){
                     String specLicId = appSpecifiedLicDto.getSpecLicId();
                     String baseLicNo = appSpecifiedLicDto.getBaseLicNo();
-                    if(!specLicIds.contains(specLicId)){
+                    if(specLicIds.contains(specLicId)){
+                        licIds.remove(specLicId);
                         List<AppSpecifiedLicDto> specLicInfoConfirmExist = map.get(baseLicNo);
                         if(!IaisCommonUtils.isEmpty(specLicInfoConfirmExist)){
                             specLicInfoConfirmExist.add(appSpecifiedLicDto);
@@ -138,8 +138,8 @@ public class CessationApplicationFeDelegator {
                     }
                 }
                 ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) map);
-                ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag", "exist");
             }
+            appCessDtosByLicIds = cessationFeService.getAppCessDtosByLicIds(licIds);
             ParamUtil.setSessionAttr(bpc.request, "isGrpLic",isGrpLicence);
         }
 

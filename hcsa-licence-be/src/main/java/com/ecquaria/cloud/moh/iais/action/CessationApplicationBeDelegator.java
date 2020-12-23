@@ -94,9 +94,7 @@ public class CessationApplicationBeDelegator {
     public void init(BaseProcessClass bpc) {
         List<String> licIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licIds");
         log.debug(StringUtil.changeForLog("cessation licenceIds ===>" + JsonUtil.parseToJson(licIds)));
-
         boolean isGrpLicence = cessationBeService.isGrpLicence(licIds);
-        List<AppCessLicDto> appCessDtosByLicIds = cessationBeService.getAppCessDtosByLicIds(licIds);
         List<String> specLicIds = cessationBeService.filtrateSpecLicIds(licIds);
         List<AppSpecifiedLicDto> specLicInfo = cessationBeService.getSpecLicInfo(licIds);
         if(specLicInfo.size()>0) {
@@ -104,7 +102,8 @@ public class CessationApplicationBeDelegator {
             for(AppSpecifiedLicDto appSpecifiedLicDto : specLicInfo){
                 String specLicId = appSpecifiedLicDto.getSpecLicId();
                 String baseLicNo = appSpecifiedLicDto.getBaseLicNo();
-                if(!specLicIds.contains(specLicId)){
+                if(specLicIds.contains(specLicId)){
+                    licIds.remove(specLicId);
                     List<AppSpecifiedLicDto> specLicInfoConfirmExist = map.get(baseLicNo);
                     if(!IaisCommonUtils.isEmpty(specLicInfoConfirmExist)){
                         specLicInfoConfirmExist.add(appSpecifiedLicDto);
@@ -118,6 +117,7 @@ public class CessationApplicationBeDelegator {
             ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) map);
             ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag","exist");
         }
+        List<AppCessLicDto> appCessDtosByLicIds = cessationBeService.getAppCessDtosByLicIds(licIds);
         int size = appCessDtosByLicIds.size();
         List<SelectOption> reasonOption = getReasonOption();
         List<SelectOption> patientsOption = getPatientsOption();
