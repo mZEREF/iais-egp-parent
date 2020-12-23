@@ -19,6 +19,7 @@
         <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
             <div id="processingDecision">
                 <iais:row>
+                    <h1 style="color: red">example : uen_nric  or   nric</h1>
                     <input id="userAccountString" name="userAccountString" value="" type="text"/>
                     <button name="submitBtn" id="submitButton" type="button" class="btn btn-primary">
                         Query
