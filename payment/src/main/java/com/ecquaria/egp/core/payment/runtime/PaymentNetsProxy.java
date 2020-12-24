@@ -17,6 +17,8 @@ import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ecq.commons.helper.StringHelper;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
@@ -94,14 +96,38 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String umId= GatewayConfig.eNetsUmId;
 		String keyId=GatewayConfig.eNetsKeyId;
 		String secretKey=GatewayConfig.eNetsSecretKey ;
-		String s2sUrl="";
-//		String b2sUrl= "http://192.168.6.195:8082/eNets/eNets/return.jsp";
 		String b2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/payment-web/back.jsp?reqNo="+reqNo;
-//		String b2sUrlPram="\""+fields.get("vpc_ReturnURL")+"\"";
-		String b2sUrlPram="";
 		String sessionId=bpc.getSession().getId();
-
-		String txnRep="{\"ss\":\"1\",\"msg\":{\"netsMid\":\""+umId+"\",\"tid\":\"\",\"submissionMode\":\"B\",\"txnAmount\":\""+amoOo+"\",\"merchantTxnRef\":\""+merchantTxnRef+"\",\"merchantTxnDtm\":\""+merchantTxnDtm+"\",\"paymentType\":\"SALE\",\"currencyCode\":\"SGD\",\"paymentMode\":\"\",\"merchantTimeZone\":\"+8:00\",\"b2sTxnEndURL\":\""+b2sUrl+"\",\"b2sTxnEndURLParam\":\""+b2sUrlPram+"\",\"s2sTxnEndURL\":\""+s2sUrl+"\",\"s2sTxnEndURLParam\":\"\",\"clientType\":\"W\",\"supMsg\":\"\",\"netsMidIndicator\":\"U\",\"ipAddress\":\"127.0.0.1\",\"language\":\"en\"}}" ;
+		ObjectMapper mapper = new ObjectMapper();
+		SoapiB2S soapiTxnQueryReq=new SoapiB2S();
+		soapiTxnQueryReq.setSs("1");
+		SoapiB2S.Msg msg=new SoapiB2S.Msg();
+		msg.setNetsMid(umId);
+		msg.setTid("");
+		msg.setSubmissionMode("B");
+		msg.setTxnAmount(amoOo);
+		msg.setMerchantTxnRef(merchantTxnRef);
+		msg.setMerchantTxnDtm(merchantTxnDtm);
+		msg.setPaymentType("SALE");
+		msg.setCurrencyCode("SGD");
+		msg.setPaymentMode("");
+		msg.setMerchantTimeZone("+8:00");
+		msg.setNetsMidIndicator("U");
+		msg.setB2sTxnEndURL(b2sUrl);
+		msg.setB2sTxnEndURLParam("");
+		msg.setS2sTxnEndURL("");
+		msg.setS2sTxnEndURLParam("");
+		msg.setIpAddress("127.0.0.1");
+		msg.setLanguage("en");
+		msg.setClientType("W");
+		msg.setSupMsg("");
+		soapiTxnQueryReq.setMsg(msg);
+		String txnRep = null;
+		try {
+			txnRep = mapper.writeValueAsString(soapiTxnQueryReq);
+		} catch (JsonProcessingException e) {
+			log.debug(e.getMessage(),e);
+		}
 
 		String hmac= null;
 		try {
