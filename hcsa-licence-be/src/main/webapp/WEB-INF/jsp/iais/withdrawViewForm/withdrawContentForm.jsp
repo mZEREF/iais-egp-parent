@@ -9,9 +9,7 @@
                         <div class="withdraw-info-gp">
                             <div class="withdraw-info-row">
                                 <div class="withdraw-info">
-                                    <c:forEach items="${withdrawDtoList}" var="withdrawDtoList">
-                                        <p>${withdrawDtoList.applicationNo}</p>
-                                    </c:forEach>
+                                    <p>${withdrawDtoList[0].applicationNo}</p>
                                 </div>
                             </div>
                         </div>
