@@ -258,7 +258,7 @@ public class WithOutRenewalDelegator {
 //                NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto, hcsaSvcSubtypeOrSubsumedDtos);
                 //use new config id
                 appSubmissionService.changeSvcScopeIdByConfigName(hcsaSvcSubtypeOrSubsumedDtos,appSubmissionDto);
-                Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
+                Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = appSubmissionService.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
                 reloadDisciplineAllocationMapList.add(reloadDisciplineAllocationMap);
                 //set svc step
                 List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcId);
@@ -1684,7 +1684,7 @@ public class WithOutRenewalDelegator {
      * @param bpc
      * @throws
      */
-    public void toPrepareData(BaseProcessClass bpc) {
+    public void toPrepareData(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the do toPrepareData start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
         if (appSubmissionDto != null) {
@@ -1704,7 +1704,7 @@ public class WithOutRenewalDelegator {
                 serviceNames.add(serviceName);
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
                 String svcId = hcsaServiceDto.getId();
-                Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
+                Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = appSubmissionService.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
                 reloadDisciplineAllocationMapList.add(reloadDisciplineAllocationMap);
 
                 //set AppSvcRelatedInfoDtoList chkName

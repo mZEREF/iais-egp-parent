@@ -234,7 +234,7 @@ public class RequestForChangeDelegator {
      * @param bpc
      * @Decription prepareFirstView
      */
-    public void prepareFirstView(BaseProcessClass bpc)  {
+    public void prepareFirstView(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do prepareFirstView start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -248,7 +248,7 @@ public class RequestForChangeDelegator {
                 }
             }
         }
-        NewApplicationHelper.setPreviewDta(appSubmissionDto,bpc);
+        appSubmissionService.setPreviewDta(appSubmissionDto,bpc);
         ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,RfcConst.FIRSTVIEW,AppConsts.TRUE);

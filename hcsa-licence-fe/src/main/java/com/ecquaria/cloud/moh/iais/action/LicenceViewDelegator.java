@@ -74,7 +74,7 @@ public class LicenceViewDelegator {
      * @param bpc
      * @throws
      */
-    public void prepareData(BaseProcessClass bpc) {
+    public void prepareData(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("The LicenceViewDelegator prepareData start ..."));
         ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"empty");
         String licencId= ParamUtil.getRequestString(bpc.request,LICENCE_ID);
@@ -146,7 +146,7 @@ public class LicenceViewDelegator {
                         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
                         ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
                         //set DisciplineAllocationMap
-                        Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap= NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto,hcsaServiceDto.getId());
+                        Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap= appSubmissionService.getDisciplineAllocationDtoList(appSubmissionDto,hcsaServiceDto.getId());
                         ParamUtil.setRequestAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
                     }else{
                         log.info(StringUtil.changeForLog("current svc name:"+appSvcRelatedInfoDto.getServiceName()+" can not found hcsaServiceDto"));

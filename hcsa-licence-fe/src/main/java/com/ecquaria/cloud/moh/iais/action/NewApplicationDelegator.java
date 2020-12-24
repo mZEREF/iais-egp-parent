@@ -207,6 +207,7 @@ public class NewApplicationDelegator {
         bpc.request.getSession().setAttribute("coMap", coMap);
         //request For Information Loading
         ParamUtil.setSessionAttr(bpc.request, REQUESTINFORMATIONCONFIG, null);
+        ParamUtil.setSessionAttr(bpc.request, "HcsaSvcSubtypeOrSubsumedDto",null);
 
         requestForChangeOrRenewLoading(bpc);
         //renewLicence(bpc);
@@ -1474,7 +1475,7 @@ public class NewApplicationDelegator {
                                 appSubmissionDto.setAppSvcRelatedInfoDtoList(newSvcRelatedInfoDtos);
                             }
                             //set DisciplineAllocationMap
-                            Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
+                            Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = appSubmissionService.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
                             ParamUtil.setRequestAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
                         }
                         for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
