@@ -244,14 +244,25 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(withdrawnList)){
             withdrawnDtoList.forEach(h -> {
-                sendNMS(h,applicationDtoList);
+                ApplicationDto oldApplication = applicationFeClient.getApplicationById(h.getApplicationId()).getEntity();
+                boolean isRfc = false;
+                if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(oldApplication.getApplicationType())){
+                    isRfc = true;
+                }
+                sendNMS(h,applicationDtoList,isRfc);
             });
         }
-        autoApproveApplicationDtoList.forEach(h -> { sendWithdrawApproveNMS(h);
+        autoApproveApplicationDtoList.forEach(h -> {
+            boolean isRfc = false;
+            ApplicationDto oldApplication = applicationFeClient.getApplicationById(h.getApplicationId()).getEntity();
+            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(oldApplication.getApplicationType())){
+                isRfc = true;
+            }
+            sendWithdrawApproveNMS(h,isRfc);
         });
     }
 
-    private void sendWithdrawApproveNMS(WithdrawnDto withdrawnDto){
+    private void sendWithdrawApproveNMS(WithdrawnDto withdrawnDto,boolean isRfc){
         Double fee = 0.0;
         String applicantName = "";
         List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
@@ -284,7 +295,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             msgInfoMap.put("S_LName",serviceName);
             msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
             msgInfoMap.put("ApplicationDate",Formatter.formatDate(applicationGroupDto.getSubmitDt()));
-            if (StringUtil.isEmpty(payMethod)){
+            if (isRfc || StringUtil.isEmpty(payMethod)){
                 msgInfoMap.put("paymentType","2");
                 msgInfoMap.put("paymentMode","");
                 msgInfoMap.put("returnMount",0.0);
@@ -314,7 +325,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         }
     }
 
-    private void sendNMS(WithdrawnDto withdrawnDto,List<ApplicationDto> applicationDtoList){
+    private void sendNMS(WithdrawnDto withdrawnDto,List<ApplicationDto> applicationDtoList,boolean isRfc){
         AppSubmissionDto appSubmissionDto = applicationFeClient.gainSubmissionDto(withdrawnDto.getApplicationNo()).getEntity();
         if (appSubmissionDto != null){
             ApplicationDto applicationDto = applicationFeClient.getApplicationById(withdrawnDto.getApplicationId()).getEntity();
@@ -340,7 +351,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                     applicantName = orgUserDto.getDisplayName();
                 }
                 msgInfoMap.put("Applicant", applicantName);
-                if (!StringUtil.isEmpty(payMethod)){
+                if (!isRfc && !StringUtil.isEmpty(payMethod)){
                     msgInfoMap.put("paymentType","0");
                     msgInfoMap.put("returnMount",fee);
                 }
@@ -389,7 +400,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(withdrawnList)){
             withdrawnDtoList.forEach(h -> {
-                sendNMS(h,applicationDtoList);
+                sendNMS(h,applicationDtoList,true);
             });
         }
 
