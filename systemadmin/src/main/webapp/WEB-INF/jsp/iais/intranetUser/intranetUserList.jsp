@@ -145,7 +145,7 @@
     }
 
     function doImport() {
-        aiting();
+        showWaiting();
         const userFileSize = $("#userFileSize").val();
         const error = validateUploadSizeMaxOrEmpty(userFileSize, "inputFile");
         if (error == "N"){
