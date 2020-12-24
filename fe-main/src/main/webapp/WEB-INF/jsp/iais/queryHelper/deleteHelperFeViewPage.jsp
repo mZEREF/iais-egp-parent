@@ -19,7 +19,7 @@
         <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
             <div id="processingDecision">
                 <iais:row>
-                    <h1 style="color: red">example : uen_nric  or   nric</h1>
+                    <h1 style="color: red">example : uen_nric  or   nric (If you have uen,you need to use uen_nric)</h1>
                     <input id="userAccountString" name="userAccountString" value="" type="text"/>
                     <button name="submitBtn" id="submitButton" type="button" class="btn btn-primary">
                         Delete
