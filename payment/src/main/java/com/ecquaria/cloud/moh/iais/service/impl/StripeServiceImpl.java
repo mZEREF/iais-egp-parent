@@ -115,7 +115,7 @@ public class StripeServiceImpl implements StripeService {
             }else if(paymentIntent!=null && "canceled".equals(paymentIntent.getStatus())){
                 paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
-                applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                //applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
             }
             paymentClient.saveHcsaPayment(paymentDto);
         }else{
@@ -124,7 +124,7 @@ public class StripeServiceImpl implements StripeService {
                 applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
             }else {
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
-                applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                //applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
             }
         }
         paymentClient.updatePaymentResquset(paymentRequestDto);

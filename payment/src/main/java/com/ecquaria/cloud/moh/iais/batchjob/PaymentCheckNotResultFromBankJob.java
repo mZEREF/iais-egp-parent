@@ -51,9 +51,13 @@ public class PaymentCheckNotResultFromBankJob {
                     paymentClient.updatePaymentResquset(payReq);
                 }
             }catch (Exception e){
-                payReq.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
-                paymentClient.updatePaymentResquset(payReq);
                 log.info(e.getMessage(),e);
+                payReq.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                try {
+                    paymentClient.updatePaymentResquset(payReq);
+                }catch (Exception e1){
+                    log.info(e.getMessage(),e1);
+                }
             }
         }
 

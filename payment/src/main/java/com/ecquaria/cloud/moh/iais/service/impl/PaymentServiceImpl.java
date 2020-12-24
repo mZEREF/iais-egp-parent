@@ -70,7 +70,7 @@ public class PaymentServiceImpl implements PaymentService {
             }else if( "1".equals(status)){
                 paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
-                applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                //applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
             }
             paymentClient.saveHcsaPayment(paymentDto);
         }else{
@@ -79,7 +79,7 @@ public class PaymentServiceImpl implements PaymentService {
                 applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
             }else {
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
-                applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                //applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
             }
         }
         paymentClient.updatePaymentResquset(paymentRequestDto);
