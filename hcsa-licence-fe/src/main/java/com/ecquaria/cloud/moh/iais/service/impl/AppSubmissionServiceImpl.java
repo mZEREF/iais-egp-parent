@@ -179,9 +179,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String applicationTypeShow = MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
             subMap.put("ApplicationType", applicationTypeShow);
             subMap.put("ApplicationNumber", applicationNumber);
-            String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED,subMap);
-            String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_SMS,subMap);
-            String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_MESSAGE,subMap);
+            String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL,subMap);
+            String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_SMS,subMap);
+            String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_MSG,subMap);
             log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
             log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
             log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
