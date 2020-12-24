@@ -230,24 +230,26 @@ public class BackendAjaxController {
     Map<String, Object> aoApproveCheck(HttpServletRequest request) {
         String applicationString =  ParamUtil.getString(request, "applications");
         String[] applications = applicationString.split(",");
-        int approveCheck = 0;
+        int approveCheck = 1;
+        StringBuilder noApprove = new StringBuilder();
         for (String item:applications
              ) {
             ApplicationDto applicationDto = inspectionTaskMainClient.getApplicationDtoByAppNo(item).getEntity();
             if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(applicationDto.getStatus()) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(applicationDto.getStatus())){
                 HcsaSvcRoutingStageDto canApproveStageDto = getCanApproveStageDto(applicationDto.getApplicationType(), applicationDto.getStatus(), applicationDto.getServiceId());
                 boolean canApprove = checkCanApproveStage(canApproveStageDto);
-                if(canApprove){
-                    approveCheck = 1;
-                }else
-                {
+                if(!canApprove){
+                    noApprove.append(item).append(',');
                     approveCheck = 0;
-                    break;
                 }
             }
         }
+        if(noApprove.length() > 0){
+            noApprove.deleteCharAt(noApprove.lastIndexOf(","));
+        }
         Map<String, Object> map = new HashMap<>();
         map.put("res",approveCheck);
+        map.put("noApprove",noApprove);
         return map;
     }
 

@@ -406,7 +406,7 @@
                         $('#action').val(action);
                         submit('approve');
                     }else{
-                        $('#approveAo .modal-body span').html(arr.toString()+ " You have no access to approve.");
+                        $('#approveAo .modal-body span').html(data.noApprove+ " You have no access to approve.");
                         $('#approveAo').modal('show');
 
                     }
