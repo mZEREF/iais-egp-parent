@@ -256,7 +256,6 @@ public class CessationBeServiceImpl implements CessationBeService {
             licIds.clear();
             licIds.add(licId);
             List<String> appIds = appIdPremisesMap.get(premiseId);
-            String applicationNo = null;
             String appId = null;
             String baseAppNo = null ;
             List<ApplicationDto> specApplicationDtos = IaisCommonUtils.genNewArrayList();
@@ -271,7 +270,6 @@ public class CessationBeServiceImpl implements CessationBeService {
             }
             for(String id : appIds){
                 ApplicationDto applicationDto = applicationClient.getApplicationById(id).getEntity();
-                applicationNo = applicationDto.getApplicationNo();
                 String originLicenceId = applicationDto.getOriginLicenceId();
                 if(licId.equals(originLicenceId)){
                     applicationDtos.add(applicationDto);
@@ -303,7 +301,7 @@ public class CessationBeServiceImpl implements CessationBeService {
             svcCodes.add(hcsaServiceDto.getSvcCode());
             Date effectiveDate = appCessationDto.getEffectiveDate();
             AppCessatonConfirmDto appCessatonConfirmDto = new AppCessatonConfirmDto();
-            appCessatonConfirmDto.setAppNo(applicationNo);
+            appCessatonConfirmDto.setAppNo(baseAppNo);
             appCessatonConfirmDto.setEffectiveDate(effectiveDate);
             appCessatonConfirmDto.setHciAddress(hciAddress);
             appCessatonConfirmDto.setSvcName(svcName);

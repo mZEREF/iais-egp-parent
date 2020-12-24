@@ -312,7 +312,6 @@ public class CessationFeServiceImpl implements CessationFeService {
             licIds.clear();
             licIds.add(licId);
             List<String> appIds = appIdPremisesMap.get(premiseId);
-            String applicationNo = null;
             String appId = null;
             String baseAppNo = null ;
             for (String id : appIds) {
@@ -326,7 +325,6 @@ public class CessationFeServiceImpl implements CessationFeService {
             }
             for (String id : appIds) {
                 ApplicationDto applicationDto = applicationFeClient.getApplicationById(id).getEntity();
-                applicationNo = applicationDto.getApplicationNo();
                 String originLicenceId = applicationDto.getOriginLicenceId();
                 if (licId.equals(originLicenceId)) {
                     applicationDtos.add(applicationDto);
@@ -367,7 +365,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     String applicantName = loginContext.getUserName();
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
-                    emailMap.put("ApplicationNumber", applicationNo);
+                    emailMap.put("ApplicationNumber", baseAppNo);
                     StringBuilder svcNameLicNo = new StringBuilder();
                     svcNameLicNo.append(svcName).append(" : ").append(licenceNo);
                     if (!IaisCommonUtils.isEmpty(specLicIds)) {
@@ -391,15 +389,15 @@ public class CessationFeServiceImpl implements CessationFeService {
                     MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE).getEntity();
                     Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                     map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
-                    map.put("ApplicationNumber", applicationNo);
+                    map.put("ApplicationNumber", baseAppNo);
                     String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
                     EmailParam emailParam = new EmailParam();
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE);
                     emailParam.setTemplateContent(emailMap);
-                    emailParam.setQueryCode(applicationNo);
-                    emailParam.setReqRefNum(applicationNo);
+                    emailParam.setQueryCode(baseAppNo);
+                    emailParam.setReqRefNum(baseAppNo);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                    emailParam.setRefId(applicationNo);
+                    emailParam.setRefId(baseAppNo);
                     emailParam.setSubject(subject);
                     //email
                     log.info(StringUtil.changeForLog("==================== email ===============>>>>>>>"));
@@ -441,23 +439,23 @@ public class CessationFeServiceImpl implements CessationFeService {
                         }
                     }
                     emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
-                    emailMap.put("ApplicationNumber", applicationNo);
+                    emailMap.put("ApplicationNumber", baseAppNo);
                     emailMap.put(CESSATION_DATE, DateFormatUtils.format(effectiveDate, "dd/MM/yyyy"));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
                     emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
                     Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                     map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
-                    map.put("ApplicationNumber", applicationNo);
+                    map.put("ApplicationNumber", baseAppNo);
                     MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE).getEntity();
                     String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
                     EmailParam emailParam = new EmailParam();
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE);
                     emailParam.setTemplateContent(emailMap);
-                    emailParam.setQueryCode(applicationNo);
-                    emailParam.setReqRefNum(applicationNo);
+                    emailParam.setQueryCode(baseAppNo);
+                    emailParam.setReqRefNum(baseAppNo);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                    emailParam.setRefId(applicationNo);
+                    emailParam.setRefId(baseAppNo);
                     emailParam.setSubject(subject);
                     //email
                     notificationHelper.sendNotification(emailParam);
@@ -481,7 +479,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                 log.info(StringUtil.changeForLog("==================== email error ===============>>>>>>>" + e.getMessage()));
             }
             AppCessatonConfirmDto appCessatonConfirmDto = new AppCessatonConfirmDto();
-            appCessatonConfirmDto.setAppNo(applicationNo);
+            appCessatonConfirmDto.setAppNo(baseAppNo);
             appCessatonConfirmDto.setEffectiveDate(effectiveDate);
             appCessatonConfirmDto.setHciAddress(hciAddress);
             appCessatonConfirmDto.setSvcName(svcName);

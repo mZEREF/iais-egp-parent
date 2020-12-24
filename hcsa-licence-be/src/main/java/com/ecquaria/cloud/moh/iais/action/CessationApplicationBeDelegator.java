@@ -104,18 +104,17 @@ public class CessationApplicationBeDelegator {
                 String baseLicNo = appSpecifiedLicDto.getBaseLicNo();
                 if(specLicIds.contains(specLicId)){
                     licIds.remove(specLicId);
-                    List<AppSpecifiedLicDto> specLicInfoConfirmExist = map.get(baseLicNo);
-                    if(!IaisCommonUtils.isEmpty(specLicInfoConfirmExist)){
-                        specLicInfoConfirmExist.add(appSpecifiedLicDto);
-                    }else {
-                        List<AppSpecifiedLicDto> specLicInfoConfirm = IaisCommonUtils.genNewArrayList();
-                        specLicInfoConfirm.add(appSpecifiedLicDto);
-                        map.put(baseLicNo,specLicInfoConfirm);
-                    }
+                }
+                List<AppSpecifiedLicDto> specLicInfoConfirmExist = map.get(baseLicNo);
+                if(!IaisCommonUtils.isEmpty(specLicInfoConfirmExist)){
+                    specLicInfoConfirmExist.add(appSpecifiedLicDto);
+                }else {
+                    List<AppSpecifiedLicDto> specLicInfoConfirm = IaisCommonUtils.genNewArrayList();
+                    specLicInfoConfirm.add(appSpecifiedLicDto);
+                    map.put(baseLicNo,specLicInfoConfirm);
                 }
             }
             ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) map);
-            ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag","exist");
         }
         List<AppCessLicDto> appCessDtosByLicIds = cessationBeService.getAppCessDtosByLicIds(licIds);
         int size = appCessDtosByLicIds.size();
