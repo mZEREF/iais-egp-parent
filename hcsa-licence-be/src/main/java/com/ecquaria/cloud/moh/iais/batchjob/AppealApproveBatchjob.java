@@ -566,7 +566,17 @@ public class AppealApproveBatchjob {
             String oldAppId = premiseMiscDto.getRelateRecId();
             oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
             if(oldApplication!=null){
-                appType ="New Licence Application";
+                String applicationType = oldApplication.getApplicationType();
+                if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
+                    //new
+                    appType ="New Licence Application";
+                }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
+                    //renew
+                    appType ="Renew";
+                } else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
+                    //RFC
+                    appType ="Request For Change";
+                }
                 subNo=oldApplication.getApplicationNo();
             }else {
                 if(licenceDto!=null){
