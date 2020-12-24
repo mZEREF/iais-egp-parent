@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -25,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,9 @@ public class WithdrawalDelegator {
 
     @Autowired
     private ApplicationFeClient applicationFeClient;
+
+    @Autowired
+    private LicFeInboxClient licFeInboxClient;
 
     private LoginContext loginContext = null;
 
@@ -266,6 +271,7 @@ public class WithdrawalDelegator {
     public void withdrawDoRfi(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("****The withdrawDoRfi Step****"));
         wdIsValid = IaisEGPConstant.YES;
+        String messageId = (String)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         List<WithdrawnDto> withdrawnDtoList = getWithdrawAppList(bpc);
         if ((withdrawnDtoList != null) && (withdrawnDtoList.size() > 0) && IaisEGPConstant.YES.equals(wdIsValid)){
 //            withdrawalService.saveWithdrawn(withdrawnDtoList);
@@ -278,6 +284,9 @@ public class WithdrawalDelegator {
             String ackMsg = MessageUtil.replaceMessage("WDL_ACK001",replaceStr,"Application No");
             ParamUtil.setRequestAttr(bpc.request,"WITHDRAW_ACKMSG",ackMsg);
             withdrawalService.saveRfiWithdrawn(withdrawnDtoList,bpc.request);
+            if (!StringUtil.isEmpty(messageId)){
+                licFeInboxClient.updateMsgStatusTo(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
+            }
         }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,wdIsValid);
     }

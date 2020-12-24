@@ -101,8 +101,7 @@
                                         <input id="selectedFile" type="file" style="display: none;" name = "selectedFile"
                                                aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary"
                                                                             href="javascript:void(0);">Upload</a>
-                                        <div id="delFile" style="margin-top: 13px;color: #1F92FF;"
-                                             hidden="hidden">
+                                        <div id="delFile" style="margin-top: 13px;color: #1F92FF;">
                                             <strong id="fileName">${rfiWithdrawDto.appPremisesSpecialDocDto.docName}</strong>
                                             <button type="button" class="btn btn-danger btn-sm" onclick="deleteWdFile()"><em
                                                     class="fa fa-times"></em></button>

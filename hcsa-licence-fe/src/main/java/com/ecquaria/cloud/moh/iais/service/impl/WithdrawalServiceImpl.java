@@ -377,7 +377,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
     @Override
     public void saveRfiWithdrawn(List<WithdrawnDto> withdrawnDtoList,HttpServletRequest httpRequest) {
-        boolean charity = NewApplicationHelper.isCharity(httpRequest);
         withdrawnDtoList.forEach(h -> {
             String appId = h.getNewApplicationId();
             ApplicationDto applicationDto = applicationFeClient.getApplicationById(appId).getEntity();
@@ -396,14 +395,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 log.error(e.getMessage(), e);
             }
         });
-        List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
-        List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
-        if (!IaisCommonUtils.isEmpty(withdrawnList)){
-            withdrawnDtoList.forEach(h -> {
-                sendNMS(h,applicationDtoList,true);
-            });
-        }
-
     }
 
     private AppSubmissionDto transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) throws Exception {
