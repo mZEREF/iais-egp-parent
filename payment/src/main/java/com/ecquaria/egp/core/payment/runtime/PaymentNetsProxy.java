@@ -127,6 +127,14 @@ public class PaymentNetsProxy extends PaymentProxy {
 			txnRep = mapper.writeValueAsString(soapiTxnQueryReq);
 		} catch (JsonProcessingException e) {
 			log.debug(e.getMessage(),e);
+			String results="?result="+ MaskUtil.maskValue("result",PaymentTransactionEntity.TRANS_STATUS_FAILED)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",reqNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo","TRN-000");
+			String failUrl =AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+returnUrl+results;
+			try {
+				RedirectUtil.redirect(failUrl, bpc.request, bpc.response);
+			} catch (IOException ex) {
+				log.debug(ex.getMessage(),ex);
+			}
+
 		}
 
 		String hmac= null;
@@ -155,12 +163,6 @@ public class PaymentNetsProxy extends PaymentProxy {
 			PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
 
 		}
-//		try {
-//			String backUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/payment-web/eservice/INTERNET/Payment";
-//			RedirectUtil.redirect("http://192.168.6.195:8090/eNets?txnReq="+ URLEncoder.encode(txnRep + "", StandardCharsets.UTF_8.name())+"&API_KEY="+keyId+"&hmac="+URLEncoder.encode(hmac + "", StandardCharsets.UTF_8.name())+"&backUrl="+URLEncoder.encode(backUrl + "", StandardCharsets.UTF_8.name()), bpc.request, bpc.response);
-//		} catch (IOException e) {
-//			log.debug(e.getMessage());
-//		}
 		try {
 			StringBuilder bud = new StringBuilder();
 			bud.append(bigsURL).append('?');
