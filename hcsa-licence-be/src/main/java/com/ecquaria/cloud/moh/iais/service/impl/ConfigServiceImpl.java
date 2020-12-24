@@ -597,10 +597,6 @@ public class ConfigServiceImpl implements ConfigService {
                     int i1 = Integer.parseInt(pageMandatoryCount);
                     if (i1<0){
                         errorMap.put("mandatoryCount"+i, "GENERAL_ERR0002");
-                    }else if(i1>1 && "PO".equals(psnType)){
-                        String sc_err013 = MessageUtil.getMessageDesc("SC_ERR013");
-                        sc_err013=sc_err013.replace("{prsType}","PO");
-                        errorMap.put("mandatoryCount"+i, sc_err013);
                     }
                 }else {
                     errorMap.put("mandatoryCount"+i,"GENERAL_ERR0002");
@@ -611,16 +607,9 @@ public class ConfigServiceImpl implements ConfigService {
             }else {
                 if(pageMaximumCount.matches("^[0-9]+$")){
                     int i1 = Integer.parseInt(pageMaximumCount);
-                    boolean b = "RDS".equals(svcCode) || "BLB".equals(svcCode);
                     String sc_err012 = MessageUtil.getMessageDesc("SC_ERR012");
                     if(i1<0){
                         errorMap.put("maximumCount"+i,"GENERAL_ERR0002");
-                    }else if(i1>1 && "PO".equals(psnType)){
-                        sc_err012 = sc_err012.replace("{prsType}", "PO");
-                        errorMap.put("maximumCount"+i,sc_err012);
-                    }else if(b && i1>1 && "CGO".equals(psnType)){
-                        sc_err012 = sc_err012.replace("{prsType}", "CGO");
-                        errorMap.put("maximumCount"+i,sc_err012);
                     }
                 }else {
                     errorMap.put("maximumCount"+i,"GENERAL_ERR0002");

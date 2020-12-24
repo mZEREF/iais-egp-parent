@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPerson
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -337,6 +338,11 @@ public class LicenceViewServiceDelegator {
         }
         if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)|| ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType)){
             oldAppSubmission(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto());
+            svcDocToPresmise(appSubmissionDto);
+            AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
+            if(oldAppSubmissionDto!=null){
+                svcDocToPresmise(oldAppSubmissionDto);
+            }
         }
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         if (appGrpPrimaryDocDtos != null) {
@@ -668,6 +674,8 @@ public class LicenceViewServiceDelegator {
                         appGrpPrimaryDocDto.setVersion(appSvcDocDto.getVersion());
                         appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
                         appSvcDocDtos.add(appSvcDocDto);
+                    }else {
+                        appSvcDocDto.setUpFileName(entity.getDocTitle());
                     }
                 }
             }
@@ -1193,27 +1201,6 @@ public class LicenceViewServiceDelegator {
         removeSvcDocFileIdIsNull(oldAppSvcDocDtoLit);
         copyServiceDoc(appSvcDocDtoLit,oldAppSvcDocDtoLit);
 
-        Map<String,String> docMapService = IaisCommonUtils.genNewHashMap();
-        docMapService.put("common", "0");
-        docMapService.put("svc",appSvcRelatedInfoDto.getServiceId());
-        List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = hcsaConfigClient.getHcsaSvcDocConfig(JsonUtil.parseToJson(docMapService)).getEntity();
-        List<AppSvcDocDto> list2=IaisCommonUtils.genNewArrayList();
-        List<AppSvcDocDto> list3=IaisCommonUtils.genNewArrayList();
-        for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto : hcsaSvcDocConfigDtos){
-            for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLit){
-                if(hcsaSvcDocConfigDto.getId().equals(appSvcDocDto.getSvcDocId())){
-                    list2.add(appSvcDocDto);
-                }
-            }
-            for(AppSvcDocDto appSvcDocDto : oldAppSvcDocDtoLit){
-                if(hcsaSvcDocConfigDto.getId().equals(appSvcDocDto.getSvcDocId())){
-                    list3.add(appSvcDocDto);
-                }
-            }
-        }
-        //oldAppSvcDocDtoLit = new ArrayList<>(list3);
-        appSvcRelatedInfoDto.setAppSvcDocDtoLit(list2);
-        oldAppSvcRelatedInfoDto.setAppSvcDocDtoLit(list3);
         List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         List<AppSvcCgoDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
        if (IaisCommonUtils.isEmpty(appSvcCgoDtoList) && !IaisCommonUtils.isEmpty(oldAppSvcCgoDtoList)) {
@@ -1690,7 +1677,7 @@ public class LicenceViewServiceDelegator {
 
     private void primaryDoc(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos,List<AppGrpPrimaryDocDto> copyAppGrpPrimaryDocDtos,List<AppGrpPrimaryDocDto> copyOldAppGrpPrimaryDocDtos){
         for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){
-            if(appGrpPrimaryDocDto.getSvcDocId()==null){
+            if(appGrpPrimaryDocDto.getFileRepoId()==null){
                 continue;
             }
             boolean flag=false;
@@ -1747,9 +1734,24 @@ public class LicenceViewServiceDelegator {
     private void serviceDoc(List<AppSvcDocDto> appSvcDocDtos,  List<AppSvcDocDto> oldAppSvcDocDtos,Set<AppSvcDocDto> copyAppSvcDocDtos,Set<AppSvcDocDto> copyOldAppSvcDocDtos){
 
         for(AppSvcDocDto appSvcDocDto : appSvcDocDtos){
+            if(appSvcDocDto.getFileRepoId()==null){
+                continue;
+            }
             boolean flag=false;
             for(AppSvcDocDto svcDocDto : oldAppSvcDocDtos){
-                if(appSvcDocDto.getSvcDocId().equals(svcDocDto.getSvcDocId())){
+                String upFileName = appSvcDocDto.getUpFileName();
+                if(upFileName==null){
+                    HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(appSvcDocDto.getSvcDocId()).getEntity();
+                    upFileName=entity.getDocTitle();
+                    appSvcDocDto.setUpFileName(entity.getDocTitle());
+                }
+                String upFileName1 = svcDocDto.getUpFileName();
+                if(upFileName1==null){
+                    HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocDto.getSvcDocId()).getEntity();
+                    upFileName1=entity.getDocTitle();
+                    svcDocDto.setUpFileName(entity.getDocTitle());
+                }
+                if(upFileName.equals(upFileName1)){
                     flag=true;
                     copyAppSvcDocDtos.add(appSvcDocDto);
                     copyOldAppSvcDocDtos.add(svcDocDto);

@@ -74,7 +74,7 @@
       <label style="font-size: 2.2rem">${stepNameMap['SVST002']}</label>
       <div class="amend-preview-info">
         <c:forEach var="cgo" items="${currentPreviewSvcInfo.appSvcCgoDtoList}" varStatus="status">
-        <p><strong class="col-xs-6">Clinical Governance Officer ${status.index+1}</strong><span class="col-xs-4 col-md-4"></span>
+        <p><strong class="col-xs-6">Clinical Governance Officer <c:if test="${fn:length(currentPreviewSvcInfo.appSvcCgoDtoList)>1}">${status.index+1}</c:if>:</strong><span class="col-xs-4 col-md-4"></span>
         </p>
         <div class="form-check-gp">
           <div class="row">
@@ -587,7 +587,7 @@
           <div class="row">
             <div class="col-xs-12">
               <c:forEach items="${currentPreviewSvcInfo.appSvcPersonnelDtoList}" var="appSvcPersonnelDtoList" varStatus="status">
-                <p><strong class="col-xs-6">Service Personnel ${status.index+1}:</strong></p>
+                <p><strong class="col-xs-6">Service Personnel <c:if test="${fn:length(currentPreviewSvcInfo.appSvcPersonnelDtoList)>1}">${status.index+1}</c:if>:</strong></p>
                 <span class="col-xs-6"></span>
                 <table class="col-xs-12">
                   <c:choose>
@@ -1085,6 +1085,56 @@
                         </td>
                       </tr>
                     </c:when>
+                    <c:otherwise>
+                      <tr>
+                        <td class="col-xs-6">
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name</p>
+                        </td>
+                        <td>
+
+                          <div class="col-xs-6">
+                            <span class="newVal " attr="${appSvcPersonnelDtoList.name}" ><c:out value="${appSvcPersonnelDtoList.name}"/></span>
+                          </div>
+                          <div class="col-xs-6">
+                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}</span>
+
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="col-xs-6">
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification</p>
+                        </td>
+                        <td>
+
+                          <div  class="col-xs-6">
+                            <span class="newVal " attr="${appSvcPersonnelDtoList.qualification}" ><c:out value="${appSvcPersonnelDtoList.qualification}"/></span>
+
+                          </div>
+                          <div  class="col-xs-6">
+                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}</span>
+                          </div>
+
+
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="col-xs-6">
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years)</p>
+                        </td>
+                        <td>
+
+                          <div  class="col-xs-6">
+                            <span class="newVal " attr="${appSvcPersonnelDtoList.wrkExpYear}" ><c:out value="${appSvcPersonnelDtoList.wrkExpYear}"/></span>
+
+                          </div>
+                          <div  class="col-xs-6">
+                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}</span>
+                          </div>
+
+                        </td>
+                      </tr>
+                    </c:otherwise>
                   </c:choose>
                 </table>
               </c:forEach>
@@ -1107,11 +1157,11 @@
               <c:set value="1" var="dpoIndex"></c:set>
               <c:forEach items="${currentPreviewSvcInfo.appSvcPrincipalOfficersDtoList}" var="po" varStatus="status">
                 <c:if test="${po.psnType =='PO'}">
-                  <p><strong class="col-xs-6">Principal Officers ${poIndex}:</strong></p>
+                  <p><strong class="col-xs-6">Principal Officers <c:if test="${poIndex>1}">${poIndex}</c:if>:</strong></p>
                   <c:set var="poIndex" value="${poIndex+1}"></c:set>
                 </c:if>
                 <c:if test="${po.psnType =='DPO'}">
-                  <p><strong class="col-xs-6">Deputy Principal Officer ${dpoIndex}:</strong></p>
+                  <p><strong class="col-xs-6">Deputy Principal Officer <c:if test="${dpoIndex>1}">${dpoIndex}</c:if>:</strong></p>
                   <c:set var="dpoIndex" value="${dpoIndex+1}"></c:set>
                 </c:if>
                 <table class="col-xs-12">
@@ -1345,7 +1395,7 @@
           <div class="row">
             <div class="col-xs-12">
               <c:forEach items="${currentPreviewSvcInfo.appSvcMedAlertPersonList}" var="appSvcMedAlertPerson" varStatus="status">
-                <p><strong class="col-xs-6">MedAlert Person ${status.index+1}:</strong></p>
+                <p><strong class="col-xs-6">MedAlert Person <c:if test="${fn:length(currentPreviewSvcInfo.appSvcMedAlertPersonList)>1}">${status.index+1}</c:if>:</strong></p>
                 <span class="col-xs-6"></span>
                 <table class="col-xs-12">
 
