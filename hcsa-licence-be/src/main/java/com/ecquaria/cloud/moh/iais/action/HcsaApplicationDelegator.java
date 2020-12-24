@@ -2132,14 +2132,20 @@ public class HcsaApplicationDelegator {
                         //update application Group status
                         ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                         broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
-                        applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+                        //update current application status in db search result
+                        updateCurrentApplicationStatus(saveApplicationDtoList,applicationDto.getId(),appStatus,licenseeId);
+                        //set app group status
+                        boolean appStatusIsAllRejected = checkAllStatus(saveApplicationDtoList, ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                        if(appStatusIsAllRejected){
+                            applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_REJECT);
+                        }else{
+                            applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+                        }
                         applicationGroupDto.setAo3ApprovedDt(new Date());
                         applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                         broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
 
                         if(needUpdateGroupStatus){
-                            //update current application status in db search result
-                            updateCurrentApplicationStatus(saveApplicationDtoList,applicationDto.getId(),appStatus,licenseeId);
                             //get and set return fee
                             saveApplicationDtoList = hcsaConfigClient.returnFee(saveApplicationDtoList).getEntity();
                             //save return fee
@@ -2285,6 +2291,23 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
+    }
+
+    private boolean checkAllStatus(List<ApplicationDto> applicationDtoList,String status){
+        boolean flag = false;
+        if(!IaisCommonUtils.isEmpty(applicationDtoList) && !StringUtil.isEmpty(status)){
+            int index = 0;
+            for(ApplicationDto applicationDto : applicationDtoList){
+                if(status.equals(applicationDto.getStatus())){
+                    index ++;
+                }
+            }
+            if(index == applicationDtoList.size()){
+                flag = true;
+            }
+        }
+
+        return flag;
     }
 
     private List<ApplicationDto> removeCurrentApplicationDto(List<ApplicationDto> applicationDtoList, String currentId){
