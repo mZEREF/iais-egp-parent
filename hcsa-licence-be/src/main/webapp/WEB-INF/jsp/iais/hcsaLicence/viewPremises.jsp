@@ -154,11 +154,11 @@
 
                                     <div class="row">
                                       <div class="col-md-6">
-                                      Name of Healthcare Institution
+                                      HCI Name
                                       <a class="btn-tooltip styleguide-tooltip" id="hciNameClick" <c:if test="${empty appGrpPremDto.applicationViewHciNameDtos}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
                                     </div>
                                       <div  class="col-md-7" style="position: absolute;z-index: 100;left: 40%;background-color: #EEEEEE;display: none;margin-top: 2%;overflow-y: scroll" id="hciNameShowOrHidden">
-                                          <p>The Healthcare Institution name is currently used by another licensee</p>
+                                          <p>The HCI name is currently used by another licensee</p>
                                           <br>
                                           <table    border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
                                             <tr>
