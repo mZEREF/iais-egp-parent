@@ -2713,11 +2713,11 @@ public class HcsaApplicationDelegator {
         emailMap.put("TAT_time", StringUtil.viewHtml(Formatter.formatDateTime(new Date(),Formatter.DATE)));
         StringBuilder stringBuffer=new StringBuilder();
         if(applicationViewDto.getHciName()!=null){
-            stringBuffer.append("Healthcare Institution Name : ").append(applicationViewDto.getHciName()).append("<br>");
+            stringBuffer.append("HCI Name : ").append(applicationViewDto.getHciName()).append("<br>");
         }
 
         if(applicationViewDto.getHciAddress()!=null){
-            stringBuffer.append("Healthcare Institution Address : ").append(applicationViewDto.getHciAddress()).append("<br>");
+            stringBuffer.append("HCI Address : ").append(applicationViewDto.getHciAddress()).append("<br>");
         }
         if(licenseeName!=null){
             stringBuffer.append("Licensee Name : ").append(licenseeName).append("<br>");

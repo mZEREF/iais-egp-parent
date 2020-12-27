@@ -373,12 +373,12 @@ public class CessationApplicationBeDelegator {
         }
         if ("yes".equals(patRadio) && !StringUtil.isEmpty(patientSelect)) {
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect) && StringUtil.isEmpty(patHciName)) {
-                errorMap.put(i + PATHCINAME + j, MessageUtil.replaceMessage(ERROR, "Healthcare Institution Name", "field"));
+                errorMap.put(i + PATHCINAME + j, MessageUtil.replaceMessage(ERROR, "HCI Name", "field"));
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect) && !StringUtil.isEmpty(patHciName)) {
                 List<String> hciName = cessationBeService.listHciName();
                 if (!hciName.contains(patHciName)) {
-                    errorMap.put(i + "patHciName" + j, "Healthcare Institution Name cannot be found.");
+                    errorMap.put(i + "patHciName" + j, "HCI Name cannot be found.");
                 }
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect) && StringUtil.isEmpty(patRegNo)) {

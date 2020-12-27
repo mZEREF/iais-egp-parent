@@ -264,7 +264,7 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Name of Healthcare Institution " mandatory="true" width="11"/>
+                        <iais:field value="HCI Name" mandatory="true" width="11"/>
                         <iais:value width="11" cssClass="col-md-5 disabled">
                             <iais:input cssClass="" maxLength="100" type="text" name="onSiteHciName" id="sitePremiseName" value="${appGrpPremisesDto.hciName}"></iais:input>
                             <span id="error_hciName${status.index}" name="iaisErrorMsg" class="error-msg"></span>

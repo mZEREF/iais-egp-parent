@@ -6,7 +6,7 @@
             <thead>
             <tr >
                 <th></th>
-                <iais:sortableHeader needSort="true"  field="HCI_NAME" value="Healthcare Institution Name" style="width:15%" isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name" style="width:15%" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="ADDR_TYPE" value="Type" style="width:15%" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No." style="width:20%" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises Type" style="width:15%" isFE="true"/>

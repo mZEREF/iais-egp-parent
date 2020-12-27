@@ -1,7 +1,7 @@
 <div class="row">
     <div class="alert alert-info" role="alert">
         <strong>
-            <h4>Section A (Healthcare Institution Details)</h4></strong>
+            <h4>Section A (HCI Details)</h4></strong>
     </div>
     <div class="row">
         <div class="col-xs-12">
@@ -27,7 +27,7 @@
                     </tr>
                     <tr>
                         <td class="col-xs-4">
-                            <p>Healthcare Institution Code</p>
+                            <p>HCI Code</p>
                         </td>
                         <td class="col-xs-4">
                             <p><c:out value="${insRepDto.hciCode}"/></p>
@@ -36,7 +36,7 @@
                     </tr>
                     <tr>
                         <td class="col-xs-4">
-                            <p>Healthcare Institution Name</p>
+                            <p>HCI Name</p>
                         </td>
                         <td class="col-xs-4">
                             <p><c:out value="${insRepDto.hciName}"/></p>
@@ -45,7 +45,7 @@
                     </tr>
                     <tr>
                         <td class="col-xs-4">
-                            <p>Healthcare Institution Address</p>
+                            <p>HCI Address</p>
                         </td>
                         <td class="col-xs-4">
                             <p><c:out value="${insRepDto.hciAddress}"/></p>
