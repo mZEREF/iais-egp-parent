@@ -111,6 +111,9 @@ public class PaymentStripeProxy extends PaymentProxy {
 						} catch (IOException ex) {
 							log.info(ex.getMessage(),ex);
 						}
+					}else {
+						paymentRequestDto1.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+						PaymentBaiduriProxyUtil.getPaymentClient().updatePaymentResquset(paymentRequestDto1);
 					}
 				}
 			}
