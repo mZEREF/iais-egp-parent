@@ -380,7 +380,7 @@ public class LicenceViewServiceDelegator {
         }
 
         try {
-            contrastNewAndOld(appSubmissionDto);
+            contrastNewAndOld(appSubmissionDto,bpc.request);
         }catch (Exception e){
             log.info(e.toString(),e);
         }
@@ -1149,9 +1149,30 @@ public class LicenceViewServiceDelegator {
         return appEditSelectDto;
     }
 
-    private void contrastNewAndOld(AppSubmissionDto appSubmissionDto) throws Exception{
+    private void contrastNewAndOld(AppSubmissionDto appSubmissionDto,HttpServletRequest request) throws Exception{
        AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
         if (oldAppSubmissionDto == null) {
+            AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+            if(appSvcRelatedInfoDto!=null){
+                List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+                if(appSvcPrincipalOfficersDtoList!=null){
+                    List<AppSvcPrincipalOfficersDto> i_PO=new ArrayList<>(appSvcPrincipalOfficersDtoList.size());
+                    List<AppSvcPrincipalOfficersDto> j_DPO=new ArrayList<>(appSvcPrincipalOfficersDtoList.size());
+                    for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtoList){
+                        if("PO".equals(appSvcPrincipalOfficersDto.getPsnType())){
+
+                            i_PO.add(appSvcPrincipalOfficersDto);
+                        }else if("DPO".equals(appSvcPrincipalOfficersDto.getPsnType())){
+                            j_DPO.add(appSvcPrincipalOfficersDto);
+                        }
+                    }
+                    appSvcPrincipalOfficersDtoList.clear();
+                    appSvcPrincipalOfficersDtoList.addAll(i_PO);
+                    appSvcPrincipalOfficersDtoList.addAll(j_DPO);
+                    request.setAttribute("PO_SIZE",i_PO.size());
+                    request.setAttribute("DPO_SIZE",j_DPO.size());
+                }
+            }
             return;
         }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -1306,6 +1327,8 @@ public class LicenceViewServiceDelegator {
         appSvcPrincipalOfficersDtoList.clear();
         appSvcPrincipalOfficersDtoList.addAll(poAppSvcPrincipalOfficersDto);
         appSvcPrincipalOfficersDtoList.addAll(dpoAppSvcPrincipalOfficersDto);
+        request.getSession().setAttribute("PO_SIZE",poAppSvcPrincipalOfficersDto.size());
+        request.getSession().setAttribute("DPO_SIZE",dpoAppSvcPrincipalOfficersDto.size());
         olAppSvcPrincipalOfficersDtoList.clear();
         olAppSvcPrincipalOfficersDtoList.addAll(oldPoAppSvcPrincipalOfficersDto);
         olAppSvcPrincipalOfficersDtoList.addAll(oldDpoAppSvcPrincipalOfficersDto);
@@ -1532,11 +1555,16 @@ public class LicenceViewServiceDelegator {
                for(AppSvcChckListDto appSvcChckListDto : oldAppSvcChckListDtos){
                    map.put(appSvcChckListDto.getChkLstConfId(),appSvcChckListDto.getChkName());
                }
+
                creatAppsvcChckList(appSvcChckListDtos,oldAppSvcChckListDtos);
                appSvcLaboratoryDisciplinesDtoList.get(i).setAppSvcChckListDtoList(appSvcChckListDtos);
                oldAppSvcLaboratoryDisciplinesDtoList.get(i).setAppSvcChckListDtoList(oldAppSvcChckListDtos);
            }
        }
+    }
+
+    private void sortAppSvcChckListDto(AppSvcChckListDto appSvcChckListDto){
+
     }
     private void creatAppsvcChckList(List<AppSvcChckListDto> appSvcChckListDtoList, List<AppSvcChckListDto> oldAppSvcChckListDtoList) throws  Exception{
         if(appSvcChckListDtoList == null || oldAppSvcChckListDtoList == null){

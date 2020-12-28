@@ -1157,11 +1157,11 @@
               <c:set value="1" var="dpoIndex"></c:set>
               <c:forEach items="${currentPreviewSvcInfo.appSvcPrincipalOfficersDtoList}" var="po" varStatus="status">
                 <c:if test="${po.psnType =='PO'}">
-                  <p><strong class="col-xs-6">Principal Officer(s) <c:if test="${poIndex>1}">${poIndex}</c:if>:</strong></p>
+                  <p><strong class="col-xs-6">Principal Officer(s) <c:if test="${PO_SIZE>1}">${poIndex}</c:if>:</strong></p>
                   <c:set var="poIndex" value="${poIndex+1}"></c:set>
                 </c:if>
                 <c:if test="${po.psnType =='DPO'}">
-                  <p><strong class="col-xs-6">Deputy Principal Officer <c:if test="${dpoIndex>1}">${dpoIndex}</c:if>:</strong></p>
+                  <p><strong class="col-xs-6">Deputy Principal Officer <c:if test="${DPO_SIZE>1}">${dpoIndex}</c:if>:</strong></p>
                   <c:set var="dpoIndex" value="${dpoIndex+1}"></c:set>
                 </c:if>
                 <table class="col-xs-12">

@@ -574,11 +574,13 @@ public class WithOutRenewalDelegator {
         appEditSelectDto.setPoEdit(true);
         appEditSelectDto.setDocEdit(true);
         List<AppFeeDetailsDto> appFeeDetailsDto = IaisCommonUtils.genNewArrayList();
+        List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
+        boolean isGiroAcc = appSubmissionService.isGiroAccount(NewApplicationHelper.getLicenseeId(appSubmissionDtos));
+        ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
         String hasSubmit = (String) ParamUtil.getSessionAttr(bpc.request, "hasAppSubmit");
         if ("Y".equals(hasSubmit)) {
             return;
         }
-        List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
         //app submit
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request, "INTER_INBOX_USER_INFO");
         String licenseeId = null;
@@ -692,13 +694,12 @@ public class WithOutRenewalDelegator {
                                 if (StringUtil.isEmpty(draftNo)) {
                                     appSubmissionService.setDraftNo(appSubmissionDtoByLicenceId);
                                 }
+                                appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
+                                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
                                 if (!amendmentFeeDto.getChangeInHCIName() && !amendmentFeeDto.getChangeInLocation()) {
-                                    appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
                                     appSubmissionDtoByLicenceId.setAutoRfc(true);
                                 } else {
-                                    appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
                                     appSubmissionDtoByLicenceId.setAutoRfc(false);
-                                    appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
                                 }
                                 appSubmissionDtoByLicenceId.setAppGrpPrimaryDocDtos(null);
                                 RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
@@ -922,7 +923,7 @@ public class WithOutRenewalDelegator {
                     //set Risk Score
                     appSubmissionService.setRiskToDto(appSubmissionDto);
                     appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                    appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
                     requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
                 }
                 autoAppSubmissionDtos.addAll(notReNewappSubmissionDtos);
@@ -999,7 +1000,7 @@ public class WithOutRenewalDelegator {
         rfcAppSubmissionDtos.addAll(autoAppSubmissionDtos);
         List<AppSubmissionDto> renewAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
         renewAppSubmissionDtos.addAll(rfcAppSubmissionDtos);
-        renewAppSubmissionDtos.addAll(appSubmissionDtos3);
+        renewAppSubmissionDtos.addAll(appSubmissionDtos);
         List<String> serviceNamesAck = IaisCommonUtils.genNewArrayList();
         for (AppSubmissionDto appSubmissionDto : renewAppSubmissionDtos) {
             String serviceName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
@@ -1028,8 +1029,7 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "serviceNamesAck", (Serializable) serviceNamesAck);
         //has app submit
         ParamUtil.setSessionAttr(bpc.request, "hasAppSubmit", "Y");
-        boolean isGiroAcc = appSubmissionService.isGiroAccount(NewApplicationHelper.getLicenseeId(appSubmissionDtos));
-        ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
+
     }
 
     private void setSubmissionAmount(List<AppSubmissionDto> appSubmissionDtoList,FeeDto feeDto,List<AppFeeDetailsDto> appFeeDetailsDto,BaseProcessClass bpc){
@@ -1232,6 +1232,29 @@ public class WithOutRenewalDelegator {
                     applicationFeClient.saveDraft(appSubmissionDto1);
                 }
             }
+        }
+        List<AppSubmissionDto> rfcAppSubmissionDtos=(List<AppSubmissionDto>)bpc.request.getSession().getAttribute("rfcAppSubmissionDtos");
+        if(rfcAppSubmissionDtos!=null){
+            for(AppSubmissionDto appSubmissionDto : rfcAppSubmissionDtos){
+                String appGrpNo = appSubmissionDto.getAppGrpNo();
+                boolean autoRfc = appSubmissionDto.isAutoRfc();
+                List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
+                if(entity!=null&& !entity.isEmpty()){
+                    for(ApplicationDto applicationDto : entity){
+                        if(autoRfc){
+                            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                        }else {
+                            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                        }
+                    }
+                    String grpId = entity.get(0).getAppGrpId();
+                    ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(grpId).getEntity();
+                    applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                    applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
+                    applicationFeClient.updateApplicationList(entity);
+                }
+            }
+
         }
         String licenseeId = null;
         if (interInboxUserDto != null) {

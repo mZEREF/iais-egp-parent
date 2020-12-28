@@ -607,7 +607,6 @@ public class ConfigServiceImpl implements ConfigService {
             }else {
                 if(pageMaximumCount.matches("^[0-9]+$")){
                     int i1 = Integer.parseInt(pageMaximumCount);
-                    String sc_err012 = MessageUtil.getMessageDesc("SC_ERR012");
                     if(i1<0){
                         errorMap.put("maximumCount"+i,"GENERAL_ERR0002");
                     }
