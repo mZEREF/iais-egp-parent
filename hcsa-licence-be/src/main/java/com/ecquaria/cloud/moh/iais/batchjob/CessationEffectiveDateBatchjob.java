@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
@@ -89,6 +90,7 @@ public class CessationEffectiveDateBatchjob {
             //licence
             log.debug(StringUtil.changeForLog("The CessationLicenceBatchJob is doBatchJob ..."));
             Set<LicenceDto> licenceDtos = IaisCommonUtils.genNewHashSet();
+            Set<LicenceDto> licNeedNew = IaisCommonUtils.genNewHashSet();
             List<String> filterLicenceId = IaisCommonUtils.genNewArrayList();
             Map<String, String> licGrpMap = IaisCommonUtils.genNewHashMap();
             List<ApplicationGroupDto> applicationGroupDtos = cessationClient.listAppGrpForCess().getEntity();
@@ -133,6 +135,7 @@ public class CessationEffectiveDateBatchjob {
                                                     if (!filterLicenceId.contains(licenceDto.getId())) {
                                                         filterLicenceId.add(licenceDto.getId());
                                                         licenceDtos.add(licenceDto);
+                                                        licNeedNew.add(licenceDto);
                                                         applicationGroupDtosCesead.add(applicationGroupDto);
                                                         licGrpMap.put(originLicenceId, appGrpId);
                                                     }
@@ -148,6 +151,7 @@ public class CessationEffectiveDateBatchjob {
                                                     licenceDtos.add(licenceDto);
                                                     applicationGroupDtosCesead.add(applicationGroupDto);
                                                     licGrpMap.put(originLicenceId, appGrpId);
+                                                    licNeedNew.add(licenceDto);
                                                     break;
                                                 }
                                             }
@@ -220,7 +224,7 @@ public class CessationEffectiveDateBatchjob {
                 }
                 try {
                     //update and send email
-                    updateLicencesStatusAndSendMails(licenceDtos, date, licGrpMap);
+                    updateLicencesStatusAndSendMails(licenceDtos, date, licGrpMap,licNeedNew);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
@@ -230,7 +234,7 @@ public class CessationEffectiveDateBatchjob {
         }
     }
 
-    private void updateLicencesStatusAndSendMails(Set<LicenceDto> licenceDtos, Date date, Map<String, String> licGrpMap) {
+    private void updateLicencesStatusAndSendMails(Set<LicenceDto> licenceDtos, Date date, Map<String, String> licGrpMap,Set<LicenceDto> licNeedNew) {
         List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
         AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         List<String> specLicIdsAll = IaisCommonUtils.genNewArrayList();
@@ -250,7 +254,6 @@ public class CessationEffectiveDateBatchjob {
                 licenceDto.setAuditTrailDto(auditTrailDto);
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
                 licenceDto.setEndDate(date);
-                updateLicenceDtos.add(licenceDto);
                 if (specLicIdsAll.contains(licenceDto.getId())) {
                     continue;
                 }
@@ -353,13 +356,16 @@ public class CessationEffectiveDateBatchjob {
             }
         }
 
-//        if (!IaisCommonUtils.isEmpty(updateLicenceDtos)) {
-//            hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
-//            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-//            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-//            gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
-//                    signature2.date(), signature2.authorization());
-//        }
+        if (!IaisCommonUtils.isEmpty(updateLicenceDtos)) {
+            if(!IaisCommonUtils.isEmpty(licNeedNew)){
+                updateLicenceDtos.removeAll(licNeedNew);
+            }
+            hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization());
+        }
     }
 
     private void updateAppGroups(List<ApplicationGroupDto> applicationGroupDtos) {
