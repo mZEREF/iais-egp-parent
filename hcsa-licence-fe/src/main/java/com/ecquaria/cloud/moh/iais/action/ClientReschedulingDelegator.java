@@ -98,6 +98,8 @@ public class ClientReschedulingDelegator {
     public void start(BaseProcessClass bpc)  {
         rescheduleParameter.setSortField("appRec.RECOM_IN_DATE");
         rescheduleParameter.setPageNo(1);
+        ParamUtil.setSessionAttr(bpc.request,"appIds",null);
+        ParamUtil.setSessionAttr(bpc.request, "apptViewDtosMap", null);
     }
 
     public void init(BaseProcessClass bpc)  {
