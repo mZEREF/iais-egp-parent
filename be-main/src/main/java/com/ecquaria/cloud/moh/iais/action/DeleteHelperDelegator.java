@@ -1,31 +1,28 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.QueryHandlerService;
 import com.ecquaria.cloud.moh.iais.service.client.BelicationClient;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * HcsaApplicationDelegator
@@ -161,17 +158,24 @@ public class DeleteHelperDelegator {
 
     private synchronized String readFile(File file,String replaceNo, String targetString) {
         StringBuilder sql = new StringBuilder();
-        try ( BufferedReader br= new BufferedReader(new InputStreamReader(new FileInputStream(file)));) {
-            String temp = null;
-            while((temp = br.readLine())!=null){
-                if(temp.contains(targetString)){
-                    temp = temp.replaceAll(targetString,replaceNo);
+
+        try (InputStream is = java.nio.file.Files.newInputStream(file.toPath())){
+            InputStreamReader isr = new InputStreamReader(is);
+            try (BufferedReader br = new BufferedReader(isr)) {
+                String temp = null;
+                while((temp = br.readLine())!=null){
+                    if(temp.contains(targetString)){
+                        temp = temp.replaceAll(targetString,replaceNo);
+                    }
+                    sql.append(temp);
+                    sql.append(System.lineSeparator());
                 }
-                sql.append(temp);
-                sql.append(System.lineSeparator());
+            }catch (IOException e){
+                log.error(e.getMessage(),e);
             }
-        }catch (IOException e){
-            log.error(e.getMessage(),e);
+
+        } catch (IOException e) {
+            log.error(e.getMessage());
         }
 
         return sql.toString();
