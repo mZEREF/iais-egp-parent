@@ -317,6 +317,15 @@ public class NewApplicationDelegator {
                         newLicAppGrpPremisesDtoMap.put(k, v);
                     }
                 });
+                //
+                if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
+                    List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+                    if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+                        for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                            newLicAppGrpPremisesDtoMap.put(appGrpPremisesDto.getPremisesSelect(),appGrpPremisesDto);
+                        }
+                    }
+                }
                 licAppGrpPremisesDtoMap = newLicAppGrpPremisesDtoMap;
             }
         } else {
