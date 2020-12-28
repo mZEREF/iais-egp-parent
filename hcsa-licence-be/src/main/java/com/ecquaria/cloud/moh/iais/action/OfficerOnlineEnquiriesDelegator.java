@@ -902,8 +902,15 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setAddress(addressList);
 
         reqForInfoSearchListDto.setCurrentRiskTagging(rfiApplicationQueryDto.getRiskScore());
-
-        if(rfiApplicationQueryDto.getLicenseeId()!=null){
+        if(rfiApplicationQueryDto.getAppLicenseeId()!=null){
+            reqForInfoSearchListDto.setLicenseeId(rfiApplicationQueryDto.getAppLicenseeId());
+            try {
+                LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiApplicationQueryDto.getAppLicenseeId());
+                reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        }else if(rfiApplicationQueryDto.getLicenseeId()!=null){
             reqForInfoSearchListDto.setLicenseeId(rfiApplicationQueryDto.getLicenseeId());
             try {
                 LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiApplicationQueryDto.getLicenseeId());
@@ -911,7 +918,6 @@ public class OfficerOnlineEnquiriesDelegator {
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
-
         }
     }
 
