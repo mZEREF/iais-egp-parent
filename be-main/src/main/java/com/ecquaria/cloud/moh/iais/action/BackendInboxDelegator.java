@@ -132,6 +132,7 @@ public class BackendInboxDelegator {
     static private String APPSTATUSCATEID = "BEE661EE-220C-EA11-BE7D-000C29F371DC";
 
     public void start(BaseProcessClass bpc){
+
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
         for (String item : loginContext.getRoleIds()) {
@@ -205,10 +206,17 @@ public class BackendInboxDelegator {
     private SearchParam getSearchParam(HttpServletRequest request, boolean neednew){
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "backendinboxSearchParam");
         if(neednew){
+            SearchParam searchParamGroupFromHsca  = (SearchParam)ParamUtil.getSessionAttr(request,"backSearchParamFromHcsaApplication");
+            if(searchParamGroupFromHsca != null){
+                ParamUtil.setSessionAttr(request,"backendinboxSearchParam",searchParamGroupFromHsca);
+                ParamUtil.setSessionAttr(request,"backSearchParamFromHcsaApplication",null);
+                return searchParamGroupFromHsca;
+            }
             searchParamGroup = new SearchParam(InspectionAppGroupQueryDto.class.getName());
             searchParamGroup.setPageSize(10);
             searchParamGroup.setPageNo(1);
             searchParamGroup.setSort("SUBMIT_DT", SearchParam.ASCENDING);
+            ParamUtil.setSessionAttr(request,"backPage",null);
         }
         return searchParamGroup;
 
