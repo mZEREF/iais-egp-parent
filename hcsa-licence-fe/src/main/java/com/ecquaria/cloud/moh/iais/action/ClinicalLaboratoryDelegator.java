@@ -929,7 +929,6 @@ public class ClinicalLaboratoryDelegator {
                     }
                     List<AppSvcChckListDto> newAppSvcChckListDtos = NewApplicationHelper.handlerPleaseIndicateLab(appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList(),svcScopeAlignMap);
                     AppSvcChckListDto targetChkDto = NewApplicationHelper.getScopeDtoByRecursiveTarNameUpward(appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList(),svcScopeAlignMap,PLEASEINDICATE,SERVICE_SCOPE_LAB_OTHERS);
-                    AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto = null;
                     AppSvcDisciplineAllocationDto targetAllocationDto = null;
                     int chkLstSize = newAppSvcChckListDtos.size();
                     for (int i = 0; i < chkLstSize; i++) {
@@ -938,7 +937,7 @@ public class ClinicalLaboratoryDelegator {
                                 .append(i);
                         String[] chkAndCgoValue = ParamUtil.getStrings(bpc.request, chkAndCgoName.toString());
                         if (chkAndCgoValue != null && chkAndCgoValue.length > 1) {
-                            appSvcDisciplineAllocationDto = new AppSvcDisciplineAllocationDto();
+                            AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto = new AppSvcDisciplineAllocationDto();
                             String svcScopeConfigId = chkAndCgoValue[0];
                             if(!StringUtil.isEmpty(svcScopeConfigId)){
                                 HcsaSvcSubtypeOrSubsumedDto svcScopeConfigDto = svcScopeAlignMap.get(svcScopeConfigId);
@@ -949,10 +948,11 @@ public class ClinicalLaboratoryDelegator {
                                 appSvcDisciplineAllocationDto.setPremiseVal(premisesValue);
                                 appSvcDisciplineAllocationDto.setChkLstConfId(svcScopeConfigId);//NOSONAR
                                 appSvcDisciplineAllocationDto.setIdNo(chkAndCgoValue[1]);//NOSONAR
-                                if(targetChkDto != null && SERVICE_SCOPE_LAB_OTHERS.equals(svcScopeConfigDto.getName())){
-                                    targetAllocationDto = (AppSvcDisciplineAllocationDto) CopyUtil.copyMutableObject(appSvcDisciplineAllocationDto);
-                                }
+
                                 daList.add(appSvcDisciplineAllocationDto);
+                                if(targetChkDto != null && SERVICE_SCOPE_LAB_OTHERS.equals(svcScopeConfigDto.getName())){
+                                    targetAllocationDto = (AppSvcDisciplineAllocationDto) CopyUtil.copyMutableObject(appSvcDisciplineAllocationDto);//NOSONAR
+                                }
                             }
                         }
                     }
