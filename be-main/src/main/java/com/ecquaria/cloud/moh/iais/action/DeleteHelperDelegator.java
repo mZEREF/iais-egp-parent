@@ -17,8 +17,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,7 +33,7 @@ import java.util.List;
 @Delegator("deleteHelperDelegator")
 @Slf4j
 public class DeleteHelperDelegator {
-    
+
     @Autowired
     private QueryHandlerService queryHandlerService;
 
@@ -45,7 +45,7 @@ public class DeleteHelperDelegator {
 
     @Autowired
     private OrganizationMainClient organizationMainClient;
-    
+
     private final String MIMA = "P@ssword$";
 
     private final String HCSA_APPLICATION_SQL_FILE = "be_hacsa_application_delete.sql";
@@ -158,24 +158,22 @@ public class DeleteHelperDelegator {
 
     private synchronized String readFile(File file,String replaceNo, String targetString) {
         StringBuilder sql = new StringBuilder();
-
-        try (InputStream is = java.nio.file.Files.newInputStream(file.toPath())){
-            InputStreamReader isr = new InputStreamReader(is);
-            try (BufferedReader br = new BufferedReader(isr)) {
-                String temp = null;
-                while((temp = br.readLine())!=null){
-                    if(temp.contains(targetString)){
-                        temp = temp.replaceAll(targetString,replaceNo);
+        try (
+                FileInputStream is = new FileInputStream(file);
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br= new BufferedReader(isr);
+                ) {
+                    String temp = null;
+                    while((temp = br.readLine())!=null){
+                        if(temp.contains(targetString)){
+                            temp = temp.replaceAll(targetString,replaceNo);
+                        }
+                        sql.append(temp);
+                        sql.append(System.lineSeparator());
                     }
-                    sql.append(temp);
-                    sql.append(System.lineSeparator());
                 }
-            }catch (IOException e){
-                log.error(e.getMessage(),e);
-            }
-
-        } catch (IOException e) {
-            log.error(e.getMessage());
+        catch (IOException e){
+            log.error(e.getMessage(),e);
         }
 
         return sql.toString();
