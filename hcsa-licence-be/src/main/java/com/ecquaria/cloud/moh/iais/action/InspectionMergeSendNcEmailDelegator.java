@@ -247,6 +247,8 @@ public class InspectionMergeSendNcEmailDelegator {
             MsgTemplateDto msgTableTemplateDto= notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_TABLE_12);
             int sn=1;
             StringBuilder stringTable=new StringBuilder();
+            StringBuilder stringBuilder1=new StringBuilder();
+            String stringBuilder2;
             for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
             ) {
                 try{
@@ -259,35 +261,34 @@ public class InspectionMergeSendNcEmailDelegator {
                     List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(appPremisesCorrelationDto.getId());
 
                     if(ncAnswerDtos.size()!=0){
-                        StringBuilder stringBuilder=new StringBuilder();
-                        stringBuilder.append("<tr>").append(appViewDto.getServiceType()).append("</tr>");
+                        stringBuilder1.append("<tr><td colspan=\"6\">").append(appViewDto.getServiceType()).append("</td></tr>");
                         int i=0;
                         for (NcAnswerDto ncAnswerDto:ncAnswerDtos
                         ) {
-                            stringBuilder.append("<tr><td>").append(++i);
-                            stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
-                            stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getClause()));
-                            stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
-                            stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
-                            stringBuilder.append(TD).append(StringUtil.viewHtml("1".equals(ncAnswerDto.getRef())?"Yes":"No"));
-                            stringBuilder.append("</td></tr>");
+                            stringBuilder1.append("<tr><td>").append(++i);
+                            stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
+                            stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getClause()));
+                            stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
+                            stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
+                            stringBuilder1.append(TD).append(StringUtil.viewHtml("1".equals(ncAnswerDto.getRef())?"Yes":"No"));
+                            stringBuilder1.append("</td></tr>");
                         }
-                        mapTableTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
+                        mapTableTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder1.toString()));
                     }
                     //mapTemplate.put("ServiceName", applicationViewDto.getServiceType());
                     if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||appPreRecommentdationDto.getRemarks()!=null)){
-                        String stringBuilder = "<tr><td>" + sn +
+                        stringBuilder2 = "<tr><td>" + sn +
                                 TD + StringUtil.viewHtml(appPreRecommentdationDto.getBestPractice()) +
                                 TD + StringUtil.viewHtml(appPreRecommentdationDto.getRemarks()) +
                                 "</td></tr>";
-                        mapTableTemplate.put("Observation_Recommendation",StringUtil.viewHtml(stringBuilder));
+                        mapTableTemplate.put("Observation_Recommendation",StringUtil.viewHtml(stringBuilder2));
                         sn++;
                     }
-                    stringTable.append(MsgUtil.getTemplateMessageByContent(msgTableTemplateDto.getMessageContent(),mapTableTemplate));
                 }catch (Exception e){
                     log.error(e.getMessage(), e);
                 }
             }
+            stringTable.append(MsgUtil.getTemplateMessageByContent(msgTableTemplateDto.getMessageContent(),mapTableTemplate));
             mapTemplate.put("ApplicationNumber", appNos.toString());
             mapTemplate.put("NC_DETAILS_AND_Observation_Recommendation",stringTable.toString());
             mapTemplate.put("HALP", AppConsts.MOH_SYSTEM_NAME);
