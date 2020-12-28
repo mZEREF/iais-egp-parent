@@ -486,7 +486,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>&nbsp;Principal Officers</p>
+                                                            <p>&nbsp;Principal Officer(s)</p>
                                                         </td>
                                                         <td class="col-xs-4">
                                                             <c:if test="${ not empty insRepDto.principalOfficers}">
@@ -574,7 +574,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>&nbsp;Other Inspection Officer</p>
+                                                            <p>&nbsp;Other Inspection Officer(s)</p>
                                                         </td>
                                                         <td class="col-xs-4">
                                                             <c:if test="${not empty insRepDto.inspectOffices}">
