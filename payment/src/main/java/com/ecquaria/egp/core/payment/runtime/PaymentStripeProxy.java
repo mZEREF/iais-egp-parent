@@ -98,7 +98,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 			String appGrgNo=reqNo.substring(0,reqNo.indexOf('_'));
 			List<PaymentRequestDto> paymentRequestDto1s = PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNoLike(appGrgNo).getEntity();
 			for(PaymentRequestDto paymentRequestDto1:paymentRequestDto1s){
-				if("stripe".equals(paymentRequestDto1.getPayMethod())&&paymentRequestDto1.getQueryCode()!=null){
+				if("stripe".equals(paymentRequestDto1.getPayMethod())&&paymentRequestDto1.getQueryCode()!=null&&!paymentRequestDto1.getStatus().equals(PaymentTransactionEntity.TRANS_STATUS_FAILED)){
 					Session session=PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDto.getQueryCode());
 					PaymentIntent paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentIntent(session.getPaymentIntent());
 					if("succeeded".equals(paymentIntent.getStatus())){
