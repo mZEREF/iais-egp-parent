@@ -463,7 +463,7 @@ public class NewApplicationDelegator {
         if (appGrpPrimaryDocDtoList != null && appGrpPrimaryDocDtoList.size() > 0) {
             Map<String, AppGrpPrimaryDocDto> reloadDocMap = IaisCommonUtils.genNewHashMap();
             for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList) {
-                if(!StringUtil.isEmpty(appGrpPrimaryDocDto.getFileRepoId())){
+                if(!StringUtil.isEmpty(appGrpPrimaryDocDto.getPrimaryDocReloadName())){
                     reloadDocMap.put(appGrpPrimaryDocDto.getPrimaryDocReloadName(), appGrpPrimaryDocDto);
                 }
             }
