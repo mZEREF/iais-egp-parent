@@ -133,6 +133,7 @@ public class PublicHolidayDelegate {
 
     public void editPrepare(BaseProcessClass bpc) {
         statusOption(bpc);
+        getSearchParam(bpc.request,true);
         yearOption(bpc,true);
     }
 
@@ -143,6 +144,7 @@ public class PublicHolidayDelegate {
     public void doEditValidation(BaseProcessClass bpc) throws ParseException {
         String action = ParamUtil.getString(bpc.request, "action");
         if("back".equals(action)){
+            ParamUtil.setSessionAttr(bpc.request,"year",null);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IntranetUserConstant.TRUE);
         }else{
             PublicHolidayDto publicHolidayDto = new PublicHolidayDto();
@@ -174,6 +176,7 @@ public class PublicHolidayDelegate {
                 PublicHolidayDto resDto = publicHolidayService.updateHoliday(publicHolidayDto);
                 ParamUtil.setSessionAttr(bpc.request,"holiday",null);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IntranetUserConstant.TRUE);
+                ParamUtil.setSessionAttr(bpc.request,"year",null);
             }
         }
     }
@@ -299,6 +302,8 @@ public class PublicHolidayDelegate {
      */
     public void doCreate(BaseProcessClass bpc){
         ParamUtil.setSessionAttr(bpc.request,"holiday",null);
+        ParamUtil.setSessionAttr(bpc.request,"phCode",null);
+        getSearchParam(bpc.request,true);
         statusOption(bpc);
         yearOption(bpc,true);
     }
@@ -410,7 +415,7 @@ public class PublicHolidayDelegate {
     public void doCreateValidation(BaseProcessClass bpc) throws ParseException {
         String action = ParamUtil.getString(bpc.request, "action");
         if("back".equals(action)){
-
+            ParamUtil.setSessionAttr(bpc.request,"year",null);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IntranetUserConstant.TRUE);
         }else{
             PublicHolidayDto publicHolidayDto = new PublicHolidayDto();
@@ -436,6 +441,7 @@ public class PublicHolidayDelegate {
                 publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 PublicHolidayDto resDto = publicHolidayService.createHoliday(publicHolidayDto);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IntranetUserConstant.TRUE);
+                ParamUtil.setSessionAttr(bpc.request,"year",null);
             }
         }
     }
