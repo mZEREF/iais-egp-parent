@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PageRecords;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,7 +25,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/commonAjax/*")
 public class CommonActionAjax {
-    @RequestMapping(value="changeMemoryPage.do", method = RequestMethod.GET)
+    @GetMapping(value="changeMemoryPage.do")
     public @ResponseBody Map<String,Object> changeMemoryPage(HttpServletRequest request,
                                    HttpServletResponse response)  {
 
@@ -40,7 +41,7 @@ public class CommonActionAjax {
         return map;
     }
 
-    @RequestMapping(value="changeMemoryPageSize.do", method = RequestMethod.GET)
+    @GetMapping(value="changeMemoryPageSize.do")
     public @ResponseBody Map<String,Object> changeMemoryPageSize(HttpServletRequest request,
                                                              HttpServletResponse response)  {
         String pageDiv = ParamUtil.getString(request, "pageDiv");

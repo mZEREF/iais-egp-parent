@@ -956,6 +956,7 @@ public class ClinicalLaboratoryDelegator {
                             }
                         }
                     }
+
                     if(targetChkDto != null && targetAllocationDto != null){
                         AppSvcChckListDto appSvcChckListDto = NewApplicationHelper.getSvcChckListDtoByConfigName(PLEASEINDICATE,appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList());
                         if(appSvcChckListDto != null){

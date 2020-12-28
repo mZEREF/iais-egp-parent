@@ -136,8 +136,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
        /* sendEmail(entity1,mouth);*/
         List<LicenceDto> licence = getLicence("IS_NO_AUTO" + F_60, "IS_NO_AUTO" + F_60,systemParameterDto5);
         List<LicenceDto> licence1 = getLicence("IS_NO_AUTO" + S_45, "IS_NO_AUTO" + S_45,systemParameterDto6);
-        log.info("======"+StringUtil.changeForLog(JsonUtil.parseToJson(licence)));
-        log.info("======"+StringUtil.changeForLog(JsonUtil.parseToJson(licence1)));
+        log.info(StringUtil.changeForLog("======"+StringUtil.changeForLog(JsonUtil.parseToJson(licence))));
+        log.info(StringUtil.changeForLog("======"+StringUtil.changeForLog(JsonUtil.parseToJson(licence1))));
         entity.clear();
         mouth.put(S_45,"-1");
         mouth.put(S_30,"-2");
@@ -163,6 +163,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         String value = systemParameterDto.getValue();
         Calendar calendar=Calendar.getInstance();
         if(entity!=null && !entity.isEmpty()){
+            Date now = new Date();
             for(JobRemindMsgTrackingDto jobRemindMsgTrackingDto : entity){
                 String refNo = jobRemindMsgTrackingDto.getRefNo();
                 Date createTime = jobRemindMsgTrackingDto.getCreateTime();
@@ -174,7 +175,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 if(licenceDto!=null&&ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
                     boolean b = checkEmailIsSend(refNo, selectKey);
                     if(!b){
-                        if(new Date().after(calendar.getTime()) ){
+                        if(now.after(calendar.getTime()) ){
                             licenceDtos.add(licenceDto);
                         }
                     }

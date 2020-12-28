@@ -6,7 +6,6 @@ import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.BatchJobConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -76,52 +75,44 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
             AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
             AuditTrailDto.setThreadDto(auditTrailDto);
             if (!IaisCommonUtils.isEmpty(atList)) {
-                atList.forEach(ert -> {
-                    reTrigger(ert, auditTrailDto);
-                });
+                atList.forEach(ert -> reTrigger(ert, auditTrailDto));
                 atEicClient.updateStatus(atList);
             }
+
             if (!IaisCommonUtils.isEmpty(appList)) {
-                appList.forEach(ert -> {
-                    reTrigger(ert, auditTrailDto);
-                });
+                appList.forEach(ert -> reTrigger(ert, auditTrailDto));
                 appEicClient.updateStatus(appList);
             }
+
             if (!IaisCommonUtils.isEmpty(licList)) {
-                licList.forEach(ert -> {
-                    reTrigger(ert, auditTrailDto);
-                });
+                licList.forEach(ert -> reTrigger(ert, auditTrailDto));
                 licEicClient.updateStatus(licList);
             }
+
             if (!IaisCommonUtils.isEmpty(licmList)) {
-                licmList.forEach(ert -> {
-                    reTrigger(ert, auditTrailDto);
-                });
+                licmList.forEach(ert -> reTrigger(ert, auditTrailDto));
                 licmEicClient.updateStatus(licmList);
             }
+
             if (!IaisCommonUtils.isEmpty(orgList)) {
-                orgList.forEach(ert -> {
-                    reTrigger(ert, auditTrailDto);
-                });
+                orgList.forEach(ert -> reTrigger(ert, auditTrailDto));
                 orgEicClient.updateStatus(orgList);
             }
+
             if (!IaisCommonUtils.isEmpty(sysList)) {
-                sysList.forEach(ert -> {
-                    reTrigger(ert, auditTrailDto);
-                });
+                sysList.forEach(ert -> reTrigger(ert, auditTrailDto));
                 eicClient.updateStatus(sysList);
             }
+
             if (!IaisCommonUtils.isEmpty(apptList)) {
-                apptList.forEach(ert -> {
-                    reTrigger(ert, auditTrailDto);
-                });
+                apptList.forEach(ert -> reTrigger(ert, auditTrailDto));
                 onlineApptEicClient.updateStatus(apptList);
             }
             log.info("<======== End EIC Self Recover Job =========>");
             JobLogger.log("<======== End EIC Self Recover Job =========>");
             return ReturnT.SUCCESS;
-        } catch (Throwable e) {
-            log.error(e.getMessage(), e);
+        } catch (Exception e) {
+            log.error(e.getMessage());
             JobLogger.log(e);
             return ReturnT.FAIL;
         }

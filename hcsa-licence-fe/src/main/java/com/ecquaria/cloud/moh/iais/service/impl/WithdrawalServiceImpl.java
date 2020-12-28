@@ -131,7 +131,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 if (appSvcRelatedInfoDtoList != null && appSvcRelatedInfoDtoList.size() >0){
                     String serviceId = appSvcRelatedInfoDtoList.get(0).getServiceId();
                     log.info(StringUtil.changeForLog(JsonUtil.parseToJson(appSvcRelatedInfoDtoList)+"-----appSvcRelatedInfoDtoList"));
-                    log.info(StringUtil.changeForLog(serviceId)+"-------serviceId");
+                    log.info(StringUtil.changeForLog(serviceId +"-------serviceId"));
                     String appStatus = getAppStatus(serviceId,ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
                     if (!StringUtil.isEmpty(appStatus)){
                         applicationDto.setStatus(appStatus);
@@ -520,16 +520,15 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         String serviceId = appSvcRelatedInfoDtoList.get(0).getServiceId();
-        HcsaServiceDto hcsaServiceDto1 = appConfigClient.getActiveHcsaServiceDtoById(serviceId).getEntity();
-        if(hcsaServiceDto1!=null){
-            log.info(StringUtil.changeForLog(JsonUtil.parseToJson(hcsaServiceDto1)+"hcsaServiceDto1"));
-        }else {
-            log.info(StringUtil.changeForLog("hcsaServiceDto1 is null"));
+        HcsaServiceDto hsd = HcsaServiceCacheHelper.getServiceById(serviceId);
+
+        if(hsd!=null){
+            log.info(StringUtil.changeForLog(JsonUtil.parseToJson(hsd)+"hcsaServiceDto1"));
+            String svcCode = hsd.getSvcCode();
+            appSvcRelatedInfoDtoList.get(0).setServiceId(hsd.getId());
+            appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
         }
 
-        String svcCode = hcsaServiceDto1.getSvcCode();
-        appSvcRelatedInfoDtoList.get(0).setServiceId(hcsaServiceDto1.getId());
-        appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
         appSubmissionDto.setAppGrpId(null);
         appSubmissionDto.setFromBe(false);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);

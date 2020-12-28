@@ -724,7 +724,7 @@ public class OfficerOnlineEnquiriesDelegator {
             if(svcSubType!=null  && "HIV".equals(svcSubType)){
                 List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
                 StringBuilder sb=new StringBuilder();
-                sb.append("(");
+                sb.append('(');
                 for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
                     if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
                         sb.append("oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR");
@@ -1194,7 +1194,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 if(parm.getFilters().get("serviceSubTypeName")!=null  && "HIV".equals(parm.getFilters().get("serviceSubTypeName"))){
                     List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
                     StringBuilder sb=new StringBuilder();
-                    sb.append("(");
+                    sb.append('(');
                     for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
                         if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
                             sb.append("oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR");
