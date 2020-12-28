@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -154,8 +155,27 @@ public class IntranetUserServiceImpl implements IntranetUserService {
 
     @Override
     public void deleteUserGroupId(List<UserGroupCorrelationDto> userGroupCorrelationDtos) {
-
         intranetUserClient.createUserGroupCorrelation(userGroupCorrelationDtos);
+    }
+
+    @Override
+    public List<UserGroupCorrelationDto> getUserGroupCorrelationDtos(String userId, List<String> grpIds,int isLeadForGroup) {
+        List<UserGroupCorrelationDto> userGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(grpIds)) {
+            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+            userGroupCorrelationDto.setUserId(userId);
+            userGroupCorrelationDto.setGroupIds(grpIds);
+            userGroupCorrelationDto.setIsLeadForGroup(isLeadForGroup);
+            userGroupCorrelationDtos = intranetUserClient.getUserGroupsByUserIdAndWorkGroups(userGroupCorrelationDto).getEntity();
+
+        }
+        return userGroupCorrelationDtos;
+    }
+
+    @Override
+    public List<String> getRoleIdByUserId(String userId) {
+        List<String> roleIds = intranetUserClient.retrieveUserRoles(userId).getEntity();
+        return roleIds;
     }
 
     @Override
@@ -188,6 +208,60 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     @Override
     public List<WorkingGroupDto> getWorkingGroups() {
         return organizationClient.getWorkingGroup("hcsa").getEntity();
+    }
+
+    @Override
+    public Map<String, List<String>> getRoleIdGrpIdMap() {
+        List<WorkingGroupDto> workingGroups = getWorkingGroups();
+        Map<String, List<String>> map = IaisCommonUtils.genNewHashMap();
+        List<String> aso = IaisCommonUtils.genNewArrayList();
+        List<String> asoLeader = IaisCommonUtils.genNewArrayList();
+        List<String> pso = IaisCommonUtils.genNewArrayList();
+        List<String> psoLeader = IaisCommonUtils.genNewArrayList();
+        List<String> inspection = IaisCommonUtils.genNewArrayList();
+        List<String> inspectionLeader = IaisCommonUtils.genNewArrayList();
+        List<String> ao1 = IaisCommonUtils.genNewArrayList();
+        List<String> ao1Leader = IaisCommonUtils.genNewArrayList();
+        List<String> ao2 = IaisCommonUtils.genNewArrayList();
+        List<String> ao2Leader = IaisCommonUtils.genNewArrayList();
+        List<String> ao3 = IaisCommonUtils.genNewArrayList();
+        List<String> ao3Leader = IaisCommonUtils.genNewArrayList();
+        for (WorkingGroupDto workingGroupDto : workingGroups) {
+            String groupId = workingGroupDto.getId();
+            String groupName = workingGroupDto.getGroupName();
+            if (groupName.contains("Inspection")) {
+                inspection.add(groupId);
+                inspectionLeader.add(groupId);
+            } else if (groupName.contains("Professional")) {
+                pso.add(groupId);
+                psoLeader.add(groupId);
+            } else if (groupName.contains("Level 1")) {
+                ao1.add(groupId);
+                ao1Leader.add(groupId);
+            } else if (groupName.contains("Level 2")) {
+                ao2.add(groupId);
+                ao2Leader.add(groupId);
+            } else if (groupName.contains("Level 3")) {
+                ao3.add(groupId);
+                ao3Leader.add(groupId);
+            } else if (groupName.contains("Admin Screening officer")) {
+                aso.add(groupId);
+                asoLeader.add(groupId);
+            }
+        }
+        map.put(RoleConsts.USER_ROLE_ASO, aso);
+        map.put(RoleConsts.USER_ROLE_ASO_LEAD, asoLeader);
+        map.put(RoleConsts.USER_ROLE_PSO, pso);
+        map.put(RoleConsts.USER_ROLE_PSO_LEAD, psoLeader);
+        map.put(RoleConsts.USER_ROLE_INSPECTIOR, inspection);
+        map.put(RoleConsts.USER_ROLE_INSPECTION_LEAD, inspectionLeader);
+        map.put(RoleConsts.USER_ROLE_AO1, ao1);
+        map.put(RoleConsts.USER_ROLE_AO1_LEAD, ao1Leader);
+        map.put(RoleConsts.USER_ROLE_AO2, ao2);
+        map.put(RoleConsts.USER_ROLE_AO2_LEAD, ao2Leader);
+        map.put(RoleConsts.USER_ROLE_AO3, ao3);
+        map.put(RoleConsts.USER_ROLE_AO3_LEAD, ao3Leader);
+        return map;
     }
 
     @Override
@@ -225,15 +299,15 @@ public class IntranetUserServiceImpl implements IntranetUserService {
             //ele
             list = root.elements();
             log.error(StringUtil.changeForLog("start kai shi jie xi xml------------"));
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(StringUtil.changeForLog("read error"));
-            log.error(StringUtil.changeForLog(e.getMessage()),e);
+            log.error(StringUtil.changeForLog(e.getMessage()), e);
             fileErrorMap.put(errorKey, MessageUtil.dateIntoMessage("USER_ERR018"));
             return fileErrorMap;
         }
-        if(!IaisCommonUtils.isEmpty(list)){
+        if (!IaisCommonUtils.isEmpty(list)) {
             for (int i = 1; i <= list.size(); i++) {
-                log.error(StringUtil.changeForLog("start kai shi jie xi xml for ------------"+i));
+                log.error(StringUtil.changeForLog("start kai shi jie xi xml for ------------" + i));
                 String userId = null;
                 String roleId = null;
                 String workingGroupId = null;
@@ -267,7 +341,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                             }
                             if (!systemRoleId.contains(roleId)) {
                                 fileErrorMap.put(errorRoleKey + i, "USER_ERR013");
-                                errorData = false ;
+                                errorData = false;
                             }
                         }
                     }
@@ -284,8 +358,8 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                                 groupIds.add(id);
                             }
                             if (!groupIds.contains(workingGroupId)) {
-                                fileErrorMap.put(errorworkGrpIdKey + i , "USER_ERR017");
-                                errorData = false ;
+                                fileErrorMap.put(errorworkGrpIdKey + i, "USER_ERR017");
+                                errorData = false;
                             }
                         }
                     }

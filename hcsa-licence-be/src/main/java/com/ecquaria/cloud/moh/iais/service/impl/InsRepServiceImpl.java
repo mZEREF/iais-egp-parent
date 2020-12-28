@@ -672,7 +672,7 @@ public class InsRepServiceImpl implements InsRepService {
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
         String groupId = hcsaSvcStageWorkingGroupDto1.getGroupId();
         String subStage = getSubStage(appPremisesCorrelationId, taskKey);
-        if (ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType) || ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK.equals(applicationType)) {
+        if (ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK.equals(applicationType)) {
             updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_APPEAL_APPROVE);
             List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
             boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList, applicationDto.getApplicationNo(),

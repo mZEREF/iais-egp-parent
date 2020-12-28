@@ -159,4 +159,14 @@ public class IntranetUserClientFallback implements IntranetUserClient{
     public FeignResponseEntity<Boolean> checkRoleIsExist(OrgUserRoleDto orgUserRoleDto) {
         return null;
     }
+
+    @Override
+    public FeignResponseEntity<List<UserGroupCorrelationDto>> getUserGroupsByUserIdAndWorkGroups(UserGroupCorrelationDto userGroupCorrelationDto) {
+        return null;
+    }
+
+    @Override
+    public FeignResponseEntity<List<String>> retrieveUserRoles(String userId) {
+        return null;
+    }
 }

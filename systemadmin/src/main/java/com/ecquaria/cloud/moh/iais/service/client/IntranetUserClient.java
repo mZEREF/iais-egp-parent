@@ -80,4 +80,10 @@ public interface IntranetUserClient {
 
     @PostMapping(value = "/iais-orguser-be/user-role-exist", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> checkRoleIsExist(@RequestBody OrgUserRoleDto orgUserRoleDto);
+
+    @PostMapping(value = "/iais-workgroup/user-groups-groupId", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<UserGroupCorrelationDto>> getUserGroupsByUserIdAndWorkGroups(@RequestBody UserGroupCorrelationDto userGroupCorrelationDto);
+
+    @GetMapping(value = "/iais-orgUserRole/user-roles/{user_id}")
+    FeignResponseEntity<List<String>> retrieveUserRoles(@PathVariable("user_id") String userId);
 }
