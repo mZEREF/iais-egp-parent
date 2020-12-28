@@ -115,9 +115,9 @@
                                                                    name="UploadFile${rfiDoc.id}" type="file"
                                                                    style="display: none;"
                                                                    aria-label="selectedFile">
+                                                            <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Attachment</a><br>
                                                             <span name="iaisErrorMsg" class="error-msg"
-                                                                  id="error_UploadFile${rfiDoc.id}"></span><br>
-                                                            <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Attachment</a><br/>
+                                                                  id="error_UploadFile${rfiDoc.id}"></span>
                                                         </div>
                                                         <br/>
                                                     </iais:value>
