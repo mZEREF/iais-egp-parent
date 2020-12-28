@@ -117,6 +117,10 @@ public interface OrganizationClient {
     @GetMapping(value = "/iais-licensee-be/licensee-by-id/{id}")
     FeignResponseEntity<LicenseeDto> getLicenseeDtoById (@PathVariable("id") String id);
 
+    @GetMapping(value = "/iais-licensee-be/licensee-overtime/{days}")
+    FeignResponseEntity<List<LicenseeDto>> getLicenseeDtoOvertime (@PathVariable("days") String days);
+
+
     @GetMapping(value = "/iais-licensee-be/licenseeDto-by-uenNo/{uenNo}")
     FeignResponseEntity<List<LicenseeDto>> getLicenseeDtoByUen(@PathVariable(name = "uenNo") String uenNo);
 
