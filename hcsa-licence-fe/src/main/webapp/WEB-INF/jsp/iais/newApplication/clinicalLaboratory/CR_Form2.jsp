@@ -117,7 +117,7 @@
                                                                         <div class="col-sm-4 control-label formtext control">
                                                                             <div class="cgo-header">
                                                                                 <strong>Clinical Governance Officer
-                                                                                    <label class="assign-psn-item">${status.index+1}</label></strong>
+                                                                                    <label class="assign-psn-item"><c:if test="${cgoList.size() > 1}">${status.index+1}</c:if></label></strong>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-sm-8 text-right">
@@ -163,7 +163,7 @@
                                                                     <div class="col-sm-4 control-label formtext control">
                                                                         <div class="cgo-header">
                                                                             <strong>Clinical Governance Officer <label
-                                                                                    class="assign-psn-item">${status.index+1}</label></strong>
+                                                                                    class="assign-psn-item"><c:if test="${cgoList.size() > 1}">${status.index+1}</c:if></label></strong>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-sm-8 text-right">
@@ -733,7 +733,7 @@
             success: function (data) {
                 console.log(data.res);
                 if ('success' == data.res) {
-                    $('.assignContent:last').after(data.sucInfo);
+                    $('.cgo-content:last').after(data.sucInfo);
                     showSpecialty();
                     psnSelect();
                     removeCgo();
@@ -859,10 +859,19 @@
             $premContentEle.remove();
             $('.errorMsg').html("");
             //show add more
-            var psnLength = $('.assignContent').length - 1;
+            var psnLength = $('div.cgo-content').length;
             if (psnLength < '${HcsaSvcPersonnel.maximumCount}') {
                 $('#addPsnDiv').removeClass('hidden');
             }
+            $('div.cgo-content').each(function (k,v) {
+                $(this).find('input[name="cgoIndexNo"]').val(k);
+                $(this).find('.assign-psn-item').html(k+1);
+            });
+
+            if(psnLength <= 1){
+                $('.assign-psn-item:eq(0)').html('');
+            }
+
         });
 
     }

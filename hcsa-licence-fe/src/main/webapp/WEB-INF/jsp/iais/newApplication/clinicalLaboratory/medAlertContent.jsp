@@ -63,7 +63,7 @@
                         <div class=" form-group form-horizontal formgap">
                             <div class="col-sm-6 control-label formtext col-md-5">
                                 <div class="cgo-header">
-                                    <strong>MedAlert Person <label class="assign-psn-item">${status.index+1}</label></strong>
+                                    <strong>MedAlert Person <label class="assign-psn-item"><c:if test="${AppSvcMedAlertPsn.size() > 1}">${status.index+1}</c:if></label></strong>
                                 </div>
                             </div>
                             <div class="col-sm-5 col-md-7 text-right">
@@ -316,6 +316,9 @@
             var psnLength = $('.medAlertContent').length-1;
             if(psnLength <'${mapHcsaSvcPersonnel.maximumCount}'){
                 $('#addPsnDiv').removeClass('hidden');
+            }
+            if(psnLength <= 1){
+                $('.assign-psn-item:eq(0)').html('');
             }
         });
     }

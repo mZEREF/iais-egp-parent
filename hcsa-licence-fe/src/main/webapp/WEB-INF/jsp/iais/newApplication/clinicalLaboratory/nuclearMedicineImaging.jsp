@@ -81,7 +81,7 @@
                           <div class=" form-group form-horizontal formgap">
                             <div class="col-sm-5 control-label formtext ">
                               <div class="cgo-header">
-                                <strong>Service Personnel <label class="assign-psn-item">${status.index+1}</label></strong>
+                                <strong>Service Personnel <label class="assign-psn-item"><c:if test="${AppSvcPersonnelDtoList.size() > 1}">${status.index+1}</c:if></label></strong>
                               </div>
                             </div>
                             <div class="col-sm-5 col-md-7 text-right">
@@ -409,6 +409,7 @@
                   if(psnLength >='${spHcsaSvcPersonnelDto.maximumCount}'){
                       $('#addPsnDiv').addClass('hidden');
                   }
+                  changePsnItem();
               }else{
                   $('.spErrorMsg').html(data.errInfo);
               }
@@ -472,6 +473,9 @@ var spRemove = function(){
         if(psnLength <'${spHcsaSvcPersonnelDto.maximumCount}'){
             $('#addPsnDiv').removeClass('hidden');
         }
+        if(psnLength <= 1){
+            $('.assign-psn-item:eq(0)').html('');
+        }
     });
 }
 
@@ -528,5 +532,12 @@ var spRemove = function(){
     function cancel() {
         $('#PRS_SERVICE_DOWN').modal('hide');
     }
+
+    var changePsnItem = function () {
+        $('.assign-psn-item').each(function (k, v) {
+            $(this).html(k + 1);
+        });
+
+    };
 
 </script>

@@ -67,14 +67,7 @@
                         <div class=" form-group form-horizontal formgap">
                           <div class="col-sm-6 control-label formtext col-md-4">
                             <div class="cgo-header" style="font-size: 18px;">
-                              <c:choose>
-                                <c:when test="${status.first}">
-                                  <strong>Principal Officer </strong>
-                                </c:when>
-                                <c:otherwise>
-                                  <strong>Principal Officer <label class="assign-psn-item">${status.index+1}</label></strong>
-                                </c:otherwise>
-                              </c:choose>
+                              <strong>Principal Officer <label class="assign-psn-item"><c:if test="${ReloadPrincipalOfficers.size() > 1}">${status.index+1}</c:if></label></strong>
                             </div>
                           </div>
                           <div class="col-sm-5 col-md-8 text-right" >
@@ -352,7 +345,7 @@
                         <div class=" form-group form-horizontal formgap">
                           <div class="col-sm-6 control-label formtext col-md-4">
                             <div class="cgo-header" style="font-size: 18px;">
-                              <strong>Deputy Principal Officer <label class="assign-psn-item">${status.index+1}</label></strong>
+                              <strong>Deputy Principal Officer <label class="assign-psn-item"><c:if test="${ReloadDeputyPrincipalOfficers.size() > 1}">${status.index+1}</c:if></label></strong>
                             </div>
                           </div>
                           <div class="col-sm-5 col-md-8 text-right" >
@@ -837,6 +830,9 @@
                         }
                         //get data from page
                         $('#isEditHiddenVal').val('1');
+                        $('.po-content').each(function (k,v) {
+                            $(this).find('.assign-psn-item').html(k);
+                        });
                     }else{
                         $('.poErrorMsg').html(data.errInfo);
                     }
@@ -886,6 +882,9 @@
                         }
                         //get data from page
                         $('#isEditDpoHiddenVal').val('1');
+                        $('.dpo-content').each(function (k,v) {
+                            $(this).find('.assign-psn-item').html(k);
+                        });
                     }else{
                         $('.dpoErrorMsg').html(data.errInfo);
                     }
@@ -1139,6 +1138,10 @@
             if(psnLength <'${poHcsaSvcPersonnelDto.maximumCount}'){
                 $('#addPsnDiv-po').removeClass('hidden');
             }
+
+            if(psnLength <= 1){
+                $('.po-content:eq(1) .assign-psn-item').html('');
+            }
         });
 
     }
@@ -1154,6 +1157,10 @@
             var psnLength = $('.dpo-content').length-1;
             if(psnLength <'${dpoHcsaSvcPersonnelDto.maximumCount}'){
                 $('#addPsnDiv-dpo').removeClass('hidden');
+            }
+
+            if(psnLength <= 1){
+                $('.dpo-content:eq(1) .assign-psn-item').html('');
             }
         });
 
