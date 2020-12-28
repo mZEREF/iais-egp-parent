@@ -46,7 +46,7 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="panel-group" id="accordion" role="tablist"
-                                                 aria-multiselectable="true">
+                                                 aria-multiselectable="true" style="margin-top: 40px" >
                                                 <c:if test="${applicationDto.applicationType == 'APTY008'}">
                                                     <%@include file="cessationViewApp.jsp" %>
                                                 </c:if>
