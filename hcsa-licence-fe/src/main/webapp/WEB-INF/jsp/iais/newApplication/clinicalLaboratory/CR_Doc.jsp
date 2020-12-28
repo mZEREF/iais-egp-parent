@@ -77,7 +77,7 @@
                 </c:otherwise>
               </c:choose>
             </div>
-            <input class="selectedFile svcDoc"  name = "${docConfig.id}selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
+            <input class="selectedFile svcDoc"  name = "${docConfig.id}selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a><br/>
             <span name="iaisErrorMsg" class="error-msg" id="error_${docConfig.id}selectedFile"></span>
           </div>
         </div>
@@ -131,7 +131,7 @@
                   </c:otherwise>
                 </c:choose>
               </div>
-              <input class="selectedFile svcDoc"  name = "${premKey}" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
+              <input class="selectedFile svcDoc"  name = "${premKey}" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a><br/>
               <span name="iaisErrorMsg" class="error-msg" id="error_${premKey}"></span>
             </div>
           </div>

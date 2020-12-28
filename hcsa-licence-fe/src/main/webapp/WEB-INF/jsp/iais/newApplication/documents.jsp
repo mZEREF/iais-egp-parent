@@ -106,8 +106,8 @@
                           </c:choose>
                           <br/>
                           <input class="selectedFile commDoc" id="commonDoc"  name = "${commKey}" type="file" style="display: none;" aria-label="selectedFile1" >
-                          <span name="iaisErrorMsg" class="error-msg" id="error_${commKey}"></span><br>
                           <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Upload</a><br/>
+                          <span name="iaisErrorMsg" class="error-msg" id="error_${commKey}"></span>
                         </div>
                       </div>
                     </c:forEach>
@@ -146,8 +146,8 @@
                             </c:choose>
                             <br/>
                             <input class="selectedFile premDoc"  name = "${premKey}" type="file" style="display: none;" aria-label="selectedFile1">
-                            <span name="iaisErrorMsg" class="error-msg" id="error_${premKey}"></span><br>
                             <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Upload</a><br/>
+                            <span name="iaisErrorMsg" class="error-msg" id="error_${premKey}"></span>
                           </div>
                         </div>
                       </c:forEach>
