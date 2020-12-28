@@ -19,6 +19,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.common.jwt.JwtEncoder;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -26,12 +28,15 @@ import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
+import com.ecquaria.cloud.moh.iais.service.client.EDHClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.FEMainRbacClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +47,7 @@ import sop.rbac.user.UserIdentifier;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -70,6 +76,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Value("${moh.halp.acra.enable}")
     private String enableAcra;
+
+    @Autowired
+    private EDHClient edhClient;
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
@@ -426,6 +435,23 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public Boolean isNotExistUserAccount(String orgId) {
         return feUserClient.isNotExistUserAccount(orgId).getEntity();
+    }
+
+
+    public static void main(String[] args) {
+        JwtEncoder encoder = new JwtEncoder();
+        Claims claims = Jwts.claims();
+        claims.put("uen", "201800001A");
+        String jwtt = encoder.encode(claims, "");
+    }
+
+    @Override
+    public Boolean isKeyAppointment(String uen) {
+        JwtEncoder encoder = new JwtEncoder();
+        Claims claims = Jwts.claims();
+        claims.put("uen", uen);
+        //edhClient.receiveEDHEntity(jwtt, uen);
+        return Boolean.TRUE;
     }
 
     @Override

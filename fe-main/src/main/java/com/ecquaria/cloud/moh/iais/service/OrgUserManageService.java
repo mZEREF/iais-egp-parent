@@ -63,4 +63,6 @@ public interface OrgUserManageService {
     LicenseeDto saveMyinfoDataByFeUserDtoAndLicenseeDto( LicenseeDto licenseeDto, FeUserDto feUserDto, MyInfoDto myInfoDto,boolean amendLicensee);
 
     Boolean isNotExistUserAccount(String orgId);
+
+    Boolean isKeyAppointment(String uen);
 }

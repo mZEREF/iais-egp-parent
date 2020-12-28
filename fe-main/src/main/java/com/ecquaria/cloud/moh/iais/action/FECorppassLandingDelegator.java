@@ -170,7 +170,14 @@ public class FECorppassLandingDelegator {
      */
     public void validateKeyAppointment(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        ParamUtil.setRequestAttr(request, FECorppassLandingDelegator.IS_KEY_APPOINTMENT, "N");
+        FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
+        boolean isKeyAppointment = orgUserManageService.isKeyAppointment(userSession.getUenNo()).booleanValue();
+        if (isKeyAppointment){
+            ParamUtil.setRequestAttr(request, FECorppassLandingDelegator.IS_KEY_APPOINTMENT, "Y");
+        }else {
+            ParamUtil.setRequestAttr(request, FECorppassLandingDelegator.IS_KEY_APPOINTMENT, "N");
+        }
+
     }
 
     /**
