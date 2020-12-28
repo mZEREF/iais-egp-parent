@@ -154,7 +154,7 @@
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Actions</p>
                                     <c:choose>
-                                        <c:when test="${app.applicationType == 'APTY002' || app.applicationType == 'APTY004' || app.applicationType == 'APTY005' || app.applicationType == 'APTY009'}">
+                                        <c:when test="${app.applicationType == 'APTY002' || app.applicationType == 'APTY004' || app.applicationType == 'APTY005'}">
                                             <c:if test="${app.status == 'APST005' || app.status == 'APST006' || app.status =='APST075' ||  app.status == 'APST050'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
@@ -253,6 +253,17 @@
                                                     <option>N/A</option>
                                                 </select>
                                             </c:if>
+                                        </c:when>
+                                        <c:when test="${app.applicationType == 'APTY009'}">
+                                            <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
+                                                <option value="" selected>Select</option>
+                                                <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
+                                                    <option value="Assessment">Assessment</option>
+                                                </c:if>
+                                                <c:if test="${app.canInspection}">
+                                                    <option value="Inspection">Indicate preferred Inspection Date</option>
+                                                </c:if>
+                                            </select>
                                         </c:when>
                                         <c:when test="${app.applicationType == 'APTY001'}">
                                             <c:if test="${app.status == 'APST008'}">
