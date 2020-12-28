@@ -100,7 +100,7 @@ public class DeleteHelperFeDelegator {
                 String licenceNo = licenceDto.getLicenceNo();
                 try{
                     String sql = getRunSql(HCSA_LICENCE_SQL_FILE, licenceNo, "AN200512000809C");
-                    log.debug(StringUtil.changeForLog("delete hacsa licence be sql : " + sql));
+                    log.debug(StringUtil.changeForLog("delete hacsa licence fe sql : " + sql));
                     licenceInboxClient.doDeleteBySql(sql);
                 }catch (Exception e){
                     flag = -1;
@@ -110,7 +110,7 @@ public class DeleteHelperFeDelegator {
         }else{
             flag = 0;
         }
-        log.debug(StringUtil.changeForLog("delete hacsa licence be flag : " + flag));
+        log.debug(StringUtil.changeForLog("delete hacsa licence fe flag : " + flag));
         return flag;
     }
 
@@ -119,7 +119,7 @@ public class DeleteHelperFeDelegator {
         if(!StringUtil.isEmpty(organizationId)){
             try{
                 String sql = getRunSql(HCSA_ORGANIZATION_SQL_FILE, organizationId, "AN200512000809C");
-                log.debug(StringUtil.changeForLog("delete hacsa organication be sql : " + sql));
+                log.debug(StringUtil.changeForLog("delete hacsa organication fe sql : " + sql));
                 feAdminClient.doDeleteBySql(sql);
             }catch (Exception e){
                 flag = -1;
@@ -127,7 +127,7 @@ public class DeleteHelperFeDelegator {
         }else{
             flag = 0;
         }
-        log.debug(StringUtil.changeForLog("delete hacsa organication be flag : " + flag));
+        log.debug(StringUtil.changeForLog("delete hacsa organication fe flag : " + flag));
         return flag;
     }
 
@@ -138,7 +138,7 @@ public class DeleteHelperFeDelegator {
                 String groupNo = applicationGroupDto.getGroupNo();
                 try{
                     String sql = getRunSql(HCSA_APPLICATION_SQL_FILE, groupNo, "AN200512000809C");
-                    log.debug(StringUtil.changeForLog("delete hacsa application be sql : " + sql));
+                    log.debug(StringUtil.changeForLog("delete hacsa application fe sql : " + sql));
                     appInboxClient.doDeleteBySql(sql);
                 }catch (Exception e){
                     flag = -1;
@@ -148,7 +148,7 @@ public class DeleteHelperFeDelegator {
         }else{
             flag = 0;
         }
-        log.debug(StringUtil.changeForLog("delete hacsa application be flag : " + flag));
+        log.debug(StringUtil.changeForLog("delete hacsa application fe flag : " + flag));
         return flag;
     }
 
