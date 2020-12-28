@@ -87,7 +87,7 @@ public class PostInspectionBatchJob {
                     entity.setAppType(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION);
                     entity.setAmount(0.0);
                     entity.setAuditTrailDto(auditTrailDto);
-                    entity.setPreInspection(true);
+                    entity.setPreInspection(false);
                     entity.setRequirement(true);
                     entity.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT);
                     entity.setEventRefNo(grpNo);
