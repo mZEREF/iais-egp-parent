@@ -404,9 +404,9 @@ public class ClinicalLaboratoryDelegator {
         List<SelectOption> deputyFlagSelect = IaisCommonUtils.genNewArrayList();
         SelectOption deputyFlagOp1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
         deputyFlagSelect.add(deputyFlagOp1);
-        SelectOption deputyFlagOp2 = new SelectOption("0", "N");
+        SelectOption deputyFlagOp2 = new SelectOption("0", "No");
         deputyFlagSelect.add(deputyFlagOp2);
-        SelectOption deputyFlagOp3 = new SelectOption("1", "Y");
+        SelectOption deputyFlagOp3 = new SelectOption("1", "Yes");
         deputyFlagSelect.add(deputyFlagOp3);
         ParamUtil.setRequestAttr(bpc.request, "DeputyFlagSelect", deputyFlagSelect);
 
