@@ -170,7 +170,7 @@ public class TemplatesDelegator {
             ParamUtil.setSessionAttr(bpc.request, "deliveryModeSelect", (Serializable) deliveryModeSelectList);
             String errMsg = "";
             if (MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_SMS.equals(deliveryMode)){
-                errMsg = MessageUtil.replaceMessage("EMM_ERR005","160","num");
+                errMsg = MessageUtil.getMessageDesc("EMM_ERR013");
             }else{
                 errMsg = MessageUtil.replaceMessage("EMM_ERR005","8000","num");
             }
@@ -197,9 +197,16 @@ public class TemplatesDelegator {
                 validationResult.setHasErrors(true);
             }
         }
-        if (contentSize < 2 || contentSize > 8000) {
-            validationResult.setHasErrors(true);
+        if (MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_SMS.equals(delivery)){
+            if (contentSize > 160) {
+                validationResult.setHasErrors(true);
+            }
+        }else{
+            if (contentSize < 2 || contentSize > 8000) {
+                validationResult.setHasErrors(true);
+            }
         }
+
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
             if (msgTemplateDto.getEffectiveFrom() != null && msgTemplateDto.getEffectiveTo() !=null){
@@ -208,12 +215,19 @@ public class TemplatesDelegator {
                     errorMap.put("effectiveTo",MessageUtil.getMessageDesc("EMM_ERR004"));
                 }
             }
-            if (contentSize > 8000) {
-                errorMap.put("messageContent",MessageUtil.replaceMessage("EMM_ERR005","8000","num"));
+            if (MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_SMS.equals(delivery)){
+                if (contentSize > 160) {
+                    errorMap.put("messageContent",MessageUtil.getMessageDesc("EMM_ERR013"));
+                }
+            }else{
+                if (contentSize > 8000) {
+                    errorMap.put("messageContent",MessageUtil.replaceMessage("EMM_ERR005","8000","num"));
+                }
+                if (contentSize < 2) {
+                    errorMap.put("messageContent", MessageUtil.replaceMessage("GENERAL_ERR0006","Message Content","field"));
+                }
             }
-            if (contentSize < 2) {
-                errorMap.put("messageContent", MessageUtil.replaceMessage("GENERAL_ERR0006","Message Content","field"));
-            }
+
             Boolean needRecipient = (Boolean) ParamUtil.getSessionAttr(request,"needRecipient");
             if(needRecipient) {
                 String recipientString = "";

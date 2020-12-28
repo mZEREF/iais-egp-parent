@@ -110,7 +110,7 @@
                         <div class="form-group">
                             <c:choose>
                                 <c:when test="${'DEMD002' eq MsgTemplateDto.deliveryMode}">
-                                    <textarea  rows="20" cols="140" name="messageContent" class="textarea" id="msgContentTxtArea" maxlength="160">
+                                    <textarea  rows="20" cols="140" name="messageContent" class="textarea" id="msgContentTxtArea">
                                             ${MsgTemplateDto.messageContent}
                                     </textarea>
                                 </c:when>
