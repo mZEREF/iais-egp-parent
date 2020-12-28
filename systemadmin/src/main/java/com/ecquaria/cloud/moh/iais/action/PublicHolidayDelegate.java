@@ -347,7 +347,7 @@ public class PublicHolidayDelegate {
             String nonWorking = ParamUtil.getString(bpc.request,"nonWorking");
             String status = ParamUtil.getString(bpc.request,"searchStatus");
             if(!StringUtil.isEmpty(phCode)){
-                holidaySearchParam.addFilter("phCode", "%" + phCode + "%",true);
+                holidaySearchParam.addFilter("phCode", phCode,true);
                 ParamUtil.setSessionAttr(bpc.request,"phCode",phCode);
             }else{
                 holidaySearchParam.removeFilter("phCode");

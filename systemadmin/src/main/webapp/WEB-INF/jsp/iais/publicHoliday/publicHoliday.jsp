@@ -41,7 +41,7 @@
                             <div class="form-horizontal" >
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Holiday Description</label>
-                                    <div class="col-md-3">
+                                    <div class="col-md-3 searchdiv">
                                         <iais:select id="phCode" name="phCode" codeCategory="CATE_ID_PUBLIC_HOLIDAY" cssClass="yearOption" firstOption="Please Select"
                                                      value="${phCode}"></iais:select>
                                     </div>
@@ -175,7 +175,7 @@
         $('input[name="description"]').val("");
         $('input[name="nonWorking"]').val("");
         $("#searchStatus option:first").prop("selected", 'selected');
-        $("#year option:first").prop("selected", 'selected');
+        $("#phCode option:first").prop("selected", 'selected');
         $(".searchdiv .current").text("Please Select");
 
     })
