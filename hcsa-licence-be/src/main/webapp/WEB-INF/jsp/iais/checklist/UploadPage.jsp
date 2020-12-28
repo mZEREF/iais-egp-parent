@@ -31,7 +31,7 @@
 
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <br>
-    <span id="error_fileUploadError" name="iaisErrorMsg" class="error-msg"></span>
+
     <br><br>
     <div class="tab-pane active" id="tabInbox" role="tabpanel">
         <div class="document-info-list">
@@ -52,11 +52,16 @@
             <div class="error-msg"></div>
             <div class="file-upload-gp">
               <div class="fileNameDisplay"></div>
+
               <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
             </div>
           </div>
         </div>
 
+      </div>
+
+      <div>
+        <span id="error_fileUploadError" name="iaisErrorMsg" class="error-msg"></span>
       </div>
     </div>
 
