@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -239,6 +240,10 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,"appealRecommendationValueOnlyShow","");
         ParamUtil.setSessionAttr(bpc.request,"isDMS",null);
         ParamUtil.setSessionAttr(bpc.request, "finalStage", Boolean.FALSE);
+
+        SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
+        ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
+
         log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
 
         initData(bpc);
