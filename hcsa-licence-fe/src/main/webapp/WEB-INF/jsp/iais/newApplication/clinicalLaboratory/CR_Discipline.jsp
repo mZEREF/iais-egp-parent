@@ -88,6 +88,22 @@
                           <c:set var="checkIndexNo1" value="${premIndexNo};${levelOneList.name};${levelOneList.code};${levelOneList.parentId}"/>
                           <c:set var="reloadIndexNo1" value="${currentServiceId}${premIndexNo}${levelOneList.id}"/>
                           <!--one -->
+                          <c:choose>
+                            <c:when test="${reloadData[reloadIndexNo1] != null && reloadData[reloadIndexNo1] != ''}">
+                              <c:set var="checkStat" value="true"/>
+                            </c:when>
+                            <c:otherwise>
+                              <c:set var="checkStat" value="false"/>
+                            </c:otherwise>
+                          </c:choose>
+                          <c:choose>
+                            <c:when test="${levelOneList.name=='Please indicate'}">
+                              <c:set var="needTextArea" value="true"/>
+                            </c:when>
+                            <c:otherwise>
+                              <c:set var="needTextArea" value="false"/>
+                            </c:otherwise>
+                          </c:choose>
                           <tr>
                             <td>
                               <div class="control-item-container parent-form-check" data-parent="<c:out value="${premIndexNo}${levelOneList.type}${levelOneList.name}" />" >
@@ -103,6 +119,32 @@
                                 </label>
                                 <input class="checkValue" type="hidden" name="<c:out value="${checkIndexNo1}" />" value="<iais:mask name="${checkIndexNo1}" value="${levelOneList.id}"/>"/>
                               </div>
+                            </td>
+                            <td >
+                            <c:choose>
+                              <c:when test="${needTextArea}">
+                                <c:set var="otherScope" value=""/>
+                                <c:forEach var="svcScope" items="${svcLaboratoryDisciplinesDto}" >
+                                  <c:choose>
+                                    <c:when test="${appGrpPremisesDto.premisesIndexNo == svcScope.premiseVal}">
+                                      <c:forEach var="svcChkLst" items="${svcScope.appSvcChckListDtoList}">
+                                        <c:if test="${'Please indicate' == svcChkLst.chkName}">
+                                          <c:set var="otherScope" value="${svcChkLst.otherScopeName}"/>
+                                        </c:if>
+                                      </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                    </c:otherwise>
+                                  </c:choose>
+                                </c:forEach>
+                                <input type="hidden" name="needTextArea" value="1"/>
+                                <textarea class="pleaseIndicate" name="pleaseIndicate${status.index}" maxlength="200" cols="45" <c:if test="${!checkStat}">disabled</c:if> >${otherScope}</textarea>
+                                <span class="error-msg" name="iaisErrorMsg" id="error_pleaseIndicateError${status.index}"></span>
+                              </c:when>
+                              <c:otherwise>
+                                <input type="hidden" name="needTextArea" value="0"/>
+                              </c:otherwise>
+                            </c:choose>
                             </td>
                           </tr>
                           <c:if test="${not empty levelOneList.list}">
@@ -175,6 +217,22 @@
                                 <c:forEach var="levelThreeList" items="${levelTwoList.list}" varStatus="levelThree">
                                   <c:set var="checkIndexNo3" value="${premIndexNo};${levelThreeList.name};${levelThreeList.code};${levelThreeList.parentId}"/>
                                   <c:set var="reloadIndexNo3" value="${currentServiceId}${premIndexNo}${levelThreeList.id}"/>
+                                  <c:choose>
+                                    <c:when test="${reloadData[reloadIndexNo3] != null && reloadData[reloadIndexNo3] != ''}">
+                                      <c:set var="checkStat" value="true"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                      <c:set var="checkStat" value="false"/>
+                                    </c:otherwise>
+                                  </c:choose>
+                                  <c:choose>
+                                    <c:when test="${levelThreeList.name=='Please indicate'}">
+                                      <c:set var="needTextArea" value="true"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                      <c:set var="needTextArea" value="false"/>
+                                    </c:otherwise>
+                                  </c:choose>
                                   <tr>
                                     <td>
                                       <div class="control-item-container sub-form-check double parent-form-check disabled" data-parent="<c:out value="${premIndexNo}${levelThreeList.type}${levelThreeList.name}"/>" data-child="<c:out value="${premIndexNo}${levelTwoList.type}${levelTwoList.name}"/>" >
@@ -190,6 +248,32 @@
                                         </label>
                                         <input class="checkValue" type="hidden" name="<c:out value="${checkIndexNo3}"/>" value="<iais:mask name="${checkIndexNo3}" value="${levelThreeList.id}"/>"/>
                                       </div>
+                                    </td>
+                                    <td>
+                                    <c:choose>
+                                      <c:when test="${needTextArea}">
+                                        <c:set var="otherScope" value=""/>
+                                        <c:forEach var="svcScope" items="${svcLaboratoryDisciplinesDto}" >
+                                          <c:choose>
+                                            <c:when test="${appGrpPremisesDto.premisesIndexNo == svcScope.premiseVal}">
+                                              <c:forEach var="svcChkLst" items="${svcScope.appSvcChckListDtoList}">
+                                                <c:if test="${'Please indicate' == svcChkLst.chkName}">
+                                                  <c:set var="otherScope" value="${svcChkLst.otherScopeName}"/>
+                                                </c:if>
+                                              </c:forEach>
+                                            </c:when>
+                                            <c:otherwise>
+                                            </c:otherwise>
+                                          </c:choose>
+                                        </c:forEach>
+                                        <input type="hidden" name="needTextArea" value="1"/>
+                                        <textarea class="pleaseIndicate" name="pleaseIndicate${status.index}" maxlength="200" cols="45" <c:if test="${!checkStat}">disabled</c:if> >${otherScope}</textarea>
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_pleaseIndicateError${status.index}"></span>
+                                      </c:when>
+                                      <c:otherwise>
+                                        <input type="hidden" name="needTextArea" value="0"/>
+                                      </c:otherwise>
+                                    </c:choose>
                                     </td>
                                   </tr>
                                 </c:forEach>
