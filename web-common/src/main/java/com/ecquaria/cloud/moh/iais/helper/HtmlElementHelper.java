@@ -79,7 +79,9 @@ public class HtmlElementHelper {
         if (options != null) {
             TreeMap<String, SelectOption> map = new TreeMap<>();
             for (SelectOption option : options) {
-                map.put(option.getText(), option);
+                if (StringUtil.isEmpty(option.getValue())) {
+                    map.put(option.getText(), option);
+                }
             }
             options.clear();
             for (Map.Entry<String, SelectOption> ent : map.entrySet()) {
