@@ -57,7 +57,7 @@
                     <%String codeStatus = request.getParameter("codeStatus")==null?"":request.getParameter("codeStatus");%>
                     <label class="col-xs-4 col-md-4 control-label" for="codeStatus">Status</label>
                     <div class="col-xs-6 col-sm-6 col-md-6">
-                        <iais:select name="codeStatus" id="codeStatus" options="codeStatus" value="<%=codeStatus%>"/>
+                        <iais:select name="codeStatus" id="codeStatus" options="codeStatus" firstOption="Please Select" value="<%=codeStatus%>"/>
                     </div>
                 </iais:value>
             </div>
