@@ -158,6 +158,9 @@
         </div>
     </div>
 </div>
+<div align="left">
+    <a class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
+</div>
 <iais:confirm msg="GENERAL_ACK018"  needCancel="false" callBack="tagConfirmCallbacksupport()" popupOrder="support" ></iais:confirm>
 <script type="text/javascript">
     function doVerifyFileGo(verify) {
