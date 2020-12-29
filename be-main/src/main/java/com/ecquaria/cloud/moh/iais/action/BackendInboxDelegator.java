@@ -150,7 +150,8 @@ public class BackendInboxDelegator {
         ParamUtil.setSessionAttr(bpc.request, "taskMap",null);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", null);
         SearchParam searchParamGroupFromHsca  = (SearchParam)ParamUtil.getSessionAttr(bpc.request,"backSearchParamFromHcsaApplication");
-        if(searchParamGroupFromHsca == null){
+        String fromOther = ParamUtil.getString(bpc.request,"fromOther");
+        if(!(searchParamGroupFromHsca != null && !StringUtil.isEmpty(fromOther) && fromOther.equals("1"))){
             ParamUtil.setSessionAttr(bpc.request,"application_status",null);
         }
         ParamUtil.setSessionAttr(bpc.request, "roleIds", (Serializable) selectOptionArrayList);
@@ -216,7 +217,8 @@ public class BackendInboxDelegator {
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "backendinboxSearchParam");
         if(neednew){
             SearchParam searchParamGroupFromHsca  = (SearchParam)ParamUtil.getSessionAttr(request,"backSearchParamFromHcsaApplication");
-            if(searchParamGroupFromHsca != null){
+            String fromOther = ParamUtil.getString(request,"fromOther");
+            if(searchParamGroupFromHsca != null && !StringUtil.isEmpty(fromOther) && fromOther.equals("1")){
                 Map<String, Object> fileters = searchParamGroupFromHsca.getFilters();
                 if(fileters != null){
                     for (Map.Entry<String, Object> entry:fileters.entrySet()
