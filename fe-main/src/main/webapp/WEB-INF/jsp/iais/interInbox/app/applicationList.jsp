@@ -30,7 +30,7 @@
                             Type:</label>
                         <div class="col-xs-8 col-md-8">
                             <iais:select name="appServiceType" id="appServiceType" cssClass="appServiceType"
-                                         options="appServiceType" value="${param.appServiceType}"/>
+                                         options="appServiceType" firstOption="All" value="${param.appServiceType}"/>
                         </div>
                     </iais:value>
                 </div>
@@ -42,7 +42,7 @@
                             Type:</label>
                         <div class="col-xs-7 col-md-7">
                             <iais:select name="appTypeSelect" id="appTypeSelect" cssClass="appTypeSelect"
-                                         options="appTypeSelect" value="${param.appTypeSelect}"/>
+                                         options="appTypeSelect" firstOption="All" value="${param.appTypeSelect}"/>
                         </div>
                     </iais:value>
                 </div>
@@ -53,7 +53,7 @@
                         <div class="col-xs-8 col-md-8">
                             <%String appStatusSelect = request.getParameter("appStatusSelect");%>
                             <iais:select options="appStatusSelect" cssClass="appStatusSelect" name="appStatusSelect"
-                                         id="appStatusSelect" value="${param.appStatusSelect}"/>
+                                         id="appStatusSelect" firstOption="All" value="${param.appStatusSelect}"/>
                         </div>
                     </iais:value>
                 </div>

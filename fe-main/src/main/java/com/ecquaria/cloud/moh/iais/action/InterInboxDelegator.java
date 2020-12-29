@@ -279,18 +279,14 @@ public class InterInboxDelegator {
         String msgSubject = ParamUtil.getString(request,InboxConst.MESSAGE_SEARCH);
         SearchParam inboxMsgParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg",true);
         if(inboxType != null){
-            if (inboxType.equals(InboxConst.SEARCH_ALL)){
-                inboxMsgParam.removeFilter("messageType");
-            }else{
-                inboxMsgParam.addFilter("messageType",inboxType,true);
-            }
+            inboxMsgParam.addFilter("messageType",inboxType,true);
+        }else{
+            inboxMsgParam.removeFilter("messageType");
         }
         if(inboxService != null){
-            if (inboxService.equals(InboxConst.SEARCH_ALL)){
-                inboxMsgParam.removeFilter("interService");
-            }else{
-                inboxMsgParam.addFilter("interService","%" + inboxService + "%",true);
-            }
+            inboxMsgParam.addFilter("interService","%" + inboxService + "%",true);
+        }else{
+            inboxMsgParam.removeFilter("interService");
         }
         if(msgSubject != null){
             inboxMsgParam.addFilter("msgSubject",'%'+msgSubject+'%',true);
@@ -409,12 +405,12 @@ public class InterInboxDelegator {
         }else{
             inboxLicParam.removeFilter("licNo");
         }
-        if(serviceType == null || serviceType.equals(InboxConst.SEARCH_ALL)){
+        if(serviceType == null){
             inboxLicParam.removeFilter("serviceType");
         }else {
             inboxLicParam.addFilter("serviceType",serviceType,true);
         }
-        if(licStatus == null || licStatus.equals(InboxConst.SEARCH_ALL)){
+        if(licStatus == null){
             inboxLicParam.removeFilter("licStatus");
         }else{
             inboxLicParam.addFilter("licStatus",licStatus,true);
@@ -912,12 +908,12 @@ public class InterInboxDelegator {
         String createDtStart = Formatter.formatDateTime(startAppDate, SystemAdminBaseConstants.DATE_FORMAT);
         String createDtEnd = Formatter.formatDateTime(endAppDate, SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
         SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxApp",true);
-        if(applicationType == null || applicationType.equals(InboxConst.SEARCH_ALL)){
+        if(applicationType == null){
             inboxParam.removeFilter("appType");
         }else{
             inboxParam.addFilter("appType", applicationType,true);
         }
-        if(applicationStatus == null || applicationStatus.equals(InboxConst.SEARCH_ALL)){
+        if(applicationStatus == null){
             inboxParam.removeFilter("appStatus");
         }else{
             List<String> inParams = IaisCommonUtils.genNewArrayList();
@@ -952,7 +948,7 @@ public class InterInboxDelegator {
         }else{
             inboxParam.removeFilter("appNo");
         }
-        if(serviceType == null || serviceType.equals(InboxConst.SEARCH_ALL)){
+        if(serviceType == null){
             inboxParam.removeFilter("serviceType");
         }else{
             if (!StringUtil.isEmpty(applicationStatus) && ApplicationConsts.APPLICATION_STATUS_DRAFT.equals(applicationStatus)){
@@ -1285,7 +1281,6 @@ public class InterInboxDelegator {
      */
     private void prepareMsgSelectOption(HttpServletRequest request){
         List<SelectOption> inboxServiceSelectList = IaisCommonUtils.genNewArrayList();
-        inboxServiceSelectList.add(new SelectOption("All", "All"));
         inboxServiceSelectList.add(new SelectOption("BLB@", "Blood Banking"));
         inboxServiceSelectList.add(new SelectOption("CLB@", "Clinical Laboratory"));
         inboxServiceSelectList.add(new SelectOption("RDS@", "Radiological Service"));
@@ -1295,7 +1290,6 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(request, "inboxServiceSelect", inboxServiceSelectList);
 
         List<SelectOption> inboxTypSelectList = IaisCommonUtils.genNewArrayList();
-        inboxTypSelectList.add(new SelectOption("All", "All"));
         inboxTypSelectList.add(new SelectOption(MessageConstants.MESSAGE_TYPE_NOTIFICATION, MasterCodeUtil.getCodeDesc(MessageConstants.MESSAGE_TYPE_NOTIFICATION)));
         inboxTypSelectList.add(new SelectOption(MessageConstants.MESSAGE_TYPE_ANNONUCEMENT, MasterCodeUtil.getCodeDesc(MessageConstants.MESSAGE_TYPE_ANNONUCEMENT)));
         inboxTypSelectList.add(new SelectOption(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED, MasterCodeUtil.getCodeDesc(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED)));
@@ -1304,7 +1298,6 @@ public class InterInboxDelegator {
 
     private void prepareAppSelectOption(HttpServletRequest request){
         List<SelectOption> applicationTypeSelectList = IaisCommonUtils.genNewArrayList();
-        applicationTypeSelectList.add(new SelectOption("All", "All"));
         applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_APPEAL, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_APPEAL)));
         applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_CESSATION, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_CESSATION)));
         applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)));
@@ -1314,7 +1307,6 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(request, "appTypeSelect", applicationTypeSelectList);
 
         List<SelectOption> appServiceStatusSelectList = IaisCommonUtils.genNewArrayList();
-        appServiceStatusSelectList.add(new SelectOption("All", "All"));
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_DRAFT, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_DRAFT)));
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_RECALLED, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_RECALLED)));
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION)));
@@ -1331,8 +1323,6 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(request, "appStatusSelect", appServiceStatusSelectList);
 
         List<SelectOption> appServiceTypeSelectList = IaisCommonUtils.genNewArrayList();
-        appServiceTypeSelectList.add(new SelectOption("All", "All"));
-
         appServiceTypeSelectList.add(new SelectOption("34F99D15-820B-EA11-BE7D-000C29F371DC", "Blood Banking"));
         appServiceTypeSelectList.add(new SelectOption("35F99D15-820B-EA11-BE7D-000C29F371DC", "Clinical Laboratory"));
         appServiceTypeSelectList.add(new SelectOption("A11ADD49-820B-EA11-BE7D-000C29F371DC", "Radiological Service"));
@@ -1344,7 +1334,6 @@ public class InterInboxDelegator {
 
     private void prepareLicSelectOption(HttpServletRequest request){
         List<SelectOption> LicenceStatusList = IaisCommonUtils.genNewArrayList();
-        LicenceStatusList.add(new SelectOption("All", "All"));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_ACTIVE, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_ACTIVE)));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_CEASED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_CEASED)));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_EXPIRY, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_EXPIRY)));
@@ -1357,7 +1346,6 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(request, "licStatus", LicenceStatusList);
 
         List<SelectOption> LicenceTypeList = IaisCommonUtils.genNewArrayList();
-        LicenceTypeList.add(new SelectOption("All", "All"));
         LicenceTypeList.add(new SelectOption("Tissue Banking", "Tissue Banking"));
         LicenceTypeList.add(new SelectOption("Blood Banking", "Blood Banking"));
         LicenceTypeList.add(new SelectOption("Radiological Service", "Radiological Service"));
