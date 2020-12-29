@@ -123,6 +123,15 @@
                             </c:choose>
                             <span id="error_messageContent" name="iaisErrorMsg" class="error-msg"></span>
                         </div>
+                    <div class="form-group">
+                        <iais:value>
+                            <div class="col-xs-9 col-sm-9 col-md-9" >
+                                <div id="confirm_msg" style="display: none;border:1px solid #000;">
+                                    <span style="font-size: 35px;text-align: center;align-self: center; width: 15%;" class="glyphicon glyphicon-info-sign"></span><label>${confirm_err_msg}</label>
+                                </div>
+                            </div>
+                        </iais:value>
+                    </div>
                         <div class="form-group">
                             <div class="col-xs-2 col-sm-2" style="padding-top: 30px;">
                                 <a href="/system-admin-web/eservice/INTRANET/MohAlertNotificationTemplate"><em class="fa fa-angle-left"></em> Back</a>
@@ -175,7 +184,7 @@
         if ('DEMD002' == deliveryMode) {
             var length = $("#msgContentTxtArea").val().length;
             if (length > 160) {
-                $('#support').modal('show');
+                $('#confirm_msg').css('display','flex')
             }else{
                 $("#template_content_size").val(length);
                 $("[name='crud_action_value']").val(mcId);
@@ -221,12 +230,11 @@
                 var allowedKeys = [8,13, 46]; // backspace, delete and cursor keys
                 ed.on('keydown', function (e) {
                     if (allowedKeys.indexOf(e.keyCode) != -1) return true;
-                    if (tinymce_getContentLength()>= this.settings.max_chars) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        return false;
-                    }
-                    return true;
+                    // if (tinymce_getContentLength()>= this.settings.max_chars) {
+                    //     e.preventDefault();
+                    //     e.stopPropagation();
+                    //     return false;
+                    // }
                 });
                 ed.on('keyup', function (e) {
                     tinymce_updateCharCounter(this, tinymce_getContentLength());
@@ -240,13 +248,8 @@
                 var editor = tinymce.get(tinymce.activeEditor.id);
                 var len = editor.contentDocument.body.innerText.length;
                 var text = $(args.content).text();
+                tinymce_updateCharCounter(editor, len + text.length);
 
-                if (tinymce_getContentLength() > editor.settings.max_chars) {
-                    $('#support').modal('show');
-                    args.content = '';
-                } else {
-                    tinymce_updateCharCounter(editor, len + text.length);
-                }
             }
         });
 

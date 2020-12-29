@@ -174,7 +174,7 @@ public class TemplatesDelegator {
             }else{
                 errMsg = MessageUtil.replaceMessage("EMM_ERR005","8000","num");
             }
-            ParamUtil.setSessionAttr(bpc.request, "confirm_err_msg",errMsg);
+            ParamUtil.setRequestAttr(bpc.request, "confirm_err_msg",errMsg);
 
         }
     }
