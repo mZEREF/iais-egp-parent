@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * HtmlElementHelper
@@ -76,6 +77,14 @@ public class HtmlElementHelper {
             }
         }
         if (options != null) {
+            TreeMap<String, SelectOption> map = new TreeMap<>();
+            for (SelectOption option : options) {
+                map.put(option.getText(), option);
+            }
+            options.clear();
+            for (Map.Entry<String, SelectOption> ent : map.entrySet()) {
+                options.add(ent.getValue());
+            }
             for (SelectOption entry : options) {
                 String val = entry.getValue();
                 String txt = entry.getValue();
