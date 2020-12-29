@@ -143,11 +143,16 @@ public class BackendInboxDelegator {
         curRole = loginContext.getCurRoleId();
         ParamUtil.setSessionAttr(bpc.request, "curRole",curRole);
         ParamUtil.setSessionAttr(bpc.request, "searchParamAjax",null);
+        ParamUtil.setSessionAttr(bpc.request, "backendinboxSearchParam",null);
         ParamUtil.setSessionAttr(bpc.request, "taskList",null);
         ParamUtil.setSessionAttr(bpc.request, "hastaskList",null);
         ParamUtil.setSessionAttr(bpc.request, "appNoUrl",null);
         ParamUtil.setSessionAttr(bpc.request, "taskMap",null);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", null);
+        SearchParam searchParamGroupFromHsca  = (SearchParam)ParamUtil.getSessionAttr(bpc.request,"backSearchParamFromHcsaApplication");
+        if(searchParamGroupFromHsca == null){
+            ParamUtil.setSessionAttr(bpc.request,"application_status",null);
+        }
         ParamUtil.setSessionAttr(bpc.request, "roleIds", (Serializable) selectOptionArrayList);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTRANET_DASHBOARD, AuditTrailConsts.FUNCTION_TASK_LIST);
 
@@ -178,16 +183,22 @@ public class BackendInboxDelegator {
         ParamUtil.setSessionAttr(bpc.request, "backendinboxSearchParam", searchParamGroup);
 
         String hci_name = (String) searchParamGroup.getFilters().get("hci_name");
+
         String address = (String) searchParamGroup.getFilters().get("hci_address");
+
         String application_no = (String) searchParamGroup.getFilters().get("application_no");
+
         if(!StringUtil.isEmpty(hci_name)){
             hci_name = hci_name.substring(1,hci_name.length()-1);
+            hci_name = hci_name.replace("%","");
         }
         if(!StringUtil.isEmpty(address)){
             address = address.substring(1,address.length()-1);
+            address = address.replace("%","");
         }
         if(!StringUtil.isEmpty(application_no)){
             application_no = application_no.substring(1,application_no.length()-1);
+            application_no = application_no.replace("%","");
         }
         ParamUtil.setRequestAttr(bpc.request, "hci_name", hci_name);
         ParamUtil.setRequestAttr(bpc.request, "hci_address", address);
