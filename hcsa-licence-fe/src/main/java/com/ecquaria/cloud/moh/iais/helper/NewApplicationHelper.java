@@ -2411,7 +2411,7 @@ public class NewApplicationHelper {
                         continue;
                     }
                     if(ClinicalLaboratoryDelegator.SERVICE_SCOPE_LAB_OTHERS.equals(chkName)){
-                        chkName = chkName + "("+ targetDto.getOtherScopeName() +")";
+                        chkName = chkName + " ("+ targetDto.getOtherScopeName() +")";
                         newAppSvcChckListDto.setChkName(chkName);
                     }
                     newAppSvcChckListDtos.add(newAppSvcChckListDto);
