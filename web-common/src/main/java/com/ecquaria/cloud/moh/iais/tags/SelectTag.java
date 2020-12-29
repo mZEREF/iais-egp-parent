@@ -6,14 +6,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
-import java.util.List;
 
 @Slf4j
 public class SelectTag extends DivTagSupport {
@@ -33,6 +33,7 @@ public class SelectTag extends DivTagSupport {
     private boolean needErrorSpan;
     private boolean disabled;
     private boolean needMask;
+    private boolean needSort;
 
     public SelectTag() {
         super();
@@ -56,6 +57,7 @@ public class SelectTag extends DivTagSupport {
         setHidden("");
         setNeedErrorSpan(true);
         setNeedMask(false);
+        setNeedSort(true);
     }
 
     public void setHidden(String hidden) {
@@ -147,6 +149,16 @@ public class SelectTag extends DivTagSupport {
         }
 
         if (sos != null) {
+            if (needSort) {
+                TreeMap<String, SelectOption> map = new TreeMap<>();
+                for (SelectOption option : sos) {
+                    map.put(option.getText(), option);
+                }
+                sos.clear();
+                for (Map.Entry<String, SelectOption> ent : map.entrySet()) {
+                    sos.add(ent.getValue());
+                }
+            }
             for (SelectOption option : sos) {
                 String val = StringUtil.viewNonNullHtml(option.getValue());
                 String txt = StringUtil.escapeHtml(option.getText());
@@ -232,5 +244,9 @@ public class SelectTag extends DivTagSupport {
 
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
+    }
+
+    public void setNeedSort(boolean needSort) {
+        this.needSort = needSort;
     }
 }
