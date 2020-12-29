@@ -1652,16 +1652,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             for(AppSvcChckListDto svcScope:svcScopeList){
                                 for(HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto:oldHcsaSvcSubtypeOrSubsumedDtos){
                                     if(svcScope.getChkLstConfId().equals(hcsaSvcSubtypeOrSubsumedDto.getId())){
+                                        HcsaSvcSubtypeOrSubsumedDto newHcsaSvcSubtypeOrSubsumedDto = newSvcScopeNameMap.get(hcsaSvcSubtypeOrSubsumedDto.getName());
                                         if(ClinicalLaboratoryDelegator.PLEASEINDICATE.equals(hcsaSvcSubtypeOrSubsumedDto.getName())){
                                             AppSvcChckListDto newAppSvcChckListDto = (AppSvcChckListDto) CopyUtil.copyMutableObject(svcScope);
-                                            newAppSvcChckListDto.setChkLstType(hcsaSvcSubtypeOrSubsumedDto.getType());
-                                            newAppSvcChckListDto.setChkName(hcsaSvcSubtypeOrSubsumedDto.getName());
-                                            newAppSvcChckListDto.setParentName(hcsaSvcSubtypeOrSubsumedDto.getParentId());
-                                            newAppSvcChckListDto.setChildrenName(hcsaSvcSubtypeOrSubsumedDto.getChildrenId());
+                                            newAppSvcChckListDto.setChkLstType(newHcsaSvcSubtypeOrSubsumedDto.getType());
+                                            newAppSvcChckListDto.setChkName(newHcsaSvcSubtypeOrSubsumedDto.getName());
+                                            newAppSvcChckListDto.setParentName(newHcsaSvcSubtypeOrSubsumedDto.getParentId());
+                                            newAppSvcChckListDto.setChildrenName(newHcsaSvcSubtypeOrSubsumedDto.getChildrenId());
                                             newSvcScopeList.add(newAppSvcChckListDto);
-                                            newSvcScopeIdList.add(newAppSvcChckListDto.getChkLstConfId());
+                                            newSvcScopeIdList.add(newHcsaSvcSubtypeOrSubsumedDto.getId());
                                         }
-                                        HcsaSvcSubtypeOrSubsumedDto newHcsaSvcSubtypeOrSubsumedDto = newSvcScopeNameMap.get(hcsaSvcSubtypeOrSubsumedDto.getName());
                                         if(newHcsaSvcSubtypeOrSubsumedDto != null){
                                             recursingChooseLabUpward(newSvcScopeIdMap,newHcsaSvcSubtypeOrSubsumedDto.getId(),newSvcScopeIdList,newSvcScopeList);
                                             break;
