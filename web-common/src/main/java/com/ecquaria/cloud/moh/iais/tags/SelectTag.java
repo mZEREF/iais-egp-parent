@@ -152,7 +152,9 @@ public class SelectTag extends DivTagSupport {
             if (needSort) {
                 TreeMap<String, SelectOption> map = new TreeMap<>();
                 for (SelectOption option : sos) {
-                    map.put(option.getText(), option);
+                    if (!StringUtil.isEmpty(option.getValue())) {
+                        map.put(option.getText(), option);
+                    }
                 }
                 sos.clear();
                 for (Map.Entry<String, SelectOption> ent : map.entrySet()) {
