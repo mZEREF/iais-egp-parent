@@ -11,7 +11,7 @@
         <div class="row">
           <div class="col-xs-12">
             <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-              <p><strong>Service Personnel ${status.index+1}:</strong></p>
+              <p><strong>Service Personnel<c:if test="${currentPreviewSvcInfo.appSvcPersonnelDtoList.size() > 1}"> ${status.index+1}</c:if>:</strong></p>
             </div>
             <table class="col-xs-8">
               <c:choose>

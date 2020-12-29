@@ -12,7 +12,7 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-                            <p><strong>Clinical Governance Officer ${status.index+1}:</strong></p>
+                            <p><strong>Clinical Governance Officer<c:if test="${currentPreviewSvcInfo.appSvcCgoDtoList.size() > 1}"> ${status.index+1}</c:if>:</strong></p>
                         </div>
                         <table class="col-xs-8">
                             <tr>

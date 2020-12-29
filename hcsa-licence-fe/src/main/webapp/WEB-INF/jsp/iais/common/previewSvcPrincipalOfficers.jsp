@@ -9,19 +9,30 @@
         <div class="form-check-gp">
             <div class="row">
                 <div class="col-xs-12">
+                    <c:set value="0" var="poSzie"></c:set>
+                    <c:set value="0" var="dpoSize"></c:set>
+                    <c:forEach items="${currentPreviewSvcInfo.appSvcPrincipalOfficersDtoList}" var="po">
+                        <c:if test="${po.psnType=='PO'}">
+                            <c:set value="${poSzie+1}" var="poSzie"></c:set>
+                        </c:if>
+                        <c:if test="${po.psnType=='DPO'}">
+                            <c:set value="${dpoSize+1}" var="dpoSize"></c:set>
+                        </c:if>
+                    </c:forEach>
+
                     <c:set value="0" var="poIndex"></c:set>
                     <c:set var="dpoIndex" value="0"></c:set>
                     <c:forEach items="${currentPreviewSvcInfo.appSvcPrincipalOfficersDtoList}" var="po">
                         <c:if test="${po.psnType=='PO'}">
                             <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Principal Officer ${poIndex+1}:</strong></p>
                                 <c:set value="${poIndex=poIndex+1}" var="poIndex"></c:set>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Principal Officer<c:if test="${poSzie > 1}"> ${poIndex}</c:if>:</strong></p>
                             </div>
                         </c:if>
                         <c:if test="${po.psnType=='DPO'}">
                             <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Deputy Principal Officer ${dpoIndex+1}:</strong></p>
                                 <c:set var="dpoIndex" value="${dpoIndex=dpoIndex+1}"></c:set>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Deputy Principal Officer<c:if test="${dpoSize > 1}"> ${dpoIndex}</c:if>:</strong></p>
                             </div>
                         </c:if>
                         <table class="col-xs-8">
