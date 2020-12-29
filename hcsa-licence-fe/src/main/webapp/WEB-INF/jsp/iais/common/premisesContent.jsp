@@ -198,10 +198,10 @@
                     <iais:value id="onSiteSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                         <c:choose>
                             <c:when test="${appGrpPremisesDto.premisesType == onSite}">
-                                <iais:select cssClass="premSelect" id="onSiteSel" name="onSiteSelect"  options="premisesSelect" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
+                                <iais:select cssClass="premSelect" id="onSiteSel" name="onSiteSelect"  options="premisesSelect" needSort="false"  value="${appGrpPremisesDto.premisesSelect}"></iais:select>
                             </c:when>
                             <c:otherwise>
-                                <iais:select cssClass="premSelect" id="onSiteSel" name="onSiteSelect"  options="premisesSelect" value=""></iais:select>
+                                <iais:select cssClass="premSelect" id="onSiteSel" name="onSiteSelect"  options="premisesSelect" needSort="false"  value=""></iais:select>
                             </c:otherwise>
                         </c:choose>
                     </iais:value>
@@ -211,10 +211,10 @@
                     <iais:value id="conveyanceSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                         <c:choose>
                             <c:when test="${appGrpPremisesDto.premisesType == conv}">
-                                <iais:select cssClass="premSelect" id="conveyanceSel" name="conveyanceSelect"  options="conveyancePremSel" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
+                                <iais:select cssClass="premSelect" id="conveyanceSel" name="conveyanceSelect"  options="conveyancePremSel" needSort="false"  value="${appGrpPremisesDto.premisesSelect}"></iais:select>
                             </c:when>
                             <c:otherwise>
-                                <iais:select cssClass="premSelect" id="conveyanceSel" name="conveyanceSelect"  options="conveyancePremSel" value=""></iais:select>
+                                <iais:select cssClass="premSelect" id="conveyanceSel" name="conveyanceSelect"  options="conveyancePremSel" needSort="false"  value=""></iais:select>
                             </c:otherwise>
                         </c:choose>
                     </iais:value>
@@ -224,10 +224,10 @@
                     <iais:value id="offSiteSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                         <c:choose>
                             <c:when test="${appGrpPremisesDto.premisesType == offSite}">
-                                <iais:select cssClass="premSelect" id="offSiteSel" name="offSiteSelect"  options="offSitePremSel" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
+                                <iais:select cssClass="premSelect" id="offSiteSel" name="offSiteSelect"  options="offSitePremSel" needSort="false"  value="${appGrpPremisesDto.premisesSelect}"></iais:select>
                             </c:when>
                             <c:otherwise>
-                                <iais:select cssClass="premSelect" id="offSiteSel" name="offSiteSelect"  options="offSitePremSel" value=""></iais:select>
+                                <iais:select cssClass="premSelect" id="offSiteSel" name="offSiteSelect"  options="offSitePremSel" needSort="false"  value=""></iais:select>
                             </c:otherwise>
                         </c:choose>
                     </iais:value>
@@ -284,7 +284,7 @@
                     <iais:row>
                         <iais:field value="Address Type " mandatory="true" width="12"/>
                         <iais:value id="onSiteAddressType${premValue}" cssClass="col-xs-7 col-sm-4 col-md-5 addressType">
-                            <iais:select cssClass="onSiteAddressType" name="onSiteAddressType" id="onSiteAddressType" options="addressType" value="${appGrpPremisesDto.addrType}" ></iais:select>
+                            <iais:select cssClass="onSiteAddressType" name="onSiteAddressType" id="onSiteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" needSort="false" firstOption="Please Select" value="${appGrpPremisesDto.addrType}" ></iais:select>
                             <span class="error-msg" name="iaisErrorMsg" id="error_addrType${status.index}"></span>
                         </iais:value>
                     </iais:row>
@@ -572,7 +572,7 @@
                     <iais:row>
                         <iais:field value="Address Type " mandatory="true" width="12"/>
                         <iais:value id="conveyanceAddrType${premValue}" cssClass="col-xs-7 col-sm-4 col-md-5 addressType">
-                            <iais:select name="conveyanceAddrType" cssClass="conveyanceAddressType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Please Select" value="${appGrpPremisesDto.conveyanceAddressType}"></iais:select>
+                            <iais:select name="conveyanceAddrType" cssClass="conveyanceAddressType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" needSort="false" firstOption="Please Select"  value="${appGrpPremisesDto.conveyanceAddressType}"></iais:select>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceAddressType${status.index}"></span>
                         </iais:value>
                     </iais:row>
@@ -827,7 +827,7 @@
                     <iais:row>
                         <iais:field value="Address Type " mandatory="true" width="12"/>
                         <iais:value id="offSiteAddrType${premValue}" cssClass="col-xs-7 col-sm-4 col-md-5 addressType">
-                            <iais:select name="offSiteAddrType" cssClass="offSiteAddressType" id="offSiteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Please Select" value="${appGrpPremisesDto.offSiteAddressType}"></iais:select>
+                            <iais:select name="offSiteAddrType" cssClass="offSiteAddressType" id="offSiteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" needSort="false" firstOption="Please Select" value="${appGrpPremisesDto.offSiteAddressType}"></iais:select>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteAddressType${status.index}"></span>
                         </iais:value>
                     </iais:row>

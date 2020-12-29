@@ -101,7 +101,7 @@
                             </div>
                             <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
                               <div class="">
-                                <iais:select cssClass="poSelect"  name="poSelect" options="PrincipalOfficersAssignSelect"  value="${principalOfficer.assignSelect}" ></iais:select>
+                                <iais:select cssClass="poSelect"  name="poSelect" options="PrincipalOfficersAssignSelect" needSort="false"  value="${principalOfficer.assignSelect}" ></iais:select>
                                 <div id="control--runtime--2--errorMsg_right" style="display: none;" class="error_placements"></div>
                                 <span id="error_assignSelect${suffix}" name="iaisErrorMsg" class="error-msg"></span>
                               </div>
@@ -140,7 +140,7 @@
                             </div>
                             <div class="col-sm-4">
                               <div class="" id="idType${suffix}">
-                                <iais:select cssClass="idType"  name="idType"  value="${principalOfficer.idType}" options="IdTypeSelect"></iais:select>
+                                <iais:select cssClass="idType"  name="idType"  value="${principalOfficer.idType}" needSort="false" options="IdTypeSelect"></iais:select>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_idType${status.index}"></span>
                               </div>
                             </div>
@@ -293,7 +293,7 @@
                   </div>
                   <c:if test="${DeputyPrincipalOfficersMandatory> 0}">
                   <div class="col-sm-5 col-md-8" >
-                    <iais:select cssClass="deputySelect"  name="deputyPrincipalOfficer" options="DeputyFlagSelect"  value="${DeputyPoFlag}" ></iais:select>
+                    <iais:select cssClass="deputySelect"  name="deputyPrincipalOfficer" options="DeputyFlagSelect" needSort="false"  value="${DeputyPoFlag}" ></iais:select>
                     <br/>
                     <br/>
                     <br/>
@@ -377,7 +377,7 @@
                             Assign a Deputy Principal Officer
                           </div>
                           <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
-                            <iais:select cssClass="deputyPoSelect"  name="deputyPoSelect" options="DeputyPrincipalOfficersAssignSelect"  value="${deputy.assignSelect}" ></iais:select>
+                            <iais:select cssClass="deputyPoSelect"  name="deputyPoSelect" options="DeputyPrincipalOfficersAssignSelect" needSort="false" value="${deputy.assignSelect}" ></iais:select>
                             <span id="error_deputyAssignSelect${status.index}" name="iaisErrorMsg" class="error-msg"></span>
                           </div>
                         </div>
@@ -414,7 +414,7 @@
                             </div>
                             <div class="col-sm-4" id="deputyIdType${suffix}">
                               <div class="">
-                                <iais:select cssClass="deputyIdType"  name="deputyIdType" value="${deputy.idType}" options="IdTypeSelect"></iais:select>
+                                <iais:select cssClass="deputyIdType"  name="deputyIdType" value="${deputy.idType}" needSort="false" options="IdTypeSelect"></iais:select>
                                 <span name="iaisErrorMsg" class="error-msg" id="error_deputyIdType${status.index}"></span>
                               </div>
                             </div>

@@ -95,7 +95,7 @@
                                 </div>
                                 <div class="col-sm-5 col-md-7" id="assignSelect">
                                     <div class="">
-                                        <iais:select cssClass="assignSel"  name="assignSel" options="MedAlertAssignSelect"  value="${medAlertPsn.assignSelect}" ></iais:select>
+                                        <iais:select cssClass="assignSel"  name="assignSel" options="MedAlertAssignSelect" needSort="false"  value="${medAlertPsn.assignSelect}" ></iais:select>
                                         <span id="error_assignSelect${status.index}" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
                                 </div>
@@ -133,7 +133,7 @@
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="">
-                                        <iais:select cssClass="idType idTypeSel"  name="idType"  value="${medAlertPsn.idType}" options="IdTypeSelect"></iais:select>
+                                        <iais:select cssClass="idType idTypeSel"  name="idType" needSort="false" value="${medAlertPsn.idType}" options="IdTypeSelect"></iais:select>
                                         <span class="error-msg" id="error_idTyp${status.index}" name="iaisErrorMsg"></span>
                                     </div>
                                 </div>

@@ -2809,6 +2809,7 @@ public class ClinicalLaboratoryDelegator {
         } else if (AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(currentSvcCod)) {
 
         }
+        NewApplicationHelper.doSortSelOption(personnelTypeSel);
         return personnelTypeSel;
     }
 
@@ -2857,6 +2858,7 @@ public class ClinicalLaboratoryDelegator {
         } else if (AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(currentSvcCod)) {
 
         }
+        NewApplicationHelper.doSortSelOption(designation);
         return designation;
     }
 

@@ -337,7 +337,7 @@ public class NewApplicationDelegator {
         NewApplicationHelper.setPremSelect(bpc.request, licAppGrpPremisesDtoMap);
         ParamUtil.setSessionAttr(bpc.request, LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);
         //addressType
-        NewApplicationHelper.setPremAddressSelect(bpc.request);
+        //NewApplicationHelper.setPremAddressSelect(bpc.request);
 
         //get premises type
         if (!IaisCommonUtils.isEmpty(svcIds)) {
@@ -365,11 +365,11 @@ public class NewApplicationDelegator {
         }
 
         //addressType
-        List<SelectOption> addrTypeOpt = new ArrayList<>();
+        /*List<SelectOption> addrTypeOpt = new ArrayList<>();
         SelectOption addrTypeSp = new SelectOption("", FIRESTOPTION);
         addrTypeOpt.add(addrTypeSp);
         addrTypeOpt.addAll(MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE));
-        ParamUtil.setRequestAttr(bpc.request, "addressType", addrTypeOpt);
+        ParamUtil.setRequestAttr(bpc.request, "addressType", addrTypeOpt);*/
         //reload dateTime
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)) {

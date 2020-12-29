@@ -61,10 +61,10 @@ import java.lang.reflect.Modifier;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * NewApplicationHelper
@@ -296,9 +296,9 @@ public class NewApplicationHelper {
         SelectOption idType0 = new SelectOption("", NewApplicationDelegator.FIRESTOPTION);
         idTypeSelectList.add(idType0);
         SelectOption idType1 = new SelectOption("NRIC", "NRIC");
-        idTypeSelectList.add(idType1);
         SelectOption idType2 = new SelectOption("FIN", "FIN");
         idTypeSelectList.add(idType2);
+        idTypeSelectList.add(idType1);
         return idTypeSelectList;
     }
 
@@ -626,40 +626,43 @@ public class NewApplicationHelper {
 
     public static String generateDropDownHtml(Map<String, String> premisesOnSiteAttr, List<SelectOption> selectOptionList, String firestOption, String checkedVal){
         //sort dropdown
-        TreeMap<String,String> treeMap = new TreeMap<>();
         List<SelectOption> sortSelOptionList = IaisCommonUtils.genNewArrayList();
-        for(SelectOption sp:selectOptionList){
-            if(StringUtil.isEmpty(sp.getValue()) || "-1".equals(sp.getValue())){
-                sortSelOptionList.add(sp);
-                break;
-            }
-        }
-        for(SelectOption sp:selectOptionList){
-            if(NewApplicationConstant.NEW_PREMISES.equals(sp.getValue())){
-                sortSelOptionList.add(sp);
-                break;
-            }
-        }
-        for(SelectOption sp:selectOptionList){
-            if(NewApplicationConstant.NEW_PSN.equals(sp.getValue())){
-                sortSelOptionList.add(sp);
-                break;
-            }
-        }
 
+        List<SelectOption> pleaseSelectSp = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> newPremisesSp = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> newPsnSp = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> otherSp =  IaisCommonUtils.genNewArrayList();
         for(SelectOption sp:selectOptionList){
-            boolean pleaseSelectVal = StringUtil.isEmpty(sp.getValue()) || "-1".equals(sp.getValue());
-            boolean newPremisesVal = NewApplicationConstant.NEW_PREMISES.equals(sp.getValue());
-            boolean newPsnVal = NewApplicationConstant.NEW_PSN.equals(sp.getValue());
-            if(pleaseSelectVal || newPremisesVal || newPsnVal){
+            String val = sp.getValue();
+            if(StringUtil.isEmpty(sp.getValue()) || "-1".equals(val)){
+                pleaseSelectSp.add(sp);
+            }else if(NewApplicationConstant.NEW_PREMISES.equals(val)){
+                newPremisesSp.add(sp);
+            }else if(NewApplicationConstant.NEW_PSN.equals(val)){
+                newPsnSp.add(sp);
+            }else if("other".equals(val)){
+                otherSp.add(sp);
+            }
+        }
+        sortSelOptionList.addAll(pleaseSelectSp);
+        sortSelOptionList.addAll(newPremisesSp);
+        sortSelOptionList.addAll(newPsnSp);
+
+        List<SelectOption> needSortList = IaisCommonUtils.genNewArrayList();
+        for(SelectOption sp:selectOptionList){
+            String val = sp.getValue();
+            boolean pleaseSelectVal = StringUtil.isEmpty(val) || "-1".equals(val);
+            boolean newPremisesVal = NewApplicationConstant.NEW_PREMISES.equals(val);
+            boolean newPsnVal = NewApplicationConstant.NEW_PSN.equals(val);
+            boolean otherVal = "other".equals(val);
+            if(pleaseSelectVal || newPremisesVal || newPsnVal || otherVal){
                 continue;
             }
-            treeMap.put(sp.getText(),sp.getValue());
+            needSortList.add(sp);
         }
-        for(String text:treeMap.keySet()){
-            sortSelOptionList.add(new SelectOption(treeMap.get(text),text));
-        }
-
+        doSortSelOption(needSortList);
+        sortSelOptionList.addAll(needSortList);
+        sortSelOptionList.addAll(otherSp);
 
         StringBuilder sBuffer = new StringBuilder(100);
         sBuffer.append("<select ");
@@ -1580,8 +1583,8 @@ public class NewApplicationHelper {
                 SelectOption ssl2 = new SelectOption("Pathology", "Pathology");
                 SelectOption ssl3 = new SelectOption("Haematology", "Haematology");
                 specialtySelectList.add(ssl1);
-                specialtySelectList.add(ssl2);
                 specialtySelectList.add(ssl3);
+                specialtySelectList.add(ssl2);
                 if(needOtherOpt){
                     SelectOption ssl4 = new SelectOption("other", "Others");
                     specialtySelectList.add(ssl4);
@@ -1609,9 +1612,10 @@ public class NewApplicationHelper {
                 SelectOption ssl5 = new SelectOption("Haematology", "Haematology");
                 specialtySelectList.add(ssl1);
                 specialtySelectList.add(ssl2);
+                specialtySelectList.add(ssl5);
                 specialtySelectList.add(ssl3);
                 specialtySelectList.add(ssl4);
-                specialtySelectList.add(ssl5);
+
                 if(needOtherOpt){
                     SelectOption ssl6 = new SelectOption("other", "Others");
                     specialtySelectList.add(ssl6);
@@ -1631,10 +1635,10 @@ public class NewApplicationHelper {
         SelectOption ssl5 = new SelectOption("Nuclear Medicine", "Nuclear Medicine");
         SelectOption ssl6 = new SelectOption("other", "Others");
         specialtySelectList.add(ssl1);
-        specialtySelectList.add(ssl2);
-        specialtySelectList.add(ssl3);
         specialtySelectList.add(ssl4);
+        specialtySelectList.add(ssl3);
         specialtySelectList.add(ssl5);
+        specialtySelectList.add(ssl2);
         specialtySelectList.add(ssl6);
         return specialtySelectList;
     }
@@ -1732,31 +1736,46 @@ public class NewApplicationHelper {
         if(appSubmissionDto != null){
             appType = appSubmissionDto.getAppType();
         }
-        List premisesSelect = getPremisesSel(appType);
-        List conveyancePremSel = getPremisesSel(appType);
-        List offSitePremSel = getPremisesSel(appType);
+        List<SelectOption> premisesSelect = getPremisesSel(appType);
+        List<SelectOption> conveyancePremSel = getPremisesSel(appType);
+        List<SelectOption> offSitePremSel = getPremisesSel(appType);
+        List<SelectOption> existingOnsitePrem = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> existingConvPrem = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> existingOffsitePrem = IaisCommonUtils.genNewArrayList();
         if (licAppGrpPremisesDtoMap != null && !licAppGrpPremisesDtoMap.isEmpty()) {
             for (AppGrpPremisesDto item : licAppGrpPremisesDtoMap.values()) {
                 SelectOption sp= new SelectOption(item.getPremisesSelect(), item.getAddress());
                 if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())) {
-                    premisesSelect.add(sp);
+                    existingOnsitePrem.add(sp);
                 }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())){
-                    conveyancePremSel.add(sp);
+                    existingConvPrem.add(sp);
                 }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(item.getPremisesType())){
-                    offSitePremSel.add(sp);
+                    existingOffsitePrem.add(sp);
                 }
             }
         }
+        //sort
+        doSortSelOption(existingOnsitePrem);
+        doSortSelOption(existingConvPrem);
+        doSortSelOption(existingOffsitePrem);
+        premisesSelect.addAll(existingOnsitePrem);
+        conveyancePremSel.addAll(existingConvPrem);
+        offSitePremSel.addAll(existingOffsitePrem);
         ParamUtil.setSessionAttr(request, "premisesSelect", (Serializable) premisesSelect);
         ParamUtil.setSessionAttr(request, "conveyancePremSel", (Serializable) conveyancePremSel);
         ParamUtil.setSessionAttr(request, "offSitePremSel", (Serializable) offSitePremSel);
     }
 
+    public static void doSortSelOption(List<SelectOption> selectOptions){
+        Collections.sort(selectOptions,(s1,s2)->(s1.getText().compareTo(s2.getText())));
+    }
+
     public static void setPremAddressSelect(HttpServletRequest request){
         List<SelectOption> addrTypeOpt = new ArrayList<>();
-        SelectOption addrTypeSp = new SelectOption("",NewApplicationDelegator.FIRESTOPTION);
-        addrTypeOpt.add(addrTypeSp);
+        /*SelectOption addrTypeSp = new SelectOption("",NewApplicationDelegator.FIRESTOPTION);
+        addrTypeOpt.add(addrTypeSp);*/
         addrTypeOpt.addAll(MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE));
+        doSortSelOption(addrTypeOpt);
         ParamUtil.setRequestAttr(request,"addressType",addrTypeOpt);
     }
 

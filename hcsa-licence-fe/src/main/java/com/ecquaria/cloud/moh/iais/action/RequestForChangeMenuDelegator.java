@@ -356,7 +356,7 @@ public class RequestForChangeMenuDelegator {
             //premise select
             NewApplicationHelper.setPremSelect(bpc.request, licAppGrpPremisesDtoMap);
             //addressType
-            NewApplicationHelper.setPremAddressSelect(bpc.request);
+            //NewApplicationHelper.setPremAddressSelect(bpc.request);
             ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);
             if (rfi == null) {
                 //when rfc/renew check is select existing premises

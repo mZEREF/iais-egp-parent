@@ -192,6 +192,7 @@
                                                                             <iais:select cssClass="assignSel"
                                                                                          name="assignSelect"
                                                                                          options="CgoSelectList"
+                                                                                         needSort="false"
                                                                                          value="${currentCgo.assignSelect}"></iais:select>
                                                                             <span class="error-msg" name="iaisErrorMsg"
                                                                                   id="error_assignSelect${status.index}"></span>
@@ -260,6 +261,7 @@
                                                                                 <div class="">
                                                                                     <iais:select cssClass="idTypeSel"
                                                                                                  name="idType"
+                                                                                                 needSort="false"
                                                                                                  value="${currentCgo.idType}"
                                                                                                  options="IdTypeSelect"></iais:select>
                                                                                     <span class="error-msg"
@@ -408,6 +410,7 @@
                                                                                                         cssClass="specialty"
                                                                                                         name="specialty"
                                                                                                         options="SpecialtySelectList"
+                                                                                                        needSort="false"
                                                                                                         value="${currentCgo.speciality}"></iais:select>
                                                                                                 <span class="error-msg"
                                                                                                       name="iaisErrorMsg"
