@@ -178,7 +178,7 @@ public class BackendInboxDelegator {
         ParamUtil.setSessionAttr(bpc.request, "backendinboxSearchParam", searchParamGroup);
 
         String hci_name = (String) searchParamGroup.getFilters().get("hci_name");
-        String address = (String) searchParamGroup.getFilters().get("address");
+        String address = (String) searchParamGroup.getFilters().get("hci_address");
         String application_no = (String) searchParamGroup.getFilters().get("application_no");
         if(!StringUtil.isEmpty(hci_name)){
             hci_name = hci_name.substring(1,hci_name.length()-1);
@@ -190,7 +190,7 @@ public class BackendInboxDelegator {
             application_no = application_no.substring(1,application_no.length()-1);
         }
         ParamUtil.setRequestAttr(bpc.request, "hci_name", hci_name);
-        ParamUtil.setRequestAttr(bpc.request, "address", address);
+        ParamUtil.setRequestAttr(bpc.request, "hci_address", address);
         ParamUtil.setRequestAttr(bpc.request, "application_no", application_no);
         ParamUtil.setRequestAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
         ParamUtil.setRequestAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
@@ -1487,9 +1487,9 @@ public class BackendInboxDelegator {
                         statusi++;
                     }
                 }
-                ParamUtil.setSessionAttr(bpc.request,"application_status",null);
-                ParamUtil.setRequestAttr(bpc.request, "application_status", application_status);
+                ParamUtil.setSessionAttr(bpc.request, "application_status", application_status);
             }else{
+                ParamUtil.setSessionAttr(bpc.request, "application_status", null);
                 searchParamGroup.removeFilter("application_status");
                 searchParamAjax.removeFilter("application_status");
             }
@@ -1499,8 +1499,8 @@ public class BackendInboxDelegator {
                 searchParamGroup.addFilter("hci_address", "%" +hci_address +"%",true);
                 searchParamAjax.addFilter("hci_address", "%" +hci_address +"%",true);
             }else{
-                searchParamGroup.removeFilter("address");
-                searchParamAjax.removeFilter("address");
+                searchParamGroup.removeFilter("hci_address");
+                searchParamAjax.removeFilter("hci_address");
             }
 
             if(!StringUtil.isEmpty(hci_name)){

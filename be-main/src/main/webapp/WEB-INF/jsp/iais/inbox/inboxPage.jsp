@@ -105,7 +105,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">HCI Address</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input type="text" name="hci_address" value="${address}"/>
+                                <input type="text" name="hci_address" value="${hci_address}"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -264,10 +264,25 @@
         $('input[name="hci_code"]').val("");
         $('input[name="hci_address"]').val("");
         $('input[name="hci_name"]').val("");
+        $('input[name="application_status"]').val("");
         $("#application_type option:first").prop("selected", 'selected');
         $("#application_status option:first").prop("selected", 'selected');
         $("#inspector_name option:first").prop("selected", 'selected');
         $("#searchCondition .current").text("Please Select");
+
+
+        $.ajax({
+            data: {remove: 1},
+            type: "POST",
+            dataType: 'json',
+            url: '/main-web/backend/removeSearchParam.do',
+            error: function (data) {
+
+            },
+            success: function (data) {
+
+            }
+        })
     })
     function cancel() {
         $('#support').modal('hide');

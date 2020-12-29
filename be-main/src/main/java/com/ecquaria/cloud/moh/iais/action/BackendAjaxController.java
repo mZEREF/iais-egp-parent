@@ -253,6 +253,17 @@ public class BackendAjaxController {
         return map;
     }
 
+    @PostMapping(value = "removeSearchParam.do")
+    public @ResponseBody
+    Map<String, String> removeSearchParam(HttpServletRequest request) {
+        ParamUtil.setSessionAttr(request,"application_status",null);
+
+        Map<String, String> result = new HashMap<>();
+        result.put("remove","suc");
+        return result;
+    }
+
+
     private boolean checkCanApproveStage(HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto){
         if(hcsaSvcRoutingStageDto == null){
             return false;
