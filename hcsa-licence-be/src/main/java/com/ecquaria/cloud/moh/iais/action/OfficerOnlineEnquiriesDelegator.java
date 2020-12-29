@@ -727,7 +727,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 sb.append('(');
                 for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
                     if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
-                        sb.append("oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR");
+                        sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
                     }
                 }
                 sb.append("'1' = '0')");
@@ -1203,7 +1203,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     sb.append('(');
                     for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
                         if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
-                            sb.append("oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR");
+                            sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
                         }
                     }
                     sb.append("'1' = '0')");
