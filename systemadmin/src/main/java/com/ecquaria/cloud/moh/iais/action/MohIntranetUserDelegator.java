@@ -437,6 +437,8 @@ public class MohIntranetUserDelegator {
                 assignRoles.add(RoleConsts.USER_ROLE_AO2);
             }else if(assignRoles.contains(RoleConsts.USER_ROLE_AO3_LEAD)){
                 assignRoles.add(RoleConsts.USER_ROLE_AO3);
+            }else if(assignRoles.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)){
+                assignRoles.add(RoleConsts.USER_ROLE_INSPECTIOR);
             }
             assignRoles.removeAll(roleIds);
             for (String roleId : assignRoles) {
@@ -459,6 +461,7 @@ public class MohIntranetUserDelegator {
 
             //add group
             List<UserGroupCorrelationDto> userGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
+            List<UserGroupCorrelationDto> userGroupCorrelationDtosNotLeader = IaisCommonUtils.genNewArrayList();
             groupIds.forEach((groupId, isLeader) -> {
                 UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
                 userGroupCorrelationDto.setUserId(userAccId);
@@ -469,6 +472,28 @@ public class MohIntranetUserDelegator {
                 userGroupCorrelationDtos.add(userGroupCorrelationDto);
             });
             if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
+                List<String> groupIdsSearch = IaisCommonUtils.genNewArrayList();
+                for(UserGroupCorrelationDto dto : userGroupCorrelationDtos){
+                    Integer isLeadForGroup = dto.getIsLeadForGroup();
+                    String groupId = dto.getGroupId();
+                    groupIdsSearch.clear();
+                    groupIdsSearch.add(groupId);
+                    if(isLeadForGroup==1){
+                        List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, groupIdsSearch,0);
+                        if(IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp)){
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserId(userAccId);
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(0);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtosNotLeader.add(userGroupCorrelationDto);
+                        }
+                    }
+                }
+                if(!IaisCommonUtils.isEmpty(userGroupCorrelationDtosNotLeader)){
+                    userGroupCorrelationDtos.addAll(userGroupCorrelationDtosNotLeader);
+                }
                 intranetUserService.addUserGroupId(userGroupCorrelationDtos);
             }
         }
