@@ -15,7 +15,7 @@
                     <%String codeKey = request.getParameter("codeCategory")==null?"":request.getParameter("codeCategory");%>
                     <label class="col-xs-4 col-md-4 control-label" for="codeCategory">Master Code Category</label>
                     <div class="col-xs-6 col-sm-6 col-md-6">
-                        <iais:select name="codeCategory" options="allCodeCategory"
+                        <iais:select name="codeCategory" options="allCodeCategory" firstOption="Please Select"
                                      value="<%=codeKey%>"/>
                     </div>
                 </iais:value>
