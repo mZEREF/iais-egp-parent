@@ -42,7 +42,7 @@
                                             </c:if>
                                             <th class="premises-info">Premises</th>
                                             <th>Start Date</th>
-                                            <th>Expires On</th>
+                                            <th style="white-space: nowrap;">Expires On</th>
                                         </tr>
                                         </thead>
                                         <tbody>
