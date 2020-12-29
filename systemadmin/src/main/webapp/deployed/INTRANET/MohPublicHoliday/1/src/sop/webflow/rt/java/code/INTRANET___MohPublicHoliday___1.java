@@ -79,6 +79,10 @@ public class INTRANET___MohPublicHoliday___1 extends BaseProcessClass {
 	// 		doSort->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "sortRecords", this);
 	}
+	public void initial_OnStepProcess_0() throws Exception {
+	// 		initial->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "initial", this);
+	}
 	
 	
 	

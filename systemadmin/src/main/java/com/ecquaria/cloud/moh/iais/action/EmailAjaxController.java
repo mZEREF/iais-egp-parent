@@ -138,6 +138,20 @@ public class EmailAjaxController {
         return result;
     }
 
+    @RequestMapping(value = "removePublicSearchParam.do", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, String> removePublicSearchParam(HttpServletRequest request, HttpServletResponse response) {
+        ParamUtil.setSessionAttr(request,"year",null);
+        ParamUtil.setSessionAttr(request,"phCode",null);
+        ParamUtil.setSessionAttr(request,"nonWorking",null);
+        ParamUtil.setSessionAttr(request,"searchStatus",null);
+
+        Map<String, String> result = new HashMap<>();
+        result.put("remove","suc");
+        return result;
+    }
+
+
 
     @RequestMapping(value = "checkUse.do", method = RequestMethod.POST)
     public @ResponseBody

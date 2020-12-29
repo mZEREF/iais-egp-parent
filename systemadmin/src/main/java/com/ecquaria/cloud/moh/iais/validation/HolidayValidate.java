@@ -40,8 +40,10 @@ public class HolidayValidate implements CustomizeValidator {
                 errMap.put("sub_date", MessageUtil.getMessageDesc("OAPPT_ERR004"));
             }
             PublicHolidayDto publicHolidayDtoDate = publicHolidayService.publicHoliday(publicHolidayDto.getFromDate());
-            if(publicHolidayDtoDate != null){
-                errMap.put("sub_date", MessageUtil.getMessageDesc("OAPPT_ERR007"));
+            if(publicHolidayDtoDate != null ){
+                if(!(!StringUtil.isEmpty(publicHolidayDto.getId()) && publicHolidayDto.getId().equals(publicHolidayDtoDate.getId()))){
+                    errMap.put("sub_date", MessageUtil.getMessageDesc("OAPPT_ERR007"));
+                }
             }
 
         }

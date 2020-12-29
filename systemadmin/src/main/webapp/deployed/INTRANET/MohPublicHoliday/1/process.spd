@@ -2,7 +2,7 @@
 <Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohPublicHoliday" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
+  <StartStep defClass="" executor="" icon="" name="Step1" x="50" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -100,6 +100,13 @@
     <JavaCode defClass="" executor="" methodName="doSort_OnStepProcess_0" name="doSort_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="initial" x="140" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="initial_OnStepProcess_0" name="initial_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PublicHolidayPage" stageIndicator="" x="400" y="100">
@@ -123,9 +130,6 @@
  </Pages>
  <Forms/>
  <Links>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1" style="oblique">
-   <position>{(120,120)(270,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/PublicHolidayPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepare" style="oblique">
    <position>{(270,120)(420,120)}</position>
   </SynchronousLink>
@@ -140,9 +144,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/createValidation" linkstyle="Direct" name="" sourceName="/Pages/WebPage/CreatePage" style="oblique">
    <position>{(440,550)(220,550)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(240,440)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/createValidation" style="rectanular">
    <position>{(220,550)(240,440)}</position>
@@ -161,9 +162,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/editValidation" style="rectanular">
    <position>{(580,540)(600,450)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
-   <position>{(600,450)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/delete" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(720,120)(920,360)}</position>
@@ -207,12 +205,24 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSort" style="oblique">
    <position>{(1200,360)(270,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/initial" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Step1" style="rectanular">
+   <position>{(70,120)(160,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/initial" style="rectanular">
+   <position>{(160,120)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/initial" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(240,440)(160,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/initial" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(600,450)(160,120)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/createPerpare" componentIfTrue="/Steps/AutomaticStep/prepare" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="220" y="420">
+  <Condition componentIfFalse="/Steps/AutomaticStep/createPerpare" componentIfTrue="/Steps/AutomaticStep/initial" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="220" y="420">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Steps/AutomaticStep/editPrepare" componentIfTrue="/Steps/AutomaticStep/prepare" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="580" y="430">
+  <Condition componentIfFalse="/Steps/AutomaticStep/editPrepare" componentIfTrue="/Steps/AutomaticStep/initial" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="580" y="430">
    <Description/>
   </Condition>
  </Conditions>

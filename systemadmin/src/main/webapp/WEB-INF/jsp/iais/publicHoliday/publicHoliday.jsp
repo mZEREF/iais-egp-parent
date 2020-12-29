@@ -176,10 +176,22 @@
         $('input[name="nonWorking"]').val("");
         $("#searchStatus option:first").prop("selected", 'selected');
         $("#phCode option:first").prop("selected", 'selected');
+        $("#year option:first").prop("selected", 'selected');
         $(".searchdiv .current").text("Please Select");
 
-    })
+        $.ajax({
+            data: {remove: 1},
+            type: "POST",
+            dataType: 'json',
+            url: '/system-admin-web/emailAjax/removePublicSearchParam.do',
+            error: function (data) {
 
+            },
+            success: function (data) {
+
+            }
+        })
+    })
     function jumpToPagechangePage() {
         submit("page");
     }
@@ -193,4 +205,6 @@
         var fileName = Utils.getFileName(file);
         $(".fileNameDisplay").text(fileName);
     });
+
+
 </script>
