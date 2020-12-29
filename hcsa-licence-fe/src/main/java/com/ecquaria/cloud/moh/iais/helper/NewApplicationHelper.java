@@ -45,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
@@ -63,6 +64,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * NewApplicationHelper
@@ -623,6 +625,42 @@ public class NewApplicationHelper {
     }
 
     public static String generateDropDownHtml(Map<String, String> premisesOnSiteAttr, List<SelectOption> selectOptionList, String firestOption, String checkedVal){
+        //sort dropdown
+        TreeMap<String,String> treeMap = new TreeMap<>();
+        List<SelectOption> sortSelOptionList = IaisCommonUtils.genNewArrayList();
+        for(SelectOption sp:selectOptionList){
+            if(StringUtil.isEmpty(sp.getValue()) || "-1".equals(sp.getValue())){
+                sortSelOptionList.add(sp);
+                break;
+            }
+        }
+        for(SelectOption sp:selectOptionList){
+            if(NewApplicationConstant.NEW_PREMISES.equals(sp.getValue())){
+                sortSelOptionList.add(sp);
+                break;
+            }
+        }
+        for(SelectOption sp:selectOptionList){
+            if(NewApplicationConstant.NEW_PSN.equals(sp.getValue())){
+                sortSelOptionList.add(sp);
+                break;
+            }
+        }
+
+        for(SelectOption sp:selectOptionList){
+            boolean pleaseSelectVal = StringUtil.isEmpty(sp.getValue()) || "-1".equals(sp.getValue());
+            boolean newPremisesVal = NewApplicationConstant.NEW_PREMISES.equals(sp.getValue());
+            boolean newPsnVal = NewApplicationConstant.NEW_PSN.equals(sp.getValue());
+            if(pleaseSelectVal || newPremisesVal || newPsnVal){
+                continue;
+            }
+            treeMap.put(sp.getText(),sp.getValue());
+        }
+        for(String text:treeMap.keySet()){
+            sortSelOptionList.add(new SelectOption(treeMap.get(text),text));
+        }
+
+
         StringBuilder sBuffer = new StringBuilder(100);
         sBuffer.append("<select ");
         for(Map.Entry<String, String> entry : premisesOnSiteAttr.entrySet()){
@@ -639,7 +677,7 @@ public class NewApplicationHelper {
                     .append(firestOption)
                     .append("</option>");
         }
-        for(SelectOption sp:selectOptionList){
+        for(SelectOption sp:sortSelOptionList){
             if(!StringUtil.isEmpty(checkedVal)){
                 if(checkedVal.equals(sp.getValue())){
 //                    sBuffer.append("<option selected=\"selected\" value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
@@ -663,13 +701,13 @@ public class NewApplicationHelper {
         }
         sBuffer.append("<div class=\"nice-select ").append(className).append("\" tabindex=\"0\">");
         if(!StringUtil.isEmpty(checkedVal)){
-            String text = getTextByValue(selectOptionList,checkedVal);
+            String text = getTextByValue(sortSelOptionList,checkedVal);
             sBuffer.append("<span selected=\"selected\" class=\"current\">").append(text).append("</span>");
         }else{
             if(!StringUtil.isEmpty(firestOption)){
                 sBuffer.append("<span class=\"current\">").append(firestOption).append("</span>");
             }else{
-                sBuffer.append("<span class=\"current\">").append(selectOptionList.get(0).getText()).append("</span>");
+                sBuffer.append("<span class=\"current\">").append(sortSelOptionList.get(0).getText()).append("</span>");
             }
         }
         sBuffer.append("<ul class=\"list mCustomScrollbar _mCS_2 mCS_no_scrollbar\">")
@@ -677,7 +715,7 @@ public class NewApplicationHelper {
                 .append("<div id=\"mCSB_2_container\" class=\"mCSB_container mCS_y_hidden mCS_no_scrollbar_y\" style=\"position:relative; top:0; left:0;\" dir=\"ltr\">");
 
         if(!StringUtil.isEmpty(checkedVal)){
-            for(SelectOption kv:selectOptionList){
+            for(SelectOption kv:sortSelOptionList){
                 if(checkedVal.equals(kv.getValue())){
                     sBuffer.append("<li selected=\"selected\" data-value=\"").append(kv.getValue()).append("\" class=\"option selected\">").append(kv.getText()).append("</li>");
                 }else{
@@ -686,12 +724,12 @@ public class NewApplicationHelper {
             }
         }else if(!StringUtil.isEmpty(firestOption)){
             sBuffer.append("<li data-value=\"\" class=\"option selected\">").append(firestOption).append("</li>");
-            for(SelectOption kv:selectOptionList){
+            for(SelectOption kv:sortSelOptionList){
                 sBuffer.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option\">").append(kv.getText()).append("</li>");
             }
         }else{
-            for(int i = 0;i<selectOptionList.size();i++){
-                SelectOption kv = selectOptionList.get(i);
+            for(int i = 0;i<sortSelOptionList.size();i++){
+                SelectOption kv = sortSelOptionList.get(i);
                 if(i == 0){
                     sBuffer.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option selected\">").append(kv.getText()).append("</li>");
                 }else{
