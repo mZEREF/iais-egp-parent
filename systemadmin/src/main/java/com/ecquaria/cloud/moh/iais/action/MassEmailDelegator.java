@@ -47,6 +47,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -523,7 +524,11 @@ public class MassEmailDelegator {
             selectOptions.add(new SelectOption("Service Personnel","Service Personnel"));
             selectOptions.add(new SelectOption("MedAlert","MedAlert"));
         }
+        doSortSelOption(selectOptions);
         ParamUtil.setRequestAttr(bpc.request, "roleSelection",  (Serializable) selectOptions);
+    }
+    public static void doSortSelOption(List<SelectOption> selectOptions){
+        Collections.sort(selectOptions,(s1, s2)->(s1.getText().compareTo(s2.getText())));
     }
 
     private void searchRole(BaseProcessClass bpc){
@@ -551,6 +556,7 @@ public class MassEmailDelegator {
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT,"MedAlert"));
 
         }
+        doSortSelOption(selectOptions);
        ParamUtil.setRequestAttr(bpc.request, "roleSelection",  (Serializable) selectOptions);
     }
 

@@ -51,6 +51,7 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -636,8 +637,13 @@ public class BlastManagementDelegator {
             ) {
                 selectOptions.add(new SelectOption(item.getId(),item.getDisname()));
             }
+            doSortSelOption(selectOptions);
         }
         ParamUtil.setRequestAttr(bpc.request, "distribution",  (Serializable) selectOptions);
+    }
+
+    public static void doSortSelOption(List<SelectOption> selectOptions){
+        Collections.sort(selectOptions,(s1, s2)->(s1.getText().compareTo(s2.getText())));
     }
 
     public void writeSms(BaseProcessClass bpc){

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +68,7 @@ public class EmailAjaxController {
             selectOptions.add(new SelectOption("Service Personnel","Service Personnel"));
             selectOptions.add(new SelectOption("MedAlert","MedAlert"));
         }
+        doSortSelOption(selectOptions);
         Map<String, String> result = new HashMap<>();
         Map<String,String> roleAttr = IaisCommonUtils.genNewHashMap();
         roleAttr.put("class", "role");
@@ -102,6 +104,7 @@ public class EmailAjaxController {
         selectOptions.add(new SelectOption("Service Personnel","Service Personnel"));
         selectOptions.add(new SelectOption("MedAlert","MedAlert"));
     }
+        doSortSelOption(selectOptions);
         Map<String, String> result = new HashMap<>();
         Map<String,String> roleAttr = IaisCommonUtils.genNewHashMap();
         roleAttr.put("class", "role");
@@ -123,6 +126,7 @@ public class EmailAjaxController {
         distributionAttr.put("name", "distributionList");
         distributionAttr.put("style", "display: none;");
         List<SelectOption> selectOptions = getDistribution(request);
+        doSortSelOption(selectOptions);
         String distributionSelect = generateDropDownHtml(distributionAttr, selectOptions, "Please Select", null);
 
         result.put("distributionSelect",distributionSelect);
@@ -226,6 +230,10 @@ public class EmailAjaxController {
         }
         sBuffer.append("</div><span id=\"error_").append(name).append("\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>");
         return sBuffer.toString();
+    }
+
+    public static void doSortSelOption(List<SelectOption> selectOptions){
+        Collections.sort(selectOptions,(s1, s2)->(s1.getText().compareTo(s2.getText())));
     }
 
     private String generateDropDownHtml(Map<String, String> premisesOnSiteAttr, List<SelectOption> selectOptionList, String firestOption, String checkedVal){
