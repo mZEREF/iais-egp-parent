@@ -38,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.dto.HcsaConfigPageDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
@@ -129,6 +130,7 @@ public class ConfigServiceImpl implements ConfigService {
                 }
             }
         }
+        Collections.sort(entity,(s1,s2)->(s1.getSvcCode().compareTo(s2.getSvcCode())));
         return entity;
     }
 
@@ -246,7 +248,13 @@ public class ConfigServiceImpl implements ConfigService {
             selectOptionList.add(selectOption);
         }
         List<HcsaServiceCategoryDto> categoryDtos = getHcsaServiceCategoryDto();
+        Collections.sort(categoryDtos,(s1,s2)->(s1.getName().compareTo(s2.getName())));
         request.getSession().setAttribute("categoryDtos",categoryDtos);
+        Collections.sort(selectOptionList,(s1,s2)->(s1.getText().compareTo(s2.getText())));
+        String code[]={"SVTP001","SVTP002","SVTP003"};
+        List<SelectOption> selectOptionList1 = MasterCodeUtil.retrieveOptionsByCodes(code);
+        Collections.sort(selectOptionList1,(s1,s2)->(s1.getText().compareTo(s2.getText())));
+        request.getSession().setAttribute("codeSelectOptionList",selectOptionList1);
         request.getSession().setAttribute("selsectBaseHcsaServiceDto",selectOptionList);
     }
 
@@ -293,6 +301,7 @@ public class ConfigServiceImpl implements ConfigService {
                      selectOption.setValue(baseHcsaService.getId());
                      selectOptionList.add(selectOption);
                  }
+                 Collections.sort(selectOptionList,(s1,s2)->(s1.getText().compareTo(s2.getText())));
                  request.setAttribute("selsectBaseHcsaServiceDto",selectOptionList);
                  request.setAttribute("hcsaServiceStepSchemeDto", stringList);
                  request.setAttribute("PremisesType", premisesSet);
@@ -1004,7 +1013,11 @@ public class ConfigServiceImpl implements ConfigService {
     private void view(HttpServletRequest request, String crud_action_value) {
         HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(crud_action_value).getEntity();
         List<HcsaServiceCategoryDto> categoryDtos = getHcsaServiceCategoryDto();
+        Collections.sort(categoryDtos,(s1,s2)->(s1.getName().compareTo(s2.getName())));
         request.getSession().setAttribute("categoryDtos",categoryDtos);
+        String code[]={"SVTP001","SVTP002","SVTP003"};
+        List<SelectOption> selectOptionList = MasterCodeUtil.retrieveOptionsByCodes(code);
+        request.getSession().setAttribute("codeSelectOptionList",selectOptionList);
         Boolean flag = hcsaConfigClient.serviceIdIsUsed(crud_action_value).getEntity();
         List<LicenceDto> entity = hcsaLicenceClient.getLicenceDtosBySvcName(hcsaServiceDto.getSvcName()).getEntity();
         if(flag || !entity.isEmpty()){
@@ -1268,6 +1281,7 @@ public class ConfigServiceImpl implements ConfigService {
             request.setAttribute("selectSubsumption",string.substring(0,string.lastIndexOf('#')));
             request.setAttribute("selectPreRequisite",string.substring(0,string.lastIndexOf('#')));
         }
+        Collections.sort(selectOptionList,(s1,s2)->(s1.getText().compareTo(s2.getText())));
         request.setAttribute("selsectBaseHcsaServiceDto",selectOptionList);
         request.setAttribute("hcsaServiceDto", hcsaServiceDto);
         String id = hcsaServiceDto.getId();

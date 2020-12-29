@@ -38,7 +38,10 @@
           <label style="font-size: 25px">Reason For Appeal<span class="mandatory"> *</span></label>
           <select id="reasonSelect" name="reasonSelect" style="margin-left: 2%">
             <option value="">Please Select</option>
-            <c:if test="${rejectEqDay==true}">
+            <c:forEach items="${selectOptionList}" var="selectOption">
+              <option value="${selectOption.value}" <c:if test="${appPremiseMiscDto.reason==selectOption.value}">selected="selected"</c:if> >${selectOption.text}</option>
+            </c:forEach>
+           <%-- <c:if test="${rejectEqDay==true}">
               <c:if test="${type=='application'}"><c:if test="${applicationAPPROVED=='APPROVED'}">
                 <option value="MS001" <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option></c:if>
               </c:if>
@@ -63,7 +66,7 @@
             </c:if>
             <c:if test="${otherEqDay==true}">
               <option value="MS007" <c:if test="${appPremiseMiscDto.reason=='MS007'}">selected="selected"</c:if>>Others</option>
-            </c:if>
+            </c:if>--%>
              <%--<option value="MS006" <c:if test="${appPremiseMiscDto.reason=='MS006'}">selected="selected"</c:if>>Appeal against revocation</option>--%>
           </select>
 
@@ -134,8 +137,6 @@
               <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Upload</a>
 
             </div>
-            <span name="iaisErrorMsg" class="error-msg" id="error_file"></span>
-            <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
             <div class="col-xs-12 col-md-4" >
               <span  name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
                   <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${fileReportIdForAppeal}"/>&fileRepoName=${filename}" title="Download" class="downloadFile">${filename}</a></span>
@@ -146,7 +147,13 @@
             </div>
           </div>
         </div>
+        <div class="col-xs-12">
+          <span name="iaisErrorMsg" class="error-msg" id="error_file"></span>
+          <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
+        </div>
+
       </div>
+
     </div>
   </div>
     </div>

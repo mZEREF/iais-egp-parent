@@ -86,6 +86,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -374,6 +375,7 @@ public class AppealServiceImpl implements AppealService {
     }
 
     private void typeApplicationOrLicence(HttpServletRequest request, String type, String appealingFor) {
+        List<SelectOption> selectOptionList=new ArrayList<>(7);
         if (LICENCE.equals(type)) {
             LicenceDto licenceDto = licenceClient.getLicDtoById(appealingFor).getEntity();
             Date createdAt = licenceDto.getCreatedAt();
@@ -381,10 +383,22 @@ public class AppealServiceImpl implements AppealService {
             calendar.setTime(createdAt);
             calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(systemParamConfig.getLicencePeriod()));
             boolean periodEqDay = calendar.getTime().after(new Date());
+            if(periodEqDay){
+                SelectOption selectOption1=new SelectOption();
+                selectOption1.setText("Appeal for change of licence period");
+                selectOption1.setValue("MS004");
+                selectOptionList.add(selectOption1);
+            }
             request.getSession().setAttribute("periodEqDay",periodEqDay);
             calendar.setTime(createdAt);
             calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(systemParamConfig.getAppealOthers()));
             boolean otherEqDay = calendar.getTime().after(new Date());
+            if(otherEqDay){
+                SelectOption selectOption=new SelectOption();
+                selectOption.setValue("MS007");
+                selectOption.setText("Others");
+                selectOptionList.add(selectOption);
+            }
             request.getSession().setAttribute("otherEqDay",otherEqDay);
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
@@ -420,10 +434,22 @@ public class AppealServiceImpl implements AppealService {
             calendar.setTime(createAt);
             calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(systemParamConfig.getRestrictedName()));
             boolean nameEqDay = calendar.getTime().after(new Date());
+            if(nameEqDay){
+                SelectOption selectOption1=new SelectOption();
+                selectOption1.setValue("MS008");
+                selectOption1.setText("Appeal against use of restricted words in HCI Name");
+                selectOptionList.add(selectOption1);
+            }
             request.getSession().setAttribute("nameEqDay",nameEqDay);
             calendar.setTime(createAt);
             calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(systemParamConfig.getAppealOthers()));
             boolean otherEqDay = calendar.getTime().after(new Date());
+            if(otherEqDay){
+                SelectOption selectOption1=new SelectOption();
+                selectOption1.setValue("MS007");
+                selectOption1.setText("Others");
+                selectOptionList.add(selectOption1);
+            }
             request.getSession().setAttribute("otherEqDay",otherEqDay);
             calendar.setTime(createAt);
             calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(systemParamConfig.getRenewalFee()));
@@ -436,6 +462,10 @@ public class AppealServiceImpl implements AppealService {
             if(cgoEqDay){
                 boolean maxCGOnumber = isMaxCGOnumber(applicationDto);
                 if (!maxCGOnumber) {
+                    SelectOption selectOption1=new SelectOption();
+                    selectOption1.setValue("MS003");
+                    selectOption1.setText("Appeal for appointment of additional CGO to a service");
+                    selectOptionList.add(selectOption1);
                     request.getSession().setAttribute("maxCGOnumber", !maxCGOnumber);
                 }
             }
@@ -445,6 +475,10 @@ public class AppealServiceImpl implements AppealService {
                 if (appFeeDetailsDto != null) {
                     try {
                         if (appFeeDetailsDto.getLaterFee() > 0.0) {
+                            SelectOption selectOption1=new SelectOption();
+                            selectOption1.setValue("MS002");
+                            selectOption1.setText("Appeal against late renewal fee");
+                            selectOptionList.add(selectOption1);
                             request.getSession().setAttribute("lateFee", Boolean.TRUE);
                         }
                     } catch (Exception e) {
@@ -480,12 +514,19 @@ public class AppealServiceImpl implements AppealService {
             request.setAttribute("applicationDto", applicationDto);
             String status = applicationDto.getStatus();
             if (ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(status)) {
+                if(rejectEqDay){
+                    SelectOption selectOption1=new SelectOption();
+                    selectOption1.setValue("MS001");
+                    selectOption1.setText("Appeal against rejection");
+                    selectOptionList.add(selectOption1);
+                }
                 request.getSession().setAttribute("applicationAPPROVED", "APPROVED");
             }
             request.getSession().setAttribute("appealNo", applicationDto.getApplicationNo());
             request.getSession().setAttribute("serviceId", applicationDto.getServiceId());
         }
-
+        Collections.sort(selectOptionList,(s1,s2)->(s1.getText().compareTo(s2.getText())));
+        request.getSession().setAttribute("selectOptionList",selectOptionList);
     }
 
     @Override

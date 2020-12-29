@@ -29,13 +29,10 @@
           <div class="col-xs-8 col-sm-6 col-md-5" style="margin-bottom: 1%">
             <select  name="module"  id="module" >
               <option  value="">Please Select</option>
-              <option <c:if test="${module=='APTY002'}">selected="selected"</c:if>  value="APTY002" >New</option>
-              <option <c:if test="${module=='APTY004'}">selected="selected"</c:if>  value="APTY004"  >Renewal</option>
-              <option  <c:if test="${module=='APTY005'}">selected="selected"</c:if> value="APTY005">Request for Change</option>
-              <option   <c:if test="${module=='APTY001'}">selected="selected"</c:if> value="APTY001">Appeal</option>
-              <option   <c:if test="${module=='APTY006'}">selected="selected"</c:if> value="APTY006" >Withdrawal</option>
-          <%--    <option  <c:if test="${module=='APTY003'}">selected="selected"</c:if>  value="APTY003">Revocation</option>--%>
-              <option  <c:if test="${module=='APTY008'}">selected="selected"</c:if> value="APTY008">Cessation</option>
+              <c:forEach items="${selectOptionList}" var="selectOption">
+                <option <c:if test="${module==selectOption.value}">selected="selected"</c:if>  value="${selectOption.value}" >${selectOption.text}</option>
+              </c:forEach>
+
             <%--  <option   <c:if test="${module=='APTY007'}">selected="selected"</c:if> value="APTY007">Suspension</option>--%>
             </select>
             <span name="iaisErrorMsg" id="error_module" class="error-msg"></span>

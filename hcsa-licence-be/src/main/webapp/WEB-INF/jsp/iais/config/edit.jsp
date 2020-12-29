@@ -98,9 +98,9 @@
             <select id="ServiceType" <c:if test="${hcsaServiceDto.serviceIsUsed}">disabled="disabled"</c:if> name="ServiceType">
 
               <option>Select one</option>
-              <option <c:if test="${hcsaServiceDto.svcType=='SVTP001'}">selected="selected"</c:if> value="SVTP001">Base</option>
-              <option <c:if test="${hcsaServiceDto.svcType=='SVTP002'}">selected="selected"</c:if> value="SVTP002">Subsumed</option>
-              <option <c:if test="${hcsaServiceDto.svcType=='SVTP003'}">selected="selected"</c:if> value="SVTP003">Specified</option>
+              <c:forEach var="codeSelectOption" items="${codeSelectOptionList}">
+                <option value="${codeSelectOption.value}" <c:if test="${hcsaServiceDto.svcType==codeSelectOption.value}">selected="selected"</c:if>>${codeSelectOption.text}</option>
+              </c:forEach>
             </select>
             <span class="error-msg" name="iaisErrorMsg" id="error_svcType"></span>
           </div>
@@ -516,12 +516,13 @@
                       <option value="common"
                               <c:if test="${routingStage.routingSchemeName=='common'}">selected="selected" </c:if>
                       >Common Pool</option>
-                      <option value="assign"
-                              <c:if test="${routingStage.routingSchemeName=='assign'}">selected="selected" </c:if>
-                      >Supervisor Assign</option>
                       <option value="round"
                               <c:if test="${routingStage.routingSchemeName=='round'}">selected="selected" </c:if>
                       >Round Robin</option>
+                      <option value="assign"
+                              <c:if test="${routingStage.routingSchemeName=='assign'}">selected="selected" </c:if>
+                      >Supervisor Assign</option>
+
                     </select>
                     <span name="iaisErrorMsg" class="error-msg" id="error_schemeType${routingStages.key}${status.index}"></span>
                   </div>

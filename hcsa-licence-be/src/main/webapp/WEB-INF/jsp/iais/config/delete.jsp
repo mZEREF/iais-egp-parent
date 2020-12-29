@@ -64,9 +64,9 @@
         <div class="col-xs-12 col-md-4" style="margin-bottom: 15px;">
           <select  id="ServiceType" disabled name="ServiceType">
             <option value="">Select one</option>
-            <option value="SVTP001" <c:if test="${hcsaServiceDto.svcType=='SVTP001'}">selected="selected"</c:if>>Base</option>
-            <option value="SVTP002" <c:if test="${hcsaServiceDto.svcType=='SVTP002'}">selected="selected"</c:if>>Subsumed</option>
-            <option value="SVTP003" <c:if test="${hcsaServiceDto.svcType=='SVTP003'}">selected="selected"</c:if> >Specified</option>
+            <c:forEach var="codeSelectOption" items="${codeSelectOptionList}">
+              <option value="${codeSelectOption.value}" <c:if test="${hcsaServiceDto.svcType==codeSelectOption.value}">selected="selected"</c:if>>${codeSelectOption.text}</option>
+            </c:forEach>
           </select>
         </div>
       </div>
@@ -433,12 +433,13 @@
                         <option value="common"
                                 <c:if test="${routingStage.routingSchemeName=='common'}">selected="selected" </c:if>
                         >Common Pool</option>
-                        <option value="assign"
-                                <c:if test="${routingStage.routingSchemeName=='assign'}">selected="selected" </c:if>
-                        >Supervisor Assign</option>
                         <option value="round"
                                 <c:if test="${routingStage.routingSchemeName=='round'}">selected="selected" </c:if>
                         >Round Robin</option>
+                        <option value="assign"
+                                <c:if test="${routingStage.routingSchemeName=='assign'}">selected="selected" </c:if>
+                        >Supervisor Assign</option>
+
                       </select>
                     </div>
 

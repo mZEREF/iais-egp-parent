@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
@@ -13,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.KpiAndReminderService;
@@ -27,6 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -93,7 +97,11 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
     @Override
     public void  getKpiAndReminder(HttpServletRequest request) {
         List<HcsaServiceDto> entity = hcsaConfigClient.getActiveServices().getEntity();
-
+        Collections.sort(entity,(s1,s2)->(s1.getSvcName().compareTo(s2.getSvcName())));
+        String[] code={"APTY002","APTY004","APTY005","APTY001","APTY006","APTY008"};
+        List<SelectOption> selectOptionList = MasterCodeUtil.retrieveOptionsByCodes(code);
+        Collections.sort(selectOptionList,(s1,s2)->(s1.getText().compareTo(s2.getText())));
+        request.getSession().setAttribute("selectOptionList",selectOptionList);
         request.getSession().setAttribute("hcsaServiceDtos",entity);
 
     }
