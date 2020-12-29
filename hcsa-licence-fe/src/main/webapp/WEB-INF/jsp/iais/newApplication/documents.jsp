@@ -78,7 +78,7 @@
                       <c:set var="file" value="${docMap.get(commKey)}"/>
                       <c:set var="commDelFlag" value="common${commonDoc.id}flag"/>
                       <div class="document-upload-list">
-                        <h3>${commonDoc.docTitle}</h3>
+                        <h3>${commonDoc.docTitle}<c:if test="${commonDoc.isMandatory}">&nbsp;<span class="mandatory">*</span></c:if></h3>
                         <div class="file-upload-gp">
                           <input class="hidden delFlag" type="hidden" name="${commDelFlag}" value="N"/>
                           <span>
@@ -119,7 +119,7 @@
                         <c:set var="primaryDoc" value="${docMap.get(premKey)}"/>
                         <c:set var="premDelFlag" value="prem${premDoc.id}${premIndexNo}flag"/>
                         <div class="document-upload-list">
-                          <h3>premises${premStatus.index+1}: ${premDoc.docTitle}</h3>
+                          <h3>premises${premStatus.index+1}: ${premDoc.docTitle}<c:if test="${premDoc.isMandatory}">&nbsp;<span class="mandatory">*</span></c:if></h3>
                           <div class="file-upload-gp">
                             <input class="hidden delFlag" type="hidden" name="${premDelFlag}" value="N"/>
                             <span  >
