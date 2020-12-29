@@ -1023,7 +1023,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 LicenceDto licenceDto = licenceClient.getLicBylicId(applicationDto.getOriginLicenceId()).getEntity();
                 if (licenceDto != null) {
                     String licenceStartDate = Formatter.formatDateTime(licenceDto.getStartDate(), AppConsts.DEFAULT_DATE_FORMAT);
-                    String licenceEndDate = Formatter.formatDateTime(licenceDto.getEndDate(), AppConsts.DEFAULT_DATE_FORMAT);
+                    String licenceEndDate = Formatter.formatDateTime(licenceDto.getExpiryDate(), AppConsts.DEFAULT_DATE_FORMAT);
                     String licensePeriod = licenceStartDate + " - " + licenceEndDate;
                     licencePeriods.add(licensePeriod);
                 }
