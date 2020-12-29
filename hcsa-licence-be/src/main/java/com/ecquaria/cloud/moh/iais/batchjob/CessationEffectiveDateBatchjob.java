@@ -254,6 +254,7 @@ public class CessationEffectiveDateBatchjob {
                 licenceDto.setAuditTrailDto(auditTrailDto);
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
                 licenceDto.setEndDate(date);
+                updateLicenceDtos.add(licenceDto);
                 if (specLicIdsAll.contains(licenceDto.getId())) {
                     continue;
                 }
