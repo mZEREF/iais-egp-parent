@@ -82,6 +82,7 @@
                                                     </button>
                                                 </iais:action>
                                             </p>
+                                            <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
                                         </div>
                                         <div class="tab-pane active" id="tabProcessing" role="tabpanel">
                                             <div class="alert alert-info" role="alert">
@@ -139,6 +140,7 @@
                                                     </iais:value >
                                                 </iais:row>
                                                 <iais:action>
+                                                    <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
                                                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doSend()">Submit</button>
                                                 </iais:action>
                                                 <br><br><br>
@@ -146,7 +148,6 @@
                                             <%@include file="/WEB-INF/jsp/iais/inspectionncList/processHistory.jsp"%>
                                         </div>
                                     </div>
-                                    <div align="left"><span><a  href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"> </em> Back</a></span></div>
                                 </div>
                             </div>
                         </div>

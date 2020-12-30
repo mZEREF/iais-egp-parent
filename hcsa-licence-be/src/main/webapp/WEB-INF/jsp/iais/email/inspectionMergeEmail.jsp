@@ -140,6 +140,7 @@
                                                     </c:if>
                                                 </iais:section>
                                                 <p class="text-right text-center-mobile">
+                                                    <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
 
                                                     <iais:action style="text-align:right;">
                                                         <button type="button" class="btn btn-secondary"
@@ -153,8 +154,6 @@
                                                 </p>
                                             </div>
                                         </div>
-                                        <div align="left"><span><a  href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"> </em> Back</a></span></div>
-
                                     </div>
                                 </div>
                             </div>

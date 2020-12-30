@@ -19,6 +19,7 @@
     </iais:row>
 </iais:section>
 <p class="text-right text-center-mobile">
+    <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
 
     <iais:action style="text-align:right;">
         <button type="button" class="btn btn-secondary" onclick="javascript:doPreview();">Preview</button>

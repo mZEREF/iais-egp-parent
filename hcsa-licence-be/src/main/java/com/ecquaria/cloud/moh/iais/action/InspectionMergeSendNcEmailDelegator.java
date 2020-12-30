@@ -230,7 +230,11 @@ public class InspectionMergeSendNcEmailDelegator {
             mapTemplate.put("HCI_Postal_Code", applicationViewDto.getHciPostalCode());
             mapTemplate.put("LicenseeName", licenseeDto.getName());
             AppPremisesRecommendationDto appPreRecommentdationDtoInspectionDate =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(correlationId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
-            mapTemplate.put("InspectionDate", Formatter.formatDate(appPreRecommentdationDtoInspectionDate.getRecomInDate()));
+            if(appPreRecommentdationDtoInspectionDate!=null){
+                mapTemplate.put("InspectionDate", Formatter.formatDate(appPreRecommentdationDtoInspectionDate.getRecomInDate()));
+            }else {
+                mapTemplate.put("InspectionDate", "-");
+            }
 //cancel old calendar
             AppPremisesInspecApptDto appPremisesInspecApptDto=inspectionTaskClient.getSpecificDtoByAppPremCorrId(correlationId).getEntity();
             ApptUserCalendarDto cancelCalendarDto = new ApptUserCalendarDto();
