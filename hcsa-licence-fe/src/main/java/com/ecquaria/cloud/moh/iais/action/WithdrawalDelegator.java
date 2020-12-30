@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -298,6 +299,11 @@ public class WithdrawalDelegator {
         WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
         withdrawnDto.setLicenseeId(loginContext.getLicenseeId());
         ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", withdrawnDto);
+        String messageId = (String)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+        InterMessageDto interMessageById = licFeInboxClient.getInterMessageById(messageId).getEntity();
+        if (MessageConstants.MESSAGE_STATUS_RESPONSE.equals(interMessageById.getStatus())){
+            ParamUtil.setRequestAttr(bpc.request, "rfi_already_err",MessageUtil.getMessageDesc("INBOX_ERR001"));
+        }
     }
 
     public void saveDateStep(BaseProcessClass bpc) throws IOException {

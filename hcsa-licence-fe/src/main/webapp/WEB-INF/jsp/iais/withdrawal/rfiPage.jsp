@@ -14,117 +14,132 @@
         <input type="hidden" name="withdraw_app_list" value="">
         <input type="hidden" id="configFileSize" value="${configFileSize}"/>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <div class="row">
-            <div class="col-lg-12 col-xs-12">
-                <div class="internet-content">
-                    <div class="center-content">
-                        <h2>You are withdrawing for </h2>
-                        <div class="row">
-                            <div class="col-lg-8 col-xs-12">
-                                <div class="withdraw-content-box">
-                                    <div class="withdraw-info-gp">
-                                        <div class="withdraw-info-row">
-                                            <div class="withdraw-info">
-                                                <p>${rfiWithdrawDto.applicationNo}</p>
-                                            </div>
-                                            <div class="withdraw-delete">
-                                                <!--   <p><a href="#"><i class="fa fa-trash-o"></i>Delete</a></p> -->
+        <c:choose>
+            <c:when test="${!empty rfi_already_err}">
+                <div class="row">
+                    <div class="col-lg-12 col-xs-12">
+                        <div class="internet-content">
+                            <div class="center-content">
+                                <label>${rfi_already_err}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <div class="row">
+                    <div class="col-lg-12 col-xs-12">
+                        <div class="internet-content">
+                            <div class="center-content">
+                                <h2>You are withdrawing for </h2>
+                                <div class="row">
+                                    <div class="col-lg-8 col-xs-12">
+                                        <div class="withdraw-content-box">
+                                            <div class="withdraw-info-gp">
+                                                <div class="withdraw-info-row">
+                                                    <div class="withdraw-info">
+                                                        <p>${rfiWithdrawDto.applicationNo}</p>
+                                                    </div>
+                                                    <div class="withdraw-delete">
+                                                        <!--   <p><a href="#"><i class="fa fa-trash-o"></i>Delete</a></p> -->
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div id="newappModal" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
-                            <!-- Modal content-->
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Select application for withdrawal</h4>
-                                </div>
-                                <div id="withdrawPagDiv"></div>
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="withdrawBodyDiv"></tbody>
-                                </table>
-                                <div class="modal-footer">
-                                    <a class="btn btn-primary withdraw-next" href="javascript:void(0);">Done</a>
+                            <div id="newappModal" class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title">Select application for withdrawal</h4>
+                                        </div>
+                                        <div id="withdrawPagDiv"></div>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="withdrawBodyDiv"></tbody>
+                                        </table>
+                                        <div class="modal-footer">
+                                            <a class="btn btn-primary withdraw-next" href="javascript:void(0);">Done</a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="center-content">
-                        <h3>Reason for Withdrawal<span style="color: red"> *</span></h3>
-                        <div class="row">
-                            <div class="col-md-7">
-                                <iais:select name="withdrawalReason" id="withdrawalReason"
-                                             options="withdrawalReasonList"
-                                             onchange="withdrawalReasons(this.value);"
-                                             value="${rfiWithdrawDto.withdrawnReason}"/>
-                                <span id="error_withdrawnReason" name="iaisErrorMsg" class="error-msg"></span>
+                            <div class="center-content">
+                                <h3>Reason for Withdrawal<span style="color: red"> *</span></h3>
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <iais:select name="withdrawalReason" id="withdrawalReason"
+                                                     options="withdrawalReasonList"
+                                                     onchange="withdrawalReasons(this.value);"
+                                                     value="${rfiWithdrawDto.withdrawnReason}"/>
+                                        <span id="error_withdrawnReason" name="iaisErrorMsg" class="error-msg"></span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div id="reason"
-                         <c:if test="${rfiWithdrawDto.withdrawnReason != 'WDR005' || rfiWithdrawDto.withdrawnReason== null}">hidden</c:if>>
-                        <div class="row">
-                            <div class="center-content">
-                                <label class="col-md-4" style="font-size:2rem">Remarks<span style="color: red"> *</span></label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="center-content">
-                                <div class="col-md-6">
-                                    <div class="file-upload-gp">
+                            <div id="reason"
+                                 <c:if test="${rfiWithdrawDto.withdrawnReason != 'WDR005' || rfiWithdrawDto.withdrawnReason== null}">hidden</c:if>>
+                                <div class="row">
+                                    <div class="center-content">
+                                        <label class="col-md-4" style="font-size:2rem">Remarks<span style="color: red"> *</span></label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="center-content">
+                                        <div class="col-md-6">
+                                            <div class="file-upload-gp">
                                             <textarea name="withdrawnRemarks" cols="90" rows="15" id="withdrawnRemarks"
                                                       title="content"
                                                       maxlength="500">${rfiWithdrawDto.withdrawnRemarks}</textarea>
-                                    </div>
-                                    <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="center-content">
-                        <div class="">
-                            <div class="document-upload-gp">
-                                <div class="document-upload-list">
-                                    <h3>File upload for Withdrawal Reasons</h3>
-                                    <div class="file-upload-gp">
-                                        <input id="selectedFile" type="file" style="display: none;" name = "selectedFile"
-                                               aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary"
-                                                                            href="javascript:void(0);">Upload</a>
-                                        <div id="delFile" style="margin-top: 13px;color: #1F92FF;">
-                                            <strong id="fileName">${rfiWithdrawDto.appPremisesSpecialDocDto.docName}</strong>
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteWdFile()"><em
-                                                    class="fa fa-times"></em></button>
+                                            </div>
+                                            <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </div>
-                                    <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
-                                    <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </div>
+                            <div class="center-content">
+                                <div class="">
+                                    <div class="document-upload-gp">
+                                        <div class="document-upload-list">
+                                            <h3>File upload for Withdrawal Reasons</h3>
+                                            <div class="file-upload-gp">
+                                                <input id="selectedFile" type="file" style="display: none;" name = "selectedFile"
+                                                       aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary"
+                                                                                    href="javascript:void(0);">Upload</a>
+                                                <div id="delFile" style="margin-top: 13px;color: #1F92FF;">
+                                                    <strong id="fileName">${rfiWithdrawDto.appPremisesSpecialDocDto.docName}</strong>
+                                                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteWdFile()"><em
+                                                            class="fa fa-times"></em></button>
+                                                </div>
+                                            </div>
+                                            <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
+                                            <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
+                                        </div>
+                                    </div>
 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="center-content">
+                            <div class="components">
+                                <a class="btn btn-primary" style="float:right" onclick="doSubmit()" href="javascript:void(0);">Submit</a>
+                                <span style="float:right">&nbsp;</span>
+                                <a class="btn btn-secondary" style="float:right"
+                                   href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp">Cancel</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="center-content">
-                    <div class="components">
-                        <a class="btn btn-primary" style="float:right" onclick="doSubmit()" href="javascript:void(0);">Submit</a>
-                        <span style="float:right">&nbsp;</span>
-                        <a class="btn btn-secondary" style="float:right"
-                           href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp">Cancel</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+            </c:otherwise>
+        </c:choose>
     </form>
     <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>
