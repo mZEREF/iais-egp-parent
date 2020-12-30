@@ -57,7 +57,7 @@ public class SelectTag extends DivTagSupport {
         setHidden("");
         setNeedErrorSpan(true);
         setNeedMask(false);
-        setNeedSort(true);
+        setNeedSort(false);
     }
 
     public void setHidden(String hidden) {
