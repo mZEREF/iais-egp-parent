@@ -180,7 +180,7 @@ public class InsRepServiceImpl implements InsRepService {
                 svcName = hcsaServiceDto.getSvcName();
             }
         }
-        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)) {
+        if (ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType)||ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)) {
             HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
             hcsaRiskScoreDto.setAppType(applicationType);
             hcsaRiskScoreDto.setLicId(appInsRepDto.getLicenceId());
