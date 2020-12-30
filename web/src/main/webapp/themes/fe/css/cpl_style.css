@@ -4633,7 +4633,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 
 .navigation .mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar {
   background-color: white !important;
-  width: 2px;
+  width: 5px;
   border-radius: 0;
 }
 .navigation .mCSB_scrollTools .mCSB_draggerRail {
@@ -5614,3 +5614,14 @@ section.logo img {
 }
 
 /*# sourceMappingURL=cpl_style.css.map */
+
+.dialogbox-content {
+  height:70vh;
+  overflow-y: auto;
+}
+
+.search-wrap .input-group input[type="text"], .search-wrap .input-group input[type="email"], .search-wrap .input-group input[type="number"]
+
+{
+  padding: 14px 55px 14px 15px;
+}
