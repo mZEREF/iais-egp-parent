@@ -126,7 +126,7 @@
                     <div class="form-group">
                         <iais:value>
                             <div class="col-xs-9 col-sm-9 col-md-9" >
-                                <div id="confirm_msg" style="display: none;border:1px solid #000;">
+                                <div id="confirm_msg" style="display: flex;border:1px solid #000;">
                                     <span style="font-size: 35px;text-align: center;align-self: center; width: 15%;" class="glyphicon glyphicon-info-sign"></span><label>${confirm_err_msg}</label>
                                 </div>
                             </div>
@@ -183,14 +183,11 @@
         console.log("deliveryMode-->"+deliveryMode);
         if ('DEMD002' == deliveryMode) {
             var length = $("#msgContentTxtArea").val().length;
-            if (length > 160) {
-                $('#confirm_msg').css('display','flex')
-            }else{
-                $("#template_content_size").val(length);
-                $("[name='crud_action_value']").val(mcId);
-                $("[name='crud_action_delivery_mode']").val(deliveryMode);
-                submit("edit");
-            }
+            $("#template_content_size").val(length);
+            $("[name='crud_action_value']").val(mcId);
+            $("[name='crud_action_delivery_mode']").val(deliveryMode);
+            submit("edit");
+
         }else{
             var length = tinymce_getContentLength();
             if(length > 8000){
