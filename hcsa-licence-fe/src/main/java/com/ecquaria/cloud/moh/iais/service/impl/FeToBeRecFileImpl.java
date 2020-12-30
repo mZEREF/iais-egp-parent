@@ -326,7 +326,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             String eicRefNo = eicRequestTrackingDto.getRefNo();
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            s = eicGatewayClient.saveFile(processFileTrackDto, signature.date(), signature.authorization(),
+            s = eicGatewayClient.saveFileApplication(processFileTrackDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
             //get eic record
             eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
