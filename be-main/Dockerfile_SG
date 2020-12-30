@@ -1,18 +1,28 @@
-FROM tomcat:9.0.36-jdk8-adoptopenjdk-hotspot
+FROM hub.ecquaria.com:8150/ecq/tomcat:9.0.38-jre8-alpine
+
+RUN deluser --remove-home egpcloud
+RUN adduser -D -u 1000 iais
+RUN chown -R iais:iais /usr/local/tomcat
 
 ENV TZ=Asia/Singapore
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-COPY target/main-web /usr/local/tomcat/webapps/main-web
-
 COPY docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
 COPY docker/server.xml /usr/local/tomcat/conf/server.xml
-COPY docker/run.sh /run.sh
-COPY docker/admin.json /admin.json
-COPY glowroot /glowroot
-
 RUN chmod +x /usr/local/tomcat/bin/setenv.sh
-RUN chmod +x /run.sh
+
+COPY --chown=iais:iais target/main-web /usr/local/tomcat/webapps/main-web
+
+COPY --chown=iais:iais docker/run.sh /run.sh
+COPY --chown=iais:iais docker/admin.json /admin.json
+COPY --chown=iais:iais glowroot /glowroot
+
+
+RUN chmod a+x /run.sh
+
+USER iais
+
+CMD ["sh", "/run.sh"]
 
 
 
