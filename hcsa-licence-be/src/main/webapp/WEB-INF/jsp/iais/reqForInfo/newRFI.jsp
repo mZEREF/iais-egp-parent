@@ -235,7 +235,7 @@
                 <div class="row">
                     <iais:action style="text-align:right;">
                         <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Cancel</button>
-                        <button class="btn btn-primary" type="button"  <c:if test="${rfiMulNum>0}"> onclick="javascript:doSubmit() </c:if > ">Submit</button>
+                        <button class="btn btn-primary" type="button"   onclick="javascript:doSubmit()  ">Submit</button>
                     </iais:action>
                 </div>
                 <iais:row >

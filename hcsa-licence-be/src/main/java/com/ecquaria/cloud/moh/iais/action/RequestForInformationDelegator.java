@@ -709,12 +709,12 @@ public class RequestForInformationDelegator {
         String[] lengthsInfo=ParamUtil.getStrings(request,"lengthsInfo");
         String infoChk=ParamUtil.getString(request, "info");
         String docChk=ParamUtil.getString(request, "doc");
-        if(infoChk==null && docChk==null){
+        if(infoChk==null && docChk==null&&systemParamConfig.getAdhocRfiMultipleRequest()>0){
             errMap.put("rfiSelect","PRF_ERR008");
 
         }
         String errTitle=MessageUtil.replaceMessage("GENERAL_ERR0006","Title","field");
-        if(docChk!=null){
+        if(docChk!=null&&systemParamConfig.getAdhocRfiMultipleRequest()>0){
             for (String len:lengths
             ) {
                 String s=ParamUtil.getString(request,"docTitle"+len);
@@ -723,7 +723,7 @@ public class RequestForInformationDelegator {
                 }
             }
         }
-        if(infoChk!=null){
+        if(infoChk!=null&&systemParamConfig.getAdhocRfiMultipleRequest()>0){
             for (String len:lengthsInfo
             ) {
                 String s=ParamUtil.getString(request,"infoTitle"+len);
