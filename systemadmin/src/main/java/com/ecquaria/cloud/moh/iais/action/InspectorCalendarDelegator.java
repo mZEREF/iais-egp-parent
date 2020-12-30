@@ -110,7 +110,7 @@ public class InspectorCalendarDelegator {
 	 */
 	public void preLoad(BaseProcessClass bpc){
 		HttpServletRequest request = bpc.request;
-
+		ParamUtil.setSessionAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, null);
 
 
 		LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request,
@@ -182,11 +182,12 @@ public class InspectorCalendarDelegator {
 		}
 
 		//For non-lead Inspectors, they will only be able to see their own non-availability.
-		if (!isGroupLead){
+		if (isGroupLead){
+			ParamUtil.setSessionAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, IaisEGPConstant.YES);
+			QueryHelp.setMainSql("systemAdmin", "queryCalendarByLead", searchParam);
+		}else {
 			searchParam.addFilter(AppointmentConstants.USER_NAME_ATTR, currentUserName, true);
 			QueryHelp.setMainSql("systemAdmin", "queryCalendarByInspector", searchParam);
-		}else {
-			QueryHelp.setMainSql("systemAdmin", "queryCalendarByLead", searchParam);
 		}
 
 		SearchResult<InspectorCalendarQueryDto> calendarSearchResult =

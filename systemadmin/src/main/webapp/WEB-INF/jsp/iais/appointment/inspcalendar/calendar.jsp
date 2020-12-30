@@ -119,6 +119,12 @@
             <br><br>
             <div class="col-xs-12">
               <div class="components">
+                <c:if test="${'Y' eq sessionScope.isGroupLead}">
+                  <h3>
+                    <span>Search Results</span>
+                  </h3>
+                </c:if>
+
                 <iais:pagination  param="inspectorCalenDarQueryAttr" result="inspectorCalenDarResultAttr"/>
                 <div class="table-gp">
                   <table class="table">
