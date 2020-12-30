@@ -27,7 +27,7 @@
             <div class="document-info-list">
                 <ul>
                     <li>
-                        <p>The maximum file size for each upload is 10MB. </p>
+                        <p><iais:message key="GENERAL_ERR0043" replaceName="configNum" propertiesKey="iais.system.upload.file.limit"></iais:message></p>
                     </li>
                     <li>
                         <p>Acceptable file formats are XLSX. </p>

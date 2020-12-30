@@ -3,11 +3,13 @@ package com.ecquaria.cloud.moh.iais.tags;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import java.util.HashMap;
+import java.util.Objects;
 
 
 /**
@@ -23,6 +25,9 @@ public final class MessageTag extends DivTagSupport {
     private String key;
     private String params;
     private boolean escape;
+    private String propertiesKey;
+    private String replaceName;
+
 
     public MessageTag() {
         super();
@@ -35,6 +40,8 @@ public final class MessageTag extends DivTagSupport {
         setKey(null);
         setParams(null);
         setEscape(true);
+        setPropertiesKey(null);
+        setReplaceName(null);
     }
 
     // Releases any resources we may have (or inherit)
@@ -49,13 +56,19 @@ public final class MessageTag extends DivTagSupport {
             HashMap paramMap = null;
             if (!StringUtil.isEmpty(params)) {
                 paramMap = (HashMap) ParamUtil.getScopeAttr((HttpServletRequest) pageContext.getRequest(), params);
+            }else if (!StringUtil.isEmpty(propertiesKey)){
+                paramMap = new HashMap<>();
+                Objects.requireNonNull(replaceName);
+                paramMap.put(replaceName, SystemParamHelper.getConfigValueByKey(propertiesKey));
             }
+
             String message = null;
             if (paramMap != null) {
                 message = MessageUtil.getMessageDesc(key, paramMap);
             } else {
                 message = MessageUtil.getMessageDesc(key);
             }
+
             if (escape) {
                 pageContext.getOut().print(StringUtil.escapeJavascript(message));
             } else {
@@ -83,5 +96,13 @@ public final class MessageTag extends DivTagSupport {
     }
     public void setEscape(boolean escape) {
         this.escape = escape;
+    }
+
+    public void setReplaceName(String replaceName) {
+        this.replaceName = replaceName;
+    }
+
+    public void setPropertiesKey(String propertiesKey) {
+        this.propertiesKey = propertiesKey;
     }
 }
