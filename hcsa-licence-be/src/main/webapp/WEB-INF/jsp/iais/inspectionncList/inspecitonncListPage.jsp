@@ -69,20 +69,16 @@
                                 </div>
                                 <div class="tab-pane <c:if test="${serListDto.checkListTab=='chkList'}">active</c:if>" id="tabPayment" role="tabpanel">
                                     <%@include file="/WEB-INF/jsp/iais/inspectionncList/inspectiondetail.jsp"%>
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div align="right">
-                                                <input type="hidden" name="viewchk" id = "viewchk">
-                                                <button type="button" class="btn btn-primary" onclick="javascript: doListAhoc();">List Adhoc</button>
-                                                <button type="button" class="btn btn-primary" onclick="javascript: doViewCheckList();">
-                                                    View CheckList
-                                                </button>
-
-                                            </div>
-                                            <div align="right">
-                                            <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
-                                            </div>
-                                        </div>
+                                    <div class="row" align="right">
+                                        <input type="hidden" name="viewchk" id = "viewchk">
+                                        <button type="button" class="btn btn-primary" onclick="javascript: doListAhoc();">List Adhoc</button>
+                                        <button type="button" class="btn btn-primary" onclick="javascript: doViewCheckList();">
+                                            View CheckList
+                                        </button>
+                                        <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
+                                    </div>
+                                    <div align="right">
+                                    <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="Processing" role="tabpanel">
