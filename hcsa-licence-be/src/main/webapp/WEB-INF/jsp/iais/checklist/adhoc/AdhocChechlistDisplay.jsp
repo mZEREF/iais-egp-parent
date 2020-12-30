@@ -33,16 +33,18 @@
                 <br><br>
                 <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
                 <div class="tab-pane" id="tabInspection" role="tabpanel">
-                    <%@ include file="../common/checklistTab.jsp" %>
-                </div>
-                <div class="row">
-                <div class="col-xs-12 col-sm-12">
-                    <div class="text-right text-center-mobile">
-                        <a id="nextAdhocItemBtn" class="btn btn-secondary" href="#">Save</a>
-                        <a id="addAdhocItemBtn" class="btn btn-primary" href="#">Add Adhoc Item</a>
+                    <div class="container">
+                        <%@ include file="../common/checklistTab.jsp" %>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12">
+                                <div class="text-right text-center-mobile">
+                                    <a id="nextAdhocItemBtn" class="btn btn-secondary" href="#">Save</a>
+                                    <a id="addAdhocItemBtn" class="btn btn-primary" href="#">Add Adhoc Item</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
             </form>
         </div>
     </c:otherwise>
