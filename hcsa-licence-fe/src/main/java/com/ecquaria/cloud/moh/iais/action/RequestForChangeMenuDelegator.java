@@ -1308,14 +1308,15 @@ public class RequestForChangeMenuDelegator {
             bpc.response.sendRedirect(tokenUrl);
             return;
         }
+        double a = 0.0;
+        for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
+            a = a + appSubmissionDto.getAmount();
+        }
+        bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtos);
         if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
             Map<String, String> fieldMap = new HashMap<String, String>();
-            double a = 0.0;
-            for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
-                a = a + appSubmissionDto.getAmount();
-            }
             fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(a));
             fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
             fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDtos.get(0).getAppGrpNo()+"_"+System.currentTimeMillis());
