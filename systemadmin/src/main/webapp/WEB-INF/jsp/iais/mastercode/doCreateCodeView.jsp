@@ -83,7 +83,7 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <iais:select name="codeStatusCMC" id="codeStatusCMC" options="codeStatus"
-                                                 value="${param.codeStatusCMC}"/>
+                                                 value="${param.codeStatusCMC}" firstOption="Please Select"/>
                                     <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>

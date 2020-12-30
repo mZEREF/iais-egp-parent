@@ -98,12 +98,10 @@ public class MasterCodeDelegator {
         logAboutStart("prepareData");
         HttpServletRequest request = bpc.request;
         List<SelectOption> selectCodeStatusList = IaisCommonUtils.genNewArrayList();
-        selectCodeStatusList.add(new SelectOption("", "Please Select"));
         selectCodeStatusList.add(new SelectOption("CMSTAT001", "Active"));
         selectCodeStatusList.add(new SelectOption("CMSTAT003", "Inactive"));
         List<MasterCodeCategoryDto> masterCodeCategoryDtoList = masterCodeService.getAllCodeCategory();
         List<SelectOption> mcCategorySelectList = IaisCommonUtils.genNewArrayList();
-        mcCategorySelectList.add(new SelectOption("", "Please Select"));
         for (MasterCodeCategoryDto masterCodeCategoryDto : masterCodeCategoryDtoList
                 ) {
             mcCategorySelectList.add(new SelectOption(masterCodeCategoryDto.getCategoryDescription(), masterCodeCategoryDto.getCategoryDescription()));
