@@ -49,6 +49,7 @@
 
                 </iais:section>
                 <div align="right">
+                    <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
                     <button type="button" class="btn btn-primary" name="submitBtn" onclick="javascript: doSubmit();">
                         Submit
                     </button>
