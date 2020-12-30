@@ -182,7 +182,7 @@
                                                         <option value="Assessment">Assessment</option>
                                                     </c:if>
                                                     <c:if test="${app.canInspection}">
-                                                    <option value="Inspection">Indicate preferred Inspection Date</option>
+                                                    <option value="Inspection">Indicate Preferred Inspection Date</option>
                                                     </c:if>
                                                 </select>
                                             </c:if>
@@ -232,7 +232,7 @@
                                                         <option value="Assessment">Assessment</option>
                                                     </c:if>
                                                     <c:if test="${app.canInspection}">
-                                                        <option value="Inspection">Indicate preferred Inspection Date</option>
+                                                        <option value="Inspection">Indicate Preferred Inspection Date</option>
                                                     </c:if>
                                                 </select>
                                             </c:if>
@@ -244,7 +244,7 @@
                                                         <option value="Assessment">Assessment</option>
                                                     </c:if>
                                                     <c:if test="${app.canInspection}">
-                                                        <option value="Inspection">Indicate preferred Inspection Date</option>
+                                                        <option value="Inspection">Indicate Preferred Inspection Date</option>
                                                     </c:if>
                                                 </select>
                                             </c:if>
@@ -261,7 +261,7 @@
                                                     <option value="Assessment">Assessment</option>
                                                 </c:if>
                                                 <c:if test="${app.canInspection}">
-                                                    <option value="Inspection">Indicate preferred Inspection Date</option>
+                                                    <option value="Inspection">Indicate Preferred Inspection Date</option>
                                                 </c:if>
                                             </select>
                                         </c:when>
