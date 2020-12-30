@@ -37,10 +37,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.nio.file.Files;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author weilu
@@ -66,6 +63,7 @@ public class MohIntranetUserDelegator {
         ParamUtil.setSessionAttr(bpc.request, "roleMap", null);
         ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", null);
         ParamUtil.setSessionAttr(bpc.request, "userFileSize", null);
+        ParamUtil.setSessionAttr(bpc.request, "orgUserRoleDtos", null);
         SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, IntranetUserConstant.SEARCH_PARAM, OrgUserQueryDto.class.getName(),
                 IntranetUserConstant.INTRANET_USER_SORT_COLUMN, SearchParam.ASCENDING, false);
         QueryHelp.setMainSql("systemAdmin", "IntranetUserQuery", searchParam);
@@ -266,7 +264,8 @@ public class MohIntranetUserDelegator {
         }
         // already assign role
         List<OrgUserRoleDto> orgUserRoleDtos = intranetUserService.retrieveRolesByuserAccId(userAccId);
-        Map<String,String> roleNameAndIdMap = IaisCommonUtils.genNewHashMap();
+        List<String> existRoleIds = IaisCommonUtils.genNewArrayList();
+        Map<String, String> roleNameAndIdMap = IaisCommonUtils.genNewHashMap();
         List<String> alreadyAssignRoleOptionFull = IaisCommonUtils.genNewArrayList();
         if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
             for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
@@ -274,7 +273,8 @@ public class MohIntranetUserDelegator {
                 String roleNameFull = roleMap1.get(roleId);
                 String assignRoleId = orgUserRoleDto.getId();
                 alreadyAssignRoleOptionFull.add(roleNameFull);
-                roleNameAndIdMap.put(roleNameFull,assignRoleId);
+                roleNameAndIdMap.put(roleNameFull, assignRoleId);
+                existRoleIds.add(roleId);
             }
         }
         List<WorkingGroupDto> workingGroups = intranetUserService.getWorkingGroups();
@@ -305,6 +305,7 @@ public class MohIntranetUserDelegator {
         ParamUtil.setSessionAttr(bpc.request, "roleMap", (Serializable) roleMap);
         //key = Professional Screening  - Nursing Home  value = AO1
         ParamUtil.setSessionAttr(bpc.request, "roleNameGroupId", (Serializable) roleNameGroupId);
+        ParamUtil.setSessionAttr(bpc.request, "orgUserRoleDtos", (Serializable) existRoleIds);
 
         if (userAccId != null) {
             OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(userAccId);
@@ -323,7 +324,7 @@ public class MohIntranetUserDelegator {
         }
         Map<String, String> roleMap = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request, "roleMap");
         Map<String, String> roleNameGroupId = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request, "roleNameGroupId");
-        Map<String,Integer> groupIds = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupIds = IaisCommonUtils.genNewHashMap();
         OrgUserDto orgUserDto = (OrgUserDto) ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);
         List<String> assignRoles = IaisCommonUtils.genNewArrayList();
@@ -342,7 +343,12 @@ public class MohIntranetUserDelegator {
             if (!StringUtil.isEmpty(ao1GroupSelect)) {
                 String roleId = roleMap.get(assignRoleAo1);
                 assignRoles.add(roleId);
-                groupIds.put(ao1GroupSelect,0);
+                Integer integer = groupIds.get(ao1GroupSelect);
+                if (integer != null && integer == 1) {
+                    return;
+                } else {
+                    groupIds.put(ao1GroupSelect, 0);
+                }
             }
         }
         //AO1Leader
@@ -351,7 +357,7 @@ public class MohIntranetUserDelegator {
             if (!StringUtil.isEmpty(ao1GroupLeadSelect)) {
                 String roleId = roleMap.get(assignRoleAo1Lead);
                 assignRoles.add(roleId);
-                groupIds.put(ao1GroupLeadSelect,1);
+                groupIds.put(ao1GroupLeadSelect, 1);
             }
         }
         //ins
@@ -360,7 +366,12 @@ public class MohIntranetUserDelegator {
             if (!StringUtil.isEmpty(insGroupSelect)) {
                 String roleId = roleMap.get(assignRoleIns);
                 assignRoles.add(roleId);
-                groupIds.put(insGroupSelect,0);
+                Integer integer = groupIds.get(insGroupSelect);
+                if (integer != null && integer == 1) {
+                    return;
+                } else {
+                    groupIds.put(insGroupSelect, 0);
+                }
             }
         }
         //insLead
@@ -369,7 +380,7 @@ public class MohIntranetUserDelegator {
             if (!StringUtil.isEmpty(insGroupLeadSelect)) {
                 String roleId = roleMap.get(assignRoleInsLead);
                 assignRoles.add(roleId);
-                groupIds.put(insGroupLeadSelect,1);
+                groupIds.put(insGroupLeadSelect, 1);
             }
         }
         //pso
@@ -378,7 +389,12 @@ public class MohIntranetUserDelegator {
             if (!StringUtil.isEmpty(psoGroupSelect)) {
                 String roleId = roleMap.get(assignRolePso);
                 assignRoles.add(roleId);
-                groupIds.put(psoGroupSelect,0);
+                Integer integer = groupIds.get(psoGroupSelect);
+                if (integer != null && integer == 1) {
+                    return;
+                } else {
+                    groupIds.put(psoGroupSelect, 0);
+                }
             }
         }
         //psoLead
@@ -387,7 +403,7 @@ public class MohIntranetUserDelegator {
             if (!StringUtil.isEmpty(psoGroupLeadSelect)) {
                 String roleId = roleMap.get(assignRolePsoLead);
                 assignRoles.add(roleId);
-                groupIds.put(psoGroupLeadSelect,1);
+                groupIds.put(psoGroupLeadSelect, 1);
             }
         }
         //others
@@ -398,27 +414,42 @@ public class MohIntranetUserDelegator {
                 if (RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO2_LEAD.equals(roleId)) {
                     String groupName = "Level 2 Approval";
                     String groupId = roleNameGroupId.get(groupName);
-                    if(RoleConsts.USER_ROLE_AO2.equals(roleId)){
-                        groupIds.put(groupId,0);
-                    }else {
-                        groupIds.put(groupId,1);
+                    if (RoleConsts.USER_ROLE_AO2.equals(roleId)) {
+                        Integer integer = groupIds.get(groupId);
+                        if (integer != null && integer == 1) {
+                            continue;
+                        } else {
+                            groupIds.put(groupId, 0);
+                        }
+                    } else {
+                        groupIds.put(groupId, 1);
                     }
 
                 } else if (RoleConsts.USER_ROLE_AO3.equals(roleId) || RoleConsts.USER_ROLE_AO3_LEAD.equals(roleId)) {
                     String groupName = "Level 3 Approval";
                     String groupId = roleNameGroupId.get(groupName);
-                    if(RoleConsts.USER_ROLE_AO3.equals(roleId)){
-                        groupIds.put(groupId,0);
-                    }else {
-                        groupIds.put(groupId,1);
+                    if (RoleConsts.USER_ROLE_AO3.equals(roleId)) {
+                        Integer integer = groupIds.get(groupId);
+                        if (integer != null && integer == 1) {
+                            continue;
+                        } else {
+                            groupIds.put(groupId, 0);
+                        }
+                    } else {
+                        groupIds.put(groupId, 1);
                     }
                 } else if (RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_ASO_LEAD.equals(roleId)) {
                     String groupName = "Admin Screening officer";
                     String groupId = roleNameGroupId.get(groupName);
-                    if(RoleConsts.USER_ROLE_ASO.equals(roleId)){
-                        groupIds.put(groupId,0);
-                    }else {
-                        groupIds.put(groupId,1);
+                    if (RoleConsts.USER_ROLE_ASO.equals(roleId)) {
+                        Integer integer = groupIds.get(groupId);
+                        if (integer != null && integer == 1) {
+                            continue;
+                        } else {
+                            groupIds.put(groupId, 0);
+                        }
+                    } else {
+                        groupIds.put(groupId, 1);
                     }
                 }
             }
@@ -427,17 +458,17 @@ public class MohIntranetUserDelegator {
             List<OrgUserRoleDto> orgUserRoleDtos = IaisCommonUtils.genNewArrayList();
             List<EgpUserRoleDto> egpUserRoleDtos = IaisCommonUtils.genNewArrayList();
             List<String> roleIds = intranetUserService.getRoleIdByUserId(userAccId);
-            if(assignRoles.contains(RoleConsts.USER_ROLE_PSO_LEAD)){
+            if (assignRoles.contains(RoleConsts.USER_ROLE_PSO_LEAD)) {
                 assignRoles.add(RoleConsts.USER_ROLE_PSO);
-            }else if(assignRoles.contains(RoleConsts.USER_ROLE_ASO_LEAD)){
+            } else if (assignRoles.contains(RoleConsts.USER_ROLE_ASO_LEAD)) {
                 assignRoles.add(RoleConsts.USER_ROLE_ASO_LEAD);
-            }else if(assignRoles.contains(RoleConsts.USER_ROLE_AO1_LEAD)){
+            } else if (assignRoles.contains(RoleConsts.USER_ROLE_AO1_LEAD)) {
                 assignRoles.add(RoleConsts.USER_ROLE_AO1);
-            }else if(assignRoles.contains(RoleConsts.USER_ROLE_AO2_LEAD)){
+            } else if (assignRoles.contains(RoleConsts.USER_ROLE_AO2_LEAD)) {
                 assignRoles.add(RoleConsts.USER_ROLE_AO2);
-            }else if(assignRoles.contains(RoleConsts.USER_ROLE_AO3_LEAD)){
+            } else if (assignRoles.contains(RoleConsts.USER_ROLE_AO3_LEAD)) {
                 assignRoles.add(RoleConsts.USER_ROLE_AO3);
-            }else if(assignRoles.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)){
+            } else if (assignRoles.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)) {
                 assignRoles.add(RoleConsts.USER_ROLE_INSPECTIOR);
             }
             assignRoles.removeAll(roleIds);
@@ -453,7 +484,6 @@ public class MohIntranetUserDelegator {
                 egpUserRoleDto.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
                 egpUserRoleDto.setRoleId(roleId);
                 egpUserRoleDto.setPermission("A");
-                //egpUserRoleDto.isSystem()
                 egpUserRoleDtos.add(egpUserRoleDto);
             }
             intranetUserService.assignRole(orgUserRoleDtos);
@@ -461,7 +491,6 @@ public class MohIntranetUserDelegator {
 
             //add group
             List<UserGroupCorrelationDto> userGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
-            List<UserGroupCorrelationDto> userGroupCorrelationDtosNotLeader = IaisCommonUtils.genNewArrayList();
             groupIds.forEach((groupId, isLeader) -> {
                 UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
                 userGroupCorrelationDto.setUserId(userAccId);
@@ -473,30 +502,35 @@ public class MohIntranetUserDelegator {
             });
             if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
                 List<String> groupIdsSearch = IaisCommonUtils.genNewArrayList();
-                for(UserGroupCorrelationDto dto : userGroupCorrelationDtos){
+                ListIterator<UserGroupCorrelationDto> iterator = userGroupCorrelationDtos.listIterator();
+                while(iterator.hasNext()){
+                    UserGroupCorrelationDto dto = iterator.next();
                     Integer isLeadForGroup = dto.getIsLeadForGroup();
                     String groupId = dto.getGroupId();
                     groupIdsSearch.clear();
                     groupIdsSearch.add(groupId);
-                    if(isLeadForGroup==1){
-                        List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, groupIdsSearch,0);
-                        if(IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp)){
-                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
-                            userGroupCorrelationDto.setUserId(userAccId);
-                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                            userGroupCorrelationDto.setGroupId(groupId);
-                            userGroupCorrelationDto.setIsLeadForGroup(0);
-                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
-                            userGroupCorrelationDtosNotLeader.add(userGroupCorrelationDto);
+                    if (isLeadForGroup == 1) {
+                        List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, groupIdsSearch, 0);
+                        if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp)) {
+                            for (UserGroupCorrelationDto groupDto : userGroupCorrelationDtosTemp) {
+                                String id = groupDto.getId();
+                                dto.setId(id);
+                                dto.setIsLeadForGroup(1);
+                            }
+                        }
+                    }else {
+                        List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, groupIdsSearch, 1);
+                        if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp)) {
+                            iterator.remove();
                         }
                     }
                 }
-                if(!IaisCommonUtils.isEmpty(userGroupCorrelationDtosNotLeader)){
-                    userGroupCorrelationDtos.addAll(userGroupCorrelationDtosNotLeader);
+                if(!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)){
+                    intranetUserService.addUserGroupId(userGroupCorrelationDtos);
                 }
-                intranetUserService.addUserGroupId(userGroupCorrelationDtos);
             }
         }
+        List<String> existRoles = (List<String>) ParamUtil.getSessionAttr(bpc.request, "orgUserRoleDtos");
         if (removeRoles != null) {
             List<String> removeRoleIds = IaisCommonUtils.genNewArrayList();
             for (String removeRole : removeRoles) {
@@ -506,6 +540,26 @@ public class MohIntranetUserDelegator {
             List<String> removeRoleNames = IaisCommonUtils.genNewArrayList();
             List<OrgUserRoleDto> orgUserRoleDtos = intranetUserService.getOrgUserRoleDtoById(removeRoleIds);
             if (!IaisCommonUtils.isEmpty(orgUserRoleDtos)) {
+                List<String> removeRole = IaisCommonUtils.genNewArrayList();
+                for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                    String roleName = orgUserRoleDto.getRoleName();
+                    removeRole.add(roleName);
+                }
+                for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                    String roleName = orgUserRoleDto.getRoleName();
+                    if (roleName.contains("LEAD")) {
+                        String[] s = roleName.split("_");
+                        String roleIdNotLeader = s[0];
+                        if (existRoles.contains(roleIdNotLeader) && !removeRole.contains(roleIdNotLeader)) {
+                            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+                            ParamUtil.setRequestAttr(bpc.request, "userAccId", userAccId);
+                            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+                            errorMap.put("roleLeader", "USER_ERR019");
+                            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                            return;
+                        }
+                    }
+                }
                 List<UserGroupCorrelationDto> userGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
                 Map<String, List<String>> roleIdGrpIdMap = intranetUserService.getRoleIdGrpIdMap();
                 for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
@@ -514,26 +568,34 @@ public class MohIntranetUserDelegator {
                     //AO1
                     removeRoleNames.add(roleName);
                     List<String> list = roleIdGrpIdMap.get(roleName);
-                    int isLeadForGroup = 0 ;
-                    if(roleName.contains("LEAD")){
-                        isLeadForGroup = 1 ;
+                    int isLeadForGroup = 0;
+                    if (roleName.contains("LEAD")) {
+                        isLeadForGroup = 1;
+                        List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, isLeadForGroup);
+                        if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp)) {
+                            for (UserGroupCorrelationDto dto : userGroupCorrelationDtosTemp) {
+                                dto.setIsLeadForGroup(0);
+                            }
+                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp);
+                        }
+                    } else {
+                        List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, isLeadForGroup);
+                        if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp)) {
+                            for (UserGroupCorrelationDto dto : userGroupCorrelationDtosTemp) {
+                                dto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                            }
+                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp);
+                        }
                     }
-                    List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, list,isLeadForGroup);
-                    userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp);
                 }
                 intranetUserService.removeRole(orgUserRoleDtos);
                 intranetUserService.removeEgpRoles(AppConsts.HALP_EGP_DOMAIN, orgUserDto.getUserId(), removeRoleNames);
 
                 //remove group
-                if(!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)){
-                    for(UserGroupCorrelationDto dto : userGroupCorrelationDtos){
-                        dto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                    }
+                if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
                     intranetUserService.addUserGroupId(userGroupCorrelationDtos);
                 }
-
             }
-
         }
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
         ParamUtil.setRequestAttr(bpc.request, "userAccId", userAccId);
@@ -717,7 +779,7 @@ public class MohIntranetUserDelegator {
                 for (OrgUserDto orgUserDto : orgUserDtos) {
                     orgUserDto.setAuditTrailDto(auditTrailDto);
                     String id = orgUserDto.getId();
-                    if(!StringUtil.isEmpty(id)){
+                    if (!StringUtil.isEmpty(id)) {
                         intranetUserService.updateOrgUser(orgUserDto);
                         editEgpUser(orgUserDto);
                     }

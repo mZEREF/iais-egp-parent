@@ -144,6 +144,7 @@
                         </div>
                         <br/>
                     </c:forEach>
+                    <span id="error_roleLeader" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
             </iais:row>
             <iais:action>
