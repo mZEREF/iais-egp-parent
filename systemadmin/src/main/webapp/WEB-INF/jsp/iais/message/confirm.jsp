@@ -33,7 +33,7 @@
           <div class="form-group">
             <iais:field value="Module" />
             <div class="col-xs-5 col-md-3">
-              <iais:select name="module" disabled="true" codeCategory="CATE_ID_ERR_MSG_MODULE" filterValue="MSGMD010" firstOption="Please Select" value="${msgRequestDto.module}"></iais:select>
+              <iais:select name="module" disabled="true" options="moduleTypeSelect"  firstOption="Please Select" value="${msgRequestDto.module}"></iais:select>
             </div>
           </div>
 

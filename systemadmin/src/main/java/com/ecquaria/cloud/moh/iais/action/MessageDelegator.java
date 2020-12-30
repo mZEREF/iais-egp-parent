@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -64,7 +65,7 @@ public class MessageDelegator {
         for (String i : option){
             moduleList.add(new SelectOption(i, i));
         }
-        ParamUtil.setRequestAttr(request, "moduleTypeSelect", moduleList);
+        ParamUtil.setSessionAttr(request, "moduleTypeSelect", (Serializable) moduleList);
     }
 
     private static String[] getMsgModuleType(){
