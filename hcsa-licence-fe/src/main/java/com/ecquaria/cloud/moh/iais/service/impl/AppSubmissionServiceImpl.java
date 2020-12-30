@@ -1757,7 +1757,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         for(AppSvcDisciplineAllocationDto allocation:allocationDto){
                             if(premisesIndexNo.equals(allocation.getPremiseVal()) && chkSvcId.equals(allocation.getChkLstConfId())){
                                 log.info(StringUtil.changeForLog("set chkName ..."));
-                                appSvcDisciplineAllocationDto = allocation;
+                                appSvcDisciplineAllocationDto = (AppSvcDisciplineAllocationDto) CopyUtil.copyMutableObject(allocation);
                                 //set chkName
                                 String chkName = appSvcChckListDto.getChkName();
                                 if("Please indicate".equals(chkName)){
