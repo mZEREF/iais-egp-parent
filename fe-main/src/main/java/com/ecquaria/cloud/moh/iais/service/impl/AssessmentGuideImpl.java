@@ -119,7 +119,20 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
 
     @Override
     public List<HcsaServiceCorrelationDto> getActiveSvcCorrelation() {
-        return configInboxClient.getActiveSvcCorrelation().getEntity();
+        List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtos = configInboxClient.getActiveSvcCorrelation().getEntity();
+        List<HcsaServiceCorrelationDto> newHcsaServiceCorrelationDtos = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(hcsaServiceCorrelationDtos)){
+            List<String> baseSpecIdList = IaisCommonUtils.genNewArrayList();
+            for(HcsaServiceCorrelationDto hcsaServiceCorrelationDto:hcsaServiceCorrelationDtos){
+                String baseSpecId = hcsaServiceCorrelationDto.getBaseSvcId() + hcsaServiceCorrelationDto.getSpecifiedSvcId();
+                if(!baseSpecIdList.contains(baseSpecId)){
+                    newHcsaServiceCorrelationDtos.add(hcsaServiceCorrelationDto);
+                    baseSpecIdList.add(baseSpecId);
+                }
+            }
+        }
+
+        return newHcsaServiceCorrelationDtos;
     }
 
     private static List<String> setPremiseHciList(AppGrpPremisesEntityDto premisesDto, List<String> premisesHci){
