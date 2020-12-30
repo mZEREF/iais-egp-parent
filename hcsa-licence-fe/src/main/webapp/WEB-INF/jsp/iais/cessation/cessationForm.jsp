@@ -74,7 +74,7 @@
                                                                      id="${num.count}reasonId${uid.count}"
                                                                      options="reasonOption" firstOption="Please Select"
                                                                      onchange="javascirpt:changeReason(this.value);"
-                                                                     value="${appCessHci.reason}" cssClass="nice-select cessationReasons"/>
+                                                                     value="${appCessHci.reason}" cssClass="nice-select cessationReasons" needSort="false"/>
                                                     </iais:value>
                                                 </iais:row>
                                                 <div id="${num.count}reason${uid.count}" hidden>
@@ -142,7 +142,7 @@
                                                                     firstOption="Please Select"
                                                                     id="${num.count}patientSelectId${uid.count}"
                                                                     onchange="javascirpt:changePatient(this.value);"
-                                                                    value="${appCessHci.patientSelect}" cssClass="nice-select cessationTransfer"/>
+                                                                    value="${appCessHci.patientSelect}" cssClass="nice-select cessationTransfer" needSort="false"/>
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>
