@@ -47,15 +47,15 @@
                                             <td><c:out value="${selfAssessment.svcName}"></c:out></td>
                                             <c:choose>
                                                 <c:when test="${hasSubmitted == 'Y'}">
-                                                    <td><button type="button" id="viewSelfAssessment${status.index}" value="<iais:mask name="selfAssessmentCorrId" value="${selfAssessment.corrId}"/>" class="btn btn-default btn-sm" >View</button></td>
+                                                    <td><button type="button" id="viewSelfAssessment${status.index}" value="<iais:mask name="selfAssessmentCorrId" value="${selfAssessment.corrId}"/>" class="btn btn-default btn-md" >View</button></td>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <c:if test="${selfAssessment.canEdit == true}">
-                                                        <td><button type="button" id="editSelfAssessment${status.index}" value="<iais:mask name="selfAssessmentCorrId" value="${selfAssessment.corrId}"/>" class="btn btn-default btn-sm" >Fill</button></td>
+                                                        <td><button type="button" id="editSelfAssessment${status.index}" value="<iais:mask name="selfAssessmentCorrId" value="${selfAssessment.corrId}"/>" class="btn btn-default btn-md" >Fill</button></td>
                                                     </c:if>
 
                                                     <c:if test="${selfAssessment.canEdit == false}">
-                                                        <td><button type="button" id="viewSelfAssessment${status.index}" value="<iais:mask name="selfAssessmentCorrId" value="${selfAssessment.corrId}"/>" class="btn btn-default btn-sm" >View</button></td>
+                                                        <td><button type="button" id="viewSelfAssessment${status.index}" value="<iais:mask name="selfAssessmentCorrId" value="${selfAssessment.corrId}"/>" class="btn btn-default btn-md" >View</button></td>
                                                     </c:if>
 
                                                 </c:otherwise>
