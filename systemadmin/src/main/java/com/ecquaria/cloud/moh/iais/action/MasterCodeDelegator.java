@@ -805,7 +805,6 @@ public class MasterCodeDelegator {
         HttpServletRequest request = bpc.request;
         String errorFlag = (String)ParamUtil.getRequestAttr(bpc.request, "errorFlag");
         List<SelectOption> mcStatusSelectList = IaisCommonUtils.genNewArrayList();
-        mcStatusSelectList.add(new SelectOption("", "Please Select"));
         mcStatusSelectList.add(new SelectOption("CMSTAT001", "Active"));
         mcStatusSelectList.add(new SelectOption("CMSTAT003", "Inactive"));
         ParamUtil.setRequestAttr(bpc.request, "mcStatusSelectList", mcStatusSelectList);
@@ -1010,7 +1009,6 @@ public class MasterCodeDelegator {
 
     private void prepareSelect(HttpServletRequest request) {
         List<SelectOption> selectCodeStatusList = IaisCommonUtils.genNewArrayList();
-        selectCodeStatusList.add(new SelectOption("", "Please Select"));
         selectCodeStatusList.add(new SelectOption("CMSTAT001", "Active"));
         selectCodeStatusList.add(new SelectOption("CMSTAT003", "Inactive"));
         ParamUtil.setRequestAttr(request, "codeStatus", selectCodeStatusList);
