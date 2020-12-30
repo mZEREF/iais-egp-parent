@@ -1069,6 +1069,10 @@ public class InsRepServiceImpl implements InsRepService {
         log.info(StringUtil.changeForLog("==================  create fe app Start  ===================>>>>>"));
         String apps = applicationClient.fileAll(grpLicIds).getEntity();
         ApplicationListFileDto applicationListFileDto = JsonUtil.parseToObject(apps, ApplicationListFileDto.class);
+        List<ApplicationGroupDto> applicationGroup = applicationListFileDto.getApplicationGroup();
+        if(!IaisCommonUtils.isEmpty(applicationGroup)){
+            applicationGroup.get(0).setStatus(ApplicationConsts.APPLICATION_SUCCESS_ZIP);
+        }
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         beEicGatewayClient.saveFePostApplicationDtos(applicationListFileDto, signature.date(), signature.authorization(),
