@@ -661,9 +661,7 @@ public class BlastManagementDelegator {
         blastManagementDto.setSubject(subject);
         blastManagementDto.setMsgContent(messageContent);
         String distribution = ParamUtil.getString(bpc.request, "distribution");
-        if(distribution != null){
-            blastManagementDto.setDistributionId(distribution);
-        }
+        blastManagementDto.setDistributionId(distribution);
         if(!action.equals(BACK)){
             ParamUtil.setRequestAttr(bpc.request, "edit", blastManagementDto);
             ValidationResult validationResult =WebValidationHelper.validateProperty(blastManagementDto, "page2");
