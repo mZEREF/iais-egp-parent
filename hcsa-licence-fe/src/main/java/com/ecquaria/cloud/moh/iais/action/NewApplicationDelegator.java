@@ -4397,7 +4397,7 @@ public class NewApplicationDelegator {
                         hcsaServiceDtoList.add(hcsaServiceDto);
                         ParamUtil.setSessionAttr(bpc.request, RFI_REPLY_SVC_DTO, (Serializable) hcsaServiceDtoList);
                     }
-                    String errMsg = "You have already replied to this RFI";
+                    String errMsg = MessageUtil.getMessageDesc("INBOX_ERR001");
                     jumpToAckPage(bpc, NewApplicationConstant.ACK_STATUS_ERROR, errMsg);
                 }
             }
