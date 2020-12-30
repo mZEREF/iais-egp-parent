@@ -132,6 +132,7 @@
                               </div>
                             </div>
                             <iais:action >
+                              <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
                               <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptReShInspectionDateConfirm()">Submit</button>
                             </iais:action>
                             <br>
