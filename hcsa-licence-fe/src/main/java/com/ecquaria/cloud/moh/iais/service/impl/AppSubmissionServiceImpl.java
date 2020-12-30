@@ -1274,6 +1274,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         if(IaisCommonUtils.isEmpty(appGrpPremisesDtos) || IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos)){
             return appGrpPrimaryDocDtos;
         }
+        log.debug(StringUtil.changeForLog("appGrpPrimaryDocDtos size:" +  appGrpPrimaryDocDtos.size()));
         //remove empty doc
         List<AppGrpPrimaryDocDto> notEmptyDocList = IaisCommonUtils.genNewArrayList();
         for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
@@ -1281,14 +1282,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 notEmptyDocList.add(appGrpPrimaryDocDto);
             }
         }
-
+        log.debug(StringUtil.changeForLog("notEmptyDocList size:" +  notEmptyDocList.size()));
         //add empty doc
         List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(null);
         List<AppGrpPrimaryDocDto> newPrimaryDocList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(hcsaSvcDocDtos)){
             log.debug(StringUtil.changeForLog("hcsaSvcDocDtos not empty ..."));
+            log.debug(StringUtil.changeForLog("hcsa svc doc config dto size:" +  hcsaSvcDocDtos.size()));
             if(notEmptyDocList != null && notEmptyDocList.size() > 0){
                 List<HcsaSvcDocConfigDto> oldHcsaSvcDocDtos = serviceConfigService.getPrimaryDocConfigById(notEmptyDocList.get(0).getSvcComDocId());
+                log.debug(StringUtil.changeForLog("oldHcsaSvcDocDtos:" +  JsonUtil.parseToJson(oldHcsaSvcDocDtos)));
                 for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocDtos){
                     String docTitle = hcsaSvcDocConfigDto.getDocTitle();
                     String dupPrem = hcsaSvcDocConfigDto.getDupForPrem();
@@ -1319,6 +1322,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             }
         }
+        log.debug(StringUtil.changeForLog("newPrimaryDocList size:" +  newPrimaryDocList.size()));
+        log.debug(StringUtil.changeForLog("newPrimaryDocList:" +  JsonUtil.parseToJson(newPrimaryDocList)));
         log.debug(StringUtil.changeForLog("do handlerPrimaryDoc end ..."));
         return newPrimaryDocList;
     }
