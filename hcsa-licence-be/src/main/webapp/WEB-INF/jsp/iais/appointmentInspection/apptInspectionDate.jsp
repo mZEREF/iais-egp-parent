@@ -160,6 +160,7 @@
                                 </div>
                               </c:if>
                               <iais:action>
+                                <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"></em> Back</a>
                                 <button id="apptSpecInspDate" class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
                                 <button id="disApptSpecInspDate" class="btn btn-primary disabled" style="float:right" type="button">Assign Specific Date</button>
                                 <span style="float:right">&nbsp;</span>
@@ -169,6 +170,7 @@
                             </c:if>
                             <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag && 'APTY007' eq applicationViewDto.applicationDto.applicationType}">
                               <iais:action>
+                                <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"></em> Back</a>
                                 <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
                               </iais:action>
                             </c:if>

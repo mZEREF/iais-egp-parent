@@ -150,16 +150,14 @@
                 </tbody>
             </table>
             <%--upload file--%>
-            <div align="right">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadDoc">
+            <iais:action>
+                <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"></em> Back</a>
+                <button type="button" style="float:right" class="btn btn-primary" data-toggle="modal" data-target="#uploadDoc">
                     Upload Document
                 </button>
-            </div>
+            </iais:action>
         </div>
     </div>
-</div>
-<div align="left">
-    <a class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
 </div>
 <iais:confirm msg="GENERAL_ACK018"  needCancel="false" callBack="tagConfirmCallbacksupport()" popupOrder="support" ></iais:confirm>
 <script type="text/javascript">
