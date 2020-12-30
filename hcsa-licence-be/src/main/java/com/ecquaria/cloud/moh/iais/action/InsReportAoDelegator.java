@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -18,28 +19,18 @@ import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloudfeign.FeignException;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import javax.validation.constraints.Null;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author weilu
@@ -106,6 +97,8 @@ public class InsReportAoDelegator {
         ParamUtil.setSessionAttr(bpc.request, INSREPDTO, insRepDto);
         ParamUtil.setSessionAttr(bpc.request, APPLICATIONVIEWDTO, applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, TASKDTO, taskDto);
+        SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
+        ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
     }
 
     public void AoReportPre(BaseProcessClass bpc) {

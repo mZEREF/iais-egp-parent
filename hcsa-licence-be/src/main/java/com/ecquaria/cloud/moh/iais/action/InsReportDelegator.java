@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -66,6 +67,9 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", null);
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, null);
         ParamUtil.setSessionAttr(bpc.request,"askType",null);
+
+        SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
+        ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
     }
 
     public void inspectionReportInit(BaseProcessClass bpc) throws IOException {
