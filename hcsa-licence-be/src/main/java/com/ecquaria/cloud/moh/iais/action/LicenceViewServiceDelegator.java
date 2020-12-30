@@ -1031,8 +1031,9 @@ public class LicenceViewServiceDelegator {
     }
 
 
-    private AppSvcRelatedInfoDto doAppSvcRelatedInfoDtoList(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList, AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
+    private AppSvcRelatedInfoDto doAppSvcRelatedInfoDtoList(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList, AppSubmissionDto appSubmissionDto, HttpServletRequest request) throws Exception {
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
+        Map<String,AppSvcChckListDto> svcChckListDtoMap=IaisCommonUtils.genNewHashMap();
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)) {
             appSvcRelatedInfoDto = appSvcRelatedInfoDtoList.get(0);
             if(appSvcRelatedInfoDto!=null){
@@ -1043,6 +1044,8 @@ public class LicenceViewServiceDelegator {
                         if (appSvcChckListDtoList != null) {
                             List<AppSvcChckListDto> appSvcChckListDtos = hcsaConfigClient.getAppSvcChckListDto(appSvcChckListDtoList).getEntity();
                             for(AppSvcChckListDto appSvcChckListDto : appSvcChckListDtos){
+                                AppSvcChckListDto o = (AppSvcChckListDto)CopyUtil.copyMutableObject(appSvcChckListDto);
+                                svcChckListDtoMap.put(o.getChkLstConfId(),o);
                                 if("Please indicate".equals(appSvcChckListDto.getChkName())){
                                     appSvcChckListDto.setChkName(appSvcChckListDto.getOtherScopeName());
                                 }
@@ -1069,6 +1072,7 @@ public class LicenceViewServiceDelegator {
                 }else if(StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDt())){
                     appGrpPremisesDto.setCertIssuedDtStr(null);
                 }
+                Map<String,AppSvcDisciplineAllocationDto> map=IaisCommonUtils.genNewHashMap();
                 if (!StringUtil.isEmpty(hciName) && allocationDto != null && !allocationDto.isEmpty()) {
                     for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : allocationDto) {
                         List<AppSvcChckListDto> appSvcChckListDtoList = null;
@@ -1117,10 +1121,41 @@ public class LicenceViewServiceDelegator {
                                     }
                                 }
                             }
+                            map.put(appSvcDisciplineAllocationDto.getChkLstConfId(),appSvcDisciplineAllocationDto);
                             reloadDisciplineAllocation.add(appSvcDisciplineAllocationDto);
                         }
                     }
                 }
+                Set<String> set = svcChckListDtoMap.keySet();
+                for(String s : set){
+                    AppSvcChckListDto v = svcChckListDtoMap.get(s);
+                    if("Please indicate".equalsIgnoreCase(v.getChkName())){
+                        AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto = map.get(s);
+                        HcsaServiceSubTypeDto entity = hcsaConfigClient.getHcsaServiceSubTypeById(s).getEntity();
+                        if(entity!=null && entity.getParentId()!=null){
+                            AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto1 = map.get(entity.getParentId());
+                            if(appSvcDisciplineAllocationDto1!=null){
+                                int i = reloadDisciplineAllocation.indexOf(appSvcDisciplineAllocationDto1);
+                                appSvcDisciplineAllocationDto1.setChkLstName(appSvcDisciplineAllocationDto1.getChkLstName()+" ("+v.getOtherScopeName()+")");
+                                reloadDisciplineAllocation.set(i,appSvcDisciplineAllocationDto1);
+                                reloadDisciplineAllocation.remove(appSvcDisciplineAllocationDto);
+                            }else {
+                                HcsaServiceSubTypeDto entity1 = hcsaConfigClient.getHcsaServiceSubTypeById(entity.getParentId()).getEntity();
+                                if(entity1!=null && entity1.getParentId()!=null){
+                                    AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto2 = map.get(entity1.getParentId());
+                                    if(appSvcDisciplineAllocationDto2!=null){
+                                        int i = reloadDisciplineAllocation.indexOf(appSvcDisciplineAllocationDto2);
+                                        appSvcDisciplineAllocationDto1.setChkLstName(appSvcDisciplineAllocationDto1.getChkLstName()+" ("+v.getOtherScopeName()+")");
+                                        reloadDisciplineAllocation.set(i,appSvcDisciplineAllocationDto1);
+                                        reloadDisciplineAllocation.remove(appSvcDisciplineAllocationDto);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+
                 reloadDisciplineAllocationMap.put(hciName, reloadDisciplineAllocation);
             }
             ParamUtil.setSessionAttr(request, "reloadOld", (Serializable) reloadDisciplineAllocationMap);
