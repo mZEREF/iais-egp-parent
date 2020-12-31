@@ -461,7 +461,7 @@ public class MohIntranetUserDelegator {
             if (assignRoles.contains(RoleConsts.USER_ROLE_PSO_LEAD)) {
                 assignRoles.add(RoleConsts.USER_ROLE_PSO);
             } else if (assignRoles.contains(RoleConsts.USER_ROLE_ASO_LEAD)) {
-                assignRoles.add(RoleConsts.USER_ROLE_ASO_LEAD);
+                assignRoles.add(RoleConsts.USER_ROLE_ASO);
             } else if (assignRoles.contains(RoleConsts.USER_ROLE_AO1_LEAD)) {
                 assignRoles.add(RoleConsts.USER_ROLE_AO1);
             } else if (assignRoles.contains(RoleConsts.USER_ROLE_AO2_LEAD)) {
@@ -503,7 +503,7 @@ public class MohIntranetUserDelegator {
             if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
                 List<String> groupIdsSearch = IaisCommonUtils.genNewArrayList();
                 ListIterator<UserGroupCorrelationDto> iterator = userGroupCorrelationDtos.listIterator();
-                while(iterator.hasNext()){
+                while (iterator.hasNext()) {
                     UserGroupCorrelationDto dto = iterator.next();
                     Integer isLeadForGroup = dto.getIsLeadForGroup();
                     String groupId = dto.getGroupId();
@@ -518,14 +518,14 @@ public class MohIntranetUserDelegator {
                                 dto.setIsLeadForGroup(1);
                             }
                         }
-                    }else {
+                    } else {
                         List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, groupIdsSearch, 1);
                         if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp)) {
                             iterator.remove();
                         }
                     }
                 }
-                if(!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)){
+                if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
                     intranetUserService.addUserGroupId(userGroupCorrelationDtos);
                 }
             }
@@ -547,10 +547,9 @@ public class MohIntranetUserDelegator {
                 }
                 for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
                     String roleName = orgUserRoleDto.getRoleName();
-                    if (roleName.contains("LEAD")) {
-                        String[] s = roleName.split("_");
-                        String roleIdNotLeader = s[0];
-                        if (existRoles.contains(roleIdNotLeader) && !removeRole.contains(roleIdNotLeader)) {
+                    if (!roleName.contains("LEAD")) {
+                        String roleLeader = roleName + "_LEAD";
+                        if (existRoles.contains(roleLeader) && !removeRole.contains(roleLeader)) {
                             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
                             ParamUtil.setRequestAttr(bpc.request, "userAccId", userAccId);
                             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -1177,96 +1176,107 @@ public class MohIntranetUserDelegator {
         ParamUtil.setSessionAttr(request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);
     }
 
-    private List<OrgUserDto> importXML(File file) throws DocumentException {
-        SAXReader saxReader = new SAXReader();
-        Document document = saxReader.read(file);
-        //root
-        Element root = document.getRootElement();
-        //ele
-        List list = root.elements();
+    private List<OrgUserDto> importXML(File file) {
+        List list = null;
         List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
-        for (int i = 0; i < list.size(); i++) {
+        try{
+            SAXReader saxReader = new SAXReader();
+            Document document = saxReader.read(file);
+            //root
+            Element root = document.getRootElement();
+            //ele
+            list = root.elements();
+        }catch (Exception e){
             OrgUserDto orgUserDto = new OrgUserDto();
-            try {
-                Element element = (Element) list.get(i);
-                String userId = element.element("userId").getText();
-                String displayName = element.element("displayName").getText();
-                String startDateStr = element.element("accountActivationStart").getText();
-                Date startDate = DateUtil.parseDate(startDateStr, "dd/MM/yyyy");
-                String endDateStr = element.element("accountActivationEnd").getText();
-                Date endDate = DateUtil.parseDate(endDateStr, "dd/MM/yyyy");
-                String salutation = element.element("salutation").getText();
-                String firstName = element.element("firstName").getText();
-                String lastName = element.element("lastName").getText();
-                String organization = element.element("organization").getText();
-                String division = element.element("division").getText();
-                String branchUnit = element.element("branchUnit").getText();
-                String mobileNo = element.element("mobileNo").getText();
-                String officeNo = element.element("officeNo").getText();
-                String email = element.element("email").getText();
-                String remarks = element.element("remarks").getText();
-                if (!StringUtil.isEmpty(userId)) {
-                    orgUserDto.setUserId(userId);
+            orgUserDto.setXmlError("error");
+            orgUserDtos.add(orgUserDto);
+            log.error(e.getMessage(), e);
+        }
+        if(list!=null){
+            for (int i = 0; i < list.size(); i++) {
+                OrgUserDto orgUserDto = new OrgUserDto();
+                try {
+                    Element element = (Element) list.get(i);
+                    String userId = element.element("userId").getText();
+                    String displayName = element.element("displayName").getText();
+                    String startDateStr = element.element("accountActivationStart").getText();
+                    Date startDate = DateUtil.parseDate(startDateStr, "dd/MM/yyyy");
+                    String endDateStr = element.element("accountActivationEnd").getText();
+                    Date endDate = DateUtil.parseDate(endDateStr, "dd/MM/yyyy");
+                    String salutation = element.element("salutation").getText();
+                    String firstName = element.element("firstName").getText();
+                    String lastName = element.element("lastName").getText();
+                    String organization = element.element("organization").getText();
+                    String division = element.element("division").getText();
+                    String branchUnit = element.element("branchUnit").getText();
+                    String mobileNo = element.element("mobileNo").getText();
+                    String officeNo = element.element("officeNo").getText();
+                    String email = element.element("email").getText();
+                    String remarks = element.element("remarks").getText();
+                    if (!StringUtil.isEmpty(userId)) {
+                        orgUserDto.setUserId(userId);
+                    }
+                    if (!StringUtil.isEmpty(firstName)) {
+                        orgUserDto.setFirstName(firstName);
+                    }
+                    if (!StringUtil.isEmpty(lastName)) {
+                        orgUserDto.setLastName(lastName);
+                    }
+                    if (!StringUtil.isEmpty(displayName)) {
+                        orgUserDto.setDisplayName(displayName);
+                    }
+                    if (!StringUtil.isEmpty(startDate)) {
+                        orgUserDto.setAccountActivateDatetime(startDate);
+                    }
+                    if (!StringUtil.isEmpty(endDate)) {
+                        orgUserDto.setAccountDeactivateDatetime(endDate);
+                    }
+                    if (!StringUtil.isEmpty(branchUnit)) {
+                        orgUserDto.setBranchUnit(branchUnit);
+                    }
+                    if (!StringUtil.isEmpty(division)) {
+                        orgUserDto.setDivision(division);
+                    }
+                    if (!StringUtil.isEmpty(salutation)) {
+                        orgUserDto.setSalutation(salutation);
+                    }
+                    if (!StringUtil.isEmpty(organization)) {
+                        orgUserDto.setOrganization(organization);
+                    }
+                    if (!StringUtil.isEmpty(email)) {
+                        orgUserDto.setEmail(email);
+                    }
+                    if (!StringUtil.isEmpty(mobileNo)) {
+                        orgUserDto.setMobileNo(mobileNo);
+                    }
+                    if (!StringUtil.isEmpty(officeNo)) {
+                        orgUserDto.setOfficeTelNo(officeNo);
+                    }
+                    if (!StringUtil.isEmpty(remarks)) {
+                        orgUserDto.setRemarks(remarks);
+                    }
+                    if (!StringUtil.isEmpty(startDateStr)) {
+                        orgUserDto.setStartDateStr(startDateStr);
+                    }
+                    if (!StringUtil.isEmpty(endDateStr)) {
+                        orgUserDto.setEndDateStr(endDateStr);
+                    }
+                    orgUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTRANET);
+                    orgUserDto.setOrgId(IntranetUserConstant.ORGANIZATION);
+                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+                    orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
+                    orgUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    orgUserDto.setAvailable(Boolean.FALSE);
+                    orgUserDtos.add(orgUserDto);
+                } catch (Exception e) {
+                    orgUserDto.setXmlError("error");
+                    orgUserDtos.add(orgUserDto);
+                    log.error(e.getMessage(), e);
+                    continue;
                 }
-                if (!StringUtil.isEmpty(firstName)) {
-                    orgUserDto.setFirstName(firstName);
-                }
-                if (!StringUtil.isEmpty(lastName)) {
-                    orgUserDto.setLastName(lastName);
-                }
-                if (!StringUtil.isEmpty(displayName)) {
-                    orgUserDto.setDisplayName(displayName);
-                }
-                if (!StringUtil.isEmpty(startDate)) {
-                    orgUserDto.setAccountActivateDatetime(startDate);
-                }
-                if (!StringUtil.isEmpty(endDate)) {
-                    orgUserDto.setAccountDeactivateDatetime(endDate);
-                }
-                if (!StringUtil.isEmpty(branchUnit)) {
-                    orgUserDto.setBranchUnit(branchUnit);
-                }
-                if (!StringUtil.isEmpty(division)) {
-                    orgUserDto.setDivision(division);
-                }
-                if (!StringUtil.isEmpty(salutation)) {
-                    orgUserDto.setSalutation(salutation);
-                }
-                if (!StringUtil.isEmpty(organization)) {
-                    orgUserDto.setOrganization(organization);
-                }
-                if (!StringUtil.isEmpty(email)) {
-                    orgUserDto.setEmail(email);
-                }
-                if (!StringUtil.isEmpty(mobileNo)) {
-                    orgUserDto.setMobileNo(mobileNo);
-                }
-                if (!StringUtil.isEmpty(officeNo)) {
-                    orgUserDto.setOfficeTelNo(officeNo);
-                }
-                if (!StringUtil.isEmpty(remarks)) {
-                    orgUserDto.setRemarks(remarks);
-                }
-                if (!StringUtil.isEmpty(startDateStr)) {
-                    orgUserDto.setStartDateStr(startDateStr);
-                }
-                if (!StringUtil.isEmpty(endDateStr)) {
-                    orgUserDto.setEndDateStr(endDateStr);
-                }
-                orgUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTRANET);
-                orgUserDto.setOrgId(IntranetUserConstant.ORGANIZATION);
-                orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
-                orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
-                orgUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                orgUserDto.setAvailable(Boolean.FALSE);
-                orgUserDtos.add(orgUserDto);
-            } catch (Exception e) {
-                orgUserDto.setXmlError("error");
-                orgUserDtos.add(orgUserDto);
-                log.error(e.getMessage(), e);
-                continue;
             }
         }
+
         return orgUserDtos;
     }
 
