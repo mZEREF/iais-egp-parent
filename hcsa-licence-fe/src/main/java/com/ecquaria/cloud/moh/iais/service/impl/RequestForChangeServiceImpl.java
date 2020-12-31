@@ -1689,13 +1689,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         AppSubmissionDto appSubmissionDto=appSubmissionDtos.get(0);
         String appGroupId = appSubmissionDto.getAppGrpId();
 
-        if(appSubmissionDtos.size()>=2){
-            double a = 0.0;
-            for (AppSubmissionDto appSubmDto : appSubmissionDtos) {
+        double a = 0.0;
+        for (AppSubmissionDto appSubmDto : appSubmissionDtos) {
+            if(appSubmDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
                 a = a + appSubmDto.getAmount();
             }
-            appSubmissionDto.setAmountStr(Formatter.formatterMoney(a));
         }
+        appSubmissionDto.setAmountStr(Formatter.formatterMoney(a));
         String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
 
@@ -1773,7 +1773,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     svcName=licenceDto.getSvcName();
                 }
                 List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(svcName)).getEntity();
-                svcCode.add(svcDto.get(0).getSvcCode());
+                if(appSubmissionDto1.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
+                    svcCode.add(svcDto.get(0).getSvcCode());
+                }
             }
             rfiEmailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_MSG).getEntity();
             subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);

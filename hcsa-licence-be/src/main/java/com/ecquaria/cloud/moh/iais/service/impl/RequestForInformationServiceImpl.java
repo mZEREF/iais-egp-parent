@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationLicenceQueryDto;
@@ -205,17 +204,15 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     @Override
     public List<SelectOption> getLicSvcSubTypeOption() {
-        List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
         List<SelectOption> selectOptions= IaisCommonUtils.genNewArrayList();
-        for (HcsaServiceSubTypeDto subTypeName:subTypeNames
-        ) {
-            if( "Pre-implantation Genetic Diagnosis".equals(subTypeName.getSubtypeName())|| "Pre-implantation Genetic Screening".equals(subTypeName.getSubtypeName())){
-                SelectOption selectOption=new SelectOption();
-                selectOption.setText(subTypeName.getSubtypeName());
-                selectOption.setValue(subTypeName.getId());
-                selectOptions.add(selectOption);
-            }
-        }
+        SelectOption selectOption1=new SelectOption();
+        selectOption1.setText("Pre-implantation Genetic Screening");
+        selectOption1.setValue("PIG_Screening");
+        selectOptions.add(selectOption1);
+        SelectOption selectOption2=new SelectOption();
+        selectOption2.setText("Pre-implantation Genetic Diagnosis");
+        selectOption2.setValue("PIG_Diagnosis");
+        selectOptions.add(selectOption2);
         SelectOption selectOption=new SelectOption();
         selectOption.setText("Human Immunodeficiency Virus");
         selectOption.setValue("HIV");

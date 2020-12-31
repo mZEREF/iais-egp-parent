@@ -455,7 +455,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 if(!StringUtil.isEmpty(serviceLicenceType)){
                     filters.put("svc_name", serviceLicenceType);
                 }
-                if(!StringUtil.isEmpty(svcSubType)|| !"HIV".equals(svcSubType)){
+                if(!StringUtil.isEmpty(svcSubType)){
                     filters.put("serviceSubTypeName", svcSubType);
                 }
                 break;
@@ -618,7 +618,7 @@ public class OfficerOnlineEnquiriesDelegator {
                         svcIds.add(r.getId());
                     }
                 }
-                if(!StringUtil.isEmpty(svcSubType)&& !"HIV".equals(svcSubType)){
+                if(!StringUtil.isEmpty(svcSubType)){
                     filters.put("serviceSubTypeName", svcSubType);
                 }
                 if(!StringUtil.isEmpty(uenNo)){
@@ -721,16 +721,34 @@ public class OfficerOnlineEnquiriesDelegator {
             if(status!=null && status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
                 appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
             }
-            if(svcSubType!=null  && "HIV".equals(svcSubType)){
+            if(!StringUtil.isEmpty(svcSubType) ){
                 List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
                 StringBuilder sb=new StringBuilder();
-                sb.append('(');
-                for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                    if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
-                        sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                if ("HIV".equals(svcSubType)) {
+                    sb.append('(');
+                    for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                        if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
+                            sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                        }
                     }
+                    sb.append("'1' = '0')");
+                } else if ("PIG_Screening".equals(svcSubType)) {
+                    sb.append('(');
+                    for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                        if("Pre-implantation Genetic Screening".equals(hcsaServiceSubTypeDto.getSubtypeName())){
+                            sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                        }
+                    }
+                    sb.append("'1' = '0')");
+                } else if ("PIG_Diagnosis".equals(svcSubType)) {
+                    sb.append('(');
+                    for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                        if("Pre-implantation Genetic Diagnosis".equals(hcsaServiceSubTypeDto.getSubtypeName())){
+                            sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                        }
+                    }
+                    sb.append("'1' = '0')");
                 }
-                sb.append("'1' = '0')");
                 appParam.addParam("appSubStatus_HIV", sb);
             }
             if(licenseeIds.size()!=0){
@@ -821,9 +839,6 @@ public class OfficerOnlineEnquiriesDelegator {
                     licParam.setPageSize(0);
                 }
             }
-        }
-        if(!StringUtil.isEmpty(svcSubType)){
-            licParam.getFilters().put("serviceSubTypeName","HIV");
         }
         String appStatus=ParamUtil.getString(request, "application_status");
         if(!StringUtil.isEmpty(appStatus)&&appStatus.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
@@ -1107,7 +1122,7 @@ public class OfficerOnlineEnquiriesDelegator {
                         svcIds.add(r.getId());
                     }
                 }
-                if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName"))&&!"HIV".equals(parm.getFilters().get("serviceSubTypeName"))){
+                if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName"))){
                     filters.put("serviceSubTypeName", parm.getFilters().get("serviceSubTypeName"));
 
                 }
@@ -1197,16 +1212,35 @@ public class OfficerOnlineEnquiriesDelegator {
                 if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)) {
                     appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
                 }
-                if(parm.getFilters().get("serviceSubTypeName")!=null  && "HIV".equals(parm.getFilters().get("serviceSubTypeName"))){
+                if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
                     List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
                     StringBuilder sb=new StringBuilder();
-                    sb.append('(');
-                    for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                        if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
-                            sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                    Object serviceSubTypeName = parm.getFilters().get("serviceSubTypeName");
+                    if ("HIV".equals(serviceSubTypeName)) {
+                        sb.append('(');
+                        for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                            if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
+                                sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                            }
                         }
+                        sb.append("'1' = '0')");
+                    } else if ("PIG_Screening".equals(serviceSubTypeName)) {
+                        sb.append('(');
+                        for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                            if("Pre-implantation Genetic Screening".equals(hcsaServiceSubTypeDto.getSubtypeName())){
+                                sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                            }
+                        }
+                        sb.append("'1' = '0')");
+                    } else if ("PIG_Diagnosis".equals(serviceSubTypeName)) {
+                        sb.append('(');
+                        for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                            if("Pre-implantation Genetic Diagnosis".equals(hcsaServiceSubTypeDto.getSubtypeName())){
+                                sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                            }
+                        }
+                        sb.append("'1' = '0')");
                     }
-                    sb.append("'1' = '0')");
                     appParam.addParam("appSubStatus_HIV", sb);
                 }
                 if(licenseeIds.size()!=0){

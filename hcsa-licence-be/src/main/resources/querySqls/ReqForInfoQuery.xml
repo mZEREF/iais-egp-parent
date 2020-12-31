@@ -158,7 +158,7 @@
             <#if svc_name??> AND oev.svc_name = :svc_name</#if>
             <#if licenseeRegnNo??> AND (charindex( :licenseeRegnNo,oev.LIC_PROF_REG_NO )>0 OR charindex( :licenseeRegnNo,oev.APP_PROF_REG_NO )>0 )</#if>
             <#if licenseeId??> AND ${licenseeId}</#if>
-            <#if serviceSubTypeName??>AND (oev.LIC_SCOPE_NAME = :serviceSubTypeName OR oev.APP_SCOPE_NAME = :serviceSubTypeName)</#if>
+            <#if serviceSubTypeName??>AND :serviceSubTypeName = :serviceSubTypeName</#if>
             <#if appSubStatus_HIV??>AND ${appSubStatus_HIV}</#if>
             <#if appType??> AND oev.app_type = :appType</#if>
             <#if appNo??> AND charindex(:appNo, oev.application_no)>0</#if>
