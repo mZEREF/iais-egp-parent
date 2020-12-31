@@ -242,7 +242,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             }
         });
         List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
-        List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(withdrawnList)){
             withdrawnDtoList.forEach(h -> {
                 ApplicationDto oldApplication = applicationFeClient.getApplicationById(h.getApplicationId()).getEntity();
@@ -250,7 +249,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(oldApplication.getApplicationType())){
                     isRfc = true;
                 }
-                sendNMS(h,applicationDtoList,isRfc);
+                sendNMS(h,isRfc);
             });
         }
         autoApproveApplicationDtoList.forEach(h -> {
@@ -326,7 +325,8 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         }
     }
 
-    private void sendNMS(WithdrawnDto withdrawnDto,List<ApplicationDto> applicationDtoList,boolean isRfc){
+    private void sendNMS(WithdrawnDto withdrawnDto,boolean isRfc){
+        List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto appSubmissionDto = applicationFeClient.gainSubmissionDto(withdrawnDto.getApplicationNo()).getEntity();
         if (appSubmissionDto != null){
             ApplicationDto applicationDto = applicationFeClient.getApplicationById(withdrawnDto.getApplicationId()).getEntity();
