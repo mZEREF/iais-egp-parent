@@ -11,7 +11,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -23,8 +25,10 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
+import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +60,10 @@ public class AppealDelegator {
     @Autowired
     private SystemParamConfig systemParamConfig;
     @Autowired
+    private LicenceClient licenceClient;
+    @Autowired
+    private ServiceConfigService serviceConfigService;
+    @Autowired
     private LicFeInboxClient licFeInboxClient;
     public void preparetionData(BaseProcessClass bpc) throws IOException {
         log.info("start**************preparetionData************");
@@ -80,14 +88,29 @@ public class AppealDelegator {
             bpc. request.setAttribute("crud_action_type","inbox");
             return;
         }
-        appealService.getMessage(bpc.request);
-        Object rfi = bpc.request.getSession().getAttribute("rfi");
-        Object type = bpc.request.getSession().getAttribute("type");
-        if(rfi==null && "".equals(type)){
-            bpc.request.setAttribute("INBOX_ERR001", MessageUtil.getMessageDesc("INBOX_ERR001"));
-            bpc. request.setAttribute("crud_action_type","ackPage");
-            return;
+        String attribute = (String)bpc.request.getSession().getAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+        if(attribute!=null){
+            InterMessageDto entity = licFeInboxClient.getInterMessageById(attribute).getEntity();
+            if(entity!=null){
+                if(MessageConstants.MESSAGE_STATUS_RESPONSE.equals(entity.getStatus())){
+                    bpc.request.setAttribute("INBOX_ERR001", MessageUtil.getMessageDesc("INBOX_ERR001"));
+                    bpc. request.setAttribute("crud_action_type","ackPage");
+                    String appealingFor = ParamUtil.getMaskedString(bpc.request, "appealingFor");
+                    String type = bpc.request.getParameter("type");
+                    if("application".equals(type)){
+                        ApplicationDto applicationDto = applicationFeClient.getApplicationById(appealingFor).getEntity();
+                        String serviceId = applicationDto.getServiceId();
+                        HcsaServiceDto serviceDtoById = serviceConfigService.getServiceDtoById(serviceId);
+                        bpc.request.setAttribute("rfiServiceName",serviceDtoById.getSvcName());
+                    }else if("licence".equals(type)){
+                        LicenceDto licenceDto = licenceClient.getLicDtoById(appealingFor).getEntity();
+                        bpc.request.setAttribute("rfiServiceName",licenceDto.getSvcName());
+                    }
+                    return;
+                }
+            }
         }
+        appealService.getMessage(bpc.request);
         log.info("end**************preparetionData************");
         bpc. request.setAttribute("crud_action_type","appeal");
     }

@@ -14,6 +14,18 @@
             </div>
         </div>
     </div>
+    <c:if test="${rfiServiceName!=null }">
+        <div style="margin-left: auto;margin-right: auto;width: 1280px">
+            <div class="navigation-gp">
+
+                <div style="margin-top: 20px;margin-left: 4%">
+                    <p style="font-size: 2.2rem">You are applying for <strong>${rfiServiceName }</strong></p>
+                </div>
+
+            </div>
+        </div>
+    </c:if>
+
 </div>
 
 <style>

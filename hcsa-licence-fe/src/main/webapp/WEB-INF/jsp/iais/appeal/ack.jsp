@@ -18,6 +18,11 @@
     <div class="row" style="margin-left:5px">
       <h2>${INBOX_ERR001}</h2>
     </div>
+    <div class="row">
+      <div class="text-right text-center-mobile" style="margin-bottom: 1%">
+        <a class="btn btn-primary" href="/main-web/eservice/INTERNET/MohInternetInbox" id="dashboard">Go to Dashboard</a>
+      </div>
+    </div>
   </form>
 </div>
 <style>

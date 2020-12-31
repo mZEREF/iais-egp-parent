@@ -2094,6 +2094,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
                             if(appSvcChckListDto.getChkLstConfId().equals(appSvcDisciplineAllocationDto.getChkLstConfId())){
                                 flag=true;
+                                break;
                             }
                         }
                         if(!flag){
