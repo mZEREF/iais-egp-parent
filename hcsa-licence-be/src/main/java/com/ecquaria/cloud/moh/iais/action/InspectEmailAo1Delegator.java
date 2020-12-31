@@ -467,7 +467,7 @@ public class InspectEmailAo1Delegator {
 
                     if(ncAnswerDtos.size()!=0){
                         StringBuilder stringBuilder=new StringBuilder();
-                        stringBuilder.append("<tr><td colspan=\"6\">").append(applicationViewDto.getServiceType()).append("</td></tr>");
+                        stringBuilder.append("<tr><td colspan=\"6\"><b>").append(applicationViewDto.getServiceType()).append("</b></td></tr>");
                         int i=0;
                         for (NcAnswerDto ncAnswerDto:ncAnswerDtos
                         ) {

@@ -268,7 +268,7 @@ public class InspectionMergeSendNcEmailDelegator {
                     List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(appPremisesCorrelationDto.getId());
 
                     if(ncAnswerDtos.size()!=0){
-                        stringBuilder1.append("<tr><td colspan=\"6\">").append(appViewDto.getServiceType()).append("</td></tr>");
+                        stringBuilder1.append("<tr><td colspan=\"6\"><b>").append(appViewDto.getServiceType()).append("</b></td></tr>");
                         int i=0;
                         for (NcAnswerDto ncAnswerDto:ncAnswerDtos
                         ) {
