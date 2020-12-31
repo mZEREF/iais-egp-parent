@@ -1095,7 +1095,12 @@ public class BackendInboxDelegator {
                     //update application Group status
                     ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                     broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
-                    applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+                    boolean appStatusIsAllRejected = checkAllStatus(saveApplicationDtoList, ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                    if(appStatusIsAllRejected){
+                        applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_REJECT);
+                    }else{
+                        applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+                    }
                     applicationGroupDto.setAo3ApprovedDt(new Date());
                     applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
@@ -1165,6 +1170,23 @@ public class BackendInboxDelegator {
                 }
             }
         }
+    }
+
+    private boolean checkAllStatus(List<ApplicationDto> applicationDtoList,String status){
+        boolean flag = false;
+        if(!IaisCommonUtils.isEmpty(applicationDtoList) && !StringUtil.isEmpty(status)){
+            int index = 0;
+            for(ApplicationDto applicationDto : applicationDtoList){
+                if(status.equals(applicationDto.getStatus())){
+                    index ++;
+                }
+            }
+            if(index == applicationDtoList.size()){
+                flag = true;
+            }
+        }
+
+        return flag;
     }
 
     private void doRefunds(List<AppReturnFeeDto> saveReturnFeeDtos){
