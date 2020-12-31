@@ -396,6 +396,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 log.error(e.getMessage(), e);
             }
         });
+        List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
     }
 
     private AppSubmissionDto transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) throws Exception {
