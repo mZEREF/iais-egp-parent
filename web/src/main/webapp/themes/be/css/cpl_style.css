@@ -4536,7 +4536,7 @@ border-radius: 18px;
 
 .navigation .mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar {
   background-color: white !important;
-  width: 2px;
+  width: 5px;
   border-radius: 0;
 }
 .navigation .mCSB_scrollTools .mCSB_draggerRail {
@@ -5496,4 +5496,9 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
 .dash-announce h3 {
   padding-bottom: 15px;
   border-bottom: 1px solid #1989bf;
+}
+
+.dialogbox-content {
+  height:70vh;
+  overflow-y: auto;
 }
