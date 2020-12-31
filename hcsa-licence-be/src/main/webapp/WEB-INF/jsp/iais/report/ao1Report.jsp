@@ -364,7 +364,7 @@
             </div>
         </div>
     </div>
-    <c:if test="${appType!='APTY007'}">
+    <c:if test="${appType!='APTY007'&&appType!='APTY009'}">
         <div class="alert alert-info" role="alert">
             <strong>
                 <h4>Section E (Recommendations)</h4>
@@ -445,7 +445,7 @@
             </div>
         </div>
     </c:if>
-    <c:if test="${appType=='APTY007'}">
+    <c:if test="${appType=='APTY007'||appType=='APTY009'}">
         <div class="alert alert-info" role="alert">
             <strong>
                 <h4>Section E (After Action)</h4>

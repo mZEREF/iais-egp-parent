@@ -161,6 +161,8 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, appPremisesRecommendationDto);
         if (ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)) {
             appPremisesRecommendationDto.setRecommendation("Audit");
+        }else if (ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType)) {
+            appPremisesRecommendationDto.setRecommendation("Post");
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ValidationResult validationResult = WebValidationHelper.validateProperty(appPremisesRecommendationDto, "save");

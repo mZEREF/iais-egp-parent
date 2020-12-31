@@ -139,7 +139,7 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </c:if>
-                                                                    <c:if test="${appType!='APTY007'}">
+                                                                    <c:if test="${appType!='APTY007'&& appType!='APTY009'}">
                                                                         <iais:row>
                                                                             <iais:field value="Recommendation"
                                                                                         required="false"/>
@@ -284,7 +284,7 @@
 
     $(document).ready(function () {
         var type = $('input[name="appType"]').val();
-        if (type == 'APTY007') {
+        if (type == 'APTY007'||type == 'APTY009') {
             $("#recommendationTitle").addClass("hidden");
             $("#recommendationContent").addClass("hidden");
             $("#sectionF").addClass("hidden");

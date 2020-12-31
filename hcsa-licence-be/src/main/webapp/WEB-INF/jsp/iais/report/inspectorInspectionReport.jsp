@@ -142,7 +142,7 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </c:if>
-                                                                    <c:if test="${appType!='APTY007'}">
+                                                                    <c:if test="${appType!='APTY007'&&appType!='APTY009'}">
                                                                     <iais:row>
                                                                         <iais:field value="Recommendation"
                                                                                     required="false"/>

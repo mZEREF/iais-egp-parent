@@ -379,7 +379,7 @@
             </div>
         </div>
     </div>
-    <c:if test="${appType!='APTY007'}">
+    <c:if test="${appType!='APTY007' && appType!='APTY009'}">
         <div id="recommendationTitle" class="alert alert-info" role="alert">
             <strong>
                 <h4 style="border-bottom: none">Section E (Recommendations)</h4>
@@ -472,6 +472,7 @@
                                              title="content"
                                              maxlength="8000"><c:out
                                         value="${appPremisesRecommendationDto.followUpAction}"/></textarea></p>
+                                <span id="error_followUpAction" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
@@ -504,7 +505,7 @@
         </div>
     </c:if>
 
-    <c:if test="${appType=='APTY007'}">
+    <c:if test="${appType=='APTY007'|| appType=='APTY009'}">
         <div class="alert alert-info" role="alert">
             <strong>
                 <h4>Section E (After Action)</h4>
@@ -523,6 +524,7 @@
                                              title="content"
                                              maxlength="8000"><c:out
                                         value="${appPremisesRecommendationDto.followUpAction}"/></textarea></p>
+                                <span id="error_followUpAction" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
@@ -555,6 +557,7 @@
         </div>
     </c:if>
 </div>
+<a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 
 <script type="text/javascript">
@@ -630,7 +633,7 @@
             $("#period").hide();
             $("#selfPeriod").hide();
         }
-        if ($("#periods").val() == "Others" && type != "APTY005" && type != "APTY007") {
+        if ($("#periods").val() == "Others" && type != "APTY005" && type != "APTY007"&& type != "APTY009") {
             changePeriod("Others");
         }
         if ($('#enforcement').is(':checked')) {
