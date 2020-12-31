@@ -202,8 +202,8 @@
         $("[name='eExpiryDate']").val("");
         $("[name='eStartDate']").val("");
         $("[name='fStartDate']").val("");
-        $("#licType option:first").prop("selected", 'selected').val("All");
-        $("#licStatus option:first").prop("selected", 'selected').val("All");
+        $("#licType option:first").prop("selected", 'selected').val("");
+        $("#licStatus option:first").prop("selected", 'selected').val("");
         $("#clearBody .current").text("All");
     }
 </script>

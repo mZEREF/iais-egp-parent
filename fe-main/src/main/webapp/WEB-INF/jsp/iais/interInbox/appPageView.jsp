@@ -69,9 +69,9 @@
         $("[name='appNoPath']").val("");
         $("[name='eed']").val("");
         $("[name='esd']").val("");
-        $("#appTypeSelect option:first").prop("selected", 'selected').val("All");
-        $("#appStatusSelect option:first").prop("selected", 'selected').val("All");
-        $("#appServiceType option:first").prop("selected", 'selected').val("All");
+        $("#appTypeSelect option:first").prop("selected", 'selected').val("");
+        $("#appStatusSelect option:first").prop("selected", 'selected').val("");
+        $("#appServiceType option:first").prop("selected", 'selected').val("");
         $("#clearBody .current").text("All");
     }
 
