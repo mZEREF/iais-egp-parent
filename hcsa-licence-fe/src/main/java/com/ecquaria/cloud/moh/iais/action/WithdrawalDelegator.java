@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -304,6 +305,10 @@ public class WithdrawalDelegator {
         if (MessageConstants.MESSAGE_STATUS_RESPONSE.equals(interMessageById.getStatus())){
             ParamUtil.setRequestAttr(bpc.request, "rfi_already_err",MessageUtil.getMessageDesc("INBOX_ERR001"));
         }
+        ApplicationDto applicationDto = applicationFeClient.getApplicationById(withdrawnDto.getApplicationId()).getEntity();
+        String serviceId = applicationDto.getServiceId();
+        HcsaServiceDto serviceDtoById = serviceConfigService.getServiceDtoById(serviceId);
+        bpc.request.setAttribute("rfiServiceName",serviceDtoById.getSvcName());
     }
 
     public void saveDateStep(BaseProcessClass bpc) throws IOException {

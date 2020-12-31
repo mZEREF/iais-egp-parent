@@ -20,9 +20,14 @@
                     <div class="col-lg-12 col-xs-12">
                         <div class="internet-content">
                             <div class="center-content">
-                                <label>${rfi_already_err}</label>
+                                <h3>${rfi_already_err}</h3>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="text-right text-center-mobile" style="margin-bottom: 1%;margin-right: 20px">
+                        <a class="btn btn-primary" href="/main-web/eservice/INTERNET/MohInternetInbox" id="dashboard">Go to Dashboard</a>
                     </div>
                 </div>
             </c:when>
