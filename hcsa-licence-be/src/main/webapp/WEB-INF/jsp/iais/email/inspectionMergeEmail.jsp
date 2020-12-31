@@ -33,20 +33,17 @@
                                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                                             <li class="complete" role="presentation"><a href="#tabInfo"
                                                                                         aria-controls="tabInfo"
-                                                                                        role="tab" data-toggle="tab"
-                                                                                        onclick="javascript:updateHidenField();">Info</a>
+                                                                                        role="tab" data-toggle="tab">Info</a>
                                             </li>
                                             <li class="complete" role="presentation"><a href="#tabDocuments"
                                                                                         aria-controls="tabDocuments"
                                                                                         role="tab"
-                                                                                        data-toggle="tab"
-                                                                                        onclick="javascript:updateHidenField();">Documents</a>
+                                                                                        data-toggle="tab">Documents</a>
                                             </li>
                                             <li class="active" role="presentation"><a href="#tabProcessing"
                                                                                       aria-controls="tabProcessing"
                                                                                       role="tab"
-                                                                                      data-toggle="tab"
-                                                                                      onclick="javascript:refreshTinyMce();">Processing</a>
+                                                                                      data-toggle="tab">Processing</a>
                                             </li>
                                         </ul>
                                         <div class="tab-nav-mobile visible-xs visible-sm">
@@ -140,7 +137,7 @@
                                                     </c:if>
                                                 </iais:section>
                                                 <p class="text-right text-center-mobile">
-                                                    <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
+                                                    <a style="float:left;padding-top: 1.1%;text-decoration:none;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
 
                                                     <iais:action style="text-align:right;">
                                                         <button type="button" class="btn btn-secondary"
@@ -163,7 +160,6 @@
             </div>
         </div>
     </div>
-    <div id="hiddenEmailContent" style="display: none">${insEmailDto.messageContent}</div>
 </form>
 </div>
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp" %>
@@ -216,13 +212,7 @@
         }
     }
 
-    function refreshTinyMce() {
-        tinymce.activeEditor.setContent($("#hiddenEmailContent").html());
-    }
 
-    function updateHidenField() {
-        $("#hiddenEmailContent").html(tinymce.activeEditor.getContent());
-    }
 </script>
 
 
