@@ -460,15 +460,20 @@ public class MohIntranetUserDelegator {
             List<String> roleIds = intranetUserService.getRoleIdByUserId(userAccId);
             if (assignRoles.contains(RoleConsts.USER_ROLE_PSO_LEAD)) {
                 assignRoles.add(RoleConsts.USER_ROLE_PSO);
-            } else if (assignRoles.contains(RoleConsts.USER_ROLE_ASO_LEAD)) {
+            }
+            if (assignRoles.contains(RoleConsts.USER_ROLE_ASO_LEAD)) {
                 assignRoles.add(RoleConsts.USER_ROLE_ASO);
-            } else if (assignRoles.contains(RoleConsts.USER_ROLE_AO1_LEAD)) {
+            }
+            if (assignRoles.contains(RoleConsts.USER_ROLE_AO1_LEAD)) {
                 assignRoles.add(RoleConsts.USER_ROLE_AO1);
-            } else if (assignRoles.contains(RoleConsts.USER_ROLE_AO2_LEAD)) {
+            }
+            if (assignRoles.contains(RoleConsts.USER_ROLE_AO2_LEAD)) {
                 assignRoles.add(RoleConsts.USER_ROLE_AO2);
-            } else if (assignRoles.contains(RoleConsts.USER_ROLE_AO3_LEAD)) {
+            }
+            if (assignRoles.contains(RoleConsts.USER_ROLE_AO3_LEAD)) {
                 assignRoles.add(RoleConsts.USER_ROLE_AO3);
-            } else if (assignRoles.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)) {
+            }
+            if (assignRoles.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)) {
                 assignRoles.add(RoleConsts.USER_ROLE_INSPECTIOR);
             }
             assignRoles.removeAll(roleIds);
@@ -567,10 +572,8 @@ public class MohIntranetUserDelegator {
                     //AO1
                     removeRoleNames.add(roleName);
                     List<String> list = roleIdGrpIdMap.get(roleName);
-                    int isLeadForGroup = 0;
                     if (roleName.contains("LEAD")) {
-                        isLeadForGroup = 1;
-                        List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, isLeadForGroup);
+                        List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, 1);
                         if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp)) {
                             for (UserGroupCorrelationDto dto : userGroupCorrelationDtosTemp) {
                                 dto.setIsLeadForGroup(0);
@@ -578,12 +581,19 @@ public class MohIntranetUserDelegator {
                             userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp);
                         }
                     } else {
-                        List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, isLeadForGroup);
+                        List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, 0);
                         if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp)) {
                             for (UserGroupCorrelationDto dto : userGroupCorrelationDtosTemp) {
                                 dto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                             }
                             userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp);
+                        }
+                        List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp1 = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, 1);
+                        if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp1)) {
+                            for (UserGroupCorrelationDto dto : userGroupCorrelationDtosTemp1) {
+                                dto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                            }
+                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp1);
                         }
                     }
                 }
@@ -1179,20 +1189,20 @@ public class MohIntranetUserDelegator {
     private List<OrgUserDto> importXML(File file) {
         List list = null;
         List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
-        try{
+        try {
             SAXReader saxReader = new SAXReader();
             Document document = saxReader.read(file);
             //root
             Element root = document.getRootElement();
             //ele
             list = root.elements();
-        }catch (Exception e){
+        } catch (Exception e) {
             OrgUserDto orgUserDto = new OrgUserDto();
             orgUserDto.setXmlError("error");
             orgUserDtos.add(orgUserDto);
             log.error(e.getMessage(), e);
         }
-        if(list!=null){
+        if (list != null) {
             for (int i = 0; i < list.size(); i++) {
                 OrgUserDto orgUserDto = new OrgUserDto();
                 try {
