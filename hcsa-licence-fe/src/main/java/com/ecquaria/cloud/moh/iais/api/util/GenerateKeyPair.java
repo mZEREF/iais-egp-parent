@@ -1,7 +1,8 @@
 package com.ecquaria.cloud.moh.iais.api.util;
 
-import java.security.SecureRandom;
 import lombok.extern.slf4j.Slf4j;
+
+import java.security.SecureRandom;
 
 @Slf4j
 public class GenerateKeyPair {
@@ -12,7 +13,7 @@ public class GenerateKeyPair {
 					.getInstance("RSA");
 			SecureRandom secrand = new SecureRandom();
 			secrand.generateSeed(128);//setSeed("dasdas2dsds".getBytes());
-			keygen.initialize(1024, secrand);
+			keygen.initialize(2048, secrand);
 
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

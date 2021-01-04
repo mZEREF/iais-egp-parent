@@ -18,8 +18,8 @@ public class GenerateKeyPair {
 			java.security.KeyPairGenerator keygen = java.security.KeyPairGenerator
 					.getInstance("RSA");
 			SecureRandom secrand = new SecureRandom();
-			secrand.generateSeed(128);//setSeed("dasdas2dsds".getBytes()); // 初始化随机产生器
-			keygen.initialize(1024, secrand);
+			secrand.generateSeed(128);//setSeed("dasdas2dsds".getBytes());
+			keygen.initialize(2048, secrand);
 			KeyPair keys = keygen.genKeyPair();
 
 			PublicKey pubkey = keys.getPublic();
