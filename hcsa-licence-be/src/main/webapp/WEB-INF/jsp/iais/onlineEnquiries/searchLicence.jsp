@@ -64,13 +64,13 @@
                                     <iais:field value="Application Submitted Date From"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
                                         <iais:datePicker id = "sub_date" name = "sub_date" value="${SearchParam.filters['subDate']}" ></iais:datePicker>
+                                        <span style="font-weight:normal;" id="error_to_date" name="iaisErrorMsg" class="error-msg" ></span>
                                     </div >
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="Application Submitted Date To"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
                                         <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['toDate']}"></iais:datePicker>
-                                        <span style="font-weight:normal;" id="error_to_date" name="iaisErrorMsg" class="error-msg" ></span>
                                     </div >
                                 </iais:row>
 
@@ -118,26 +118,26 @@
                                     <iais:field value="Licence Start Date From"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
                                         <iais:datePicker id = "start_date" name = "start_date" value="${SearchParam.filters['start_date']}" ></iais:datePicker>
+                                        <span style="font-weight:normal;" id="error_start_to_date" name="iaisErrorMsg" class="error-msg" ></span>
                                     </div >
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="Licence Start Date To"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
                                         <iais:datePicker id = "start_to_date" name = "start_to_date" value="${SearchParam.filters['start_to_date']}"></iais:datePicker>
-                                        <span style="font-weight:normal;" id="error_start_to_date" name="iaisErrorMsg" class="error-msg" ></span>
                                     </div >
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="Licence Expiry Date From"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
                                         <iais:datePicker id = "expiry_start_date" name = "expiry_start_date" value="${SearchParam.filters['expiry_start_date']}" ></iais:datePicker>
+                                        <span style="font-weight:normal;" id="error_expiry_date" name="iaisErrorMsg" class="error-msg" ></span>
                                     </div >
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="Licence Expiry Date To"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
                                         <iais:datePicker id = "expiry_date" name = "expiry_date" value="${SearchParam.filters['expiry_date']}"></iais:datePicker>
-                                        <span style="font-weight:normal;" id="error_expiry_date" name="iaisErrorMsg" class="error-msg" ></span>
                                     </div >
                                 </iais:row>
                                 </iais:section>
