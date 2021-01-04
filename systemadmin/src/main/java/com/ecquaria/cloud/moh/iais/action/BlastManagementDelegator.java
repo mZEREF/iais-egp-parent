@@ -218,15 +218,18 @@ public class BlastManagementDelegator {
      * search
      * @param bpc
      */
-    public void search(BaseProcessClass bpc){
+    public void search(BaseProcessClass bpc) throws ParseException {
         SearchParam searchParam = getSearchParam(bpc.request,true);
         String descriptionSwitch = ParamUtil.getRequestString(bpc.request,"descriptionSwitch");
         String msgName = ParamUtil.getRequestString(bpc.request,"msgName");
         String start = ParamUtil.getRequestString(bpc.request,"start");
         String end = ParamUtil.getRequestString(bpc.request,"end");
+        Date startDate = Formatter.parseDate(start);
+        Date endDate = Formatter.parseDate(end);
+
         String mode = ParamUtil.getRequestString(bpc.request,"modeDelivery");
         String distribution = ParamUtil.getRequestString(bpc.request,"distributionList");
-        if(start != null && end !=null && start.compareTo(end)>0){
+        if(start != null && end !=null && startDate.after(endDate)){
             Map<String,String> err = IaisCommonUtils.genNewHashMap();
             err.put("errDate",MessageUtil.getMessageDesc("EMM_ERR012"));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(err));
