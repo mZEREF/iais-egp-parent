@@ -451,7 +451,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         Claims claims = Jwts.claims();
         claims.put("uen", uen);
         //edhClient.receiveEDHEntity(jwtt, uen);
-        return Boolean.TRUE;
+        return Boolean.FALSE;
     }
 
     @Override
