@@ -242,6 +242,9 @@ public class BackendAjaxController {
                     noApprove.append(item).append(',');
                     approveCheck = 0;
                 }
+            }else{
+                noApprove.append(item).append(',');
+                approveCheck = 0;
             }
         }
         if(noApprove.length() > 0){
