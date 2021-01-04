@@ -127,14 +127,9 @@
                                             </c:forEach>
 
                                         </c:if>
-                                        <iais:action style="text-align:left;">
-                                            <a onclick="javascript:doBack()"><em class="fa fa-angle-left"> </em> Back</a>
-                                        </iais:action>
-                                        <iais:action style="text-align:right;">
-                                            <button class="btn btn-primary" type="button"
-                                                    onclick="javascript:doSubmit()">Proceed
-                                                to Submit
-                                            </button>
+                                        <iais:action>
+                                            <a style="float:left;padding-top: 1.1%;text-decoration:none;" class="back" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a>
+                                            <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doSubmit()">Proceed to Submit</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>
