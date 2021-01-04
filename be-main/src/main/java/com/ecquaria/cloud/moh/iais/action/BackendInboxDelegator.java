@@ -1188,6 +1188,7 @@ public class BackendInboxDelegator {
                  ) {
                 if(item.equals(applicationDto.getApplicationNo())){
                     needChange = 0;
+                    break;
                 }
             }
             if(needChange == 1){
