@@ -13,6 +13,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineA
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
@@ -146,7 +148,22 @@ public class LicenceViewDelegator {
                         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
                         ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
                         //set DisciplineAllocationMap
-                        Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap= appSubmissionService.getDisciplineAllocationDtoList(appSubmissionDto,hcsaServiceDto.getId());
+                        //get lic_app svc id
+                        String licAlignAppSvcId = "";
+                        List<LicAppCorrelationDto> licAppCorrelationDtos =  appSubmissionService.getLicDtoByLicId(appSubmissionDto.getLicenceId());
+                        if(licAppCorrelationDtos != null && licAppCorrelationDtos.size() >0){
+                            LicAppCorrelationDto licAppCorrelationDto = licAppCorrelationDtos.get(0);
+                            ApplicationDto applicationDto = appSubmissionService.getAppById(licAppCorrelationDto.getApplicationId());
+                            if(applicationDto != null){
+                                licAlignAppSvcId = applicationDto.getServiceId();
+                            }
+                        }
+                        if(!StringUtil.isEmpty(licAlignAppSvcId)){
+                            appSvcRelatedInfoDto.setServiceId(licAlignAppSvcId);
+                            appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
+                            appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
+                        }
+                        Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap= appSubmissionService.getDisciplineAllocationDtoList(appSubmissionDto,licAlignAppSvcId);
                         ParamUtil.setRequestAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
                     }else{
                         log.info(StringUtil.changeForLog("current svc name:"+appSvcRelatedInfoDto.getServiceName()+" can not found hcsaServiceDto"));

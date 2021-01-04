@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
@@ -256,6 +257,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             log.info("send app sumbit email fail");
         }
 
+    }
+
+    @Override
+    public List<LicAppCorrelationDto> getLicDtoByLicId(String licId) {
+        return licenceClient.getLicCorrBylicId(licId).getEntity();
+    }
+
+    @Override
+    public ApplicationDto getAppById(String appId) {
+        return applicationFeClient.getApplicationById(appId).getEntity();
     }
 
     @Override
