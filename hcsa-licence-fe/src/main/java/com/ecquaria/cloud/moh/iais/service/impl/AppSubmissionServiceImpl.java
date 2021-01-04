@@ -1660,6 +1660,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                         HcsaSvcSubtypeOrSubsumedDto newHcsaSvcSubtypeOrSubsumedDto = newSvcScopeNameMap.get(hcsaSvcSubtypeOrSubsumedDto.getName());
                                         if(ClinicalLaboratoryDelegator.PLEASEINDICATE.equals(hcsaSvcSubtypeOrSubsumedDto.getName())){
                                             AppSvcChckListDto newAppSvcChckListDto = (AppSvcChckListDto) CopyUtil.copyMutableObject(svcScope);
+                                            newAppSvcChckListDto.setChkLstConfId(newHcsaSvcSubtypeOrSubsumedDto.getId());
                                             newAppSvcChckListDto.setChkLstType(newHcsaSvcSubtypeOrSubsumedDto.getType());
                                             newAppSvcChckListDto.setChkName(newHcsaSvcSubtypeOrSubsumedDto.getName());
                                             newAppSvcChckListDto.setParentName(newHcsaSvcSubtypeOrSubsumedDto.getParentId());
@@ -1701,6 +1702,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     appSvcRelatedInfoDto.setAppSvcDisciplineAllocationDtoList(newDisciplineAllocationDtoList);
                 }
             }
+            appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
         }
         log.debug(StringUtil.changeForLog("do changeSvcScopeIdByConfigName end ..."));
     }
