@@ -435,9 +435,15 @@ public class BackendInboxDelegator {
                     AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
                     if(appPremisesRecommendationDto!=null){
                         Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
+                        String appgroupName = applicationDto.getAppGrpId() + "backendAppGroupStatus";
                         if(null != recomInNumber && recomInNumber == 0){
+                            String appGroupStatus = (String)ParamUtil.getSessionAttr(bpc.request,appgroupName);
+                            if(StringUtil.isEmpty(appGroupStatus)){
+                                ParamUtil.setSessionAttr(bpc.request,appgroupName,ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                            }
                             successStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
                         }else{
+                            ParamUtil.setSessionAttr(bpc.request,appgroupName,ApplicationConsts.APPLICATION_STATUS_APPROVED);
                             successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
                         }
                     }else{
@@ -1095,8 +1101,10 @@ public class BackendInboxDelegator {
                     //update application Group status
                     ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                     broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
-                    boolean appStatusIsAllRejected = checkAllStatus(saveApplicationDtoList, ApplicationConsts.APPLICATION_STATUS_REJECTED);
-                    if(appStatusIsAllRejected){
+                    String appStatusIsAllRejected = checkAllStatus(saveApplicationDtoList,applicationDtoIds);
+                    String appgroupName = applicationDto.getAppGrpId() + "backendAppGroupStatus";
+                    String sessionStatus = (String) ParamUtil.getSessionAttr(bpc.request,appgroupName);
+                    if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatusIsAllRejected) && ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(sessionStatus)){
                         applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_REJECT);
                     }else{
                         applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
@@ -1172,21 +1180,24 @@ public class BackendInboxDelegator {
         }
     }
 
-    private boolean checkAllStatus(List<ApplicationDto> applicationDtoList,String status){
-        boolean flag = false;
-        if(!IaisCommonUtils.isEmpty(applicationDtoList) && !StringUtil.isEmpty(status)){
-            int index = 0;
-            for(ApplicationDto applicationDto : applicationDtoList){
-                if(status.equals(applicationDto.getStatus())){
-                    index ++;
+    private String checkAllStatus(List<ApplicationDto> applicationDtoList,List<String> applist ){
+        String status = ApplicationConsts.APPLICATION_STATUS_REJECTED;
+        for(ApplicationDto applicationDto : applicationDtoList){
+            int needChange = 1;
+            for (String item:applist
+                 ) {
+                if(item.equals(applicationDto.getApplicationNo())){
+                    needChange = 0;
                 }
             }
-            if(index == applicationDtoList.size()){
-                flag = true;
+            if(needChange == 1){
+                if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationDto.getStatus())){
+                    status = ApplicationConsts.APPLICATION_STATUS_APPROVED;
+                }
             }
         }
 
-        return flag;
+        return status;
     }
 
     private void doRefunds(List<AppReturnFeeDto> saveReturnFeeDtos){
