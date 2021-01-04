@@ -196,8 +196,9 @@ public class LicenceViewServiceDelegator {
                 List<ApplicationDto> applicationDtoList = applicationClient.getAppDtosByAppGrpId(appGrpId).getEntity();
                 if (applicationDtoList != null && premiseMiscDto != null){
                     applicationDtoList.forEach(h -> {
+                        ApplicationDto oldApplicationDto = applicationClient.getApplicationById(premiseMiscDto.getRelateRecId()).getEntity();
                         WithdrawnDto withdrawnDto = new WithdrawnDto();
-                        withdrawnDto.setApplicationNo(h.getApplicationNo());
+                        withdrawnDto.setApplicationNo(oldApplicationDto.getApplicationNo());
 
                         withdrawnDto.setWithdrawnReason(premiseMiscDto.getReason());
                         withdrawnDto.setWithdrawnRemarks(premiseMiscDto.getRemarks());
