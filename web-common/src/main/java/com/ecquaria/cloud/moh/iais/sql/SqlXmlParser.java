@@ -42,7 +42,7 @@ public class SqlXmlParser extends DefaultHandler {
     private StringBuilder sqlStat; // accumulator
 
     public List<Sql> parseSqlXml(String xmlFileName) throws SAXException, ParserConfigurationException, IOException {
-        SAXParserFactory spf = SAXParserFactory.newInstance();
+        SAXParserFactory spf = SAXParserFactory.newInstance();//NOSONAR
         spf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         SAXParser sp = spf.newSAXParser();
         sp.parse(xmlFileName, this);

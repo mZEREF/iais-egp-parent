@@ -1190,7 +1190,7 @@ public class MohIntranetUserDelegator {
         List list = null;
         List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
         try {
-            SAXReader saxReader = new SAXReader();
+            SAXReader saxReader = new SAXReader();//NOSONAR
             Document document = saxReader.read(file);
             //root
             Element root = document.getRootElement();

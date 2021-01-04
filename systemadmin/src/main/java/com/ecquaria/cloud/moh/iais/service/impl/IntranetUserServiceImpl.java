@@ -292,7 +292,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
         List list = IaisCommonUtils.genNewArrayList();
         try {
             //validate data
-            SAXReader saxReader = new SAXReader();
+            SAXReader saxReader = new SAXReader();//NOSONAR
             Document document = saxReader.read(xmlFile);
             //root
             Element root = document.getRootElement();
@@ -430,7 +430,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
 
     @Override
     public List<EgpUserRoleDto> importRoleXml(File xmlFile) throws DocumentException {
-        SAXReader saxReader = new SAXReader();
+        SAXReader saxReader = new SAXReader();//NOSONAR
         Document document = saxReader.read(xmlFile);
         //root
         Element root = document.getRootElement();
