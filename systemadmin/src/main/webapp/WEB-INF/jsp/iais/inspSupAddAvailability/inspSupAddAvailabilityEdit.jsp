@@ -58,6 +58,7 @@
                         <iais:field value="Non-Available Date Start" required="true"/>
                         <iais:value width="7">
                           <iais:datePicker id = "blockOutStart" name = "blockOutStart" dateVal="${inspNonAvailabilityDto.blockOutStart}"></iais:datePicker>
+                          <span class="error-msg" name="iaisErrorMsg" id="error_nonAvaStartDate"></span>
                         </iais:value>
                       </div>
                       <div class="form-group">

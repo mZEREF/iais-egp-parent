@@ -45,7 +45,7 @@ public class ApptNonAvailabilityValidate implements CustomizeValidator {
             return null;
         }
         if(apptNonAvailabilityDateDto.getBlockOutStart().after(apptNonAvailabilityDateDto.getBlockOutEnd())){
-            errMap.put("nonAvaDate", "OAPPT_ERR008");
+            errMap.put("nonAvaStartDate", "OAPPT_ERR008");
             return errMap;
         }
         if(!IaisCommonUtils.isEmpty(inspectionDate)) {
