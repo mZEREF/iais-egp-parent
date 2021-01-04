@@ -160,13 +160,13 @@
                                                                  class="control control-caption-horizontal">
                                                                 <div class=" form-group form-horizontal formgap"
                                                                      <c:if test="${status.first}">style="width:194%;"</c:if> >
-                                                                    <div class="col-sm-4 control-label formtext control">
+                                                                    <div class="col-sm-8 control-label formtext control">
                                                                         <div class="cgo-header">
                                                                             <strong>Clinical Governance Officer <label
                                                                                     class="assign-psn-item"><c:if test="${cgoList.size() > 1}">${status.index+1}</c:if></label></strong>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-sm-8 text-right">
+                                                                    <div class="col-sm-4 text-right">
                                                                         <c:if test="${status.index - HcsaSvcPersonnel.mandatoryCount >=0}">
                                                                             <div class="">
                                                                                 <h4 class="text-danger"><em

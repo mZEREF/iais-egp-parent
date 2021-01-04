@@ -13,12 +13,12 @@
             <td class="first last" style="width: 100%;">
               <div id="control--runtime--2" class="control control-caption-horizontal">
                 <div class=" form-group form-horizontal formgap">
-                    <div class="col-sm-4 control-label formtext control">
+                    <div class="col-sm-8 control-label formtext control">
                       <div class="cgo-header">
                         <strong>Clinical Governance Officer <label class="assign-psn-item"></label></strong>
                       </div>
                     </div>
-                    <div class="col-sm-8 text-right">
+                    <div class="col-sm-4 text-right">
                         <div class="">
                           <h4 class="text-danger"><em class="fa fa-times-circle cursorPointer removeBtn"></em></h4>
                         </div>

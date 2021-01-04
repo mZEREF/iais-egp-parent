@@ -61,12 +61,12 @@
                 <div class="row">
                     <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-6 control-label formtext col-md-5">
+                            <div class="col-sm-6 control-label formtext col-md-8">
                                 <div class="cgo-header">
                                     <strong>MedAlert Person <label class="assign-psn-item"><c:if test="${AppSvcMedAlertPsn.size() > 1}">${status.index+1}</c:if></label></strong>
                                 </div>
                             </div>
-                            <div class="col-sm-5 col-md-7 text-right">
+                            <div class="col-sm-5 col-md-4 text-right">
                                 <c:if test="${status.index - mandatoryCount >=0}">
                                     <h4 class="text-danger"><em class="fa fa-times-circle mapDelBtn cursorPointer"></em></h4>
                                 </c:if>

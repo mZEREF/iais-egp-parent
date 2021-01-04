@@ -79,12 +79,12 @@
                       <td class="" style="width: 100%;">
                         <div  class="personnel-header control-caption-horizontal">
                           <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-5 control-label formtext ">
+                            <div class="col-sm-8 control-label formtext ">
                               <div class="cgo-header">
                                 <strong>Service Personnel <label class="assign-psn-item"><c:if test="${AppSvcPersonnelDtoList.size() > 1}">${status.index+1}</c:if></label></strong>
                               </div>
                             </div>
-                            <div class="col-sm-5 col-md-7 text-right">
+                            <div class="col-sm-5 col-md-4 text-right">
                               <c:if test="${status.index - spMandatoryCount >=0}">
                                 <h4 class="text-danger"><em class="fa fa-times-circle removeSpBtn cursorPointer"></em></h4>
                               </c:if>

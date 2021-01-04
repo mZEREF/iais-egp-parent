@@ -65,12 +65,12 @@
                     <div class="row">
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-6 control-label formtext col-md-4">
+                          <div class="col-sm-6 control-label formtext col-md-8">
                             <div class="cgo-header" style="font-size: 18px;">
                               <strong>Principal Officer <label class="assign-psn-item"><c:if test="${ReloadPrincipalOfficers.size() > 1}">${status.index+1}</c:if></label></strong>
                             </div>
                           </div>
-                          <div class="col-sm-5 col-md-8 text-right" >
+                          <div class="col-sm-5 col-md-4 text-right" >
                             <c:if test="${status.index - poMandatoryCount >=0}">
                               <h4 class="text-danger"><em class="fa fa-times-circle removePoBtn cursorPointer"></em></h4>
                             </c:if>
@@ -343,12 +343,12 @@
                     <div class="row" <c:if test="${status.first}">style="margin-top:-4%;"</c:if> >
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-6 control-label formtext col-md-4">
+                          <div class="col-sm-6 control-label formtext col-md-8">
                             <div class="cgo-header" style="font-size: 18px;">
                               <strong>Deputy Principal Officer <label class="assign-psn-item"><c:if test="${ReloadDeputyPrincipalOfficers.size() > 1}">${status.index+1}</c:if></label></strong>
                             </div>
                           </div>
-                          <div class="col-sm-5 col-md-8 text-right" >
+                          <div class="col-sm-5 col-md-4 text-right" >
                             <c:if test="${status.index - dpoMandatoryCount >=0}">
                               <h4 class="text-danger"><em class="fa fa-times-circle removeDpoBtn cursorPointer"></em></h4>
                             </c:if>
