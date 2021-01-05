@@ -461,7 +461,7 @@ public class LicenceServiceImpl implements LicenceService {
                             msgParam.setQueryCode(licenceDto.getLicenceNo());
                             msgParam.setReqRefNum(licenceDto.getLicenceNo());
                             List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-                            svcCodeList.add(licenseeIndividualDto.getFirstServiceCode());
+                            svcCodeList.add(licenceDto.getSvcCode());
                             msgParam.setSvcCodeList(svcCodeList);
                             msgParam.setRefId(licenceDto.getId());
                             msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
