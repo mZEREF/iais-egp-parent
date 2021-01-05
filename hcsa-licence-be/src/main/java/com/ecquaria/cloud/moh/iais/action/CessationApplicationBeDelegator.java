@@ -378,7 +378,7 @@ public class CessationApplicationBeDelegator {
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect) && !StringUtil.isEmpty(patHciName)) {
                 List<String> hciName = cessationBeService.listHciName();
                 if (!hciName.contains(patHciName)) {
-                    errorMap.put(i + "patHciName" + j, "HCI Name cannot be found.");
+                    errorMap.put(i + "patHciName" + j, "CESS_ERR004");
                 }
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect) && StringUtil.isEmpty(patRegNo)) {
@@ -436,7 +436,7 @@ public class CessationApplicationBeDelegator {
 
     private List<SelectOption> getPatientsOption() {
         List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, "Healthcare Institution");
+        SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, "HCI");
         SelectOption so2 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, "Professional Regn. No.");
         SelectOption so3 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER, "Others");
         riskLevelResult.add(so1);

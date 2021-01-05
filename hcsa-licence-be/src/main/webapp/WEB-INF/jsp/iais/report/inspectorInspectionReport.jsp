@@ -123,7 +123,7 @@
                                                                                          firstOption="Please Select"
                                                                                          value="${appPremisesRecommendationDto.processingDecision}"/>
                                                                             <span id="error_submit" class="error-msg"
-                                                                                  hidden>Processing Decision is mandatory</span>
+                                                                                  hidden>This is mandatory</span>
                                                                         </iais:value>
                                                                     </iais:row>
                                                                     <c:if test="${applicationViewDto.applicationDto.applicationType=='APTY002'}">
