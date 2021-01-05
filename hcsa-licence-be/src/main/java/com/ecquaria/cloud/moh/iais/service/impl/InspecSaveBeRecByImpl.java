@@ -28,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,10 +67,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     private String download;
     private String zipFile;
     private String compressPath;
-
-
-    @Autowired
-    private SystemBeLicClient systemBeLicClient;
 
     @Autowired
     private ApplicationClient applicationClient;
@@ -285,6 +280,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         JobLogger.log(StringUtil.changeForLog("submissionId:" + submissionId));
         JobLogger.log(StringUtil.changeForLog("eventRefNo:" + eventRefNo));
         //file is backupsRec
+        List<ProcessFileTrackDto> saveProcessFileTrackDto = IaisCommonUtils.genNewArrayList();
         if(file.isDirectory()){
             File[] files = file.listFiles();
             for(ProcessFileTrackDto pDto:processFileTrackDtos){
@@ -297,9 +293,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                         pDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SAVE_SUCCESSFUL);
                         pDto.setAuditTrailDto(intranet);
                         pDto.setEventRefNo(eventRefNo);
-
-                        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(pDto, submissionId, EventBusConsts.SERVICE_NAME_SYSTEM_ADMIN,
-                                EventBusConsts.OPERATION_BE_REC_DATA_COPY, pDto.getEventRefNo(), null);
+                        saveProcessFileTrackDto.add(pDto);
                     }
                 }
             }
@@ -328,6 +322,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         }
         if(!IaisCommonUtils.isEmpty(appPremCorrIds)){
             EventInspRecItemNcDto eventInspRecItemNcDto = new EventInspRecItemNcDto();
+            eventInspRecItemNcDto.setProcessFileTrackDtos(saveProcessFileTrackDto);
             //get Task
             eventInspRecItemNcDto.setEventRefNo(eventRefNo);
             eventInspRecItemNcDto.setAppPremCorrIds(appPremCorrIds);
