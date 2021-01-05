@@ -382,7 +382,7 @@
             $("#actionValue").val('acccond');
             inspectorProRecSubmit("acccond");
         } else {
-            var errMsg = 'Processing Decision is mandatory';
+            var errMsg = 'This is mandatory';
             $("#error_selectValue").text(errMsg);
             dismissWaiting();
         }
