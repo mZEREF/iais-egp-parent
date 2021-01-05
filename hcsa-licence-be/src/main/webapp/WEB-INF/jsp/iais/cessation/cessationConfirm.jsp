@@ -61,7 +61,7 @@
                                                         <span style="font-size: 16px"><fmt:formatDate value="${appCessHci.effectiveDate}" pattern="dd/MM/yyyy"/></span>
                                                         <span style="font-size: 16px;float:right"><a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
                                                                                          data-html="true"
-                                                                                         data-original-title="<p>The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">
+                                                                                         data-original-title="<p>The ASO must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">
                                                                 i</a></span>
                                                     </div>
                                                 </div>
