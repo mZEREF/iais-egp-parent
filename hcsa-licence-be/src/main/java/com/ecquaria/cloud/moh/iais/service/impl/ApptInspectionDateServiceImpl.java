@@ -1077,7 +1077,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         }
     }
 
-    private void createFeAppPremisesInspecApptDto(ApptInspectionDateDto apptInspectionDateDto) {
+    @Override
+    public void createFeAppPremisesInspecApptDto(ApptInspectionDateDto apptInspectionDateDto) {
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = apptInspectionDateDto.getAppPremisesInspecApptCreateList();
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);

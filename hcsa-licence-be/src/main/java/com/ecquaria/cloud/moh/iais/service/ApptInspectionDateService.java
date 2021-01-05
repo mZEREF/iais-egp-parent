@@ -152,4 +152,6 @@ public interface ApptInspectionDateService {
       * @Descripation: cancel System Date By SpecStep
       */
     ApptInspectionDateDto cancelSystemDateBySpecStep(ApptInspectionDateDto apptInspectionDateDto);
+
+    void createFeAppPremisesInspecApptDto(ApptInspectionDateDto apptInspectionDateDto);
 }

@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -40,15 +41,9 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.EventClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.kafka.model.Submission;
@@ -107,7 +102,10 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     private NotificationHelper notificationHelper;
     @Autowired
     private SystemParamConfig systemParamConfig;
-
+    @Autowired
+    private InspectionTaskClient inspectionTaskClient;
+    @Autowired
+    private  ApptInspectionDateService apptInspectionDateService;
     static String[] category = {"ADTYPE001", "ADTYPE002", "ADTYPE003"};
 
     @Override
@@ -392,10 +390,10 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
            return;
        }
         auditCombinationDto.setEventRefNo(RefNo);
+        boolean haveApptData = setAppPremisesInspecApptDtos(auditCombinationDto,RefNo);
         updateLicenceSaveCancelTask(auditCombinationDto,status,submitId);
         updateAppCancelTaskByEventBus(auditCombinationDto,submitId);
         updateTaskCancelTaskByEventBus(auditCombinationDto,submitId);
-
         try{
             // sysn fe app
             log.info("========================>>>>>sysn fe app !!!!");
@@ -414,8 +412,31 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
-
+        //save fe appt
+        if(haveApptData){
+            ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
+            apptInspectionDateDto.setAppPremisesInspecApptDtos(auditCombinationDto.getAppPremisesInspecApptDtos());
+            apptInspectionDateService.createFeAppPremisesInspecApptDto(apptInspectionDateDto);
+        }
     }
+    private boolean setAppPremisesInspecApptDtos(AuditCombinationDto auditCombinationDto,String refNo){
+        //get AppPremisesInspecApptDtos
+        try{
+            List<AppPremisesInspecApptDto>  appPremisesInspecApptDtos = inspectionTaskClient.getSystemDtosByAppPremCorrId(refNo).getEntity();
+            if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtos)){
+                for(AppPremisesInspecApptDto appPremisesInspecApptDto : appPremisesInspecApptDtos){
+                    appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                }
+                auditCombinationDto.setAppPremisesInspecApptDtos(appPremisesInspecApptDtos);
+                return true;
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+        return false;
+    }
+
 
     @Override
     public void sendEmailToIns( String emailKey, String appGroupNo,AuditTaskDataFillterDto auditTaskDataFillterDto) {
