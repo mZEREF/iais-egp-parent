@@ -1873,7 +1873,7 @@ public class NewApplicationDelegator {
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = o.getAppSvcRelatedInfoDtoList();
         serviceIsChange = eqServiceChange(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
         log.info(StringUtil.changeForLog("serviceIsChange"+serviceIsChange));
-        appEditSelectDto.setServiceEdit(false);
+        appEditSelectDto.setServiceEdit(serviceIsChange);
         appEditSelectDto.setPremisesEdit(grpPremiseIsChange);
         appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
@@ -2167,7 +2167,7 @@ public class NewApplicationDelegator {
                     appEditSelectDto1.setServiceEdit(serviceIsChange);
                     appSubmissionDto1.setAppEditSelectDto(appEditSelectDto1);
                     appSubmissionDto1.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-                    appSubmissionDto1.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                    appSubmissionDto1.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
                     appSubmissionDto1.setIsNeedNewLicNo(AppConsts.YES);
                     for(AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto1.getAppGrpPremisesDtoList()){
                         appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
@@ -2506,7 +2506,7 @@ public class NewApplicationDelegator {
             svcDocDto.setDocName(appSvcDocDto.getDocName());
             svcDocDto.setDocSize(appSvcDocDto.getDocSize());
             svcDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
-            svcDocDto.setPremisesVal(appSvcDocDto.getPremisesVal());
+            //premiseVal May be ""
             svcDocDto.setMd5Code(appSvcDocDto.getMd5Code());
             appSvcDocDtos.add(svcDocDto);
         }
