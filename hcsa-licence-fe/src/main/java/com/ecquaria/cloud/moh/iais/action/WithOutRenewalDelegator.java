@@ -765,10 +765,14 @@ public class WithOutRenewalDelegator {
         setSubmissionAmount(appSubmissionDtos,renewalAmount,appFeeDetailsDto,bpc);
 
         List<FeeExtDto> gradualFeeList = IaisCommonUtils.genNewArrayList();
-        HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = getLaterFeeDetailsMap(renewalAmount.getDetailFeeDto(),gradualFeeList);
+        List<FeeExtDto> normalFeeList = IaisCommonUtils.genNewArrayList();
+        HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = getLaterFeeDetailsMap(renewalAmount.getDetailFeeDto(),gradualFeeList,normalFeeList);
         ParamUtil.setRequestAttr(bpc.request, "laterFeeDetailsMap", laterFeeDetailsMap);
         if(!IaisCommonUtils.isEmpty(gradualFeeList)){
             ParamUtil.setRequestAttr(bpc.request, "gradualFeeList", gradualFeeList);
+        }
+        if(!IaisCommonUtils.isEmpty(normalFeeList)){
+            ParamUtil.setRequestAttr(bpc.request, "normalFeeList", normalFeeList);
         }
         requestForChangeService.premisesDocToSvcDoc(oldAppSubmissionDto);
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -1085,7 +1089,7 @@ public class WithOutRenewalDelegator {
         }
     }
 
-    public static HashMap<String, List<FeeExtDto>> getLaterFeeDetailsMap(List<FeeExtDto> laterFeeDetails,List<FeeExtDto> gradualFeeList){
+    public static HashMap<String, List<FeeExtDto>> getLaterFeeDetailsMap(List<FeeExtDto> laterFeeDetails,List<FeeExtDto> gradualFeeList,List<FeeExtDto> normalFeeList){
         HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = IaisCommonUtils.genNewHashMap();
         if(laterFeeDetails == null || laterFeeDetails.size() == 0){
             return null;
@@ -1094,6 +1098,7 @@ public class WithOutRenewalDelegator {
         for(FeeExtDto laterFeeDetail : laterFeeDetails){
             String targetLaterFeeType = laterFeeDetail.getLateFeeType();
             if(StringUtil.isEmpty(targetLaterFeeType)){
+                normalFeeList.add(laterFeeDetail);
                 continue;
             }else if("gradualFee".equals(targetLaterFeeType)){
                 Double amount = laterFeeDetail.getAmount();
@@ -1102,7 +1107,7 @@ public class WithOutRenewalDelegator {
                 }
                 continue;
             }
-
+            normalFeeList.add(laterFeeDetail);
             if(laterFeeDetailsMap.get(targetLaterFeeType) == null){
                 List<FeeExtDto> list = IaisCommonUtils.genNewArrayList();
                 list.add(laterFeeDetail);

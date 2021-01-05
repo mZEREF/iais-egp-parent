@@ -101,6 +101,28 @@
                                         </c:forEach>
                                     </c:if>
 
+                                    <c:if test="${'mix' != mix}">
+                                        <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}"  varStatus="status">
+                                            <c:if test="${'gradualFee' != AppSubmissionDto.renewalFeeType}">
+                                                <c:set var="detailFeeDto" value="${AppSubmissionDto.detailFeeDto}"/>
+                                                <tr>
+                                                    <td>
+                                                        <p><c:out value="${AppSubmissionDto.serviceName}"></c:out></p>
+                                                    </td>
+                                                    <td>
+                                                        Renewal
+                                                    </td>
+                                                    <td>
+                                                        <p>${AppSubmissionDto.appGrpNo}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>${AppSubmissionDto.amountStr}</p>
+                                                    </td>
+                                                </tr>
+                                            </c:if>
+                                        </c:forEach>
+                                    </c:if>
+
                                     <c:if test="${'mix' == mix}">
                                         <tr>
                                             <td colspan="4">
@@ -110,27 +132,22 @@
                                             <td></td>
                                             <td></td>
                                         </tr>
+                                        <c:forEach items="${normalFeeList}" var="normalFee">
+                                            <c:if test="${'gradualFee' != normalFee.lateFeeType}">
+                                                <tr>
+                                                    <td style="border-top: none;">
+                                                        <c:forEach var="serviceName" items="${normalFee.svcNames}">
+                                                            <p>${serviceName}</p>
+                                                        </c:forEach>
+                                                    </td>
+                                                    <td style="border-top: none;">Renewal</td>
+                                                    <td style="border-top: none;">${normalFee.appGroupNo}</td>
+                                                    <td style="border-top: none;"><p>${normalFee.amountStr}</p></td>
+                                                </tr>
+                                            </c:if>
+                                        </c:forEach>
                                     </c:if>
 
-                                    <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}"  varStatus="status">
-                                        <c:if test="${'gradualFee' != AppSubmissionDto.renewalFeeType}">
-                                            <c:set var="detailFeeDto" value="${AppSubmissionDto.detailFeeDto}"/>
-                                            <tr>
-                                                <td ${('mix' == mix) ? 'style="border-top: none;"':''}>
-                                                    <p><c:out value="${AppSubmissionDto.serviceName}"></c:out></p>
-                                                </td>
-                                                <td ${('mix' == mix) ? 'style="border-top: none;"':''}>
-                                                    Renewal
-                                                </td>
-                                                <td ${('mix' == mix) ? 'style="border-top: none;"':''}>
-                                                    <p>${AppSubmissionDto.appGrpNo}</p>
-                                                </td>
-                                                <td ${('mix' == mix) ? 'style="border-top: none;"':''}>
-                                                    <p>${AppSubmissionDto.amountStr}</p>
-                                                </td>
-                                            </tr>
-                                        </c:if>
-                                    </c:forEach>
                                     <c:forEach items="${rfcAppSubmissionDtos}" var="rfcAppSubmissionDto">
                                         <tr>
                                             <td>
