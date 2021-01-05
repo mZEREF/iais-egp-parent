@@ -17,16 +17,14 @@ import com.ecquaria.cloud.moh.iais.service.client.AtEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicmEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.OnlineApptEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
+import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.List;
 
 /**
  * EicSelfRecoveJobHandler
@@ -50,8 +48,6 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
     private EicClient eicClient;
     @Autowired
     private OrgEicClient orgEicClient;
-    @Autowired
-    private OnlineApptEicClient onlineApptEicClient;
     @Value("${spring.application.name}")
     private String currentApp;
     @Value("${iais.current.domain}")
@@ -70,10 +66,6 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
             List<EicRequestTrackingDto> licmList = licmEicClient.getPendingRecords(moduleName).getEntity();
             List<EicRequestTrackingDto> orgList = orgEicClient.getPendingRecords(moduleName).getEntity();
             List<EicRequestTrackingDto> sysList = eicClient.getPendingRecords(moduleName).getEntity();
-            List<EicRequestTrackingDto> apptList = null;
-            if (AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
-                apptList = onlineApptEicClient.getPendingRecords(moduleName).getEntity();
-            }
             AuditTrailHelper.setupBatchJobAuditTrail(this);
             AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
             AuditTrailDto.setThreadDto(auditTrailDto);
@@ -105,11 +97,6 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
             if (!IaisCommonUtils.isEmpty(sysList)) {
                 sysList.forEach(ert -> reTrigger(ert, auditTrailDto));
                 eicClient.updateStatus(sysList);
-            }
-
-            if (!IaisCommonUtils.isEmpty(apptList)) {
-                apptList.forEach(ert -> reTrigger(ert, auditTrailDto));
-                onlineApptEicClient.updateStatus(apptList);
             }
             log.info("<======== End EIC Self Recover Job =========>");
             JobLogger.log("<======== End EIC Self Recover Job =========>");
