@@ -122,7 +122,7 @@ public class EmailResendDelegator {
                 int comparatorValue = endDate.compareTo(startDate);
                 if (comparatorValue < 0){
                     Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-                    errorMap.put("later", MessageUtil.getMessageDesc("EMM_ERR011"));
+                    errorMap.put("start", MessageUtil.getMessageDesc("EMM_ERR011"));
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 }
             }catch (Exception e){
@@ -220,7 +220,7 @@ public class EmailResendDelegator {
             sch = blastManagementDto.getSchedule();
             Date now = new Date();
             if (sch.compareTo(now) < 0) {
-                errMap.put("date", MessageUtil.getMessageDesc("EMM_ERR011"));
+                errMap.put("date", MessageUtil.getMessageDesc("EMM_ERR007"));
             }
         }
         if(errMap.isEmpty()){

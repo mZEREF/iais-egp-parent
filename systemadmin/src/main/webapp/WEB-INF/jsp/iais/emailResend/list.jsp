@@ -31,13 +31,14 @@
                                 <label class="col-xs-12 col-md-4 control-label">Send Date From</label>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <iais:datePicker id="start" name="start" value="${start}"/>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_start"></span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-xs-12 col-md-4 control-label">Send Date To</label>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <iais:datePicker id="end" name="end" value="${end}"/>
-                                    <span class="error-msg" name="iaisErrorMsg" id="error_later"></span>
+
                                 </div>
                             </div>
                         </div>
