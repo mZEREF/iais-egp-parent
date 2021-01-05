@@ -47,6 +47,14 @@
         </div>
         <div class="form-group">
             <iais:value>
+                <label class="col-xs-4 col-md-4 control-label"></label>
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    <span class="error-msg" style="width: 150%;position: absolute;">${TDEM}</span>
+                </div>
+            </iais:value>
+        </div>
+        <div class="form-group">
+            <iais:value>
                 <label class="col-xs-4 col-md-4 control-label" for="esd">Effective Start Date</label>
                 <div class="col-xs-6 col-sm-6 col-md-6">
                     <%String esd = request.getParameter("esd");%>
@@ -63,14 +71,6 @@
                 </div>
             </iais:value>
 
-        </div>
-        <div class="form-group">
-            <iais:value>
-                <label class="col-xs-4 col-md-4 control-label"></label>
-                <div class="col-xs-6 col-sm-6 col-md-6">
-                    <span class="error-msg" style="width: 150%;position: absolute;">${TDEM}</span>
-                </div>
-            </iais:value>
         </div>
         <div class="row">
             <div class="col-xs-12 col-md-12">
