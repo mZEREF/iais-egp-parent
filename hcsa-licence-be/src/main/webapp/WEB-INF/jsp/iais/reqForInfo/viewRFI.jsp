@@ -76,23 +76,25 @@
                                                              options="salutationStatusList" value="${licPreReqForInfoDto.status}"></iais:select>
                                             </div>
                                         </iais:row>
-                                        <iais:row>
-                                            <iais:value width="18">
-                                                <label>
-                                                    <input type="checkbox" disabled name="reqType"
-                                                           <c:if test="${not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}">checked</c:if>/>&nbsp;Information
-                                                </label>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:value width="18">
-                                                <label>
-                                                    <input type="checkbox" disabled name="reqType"
-                                                           <c:if test="${licPreReqForInfoDto.needDocument}">checked</c:if> />&nbsp;Supporting
-                                                    Documents
-                                                </label>
-                                            </iais:value>
-                                        </iais:row>
+                                        <c:if test="${ licPreReqForInfoDto.needDocument or not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos }">
+                                            <iais:row>
+                                                <iais:value width="18">
+                                                    <label>
+                                                        <input type="checkbox" disabled name="reqType"
+                                                               <c:if test="${not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}">checked</c:if>/>&nbsp;Information
+                                                    </label>
+                                                </iais:value>
+                                            </iais:row>
+                                            <iais:row>
+                                                <iais:value width="18">
+                                                    <label>
+                                                        <input type="checkbox" disabled name="reqType"
+                                                               <c:if test="${licPreReqForInfoDto.needDocument}">checked</c:if> />&nbsp;Supporting
+                                                        Documents
+                                                    </label>
+                                                </iais:value>
+                                            </iais:row>
+                                        </c:if>
                                         <H3></H3>
                                         <c:if test="${not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}">
                                             <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}"
