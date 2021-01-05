@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -297,18 +298,13 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
                 try {
                     complianceHistoryDto.setRemarks(appPremisesRecommendationDto.getRemarks());
-                    HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
-                    hcsaRiskScoreDto.setAppType(applicationDto.getApplicationType());
-                    hcsaRiskScoreDto.setLicId(licenceId);
-                    List<ApplicationDto> applicationDtos = new ArrayList<>(1);
-                    applicationDto.setNeedInsp(true);
-                    applicationDtos.add(applicationDto);
-                    hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
-                    hcsaRiskScoreDto.setServiceId(applicationDto.getServiceId());
-                    hcsaRiskScoreDto.setBeExistAppId(applicationDto.getId());
-                    HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
-                    String riskLevel = entity.getRiskLevel();
-                    complianceHistoryDto.setRiskTag(MasterCodeUtil.retrieveOptionsByCodes(new String[]{riskLevel}).get(0).getText());
+                    if(appPremisesCorrelationDto.getRiskScore()<=1){
+                        complianceHistoryDto.setRiskTag(MasterCodeUtil.getCodeDesc(RiskConsts.LOW));
+                    }else if(appPremisesCorrelationDto.getRiskScore()<=2){
+                        complianceHistoryDto.setRiskTag(MasterCodeUtil.getCodeDesc(RiskConsts.MODERRATE));
+                    }else {
+                        complianceHistoryDto.setRiskTag(MasterCodeUtil.getCodeDesc(RiskConsts.HIGH));
+                    }
                 }catch (NullPointerException e){
                     log.error(e.getMessage(), e);
                     complianceHistoryDto.setRiskTag("-");
