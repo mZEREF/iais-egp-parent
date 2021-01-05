@@ -57,7 +57,9 @@
                                         <%--<c:if test="${'Credit'==AppSubmissionDto.paymentMethod or 'NETS'==AppSubmissionDto.paymentMethod}">
                                             <th>Transactional No.</th>
                                         </c:if>--%>
-                                        <th>Transactional No.</th>
+                                        <c:if test="${requestInformationConfig == null}">
+                                            <th>Transactional No.</th>
+                                        </c:if>
                                         <th>Date & Time</th>
                                         <th>Amount Deducted</th>
                                         <th>Payment Method</th>
@@ -72,16 +74,18 @@
                                                     <%--<c:if test="${'Credit'==AppSubmissionDto.paymentMethod or 'NETS'==AppSubmissionDto.paymentMethod}">
                                                         <td><c:out value="${txnRefNo}"/></td>
                                                     </c:if>--%>
-                                                    <td>
-                                                        <c:choose>
-                                                            <c:when test="${empty txnRefNo}">
-                                                                N/A
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <c:out value="${txnRefNo}"/>
-                                                            </c:otherwise>
-                                                        </c:choose>
-                                                    </td>
+                                                    <c:if test="${requestInformationConfig == null}">
+                                                        <td>
+                                                            <c:choose>
+                                                                <c:when test="${empty txnRefNo}">
+                                                                    N/A
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <c:out value="${txnRefNo}"/>
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </td>
+                                                    </c:if>
                                                     <td><c:out value="${txnDt}"/></td>
                                                     <td><c:if test="${ackPageAppSubmission.amount==null}">N/A</c:if>
                                                         <c:if test="${ackPageAppSubmission.amount!=null}">
@@ -107,16 +111,18 @@
                                                 <%--<c:if test="${'Credit'==AppSubmissionDto.paymentMethod or 'NETS'==AppSubmissionDto.paymentMethod}">
                                                     <td><c:out value="${txnRefNo}"/></td>
                                                 </c:if>--%>
-                                                <td>
-                                                    <c:choose>
-                                                        <c:when test="${empty txnRefNo}">
-                                                            N/A
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <c:out value="${txnRefNo}"/>
-                                                        </c:otherwise>
-                                                    </c:choose>
-                                                </td>
+                                                <c:if test="${requestInformationConfig == null}">
+                                                    <td>
+                                                        <c:choose>
+                                                            <c:when test="${empty txnRefNo}">
+                                                                N/A
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <c:out value="${txnRefNo}"/>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </td>
+                                                </c:if>
                                                 <td><c:out value="${txnDt}"/></td>
                                                 <td><c:if test="${AppSubmissionDto.amountStr==null}">N/A</c:if>
                                                     <c:if test="${AppSubmissionDto.amountStr!=null}">
