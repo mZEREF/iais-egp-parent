@@ -37,14 +37,15 @@ public class LogoutDelegate {
             sop.rbac.user.UserIdentifier userIden = new  sop.rbac.user.UserIdentifier();
             sop.iwe.SessionManager session_mgmt = sop.iwe.SessionManager.getInstance(bpc.request);
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-
+            if (loginContext == null) {
+                return;
+            }
             String userdomain = session_mgmt.getCurrentUserDomain();
             String userid=session_mgmt.getCurrentUserID();
             String sessionId = bpc.request.getSession().getId();
 
             //Add audit trail
             AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGOUT);
 
             if (loginContext != null){
