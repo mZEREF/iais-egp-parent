@@ -115,7 +115,7 @@
                                                                 <option value="${decision.value}">${decision.text}</option>
                                                             </c:forEach>
                                                         </select>
-                                                        <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" >Processing Decision is mandatory</span>
+                                                        <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" >This is mandatory</span>
                                                     </iais:value>
                                                 </iais:row>
 

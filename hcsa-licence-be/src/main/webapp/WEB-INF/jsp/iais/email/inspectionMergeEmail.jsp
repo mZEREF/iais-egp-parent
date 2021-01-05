@@ -107,7 +107,7 @@
                                                                 </c:forEach>
                                                             </select>
                                                             <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" >
-                                                                Processing Decision is mandatory
+                                                                This is mandatory
                                                             </span>
                                                         </iais:value>
                                                     </iais:row>
@@ -119,7 +119,7 @@
                                                                        value="${revise}"/>&nbsp;${revise}&nbsp;
                                                             </c:forEach>
                                                             <div class="row">&nbsp;</div>
-                                                            <span id="selectDecisionMsgRevise"  style="display: none; font-size: 1.6rem; color: #D22727;">Need Revise is mandatory</span>
+                                                            <span id="selectDecisionMsgRevise"  style="display: none; font-size: 1.6rem; color: #D22727;">This is mandatory</span>
                                                         </iais:value>
                                                     </iais:row>
                                                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">
