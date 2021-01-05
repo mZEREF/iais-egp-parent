@@ -4452,7 +4452,7 @@ public class NewApplicationDelegator {
         if (!serviceConfigIds.isEmpty()) {
             hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
         } else if (!names.isEmpty()) {
-            hcsaServiceDtoList = serviceConfigService.getHcsaServiceByNames(names);
+            hcsaServiceDtoList = serviceConfigService.getActiveHcsaSvcByNames(names);
         }
         if (hcsaServiceDtoList != null) {
             hcsaServiceDtoList = sortHcsaServiceDto(hcsaServiceDtoList);
