@@ -255,7 +255,7 @@
 
                                     <div class="input-group">
                                         <div class="ax_default text_area">
-                                            <span style="font-size: 18px"><strong>Inspection Officers</strong></span>
+                                            <span style="font-size: 18px"><strong>Inspection Officer(s)</strong></span>
                                             <c:forEach var = "officer" items = "${serListDto.inspectionofficer}" varStatus="status">
                                                 <c:out value="${officer}"/>
                                             </c:forEach>
@@ -264,7 +264,7 @@
 
                                     <div class="input-group">
                                         <div class="ax_default text_area">
-                                            <span style="font-size: 18px"><strong>Other Inspection Officers</strong></span><br>
+                                            <span style="font-size: 18px"><strong>Other Inspection Officer(s)</strong></span><br>
                                             <textarea cols="70" rows="7" name="otherinspector" id="otherinspector" maxlength="300"><c:out value="${serListDto.otherinspectionofficer}"></c:out></textarea>
                                             <span class="error-msg" id="error_otherofficer" name="iaisErrorMsg"></span>
                                         </div>

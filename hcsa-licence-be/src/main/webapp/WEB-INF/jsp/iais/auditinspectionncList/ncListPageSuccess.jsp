@@ -388,13 +388,13 @@
                                             </div>
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
-                                                    <h4>Inspection Start Time</h4> <c:out value="${serListDto.inspectionStartDate}"/>
+                                                    <h4>Inspection Start Time (HH MM)</h4> <c:out value="${serListDto.inspectionStartDate}"/>
                                                 </div>
                                             </div>
 
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
-                                                    <h4>Inspection End Time</h4> <c:out value="${serListDto.inspectionEndDate}"/>
+                                                    <h4>Inspection End Time (HH MM)</h4> <c:out value="${serListDto.inspectionEndDate}"/>
                                                 </div>
                                             </div>
                                             <div class="input-group">
@@ -405,7 +405,7 @@
 
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
-                                                    <h4>Inspection Officers</h4>
+                                                    <h4>Inspection Officer(s)</h4>
                                                     <c:forEach var = "officer" items = "${serListDto.inspectionofficer}" varStatus="status">
                                                         <c:out value="${officer}"/>
                                                     </c:forEach>
@@ -414,7 +414,7 @@
 
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
-                                                    <h4>Other Inspection Officers</h4>
+                                                    <h4>Other Inspection Officer(s)</h4>
                                                     <textarea cols="70" rows="7" name="otherinspector" id="otherinspector" disabled maxlength="300"><c:out value="${serListDto.otherinspectionofficer}"></c:out></textarea>
                                                     <span class="error-msg" id="error_otherofficer" name="iaisErrorMsg"></span>
                                                 </div>

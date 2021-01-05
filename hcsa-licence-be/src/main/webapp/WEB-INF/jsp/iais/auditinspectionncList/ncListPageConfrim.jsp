@@ -231,14 +231,14 @@
                                     </div>
                                     <div class="input-group">
                                         <div class="ax_default text_area">
-                                            <span style="font-size: 18px"><strong>Inspection Start Time</strong></span>
+                                            <span style="font-size: 18px"><strong>Inspection Start Time (HH MM)</strong></span>
                                         </div>
                                         <div style="float: left"><input type="text" maxlength="2" disabled name="startHour" value="<c:out value="${serListDto.startHour}"/>"></div><div style="float: left;padding-left: 10px;"> <input type="text" maxlength="2" name="startHourMin" disabled value="<c:out value="${serListDto.startMin}"/>"></div>
                                     </div>
 
                                     <div class="input-group">
                                         <div class="ax_default text_area">
-                                            <span style="font-size: 18px"><strong>Inspection End Time</strong></span>
+                                            <span style="font-size: 18px"><strong>Inspection End Time (HH MM)</strong></span>
                                         </div>
                                         <div style="float: left"><input type="text" maxlength="2" disabled name="endHour" value="<c:out value="${serListDto.endHour}"/>"></div><div style="float: left;padding-left: 10px;"><input type="text" maxlength="2" name="endHourMin" disabled value="<c:out value="${serListDto.endMin}"/>"></div>
                                     </div>
@@ -250,7 +250,7 @@
 
                                     <div class="input-group">
                                         <div class="ax_default text_area">
-                                            <span style="font-size: 18px"><strong>Inspection Officers</strong></span>
+                                            <span style="font-size: 18px"><strong>Inspection Officer(s)</strong></span>
                                             <c:forEach var = "officer" items = "${serListDto.inspectionofficer}" varStatus="status">
                                                 <c:out value="${officer}"/>
                                             </c:forEach>
@@ -259,7 +259,7 @@
 
                                     <div class="input-group">
                                         <div class="ax_default text_area">
-                                            <span style="font-size: 18px"><strong>Other Inspection Officers</strong></span><br>
+                                            <span style="font-size: 18px"><strong>Other Inspection Officer(s)</strong></span><br>
                                             <textarea cols="70" rows="7" name="otherinspector" id="otherinspector" disabled><c:out value="${serListDto.otherinspectionofficer}"></c:out></textarea>
                                             <span class="error-msg" id="error_otherofficer" name="iaisErrorMsg"></span>
                                         </div>

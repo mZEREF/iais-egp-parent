@@ -49,7 +49,7 @@
     </div>
 
     <div class="form-group">
-        <label class="col-xs-12 col-md-4 control-label" >Inspection Officers</label>
+        <label class="col-xs-12 col-md-4 control-label" >Inspection Officer(s)</label>
         <div class="col-xs-8 col-sm-6 col-md-5">
             <p>
             <c:forEach var = "officer" items = "${serListDto.inspectionofficer}" varStatus="status">
@@ -60,7 +60,7 @@
     </div>
 
     <div class="form-group">
-        <label class="col-xs-12 col-md-4 control-label" >Other Inspection Officers</label>
+        <label class="col-xs-12 col-md-4 control-label" >Other Inspection Officer(s)</label>
         <div class="col-xs-8 col-sm-6 col-md-5">
             <textarea cols="43" rows="5" name="otherinspector" id="otherinspector" maxlength="300"><c:out value="${serListDto.otherinspectionofficer}"></c:out></textarea>
             <span class="error-msg" id="error_otherofficer" name="iaisErrorMsg"></span>

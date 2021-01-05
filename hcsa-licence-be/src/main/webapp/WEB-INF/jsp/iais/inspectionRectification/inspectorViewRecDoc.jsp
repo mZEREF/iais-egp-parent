@@ -43,7 +43,7 @@
                   <p></p>
                   <div class="row">
                     <div class="col-md-2">
-                      <label style="font-size: 16px">Inspection Start Time</label>
+                      <label style="font-size: 16px">Inspection Start Time (HH MM)</label>
                     </div>
                     <div class="col-md-6">
                       <span style="font-size: 16px"><c:out value="${inspectionReportDto.inspectionStartTime}"/></span>
@@ -52,7 +52,7 @@
                   <p></p>
                   <div class="row">
                     <div class="col-md-2">
-                      <label style="font-size: 16px">Inspection End Time</label>
+                      <label style="font-size: 16px">Inspection End Time (HH MM)</label>
                     </div>
                     <div class="col-md-6">
                       <span style="font-size: 16px"><c:out value="${inspectionReportDto.inspectionEndTime}"/></span>
@@ -83,7 +83,7 @@
                   <p></p>
                   <div class="row">
                     <div class="col-md-2">
-                      <label style="font-size: 16px">Other Inspection Officers</label>
+                      <label style="font-size: 16px">Other Inspection Officer(s)</label>
                     </div>
                     <div class="col-md-6">
                       <c:forEach var = "otherInsepctor" items = "${inspectionReportDto.inspectOffices}">
