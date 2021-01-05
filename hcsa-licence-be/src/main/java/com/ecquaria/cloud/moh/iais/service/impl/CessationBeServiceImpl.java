@@ -279,6 +279,9 @@ public class CessationBeServiceImpl implements CessationBeService {
                     specApplicationDtos.add(applicationDto);
                 }
             }
+            if(!IaisCommonUtils.isEmpty(specApplicationDtos)){
+                applicationClient.updateCessationApplications(specApplicationDtos).getEntity();
+            }
             List<AppCessLicDto> appCessDtosByLicIds = getAppCessDtosByLicIds(licIds);
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
             AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(appId).getEntity();

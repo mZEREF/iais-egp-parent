@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspecti
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
@@ -162,6 +163,13 @@ public class InsRepServiceImpl implements InsRepService {
         //get application type (pre/post)
         Integer isPre = applicationGroupDto.getIsPreInspection();
         String appType = MasterCodeUtil.getCodeDesc(appTypeCode);
+        List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licId).getEntity();
+        if(!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
+            String applicationId = licAppCorrelationDtos.get(0).getApplicationId();
+            ApplicationDto applicationDtoOld = applicationClient.getApplicationById(applicationId).getEntity();
+            String applicationTypeOld = applicationDtoOld.getApplicationType();
+            appType = MasterCodeUtil.getCodeDesc(applicationTypeOld);
+        }
         String reasonForVisit;
         if (isPre == 1) {
             reasonForVisit = "Pre-licensing inspection for " + appType;
@@ -183,7 +191,7 @@ public class InsRepServiceImpl implements InsRepService {
         if (ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType)||ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)) {
             HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
             hcsaRiskScoreDto.setAppType(applicationType);
-            hcsaRiskScoreDto.setLicId(appInsRepDto.getLicenceId());
+            hcsaRiskScoreDto.setLicId(licId);
             List<ApplicationDto> applicationDtos = new ArrayList<>(1);
             applicationDtos.add(applicationDto);
             hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
