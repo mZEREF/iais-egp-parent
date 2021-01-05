@@ -2047,6 +2047,7 @@ public class ClinicalLaboratoryDelegator {
                             professionType = removeArrIndex(professionType, i);
                             specialty = removeArrIndex(specialty, i);
                             existingPsn = removeArrIndex(existingPsn, i);
+                            specialtyOther = removeArrIndex(specialtyOther,i);
                             //change arr index
                             --i;
                             --size;
@@ -2105,6 +2106,8 @@ public class ClinicalLaboratoryDelegator {
                 }
                 if(appPsnEditDto.isSpecialityOther() && "other".equals(appSvcPrincipalOfficersDto.getSpeciality())){
                     specialtyOther = NewApplicationHelper.setPsnValue(specialtyOther,i,appSvcPrincipalOfficersDto,"specialityOther");
+                }else{
+                    specialtyOther = removeArrIndex(specialtyOther,i);
                 }
                 if(appPsnEditDto.isSubSpeciality()){
                     qualification = NewApplicationHelper.setPsnValue(qualification,i,appSvcPrincipalOfficersDto,"subSpeciality");
