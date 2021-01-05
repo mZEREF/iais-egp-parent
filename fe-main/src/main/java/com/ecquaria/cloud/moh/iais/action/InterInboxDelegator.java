@@ -958,7 +958,24 @@ public class InterInboxDelegator {
                     inboxParam.addFilter("serviceCode", "%" + svcCode + "%",true);
                 }
             }else{
-                inboxParam.addFilter("serviceType", serviceType,true);
+//                String moduleStr = SqlHelper.constructInCondition("svc.module", mcb.length);
+//                searchParam.addParam("module", moduleStr);
+//                int indx = 0;
+//                for (String s : mcb){
+//                    searchParam.addFilter("svc.module"+indx, s);
+//                    indx++;
+//                }
+                List<String> serviceNameList = IaisCommonUtils.genNewArrayList();
+                serviceNameList.add(serviceType);
+                List<HcsaServiceDto> entity = hcsaConfigClient.getHcsaServiceByNames(serviceNameList).getEntity();
+                String moduleStr = SqlHelper.constructInCondition("B.service_id", entity.size());
+                inboxParam.addParam("service_id", moduleStr);
+                int indx = 0;
+                for (HcsaServiceDto hcsaServiceDto : entity){
+                    inboxParam.addFilter("B.service_id"+indx, hcsaServiceDto.getId());
+                    indx++;
+                }
+//                inboxParam.addFilter("serviceType", serviceType,true);
             }
         }
         if (startAppDate != null && endAppDate != null){
@@ -974,7 +991,7 @@ public class InterInboxDelegator {
                     inboxParam.removeFilter("createDtEnd");
                 }
             }else{
-                String errStr = "Date Submitted From cannot be later than Date Submitted To";
+                String errStr = MessageUtil.getMessageDesc("INBOX_ERR007");
                 ParamUtil.setRequestAttr(request,InboxConst.APP_DATE_ERR_MSG, errStr);
                 Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
                 errorMap.put("INBOX_SEARCH_APP_ERR",errStr);
@@ -1323,12 +1340,12 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(request, "appStatusSelect", appServiceStatusSelectList);
 
         List<SelectOption> appServiceTypeSelectList = IaisCommonUtils.genNewArrayList();
-        appServiceTypeSelectList.add(new SelectOption("34F99D15-820B-EA11-BE7D-000C29F371DC", "Blood Banking"));
-        appServiceTypeSelectList.add(new SelectOption("35F99D15-820B-EA11-BE7D-000C29F371DC", "Clinical Laboratory"));
-        appServiceTypeSelectList.add(new SelectOption("A11ADD49-820B-EA11-BE7D-000C29F371DC", "Radiological Service"));
-        appServiceTypeSelectList.add(new SelectOption("7B450178-C70C-EA11-BE7D-000C29F371DC", "Tissue Banking"));
-        appServiceTypeSelectList.add(new SelectOption("A21ADD49-820B-EA11-BE7D-000C29F371DC", "Nuclear Medicine (Assay)"));
-        appServiceTypeSelectList.add(new SelectOption("F27DD5E2-C90C-EA11-BE7D-000C29F371DC", "Nuclear Medicine (Imaging)"));
+        appServiceTypeSelectList.add(new SelectOption("Blood Banking", "Blood Banking"));
+        appServiceTypeSelectList.add(new SelectOption("Clinical Laboratory", "Clinical Laboratory"));
+        appServiceTypeSelectList.add(new SelectOption("Radiological Service", "Radiological Service"));
+        appServiceTypeSelectList.add(new SelectOption("Tissue Banking", "Tissue Banking"));
+        appServiceTypeSelectList.add(new SelectOption("Nuclear Medicine (Assay)", "Nuclear Medicine (Assay)"));
+        appServiceTypeSelectList.add(new SelectOption("Nuclear Medicine (Imaging)", "Nuclear Medicine (Imaging)"));
         ParamUtil.setRequestAttr(request, "appServiceType", appServiceTypeSelectList);
     }
 

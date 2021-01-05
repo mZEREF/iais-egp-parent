@@ -58,14 +58,16 @@
                     </iais:value>
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 37px;">
-                <div class="col-md-6">
-                    <span class="col-xs-5 col-md-5"></span>
-                    <div class="col-md-7">
-                        <span class="error-msg" style="width: 150%;position: absolute;">${ADEM}</span>
+            <c:if test="${!empty ADEM}">
+                <div class="row" style="margin-bottom: 37px;">
+                    <div class="col-md-6">
+                        <span class="col-xs-5 col-md-5"></span>
+                        <div class="col-md-7">
+                            <span class="error-msg" style="width: 150%;position: absolute;">${ADEM}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </c:if>
             <div class="row">
                 <div class="col-md-6">
                     <iais:value>

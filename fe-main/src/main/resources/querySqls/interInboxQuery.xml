@@ -90,6 +90,7 @@
             <#if serviceType??> AND B.service_id = :serviceType</#if>
             <#if appNo??> AND B.application_no like :appNo</#if>
             <#if appStatus??> AND ${appStatus}</#if>
+            <#if service_id??> AND ${service_id}</#if>
             <#if createDtStart??> AND B.created_dt > :createDtStart</#if>
             <#if serviceCode??> AND B.code like :serviceCode</#if>
             <#if createDtEnd??> AND B.created_dt < :createDtEnd</#if>
