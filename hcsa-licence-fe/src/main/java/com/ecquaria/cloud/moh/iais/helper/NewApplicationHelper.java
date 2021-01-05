@@ -773,7 +773,7 @@ public class NewApplicationHelper {
     //just for one svc
     public static void setLaboratoryDisciplinesInfo(AppSubmissionDto appSubmissionDto,List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos){
         Map<String, HcsaSvcSubtypeOrSubsumedDto> map = IaisCommonUtils.genNewHashMap();
-        turn(hcsaSvcSubtypeOrSubsumedDtos, map);
+        recursingSvcScope(hcsaSvcSubtypeOrSubsumedDtos, map);
         if(appSubmissionDto == null){
             return;
         }
@@ -788,7 +788,7 @@ public class NewApplicationHelper {
     //
     public static void setLaboratoryDisciplinesInfo(List<AppGrpPremisesDto> appGrpPremisesDtos,AppSvcRelatedInfoDto appSvcRelatedInfoDto,List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos){
         Map<String, HcsaSvcSubtypeOrSubsumedDto> map = IaisCommonUtils.genNewHashMap();
-        turn(hcsaSvcSubtypeOrSubsumedDtos, map);
+        recursingSvcScope(hcsaSvcSubtypeOrSubsumedDtos, map);
         if(appSvcRelatedInfoDto == null){
             return;
         }
@@ -2606,16 +2606,6 @@ public class NewApplicationHelper {
         throw new IllegalStateException("Utility class");
     }
 
-    private static void turn(List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos,Map<String,HcsaSvcSubtypeOrSubsumedDto> allCheckListMap){
-
-        for(HcsaSvcSubtypeOrSubsumedDto dto:hcsaSvcSubtypeOrSubsumedDtos){
-            allCheckListMap.put(dto.getId(),dto);
-            if(dto.getList() != null && dto.getList().size()>0){
-                turn(dto.getList(), allCheckListMap);
-            }
-        }
-
-    }
 
     private static void setSvcScopeInfo(List<AppGrpPremisesDto> appGrpPremisesDtos,AppSvcRelatedInfoDto appSvcRelatedInfoDto,Map<String, HcsaSvcSubtypeOrSubsumedDto> map){
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtos =appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
