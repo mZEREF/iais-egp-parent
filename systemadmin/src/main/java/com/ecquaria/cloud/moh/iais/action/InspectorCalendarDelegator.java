@@ -27,14 +27,17 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppointmentService;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
+import com.ecquaria.sz.commons.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -217,7 +220,7 @@ public class InspectorCalendarDelegator {
 	 * @param bpc
 	 * @throws IllegalAccessException
 	 */
-	public void doQuery(BaseProcessClass bpc){
+	public void doQuery(BaseProcessClass bpc) throws ParseException {
 		HttpServletRequest request = bpc.request;
 
 		String groupName = ParamUtil.getString(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT);
@@ -234,6 +237,15 @@ public class InspectorCalendarDelegator {
 		queryDto.setUserName(userName);
 		queryDto.setYearVal(yearVal);
 		queryDto.setDescription(userBlockDateDescription);
+
+		if (!StringUtil.isEmpty(userBlockDateStart) && !StringUtil.isEmpty(userBlockDateEnd)){
+			Date std = IaisEGPHelper.parseToDate(userBlockDateStart);
+			Date etd = IaisEGPHelper.parseToDate(userBlockDateEnd);
+			queryDto.setUserBlockDateStart(std);
+			queryDto.setUserBlockDateEnd(etd);
+		}
+
+		ParamUtil.setRequestAttr(request, "inspectorCalendarQueryDto", queryDto);
 		ValidationResult validationResult = WebValidationHelper.validateProperty(queryDto, "search");
 		if(validationResult != null && validationResult.isHasErrors()) {
 			Map<String, String> errorMap = validationResult.retrieveAll();
@@ -276,9 +288,7 @@ public class InspectorCalendarDelegator {
 				String convertRecurrenceEndDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(recurrenceEndDate), SystemAdminBaseConstants.DATE_FORMAT);
 				searchParam.addFilter(AppointmentConstants.RECURRENCE_END_DATE_ATTR, convertRecurrenceEndDate, true);
 			}
-
 		}
-
 	}
 
 	/**
