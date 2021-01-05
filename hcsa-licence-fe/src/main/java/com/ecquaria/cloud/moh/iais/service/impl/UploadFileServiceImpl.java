@@ -646,7 +646,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
 
     private void getFileRep(String id,String docName,String groupId){
-        if(id==null){
+        if(id==null||"".equals(id)){
             return;
         }
         byte[] entity = fileRepositoryClient.getFileFormDataBase(id).getEntity();

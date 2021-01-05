@@ -19,7 +19,7 @@
             <div class="navigation-gp">
 
                 <div style="margin-top: 20px;margin-left: 4%">
-                    <p style="font-size: 2.2rem">You are applying for <strong>${rfiServiceName }</strong></p>
+                    <p style="font-size: 2.2rem">You are appealing for <strong>${rfiServiceName }</strong></p>
                 </div>
 
             </div>
