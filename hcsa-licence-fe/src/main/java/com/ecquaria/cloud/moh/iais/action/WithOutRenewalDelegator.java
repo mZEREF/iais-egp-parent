@@ -497,13 +497,14 @@ public class WithOutRenewalDelegator {
                 try {
                     sendEmail(bpc.request,appSubmissionDtos);
                     boolean b=false;
-                    for (AppSubmissionDto appSubmDto : appSubmissionDtos) {
+                    List<AppSubmissionDto> rfcAppSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("rfcAppSubmissionDtos");
+                    for (AppSubmissionDto appSubmDto : rfcAppSubmissionDtos) {
                         if(appSubmDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
                             b=true;
                         }
                     }
                     if(b){
-                        requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos,pmtMethod);
+                        requestForChangeService.sendRfcSubmittedEmail(rfcAppSubmissionDtos,pmtMethod);
                     }
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
