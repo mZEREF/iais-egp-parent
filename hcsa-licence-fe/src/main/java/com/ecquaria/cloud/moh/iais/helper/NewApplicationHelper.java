@@ -2458,13 +2458,24 @@ public class NewApplicationHelper {
         }
         return result;
     }
-
+    //key is config id
     public static void recursingSvcScope(List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos, Map<String, HcsaSvcSubtypeOrSubsumedDto> allCheckListMap) {
 
         for (HcsaSvcSubtypeOrSubsumedDto dto : hcsaSvcSubtypeOrSubsumedDtos) {
             allCheckListMap.put(dto.getId(), dto);
             if (dto.getList() != null && dto.getList().size() > 0) {
                 recursingSvcScope(dto.getList(), allCheckListMap);
+            }
+        }
+
+    }
+    //key is config name
+    public static void recursingSvcScopeKeyIsName(List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos, Map<String, HcsaSvcSubtypeOrSubsumedDto> allCheckListMap) {
+
+        for (HcsaSvcSubtypeOrSubsumedDto dto : hcsaSvcSubtypeOrSubsumedDtos) {
+            allCheckListMap.put(dto.getName(), dto);
+            if (dto.getList() != null && dto.getList().size() > 0) {
+                recursingSvcScopeKeyIsName(dto.getList(), allCheckListMap);
             }
         }
 

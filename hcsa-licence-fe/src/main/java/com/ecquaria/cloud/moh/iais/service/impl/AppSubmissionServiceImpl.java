@@ -1646,9 +1646,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         log.debug(StringUtil.changeForLog("do changeSvcScopeIdByConfigName start ..."));
         log.debug(StringUtil.changeForLog("newConfigInfo size :"+ newConfigInfo.size()));
         Map<String, HcsaSvcSubtypeOrSubsumedDto> newSvcScopeNameMap = IaisCommonUtils.genNewHashMap();
-        turnName(newConfigInfo,newSvcScopeNameMap);
+        NewApplicationHelper.recursingSvcScopeKeyIsName(newConfigInfo,newSvcScopeNameMap);
         Map<String, HcsaSvcSubtypeOrSubsumedDto> newSvcScopeIdMap = IaisCommonUtils.genNewHashMap();
-        turnId(newConfigInfo,newSvcScopeIdMap);
+        NewApplicationHelper.recursingSvcScope(newConfigInfo,newSvcScopeIdMap);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
@@ -2501,16 +2501,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             appSubmissionDto = new AppSubmissionDto();
         }
         return appSubmissionDto;
-    }
-
-    private void turnName(List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos, Map<String, HcsaSvcSubtypeOrSubsumedDto> allCheckListMap) {
-
-        for (HcsaSvcSubtypeOrSubsumedDto dto : hcsaSvcSubtypeOrSubsumedDtos) {
-            allCheckListMap.put(dto.getName(), dto);
-            if (dto.getList() != null && dto.getList().size() > 0) {
-                turnName(dto.getList(), allCheckListMap);
-            }
-        }
     }
 
     private void turnId(List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos, Map<String, HcsaSvcSubtypeOrSubsumedDto> allCheckListMap) {
