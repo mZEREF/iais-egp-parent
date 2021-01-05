@@ -42,6 +42,14 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
+                    <span class="col-xs-3 col-md-3"></span>
+                    <div class="col-md-9">
+                        <span class="error-msg" style="padding: 0;font-size:1.5rem">${LDEM}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
                     <iais:value>
                         <label class="col-md-3" for="fStartDate" style="text-align:left;margin-top: 1.5%">Licence Start
                             Date:</label>
@@ -57,11 +65,11 @@
                     </iais:value>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" style="margin-bottom: 30px;">
                 <div class="col-md-12">
                     <span class="col-xs-3 col-md-3"></span>
                     <div class="col-md-9">
-                        <span class="error-msg" style="padding: 0;font-size:1.5rem">${LDEM}</span>
+                        <span class="error-msg" style="width: 150%;position: absolute;font-size:1.5rem">${LEEM}</span>
                     </div>
                 </div>
             </div>
@@ -88,7 +96,7 @@
                 <div class="col-md-12">
                     <span class="col-xs-3 col-md-3"></span>
                     <div class="col-md-5">
-                        <span class="error-msg" style="width: 150%;position: absolute;font-size:1.5rem">${LEEM}</span>
+                        <%--<span class="error-msg" style="width: 150%;position: absolute;font-size:1.5rem">${LEEM}</span>--%>
                     </div>
                     <div class="col-md-4">
                         <div class="text-right">
