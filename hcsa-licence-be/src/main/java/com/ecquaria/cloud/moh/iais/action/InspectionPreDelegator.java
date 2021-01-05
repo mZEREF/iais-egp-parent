@@ -168,9 +168,9 @@ public class InspectionPreDelegator {
                 inspectionPreTaskDto.setPreInspRbOption(preInspRbOption);
                 ParamUtil.setSessionAttr(bpc.request, "preInspRbOption", (Serializable) preInspRbOption);
             }
-                //get Request For Information
-                List<SelectOption> rfiCheckOption = inspectionPreTaskService.getRfiCheckOption(applicationDto.getApplicationType());
-                inspectionPreTaskDto.setPreInspRfiOption(rfiCheckOption);
+            //get Request For Information
+            List<SelectOption> rfiCheckOption = inspectionPreTaskService.getRfiCheckOption(applicationDto.getApplicationType());
+            inspectionPreTaskDto.setPreInspRfiOption(rfiCheckOption);
         }
         //adhocChecklist
         List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
