@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -1669,7 +1668,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 for(HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto:oldHcsaSvcSubtypeOrSubsumedDtos){
                                     if(svcScope.getChkLstConfId().equals(hcsaSvcSubtypeOrSubsumedDto.getId())){
                                         HcsaSvcSubtypeOrSubsumedDto newHcsaSvcSubtypeOrSubsumedDto = newSvcScopeNameMap.get(hcsaSvcSubtypeOrSubsumedDto.getName());
-                                        if(ClinicalLaboratoryDelegator.PLEASEINDICATE.equals(hcsaSvcSubtypeOrSubsumedDto.getName())){
+                                        if(NewApplicationConstant.PLEASEINDICATE.equals(hcsaSvcSubtypeOrSubsumedDto.getName())){
                                             AppSvcChckListDto newAppSvcChckListDto = (AppSvcChckListDto) CopyUtil.copyMutableObject(svcScope);
                                             newAppSvcChckListDto.setChkLstConfId(newHcsaSvcSubtypeOrSubsumedDto.getId());
                                             newAppSvcChckListDto.setChkLstType(newHcsaSvcSubtypeOrSubsumedDto.getType());
@@ -1778,7 +1777,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 appSvcDisciplineAllocationDto = (AppSvcDisciplineAllocationDto) CopyUtil.copyMutableObject(allocation);
                                 //set chkName
                                 String chkName = appSvcChckListDto.getChkName();
-                                if("Please indicate".equals(chkName)){
+                                if(NewApplicationConstant.PLEASEINDICATE.equals(chkName)){
                                     appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getOtherScopeName());
                                 }else{
                                     appSvcDisciplineAllocationDto.setChkLstName(chkName);

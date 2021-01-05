@@ -88,8 +88,7 @@ public class ClinicalLaboratoryDelegator {
     public static final String ERRORMAP_GOVERNANCEOFFICERS = "errorMap_governanceOfficers";
     public static final String RELOADSVCDOC = "ReloadSvcDoc";
     public static final String SERVICEPERSONNELTYPE = "ServicePersonnelType";
-    public static final String PLEASEINDICATE = "Please indicate";
-    public static final String SERVICE_SCOPE_LAB_OTHERS = "Others";
+
 
     //dropdown
     public static final String DROPWOWN_IDTYPESELECT = "IdTypeSelect";
@@ -652,7 +651,7 @@ public class ClinicalLaboratoryDelegator {
 
                         AppSvcChckListDto appSvcChckListDto = new AppSvcChckListDto();
                         appSvcChckListDto.setChkLstConfId(checkInfo.getId());
-                        if (PLEASEINDICATE.equals(checkInfo.getName())) {
+                        if (NewApplicationConstant.PLEASEINDICATE.equals(checkInfo.getName())) {
                             String subName = ParamUtil.getString(bpc.request, "pleaseIndicate" + i);
                             //appGrpPremisesDto.setOtherScopeName(subName);
                             appSvcChckListDto.setOtherScopeName(subName);
@@ -928,7 +927,7 @@ public class ClinicalLaboratoryDelegator {
                         }
                     }
                     List<AppSvcChckListDto> newAppSvcChckListDtos = NewApplicationHelper.handlerPleaseIndicateLab(appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList(),svcScopeAlignMap);
-                    AppSvcChckListDto targetChkDto = NewApplicationHelper.getScopeDtoByRecursiveTarNameUpward(appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList(),svcScopeAlignMap,PLEASEINDICATE,SERVICE_SCOPE_LAB_OTHERS);
+                    AppSvcChckListDto targetChkDto = NewApplicationHelper.getScopeDtoByRecursiveTarNameUpward(appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList(),svcScopeAlignMap,NewApplicationConstant.PLEASEINDICATE,NewApplicationConstant.SERVICE_SCOPE_LAB_OTHERS);
                     AppSvcDisciplineAllocationDto targetAllocationDto = null;
                     int chkLstSize = newAppSvcChckListDtos.size();
                     for (int i = 0; i < chkLstSize; i++) {
@@ -950,7 +949,7 @@ public class ClinicalLaboratoryDelegator {
                                 appSvcDisciplineAllocationDto.setIdNo(chkAndCgoValue[1]);//NOSONAR
 
                                 daList.add(appSvcDisciplineAllocationDto);
-                                if(targetChkDto != null && SERVICE_SCOPE_LAB_OTHERS.equals(svcScopeConfigDto.getName())){
+                                if(targetChkDto != null && NewApplicationConstant.SERVICE_SCOPE_LAB_OTHERS.equals(svcScopeConfigDto.getName())){
                                     targetAllocationDto = (AppSvcDisciplineAllocationDto) CopyUtil.copyMutableObject(appSvcDisciplineAllocationDto);//NOSONAR
                                 }
                             }
@@ -958,7 +957,7 @@ public class ClinicalLaboratoryDelegator {
                     }
 
                     if(targetChkDto != null && targetAllocationDto != null){
-                        AppSvcChckListDto appSvcChckListDto = NewApplicationHelper.getSvcChckListDtoByConfigName(PLEASEINDICATE,appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList());
+                        AppSvcChckListDto appSvcChckListDto = NewApplicationHelper.getSvcChckListDtoByConfigName(NewApplicationConstant.PLEASEINDICATE,appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList());
                         if(appSvcChckListDto != null){
                             targetAllocationDto.setChkLstConfId(appSvcChckListDto.getChkLstConfId());
                         }

@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayNetsAPI;
@@ -93,8 +92,8 @@ public class NewApplicationHelper {
                     /*   map.put("checkError","NEW_ERR0012");*/
                 }else {
                     for(int i=0;i<listDtos.size();i++){
-                        if(ClinicalLaboratoryDelegator.PLEASEINDICATE.equals(listDtos.get(i).getChkName())&&StringUtil.isEmpty(listDtos.get(i).getOtherScopeName()) ){
-                            map.put("pleaseIndicateError"+premCount,MessageUtil.replaceMessage("GENERAL_ERR0006",ClinicalLaboratoryDelegator.PLEASEINDICATE,"field"));
+                        if(NewApplicationConstant.PLEASEINDICATE.equals(listDtos.get(i).getChkName())&&StringUtil.isEmpty(listDtos.get(i).getOtherScopeName()) ){
+                            map.put("pleaseIndicateError"+premCount,MessageUtil.replaceMessage("GENERAL_ERR0006",NewApplicationConstant.PLEASEINDICATE,"field"));
                         }
 
                         String parentName = listDtos.get(i).getParentName();
@@ -2402,15 +2401,15 @@ public class NewApplicationHelper {
     public static List<AppSvcChckListDto> handlerPleaseIndicateLab( List<AppSvcChckListDto> appSvcChckListDtos ,Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap) throws CloneNotSupportedException {
         List<AppSvcChckListDto> newAppSvcChckListDtos = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(appSvcChckListDtos) && svcScopeAlignMap != null){
-            AppSvcChckListDto targetDto = getScopeDtoByRecursiveTarNameUpward(appSvcChckListDtos,svcScopeAlignMap,ClinicalLaboratoryDelegator.PLEASEINDICATE,ClinicalLaboratoryDelegator.SERVICE_SCOPE_LAB_OTHERS);
+            AppSvcChckListDto targetDto = getScopeDtoByRecursiveTarNameUpward(appSvcChckListDtos,svcScopeAlignMap,NewApplicationConstant.PLEASEINDICATE,NewApplicationConstant.SERVICE_SCOPE_LAB_OTHERS);
             if(targetDto != null){
                 for(AppSvcChckListDto appSvcChckListDto:appSvcChckListDtos){
                     AppSvcChckListDto newAppSvcChckListDto = (AppSvcChckListDto) CopyUtil.copyMutableObject(appSvcChckListDto);
                     String chkName = newAppSvcChckListDto.getChkName();
-                    if(ClinicalLaboratoryDelegator.PLEASEINDICATE.equals(chkName)){
+                    if(NewApplicationConstant.PLEASEINDICATE.equals(chkName)){
                         continue;
                     }
-                    if(ClinicalLaboratoryDelegator.SERVICE_SCOPE_LAB_OTHERS.equals(chkName)){
+                    if(NewApplicationConstant.SERVICE_SCOPE_LAB_OTHERS.equals(chkName)){
                         chkName = chkName + " ("+ targetDto.getOtherScopeName() +")";
                         newAppSvcChckListDto.setChkName(chkName);
                     }
