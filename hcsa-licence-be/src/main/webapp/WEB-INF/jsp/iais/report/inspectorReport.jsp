@@ -465,7 +465,7 @@
                     <table class="table">
                         <tr>
                             <td class="col-xs-4">
-                                <p>Follow up Action</p>
+                                <p>Follow up Action <strong style="color:#ff0000;"> *</strong></p>
                             </td>
                             <td class="col-xs-4">
                                 <p><textarea style="resize:none" name="followUpAction" cols="50" rows="6"
@@ -517,7 +517,7 @@
                     <table class="table">
                         <tr>
                             <td class="col-xs-4">
-                                <p>Follow up Action</p>
+                                <p>Follow up Action <strong style="color:#ff0000;"> *</strong></p>
                             </td>
                             <td class="col-xs-4">
                                 <p><textarea style="resize:none" name="followUpAction" cols="50" rows="6"
