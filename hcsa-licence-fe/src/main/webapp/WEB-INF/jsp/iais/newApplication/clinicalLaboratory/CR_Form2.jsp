@@ -867,14 +867,12 @@
                 $('#addPsnDiv').removeClass('hidden');
             }
             $('div.cgo-content').each(function (k,v) {
-                $(this).find('input[name="cgoIndexNo"]').val(k);
                 $(this).find('.assign-psn-item').html(k+1);
             });
 
             if(psnLength <= 1){
                 $('.assign-psn-item:eq(0)').html('');
             }
-
         });
 
     }
