@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
-import com.ecquaria.cloud.moh.iais.service.client.AppealClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
@@ -45,7 +44,7 @@ import java.util.List;
 @Slf4j
 public class AppealServiceImpl implements AppealService {
     @Autowired
-    private AppealClient appealClient;
+    private ApplicationClient applicationClient;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
@@ -60,8 +59,6 @@ public class AppealServiceImpl implements AppealService {
     private EventBusHelper eventBusHelper;
     @Autowired
     private LicEicClient licEicClient;
-    @Autowired
-    private ApplicationClient applicationClient;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -74,7 +71,7 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public List<AppealApproveGroupDto> getAppealApproveDtos() {
-        List<AppealApproveGroupDto> result = appealClient.getApproveAppeal().getEntity();
+        List<AppealApproveGroupDto> result = applicationClient.getApproveAppeal().getEntity();
         if(!IaisCommonUtils.isEmpty(result)){
            for(AppealApproveGroupDto appealApproveGroupDto : result){
                List<AppealApproveDto> appealApproveDtos = appealApproveGroupDto.getAppealApproveDtoList();

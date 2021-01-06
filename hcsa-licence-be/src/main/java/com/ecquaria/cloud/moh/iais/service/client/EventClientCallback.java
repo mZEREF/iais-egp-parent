@@ -11,7 +11,8 @@ import java.util.List;
  * @author Wenkang
  * @date 2020/3/20 15:12
  */
-public class EventClientCallback {
+public class EventClientCallback implements EventClient{
+    @Override
     public FeignResponseEntity<List<Submission>> getSubmission(String submissionId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

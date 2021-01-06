@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppLastInsGroup;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
@@ -15,8 +16,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.HfsmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SearchAuditRiskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -371,4 +374,23 @@ public interface ApplicationClient {
             produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ProcessFileTrackDto>> getFileTypeAndStatus(
             @PathVariable(name = "processType") String processType, @PathVariable(name = "status") String status);
+    @RequestMapping(path = "/iais-appeal/appeals",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppealApproveGroupDto>> getApproveAppeal();
+
+    @RequestMapping(path = "/app-eic-request-tracking/{eventRefNo}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<EicRequestTrackingDto> getAppEicRequestTrackingDto(@PathVariable(name = "eventRefNo") String eventRefNo);
+
+    @RequestMapping(path = "/app-eic-request-tracking/app-eic-request-tracking",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<EicRequestTrackingDto> updateAppEicRequestTracking(@RequestBody EicRequestTrackingDto appEicRequestTrackingDto);
+
+    @GetMapping(value = "/iais-apppremisescorrelation-be/applicationDtosByPremCorreid/{appCorreId}", produces = MediaType.APPLICATION_JSON_VALUE ,
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<ApplicationDto>> getApplicationDtosByCorreId(@PathVariable("appCorreId") String appCorreId);
+
+    @GetMapping(value = "/iais-apppremisescorrelation-be/AppPremisesCorrelationsByPremises/{appCorreId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremisesCorrelationDto>> getAppPremisesCorrelationsByPremises(@PathVariable("appCorreId") String appCorreId);
+
+    ///application-number-grp-premiese/{appPremcorrId}
+    @GetMapping(value = "/application-number-grp-premiese/{appPremcorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppInsRepDto> appGrpPremises(@PathVariable("appPremcorrId") String appPremcorrId);
 }

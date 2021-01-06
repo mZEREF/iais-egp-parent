@@ -17,7 +17,26 @@
                             <c:when test="${'APTY005' == AppSubmissionDto.appType}">
                                 <%@include file="../resForChange/amendHeader.jsp"%>
                             </c:when>
-
+                            <c:when test="${'APTY004'==APPLICATION_TYPE}">
+                                <h1>Licence Renewal</h1>
+                                <h3 id="newSvc">
+                                    You are renewing for
+                                    <c:forEach var="hcsaServiceDto" items="${hcsaServiceDtoList}" varStatus="status">
+                                        <strong>${hcsaServiceDto.svcName}</strong>
+                                        <c:if test="${!status.last}"> | </c:if>
+                                    </c:forEach>
+                                </h3>
+                            </c:when>
+                            <c:when test="${'APTY005'==APPLICATION_TYPE}">
+                              <h1>Amendment</h1>
+                                <h3 id="newSvc">
+                                    You are amending for
+                                    <c:forEach var="hcsaServiceDto" items="${hcsaServiceDtoList}" varStatus="status">
+                                        <strong>${hcsaServiceDto.svcName}</strong>
+                                        <c:if test="${!status.last}"> | </c:if>
+                                    </c:forEach>
+                                </h3>
+                            </c:when>
                             <c:otherwise>
                                 <h1>New Licence Application</h1>
                                 <h3 id="newSvc">

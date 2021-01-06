@@ -53,6 +53,7 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -65,6 +66,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -130,7 +132,16 @@ public class ConfigServiceImpl implements ConfigService {
                 }
             }
         }
-        Collections.sort(entity,(s1,s2)->(s1.getSvcCode().compareTo(s2.getSvcCode())));
+        Collections.sort(entity, new Comparator<HcsaServiceDto>() {
+            @Override
+            public int compare(HcsaServiceDto o1, HcsaServiceDto o2) {
+                if(o1.getSvcName().equals(o2.getSvcName())){
+                   return (int) (Double.parseDouble(o1.getVersion())-Double.parseDouble(o2.getVersion()));
+                }else {
+                    return o1.getSvcName().compareTo(o2.getSvcName());
+                }
+            }
+        });
         return entity;
     }
 

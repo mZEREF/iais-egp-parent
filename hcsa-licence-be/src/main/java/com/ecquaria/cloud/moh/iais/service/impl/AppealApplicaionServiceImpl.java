@@ -5,7 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.AppealApplicaionService;
-import com.ecquaria.cloud.moh.iais.service.client.AppealClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.util.EicUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public class AppealApplicaionServiceImpl implements AppealApplicaionService {
     private BeEicGatewayClient beEicGatewayClient;
 
     @Autowired
-    private AppealClient appealClient;
+    private ApplicationClient applicationClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -54,7 +54,7 @@ public class AppealApplicaionServiceImpl implements AppealApplicaionService {
 
     @Override
     public EicRequestTrackingDto getAppEicRequestTrackingDtoByRefNo(String refNo) {
-        return appealClient.getAppEicRequestTrackingDto(refNo).getEntity();
+        return applicationClient.getAppEicRequestTrackingDto(refNo).getEntity();
     }
 
 }

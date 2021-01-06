@@ -45,7 +45,6 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppealClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
@@ -115,8 +114,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Autowired
     private AppealApplicaionService appealApplicaionService;
-    @Autowired
-    private AppealClient appealClient;
     @Autowired
     private OrganizationClient organizationClient;
 
@@ -822,7 +819,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                     log.error(StringUtil.changeForLog("This eventReo can not get the EventApplicationGroupDto -->:"+eventRefNum));
                 }
                 appEicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                appealClient.updateAppEicRequestTracking(appEicRequestTrackingDto);
+                applicationClient.updateAppEicRequestTracking(appEicRequestTrackingDto);
             }else{
                 log.error(StringUtil.changeForLog("This eventReo can not get the AppEicRequestTrackingDto -->:"+eventRefNum));
             }

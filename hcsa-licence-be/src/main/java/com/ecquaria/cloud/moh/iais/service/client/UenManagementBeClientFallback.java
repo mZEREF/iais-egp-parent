@@ -10,7 +10,8 @@ import org.springframework.http.HttpHeaders;
  * @author junyu
  * @date 2020/1/22
  */
-public class UenManagementBeClientFallback {
+public class UenManagementBeClientFallback implements UenManagementBeClient{
+    @Override
     public FeignResponseEntity<MohUenDto> getMohUenById(String uenNo){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -18,7 +19,7 @@ public class UenManagementBeClientFallback {
         return entity;
     }
 
-
+    @Override
     public FeignResponseEntity<MohUenDto>  generatesMohIssuedUen(MohUenDto mohUenDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

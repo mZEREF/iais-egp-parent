@@ -22,7 +22,8 @@
     <input type="hidden" name="selfDeclAction" value="new"/>
     <div class="main-content">
         <div class="container">
-            <div class="row center">
+            <div class="row center" <c:if test="${AckMessage!=null || AckMessage!=''}">style="margin-left: 8px" </c:if>>
+
                 <c:choose>
                     <c:when test="${'error' != AckStatus}">
                         <div class="col-xs-12">
