@@ -105,8 +105,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     private SystemParamConfig systemParamConfig;
     @Autowired
     private InspectionTaskClient inspectionTaskClient;
-    @Autowired
-    private  ApptInspectionDateService apptInspectionDateService;
+    /* @Autowired
+    private  ApptInspectionDateService apptInspectionDateService;*/
     static String[] category = {"ADTYPE001", "ADTYPE002", "ADTYPE003"};
     @Autowired
     private AppointmentClient appointmentClient;
@@ -392,7 +392,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
            return;
        }
         auditCombinationDto.setEventRefNo(RefNo);
-        boolean haveApptData = setAppPremisesInspecApptDtos(auditCombinationDto,RefNo);
+        // boolean haveApptData =
+        setAppPremisesInspecApptDtos(auditCombinationDto,RefNo);
         updateLicenceSaveCancelTask(auditCombinationDto,status,submitId);
         updateAppCancelTaskByEventBus(auditCombinationDto,submitId);
         updateTaskCancelTaskByEventBus(auditCombinationDto,submitId);
@@ -415,11 +416,15 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             log.error(e.getMessage(),e);
         }
         //save fe appt
-        if(haveApptData){
+        /*if(haveApptData){
             ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
             apptInspectionDateDto.setAppPremisesInspecApptDtos(auditCombinationDto.getAppPremisesInspecApptDtos());
-            apptInspectionDateService.createFeAppPremisesInspecApptDto(apptInspectionDateDto);
-        }
+            try{
+                apptInspectionDateService.createFeAppPremisesInspecApptDto(apptInspectionDateDto);
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+            }
+        }*/
     }
     private boolean setAppPremisesInspecApptDtos(AuditCombinationDto auditCombinationDto,String refNo){
         //get AppPremisesInspecApptDtos
