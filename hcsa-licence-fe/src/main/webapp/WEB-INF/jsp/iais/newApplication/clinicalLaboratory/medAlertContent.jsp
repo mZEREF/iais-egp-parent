@@ -73,7 +73,11 @@
                             </div>
                             <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null}">
                                 <div class="col-sm-10">
-                                    <label class="control-font-label">${medAlertPsn.name}, ${medAlertPsn.idNo} (${medAlertPsn.idType})</label>
+                                    <label class="control-font-label">
+                                        <c:if test="${!empty medAlertPsn.name && !empty medAlertPsn.idNo && !empty medAlertPsn.idType}">
+                                            ${medAlertPsn.name}, ${medAlertPsn.idNo} (${medAlertPsn.idType})
+                                        </c:if>
+                                    </label>
                                 </div>
                                 <div class="col-sm-2 text-right">
                                     <div class="edit-content">
@@ -87,7 +91,7 @@
                     </div>
                 </div>
                 <div class="">
-                    <div class="row <c:if test="${'true' == canEdit}">hidden</c:if>">
+                    <div class="row <c:if test="${'true' == canEdit && '-1' != medAlertPsn.assignSelect}">hidden</c:if>">
                         <div class="control control-caption-horizontal">
                             <div class=" form-group form-horizontal formgap">
                                 <div class="col-sm-6 control-label formtext col-md-5">
@@ -423,6 +427,10 @@
         $contentEle.find('.preferredMode').prop('disabled',false);
         //get data from page
         $contentEle.find('select[name="assignSel"] option[value="newOfficer"]').prop('selected',true);
+        var mapSelectVal = $contentEle.find('select[name="assignSel"]').val();
+        if('-1' != mapSelectVal){
+            $contentEle.find('select[name="assignSel"] option[value="newOfficer"]').prop('selected',true);
+        }
         $('#isEditHiddenVal').val('1');
     });
 

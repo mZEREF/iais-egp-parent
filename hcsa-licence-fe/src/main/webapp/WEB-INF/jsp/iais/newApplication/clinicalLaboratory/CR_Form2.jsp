@@ -128,16 +128,13 @@
                                                                                     </h4>
                                                                                 </div>
                                                                             </c:if>
-                                                                            <div class="hidden">
-                                                                                <iais:select cssClass="assignSel"
-                                                                                             name="assignSelect"
-                                                                                             options="CgoSelectList"
-                                                                                             value="${currentCgo.assignSelect}"></iais:select>
-                                                                            </div>
                                                                         </div>
                                                                         <div class="col-sm-10">
-                                                                            <label class="control-font-label">${currentCgo.name}, ${currentCgo.idNo}
-                                                                                (${currentCgo.idType})</label>
+                                                                            <label class="control-font-label">
+                                                                                <c:if test="${!empty currentCgo.name && !empty currentCgo.idNo && !empty currentCgo.idType}">
+                                                                                    ${currentCgo.name}, ${currentCgo.idNo} (${currentCgo.idType})
+                                                                                </c:if>
+                                                                            </label>
                                                                         </div>
                                                                         <div class="col-sm-2" style="margin-top:3%;">
                                                                             <div class="edit-content">
@@ -149,6 +146,23 @@
                                                                                     </div>
                                                                                     </p>
                                                                                 </c:if>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="<c:if test="${'-1' != currentCgo.assignSelect}"> hidden </c:if>">
+                                                                            <div class="col-sm-5 control-label formtext ">
+                                                                                <label class="control-label control-set-font control-font-label">Add/Assign a Clinical Governance Officer</label>
+                                                                                <span class="upload_controls"></span>
+                                                                            </div>
+                                                                            <div class="col-sm-5 col-md-7" id="assignSelect${suffix}">
+                                                                                <div class="">
+                                                                                    <iais:select cssClass="assignSel"
+                                                                                                 name="assignSelect"
+                                                                                                 options="CgoSelectList"
+                                                                                                 needSort="false"
+                                                                                                 value="${currentCgo.assignSelect}"></iais:select>
+                                                                                    <span class="error-msg" name="iaisErrorMsg"
+                                                                                          id="error_assignSelect${status.index}"></span>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -373,7 +387,7 @@
                                                                                 <div class="">
                                                                                     <input maxLength="20"
                                                                                            type="text"
-                                                                                           name="professionRegoNo"
+                                                                                           name="professionRegoNo" autocomplete="off"
                                                                                            value="${currentCgo.profRegNo}" onblur="aaa(this)">
                                                                                     <span class="error-msg"
                                                                                           name="iaisErrorMsg"
@@ -426,7 +440,7 @@
                                                                                                        type="text"
                                                                                                        class="form-control control-input control-set-font control-font-normal"
                                                                                                        value="${currentCgo.specialityOther}"
-                                                                                                       maxlength="100">
+                                                                                                       maxlength="100" autocomplete="off" >
                                                                                                 <span name="iaisErrorMsg"
                                                                                                       class="error-msg"
                                                                                                       id="error_other${status.index}"></span>
@@ -841,7 +855,10 @@
             $contentEle.find('input[type="text"]').css('border-color', '');
             $contentEle.find('input[type="text"]').css('color', '');
             //get data from page
-            $contentEle.find('select[name="assignSelect"] option[value="newOfficer"]').prop('selected', true);
+            var cgoSelectVal = $contentEle.find('select[name="assignSelect"]').val();
+            if('-1' != cgoSelectVal){
+                $contentEle.find('select[name="assignSelect"] option[value="newOfficer"]').prop('selected', true);
+            }
             $('#isEditHiddenVal').val('1');
         });
     };

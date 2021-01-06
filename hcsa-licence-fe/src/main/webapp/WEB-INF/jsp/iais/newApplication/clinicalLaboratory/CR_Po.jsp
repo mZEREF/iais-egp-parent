@@ -77,7 +77,11 @@
                           </div>
                           <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null}">
                             <div class="col-sm-10">
-                              <label class="control-font-label">${principalOfficer.name}, ${principalOfficer.idNo} (${principalOfficer.idType})</label>
+                              <label class="control-font-label">
+                                <c:if test="${!empty principalOfficer.name && !empty principalOfficer.idNo && !empty principalOfficer.idType}">
+                                  ${principalOfficer.name}, ${principalOfficer.idNo} (${principalOfficer.idType})
+                                </c:if>
+                              </label>
                             </div>
                             <div class="col-sm-2 text-right">
                               <div class="edit-content">
@@ -92,7 +96,7 @@
                       </div>
                     </div>
                     <div class="">
-                      <div class="row  <c:if test="${'true' == canEdit}">hidden</c:if>">
+                      <div class="row  <c:if test="${'true' == canEdit && '' != principalOfficer.assignSelect}">hidden</c:if>">
                         <div class="control control-caption-horizontal">
                           <div class=" form-group form-horizontal formgap">
                             <div class="col-sm-6 control-label formtext col-md-4">
@@ -356,7 +360,11 @@
                           <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null) && '1' == DeputyPoFlag }">
                             <div class="col-sm-10">
                               <c:if test="${'-1' != deputy.assignSelect}">
-                              <label class="control-font-label">${deputy.name}, ${deputy.idNo} (${deputy.idType})</label>
+                              <label class="control-font-label">
+                                <c:if test="${!empty deputy.name && !empty deputy.idNo && !empty deputy.idType}">
+                                  ${deputy.name}, ${deputy.idNo} (${deputy.idType})
+                                </c:if>
+                              </label>
                               </c:if>
                             </div>
                             <div class="col-sm-2 text-right">
@@ -910,7 +918,10 @@
             $contentEle.find('input[type="text"]').css('border-color','');
             $contentEle.find('input[type="text"]').css('color','');
             //get data from page
-            $contentEle.find('select[name="poSelect"] option[value="newOfficer"]').prop('selected',true);
+            var poSelectVal = $contentEle.find('select[name="poSelect"]').val();
+            if('' != poSelectVal){
+                $contentEle.find('select[name="poSelect"] option[value="newOfficer"]').prop('selected',true);
+            }
             $('#isEditHiddenVal').val('1');
 
         });
