@@ -33,7 +33,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -43,7 +42,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -961,12 +959,12 @@ public class LicenceViewServiceDelegator {
                     }
                 }
             }
-            Set<String> set = svcChckListDtoMap.keySet();
-            for(String s : set){
-                AppSvcChckListDto v = svcChckListDtoMap.get(s);
+        for (Map.Entry<String,AppSvcChckListDto> entitySet:svcChckListDtoMap.entrySet()
+        ) {
+                AppSvcChckListDto v = entitySet.getValue();
                 if("Please indicate".equalsIgnoreCase(v.getChkName())){
-                    AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto = map.get(s);
-                    HcsaServiceSubTypeDto entity = hcsaConfigClient.getHcsaServiceSubTypeById(s).getEntity();
+                    AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto = map.get(entitySet.getKey());
+                    HcsaServiceSubTypeDto entity = hcsaConfigClient.getHcsaServiceSubTypeById(entitySet.getKey()).getEntity();
                     if(entity!=null && entity.getParentId()!=null){
                         AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto1 = map.get(entity.getParentId());
                         if(appSvcDisciplineAllocationDto1!=null){
@@ -1127,12 +1125,12 @@ public class LicenceViewServiceDelegator {
                         }
                     }
                 }
-                Set<String> set = svcChckListDtoMap.keySet();
-                for(String s : set){
-                    AppSvcChckListDto v = svcChckListDtoMap.get(s);
+                for (Map.Entry<String,AppSvcChckListDto> entitySet:svcChckListDtoMap.entrySet()
+                ) {
+                    AppSvcChckListDto v = entitySet.getValue();
                     if("Please indicate".equalsIgnoreCase(v.getChkName())){
-                        AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto = map.get(s);
-                        HcsaServiceSubTypeDto entity = hcsaConfigClient.getHcsaServiceSubTypeById(s).getEntity();
+                        AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto = map.get(entitySet.getKey());
+                        HcsaServiceSubTypeDto entity = hcsaConfigClient.getHcsaServiceSubTypeById(entitySet.getKey()).getEntity();
                         if(entity!=null && entity.getParentId()!=null){
                             AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto1 = map.get(entity.getParentId());
                             if(appSvcDisciplineAllocationDto1!=null){

@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
@@ -29,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -98,7 +98,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
     public void  getKpiAndReminder(HttpServletRequest request) {
         List<HcsaServiceDto> entity = hcsaConfigClient.getActiveServices().getEntity();
         Collections.sort(entity,(s1,s2)->(s1.getSvcName().compareTo(s2.getSvcName())));
-        String[] code={"APTY002","APTY004","APTY005","APTY001","APTY006","APTY008"};
+        String[] code={ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_TYPE_APPEAL,ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL,ApplicationConsts.APPLICATION_TYPE_CESSATION};
         List<SelectOption> selectOptionList = MasterCodeUtil.retrieveOptionsByCodes(code);
         Collections.sort(selectOptionList,(s1,s2)->(s1.getText().compareTo(s2.getText())));
         request.getSession().setAttribute("selectOptionList",selectOptionList);

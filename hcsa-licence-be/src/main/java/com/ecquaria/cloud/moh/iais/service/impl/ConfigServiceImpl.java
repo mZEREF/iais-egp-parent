@@ -262,7 +262,7 @@ public class ConfigServiceImpl implements ConfigService {
         Collections.sort(categoryDtos,(s1,s2)->(s1.getName().compareTo(s2.getName())));
         request.getSession().setAttribute("categoryDtos",categoryDtos);
         Collections.sort(selectOptionList,(s1,s2)->(s1.getText().compareTo(s2.getText())));
-        String code[]={"SVTP001","SVTP002","SVTP003"};
+        String code[]={ApplicationConsts.SERVICE_CONFIG_TYPE_BASE,ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED,ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED};
         List<SelectOption> selectOptionList1 = MasterCodeUtil.retrieveOptionsByCodes(code);
         Collections.sort(selectOptionList1,(s1,s2)->(s1.getText().compareTo(s2.getText())));
         request.getSession().setAttribute("codeSelectOptionList",selectOptionList1);
@@ -1026,7 +1026,7 @@ public class ConfigServiceImpl implements ConfigService {
         List<HcsaServiceCategoryDto> categoryDtos = getHcsaServiceCategoryDto();
         Collections.sort(categoryDtos,(s1,s2)->(s1.getName().compareTo(s2.getName())));
         request.getSession().setAttribute("categoryDtos",categoryDtos);
-        String code[]={"SVTP001","SVTP002","SVTP003"};
+        String code[]={ApplicationConsts.SERVICE_CONFIG_TYPE_BASE,ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED,ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED};
         List<SelectOption> selectOptionList = MasterCodeUtil.retrieveOptionsByCodes(code);
         request.getSession().setAttribute("codeSelectOptionList",selectOptionList);
         Boolean flag = hcsaConfigClient.serviceIdIsUsed(crud_action_value).getEntity();

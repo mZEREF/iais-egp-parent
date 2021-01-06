@@ -1117,15 +1117,17 @@ public class HalpAssessmentGuideDelegator {
             url.append("https://").append(bpc.request.getServerName())
                     .append("/main-web/eservice/INTERNET/MohLicenseeCompanyDetail");
 //            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            String licenseeurl = "";
+            StringBuilder licenseeurl = new StringBuilder();
             if("LICT001".equals(licenseeDto.getLicenseeType())){
-                licenseeurl = url.toString() + "?licenseView=Licensee";
+                licenseeurl.append(url.toString()).append("?licenseView=Licensee") ;
             }else{
-                licenseeurl = url.toString() + "?licenseView=Solo";
+                licenseeurl.append(url.toString()).append("?licenseView=Solo") ;
             }
 
-            String authorisedUrl = url.toString() + "?licenseView=Authorised";
-            String medAlertUrl= url.toString() + "?licenseView=MedAlert";
+            StringBuilder authorisedUrl=new StringBuilder();
+            authorisedUrl.append(url.toString()).append("?licenseView=Authorised");
+            StringBuilder medAlertUrl=new StringBuilder();
+            medAlertUrl.append(url.toString()).append("?licenseView=MedAlert") ;
             List<FeUserDto> feUserDtos = requestForChangeService.getAccountByOrgId(loginContext.getOrgId());
 
             ParamUtil.setSessionAttr(bpc.request,"licenseeurl",licenseeurl);

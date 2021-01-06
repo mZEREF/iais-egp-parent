@@ -778,9 +778,9 @@ public final class IaisEGPHelper extends EGPHelper {
 
     public static String generateEDHRequestAuthorizationStr(){
         StringBuilder authorization = new StringBuilder();
-        authorization.append("PKI_SIGN ").append("app_id=").append(",");
-        authorization.append("nonce=").append(System.currentTimeMillis()).append(",");
-        authorization.append("signature_method=").append("RS256").append(",");
+        authorization.append("PKI_SIGN ").append("app_id=").append(',');
+        authorization.append("nonce=").append(System.currentTimeMillis()).append(',');
+        authorization.append("signature_method=").append("RS256").append(',');
         authorization.append("signature=").append("");
         authorization.append("timestamp=").append("System.currentTimeMillis()");
         return authorization.toString();
