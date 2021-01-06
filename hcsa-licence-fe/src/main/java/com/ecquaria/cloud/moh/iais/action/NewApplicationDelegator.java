@@ -2186,7 +2186,7 @@ public class NewApplicationDelegator {
                         appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
                     }
                     appSubmissionDto1.setAppSvcRelatedInfoDtoList(personAppsubmit.getAppSvcRelatedInfoDtoList());
-                    autoSaveAppsubmission.add(personAppsubmit);
+
                 }else {
                     autoSaveAppsubmission.add(personAppsubmit);
                 }
