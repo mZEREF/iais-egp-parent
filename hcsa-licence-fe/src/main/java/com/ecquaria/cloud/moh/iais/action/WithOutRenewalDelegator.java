@@ -1550,6 +1550,8 @@ public class WithOutRenewalDelegator {
             if(renewDto!=null){
                 List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
                 if(appSubmissionDtos!=null){
+                    //send email
+                    sendEmail(bpc.request,appSubmissionDtos);
                     for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
                         String appGrpNo = appSubmissionDto.getAppGrpNo();
                         boolean autoRfc = appSubmissionDto.isAutoRfc();
@@ -1899,6 +1901,8 @@ public class WithOutRenewalDelegator {
                 index ++;
             }
             log.info(StringUtil.changeForLog("send renewal application notification end"));
+        }else{
+            log.error(StringUtil.changeForLog("send email error , appSubmissionDtos is null"));
         }
     }
 
