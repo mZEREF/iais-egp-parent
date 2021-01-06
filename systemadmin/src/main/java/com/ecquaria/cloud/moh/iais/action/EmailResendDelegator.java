@@ -224,15 +224,14 @@ public class EmailResendDelegator {
             Date sch = new Date();
             sch = blastManagementDto.getSchedule();
             Date now = new Date();
-            if (sch.compareTo(now) < 0) {
+            if (sch.compareTo(now) < 0 && StringUtil.isEmpty(errMap.get("date"))) {
                 errMap.put("date", MessageUtil.getMessageDesc("EMM_ERR007"));
             }
         }
         if(errMap.isEmpty()){
             blastManagementDto.setActual(null);
             blastManagementListService.setSchedule(blastManagementDto);
-            String id = (String) ParamUtil.getSessionAttr(bpc.request,"notiId");
-            blastManagementListService.setEmailResend(id);
+            blastManagementListService.setEmailResend(blastManagementDto.getMessageId());
             ParamUtil.setSessionAttr(bpc.request,"resendSearchParam",null);
             ParamUtil.setRequestAttr(bpc.request,"crud_action","suc");
         }else{
