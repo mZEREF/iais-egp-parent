@@ -1128,7 +1128,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doPayment start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         //for relation Licences when RFC the premises.
-        List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("otherAppSubmissionDtos");
+        List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("ackPageAppSubmissionDto");
         String switch2 = "loading";
         String pmtMethod = appSubmissionDto.getPaymentMethod();
         if (StringUtil.isEmpty(pmtMethod)) {
@@ -1162,12 +1162,29 @@ public class NewApplicationDelegator {
                 if (appSubmissionDtos != null) {
                     for (AppSubmissionDto appSubmissionDto1 : appSubmissionDtos) {
                         Double amount = appSubmissionDto1.getAmount();
+                        String grpId = appSubmissionDto1.getAppGrpId();
+                        boolean autoRfc = appSubmissionDto1.isAutoRfc();
+                        List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appSubmissionDto1.getAppGrpNo()).getEntity();
+                        if(entity!=null && !entity.isEmpty()){
+                            for(ApplicationDto applicationDto : entity){
+                                if(autoRfc){
+                                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                                }else {
+                                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                                }
+                            }
+                            applicationFeClient.updateApplicationList(entity);
+                        }
+
+                        ApplicationGroupDto appGrp = new ApplicationGroupDto();
+                        appGrp.setId(grpId);
+                        appGrp.setPmtRefNo(pmtRefNo);
                         if (0.0 != amount) {
-                            String grpId = appSubmissionDto1.getAppGrpId();
-                            ApplicationGroupDto appGrp = new ApplicationGroupDto();
-                            appGrp.setId(grpId);
-                            appGrp.setPmtRefNo(pmtRefNo);
                             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                            appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
+                            serviceConfigService.updatePaymentStatus(appGrp);
+                        }else {
+                            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
                             appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
                             serviceConfigService.updatePaymentStatus(appGrp);
                         }
@@ -2287,34 +2304,6 @@ public class NewApplicationDelegator {
             appSubmissionDtoList.addAll(appSubmissionDtos1);
             appSubmissionDto.setAppGrpId(appSubmissionDtos1.get(0).getAppGrpId());
         }
-       /* if(amount==0.0){
-            if(draftNo!=null){
-                AppSubmissionDto draftAppSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
-                if(draftAppSubmissionDto!=null){
-                    draftAppSubmissionDto.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                    applicationFeClient.saveDraft(draftAppSubmissionDto);
-                }
-            }
-            if(!StringUtil.isEmpty(appSubmissionDto.getLicenceId())){
-                List<ApplicationSubDraftDto> entity = applicationFeClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
-                for (ApplicationSubDraftDto applicationSubDraftDto : entity) {
-                    if(!applicationSubDraftDto.getDraftNo().equals(draftNo)){
-                        String draftJson = applicationSubDraftDto.getDraftJson();
-                        AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
-                        appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                        applicationFeClient.saveDraft(appSubmissionDto1);
-                    }else {
-                        if(AppConsts.COMMON_STATUS_ACTIVE.equals(applicationSubDraftDto.getStatus())){
-                            String draftJson = applicationSubDraftDto.getDraftJson();
-                            AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
-                            appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                            applicationFeClient.saveDraft(appSubmissionDto1);
-                        }
-                    }
-                }
-            }
-
-        }*/
         if(autoSaveAppsubmission.isEmpty()&&notAutoSaveAppsubmission.isEmpty()){
             bpc.request.setAttribute("RFC_ERROR_NO_CHANGE",MessageUtil.getMessageDesc("RFC_ERR014"));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
