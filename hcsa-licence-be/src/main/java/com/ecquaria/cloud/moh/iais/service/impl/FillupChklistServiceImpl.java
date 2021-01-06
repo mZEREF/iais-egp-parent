@@ -774,6 +774,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         if(updatedtaskDto == null){
             updatedtaskDto = taskDto;
             updatedtaskDto.setUpdateCount(0);
+        }else {
+            updatedtaskDto.setUpdateCount(0);
         }
         return updatedtaskDto;
     }

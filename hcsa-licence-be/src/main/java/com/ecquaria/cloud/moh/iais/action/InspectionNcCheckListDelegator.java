@@ -248,7 +248,7 @@ public class InspectionNcCheckListDelegator {
             ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
             ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);*/
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-        }else if("listAhoc".equalsIgnoreCase(crudActionValue)){
+        }else if("listAhoc".equalsIgnoreCase(crudActionType)){
             serListDto = getOtherInfo(mulReq);
             serListDto.setCheckListTab("chkList");
             ParamUtil.setSessionAttr(mulReq,SERLISTDTO,serListDto);
