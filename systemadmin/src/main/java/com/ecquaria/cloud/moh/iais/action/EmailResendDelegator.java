@@ -145,9 +145,10 @@ public class EmailResendDelegator {
     public void resend(BaseProcessClass bpc){
         String id =  ParamUtil.getMaskedString(bpc.request, "emailId");
         String notiId =  ParamUtil.getMaskedString(bpc.request, "notiId");
-        BlastManagementDto blastManagementDtoById = new BlastManagementDto();
+            BlastManagementDto blastManagementDtoById = new BlastManagementDto();
         if(StringUtil.isEmpty(id)){
             id = (String)ParamUtil.getSessionAttr(bpc.request,"BlastMsgId");
+            notiId = (String)ParamUtil.getSessionAttr(bpc.request, "notiId");
             blastManagementDtoById = (BlastManagementDto) ParamUtil.getSessionAttr(bpc.request,"resendBlastedit");
         }else{
             blastManagementDtoById = blastManagementListService.getBlastByMsgId(id);
