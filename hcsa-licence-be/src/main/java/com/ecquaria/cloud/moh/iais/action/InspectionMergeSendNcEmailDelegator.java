@@ -255,7 +255,7 @@ public class InspectionMergeSendNcEmailDelegator {
             int sn=1;
             StringBuilder stringTable=new StringBuilder();
             StringBuilder stringBuilder1=new StringBuilder();
-            String stringBuilder2;
+            StringBuilder stringBuilder2=new StringBuilder();
             for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
             ) {
                 try{
@@ -284,11 +284,8 @@ public class InspectionMergeSendNcEmailDelegator {
                     }
                     //mapTemplate.put("ServiceName", applicationViewDto.getServiceType());
                     if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||appPreRecommentdationDto.getRemarks()!=null)){
-                        stringBuilder2 = "<tr><td>" + sn +
-                                TD + StringUtil.viewHtml(appPreRecommentdationDto.getBestPractice()) +
-                                TD + StringUtil.viewHtml(appPreRecommentdationDto.getRemarks()) +
-                                "</td></tr>";
-                        mapTableTemplate.put("Observation_Recommendation",StringUtil.viewHtml(stringBuilder2));
+                        stringBuilder2.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(appPreRecommentdationDto.getBestPractice())).append(TD).append(StringUtil.viewHtml(appPreRecommentdationDto.getRemarks())).append("</td></tr>");
+                        mapTableTemplate.put("Observation_Recommendation",StringUtil.viewHtml(stringBuilder2.toString()));
                         sn++;
                     }
                 }catch (Exception e){
