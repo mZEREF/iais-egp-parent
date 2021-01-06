@@ -13,7 +13,7 @@
                 </label>
             </div>
             <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-               title='<p>"Base Licence" is a licence that a licensee must have to provide a special licensable healthcare service. "Special Licensable Healthcare Services" are services where the licensee will require the relevant base licence in order to provide the service.</p>'
+               title='<p>"Base Licence" is a licence that a licensee must have to provide a special licensable healthcare service. "Special Services" are services where the licensee will require the relevant base licence in order to provide the service.</p>'
                style="position: absolute;left: 340px; top: 55px;z-index: 10"
                data-original-title=""
                >i</a>
