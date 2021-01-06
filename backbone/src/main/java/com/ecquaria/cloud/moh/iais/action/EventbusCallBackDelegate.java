@@ -149,6 +149,11 @@ public class EventbusCallBackDelegate {
             invokeMethod(submissionId, eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.LicenceFileDownloadServiceImpl",
                     "removeFile");
+        }else if(EventBusConsts.OPERATION__AUDIT_TASK_CANCELED.equalsIgnoreCase(operation)){
+            log.info("-------cancel audit task call back ----");
+            invokeMethod(submissionId, eventRefNum,
+                    "com.ecquaria.cloud.moh.iais.service.impl.AuditSystemListServiceImpl",
+                    "releaseTimeForInsUserCallBack");
         }
     }
 

@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
@@ -107,7 +108,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     @Autowired
     private  ApptInspectionDateService apptInspectionDateService;
     static String[] category = {"ADTYPE001", "ADTYPE002", "ADTYPE003"};
-
+    @Autowired
+    private AppointmentClient appointmentClient;
     @Override
     public void sendMailForAuditPlanerForSms(String emailKey) {
         List<OrgUserDto> userDtoList = organizationClient. retrieveUserRoleByRoleId(RoleConsts.USER_ROLE_AUDIT_PLAN).getEntity();
@@ -609,6 +611,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }
     }
 
+
+
     public void updateLicPremisesAuditDto(AuditTaskDataFillterDto temp,String status){
         LicPremisesAuditDto licPremisesAuditDto = hcsaLicenceClient.getLicPremAuditByGuid(temp.getAuditId()).getEntity();
         licPremisesAuditDto.setStatus(status);
@@ -644,6 +648,17 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }
     }
 
+    public void releaseTimeForInsUserCallBack(String eventRefNum,String submissionId)throws FeignException{
+        log.info(StringUtil.changeForLog("--------------- releaseTimeForInsUserCallBack eventRefNum :" + eventRefNum+ " submissionId :"+ submissionId +"--------------------"));
+        ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
+         List<String> cancelRefNums = new ArrayList<>(1);
+         if( !StringUtil.isEmpty(eventRefNum)){
+             cancelRefNums.add(eventRefNum);
+         }
+        apptCalendarStatusDto.setCancelRefNums(cancelRefNums);
+        apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+        appointmentClient.updateUserCalendarStatus(apptCalendarStatusDto);
+    }
     @Override
     public List<AuditTaskDataFillterDto> doRemove(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
         List<AuditTaskDataFillterDto> removeList = IaisCommonUtils.genNewArrayList();
