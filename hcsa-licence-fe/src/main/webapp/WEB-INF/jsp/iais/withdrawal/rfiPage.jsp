@@ -16,18 +16,16 @@
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <c:choose>
             <c:when test="${!empty rfi_already_err}">
-                <div class="row">
-                    <div class="col-lg-12 col-xs-12">
-                        <div class="internet-content">
-                            <div class="center-content">
-                                <h3>${rfi_already_err}</h3>
+                <div class="row ">
+                    <div class="container">
+                        <div class="row center">
+                            <h3>${rfi_already_err}</h3>
+                        </div>
+                        <div class="row margin-bottom-10 text-right">
+                            <div class="col-lg-12 col-xs-12">
+                                    <a class="btn btn-primary aMarginleft col-md-2 pull-right" id="toDashBoard" href="/main-web/eservice/INTERNET/MohInternetInbox">Go to <br>Dashboard</a>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="text-right text-center-mobile" style="margin-bottom: 1%;margin-right: 20px">
-                        <a class="btn btn-primary" href="/main-web/eservice/INTERNET/MohInternetInbox" id="dashboard">Go to Dashboard</a>
                     </div>
                 </div>
             </c:when>

@@ -8,21 +8,17 @@
         <div class="navigation-gp">
             <div class="row">
                 <%@ include file="../common/dashboardDropDown.jsp" %>
+                <div class="col-xs-12">
+                    <div class="dashboard-page-title">
+                        <h1>Withdrawal Form</h1>
+                        <c:if test="${rfiServiceName!=null }">
+                            <p style="font-size: 2.2rem">You are Withdrawing for <strong>${rfiServiceName }</strong></p>
+                        </c:if>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="prelogin-title">
-                <h1>Withdrawal Form</h1>
-                <c:if test="${rfiServiceName!=null }">
-                    <p style="font-size: 2.2rem">You are applying for <strong>${rfiServiceName }</strong></p>
-                </c:if>
-            </div>
-        </div>
-
-    </div>
-
 </div>
 
 <style>
