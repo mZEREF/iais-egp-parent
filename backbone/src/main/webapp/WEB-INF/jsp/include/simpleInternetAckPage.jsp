@@ -53,7 +53,8 @@
 
 <script type="text/javascript">
     function doCancel(){
-        SOP.Crud.cfxSubmit("mainForm","doCancel");
+        document.getElementById('crud_action_type').value = 'doBack';
+        document.getElementById("mainForm").submit();
     }
 
 </script>
