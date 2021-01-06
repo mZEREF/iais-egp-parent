@@ -496,16 +496,6 @@ public class WithOutRenewalDelegator {
                 //send email pay success
                 try {
                     sendEmail(bpc.request,appSubmissionDtos);
-                    boolean b=false;
-                    List<AppSubmissionDto> rfcAppSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("rfcAppSubmissionDtos");
-                    for (AppSubmissionDto appSubmDto : rfcAppSubmissionDtos) {
-                        if(appSubmDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
-                            b=true;
-                        }
-                    }
-                    if(b){
-                        requestForChangeService.sendRfcSubmittedEmail(rfcAppSubmissionDtos,pmtMethod);
-                    }
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
@@ -1270,6 +1260,16 @@ public class WithOutRenewalDelegator {
                 }
             }
 
+        }
+        boolean b=false;
+        for (AppSubmissionDto appSubmDto : rfcAppSubmissionDtos) {
+            if(appSubmDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                b=true;
+            }
+        }
+        if(b){
+            rfcAppSubmissionDtos.get(0).setAppGrpId(appSubmissionDtos.get(0).getAppGrpId());
+            requestForChangeService.sendRfcSubmittedEmail(rfcAppSubmissionDtos,appSubmissionDtos.get(0).getPaymentMethod());
         }
         String licenseeId = null;
         if (interInboxUserDto != null) {
