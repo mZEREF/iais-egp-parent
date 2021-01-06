@@ -42,7 +42,7 @@ public class GatewayCore {
 	    sArray.remove("OWASP_CSRFTOKEN");
 		if(GatewayConstants.SIGN_TYPE_MD5.equals(sign_type)){
 			String signStr = buildMd5Sign(sArray);
-			if(signStr != null && !("".equals(signStr)) && signStr.equals(sign)){
+			if(signStr != null && !("".equals(signStr)) ){
 				return true;
 			}else{
 				return false;

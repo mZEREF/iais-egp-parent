@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/jsp/inc/script.jsp" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <webui:setLayout name="none"/>
-<form action="commpymt_eNets.jsp">
+<form action="commpymt_stripe.jsp">
 	SVC refno:<input type="text" name="svc_refno"/><br/>
 	Payment description:<textarea name="description"></textarea><br/>
 	Amount:<input type="text" name="amount"/><br/>
