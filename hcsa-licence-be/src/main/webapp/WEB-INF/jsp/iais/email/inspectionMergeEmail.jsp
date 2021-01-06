@@ -12,7 +12,6 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
            String webroot=IaisEGPConstant.BE_CSS_ROOT;
 %>
-<script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/jquery-3.4.1.min.js"></script>
 <webui:setLayout name="iais-intranet"/>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>

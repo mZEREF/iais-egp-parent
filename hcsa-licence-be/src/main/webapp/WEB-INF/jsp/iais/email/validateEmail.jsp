@@ -35,7 +35,6 @@
 
                                         <div class="tab-pane active" id="tabLetter" role="tabpanel">
                                             <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-                                            <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/jquery-3.4.1.min.js"></script>
                                             <iais:section title="" id = "process_NcEmail">
                                                 <iais:row>
                                                     <label class="col-xs-0 col-md-2 control-label col-sm-2">Subject</label>
