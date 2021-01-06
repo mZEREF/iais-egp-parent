@@ -23,6 +23,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Wenkang
@@ -199,6 +200,14 @@ public class OrganizationClientFallback implements OrganizationClient {
 
     @Override
     public FeignResponseEntity<LicenseeDto> getLicenseeDtoById(String id) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Map<String, String>> getAllLicenseeIdName() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

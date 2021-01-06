@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Wenkang
@@ -116,6 +117,9 @@ public interface OrganizationClient {
 
     @GetMapping(value = "/iais-licensee-be/licensee-by-id/{id}")
     FeignResponseEntity<LicenseeDto> getLicenseeDtoById (@PathVariable("id") String id);
+
+    @GetMapping(path = "/iais-licensee/getAllLicenseeIdName",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Map<String, String>> getAllLicenseeIdName();
 
     @GetMapping(value = "/iais-licensee-be/licensee-overtime/{days}")
     FeignResponseEntity<List<LicenseeDto>> getLicenseeDtoOvertime (@PathVariable("days") String days);
