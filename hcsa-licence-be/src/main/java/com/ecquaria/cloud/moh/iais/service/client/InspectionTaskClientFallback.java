@@ -302,4 +302,12 @@ public class InspectionTaskClientFallback implements InspectionTaskClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<AppPremisesInspecApptDto>> getAllSystemDtosByAppPremCorrId(String appPremCorrId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

@@ -654,15 +654,23 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     }
 
     public void releaseTimeForInsUserCallBack(String eventRefNum,String submissionId)throws FeignException{
-        log.info(StringUtil.changeForLog("--------------- releaseTimeForInsUserCallBack eventRefNum :" + eventRefNum+ " submissionId :"+ submissionId +"--------------------"));
-        ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
-         List<String> cancelRefNums = new ArrayList<>(1);
+        log.info("---releaseTimeForInsUserCallBack into---------------");
          if( !StringUtil.isEmpty(eventRefNum)){
-             cancelRefNums.add(eventRefNum);
+             log.info(StringUtil.changeForLog("--------------- releaseTimeForInsUserCallBack eventRefNum :" + eventRefNum+ " submissionId :"+ submissionId +"--------------------"));
+             List<AppPremisesInspecApptDto> appPremisesInspecApptDtos = inspectionTaskClient.getAllSystemDtosByAppPremCorrId(eventRefNum).getEntity();
+             if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtos)){
+                 ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
+                 List<String> cancelRefNums = new ArrayList<>(1);
+                 for(AppPremisesInspecApptDto appPremisesInspecApptDto : appPremisesInspecApptDtos){
+                     cancelRefNums.add(appPremisesInspecApptDto.getApptRefNo());
+                 }
+                 apptCalendarStatusDto.setCancelRefNums(cancelRefNums);
+                 apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+                 appointmentClient.updateUserCalendarStatus(apptCalendarStatusDto);
+             }else {
+                 log.info(StringUtil.changeForLog("------ eventRefNum :" + eventRefNum +" cannot exist appt"));
+             }
          }
-        apptCalendarStatusDto.setCancelRefNums(cancelRefNums);
-        apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
-        appointmentClient.updateUserCalendarStatus(apptCalendarStatusDto);
     }
     @Override
     public List<AuditTaskDataFillterDto> doRemove(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
