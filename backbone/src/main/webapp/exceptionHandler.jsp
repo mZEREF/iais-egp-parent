@@ -24,7 +24,7 @@
 <link href="<%=resourcePath%>/_statics/css/core/core.css" rel="stylesheet">
 <link href="<%=resourcePath%>/_themes/egov/css/template.css" rel="stylesheet">
 <link href="<%=resourcePath%>/_statics/css/error-page.css" rel="stylesheet">
-<script type="text/javascript" src="<%=resourcePath%>/javascripts/egov/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="<%=resourcePath%>/javascripts/egov/jquery-3.4.1.min.js"></script>
 
   <%
     Map<String, Object> errors = (Map<String, Object>) request.getAttribute("errors");
