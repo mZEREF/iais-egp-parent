@@ -352,6 +352,18 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setBestPractice(bestPractice);
         inspectionReportDto.setTaskRemarks(remarks);
         inspectionReportDto.setCurrentStatus(status);
+        //save
+//        try {
+//            if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW.equals(status)){
+//                ReportResultDto reportResultDto = new ReportResultDto();
+//                reportResultDto.setAppPremId(appPremisesCorrelationId);
+//                reportResultDto.setInspDate(inspectionReportDto.getInspectionDate());
+//                reportResultDto.setInspEnddate(new Date());
+//                saveReportResult(reportResultDto);
+//            }
+//        }catch (Exception e){
+//            log.error(e.getMessage(),e);
+//        }
         return inspectionReportDto;
     }
 
@@ -379,6 +391,11 @@ public class InsRepServiceImpl implements InsRepService {
         appPremisesRecommendationDto.setAuditTrailDto(currentAuditTrailDto);
         appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         insRepClient.saveRecommendationData(appPremisesRecommendationDto);
+    }
+
+    @Override
+    public void saveReportResult(ReportResultDto reportResultDto) {
+        insRepClient.saveReportResult(reportResultDto).getEntity();
     }
 
     @Override

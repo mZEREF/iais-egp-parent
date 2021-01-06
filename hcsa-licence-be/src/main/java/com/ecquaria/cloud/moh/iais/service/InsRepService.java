@@ -6,14 +6,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloudfeign.FeignException;
-import freemarker.template.TemplateException;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -24,6 +21,7 @@ public interface InsRepService {
 
     InspectionReportDto getInsRepDto (TaskDto taskDto, ApplicationViewDto applicationViewDto , LoginContext loginContext);
     void saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
+    void saveReportResult (ReportResultDto reportResultDto);
     void updateengageRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     void updateFollowRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     void updateRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);

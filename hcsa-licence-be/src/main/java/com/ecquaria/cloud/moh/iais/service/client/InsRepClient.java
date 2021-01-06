@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportResultDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -28,8 +29,6 @@ public interface InsRepClient {
     @RequestMapping(path = "/application-number-grp-premiese/{appPremCorreId}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppInsRepDto> getAppInsRepDto(@PathVariable("appPremCorreId") String appPremCorreId);
 
-
-
     @GetMapping(value = "/iais-inspection-report/is-pre/{appGrpId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationGroupDto>getApplicationGroupDto (@PathVariable("appGrpId") String appId);
 
@@ -44,4 +43,7 @@ public interface InsRepClient {
 
     @GetMapping(value = "/iais-application-be/application/premises-scope/{correId}")
     FeignResponseEntity<List<AppSvcPremisesScopeDto>> getAppSvcPremisesScopeListByCorreId(@PathVariable(name = "correId") String correId);
+
+    @PostMapping(value = "/iais-inspection-report/saveReportResult" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> saveReportResult(@RequestBody ReportResultDto reportResultDto );
 }
