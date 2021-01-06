@@ -188,5 +188,9 @@ public class INTERNET___MohInternetInbox___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "toElis", this);
 	}
 
+	public void toMOHAlert_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "toMOHAlert", this);
+	}
+
 
 }

@@ -164,6 +164,10 @@ public class InterInboxDelegator {
         bpc.response.sendRedirect(elisUrl);
     }
 
+    public void toMOHAlert(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("Step ---> toMOHAlert"));
+    }
+
     /**
      *
      * @param bpc
