@@ -2046,7 +2046,7 @@ public class ClinicalLaboratoryDelegator {
                             professionType = removeArrIndex(professionType, i);
                             specialty = removeArrIndex(specialty, i);
                             existingPsn = removeArrIndex(existingPsn, i);
-                            specialtyOther = removeArrIndex(specialtyOther,i);
+                            //specialtyOther = removeArrIndex(specialtyOther,i);
                             //change arr index
                             --i;
                             --size;
