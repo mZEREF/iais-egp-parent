@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -190,7 +191,7 @@ public class EmailResendDelegator {
 
         if(HH == null){
             blastManagementDto.setHH(null);
-            errMap.put("HH","The field is mandatory.");
+            errMap.put("HH", MasterCodeUtil.getCodeDesc("GENERAL_ERR0006"));
         }else if(!(StringUtils.isNumeric(HH) &&  Integer.parseInt(HH) < 24)){
             blastManagementDto.setHH(HH);
             errMap.put("HH","Field format is wrong");
@@ -198,11 +199,12 @@ public class EmailResendDelegator {
         if(MM == null){
             blastManagementDto.setMM(null);
 
-            errMap.put("HH","The field is mandatory.");
+            errMap.put("HH",MasterCodeUtil.getCodeDesc("GENERAL_ERR0006"));
         }else if(!(StringUtils.isNumeric(MM) &&  Integer.parseInt(MM) < 60)){
             blastManagementDto.setMM(MM);
             errMap.put("HH","Field format is wrong");
         }
+
         if(errMap.isEmpty()){
             if(!StringUtil.isEmpty(date)){
                 try {
@@ -213,6 +215,8 @@ public class EmailResendDelegator {
                 } catch (ParseException e) {
                     log.error(e.getMessage(), e);
                 }
+            }else{
+                errMap.put("date", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
             }
         }
         if(blastManagementDto.getSchedule() != null && HH != null && MM != null) {
