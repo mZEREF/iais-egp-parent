@@ -4,14 +4,12 @@ import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.BatchJobConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,14 +28,14 @@ import java.util.Map;
 @Slf4j
 public class FrontendMsgRefreshJobHandler extends IJobHandler {
     @Autowired
-    private IaisSystemClient iaisSystemClient;
+    private GenerateIdClient generateIdClient;
 
     @Override
     public ReturnT<String> execute(String s) {
         try{
             logInfo("<====== Start to refresh error msg ======>");
             AuditTrailHelper.setupBatchJobAuditTrail(this);
-            List<MessageDto> list = iaisSystemClient.getMessagesToRefresh().getEntity();
+            List<MessageDto> list = generateIdClient.getMessagesToRefresh().getEntity();
             Map<String, String> map = IaisCommonUtils.genNewHashMap();
             if (!IaisCommonUtils.isEmpty(list)) {
                 for (MessageDto mc : list) {
@@ -45,7 +43,7 @@ public class FrontendMsgRefreshJobHandler extends IJobHandler {
                     mc.setNeedFlush(false);
                 }
                 MessageUtil.loadMessages(map);
-                iaisSystemClient.saveMessages(list);
+                generateIdClient.saveMessages(list);
             }
             logInfo("<====== End to refresh error msg ======>");
         }catch (Exception e){

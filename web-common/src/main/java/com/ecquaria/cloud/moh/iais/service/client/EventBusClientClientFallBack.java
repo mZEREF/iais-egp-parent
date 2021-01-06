@@ -9,7 +9,8 @@ import org.springframework.http.HttpHeaders;
  * @author Jinhua
  * @date 2020/9/23 14:01
  */
-public class EventBusClientClientFallBack {
+public class EventBusClientClientFallBack implements EventBusClient{
+    @Override
     public FeignResponseEntity<Void> trackCompersation() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

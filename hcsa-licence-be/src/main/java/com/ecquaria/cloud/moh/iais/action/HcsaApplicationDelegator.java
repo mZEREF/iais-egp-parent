@@ -145,8 +145,7 @@ public class HcsaApplicationDelegator {
     AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
     @Autowired
     private AppInspectionStatusClient appInspectionStatusClient;
-    @Autowired
-    private AppPremisesCorrClient appPremisesCorrClient;
+
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
@@ -3366,10 +3365,10 @@ public class HcsaApplicationDelegator {
                 String type = "";
                 ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
                 if (oldApplication != null) {
-                    List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = appPremisesCorrClient.getAppPremisesCorrelationsByAppId(oldApplication.getId()).getEntity();
+                    List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getAppPremisesCorrelationsByAppId(oldApplication.getId()).getEntity();
                     if (appPremisesCorrelationDtos != null && appPremisesCorrelationDtos.size() > 0) {
                         AppPremisesCorrelationDto appPremisesCorrelationDto = appPremisesCorrelationDtos.get(0);
-                        AppInsRepDto appInsRepDto = appPremisesCorrClient.appGrpPremises(appPremisesCorrelationDto.getId()).getEntity();
+                        AppInsRepDto appInsRepDto = applicationClient.appGrpPremises(appPremisesCorrelationDto.getId()).getEntity();
                         if (appInsRepDto != null) {
                             String hciName = appInsRepDto.getHciName();
                             List<String> hciNames = IaisCommonUtils.genNewArrayList();

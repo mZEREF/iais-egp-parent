@@ -31,7 +31,7 @@ import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.CommonEmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.CommonMsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
@@ -74,7 +74,7 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private HcsaAppClient hcsaAppClient;
     @Autowired
-    private CommonMsgTemplateClient msgTemplateClient;
+    private GenerateIdClient generateIdClient;
     @Value("${iais.email.sender}")
     private String mailSender;
     @Autowired
@@ -453,7 +453,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void sendNoteToAdm(String appNo,String refNo, OrgUserDto orgUserDto) {
         try {
-            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SYSTEM_ADMIN_REMINDER).getEntity();
+            MsgTemplateDto msgTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SYSTEM_ADMIN_REMINDER).getEntity();
             String emailTemplate = msgTemplateDto.getMessageContent();
             Map<String, Object> templateMap = IaisCommonUtils.genNewHashMap();
             List<String> receiptEmail = IaisCommonUtils.genNewArrayList();

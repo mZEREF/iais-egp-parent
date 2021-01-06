@@ -28,7 +28,7 @@ import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.KpiAndReminderService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
@@ -68,7 +68,7 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
     MsgTemplateClient msgTemplateClient;
 
     @Autowired
-    private IaisSystemClient iaisSystemClient;
+    private GenerateIdClient generateIdClient;
 
     @Autowired
     ApplicationService applicationService;
@@ -153,7 +153,7 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                 email.add(item.getUserEmail());
                                 sms.add(item.getUserMobile());
                                 String subject = StringUtil.changeForLog("Reminder for "+applicationDto.getApplicationNo()+" processing");
-                                MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_UNPROCESSED_TASK_1).getEntity();
+                                MsgTemplateDto msgTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_UNPROCESSED_TASK_1).getEntity();
                                 Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
                                 templateContent.put("officer", item.getUserName());
                                 templateContent.put("applicationNo", applicationDto.getApplicationNo());
@@ -171,7 +171,7 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                 email.add(leader.getEmail());
                                 sms.add(leader.getMobileNo());
                                 String subject = StringUtil.changeForLog("Reminder for "+applicationDto.getApplicationNo()+" processing for "+leader.getDisplayName());
-                                MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_UNPROCESSED_TASK_2).getEntity();
+                                MsgTemplateDto msgTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_UNPROCESSED_TASK_2).getEntity();
                                 Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
                                 templateContent.put("officer", item.getUserName());
                                 templateContent.put("supervisor", leader.getDisplayName());
@@ -192,7 +192,7 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                         email.add(orgUserDto.getEmail());
                                         sms.add(orgUserDto.getMobileNo());
                                         String subject = StringUtil.changeForLog("Reminder for "+applicationDto.getApplicationNo()+" processing for "+item.getUserName());
-                                        MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_UNPROCESSED_TASK_3).getEntity();
+                                        MsgTemplateDto msgTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_UNPROCESSED_TASK_3).getEntity();
                                         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
                                         templateContent.put("systemAdmin", orgUserDto.getDisplayName());
                                         templateContent.put("officer", item.getUserName());

@@ -32,9 +32,9 @@ import com.ecquaria.cloud.moh.iais.service.client.CommonFeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceCommonClient;
-import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
@@ -115,7 +115,7 @@ public class NotificationHelper {
 	private Environment env;
 
 	@Autowired
-	private IaisSystemClient iaisSystemClient;
+	private GenerateIdClient generateIdClient;
 	@Autowired
 	private EicClient eicClient;
 
@@ -166,7 +166,7 @@ public class NotificationHelper {
 	}
 
 	public MsgTemplateDto getMsgTemplate(String templateId){
-		return iaisSystemClient.getMsgTemplate(templateId).getEntity();
+		return generateIdClient.getMsgTemplate(templateId).getEntity();
 	}
 
 	public List<String> getEmailAddressListByLicenseeId(List<String> licenseeIdList){
@@ -236,9 +236,9 @@ public class NotificationHelper {
 				+ "templateId is "+ templateId+ " thread name is " + Thread.currentThread().getName()));
 		MsgTemplateDto msgTemplateDto ;
 		if(recipientType!=null&&!recipientType.isEmpty()){
-			msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId,recipientType).getEntity();
+			msgTemplateDto = generateIdClient.getMsgTemplate(templateId,recipientType).getEntity();
 		}else {
-			msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId).getEntity();
+			msgTemplateDto = generateIdClient.getMsgTemplate(templateId).getEntity();
 		}
 		String deliveryMode = msgTemplateDto.getDeliveryMode();
 
@@ -280,7 +280,7 @@ public class NotificationHelper {
 				List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
 				jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 				jobList.add(jrDto);
-				iaisSystemClient.createJobRemindMsgTracking(jobList);
+				generateIdClient.createJobRemindMsgTracking(jobList);
 			}
 		} else {
 			try {
@@ -322,7 +322,7 @@ public class NotificationHelper {
 						List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
 						jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 						jobList.add(jrDto);
-						iaisSystemClient.createJobRemindMsgTracking(jobList);
+						generateIdClient.createJobRemindMsgTracking(jobList);
 					}
 				} else if(MessageConstants.TEMPLETE_DELIVERY_MODE_EMAIL.equals(deliveryMode)) {
 					int emailFlag = systemParamConfig.getEgpEmailNotifications();
@@ -389,7 +389,7 @@ public class NotificationHelper {
 							List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
 							jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 							jobList.add(jrDto);
-							iaisSystemClient.createJobRemindMsgTracking(jobList);
+							generateIdClient.createJobRemindMsgTracking(jobList);
 							jobRemindFlag = true;
 						}
 					} else {
@@ -431,7 +431,7 @@ public class NotificationHelper {
 							List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
 							jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 							jobList.add(jrDto);
-							iaisSystemClient.createJobRemindMsgTracking(jobList);
+							generateIdClient.createJobRemindMsgTracking(jobList);
 						}
 					}
 				}
@@ -441,7 +441,7 @@ public class NotificationHelper {
 					List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
 					jrDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
 					jobList.add(jrDto);
-					iaisSystemClient.createJobRemindMsgTracking(jobList);
+					generateIdClient.createJobRemindMsgTracking(jobList);
 				}
 			}
 		}

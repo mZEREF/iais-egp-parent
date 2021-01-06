@@ -2,7 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
-import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public class SystemParamHelper {
      * @return
      */
     public static Object getConfigValueByKey(String propertiesKey){
-        IaisSystemClient isc = SpringContextHelper.getContext().getBean(IaisSystemClient.class);
+        GenerateIdClient isc = SpringContextHelper.getContext().getBean(GenerateIdClient.class);
         List<SystemParameterDto> spList;
         if (isc != null && (spList = isc.receiveAllSystemParam().getEntity()) != null){
             for (SystemParameterDto sp : spList){

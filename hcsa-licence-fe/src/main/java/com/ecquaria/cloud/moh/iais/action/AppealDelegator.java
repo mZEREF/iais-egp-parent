@@ -30,7 +30,8 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
-import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+
 import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
@@ -73,7 +74,7 @@ public class AppealDelegator {
     @Autowired
     private AppSubmissionService appSubmissionService;
     @Autowired
-    private IaisSystemClient iaisSystemClient;
+    private GenerateIdClient generateIdClient;
     public void preparetionData(BaseProcessClass bpc) throws Exception {
         log.info("start**************preparetionData************");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -94,7 +95,7 @@ public class AppealDelegator {
                     Map<String,Object> subjectMap = IaisCommonUtils.genNewHashMap();
                     subjectMap.put("ApplicationType",MasterCodeUtil.getCodeDesc(entity.getApplicationType()));
                     subjectMap.put("ApplicationNumber",StringUtil.viewHtml(appNo));
-                    MsgTemplateDto autoEntity = iaisSystemClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APP_RFI_MSG).getEntity();
+                    MsgTemplateDto autoEntity = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APP_RFI_MSG).getEntity();
                     String msgSubject = MsgUtil.getTemplateMessageByContent(autoEntity.getTemplateName(),subjectMap);
                     InterMessageDto interMessageBySubjectLike = appSubmissionService.getInterMessageBySubjectLike(msgSubject.trim(), MessageConstants.MESSAGE_STATUS_RESPONSE);
                     bpc.request.getSession().setAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID,interMessageBySubjectLike.getId());

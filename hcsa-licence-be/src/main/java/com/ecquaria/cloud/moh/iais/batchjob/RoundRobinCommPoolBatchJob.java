@@ -54,7 +54,6 @@ import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
@@ -122,8 +121,7 @@ public class RoundRobinCommPoolBatchJob {
     @Autowired
     private AppointmentClient appointmentClient;
 
-    @Autowired
-    private AppPremisesCorrClient appPremisesCorrClient;
+
 
     @Autowired
     private AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
@@ -708,7 +706,7 @@ public class RoundRobinCommPoolBatchJob {
     }
 
     private List<AppPremisesCorrelationDto> getAppPremisesCorrelationsByPremises(String appPremCorrId) {
-        return appPremisesCorrClient.getAppPremisesCorrelationsByPremises(appPremCorrId).getEntity();
+        return applicationClient.getAppPremisesCorrelationsByPremises(appPremCorrId).getEntity();
     }
 
     private List<AppPremisesInspecApptDto> setAudiTrailDtoInspAppt(List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList, AuditTrailDto currentAuditTrailDto) {

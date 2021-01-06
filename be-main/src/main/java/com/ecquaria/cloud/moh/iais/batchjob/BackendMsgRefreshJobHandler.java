@@ -9,7 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,14 +28,14 @@ import java.util.Map;
 @Slf4j
 public class BackendMsgRefreshJobHandler extends IJobHandler {
     @Autowired
-    private IaisSystemClient systemBeLicClient;
+    private GenerateIdClient generateIdClient;
 
     @Override
     public ReturnT<String> execute(String s) {
         try{
             logInfo("<====== Start to refresh error msg ======>");
             AuditTrailHelper.setupBatchJobAuditTrail(this);
-            List<MessageDto> list = systemBeLicClient.getMessagesToRefresh().getEntity();
+            List<MessageDto> list = generateIdClient.getMessagesToRefresh().getEntity();
             Map<String, String> map = IaisCommonUtils.genNewHashMap();
             if (!IaisCommonUtils.isEmpty(list)) {
                 for (MessageDto mc : list) {
@@ -43,7 +43,7 @@ public class BackendMsgRefreshJobHandler extends IJobHandler {
                     mc.setNeedFlush(false);
                 }
                 MessageUtil.loadMessages(map);
-                systemBeLicClient.saveMessages(list);
+                generateIdClient.saveMessages(list);
             }
             logInfo("<====== End to refresh error msg ======>");
         }catch (Exception e){

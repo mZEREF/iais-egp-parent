@@ -126,14 +126,12 @@ public class NewApplicationDelegator {
     @Autowired
     private RequestForChangeService requestForChangeService;
 
-    @Autowired
-    private CessationFeService cessationFeService;
+
     @Autowired
     private LicenceClient licenceClient;
+
     @Autowired
-    private OrganizationLienceseeClient organizationLienceseeClient;
-    @Autowired
-    private IaisSystemClient iaisSystemClient;
+    private GenerateIdClient generateIdClient;
     @Autowired
     private CessationClient cessationClient;
     @Autowired
@@ -143,8 +141,6 @@ public class NewApplicationDelegator {
     private ApplicationFeClient applicationFeClient;
     @Autowired
     private EventBusHelper eventBusHelper;
-    @Autowired
-    private GenerateIdClient generateIdClient;
     @Autowired
     private FeMessageClient feMessageClient;
     @Autowired
@@ -1332,7 +1328,7 @@ public class NewApplicationDelegator {
             ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
             if(applicationDto != null) {
                 if (ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(applicationDto.getStatus())) {
-                    MsgTemplateDto autoEntity = iaisSystemClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APP_RFI_MSG).getEntity();
+                    MsgTemplateDto autoEntity = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APP_RFI_MSG).getEntity();
                     Map<String,Object> subjectMap = IaisCommonUtils.genNewHashMap();
                     subjectMap.put("ApplicationType",MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
                     subjectMap.put("ApplicationNumber",StringUtil.viewHtml(appNo));

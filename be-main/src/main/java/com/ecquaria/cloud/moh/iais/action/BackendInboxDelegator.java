@@ -125,8 +125,6 @@ public class BackendInboxDelegator {
     @Autowired
     private SystemParamConfig systemParamConfig;
     @Autowired
-    private IaisSystemClient iaisSystemClient;
-    @Autowired
     LicenceClient licenceClient;
 
     static private String APPSTATUSCATEID = "BEE661EE-220C-EA11-BE7D-000C29F371DC";
@@ -556,7 +554,7 @@ public class BackendInboxDelegator {
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
         emailParam.setRefId(applicationNo);
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-        MsgTemplateDto rfiEmailTemplateDto = iaisSystemClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED).getEntity();
+        MsgTemplateDto rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED).getEntity();
         map.put("ApplicationType", applicationTypeShow);
         map.put("ApplicationNumber", applicationNo);
         String subject= null;
@@ -571,7 +569,7 @@ public class BackendInboxDelegator {
         notificationHelper.sendNotification(emailParam);
         log.info(StringUtil.changeForLog("send RFC Reject email end"));
         //msg
-        rfiEmailTemplateDto = iaisSystemClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG).getEntity();
+        rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG).getEntity();
         subject = null;
         try {
             subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
@@ -587,7 +585,7 @@ public class BackendInboxDelegator {
         notificationHelper.sendNotification(emailParam);
         log.info(StringUtil.changeForLog("send RFC Reject msg end"));
         //sms
-        rfiEmailTemplateDto = iaisSystemClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS).getEntity();
+        rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS).getEntity();
         subject = null;
         try {
             subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
