@@ -207,6 +207,11 @@ public class MasterCodeDelegator {
             if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
                 validationResult.setHasErrors(true);
             }
+            if (AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
+                if (masterCodeDto.getEffectiveFrom().before(new Date())){
+                    validationResult.setHasErrors(true);
+                }
+            }
         }
         if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
             validationResult.setHasErrors(true);
@@ -218,6 +223,13 @@ public class MasterCodeDelegator {
                     validationResult.setHasErrors(true);
                     String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
                     errorMap.put("effectiveTo", errMsg);
+                }
+                if (AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
+                    if (masterCodeDto.getEffectiveFrom().before(new Date())){
+                        validationResult.setHasErrors(true);
+                        String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
+                        errorMap.put("effectiveTo", errMsg);
+                    }
                 }
             }
             if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
