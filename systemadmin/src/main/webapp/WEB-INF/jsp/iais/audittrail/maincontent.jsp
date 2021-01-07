@@ -134,10 +134,10 @@
                                                  value="Active directory ID"></iais:sortableHeader>
 
                             <iais:sortableHeader needSort="true" field="entity_id"
-                                                 value="Corp-Pass Id"></iais:sortableHeader>
+                                                 value="CorpPass Id"></iais:sortableHeader>
 
                             <iais:sortableHeader needSort="true" field="nric_number"
-                                                 value="Corp-Pass NRIC"></iais:sortableHeader>
+                                                 value="CorpPass NRIC"></iais:sortableHeader>
 
                             <iais:sortableHeader needSort="true" field="uen_id"
                                                  value="Uen"></iais:sortableHeader>
