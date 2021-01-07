@@ -658,7 +658,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                             List<AppGrpPremisesDto> entity = applicationFeClient.getAppGrpPremisesDtoByHciName(hciName, licenseeId).getEntity();
                             if (!entity.isEmpty()) {
-                                errorMap.put("hciNameUsed", "NEW_ACK011");
+                                errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
                             }
                         }
                         String offTelNo = appGrpPremisesDtoList.get(i).getOffTelNo();
