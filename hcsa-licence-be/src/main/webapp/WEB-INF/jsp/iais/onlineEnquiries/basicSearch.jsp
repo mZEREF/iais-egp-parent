@@ -209,7 +209,7 @@
                                             <td><c:out value="${pool.hciName}"/></td>
                                             <td>
                                                 <c:if test="${pool.licenceNo==null}">
-                                                    <c:out value="${MiscUtil.getAddress(pool.blkNo,pool.streetName,pool.buildingName,pool.floorNo,pool.unitNo,'')}"/>
+                                                    <c:out value="${pool.address[0]}"/>
                                                 </c:if>
                                                 <c:if test="${pool.licenceNo!=null}">
                                                     <c:choose>
