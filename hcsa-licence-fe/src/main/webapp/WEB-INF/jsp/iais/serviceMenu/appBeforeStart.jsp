@@ -77,7 +77,7 @@
           </div>
         </div>
         <h3>Before You Begin</h3>
-        <ul class="short-content">
+        <ul class="">
           <li>
             <p>This form will take approximately 30 minutes to complete. You may save your progress at any time and resume your application later. </p>
           </li>
