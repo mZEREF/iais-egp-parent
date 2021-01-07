@@ -1262,9 +1262,11 @@ public class WithOutRenewalDelegator {
 
         }
         boolean b=false;
-        for (AppSubmissionDto appSubmDto : rfcAppSubmissionDtos) {
-            if(appSubmDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
-                b=true;
+        if(rfcAppSubmissionDtos!=null){
+            for (AppSubmissionDto appSubmDto : rfcAppSubmissionDtos) {
+                if(appSubmDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                    b=true;
+                }
             }
         }
         if(b){

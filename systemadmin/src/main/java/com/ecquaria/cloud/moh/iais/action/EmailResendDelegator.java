@@ -189,9 +189,10 @@ public class EmailResendDelegator {
         Date schedule = new Date();
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
 
+        String err006 =MasterCodeUtil.getCodeDesc("GENERAL_ERR0006");
         if(HH == null){
             blastManagementDto.setHH(null);
-            errMap.put("HH", MasterCodeUtil.getCodeDesc("GENERAL_ERR0006"));
+            errMap.put("HH", err006);
         }else if(!(StringUtils.isNumeric(HH) &&  Integer.parseInt(HH) < 24)){
             blastManagementDto.setHH(HH);
             errMap.put("HH","Field format is wrong");
@@ -199,7 +200,7 @@ public class EmailResendDelegator {
         if(MM == null){
             blastManagementDto.setMM(null);
 
-            errMap.put("HH",MasterCodeUtil.getCodeDesc("GENERAL_ERR0006"));
+            errMap.put("HH",err006);
         }else if(!(StringUtils.isNumeric(MM) &&  Integer.parseInt(MM) < 60)){
             blastManagementDto.setMM(MM);
             errMap.put("HH","Field format is wrong");

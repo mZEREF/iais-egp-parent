@@ -1113,21 +1113,21 @@ public class HalpAssessmentGuideDelegator {
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByOrgId(loginContext.getOrgId());
             List<LicenseeKeyApptPersonDto> keyApptPersonDtos =  requestForChangeService.getLicenseeKeyApptPersonDtoListByLicenseeId(licenseeDto.getId());
 
-            StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/main-web/eservice/INTERNET/MohLicenseeCompanyDetail");
+            //            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            String url= "https://" + bpc.request.getServerName() +
+                    "/main-web/eservice/INTERNET/MohLicenseeCompanyDetail";
 //            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             StringBuilder licenseeurl = new StringBuilder();
             if("LICT001".equals(licenseeDto.getLicenseeType())){
-                licenseeurl.append(url.toString()).append("?licenseView=Licensee") ;
+                licenseeurl.append(url).append("?licenseView=Licensee") ;
             }else{
-                licenseeurl.append(url.toString()).append("?licenseView=Solo") ;
+                licenseeurl.append(url).append("?licenseView=Solo") ;
             }
 
             StringBuilder authorisedUrl=new StringBuilder();
-            authorisedUrl.append(url.toString()).append("?licenseView=Authorised");
+            authorisedUrl.append(url).append("?licenseView=Authorised");
             StringBuilder medAlertUrl=new StringBuilder();
-            medAlertUrl.append(url.toString()).append("?licenseView=MedAlert") ;
+            medAlertUrl.append(url).append("?licenseView=MedAlert") ;
             List<FeUserDto> feUserDtos = requestForChangeService.getAccountByOrgId(loginContext.getOrgId());
 
             ParamUtil.setSessionAttr(bpc.request,"licenseeurl",licenseeurl);

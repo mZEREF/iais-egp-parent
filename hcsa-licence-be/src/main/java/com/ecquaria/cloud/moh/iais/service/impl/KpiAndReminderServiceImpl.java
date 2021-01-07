@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -93,14 +92,14 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
         request.setAttribute("message","You have successfully created required KPI");
         request.setAttribute("crud_action_type","submit");
     }
+    static String[] code={ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_TYPE_APPEAL,ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL,ApplicationConsts.APPLICATION_TYPE_CESSATION};
 
     @Override
     public void  getKpiAndReminder(HttpServletRequest request) {
         List<HcsaServiceDto> entity = hcsaConfigClient.getActiveServices().getEntity();
-        Collections.sort(entity,(s1,s2)->(s1.getSvcName().compareTo(s2.getSvcName())));
-        String[] code={ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_TYPE_APPEAL,ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL,ApplicationConsts.APPLICATION_TYPE_CESSATION};
+        entity.sort((s1, s2) -> (s1.getSvcName().compareTo(s2.getSvcName())));
         List<SelectOption> selectOptionList = MasterCodeUtil.retrieveOptionsByCodes(code);
-        Collections.sort(selectOptionList,(s1,s2)->(s1.getText().compareTo(s2.getText())));
+        selectOptionList.sort((s1, s2) -> (s1.getText().compareTo(s2.getText())));
         request.getSession().setAttribute("selectOptionList",selectOptionList);
         request.getSession().setAttribute("hcsaServiceDtos",entity);
 

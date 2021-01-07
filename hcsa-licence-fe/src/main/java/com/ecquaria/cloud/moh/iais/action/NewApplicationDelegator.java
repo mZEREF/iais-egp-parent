@@ -1613,10 +1613,12 @@ public class NewApplicationDelegator {
 //        List<AppSubmissionDto> appSubmissionDtoByGroupNo = appSubmissionService.getAppSubmissionDtoByGroupNo(appGrpNo);
         StringBuilder stringBuilder = new StringBuilder(10);
         stringBuilder.append(appSubmissionDto);
-        log.info(StringUtil.changeForLog("appSubmissionDto:" + stringBuilder.toString()));
+        String str=stringBuilder.toString();
+        log.info(StringUtil.changeForLog("appSubmissionDto:" + str));
         stringBuilder.setLength(0);
         stringBuilder.append(oldAppSubmissionDto);
-        log.info(StringUtil.changeForLog("oldAppSubmissionDto:" + stringBuilder.toString()));
+        str=stringBuilder.toString();
+        log.info(StringUtil.changeForLog("oldAppSubmissionDto:" + str));
         Map<String, String> doComChangeMap = doComChange(appSubmissionDto, oldAppSubmissionDto);
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         if (!doComChangeMap.isEmpty()) {

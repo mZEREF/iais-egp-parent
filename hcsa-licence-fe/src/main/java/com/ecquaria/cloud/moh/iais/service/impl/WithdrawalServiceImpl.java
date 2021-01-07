@@ -9,7 +9,16 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationTruckDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
@@ -28,7 +37,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
@@ -39,7 +54,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
-import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +66,9 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -162,9 +178,8 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             recallApplicationDto.setAppGrpId(oldApplication.getAppGrpId());
 
             recallApplicationDto.setNewAppId(h.getNewApplicationId());
-            if (!StringUtil.isEmpty(oldApplicationGroupDtox.getPayMethod())
-                    && !ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(oldApplication.getApplicationType())
-                    && !charity){
+            if ( !charity&&!StringUtil.isEmpty(oldApplicationGroupDtox.getPayMethod())
+                    && !ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(oldApplication.getApplicationType())){
                 recallApplicationDto.setNeedReturnFee(true);
             }else{
                 recallApplicationDto.setNeedReturnFee(false);

@@ -53,7 +53,6 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -243,7 +242,7 @@ public class ConfigServiceImpl implements ConfigService {
         }
         request.setAttribute("crud_action_type", "save");
     }
-
+    static String[] code ={ApplicationConsts.SERVICE_CONFIG_TYPE_BASE,ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED,ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED};
 
     @Override
     public void addNewService(HttpServletRequest request) {
@@ -259,12 +258,11 @@ public class ConfigServiceImpl implements ConfigService {
             selectOptionList.add(selectOption);
         }
         List<HcsaServiceCategoryDto> categoryDtos = getHcsaServiceCategoryDto();
-        Collections.sort(categoryDtos,(s1,s2)->(s1.getName().compareTo(s2.getName())));
+        categoryDtos.sort((s1, s2) -> (s1.getName().compareTo(s2.getName())));
         request.getSession().setAttribute("categoryDtos",categoryDtos);
-        Collections.sort(selectOptionList,(s1,s2)->(s1.getText().compareTo(s2.getText())));
-        String code[]={ApplicationConsts.SERVICE_CONFIG_TYPE_BASE,ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED,ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED};
+        selectOptionList.sort((s1, s2) -> (s1.getText().compareTo(s2.getText())));
         List<SelectOption> selectOptionList1 = MasterCodeUtil.retrieveOptionsByCodes(code);
-        Collections.sort(selectOptionList1,(s1,s2)->(s1.getText().compareTo(s2.getText())));
+        selectOptionList1.sort((s1, s2) -> (s1.getText().compareTo(s2.getText())));
         request.getSession().setAttribute("codeSelectOptionList",selectOptionList1);
         request.getSession().setAttribute("selsectBaseHcsaServiceDto",selectOptionList);
     }
@@ -1019,15 +1017,15 @@ public class ConfigServiceImpl implements ConfigService {
         List<HcsaServiceCategoryDto> hcsaServiceCategoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
         return hcsaServiceCategoryDtos;
     }
+    static String[] codeSvc ={ApplicationConsts.SERVICE_CONFIG_TYPE_BASE,ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED,ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED};
 
 
     private void view(HttpServletRequest request, String crud_action_value) {
         HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(crud_action_value).getEntity();
         List<HcsaServiceCategoryDto> categoryDtos = getHcsaServiceCategoryDto();
-        Collections.sort(categoryDtos,(s1,s2)->(s1.getName().compareTo(s2.getName())));
+        categoryDtos.sort((s1, s2) -> (s1.getName().compareTo(s2.getName())));
         request.getSession().setAttribute("categoryDtos",categoryDtos);
-        String code[]={ApplicationConsts.SERVICE_CONFIG_TYPE_BASE,ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED,ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED};
-        List<SelectOption> selectOptionList = MasterCodeUtil.retrieveOptionsByCodes(code);
+        List<SelectOption> selectOptionList = MasterCodeUtil.retrieveOptionsByCodes(codeSvc);
         request.getSession().setAttribute("codeSelectOptionList",selectOptionList);
         Boolean flag = hcsaConfigClient.serviceIdIsUsed(crud_action_value).getEntity();
         List<LicenceDto> entity = hcsaLicenceClient.getLicenceDtosBySvcName(hcsaServiceDto.getSvcName()).getEntity();

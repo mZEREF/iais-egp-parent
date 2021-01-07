@@ -1129,19 +1129,19 @@ public class ServiceMenuDelegator {
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByOrgId(loginContext.getOrgId());
             List<LicenseeKeyApptPersonDto> keyApptPersonDtos =  requestForChangeService.getLicenseeKeyApptPersonDtoListByLicenseeId(licenseeDto.getId());
 
-            StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/main-web/eservice/INTERNET/MohLicenseeCompanyDetail");
+            //            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            String urlTo= "https://" + bpc.request.getServerName() +
+                    "/main-web/eservice/INTERNET/MohLicenseeCompanyDetail";
 //            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             String licenseeurl = "";
             if("LICT001".equals(licenseeDto.getLicenseeType())){
-                licenseeurl = url.toString() + "?licenseView=Licensee";
+                licenseeurl = urlTo + "?licenseView=Licensee";
             }else{
-                licenseeurl = url.toString() + "?licenseView=Solo";
+                licenseeurl = urlTo + "?licenseView=Solo";
             }
 
-            String authorisedUrl = url.toString() + "?licenseView=Authorised";
-            String medAlertUrl= url.toString() + "?licenseView=MedAlert";
+            String authorisedUrl = urlTo + "?licenseView=Authorised";
+            String medAlertUrl= urlTo + "?licenseView=MedAlert";
             List<FeUserDto> feUserDtos = requestForChangeService.getAccountByOrgId(loginContext.getOrgId());
 
             ParamUtil.setSessionAttr(bpc.request,"licenseeurl",licenseeurl);

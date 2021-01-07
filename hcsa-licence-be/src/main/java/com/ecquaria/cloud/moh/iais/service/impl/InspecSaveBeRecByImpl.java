@@ -306,8 +306,11 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         for (String s : appPremCorrIds) {
             strAppCorrIds.append(s);
         }
-        log.info(StringUtil.changeForLog("appIds:" + strAppIds.toString()));
-        JobLogger.log(StringUtil.changeForLog("appIds:" + strAppIds.toString()));
+        String strAppIdsTo=strAppIds.toString();
+        String strAppCorrIdsTo=strAppCorrIds.toString();
+
+        log.info(StringUtil.changeForLog("appIds:" + strAppIdsTo));
+        JobLogger.log(StringUtil.changeForLog("appIds:" + strAppIdsTo));
         Map<String, String> appNoCorrMap = IaisCommonUtils.genNewHashMap();
         if(!IaisCommonUtils.isEmpty(appIds)){
             Set<String> appIdSet = new HashSet<>(appIds);
@@ -317,8 +320,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 appPremCorrIds.add(appPremisesCorrelationDto.getId());
                 appNoCorrMap.put(applicationDto.getApplicationNo(), appPremisesCorrelationDto.getId());
             }
-            log.info(StringUtil.changeForLog("appPremCorrIds:" + strAppCorrIds.toString()));
-            JobLogger.log(StringUtil.changeForLog("appPremCorrIds:" + strAppCorrIds.toString()));
+            log.info(StringUtil.changeForLog("appPremCorrIds:" + strAppCorrIdsTo));
+            JobLogger.log(StringUtil.changeForLog("appPremCorrIds:" + strAppCorrIdsTo));
         }
         if(!IaisCommonUtils.isEmpty(appPremCorrIds)){
             EventInspRecItemNcDto eventInspRecItemNcDto = new EventInspRecItemNcDto();

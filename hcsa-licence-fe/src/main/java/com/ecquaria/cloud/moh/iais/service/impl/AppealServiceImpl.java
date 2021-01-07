@@ -861,7 +861,8 @@ public class AppealServiceImpl implements AppealService {
                             if (s.contains(stringBuilder1.toString())) {
                                 map.put("idNo", "NEW_ERR0012");
                             } else {
-                                stringBuilder.append(stringBuilder1.toString());
+                                String str=stringBuilder1.toString();
+                                stringBuilder.append(str);
                             }
                         }
 
