@@ -1,7 +1,6 @@
 package com.ecquaria.egp.core.payment.api.services;
 
 
-import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
 import com.ecquaria.egp.core.payment.api.config.GatewayConstants;
 import com.ecquaria.egp.core.payment.api.config.GatewayStripeConfig;
 import com.ecquaria.egp.core.payment.api.util.GatewayStripeCore;
@@ -15,11 +14,9 @@ import java.util.Map;
 
 public class GatewayStripeAPI {
 
-	public static String create_partner_trade_by_buyer(
-			HttpServletRequest request, Map<String, String> sParaTemp) throws Exception {
-
+	public static String create_partner_trade_by_buyer(HttpServletRequest request, Map<String, String> sParaTemp) throws Exception {
 		sParaTemp.put(GatewayConstants.REGISTRY_NAME_KEY, GatewayStripeConfig.payment_registry_name);
-		sParaTemp.put(GatewayConstants.RETURN_URL_KEY, GatewayConfig.return_url);
+		sParaTemp.put(GatewayConstants.RETURN_URL_KEY, GatewayStripeConfig.return_url);
 		sParaTemp.put(GatewayConstants.NOTIFY_URL_KEY, "https://" + request.getServerName()+GatewayStripeConfig.notify_url);
 		sParaTemp.put(GatewayConstants.INPUT_CHARSET, GatewayStripeConfig.input_charset);
 

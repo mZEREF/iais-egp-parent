@@ -1,7 +1,6 @@
 package com.ecquaria.egp.core.payment.api.services;
 
 
-import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
 import com.ecquaria.egp.core.payment.api.config.GatewayConstants;
 import com.ecquaria.egp.core.payment.api.config.GatewayNetsConfig;
 import com.ecquaria.egp.core.payment.api.util.GatewayNetsCore;
@@ -17,9 +16,8 @@ public class GatewayNetsAPI {
 
 	public static String create_partner_trade_by_buyer(
 			HttpServletRequest request, Map<String, String> sParaTemp) throws Exception {
-
 		sParaTemp.put(GatewayConstants.REGISTRY_NAME_KEY, GatewayNetsConfig.payment_registry_name);
-		sParaTemp.put(GatewayConstants.RETURN_URL_KEY, GatewayConfig.return_url);
+		sParaTemp.put(GatewayConstants.RETURN_URL_KEY, GatewayNetsConfig.return_url);
 		sParaTemp.put(GatewayConstants.NOTIFY_URL_KEY, "https://" + request.getServerName()+GatewayNetsConfig.notify_url);
 		sParaTemp.put(GatewayConstants.INPUT_CHARSET, GatewayNetsConfig.input_charset);
 
