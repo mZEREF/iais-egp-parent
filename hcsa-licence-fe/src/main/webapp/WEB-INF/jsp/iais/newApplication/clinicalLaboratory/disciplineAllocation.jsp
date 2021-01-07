@@ -33,7 +33,6 @@
                         <%@ include file="step.jsp" %>
                         <div class="application-service-steps">
                           <div class="discipline-allocation">
-                            <span class="error-msg" name="iaisErrorMsg" id="error_CGO"></span>
                             <h2>${currStepName}</h2>
                             <p>Please ensure that a clinical governance officer is assigned to each laboratory discipline.</p>
                             <div class="table-gp">
@@ -114,7 +113,7 @@
 
 
                               </table>
-
+                              <span class="error-msg" name="iaisErrorMsg" id="error_CGO"></span>
                             </div>
                           </div>
                         </div>
