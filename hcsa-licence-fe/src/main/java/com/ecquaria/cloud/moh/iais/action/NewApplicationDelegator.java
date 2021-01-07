@@ -1446,24 +1446,27 @@ public class NewApplicationDelegator {
                                 || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())
                                 || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())
                                 || ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationDto.getApplicationType())) {
-                            AppGrpPremisesEntityDto rfiPremises = appSubmissionService.getPremisesByAppNo(appNo);
-                            String premHci = IaisCommonUtils.genPremisesKey(rfiPremises.getPostalCode(), rfiPremises.getBlkNo(), rfiPremises.getFloorNo(), rfiPremises.getUnitNo());
-                            if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(rfiPremises.getPremisesType())) {
-                                premHci = rfiPremises.getHciName() + premHci;
-                            } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(rfiPremises.getPremisesType())) {
-                                premHci = rfiPremises.getVehicleNo() + premHci;
-                            } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(rfiPremises.getPremisesType())) {
-
-                            }
+                            log.info(StringUtil.changeForLog("InboxToView AppNo -->" + appNo));
                             List<AppGrpPremisesDto> newPremisesDtos = IaisCommonUtils.genNewArrayList();
-                            for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
-                                if (premHci.equals(NewApplicationHelper.getPremHci(appGrpPremisesDto))) {
-                                    NewApplicationHelper.setWrkTime(appGrpPremisesDto);
-                                    List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
-                                    //set ph name
-                                    NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos);
-                                    newPremisesDtos.add(appGrpPremisesDto);
-                                    break;
+                            AppGrpPremisesEntityDto rfiPremises = appSubmissionService.getPremisesByAppNo(appNo);
+                            if (rfiPremises != null){
+                                String premHci = IaisCommonUtils.genPremisesKey(rfiPremises.getPostalCode(), rfiPremises.getBlkNo(), rfiPremises.getFloorNo(), rfiPremises.getUnitNo());
+                                if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(rfiPremises.getPremisesType())) {
+                                    premHci = rfiPremises.getHciName() + premHci;
+                                } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(rfiPremises.getPremisesType())) {
+                                    premHci = rfiPremises.getVehicleNo() + premHci;
+                                } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(rfiPremises.getPremisesType())) {
+
+                                }
+                                for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
+                                    if (premHci.equals(NewApplicationHelper.getPremHci(appGrpPremisesDto))) {
+                                        NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                                        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+                                        //set ph name
+                                        NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos);
+                                        newPremisesDtos.add(appGrpPremisesDto);
+                                        break;
+                                    }
                                 }
                             }
                             appSubmissionDto.setAppGrpPremisesDtoList(newPremisesDtos);
