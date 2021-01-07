@@ -163,12 +163,14 @@ public class InsRepServiceImpl implements InsRepService {
         //get application type (pre/post)
         Integer isPre = applicationGroupDto.getIsPreInspection();
         String appType = MasterCodeUtil.getCodeDesc(appTypeCode);
-        List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licId).getEntity();
-        if (!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
-            String applicationId = licAppCorrelationDtos.get(0).getApplicationId();
-            ApplicationDto applicationDtoOld = applicationClient.getApplicationById(applicationId).getEntity();
-            String applicationTypeOld = applicationDtoOld.getApplicationType();
-            appType = MasterCodeUtil.getCodeDesc(applicationTypeOld);
+        if(!StringUtil.isEmpty(licId)){
+            List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licId).getEntity();
+            if (!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
+                String applicationId = licAppCorrelationDtos.get(0).getApplicationId();
+                ApplicationDto applicationDtoOld = applicationClient.getApplicationById(applicationId).getEntity();
+                String applicationTypeOld = applicationDtoOld.getApplicationType();
+                appType = MasterCodeUtil.getCodeDesc(applicationTypeOld);
+            }
         }
         String reasonForVisit;
         if (isPre == 1) {
