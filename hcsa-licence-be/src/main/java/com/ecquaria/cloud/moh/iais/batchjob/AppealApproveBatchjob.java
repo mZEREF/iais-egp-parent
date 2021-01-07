@@ -572,7 +572,7 @@ public class AppealApproveBatchjob {
                     appType ="New Licence Application";
                 }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
                     //renew
-                    appType ="Renew";
+                    appType ="Renewal";
                 } else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
                     //RFC
                     appType ="Request For Change";
