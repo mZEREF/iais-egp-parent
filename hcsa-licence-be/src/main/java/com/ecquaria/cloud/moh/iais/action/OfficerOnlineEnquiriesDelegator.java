@@ -166,6 +166,8 @@ public class OfficerOnlineEnquiriesDelegator {
         ParamUtil.setSessionAttr(request,SEARCH_NO,null);
         appLicenceParameter.setPageNo(1);
         licenseeParameter.setPageNo(1);
+        appLicenceParameter.setPageSize(SysParamUtil.getDefaultPageSize());
+        licenseeParameter.setPageSize(SysParamUtil.getDefaultPageSize());
         // 		Start->OnStepProcess
     }
 
