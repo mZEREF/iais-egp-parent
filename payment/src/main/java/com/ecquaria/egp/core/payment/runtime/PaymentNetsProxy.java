@@ -89,8 +89,8 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String amoOo= String.valueOf(Integer.parseInt(amo));
 		String payMethod = fields.get("vpc_OrderInfo");
 		String reqNo = fields.get("vpc_MerchTxnRef");
-		if(reqNo.length()>=19){
-			reqNo=reqNo.substring(0,18)+reqNo.substring(reqNo.length()-3);
+		if(reqNo.length()>=20){
+			reqNo=reqNo.substring(0,16)+reqNo.substring(reqNo.length()-4);
 		}
 		String returnUrl=this.getPaymentData().getContinueUrl();
 		String umId= GatewayConfig.eNetsUmId;
@@ -191,8 +191,8 @@ public class PaymentNetsProxy extends PaymentProxy {
 
 		String transNo = this.getPaymentData().getPaymentTrans().getTransNo();
 		String refNo = this.getPaymentData().getSvcRefNo();
-		if(refNo.length()>=19){
-			refNo=refNo.substring(0,18)+refNo.substring(refNo.length()-3);
+		if(refNo.length()>=20){
+			refNo=refNo.substring(0,16)+refNo.substring(refNo.length()-4);
 		}
 		double amount = this.getPaymentData().getAmount();
 		PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(refNo).getEntity();
