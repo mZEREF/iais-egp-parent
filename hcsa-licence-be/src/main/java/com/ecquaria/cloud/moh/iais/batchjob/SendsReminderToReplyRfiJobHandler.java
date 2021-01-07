@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -32,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -81,7 +83,8 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
     String reminderMax2Day;
     @Value("${iais.system.rfc.sms.third.reminder.day}")
     String reminderMax3Day;
-
+    @Autowired
+    OrganizationClient organizationClient;
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         try {
@@ -123,7 +126,11 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
         cal.add(Calendar.DAY_OF_MONTH, systemParamConfig.getRfiDueDate());
         String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto.getId()).getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
+        List<OrgUserDto> orgUserDtoList = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(licenseeDto.getOrganizationId()).getEntity();
         String applicantName=licenseeDto.getName();
+        if(orgUserDtoList!=null&&orgUserDtoList.get(0)!=null){
+            applicantName=orgUserDtoList.get(0).getDisplayName();
+        }
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         StringBuilder stringBuilder=new StringBuilder();
         int i=0;

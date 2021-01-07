@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.NewRfiPageListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -43,6 +44,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -93,7 +95,8 @@ public class RequestForInformationDelegator {
     EmailClient emailClient;
     @Autowired
     private NotificationHelper notificationHelper;
-
+    @Autowired
+    OrganizationClient organizationClient;
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
@@ -331,7 +334,11 @@ public class RequestForInformationDelegator {
 
         String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto1.getId()).getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
+        List<OrgUserDto> orgUserDtoList = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(licenseeDto.getOrganizationId()).getEntity();
         String applicantName=licenseeDto.getName();
+        if(orgUserDtoList!=null&&orgUserDtoList.get(0)!=null){
+            applicantName=orgUserDtoList.get(0).getDisplayName();
+        }
         StringBuilder stringBuilder=new StringBuilder();
         int i=0;
         if(!StringUtil.isEmpty(reqTypeInfo)&&"information".equals(reqTypeInfo)){
@@ -606,7 +613,11 @@ public class RequestForInformationDelegator {
 
         InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI);
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licPremisesReqForInfoDto.getLicenseeId());
+        List<OrgUserDto> orgUserDtoList = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(licenseeDto.getOrganizationId()).getEntity();
         String applicantName=licenseeDto.getName();
+        if(orgUserDtoList!=null&&orgUserDtoList.get(0)!=null){
+            applicantName=orgUserDtoList.get(0).getDisplayName();
+        }
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         StringBuilder stringBuilder=new StringBuilder();
         int i=0;
