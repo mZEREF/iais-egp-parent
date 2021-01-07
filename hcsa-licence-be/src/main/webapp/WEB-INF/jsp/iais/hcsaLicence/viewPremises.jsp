@@ -500,7 +500,7 @@
 
                                     <div class="row">
                                       <div class="col-md-6">
-                                        Public Holidays Operating Hours (Start)
+                                        Public Holiday Operating Hours (Start)
                                       </div>
                                       <div class="col-md-6">
                                           <div class="col-md-6">
@@ -516,7 +516,7 @@
 
                                     <div class="row">
                                       <div class="col-md-6">
-                                        Public Holidays Operating Hours (End)
+                                        Public Holiday Operating Hours (End)
                                       </div>
                                       <div class="col-md-6">
                                           <div class="col-md-6">

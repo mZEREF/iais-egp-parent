@@ -209,7 +209,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holidays Operating Hours (Start)</span></p>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday Operating Hours (Start)</span></p>
                                     </div>
                                     <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span>
@@ -236,7 +236,7 @@
 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holidays Operating Hours (End)</span></p>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday Operating Hours (End)</span></p>
                                     </div>
                                     <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span>
@@ -406,7 +406,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holidays Operating Hours (Start)</span></p>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday Operating Hours (Start)</span></p>
                                     </div>
                                     <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span>
@@ -432,7 +432,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holidays Operating Hours (End)</span></p>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday Operating Hours (End)</span></p>
                                     </div>
                                     <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span>
@@ -585,7 +585,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holidays Operating Hours (Start)</span></p>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday Operating Hours (Start)</span></p>
                                     </div>
                                     <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span>
@@ -611,7 +611,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holidays Operating Hours (End)</span></p>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday Operating Hours (End)</span></p>
                                     </div>
                                     <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span>

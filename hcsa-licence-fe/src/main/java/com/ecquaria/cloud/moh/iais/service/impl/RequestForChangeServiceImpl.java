@@ -527,10 +527,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 String phDate = appPremPhOpenPeriodDto.getPhDate();
                                 if (!StringUtil.isEmpty(phDate)) {
                                     if (StringUtil.isEmpty(convStartFromHH) || StringUtil.isEmpty(convStartFromMM)) {
-                                        errorMap.put("onsiteStartToMM" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holidays Operating Hours (Start)", "field"));
+                                        errorMap.put("onsiteStartToMM" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (Start)", "field"));
                                     }
                                     if (StringUtil.isEmpty(onsiteEndToHH) || StringUtil.isEmpty(onsiteEndToMM)) {
-                                        errorMap.put("onsiteEndToMM" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holidays Operating Hours (End)", "field"));
+                                        errorMap.put("onsiteEndToMM" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (End)", "field"));
                                     }
                                 } else if (StringUtil.isEmpty(phDate)) {
                                     errorMap.put("onsitephDate" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Select Public Holiday", "field"));
@@ -581,7 +581,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
                                 } else {
                                     if (StringUtil.isEmpty(convStartFromHH) && StringUtil.isEmpty(convStartFromMM) || StringUtil.isEmpty(convStartFromMM) || StringUtil.isEmpty(convStartFromHH)) {
-                                        errorMap.put("onsiteStartToMM" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holidays Operating Hours (Start) ", "field"));
+                                        errorMap.put("onsiteStartToMM" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (Start) ", "field"));
                                     } else {
                                         try {
                                             int i1 = Integer.parseInt(convStartFromHH);
@@ -598,7 +598,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                         }
                                     }
                                     if (StringUtil.isEmpty(onsiteEndToHH) && StringUtil.isEmpty(onsiteEndToMM) || StringUtil.isEmpty(onsiteEndToHH) || StringUtil.isEmpty(onsiteEndToMM)) {
-                                        errorMap.put("onsiteEndToMM" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holidays Operating Hours (End)", "field"));
+                                        errorMap.put("onsiteEndToMM" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (End)", "field"));
                                     } else {
                                         try {
                                             int i3 = Integer.parseInt(onsiteEndToHH);
@@ -851,10 +851,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 String phDate = appPremPhOpenPeriodDto.getPhDate();
                                 if (!StringUtil.isEmpty(phDate)) {
                                     if (StringUtil.isEmpty(convEndToHH) || StringUtil.isEmpty(convEndToMM)) {
-                                        errorMap.put("convEndToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holidays Operating Hours (End) ", "field"));
+                                        errorMap.put("convEndToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (End) ", "field"));
                                     }
                                     if (StringUtil.isEmpty(convStartFromHH) || StringUtil.isEmpty(convStartFromMM)) {
-                                        errorMap.put("convStartToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holidays Operating Hours (Start) ", "field"));
+                                        errorMap.put("convStartToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (Start) ", "field"));
                                     }
                                 } else if (StringUtil.isEmpty(phDate)) {
                                     errorMap.put("convphDate" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006","convphDate","field"));
@@ -904,7 +904,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     }
                                 } else {
                                     if (StringUtil.isEmpty(convStartFromHH) || StringUtil.isEmpty(convStartFromMM) || StringUtil.isEmpty(convStartFromMM) && StringUtil.isEmpty(convStartFromHH)) {
-                                        errorMap.put("convStartToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holidays Operating Hours (Start) ", "field"));
+                                        errorMap.put("convStartToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (Start) ", "field"));
                                     } else {
                                         try {
                                             int i1 = Integer.parseInt(convStartFromHH);
@@ -920,7 +920,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                         }
                                     }
                                     if (StringUtil.isEmpty(convEndToHH) || StringUtil.isEmpty(convEndToMM) || StringUtil.isEmpty(convEndToHH) && StringUtil.isEmpty(convEndToMM)) {
-                                        errorMap.put("convEndToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holidays Operating Hours (End) ", "field"));
+                                        errorMap.put("convEndToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (End) ", "field"));
                                     } else {
                                         try {
                                             int i3 = Integer.parseInt(convEndToHH);
@@ -1224,10 +1224,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 String phDate = appPremPhOpenPeriodDto.getPhDate();
                                 if (!StringUtil.isEmpty(phDate)) {
                                     if (StringUtil.isEmpty(offSiteEndToHH) || StringUtil.isEmpty(offSiteEndToMM)) {
-                                        errorMap.put("offSiteEndToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holidays Operating Hours (End) ", "field"));
+                                        errorMap.put("offSiteEndToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (End) ", "field"));
                                     }
                                     if (StringUtil.isEmpty(offSiteStartFromHH) || StringUtil.isEmpty(offSiteStartFromMM)) {
-                                        errorMap.put("offSiteStartToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holidays Operating Hours (Start) ", "field"));
+                                        errorMap.put("offSiteStartToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (Start) ", "field"));
                                     }
                                 } else if (StringUtil.isEmpty(phDate)) {
                                     errorMap.put("offSitephDate" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Select Public Holiday", "field"));
@@ -1278,7 +1278,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     }
                                 } else {
                                     if (StringUtil.isEmpty(offSiteStartFromHH) || StringUtil.isEmpty(offSiteStartFromMM) || StringUtil.isEmpty(offSiteStartFromHH) && StringUtil.isEmpty(offSiteStartFromMM)) {
-                                        errorMap.put("offSiteStartToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holidays Operating Hours (Start) ", "field"));
+                                        errorMap.put("offSiteStartToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (Start) ", "field"));
                                     } else {
                                         try {
                                             int i1 = Integer.parseInt(offSiteStartFromHH);
@@ -1294,7 +1294,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                         }
                                     }
                                     if (StringUtil.isEmpty(offSiteEndToHH) || StringUtil.isEmpty(offSiteEndToMM) || StringUtil.isEmpty(offSiteEndToHH) && StringUtil.isEmpty(offSiteEndToMM)) {
-                                        errorMap.put("offSiteEndToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holidays Operating Hours (End) ", "field"));
+                                        errorMap.put("offSiteEndToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (End) ", "field"));
                                     } else {
 
                                         try {

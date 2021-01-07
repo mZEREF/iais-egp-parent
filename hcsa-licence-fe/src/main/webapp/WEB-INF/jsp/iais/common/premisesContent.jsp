@@ -452,7 +452,7 @@
                                     </iais:row>
                                     <div class="form-group">
                                         <label class="col-xs-12 col-md-4 control-label">
-                                            Public Holidays Operating Hours (Start)
+                                            Public Holiday Operating Hours (Start)
                                         </label>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
                                             <div class="col-md-3" style="padding-left: unset">
@@ -471,7 +471,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-12 col-md-4 control-label">
-                                            Public Holidays Operating Hours (End)
+                                            Public Holiday Operating Hours (End)
                                         </label>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
                                             <div class="col-md-3" style="padding-left: unset">
@@ -502,7 +502,7 @@
                                 </iais:row>
                                 <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label">
-                                        Public Holidays Operating Hours (Start)
+                                        Public Holiday Operating Hours (Start)
                                     </label>
                                     <div class="col-xs-9 col-sm-5 col-md-6">
                                         <div class="col-md-3" style="padding-left: unset">
@@ -519,7 +519,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label">
-                                        Public Holidays Operating Hours (End)
+                                        Public Holiday Operating Hours (End)
                                     </label>
                                     <div class="col-xs-9 col-sm-5 col-md-6">
                                         <div class="col-md-3" style="padding-left: unset">
@@ -712,7 +712,7 @@
                                     </iais:row>
                                     <div class="form-group">
                                         <label class="col-xs-12 col-md-4 control-label">
-                                            Public Holidays Operating Hours (Start)
+                                            Public Holiday Operating Hours (Start)
                                         </label>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
                                             <div class="col-md-3" style="padding-left: unset">
@@ -731,7 +731,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-12 col-md-4 control-label">
-                                            Public Holidays Operating Hours (End)
+                                            Public Holiday Operating Hours (End)
                                         </label>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
                                             <div class="col-md-3" style="padding-left: unset">
@@ -762,7 +762,7 @@
                                 </iais:row>
                                 <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label">
-                                        Public Holidays Operating Hours (Start)
+                                        Public Holiday Operating Hours (Start)
                                     </label>
                                     <div class="col-xs-9 col-sm-5 col-md-6">
                                         <div class="col-md-3" style="padding-left: unset">
@@ -781,7 +781,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label">
-                                        Public Holidays Operating Hours (End)
+                                        Public Holiday Operating Hours (End)
                                     </label>
                                     <div class="col-xs-9 col-sm-5 col-md-6">
                                         <div class="col-md-3" style="padding-left: unset">
@@ -967,7 +967,7 @@
                                     </iais:row>
                                     <div class="form-group">
                                         <label class="col-xs-12 col-md-4 control-label">
-                                            Public Holidays Operating Hours (Start)
+                                            Public Holiday Operating Hours (Start)
                                         </label>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
                                             <div class="col-md-3" style="padding-left: unset">
@@ -986,7 +986,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-12 col-md-4 control-label">
-                                            Public Holidays Operating Hours (End)
+                                            Public Holiday Operating Hours (End)
                                         </label>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
                                             <div class="col-md-3" style="padding-left: unset">
@@ -1017,7 +1017,7 @@
                                 </iais:row>
                                 <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label">
-                                        Public Holidays Operating Hours (Start)
+                                        Public Holiday Operating Hours (Start)
                                     </label>
                                     <div class="col-xs-9 col-sm-5 col-md-6">
                                         <div class="col-md-3" style="padding-left: unset">
@@ -1036,7 +1036,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label">
-                                        Public Holidays Operating Hours (End)
+                                        Public Holiday Operating Hours (End)
                                     </label>
                                     <div class="col-xs-9 col-sm-5 col-md-6">
                                         <div class="col-md-3" style="padding-left: unset">
