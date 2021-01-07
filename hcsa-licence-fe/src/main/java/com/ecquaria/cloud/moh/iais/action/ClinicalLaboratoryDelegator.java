@@ -2121,6 +2121,18 @@ public class ClinicalLaboratoryDelegator {
                 if (StringUtil.isEmpty(appSvcPrincipalOfficersDto.getCgoIndexNo())) {
                     appSvcCgoDto.setCgoIndexNo(UUID.randomUUID().toString());
                 }
+                //
+                boolean needSpcOptList = appSvcCgoDto.isNeedSpcOptList();
+                if(needSpcOptList){
+                    Map<String,String> specialtyAttr = IaisCommonUtils.genNewHashMap();
+                    specialtyAttr.put("name", "specialty");
+                    specialtyAttr.put("class", "specialty");
+                    specialtyAttr.put("style", "display: none;");
+                    List<SelectOption> spcOpts = appSvcCgoDto.getSpcOptList();
+                    String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, spcOpts, null, appSvcCgoDto.getSpeciality());
+                    appSvcCgoDto.setSpecialityHtml(specialtySelectStr);
+                }
+
                 appSvcCgoDtoList.add(appSvcCgoDto);
                 //change arr index
                 cgoIndexNos = removeArrIndex(cgoIndexNos, i);
