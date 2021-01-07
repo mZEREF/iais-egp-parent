@@ -12,7 +12,9 @@
 .column-sort .sort-up:active, .column-sort .sort-up.active {
     background-position: -30px 1px;
 }
-
+.fa:hover{
+    cursor: pointer
+}
 .column-sort .sort-up {
     background-position: 0 1px;
 }
