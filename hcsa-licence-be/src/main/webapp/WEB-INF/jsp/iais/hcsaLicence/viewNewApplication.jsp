@@ -1991,7 +1991,7 @@
     $('#primaryCheckbox').click(function () {
         let jQuery = $(this).closest("div.panel-body");
         let jQuery1 = jQuery.attr("style");
-        if ("" == jQuery1) {
+        if ("" == jQuery1 || undefined ==jQuery1) {
             jQuery.attr("style", "background-color: #999999;");
         } else {
             jQuery.attr("style", "");
@@ -2000,7 +2000,7 @@
     $("#serviceCheckbox").click(function () {
         let jQuery = $(this).closest("div.panel-body");
         let jQuery1 = jQuery.attr("style");
-        if ("" == jQuery1) {
+        if ("" == jQuery1 || undefined ==jQuery1) {
             jQuery.attr("style", "background-color: #999999;");
         } else {
             jQuery.attr("style", "");
@@ -2009,7 +2009,7 @@
     $("#premisesCheckbox").click(function () {
         let jQuery = $(this).closest("div.panel-body");
         let jQuery1 = jQuery.attr("style");
-        if ("" == jQuery1) {
+        if ("" == jQuery1 || undefined ==jQuery1) {
             jQuery.attr("style", "background-color: #999999;");
         } else {
             jQuery.attr("style", "");
