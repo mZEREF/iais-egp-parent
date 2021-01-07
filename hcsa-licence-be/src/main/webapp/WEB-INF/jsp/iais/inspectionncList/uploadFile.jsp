@@ -178,7 +178,7 @@
 
         var file = $('#selectedFile').get(0).files[0];
         if(selectedFile == null || selectedFile== "" ||file==null|| file==undefined){
-            $('#selectedFileShow').html('Document is mandatory.');
+            $('#selectedFileShow').html('This is mandatory.');
             $('#uploadFileButton').attr("disabled", false);
             return false;
         }else {
