@@ -157,6 +157,7 @@ public class InspectionSearchDelegator {
             }
             ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
             ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", searchResult);
+            ParamUtil.setRequestAttr(bpc.request, "supervisorErrorPage", AppConsts.TRUE);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             ParamUtil.setRequestAttr(bpc.request, "supervisorErrorPage", AppConsts.FALSE);
