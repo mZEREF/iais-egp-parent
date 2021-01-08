@@ -125,19 +125,19 @@ public class OfficerOnlineEnquiriesDelegator {
 
     private static final String SEARCH_NO="searchNo";
     private static final String RFI_QUERY="ReqForInfoQuery";
-
+    private static final Integer pageSize=SysParamUtil.getDefaultPageSize();
 
     FilterParameter appLicenceParameter = new FilterParameter.Builder()
             .clz(ApplicationLicenceQueryDto.class)
             .searchAttr("licParam")
             .resultAttr("licResult")
-            .sortField("application_no").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(SysParamUtil.getDefaultPageSize()).build();
+            .sortField("application_no").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
 
     FilterParameter licenseeParameter = new FilterParameter.Builder()
             .clz(LicenseeQueryDto.class)
             .searchAttr("licenseeParam")
             .resultAttr("licenseeResult")
-            .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(SysParamUtil.getDefaultPageSize()).build();
+            .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
 
 
 
@@ -166,8 +166,8 @@ public class OfficerOnlineEnquiriesDelegator {
         ParamUtil.setSessionAttr(request,SEARCH_NO,null);
         appLicenceParameter.setPageNo(1);
         licenseeParameter.setPageNo(1);
-        appLicenceParameter.setPageSize(SysParamUtil.getDefaultPageSize());
-        licenseeParameter.setPageSize(SysParamUtil.getDefaultPageSize());
+        appLicenceParameter.setPageSize(pageSize);
+        licenseeParameter.setPageSize(pageSize);
         // 		Start->OnStepProcess
     }
 

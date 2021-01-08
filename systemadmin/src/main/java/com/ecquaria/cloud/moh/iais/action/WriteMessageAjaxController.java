@@ -87,7 +87,7 @@ public class WriteMessageAjaxController {
     }
 
     private String setHtmlValue(List<AttachmentDto> attachmentDtoList){
-        StringBuilder data = new StringBuilder();
+        String data = "";
         if(!IaisCommonUtils.isEmpty(attachmentDtoList)){
             for(AttachmentDto temp : attachmentDtoList){
                 StringBuilder box = new StringBuilder();
@@ -102,9 +102,9 @@ public class WriteMessageAjaxController {
                         .append("<input hidden name='fileSize' value='")
                         .append(temp.getDocSize())
                         .append("'/>\n");
-                data.append(box.toString());
+                data=box.toString();
             }
         }
-        return data.toString();
+        return data;
     }
 }
