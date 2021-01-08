@@ -141,21 +141,21 @@ public class InsReportAoDelegator {
         TaskDto taskDto =  (TaskDto)ParamUtil.getSessionAttr(bpc.request, TASKDTO);
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         String[] fastTracking =  ParamUtil.getStrings(bpc.request,"fastTracking");
+        String historyRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
         if(fastTracking!=null){
             applicationDto.setFastTracking(true);
         }
         if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(applicationDto.getStatus())){
-            insRepService.routTaskToRoutBack(bpc,taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecommendationDto.getProcessRemarks());
+            insRepService.routTaskToRoutBack(bpc,taskDto, applicationDto, appPremisesCorrelationId,historyRemarks);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             ParamUtil.setSessionAttr(bpc.request,"askType","Y");
             return;
         }
         if (ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationDto.getStatus())) {
-            insRepService.routTaskToRoutBackAo3(bpc, taskDto, applicationDto, appPremisesCorrelationId, appPremisesRecommendationDto.getProcessRemarks());
+            insRepService.routTaskToRoutBackAo3(bpc, taskDto, applicationDto, appPremisesCorrelationId, historyRemarks);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
         }
-        String historyRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
         insRepService.routingTaskToAo2(taskDto,applicationDto,appPremisesCorrelationId,historyRemarks,newCorrelationId);
         ParamUtil.setSessionAttr(bpc.request, INSREPDTO, insRepDto);
         ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);

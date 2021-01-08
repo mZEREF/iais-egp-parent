@@ -137,6 +137,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG, null);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, null);
+        ParamUtil.setSessionAttr(bpc.request, "txnRefNo", null);
         removeSession(bpc);
         requestForInformation(bpc, appNo);
         ParamUtil.setSessionAttr(bpc.request, ACKMESSAGE, null);
@@ -298,7 +299,6 @@ public class RequestForChangeMenuDelegator {
     /**
      * @param bpc
      * @Decription preparePremisesEdit
-     *//*
      */
     public void preparePremisesEdit(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the do preparePremisesEdit start ...."));
