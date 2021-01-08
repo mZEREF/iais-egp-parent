@@ -804,6 +804,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         if(!IaisCommonUtils.isEmpty(appPremInspCorrelationDtoList)){
             for(AppPremInspCorrelationDto appPremInspCorrelationDto : appPremInspCorrelationDtoList) {
                 String appNo = appPremInspCorrelationDto.getApplicationNo();
+                log.info(StringUtil.changeForLog("Rescheduling Application No. = " + appNo));
                 AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremCorrByAppNo(appNo).getEntity();
                 if(appPremisesCorrelationDto != null){
                     String appPremCorrId = appPremisesCorrelationDto.getId();
