@@ -753,7 +753,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }else if (postalCode.length() < 6) {
                                 errorMap.put("postalCode" + i, "NEW_ERR0004");
                             } else if (!postalCode.matches("^[0-9]{6}$")) {
-                                errorMap.put("postalCode" + i, "GENERAL_ERR0002");
+                                errorMap.put("postalCode" + i, "NEW_ERR0004");
                             } else {
                                 if (!StringUtil.isEmpty(stringBuilder.toString())) {
                                     stringBuilder.append(postalCode);
@@ -1034,7 +1034,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }else if (conveyancePostalCode.length() < 6) {
                                 errorMap.put("conveyancePostalCode" + i, "NEW_ERR0004");
                             } else if (!conveyancePostalCode.matches("^[0-9]{6}$")) {
-                                errorMap.put("conveyancePostalCode" + i, "GENERAL_ERR0002");
+                                errorMap.put("conveyancePostalCode" + i, "NEW_ERR0004");
                             } else {
                                 if (!StringUtil.isEmpty(stringBuilder.toString())) {
                                     stringBuilder.append(conveyancePostalCode);
@@ -1162,7 +1162,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }else if (offSitePostalCode.length() < 6) {
                                 errorMap.put("offSitePostalCode" + i, "NEW_ERR0004");
                             } else if (!offSitePostalCode.matches("^[0-9]{6}$")) {
-                                errorMap.put("offSitePostalCode" + i, "GENERAL_ERR0002");
+                                errorMap.put("offSitePostalCode" + i, "NEW_ERR0004");
                             } else {
                                 if (!StringUtil.isEmpty(stringBuilder.toString())) {
                                     stringBuilder.append(offSitePostalCode);
