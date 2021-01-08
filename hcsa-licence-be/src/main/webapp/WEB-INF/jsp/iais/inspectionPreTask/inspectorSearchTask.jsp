@@ -24,131 +24,139 @@
         <div class="col-lg-12 col-xs-12">
           <div class="center-content">
             <div class="intranet-content">
-              <div class="bg-title">
-                <h2>
-                  <span>Supervisor Assignment Pool</span>
-                </h2>
-              </div>
-              <iais:body >
-                <iais:section title="" id = "supPoolList">
-                  <div class="form-horizontal">
-                    <div class="form-group">
-                      <label class="col-xs-12 col-md-4 control-label">Role</label>
-                      <div class="col-xs-8 col-sm-6 col-md-5">
-                        <iais:select name="supervisorRoleId" cssClass="roleIds" options="superPoolRoleIds" id="supervisorPoolRole" value="${poolRoleCheckDto.checkCurRole}"></iais:select>
+              <c:if test="${'false' eq supervisorErrorPage}">
+                <div class="bg-title">
+                  <h2>You are not authorised to access this function.</h2>
+                </div>
+                <div align="left"><span><a href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"></em> Back</a></span></div>
+              </c:if>
+              <c:if test="${'false' ne supervisorErrorPage}">
+                <div class="bg-title">
+                  <h2>
+                    <span>Supervisor Assignment Pool</span>
+                  </h2>
+                </div>
+                <iais:body >
+                  <iais:section title="" id = "supPoolList">
+                    <div class="form-horizontal">
+                      <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Role</label>
+                        <div class="col-xs-8 col-sm-6 col-md-5">
+                          <iais:select name="supervisorRoleId" cssClass="roleIds" options="superPoolRoleIds" id="supervisorPoolRole" value="${poolRoleCheckDto.checkCurRole}"></iais:select>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-xs-10 col-md-12">
-                      <div class="components">
-                        <a name="filterBtn" class="btn btn-secondary" data-toggle="collapse"
-                           data-target="#superPoolSearch">Filter</a>
+                    <div class="row">
+                      <div class="col-xs-10 col-md-12">
+                        <div class="components">
+                          <a name="filterBtn" class="btn btn-secondary" data-toggle="collapse"
+                             data-target="#superPoolSearch">Filter</a>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <p></p>
-                  <div id = "superPoolSearch" class="collapse">
-                    <iais:row>
-                      <iais:field value="Application No."/>
-                      <iais:value width="18">
-                        <input type="text" name="application_no" value="${supTaskSearchParam.filters['application_no']}" />
-                      </iais:value>
-                    </iais:row>
-                    <iais:row>
-                      <iais:field value="Application Type"/>
-                      <iais:value width="18">
-                        <iais:select cssClass="application_type" name="application_type" options="appTypeOption" firstOption="Please Select" value="${supTaskSearchParam.filters['application_type']}" ></iais:select>
-                      </iais:value>
-                    </iais:row>
-                    <iais:row>
-                      <iais:field value="Application Status"/>
-                      <iais:value width="18">
-                        <iais:select name="application_status" options="appStatusOption" firstOption="Please Select" value="${supTaskSearchParam.filters['application_status']}" ></iais:select>
-                      </iais:value>
-                    </iais:row>
-                    <iais:row>
-                      <iais:field value="HCI Code"/>
-                      <iais:value width="18">
-                        <input type="text" name="hci_code" value="${supTaskSearchParam.filters['hci_code']}" />
-                      </iais:value>
-                    </iais:row>
-                    <iais:row>
-                      <iais:field value="HCI Name"/>
-                      <iais:value width="18">
-                        <input type="text" name="hci_name" value="${supTaskSearchParam.filters['hci_name']}" />
-                      </iais:value>
-                    </iais:row>
-                    <iais:row>
-                      <iais:field value="HCI Address"/>
-                      <iais:value width="18">
-                        <input type="text" name="hci_address" value="${supTaskSearchParam.filters['hci_address']}" />
-                      </iais:value>
-                    </iais:row>
-                    <iais:row>
-                      <iais:field value="${groupRoleFieldDto.groupMemBerName} Name"/>
-                      <iais:value width="18">
-                        <iais:select name="memberName" options="memberOption" firstOption="Please Select" value="${groupRoleFieldDto.checkUser}" ></iais:select>
-                      </iais:value>
-                    </iais:row>
-                    <iais:action style="text-align:right;">
-                      <button name="clearBtn" class="btn btn-secondary" type="button" onclick="javascript:doInspectorSearchTaskClear()">Clear</button>
-                      <button name="searchBtn" class="btn btn-primary" type="button" onclick="javascript:doInspectorSearchTaskSearch()">Search</button>
-                    </iais:action>
-                  </div>
-                </iais:section>
-                <h3>
-                  <span>Search Results</span>
-                </h3>
-                <iais:pagination  param="supTaskSearchParam" result="supTaskSearchResult"/>
-                <div class="table-gp">
-                  <table class="table application-group">
-                    <thead>
-                    <tr align="center">
-                      <iais:sortableHeader needSort="false" field = "" value="S/N"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field = "GROUP_NO" value="Application No."></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field = "APP_TYPE" value="Application Type"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field = "" value="${groupRoleFieldDto.groupLeadName}"></iais:sortableHeader>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <c:choose>
-                      <c:when test="${empty supTaskSearchResult.rows}">
-                        <tr>
-                          <td colspan="12">
-                            <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
-                            <!--No Record!!-->
-                          </td>
-                        </tr>
-                      </c:when>
-                      <c:otherwise>
-                        <c:forEach var="superPool" items="${supTaskSearchResult.rows}" varStatus="status">
-                          <tr style = "display: table-row;" id = "advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}">
-                            <td class="row_no"><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
-                            <td>
-                              <p>
-                                <c:out value="${superPool.appGroupNo}"/>
-                                <a class="accordion-toggle  collapsed"
-                                   data-toggle="collapse" aria-expanded="false"
-                                   data-target="#advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"
-                                   onclick="javascript:supervisorByGroupId('<iais:mask name="appGroupId" value="${superPool.id}"/>','${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}')">
-                                </a>
-                              </p>
-                            </td>
-                            <td><iais:code code="${superPool.applicationType}"/></td>
-                            <td>
-                              <c:forEach var="lead" items="${superPool.groupLead}">
-                                <c:out value="${lead}"/><br>
-                              </c:forEach>
+                    <p></p>
+                    <div id = "superPoolSearch" class="collapse">
+                      <iais:row>
+                        <iais:field value="Application No."/>
+                        <iais:value width="18">
+                          <input type="text" name="application_no" value="${supTaskSearchParam.filters['application_no']}" />
+                        </iais:value>
+                      </iais:row>
+                      <iais:row>
+                        <iais:field value="Application Type"/>
+                        <iais:value width="18">
+                          <iais:select cssClass="application_type" name="application_type" options="appTypeOption" firstOption="Please Select" value="${supTaskSearchParam.filters['application_type']}" ></iais:select>
+                        </iais:value>
+                      </iais:row>
+                      <iais:row>
+                        <iais:field value="Application Status"/>
+                        <iais:value width="18">
+                          <iais:select name="application_status" options="appStatusOption" firstOption="Please Select" value="${supTaskSearchParam.filters['application_status']}" ></iais:select>
+                        </iais:value>
+                      </iais:row>
+                      <iais:row>
+                        <iais:field value="HCI Code"/>
+                        <iais:value width="18">
+                          <input type="text" name="hci_code" value="${supTaskSearchParam.filters['hci_code']}" />
+                        </iais:value>
+                      </iais:row>
+                      <iais:row>
+                        <iais:field value="HCI Name"/>
+                        <iais:value width="18">
+                          <input type="text" name="hci_name" value="${supTaskSearchParam.filters['hci_name']}" />
+                        </iais:value>
+                      </iais:row>
+                      <iais:row>
+                        <iais:field value="HCI Address"/>
+                        <iais:value width="18">
+                          <input type="text" name="hci_address" value="${supTaskSearchParam.filters['hci_address']}" />
+                        </iais:value>
+                      </iais:row>
+                      <iais:row>
+                        <iais:field value="${groupRoleFieldDto.groupMemBerName} Name"/>
+                        <iais:value width="18">
+                          <iais:select name="memberName" options="memberOption" firstOption="Please Select" value="${groupRoleFieldDto.checkUser}" ></iais:select>
+                        </iais:value>
+                      </iais:row>
+                      <iais:action style="text-align:right;">
+                        <button name="clearBtn" class="btn btn-secondary" type="button" onclick="javascript:doInspectorSearchTaskClear()">Clear</button>
+                        <button name="searchBtn" class="btn btn-primary" type="button" onclick="javascript:doInspectorSearchTaskSearch()">Search</button>
+                      </iais:action>
+                    </div>
+                  </iais:section>
+                  <h3>
+                    <span>Search Results</span>
+                  </h3>
+                  <iais:pagination  param="supTaskSearchParam" result="supTaskSearchResult"/>
+                  <div class="table-gp">
+                    <table class="table application-group">
+                      <thead>
+                      <tr align="center">
+                        <iais:sortableHeader needSort="false" field = "" value="S/N"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="false" field = "GROUP_NO" value="Application No."></iais:sortableHeader>
+                        <iais:sortableHeader needSort="false" field = "APP_TYPE" value="Application Type"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="false" field = "" value="${groupRoleFieldDto.groupLeadName}"></iais:sortableHeader>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <c:choose>
+                        <c:when test="${empty supTaskSearchResult.rows}">
+                          <tr>
+                            <td colspan="12">
+                              <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                              <!--No Record!!-->
                             </td>
                           </tr>
-                        </c:forEach>
-                      </c:otherwise>
-                    </c:choose>
-                    </tbody>
-                  </table>
-                </div>
-              </iais:body>
+                        </c:when>
+                        <c:otherwise>
+                          <c:forEach var="superPool" items="${supTaskSearchResult.rows}" varStatus="status">
+                            <tr style = "display: table-row;" id = "advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}">
+                              <td class="row_no"><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
+                              <td>
+                                <p>
+                                  <c:out value="${superPool.appGroupNo}"/>
+                                  <a class="accordion-toggle  collapsed"
+                                     data-toggle="collapse" aria-expanded="false"
+                                     data-target="#advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"
+                                     onclick="javascript:supervisorByGroupId('<iais:mask name="appGroupId" value="${superPool.id}"/>','${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}')">
+                                  </a>
+                                </p>
+                              </td>
+                              <td><iais:code code="${superPool.applicationType}"/></td>
+                              <td>
+                                <c:forEach var="lead" items="${superPool.groupLead}">
+                                  <c:out value="${lead}"/><br>
+                                </c:forEach>
+                              </td>
+                            </tr>
+                          </c:forEach>
+                        </c:otherwise>
+                      </c:choose>
+                      </tbody>
+                    </table>
+                  </div>
+                </iais:body>
+              </c:if>
             </div>
           </div>
         </div>

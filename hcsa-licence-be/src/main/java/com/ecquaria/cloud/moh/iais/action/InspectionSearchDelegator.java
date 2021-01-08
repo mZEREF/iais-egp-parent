@@ -15,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListD
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -32,7 +31,6 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -62,15 +60,11 @@ public class InspectionSearchDelegator {
     private ApplicationViewService applicationViewService;
 
     @Autowired
-    private TaskService taskService;
-
-    @Autowired
     private InspectionSearchDelegator(InspectionService inspectionService, ApplicationViewService applicationViewService,
-                                      InspectionAssignTaskService inspectionAssignTaskService, TaskService taskService){
+                                      InspectionAssignTaskService inspectionAssignTaskService){
         this.inspectionService = inspectionService;
         this.applicationViewService = applicationViewService;
         this.inspectionAssignTaskService = inspectionAssignTaskService;
-        this.taskService = taskService;
     }
 
     /**
@@ -165,7 +159,7 @@ public class InspectionSearchDelegator {
             ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", searchResult);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new IaisRuntimeException("Supervisor Search Pre Error!!!", e);
+            ParamUtil.setRequestAttr(bpc.request, "supervisorErrorPage", AppConsts.FALSE);
         }
         log.info(StringUtil.changeForLog("the inspectionSupSearchPre end ...."));
     }
