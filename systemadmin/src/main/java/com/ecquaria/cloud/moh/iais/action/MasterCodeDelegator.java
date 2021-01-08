@@ -227,7 +227,8 @@ public class MasterCodeDelegator {
                 if (AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
                     if (masterCodeDto.getEffectiveFrom().before(new Date())){
                         validationResult.setHasErrors(true);
-                        String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
+                        String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
+                        //The effective date of inactive data must be a future time
                         errorMap.put("effectiveTo", errMsg);
                     }
                 }

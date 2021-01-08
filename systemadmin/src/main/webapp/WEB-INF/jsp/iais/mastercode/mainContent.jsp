@@ -89,7 +89,7 @@
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Action</p>
-                                                <c:if test="${masterCodeResult.level != 5}">
+                                                <c:if test="${masterCodeResult.level != 5 && masterCodeResult.isCentrallyManage == 1}">
                                                     <button type="button" class="btn btn-default btn-sm" onclick="doCreateCategory('${masterCodeResult.masterCodeId}')">Create</button>
                                                 </c:if>
                                                 <c:if test="${masterCodeResult.isCentrallyManage == 1}">
