@@ -12,7 +12,7 @@
             <div class="center-content">
                 <div class="intranet-content">
                     <div class="bg-title">
-                        <h2>You have no privilege.</h2>
+                        <h2>You have no privilege. </h2>
                     </div>
                 </div>
             </div>
