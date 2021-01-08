@@ -175,9 +175,11 @@ public class InspectionServiceImpl implements InspectionService {
     public List<String> getWorkGroupIdsByLogin(LoginContext loginContext) {
         List<String> workGroupIdList = IaisCommonUtils.genNewArrayList();
         List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
-        for(UserGroupCorrelationDto ugcDto:userGroupCorrelationDtos){
-            if(ugcDto.getIsLeadForGroup() == 1){
-                workGroupIdList.add(ugcDto.getGroupId());
+        for(UserGroupCorrelationDto ugcDto : userGroupCorrelationDtos){
+            if(ugcDto != null) {
+                if (AppConsts.COMMON_STATUS_ACTIVE.equals(ugcDto.getStatus()) && ugcDto.getIsLeadForGroup() == 1) {
+                    workGroupIdList.add(ugcDto.getGroupId());
+                }
             }
         }
         return workGroupIdList;
