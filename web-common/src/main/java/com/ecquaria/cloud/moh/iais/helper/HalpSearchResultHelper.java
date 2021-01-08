@@ -21,7 +21,7 @@ public class HalpSearchResultHelper {
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, paramName);
         if(searchParam == null || isNew){
             searchParam = new SearchParam(searchClassName);
-            searchParam.setPageSize(10);
+            searchParam.setPageSize(SysParamUtil.getDefaultPageSize());
             searchParam.setPageNo(1);
             searchParam.setSort(sortField, sortRule);
             ParamUtil.setSessionAttr(request,paramName, searchParam);
@@ -36,7 +36,7 @@ public class HalpSearchResultHelper {
                 searchParam = (SearchParam) ParamUtil.getSessionAttr(request, InboxConst.INBOX_PARAM);
                 if (searchParam == null || isNew) {
                     searchParam = new SearchParam(InboxQueryDto.class.getName());
-                    searchParam.setPageSize(10);
+                    searchParam.setPageSize(SysParamUtil.getDefaultPageSize());
                     searchParam.setPageNo(1);
                     searchParam.setSort("created_dt", SearchParam.DESCENDING);
                     ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, searchParam);
@@ -47,7 +47,7 @@ public class HalpSearchResultHelper {
                 if (searchParam == null || isNew) {
                     searchParam = new SearchParam(InboxAppQueryDto.class.getName());
                     searchParam.setPageNo(1);
-                    searchParam.setPageSize(10);
+                    searchParam.setPageSize(SysParamUtil.getDefaultPageSize());
                     searchParam.setSort("created_dt", SearchParam.DESCENDING);
                     ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, searchParam);
                 }
@@ -58,7 +58,7 @@ public class HalpSearchResultHelper {
                     searchParam = new SearchParam(InboxLicenceQueryDto.class.getName());
                     searchParam.setSort("START_DATE", SearchParam.DESCENDING);
                     searchParam.setPageNo(1);
-                    searchParam.setPageSize(10);
+                    searchParam.setPageSize(SysParamUtil.getDefaultPageSize());
                     ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, searchParam);
                 }
                 break;
