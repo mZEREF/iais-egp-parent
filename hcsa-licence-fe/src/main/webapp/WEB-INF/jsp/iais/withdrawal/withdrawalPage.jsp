@@ -169,6 +169,13 @@
                         </div>
                     </div>
                 </c:if>
+                <c:if test="${isDoView == 'Y'}">
+                    <div class="center-content">
+                        <div class="components">
+                            <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
+                        </div>
+                    </div>
+                </c:if>
             </div>
         </div>
         <div class="modal fade" id="isAppealModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
