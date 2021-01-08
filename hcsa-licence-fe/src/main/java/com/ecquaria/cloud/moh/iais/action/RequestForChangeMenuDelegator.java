@@ -1519,6 +1519,9 @@ public class RequestForChangeMenuDelegator {
         amendmentFeeDto.setChangeInHCIName(!b);
         amendmentFeeDto.setChangeInLocation(!isSame);
         boolean eqAddFloorNo = NewApplicationDelegator.eqAddFloorNo(appSubmissionDto, oldAppSubmissionDtoappSubmissionDto);
+        if(eqAddFloorNo){
+            amendmentFeeDto.setChangeInLocation(Boolean.TRUE);
+        }
         if(!isSame || !b){
             for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1){
                 appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);

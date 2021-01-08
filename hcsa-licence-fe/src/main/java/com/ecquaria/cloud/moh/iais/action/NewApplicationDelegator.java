@@ -1658,10 +1658,10 @@ public class NewApplicationDelegator {
         //update message statusdo
         String msgId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         appSubmissionService.updateMsgStatus(msgId, MessageConstants.MESSAGE_STATUS_RESPONSE);
-/*
         appSubmissionDto= applicationFeClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto).getEntity();
-*/
+/*
         appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
+*/
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
             List<AppSubmissionDto> appSubmissionDtos = new ArrayList<>(1);
             appSubmissionDto.setAmountStr("N/A");

@@ -1110,7 +1110,7 @@ public class InterInboxDelegator {
         calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(systemParamConfig.getAgainstRejection()));
         boolean rejectEqDay = calendar.getTime().after(new Date());
         if (!cgoEqDay&&!nameEqDay&&!otherEqDay&&!feeEqDay&&!rejectEqDay){
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,"The selected licence is not eligible for appeal");
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,"The selected application is not eligible for appeal");
             ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",Boolean.FALSE);
             return;
         }

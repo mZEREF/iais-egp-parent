@@ -611,7 +611,7 @@ public class WithOutRenewalDelegator {
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             boolean eqGrpPremisesResult;
             if(appGrpPremisesDtoList != null){
-                eqGrpPremisesResult = eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
+                eqGrpPremisesResult = NewApplicationDelegator.eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
             } else {
                 eqGrpPremisesResult = false;
             }
@@ -1257,8 +1257,9 @@ public class WithOutRenewalDelegator {
                     String grpId = entity.get(0).getAppGrpId();
                     ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(grpId).getEntity();
                     applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-                    applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
                     applicationFeClient.updateApplicationList(entity);
+                    applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
+
                 }
             }
 
