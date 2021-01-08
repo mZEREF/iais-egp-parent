@@ -2,14 +2,13 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditSystemPotentialDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -21,6 +20,8 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemPotitalListService;
+import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,10 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     private ApplicationViewService applicationViewService;
     @Autowired
     private SystemParamConfig systemParamConfig;
-
+    @Autowired
+    private ComSystemAdminClient comSystemAdminClient;
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
     @Override
     public AuditSystemPotentialDto initDtoForSearch() {
         AuditSystemPotentialDto dto = new AuditSystemPotentialDto();
@@ -92,6 +96,9 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     }
     @Override
     public List<AuditTaskDataFillterDto> getSystemPotentailAdultCancelList() {
+        if( !isLimitedCancel()){
+            return null;
+        }
         SearchParam searchParam = getAduitCancelSearchParamFrom();
         SearchResult<AuditTaskDataDto> searchResult = getAuditSysParam(searchParam);
         if(searchResult != null && searchResult.getRows() != null){
@@ -105,6 +112,32 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         return  null;
     }
 
+    private boolean isLimitedCancel(){
+        String userGuid = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid();
+        List<String> workGrps = comSystemAdminClient.getWorkGrpsByUserId(userGuid).getEntity();
+        if(IaisCommonUtils.isEmpty(workGrps)){
+            return false;
+        }
+        List<String> stageIds = new ArrayList<>(1);
+        stageIds.add(HcsaConsts.ROUTING_STAGE_AO1);
+        List<String> workGroupsActives = hcsaConfigClient. getWorkGroupIdsByStageId(HcsaConsts.ROUTING_STAGE_AO1).getEntity();
+        if(IaisCommonUtils.isEmpty(workGroupsActives)){
+            return false;
+        }
+        List<String> compathyWorkGroups = IaisCommonUtils.genNewArrayList();
+         for(String workGrp : workGrps){
+            for(String  workGroupsActive: workGroupsActives){
+                if(workGrp.equalsIgnoreCase(workGroupsActive) && !compathyWorkGroups.contains( workGroupsActives)){
+                    compathyWorkGroups.add(workGroupsActive);
+                    break;
+                }
+            }
+         }
+         if(!IaisCommonUtils.isEmpty( workGroupsActives)){
+             return true;
+         }
+        return false;
+    }
     public  AuditTaskDataFillterDto getAuditTaskDataFillterDto(AuditTaskDataDto auditTaskDataDto,Boolean isCancelTask,Boolean needCancelReason){
      return getAuditTaskDataFillterDto(auditTaskDataDto,isCancelTask,needCancelReason,Boolean.TRUE);
     }
