@@ -164,8 +164,22 @@ public class InterInboxDelegator {
         bpc.response.sendRedirect(elisUrl);
     }
 
-    public void toMOHAlert(BaseProcessClass bpc) {
+    public void toMOHAlert(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("Step ---> toMOHAlert"));
+        HttpServletRequest request = bpc.request;
+        String privateKey = ConfigHelper.getString("halp.mohAlert.private.key");
+        LoginContext loginContext = AccessUtil.getLoginUser(request);
+        Claims claims = Jwts.claims();
+        claims.put("uid", loginContext.getLoginId());
+        claims.put("uen", loginContext.getUenNo());
+        String iso8601ExpDateString  = Formatter.formatDateTime(new Date(),Formatter.ISO_8601);
+        iso8601ExpDateString = iso8601ExpDateString.substring(0, 22) + ":" +iso8601ExpDateString.substring(22);
+        claims.put("iat", iso8601ExpDateString);
+        JwtEncoder jwtEncoder = new JwtEncoder();
+        String jwtStr = jwtEncoder.encode(claims, privateKey);
+        String alertUrl = ConfigHelper.getString("moh.mohAlert.url");
+        bpc.response.setHeader("authToken", jwtStr);
+        bpc.response.sendRedirect(alertUrl);
     }
 
     /**
