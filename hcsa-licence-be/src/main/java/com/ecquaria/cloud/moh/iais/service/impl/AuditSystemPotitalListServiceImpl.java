@@ -113,8 +113,8 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         }
         return  null;
     }
-
-    private boolean isLimitedCancel(){
+    @Override
+    public boolean isLimitedCancel(){
         String userGuid = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid();
         List<String> workGrps = comSystemAdminClient.getWorkGrpsByUserId(userGuid).getEntity();
         if(IaisCommonUtils.isEmpty(workGrps)){
@@ -133,12 +133,12 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
                 }
             }
          }
-         if(!IaisCommonUtils.isEmpty( workGroupsActives)){
+         if(!IaisCommonUtils.isEmpty( compathyWorkGroups)){
              RoutingStageSearchDto routingStageSearchDto = new RoutingStageSearchDto();
              routingStageSearchDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK);
              routingStageSearchDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
              routingStageSearchDto.setSubOrder(2);
-             routingStageSearchDto.setWrokGroupIds(workGroupsActives);
+             routingStageSearchDto.setWrokGroupIds(compathyWorkGroups);
              List<String> svcIds =  hcsaConfigClient.getSvcIdsByStageIdAndWorkgroupIdsAndAppType(routingStageSearchDto).getEntity();
              if(IaisCommonUtils.isEmpty(svcIds)){
                  return false;
