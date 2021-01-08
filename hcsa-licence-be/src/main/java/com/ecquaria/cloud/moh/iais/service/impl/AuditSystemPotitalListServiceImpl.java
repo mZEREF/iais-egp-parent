@@ -2,10 +2,12 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.RoutingStageSearchDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditSystemPotentialDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
@@ -118,9 +120,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         if(IaisCommonUtils.isEmpty(workGrps)){
             return false;
         }
-        List<String> stageIds = new ArrayList<>(1);
-        stageIds.add(HcsaConsts.ROUTING_STAGE_AO1);
-        List<String> workGroupsActives = hcsaConfigClient. getWorkGroupIdsByStageId(HcsaConsts.ROUTING_STAGE_AO1).getEntity();
+        List<String> workGroupsActives = hcsaConfigClient. getWorkGroupIdsByStageId(HcsaConsts.ROUTING_STAGE_INS).getEntity();
         if(IaisCommonUtils.isEmpty(workGroupsActives)){
             return false;
         }
@@ -134,6 +134,15 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             }
          }
          if(!IaisCommonUtils.isEmpty( workGroupsActives)){
+             RoutingStageSearchDto routingStageSearchDto = new RoutingStageSearchDto();
+             routingStageSearchDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK);
+             routingStageSearchDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
+             routingStageSearchDto.setSubOrder(2);
+             routingStageSearchDto.setWrokGroupIds(workGroupsActives);
+             List<String> svcIds =  hcsaConfigClient.getSvcIdsByStageIdAndWorkgroupIdsAndAppType(routingStageSearchDto).getEntity();
+             if(IaisCommonUtils.isEmpty(svcIds)){
+                 return false;
+             }
              return true;
          }
         return false;
