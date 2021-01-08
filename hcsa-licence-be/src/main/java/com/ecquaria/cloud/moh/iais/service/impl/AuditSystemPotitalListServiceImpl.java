@@ -127,7 +127,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         List<String> compathyWorkGroups = IaisCommonUtils.genNewArrayList();
          for(String workGrp : workGrps){
             for(String  workGroupsActive: workGroupsActives){
-                if(workGrp.equalsIgnoreCase(workGroupsActive) && !compathyWorkGroups.contains( workGroupsActives)){
+                if(workGrp.equalsIgnoreCase(workGroupsActive) && !compathyWorkGroups.contains( workGroupsActive)){
                     compathyWorkGroups.add(workGroupsActive);
                     break;
                 }
