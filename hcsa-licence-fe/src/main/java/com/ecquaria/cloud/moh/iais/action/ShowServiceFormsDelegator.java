@@ -89,6 +89,7 @@ public class ShowServiceFormsDelegator {
         }
         svcAllPsnConfig.put(svcId, currentSvcAllPsnConfig);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.SERVICEALLPSNCONFIGMAP, (Serializable) svcAllPsnConfig);
+        log.debug(StringUtil.changeForLog("current service id:"+svcId));
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID, svcId);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE, actionTab);
         log.info(StringUtil.changeForLog("serviceStepDto:"+ JsonUtil.parseToJson(serviceStepDto)));
