@@ -2689,6 +2689,7 @@ public class ClinicalLaboratoryDelegator {
      * get current svc dto
      * */
     private AppSvcRelatedInfoDto getAppSvcRelatedInfo(HttpServletRequest request, String currentSvcId) {
+        log.debug(StringUtil.changeForLog("getAppSvcRelatedInfo service id:"+currentSvcId));
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
         if (appSubmissionDto != null) {
