@@ -39,34 +39,35 @@ import java.util.Map;
  * @date 11/9/2019
  */
 public interface AppSubmissionService {
-    public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process);
-    public AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process);
-    public AppSubmissionDto submitPremisesListRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process);
+     AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process);
+     AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process);
+     AppSubmissionDto submitRequestRfcRenewInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process);
+     AppSubmissionDto submitPremisesListRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process);
 
     List<ApplicationDto> listApplicationByGroupId(String groupId);
 
-    public AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto);
+     AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto);
 
-    public String getDraftNo(String appType);
-    public String getGroupNo(String appType);
-    public FeeDto getNewAppAmount(AppSubmissionDto appSubmissionDto,boolean isCharity);
-    public FeeDto getGroupAmount(AppSubmissionDto appSubmissionDto,boolean isCharity);
-    public FeeDto getRenewalAmount(List<AppSubmissionDto> appSubmissionDtoList,boolean isCharity);
-    public FeeDto getCharityRenewalAmount(List<AppSubmissionDto> appSubmissionDtoList,boolean isCharity);
-    public PreOrPostInspectionResultDto judgeIsPreInspection(AppSubmissionDto appSubmissionDto);
-    public void setRiskToDto(AppSubmissionDto appSubmissionDto);
-    public AppSubmissionDto getAppSubmissionDtoByAppNo(String appNo);
-    public AppSubmissionDto getAppSubmissionDto(String appNo);
-    public AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId);
-    public FeeDto getGroupAmendAmount(AmendmentFeeDto amendmentFeeDto);
-    public AppSubmissionDto submitRequestChange(AppSubmissionDto appSubmissionDto, Process process);
-    public AppSubmissionDto submitRenew(AppSubmissionDto appSubmissionDto);
-    public MsgTemplateDto getMsgTemplateById(String id);
-    public void feSendEmail(EmailDto emailDto);
-    public ApplicationGroupDto createApplicationDataByWithOutRenewal(RenewDto renewDto);
-    public void updateApplicationsStatus(String appGroupId,String stuts);
-    public boolean checkRenewalStatus(String licenceId);
-    public AppSubmissionDto getExistBaseSvcInfo(List<String> licenceIds);
+     String getDraftNo(String appType);
+     String getGroupNo(String appType);
+     FeeDto getNewAppAmount(AppSubmissionDto appSubmissionDto,boolean isCharity);
+     FeeDto getGroupAmount(AppSubmissionDto appSubmissionDto,boolean isCharity);
+     FeeDto getRenewalAmount(List<AppSubmissionDto> appSubmissionDtoList,boolean isCharity);
+     FeeDto getCharityRenewalAmount(List<AppSubmissionDto> appSubmissionDtoList,boolean isCharity);
+     PreOrPostInspectionResultDto judgeIsPreInspection(AppSubmissionDto appSubmissionDto);
+     void setRiskToDto(AppSubmissionDto appSubmissionDto);
+     AppSubmissionDto getAppSubmissionDtoByAppNo(String appNo);
+     AppSubmissionDto getAppSubmissionDto(String appNo);
+     AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId);
+     FeeDto getGroupAmendAmount(AmendmentFeeDto amendmentFeeDto);
+     AppSubmissionDto submitRequestChange(AppSubmissionDto appSubmissionDto, Process process);
+     AppSubmissionDto submitRenew(AppSubmissionDto appSubmissionDto);
+     MsgTemplateDto getMsgTemplateById(String id);
+     void feSendEmail(EmailDto emailDto);
+     ApplicationGroupDto createApplicationDataByWithOutRenewal(RenewDto renewDto);
+     void updateApplicationsStatus(String appGroupId,String stuts);
+     boolean checkRenewalStatus(String licenceId);
+     AppSubmissionDto getExistBaseSvcInfo(List<String> licenceIds);
     void transform(AppSubmissionDto appSubmissionDto,String licenseeId);
     void saveAppsubmission(AppSubmissionDto appSubmissionDto );
     void setDraftNo(AppSubmissionDto appSubmissionDto);

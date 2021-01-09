@@ -141,7 +141,15 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
         entity.setHeaders(headers);
         return entity;
     }
-    
+
+    @Override
+    public FeignResponseEntity<AppSubmissionDto> saveRFCOrRenewRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 
     @Override
     public FeignResponseEntity<List<AppPremisesCorrelationDto>> listAppPremisesCorrelation( String appId){

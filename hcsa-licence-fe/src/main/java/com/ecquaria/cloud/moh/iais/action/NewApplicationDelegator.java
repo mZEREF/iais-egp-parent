@@ -1653,15 +1653,46 @@ public class NewApplicationDelegator {
         //handler primary doc
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionService.handlerPrimaryDoc(appSubmissionDto.getAppGrpPremisesDtoList(),appSubmissionDto.getAppGrpPrimaryDocDtos());
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
+
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+            AppSubmissionDto submissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = submissionDto.getAppGrpPremisesDtoList();
+            List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
+            submissionDto.setAppGrpPremisesDtoList(appSubmissionDto.getAppGrpPremisesDtoList());
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList1 = submissionDto.getAppSvcRelatedInfoDtoList();
+            List<AppSvcRelatedInfoDto> list=new ArrayList<>(appSvcRelatedInfoDtoList1.size());
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
+                for(AppSvcRelatedInfoDto svcRelatedInfoDto : appSvcRelatedInfoDtoList1){
+                    if(appSvcRelatedInfoDto.getServiceId().equals(svcRelatedInfoDto.getServiceId())){
+                        list.add(svcRelatedInfoDto);
+                    }
+                }
+            }
+            List<AppGrpPremisesDto> premisesDtoList=new ArrayList<>(appGrpPremisesDtoList.size());
+            for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+                for(AppGrpPremisesDto appGrpPremisesDto1 : appGrpPremisesDtoList1){
+                    if(appGrpPremisesDto.getPremisesIndexNo().equals(appGrpPremisesDto1.getPremisesIndexNo())){
+                        premisesDtoList.add(appGrpPremisesDto);
+                    }
+                }
+            }
+            appGrpPremisesDtoList.removeAll(premisesDtoList);
+            appGrpPremisesDtoList1.addAll(appGrpPremisesDtoList);
+            appSvcRelatedInfoDtoList1.removeAll(list);
+            appSvcRelatedInfoDtoList.addAll(appSvcRelatedInfoDtoList1);
+            appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
+        }
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
         //update message statusdo
         String msgId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         appSubmissionService.updateMsgStatus(msgId, MessageConstants.MESSAGE_STATUS_RESPONSE);
-        appSubmissionDto= applicationFeClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto).getEntity();
-/*
-        appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
-*/
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+            appSubmissionDto= applicationFeClient.saveRFCOrRenewRequestInformation(appSubmissionRequestInformationDto).getEntity();
+        }else {
+            appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
+        }
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
             List<AppSubmissionDto> appSubmissionDtos = new ArrayList<>(1);
             appSubmissionDto.setAmountStr("N/A");

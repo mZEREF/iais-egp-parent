@@ -107,6 +107,8 @@ public interface ApplicationFeClient {
     @PostMapping(path = "/iais-submission/requestInformation", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> saveReqeustInformationSubmision(@RequestBody AppSubmissionRequestInformationDto appSubmissionRequestInformationDto);
 
+    @PostMapping(path = "/iais-submission/save-RFC-renew-requestInformation", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppSubmissionDto> saveRFCOrRenewRequestInformation(@RequestBody AppSubmissionRequestInformationDto appSubmissionRequestInformationDto);
     @GetMapping(path = "/iais-application/application-premises-by-app-id/{applicationId}")
     FeignResponseEntity<List<AppGrpPremisesDto>> getAppGrpPremisesDtoByAppGroId(@PathVariable("applicationId") String applicationId);
 

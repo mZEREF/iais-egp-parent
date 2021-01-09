@@ -584,9 +584,6 @@ public class RequestForChangeDelegator {
         log.debug(StringUtil.changeForLog("the do submitPayment end ...."));
 
     }
-    private boolean iftranfer(String UNID,String licenceId,String pageType){
-        return true;
-    }
 
     private void init(BaseProcessClass bpc, String licenceId) throws Exception {
         HcsaServiceCacheHelper.flushServiceMapping();
