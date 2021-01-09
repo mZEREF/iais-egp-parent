@@ -44,16 +44,6 @@ public class LogoutDelegate {
             String userid=session_mgmt.getCurrentUserID();
             String sessionId = bpc.request.getSession().getId();
 
-            //Add audit trail
-            AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-            auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGOUT);
-
-            if (loginContext != null){
-                String curDomain = loginContext.getUserDomain();
-                auditTrailDto.setOperationType(AppConsts.USER_DOMAIN_INTERNET.equalsIgnoreCase(curDomain) ?
-                        AuditTrailConsts.OPERATION_TYPE_INTERNET : AuditTrailConsts.OPERATION_TYPE_INTRANET);
-                auditTrailDto.setFunctionName(StringUtil.capitalize(loginContext.getUserDomain()) + " Logout");
-            }
 
             if(!StringUtil.isEmpty(userid) && !StringUtil.isEmpty(userdomain)){
                 userIden.setUserDomain(userdomain);
@@ -77,7 +67,21 @@ public class LogoutDelegate {
             }
 
             try {
-                AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
+                //Add audit trail
+                AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+                if (auditTrailDto != null){
+                    log.debug(StringUtil.changeForLog("=====>>>>> current logout" + userid));
+
+                    auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGOUT);
+                    if (loginContext != null){
+                        String curDomain = loginContext.getUserDomain();
+                        auditTrailDto.setOperationType(AppConsts.USER_DOMAIN_INTERNET.equalsIgnoreCase(curDomain) ?
+                                AuditTrailConsts.OPERATION_TYPE_INTERNET : AuditTrailConsts.OPERATION_TYPE_INTRANET);
+                        auditTrailDto.setFunctionName(StringUtil.capitalize(loginContext.getUserDomain()) + " Logout");
+                    }
+                    AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
+                }
+
                 AuditTrailDto loginDto = bbAuditTrailClient.getLoginInfoBySessionId(sessionId).getEntity();
                 Date now = new Date();
                 if (loginDto != null) {

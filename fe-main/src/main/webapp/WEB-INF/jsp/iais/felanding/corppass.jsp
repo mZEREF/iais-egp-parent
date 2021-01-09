@@ -53,7 +53,7 @@
                   </div>
                   <div class="form-group">
                     <label class="sr-only" for="corpPassId">CorpPass ID</label>
-                    <input id="corpPassId" maxlength="15" name="corpPassId" onkeypress="doKeyPress(event, 'login')" placeholder="CORPPASS ID" class="form-control" required="required" type="corpPassid" value="" autocomplete="off">
+                    <input id="corpPassId" maxlength="9" name="corpPassId" onkeypress="doKeyPress(event, 'login')" placeholder="CORPPASS ID" class="form-control" required="required" type="corpPassid" value="" autocomplete="off">
                     <a class="topposition tooltipclick" title="" data-placement="left" data-toggle="tooltip" data-trigger="click" tabindex="-1" href="#" data-original-title="CorpPass ID registered to your account."><span class="icon-info-login-main login-info-padding"></span></a>
                   </div>
 
