@@ -716,6 +716,7 @@ public class NewApplicationAjaxController {
             Map<String, String> designationAttr = IaisCommonUtils.genNewHashMap();
             designationAttr.put("name", "designation");
             designationAttr.put("style", "display: none;");
+            designationAttr.put("class", "designation");
             String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designation, NewApplicationDelegator.FIRESTOPTION, null);
             sql = sql.replace("(0)", String.valueOf(hasNumber + 1));
             sql = sql.replace("(1)", personnelSelectStr);

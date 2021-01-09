@@ -410,6 +410,12 @@
                       $('#addPsnDiv').addClass('hidden');
                   }
                   changePsnItem();
+                  $("div.designation->ul").mCustomScrollbar({
+                          advanced: {
+                              updateOnContentResize: true
+                          }
+                      }
+                  );
               }else{
                   $('.spErrorMsg').html(data.errInfo);
               }
