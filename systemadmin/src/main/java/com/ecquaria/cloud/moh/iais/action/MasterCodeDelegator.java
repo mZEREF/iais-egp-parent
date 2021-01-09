@@ -48,6 +48,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * @Author Hua_Chong
@@ -213,6 +214,9 @@ public class MasterCodeDelegator {
                 }
             }
         }
+        if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2){
+            validationResult.setHasErrors(true);
+        }
         if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
             validationResult.setHasErrors(true);
         }
@@ -231,6 +235,14 @@ public class MasterCodeDelegator {
                         //The effective date of inactive data must be a future time
                         errorMap.put("effectiveTo", errMsg);
                     }
+                }
+                if (masterCodeDto.getSequence() == -1){
+                    String errMsg = MessageUtil.getMessageDesc("MCUPERR008");
+                    errorMap.put("sequence", errMsg);
+                }
+                if (masterCodeDto.getSequence() == -2){
+                    String errMsg = MessageUtil.getMessageDesc("MCUPERR008");
+                    errorMap.put("sequence", errMsg);
                 }
             }
             if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
@@ -1001,12 +1013,27 @@ public class MasterCodeDelegator {
     }
 
     private void getCategoryValueFromPage(MasterCodeDto masterCodeDto, HttpServletRequest request) throws ParseException {
+        String codeCategorySequence = ParamUtil.getString(request, "codeCategorySequence");
         masterCodeDto.setMasterCodeId(null);
         masterCodeDto.setCodeValue(ParamUtil.getString(request, "codeCategoryValue"));
         masterCodeDto.setCodeDescription(ParamUtil.getString(request, "codeCategoryDescription"));
         masterCodeDto.setStatus(ParamUtil.getString(request, "codeCategoryStatus"));
         masterCodeDto.setRemarks(ParamUtil.getString(request, "codeCategoryRemarks"));
-        masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, "codeCategorySequence")) ? null : ParamUtil.getInt(request, "codeCategorySequence") * 1000);
+        if (StringUtil.isEmpty(codeCategorySequence)){
+            masterCodeDto.setSequence(null);
+        }else{
+            if (!isDouble(codeCategorySequence)) {
+                masterCodeDto.setSequence(-1);
+            }else{
+                int codeCategorySequenceInt = ParamUtil.getInt(request, "codeCategorySequence") * 1000;
+                if (codeCategorySequenceInt < 0){
+                    masterCodeDto.setSequence(-2);
+                }else{
+                    masterCodeDto.setSequence(codeCategorySequenceInt);
+                }
+
+            }
+        }
         masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, "categoryEsd")));
         masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, "categoryEed")));
         masterCodeDto.setIsEditable(1);
@@ -1016,6 +1043,11 @@ public class MasterCodeDelegator {
 
     private void logAboutStart(String methodName) {
         log.debug(StringUtil.changeForLog("**** The  " + methodName + "  Start ****"));
+    }
+
+    private static boolean isDouble(String str) {
+        Pattern pattern = Pattern.compile("^[-\\+]?[.\\d]*$");
+        return pattern.matcher(str).matches();
     }
 
     private void prepareSelect(HttpServletRequest request) {
