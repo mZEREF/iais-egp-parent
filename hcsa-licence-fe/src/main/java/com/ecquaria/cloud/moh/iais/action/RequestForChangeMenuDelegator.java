@@ -138,6 +138,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG, null);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, "txnRefNo", null);
+        ParamUtil.setSessionAttr(bpc.request, "emailAddress", null);
         removeSession(bpc);
         requestForInformation(bpc, appNo);
         ParamUtil.setSessionAttr(bpc.request, ACKMESSAGE, null);
@@ -782,11 +783,6 @@ public class RequestForChangeMenuDelegator {
             compareNewDto.setOfficeTelNo(officeTelNo1);
             compareNewDto.setMobileNo(mobileNo1);
             compareNewDto.setEmailAddr(emailAddr1);
-            if (!compareNewDto.equals(oldDto)) {
-                return true;
-            } else {
-                return false;
-            }
         } else {
             compareNewDto.setIdNo(idNo);
             compareNewDto.setIdType(idType);
@@ -796,11 +792,11 @@ public class RequestForChangeMenuDelegator {
             compareNewDto.setOfficeTelNo(officeTelNo);
             compareNewDto.setMobileNo(mobileNo);
             compareNewDto.setEmailAddr(emailAddr);
-            if (!compareNewDto.equals(oldDto)) {
-                return true;
-            } else {
-                return false;
-            }
+        }
+        if (!compareNewDto.equals(oldDto)) {
+            return true;
+        } else {
+            return false;
         }
     }
 
