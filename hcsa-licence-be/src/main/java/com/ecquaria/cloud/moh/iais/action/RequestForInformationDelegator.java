@@ -207,7 +207,8 @@ public class RequestForInformationDelegator {
         String rfiStatus=ParamUtil.getString(request,"status");
         NewRfiPageListDto newRfiPageListDto=new NewRfiPageListDto();
         newRfiPageListDto.setDate(date);
-        if(date==null){
+        String actionType = ParamUtil.getRequestString(bpc.request, "crud_action_type");
+        if(date==null&& "new".equals(actionType)){
             Calendar calendar=Calendar.getInstance();
             calendar.add(Calendar.DATE, systemParamConfig.getRfiDueDate());
             String dueDay=new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(calendar.getTime());
