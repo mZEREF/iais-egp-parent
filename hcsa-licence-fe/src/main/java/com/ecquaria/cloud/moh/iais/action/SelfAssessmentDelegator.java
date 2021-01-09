@@ -80,7 +80,7 @@ public class SelfAssessmentDelegator {
             appNo = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER);
         }catch (Exception e){
             log.error("====>>>>>>>message back receive value >>>>applicationNumber>>>>>>");
-            log.error(e.getMessage(), e);
+            log.error(e.getMessage());
             appNo = ParamUtil.getString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER);
         }
 
