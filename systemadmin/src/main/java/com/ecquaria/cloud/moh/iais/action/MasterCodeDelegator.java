@@ -777,6 +777,9 @@ public class MasterCodeDelegator {
         if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
             validationResult.setHasErrors(true);
         }
+        if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2){
+            validationResult.setHasErrors(true);
+        }
         if (validationResult != null && validationResult.isHasErrors()) {
             errorMap = validationResult.retrieveAll();
             if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
@@ -784,6 +787,14 @@ public class MasterCodeDelegator {
                     String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
                     errorMap.put("effectiveTo", errMsg);
                 }
+            }
+            if (masterCodeDto.getSequence() == -1){
+                String errMsg = MessageUtil.getMessageDesc("MCUPERR008");
+                errorMap.put("sequence", errMsg);
+            }
+            if (masterCodeDto.getSequence() == -2){
+                String errMsg = MessageUtil.getMessageDesc("MCUPERR008");
+                errorMap.put("sequence", errMsg);
             }
             if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
                 validationResult.setHasErrors(true);
@@ -882,6 +893,9 @@ public class MasterCodeDelegator {
                 validationEditResult.setHasErrors(true);
             }
         }
+        if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2){
+            validationEditResult.setHasErrors(true);
+        }
         if (validationEditResult != null && validationEditResult.isHasErrors()) {
             logAboutStart("Edit validation");
             if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
@@ -893,6 +907,14 @@ public class MasterCodeDelegator {
             if(AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
                 errorMap.remove("effectiveFrom");
                 errorMap.remove("effectiveTo");
+            }
+            if (masterCodeDto.getSequence() == -1){
+                String errMsg = MessageUtil.getMessageDesc("MCUPERR008");
+                errorMap.put("sequence", errMsg);
+            }
+            if (masterCodeDto.getSequence() == -2){
+                String errMsg = MessageUtil.getMessageDesc("MCUPERR008");
+                errorMap.put("sequence", errMsg);
             }
             if(errorMap != null && errorMap.size() > 0){
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
@@ -984,11 +1006,27 @@ public class MasterCodeDelegator {
     }
 
     private void getEditValueFromPage(MasterCodeDto masterCodeDto, HttpServletRequest request) throws ParseException {
+        String codeSequenceEd = ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_ED);
         masterCodeDto.setCodeValue(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VALUE_ED));
         masterCodeDto.setCodeDescription(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_DESCRIPTION_ED));
         masterCodeDto.setStatus(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_STATUS_ED));
         masterCodeDto.setRemarks(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_REMARKS_ED));
         masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_ED)) ? null : ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_ED) * 1000);
+        if (StringUtil.isEmpty(codeSequenceEd)){
+            masterCodeDto.setSequence(null);
+        }else{
+            if (!isDouble(codeSequenceEd)) {
+                masterCodeDto.setSequence(-1);
+            }else{
+                int codeCategorySequenceInt = ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_ED) * 1000;
+                if (codeCategorySequenceInt < 0){
+                    masterCodeDto.setSequence(-2);
+                }else{
+                    masterCodeDto.setSequence(codeCategorySequenceInt);
+                }
+
+            }
+        }
         masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_FROM_ED)));
         masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_TO_ED)));
         masterCodeDto.setIsEditable(1);
@@ -997,12 +1035,28 @@ public class MasterCodeDelegator {
     }
 
     private void getValueFromPage(MasterCodeDto masterCodeDto, HttpServletRequest request) throws ParseException {
+        String codeSequenceCMC = ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC);
         masterCodeDto.setCodeValue(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VALUE_CMC));
         masterCodeDto.setCodeCategory(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_CATEGORY_CMC));
         masterCodeDto.setCodeDescription(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_DESCRIPTION_CMC));
         masterCodeDto.setFilterValue(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_FILTER_VALUE_CMC));
         masterCodeDto.setStatus(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_STATUS_CMC));
         masterCodeDto.setRemarks(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_REMARKS_CMC));
+        if (StringUtil.isEmpty(codeSequenceCMC)){
+            masterCodeDto.setSequence(null);
+        }else{
+            if (!isDouble(codeSequenceCMC)) {
+                masterCodeDto.setSequence(-1);
+            }else{
+                int codeCategorySequenceInt = ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC) * 1000;
+                if (codeCategorySequenceInt < 0){
+                    masterCodeDto.setSequence(-2);
+                }else{
+                    masterCodeDto.setSequence(codeCategorySequenceInt);
+                }
+
+            }
+        }
         masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC)) ? null : ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC) * 1000);
         masterCodeDto.setVersion(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_CMC)) ? null : Float.parseFloat(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_CMC)));
         masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_FROM_CMC)));
