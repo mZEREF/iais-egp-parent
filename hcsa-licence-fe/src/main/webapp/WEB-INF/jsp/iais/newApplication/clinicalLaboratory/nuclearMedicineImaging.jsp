@@ -145,7 +145,7 @@
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-7">
-                                      <iais:select  name="designation" options="NuclearMedicineImagingDesignation"  value="${appSvcPersonnelDto.designation}" firstOption="Please Select"></iais:select>
+                                      <iais:select cssClass="designation"  name="designation" options="NuclearMedicineImagingDesignation"  value="${appSvcPersonnelDto.designation}" firstOption="Please Select"></iais:select>
                                       <span class="error-msg" name="iaisErrorMsg" id="error_designation${status.index}"></span>
                                     </div>
                                   </div>
