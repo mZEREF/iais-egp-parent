@@ -208,12 +208,14 @@ public class ResponseForInformationDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) httpServletRequest.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         if(!IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto())){
             for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
+                doc.setPassDocValidate(true);
                 CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+doc.getId());
                 String errDocument=MessageUtil.replaceMessage("GENERAL_ERR0006","Supporting Documents","field");
                 String commDelFlag = ParamUtil.getString(mulReq, "commDelFlag"+doc.getId());
                 if(licPremisesReqForInfoDto.isNeedDocument()&&("N".equals(commDelFlag)||doc.getDocSize()==null)){
 
                     if(file == null || file.getSize() == 0){
+                        doc.setPassDocValidate(false);
                         errMap.put("UploadFile"+doc.getId(),errDocument);
                     }else{
                         List<String> fileTypes = Arrays.asList(systemParamConfig.getUploadFileType().split(","));
@@ -223,15 +225,16 @@ public class ResponseForInformationDelegator {
                         Boolean fileType = booleanMap.get("fileType");
                         //size
                         if(!fileSize){
+                            doc.setPassDocValidate(false);
                             errMap.put("UploadFile"+doc.getId(), MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(systemParamConfig.getUploadFileLimit()),"sizeMax"));
                         }
                         //type
                         if(!fileType){
+                            doc.setPassDocValidate(false);
                             errMap.put("UploadFile"+doc.getId(),MessageUtil.replaceMessage("GENERAL_ERR0018", systemParamConfig.getUploadFileType(),"fileType"));
                         }
                     }
                 }
-
 
             }
         }
