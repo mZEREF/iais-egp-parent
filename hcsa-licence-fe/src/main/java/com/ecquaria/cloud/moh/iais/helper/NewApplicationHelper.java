@@ -2169,12 +2169,14 @@ public class NewApplicationHelper {
             String premisesHciPre = "";
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
                 premisesHciPre = appGrpPremisesDto.getHciName() + appGrpPremisesDto.getPostalCode() + appGrpPremisesDto.getBlkNo();
+                premisesHciList.add(premisesHciPre + appGrpPremisesDto.getFloorNo() + appGrpPremisesDto.getUnitNo());
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
-                premisesHciPre = appGrpPremisesDto.getConveyanceVehicleNo() + appGrpPremisesDto.getPostalCode() + appGrpPremisesDto.getBlkNo();
+                premisesHciPre = appGrpPremisesDto.getConveyanceVehicleNo() + appGrpPremisesDto.getConveyancePostalCode() + appGrpPremisesDto.getConveyanceBlockNo();
+                premisesHciList.add(premisesHciPre + appGrpPremisesDto.getConveyanceFloorNo() + appGrpPremisesDto.getConveyanceUnitNo());
             }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
-                premisesHciPre = appGrpPremisesDto.getPostalCode() + appGrpPremisesDto.getBlkNo();
+                premisesHciPre = appGrpPremisesDto.getOffSitePostalCode() + appGrpPremisesDto.getOffSiteBlockNo();
+                premisesHciList.add(premisesHciPre + appGrpPremisesDto.getOffSiteFloorNo() + appGrpPremisesDto.getOffSiteUnitNo());
             }
-            premisesHciList.add(premisesHciPre + appGrpPremisesDto.getFloorNo() + appGrpPremisesDto.getUnitNo());
             List<AppPremisesOperationalUnitDto> operationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
             if(!IaisCommonUtils.isEmpty(operationalUnitDtos)){
                 for(AppPremisesOperationalUnitDto operationalUnitDto:operationalUnitDtos){
