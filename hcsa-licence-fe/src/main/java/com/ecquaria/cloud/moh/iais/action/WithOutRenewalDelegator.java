@@ -703,7 +703,6 @@ public class WithOutRenewalDelegator {
                                 } else {
                                     appSubmissionDtoByLicenceId.setAutoRfc(false);
                                 }
-                                appSubmissionDtoByLicenceId.setAppGrpPrimaryDocDtos(null);
                                 RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
                                 requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
                                 if (appSubmissionDtoByLicenceId.isAutoRfc()) {
