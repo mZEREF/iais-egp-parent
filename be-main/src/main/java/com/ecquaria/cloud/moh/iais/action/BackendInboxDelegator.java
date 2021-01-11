@@ -231,22 +231,24 @@ public class BackendInboxDelegator {
                 ParamUtil.setSessionAttr(request,"backSearchParamFromHcsaApplication",null);
                 return searchParamGroupFromHsca;
             }
-            searchParamGroup = new SearchParam(InspectionAppGroupQueryDto.class.getName());
-            searchParamGroup.setPageSize(SysParamUtil.getDefaultPageSize());
-            searchParamGroup.setPageNo(1);
-            searchParamGroup.setSort("SUBMIT_DT", SearchParam.ASCENDING);
+            newSearchParam();
         }else{
             if(searchParamGroup == null ){
-                searchParamGroup = new SearchParam(InspectionAppGroupQueryDto.class.getName());
-                searchParamGroup.setPageSize(SysParamUtil.getDefaultPageSize());
-                searchParamGroup.setPageNo(1);
-                searchParamGroup.setSort("SUBMIT_DT", SearchParam.ASCENDING);
+                newSearchParam();
             }
         }
 
 
         return searchParamGroup;
 
+    }
+
+    private SearchParam newSearchParam(){
+        SearchParam searchParamGroup = new SearchParam(InspectionAppGroupQueryDto.class.getName());
+        searchParamGroup.setPageSize(SysParamUtil.getDefaultPageSize());
+        searchParamGroup.setPageNo(1);
+        searchParamGroup.setSort("SUBMIT_DT", SearchParam.ASCENDING);
+        return searchParamGroup;
     }
 
     /**
