@@ -45,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.role.Role;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.kafka.model.Submission;
@@ -55,10 +56,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author: jiahao
@@ -110,6 +108,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     static String[] category = {"ADTYPE001", "ADTYPE002", "ADTYPE003"};
     @Autowired
     private AppointmentClient appointmentClient;
+    @Autowired
+    private EgpUserClient egpUserClient;
     @Override
     public void sendMailForAuditPlanerForSms(String emailKey) {
         List<OrgUserDto> userDtoList = organizationClient. retrieveUserRoleByRoleId(RoleConsts.USER_ROLE_AUDIT_PLAN).getEntity();
@@ -727,6 +727,42 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     @Override
     public List<HcsaServiceDto> getActiveHCIServices() {
         return hcsaConfigClient.getActiveServices().getEntity();
+    }
+
+    @Override
+    public List<SelectOption> getCanViewAuditRoles(Set<String> roleIds){
+        List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
+        List<Role> roles = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
+        add(roleIds,RoleConsts.USER_ROLE_AUDIT_PLAN,selectOptionArrayList,roles);
+        add(roleIds,RoleConsts.USER_ROLE_INSPECTIOR,selectOptionArrayList,roles);
+       return selectOptionArrayList;
+    }
+
+    private void add(Set<String> roleIds,String roleId, List<SelectOption> selectOptionArrayList,List<Role> roles){
+        for (String item : roleIds){
+            if(roleId.equalsIgnoreCase(item)){
+                selectOptionArrayList.add(new SelectOption(item,item));
+                break;
+            }
+        }
+    }
+    @Override
+    public  SelectOption getRoleSelectOption(List<Role> roles,String roleId){
+       if(IaisCommonUtils.isEmpty(roles) || StringUtil.isEmpty(roleId)){
+           return null;
+       }
+        for(Role role : roles){
+            if(roleId.equalsIgnoreCase(role.getId())){
+                return new SelectOption(role.getId(),role.getName());
+            }
+        }
+        return null;
+    }
+    @Override
+    public List<Role> getRolesByDomain(String domain) {
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
+        map.put("userDomain", domain);
+        return egpUserClient.search(map).getEntity();
     }
 
     @Override

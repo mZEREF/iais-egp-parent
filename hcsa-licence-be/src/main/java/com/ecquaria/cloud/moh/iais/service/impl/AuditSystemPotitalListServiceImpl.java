@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -312,6 +313,9 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             searchParam.addFilter("number_generate", dto.getGenerateNum(), true);
         }
 
+        if(RoleConsts.USER_ROLE_INSPECTIOR.equalsIgnoreCase(dto.getSelectRole())){
+            searchParam.addFilter("ins_id", IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid(), true);
+        }
         if(!StringUtil.isEmpty(dto.getLastInspectionStart())){
             try {
                 searchParam.addFilter("last_insp_start",Formatter.formatDateTime( Formatter.parseDate(dto.getLastInspectionStart()),"yyyy-MM-dd HH:mm:ss"), true);

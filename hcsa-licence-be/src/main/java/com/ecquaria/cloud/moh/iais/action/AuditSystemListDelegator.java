@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AuditAssginListValidateDto;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -68,6 +70,12 @@ public class AuditSystemListDelegator {
     public void pre(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<SelectOption> roleIds = auditSystemListService.getCanViewAuditRoles(loginContext.getRoleIds());
+        if(!IaisCommonUtils.isEmpty(roleIds)){
+            ParamUtil.setRequestAttr(request, "roleIdsForAudit", (Serializable) roleIds);
+            ParamUtil.setRequestAttr(request, "roleIdsForAuditSelect",  roleIds.get(0).getValue());
+        }
         List<HcsaServiceDto> hcsaServiceDtos = auditSystemListService.getActiveHCIServices();
         ParamUtil.setRequestAttr(request, "activeHCIServiceNames", (Serializable) auditSystemListService.getActiveHCIServicesByNameOrCode(hcsaServiceDtos, HcsaLicenceBeConstant.GET_HCI_SERVICE_SELECTION_NAME_TAG));
         ParamUtil.setRequestAttr(request, "activeHCIServiceCodes", (Serializable) auditSystemListService.getActiveHCIServicesByNameOrCode(hcsaServiceDtos, HcsaLicenceBeConstant.GET_HCI_SERVICE_SELECTION_COED_TAG));
@@ -92,6 +100,7 @@ public class AuditSystemListDelegator {
         String genNum = ParamUtil.getString(request, "genNum");
         String svcNameSelect = ParamUtil.getStringsToString(request, "svcName");
         String svcNameCodeSelect = ParamUtil.getStringsToString(request, "hclSCode");
+        String selectRole = ParamUtil.getString(request,"roleIdsForAuditSelect");
         AuditSystemPotentialDto dto = auditSystemPotitalListService.initDtoForSearch();
         List<String> serviceNmaeList = IaisCommonUtils.genNewArrayList();
         if(serviceNames != null && serviceNames.length >0){
@@ -115,6 +124,7 @@ public class AuditSystemListDelegator {
         dto.setGenerateNumString(genNum);
         if (!StringUtil.isEmpty(genNum) && StringUtil.stringIsFewDecimal(genNum,null))
             dto.setGenerateNum(Integer.valueOf(genNum));
+        dto.setSelectRole(selectRole);
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, dto);
         AduitSystemGenerateValidate auditTestValidate = new AduitSystemGenerateValidate();
         Map<String, String> errMap = auditTestValidate.validate(request);

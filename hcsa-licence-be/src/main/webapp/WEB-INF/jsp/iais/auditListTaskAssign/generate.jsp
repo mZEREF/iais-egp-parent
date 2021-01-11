@@ -21,6 +21,12 @@
         <div class="bg-title"><h2>Risk Score Module</h2></div>
         <iais:section title="" id="potentialAuditableHCIs">
             <iais:row>
+                <iais:field value="Role"/>
+                <iais:value width="8">
+                    <iais:select name="roleIdsForAuditSelect" options="roleIdsForAudit"  value="${roleIdsForAuditSelect}"/>
+                </iais:value>
+            </iais:row>
+            <iais:row>
             <iais:field value="Service Name"/>
                 <iais:value width="8">
                     <iais:multipleSelect name="svcName" selectValue="${auditSystemPotentialDtoForSearch.svcNameSelect}" options="activeHCIServiceNames"></iais:multipleSelect>
