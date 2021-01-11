@@ -1348,7 +1348,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         if(inspectionFillCheckListDto == null){
             return inspectionFillCheckListDto;
         }
-
+        Map<String, String> draftRemarkMaps = IaisCommonUtils.genNewHashMap();
+        inspectionFillCheckListDto.setDraftRemarkMaps(draftRemarkMaps);
         int userNum = orgUserDtos.size();
         if(userNum > 1){
             inspectionFillCheckListDto.setMoreOneDraft(true);
@@ -1377,6 +1378,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         if(IaisCommonUtils.isEmpty(appPremInsDraftDtos)){
             return inspectionFillCheckListDto;
         }else {
+            setDraftRemarkMaps(draftRemarkMaps,appPremInsDraftDtos);
             inspectionFillCheckListDto.setStringInspectionCheckQuestionDtoMap( getStringInspectionCheckQuestionDtoMapByList( inspectionCheckQuestionDtos));
             inspectionFillCheckListDto.setOtherInspectionOfficer(getOtherOffs(appPremInsDraftDtos));
             List<InspectionCheckListAnswerDto> answerDtos = getInspectionCheckListAnswerDtosByAppPremInsDraftDtos(appPremInsDraftDtos);
@@ -1405,6 +1407,14 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         }
 
         return inspectionFillCheckListDto;
+    }
+
+    private  void setDraftRemarkMaps( Map<String, String> draftRemarkMaps, List<AppPremInsDraftDto> appPremInsDraftDtos){
+        for(AppPremInsDraftDto appPremInsDraftDto : appPremInsDraftDtos){
+            if(!StringUtil.isEmpty(appPremInsDraftDto.getRemarks())){
+                draftRemarkMaps.put(appPremInsDraftDto.getCreatedBy(),appPremInsDraftDto.getRemarks());
+            }
+        }
     }
 
     private  void  setDraftAnswerByAnswerDtosOne( List<InspectionCheckListAnswerDto> answerDtosOne ,  Map<String, AnswerForDifDto> answerForDifDtoMaps ){

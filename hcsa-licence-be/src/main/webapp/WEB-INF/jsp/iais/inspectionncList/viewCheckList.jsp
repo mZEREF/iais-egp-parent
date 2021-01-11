@@ -49,6 +49,12 @@
                                     <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.generalDo}"/>/<c:out value="${serListDto.generalTotal}"/><br>
                                     <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.generalNc}"/>
                                     <h3>General</h3>
+                                    <div class="form-group">
+                                        <label class="col-xs-12 col-md-4 control-label" >Remarks</label>
+                                        <div class="col-xs-8 col-sm-6 col-md-5">
+                                            <p> <c:out value="${commonDto.draftRemarkMaps[inspectorUserFinishChecklistId]}"/></p>
+                                        </div>
+                                    </div>
                                     <div class="table-gp">
                                         <c:forEach var ="section" items ="${commonDto.sectionDtoList}" varStatus="one">
                                             <br/>

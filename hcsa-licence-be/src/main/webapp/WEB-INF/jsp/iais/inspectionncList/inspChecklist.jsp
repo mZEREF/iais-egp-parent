@@ -1,5 +1,11 @@
 <c:forEach var = "inspector" items="${inspectorsParticipant}"  varStatus="inspectorsStatus">
     <div ${((nowComTabIn == null || nowComTabIn== 'General') && ( nowTabIn == inspector.id)) ? '' : 'hidden'} >
+        <div class="form-group">
+            <label class="col-xs-12 col-md-4 control-label" >Remarks</label>
+            <div class="col-xs-8 col-sm-6 col-md-5">
+                <p> <c:out value="${commonDto.draftRemarkMaps[inspector.id]}"/> </p>
+            </div>
+        </div>
 <div class="table-gp">
     <c:forEach var ="section" items ="${commonDto.sectionDtoList}" varStatus="one">
         <br/>
