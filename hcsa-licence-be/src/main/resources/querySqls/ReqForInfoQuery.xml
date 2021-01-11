@@ -53,7 +53,7 @@
             <#if appGrpPmtStatus??> AND oev.PMT_STATUS = :appGrpPmtStatus</#if>
             <#if subDate??> AND oev.submit_dt >= convert(datetime,:subDate)</#if>
             <#if toDate??> AND oev.submit_dt <= convert(datetime,:toDate)</#if>
-            <#if personnelName??> AND charindex(:personnelName, oev.appSvcPerName )>0</#if>
+            <#if personnelName??> AND (charindex(:personnelName, oev.appSvcPerName )>0 OR charindex(:personnelName, oev.appGrpPerName )>0)</#if>
             <#if personnelId??> AND charindex(:personnelId, oev.ID_NO )>0</#if>
             <#if personnelRegnNo??> AND (charindex( :personnelRegnNo, oev.LIC_PROF_REG_NO )>0 OR charindex( :personnelRegnNo, oev.APP_PROF_REG_NO )>0 OR charindex( :personnelRegnNo, oev.APP_SVC_PROF_REG_NO )>0)</#if>
             <#if personnelRole??> AND  oev.PSN_TYPE = :personnelRole</#if>

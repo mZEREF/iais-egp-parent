@@ -83,7 +83,7 @@
                                                         <td class="col-xs-6">&nbsp;${organizationLicDto.licenseeDto.name}<c:if test="${empty organizationLicDto.licenseeDto.name}">-</c:if></td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">Postal code</td>
+                                                        <td align="right">Postal Code</td>
                                                         <td>&nbsp;${organizationLicDto.licenseeDto.postalCode}<c:if test="${empty organizationLicDto.licenseeDto.postalCode}">-</c:if></td>
                                                     </tr>
                                                     <tr>
@@ -221,7 +221,7 @@
                                                         <td>&nbsp;${organizationLicDto.licenseeIndividualDto.idNo}<c:if test="${empty organizationLicDto.licenseeIndividualDto.idNo}">-</c:if></td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">Postal code</td>
+                                                        <td align="right">Postal Code</td>
                                                         <td>&nbsp;${organizationLicDto.licenseeDto.postalCode}<c:if test="${empty organizationLicDto.licenseeDto.postalCode}">-</c:if></td>
                                                     </tr>
                                                     <tr>
