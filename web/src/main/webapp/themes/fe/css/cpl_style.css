@@ -5625,3 +5625,7 @@ section.logo img {
 {
   padding: 14px 55px 14px 15px;
 }
+
+.datepicker {
+  z-index:999 !important;
+}
