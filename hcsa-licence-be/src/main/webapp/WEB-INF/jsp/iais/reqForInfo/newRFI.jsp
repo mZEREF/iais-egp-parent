@@ -226,8 +226,8 @@
                                         </c:if>
                                     </c:forEach>
                                 </c:if>
-                            </div>
-                            <div class="rfiFormMarkPoint">
+                                <div class="rfiFormMarkPoint">
+                                </div>
                             </div>
                         </div>
                     </div>
