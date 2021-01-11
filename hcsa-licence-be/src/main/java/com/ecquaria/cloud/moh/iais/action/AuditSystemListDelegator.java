@@ -76,6 +76,10 @@ public class AuditSystemListDelegator {
             ParamUtil.setRequestAttr(request, "roleIdsForAudit", (Serializable) roleIds);
             ParamUtil.setRequestAttr(request, "roleIdsForAuditSelect",  roleIds.get(0).getValue());
         }
+        AuditSystemPotentialDto dto = (AuditSystemPotentialDto) ParamUtil.getSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME);
+        if(dto != null){
+            ParamUtil.setRequestAttr(request, "roleIdsForAuditSelect",  dto.getSelectRole());
+        }
         List<HcsaServiceDto> hcsaServiceDtos = auditSystemListService.getActiveHCIServices();
         ParamUtil.setRequestAttr(request, "activeHCIServiceNames", (Serializable) auditSystemListService.getActiveHCIServicesByNameOrCode(hcsaServiceDtos, HcsaLicenceBeConstant.GET_HCI_SERVICE_SELECTION_NAME_TAG));
         ParamUtil.setRequestAttr(request, "activeHCIServiceCodes", (Serializable) auditSystemListService.getActiveHCIServicesByNameOrCode(hcsaServiceDtos, HcsaLicenceBeConstant.GET_HCI_SERVICE_SELECTION_COED_TAG));

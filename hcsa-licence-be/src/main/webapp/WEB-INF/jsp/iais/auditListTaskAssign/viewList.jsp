@@ -115,9 +115,11 @@
                                 <button type="button" class="btn btn-secondary" onclick="javascript:cancel();">Cancel
                                 </button>
                             </c:if>
+                            <c:if test="${auditSystemPotentialDtoForSearch.selectRole eq 'APO'}">
                             <button type="button" class="btn btn-primary next" onclick="javascript:confirm();">Confirm
                                 to Audit
                             </button>
+                            </c:if>
                             <button type="button" class="btn btn-primary next" onclick="javascript:cancelAudit();">Cancel
                                 Audit Task
                             </button>
