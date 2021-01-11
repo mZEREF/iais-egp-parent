@@ -7,7 +7,7 @@
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
-            String webroot=IaisEGPConstant.BE_CSS_ROOT;
+            String webroot=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
 <%@ page
         import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>

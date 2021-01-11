@@ -18,7 +18,7 @@
 <webui:setLayout name="iais-intranet"/>
 
 <%
-  String webroot=IaisEGPConstant.BE_CSS_ROOT;
+  String webroot=IaisEGPConstant.COMMON_CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
 <style type="text/css">
   #blockOutStart {

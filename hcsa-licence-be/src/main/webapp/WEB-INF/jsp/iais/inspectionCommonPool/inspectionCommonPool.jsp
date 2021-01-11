@@ -11,7 +11,7 @@
 <webui:setLayout name="iais-intranet"/>
 
 <%
-  String webroot=IaisEGPConstant.BE_CSS_ROOT;
+  String webroot=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
 

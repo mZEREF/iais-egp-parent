@@ -6,7 +6,7 @@
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
-           String webroot=IaisEGPConstant.BE_CSS_ROOT;
+           String webroot=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
