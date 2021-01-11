@@ -75,10 +75,10 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             LicPremisesAuditDto licPremisesAuditDto =  appViewDto.getLicPremisesAuditDto();
             if(licPremisesAuditDto.getInRiskSocre().equals(0)){
                 if(StringUtil.isEmpty(licPremisesAuditDto.getIncludeRiskType())){
-                    errMap.put("periods","GENERAL_ERR0039");
+                    errMap.put("periods","GENERAL_ERR0006");
                 }else if(licPremisesAuditDto.getIncludeRiskType().equalsIgnoreCase(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY)) {
                     if(StringUtil.isEmpty(licPremisesAuditDto.getLgrRemarks())){
-                        errMap.put("frameworkRemarks","GENERAL_ERR0039");
+                        errMap.put("frameworkRemarks","GENERAL_ERR0006");
                     }else if(licPremisesAuditDto.getIncludeRiskType().length() > 2000){
                         errMap.put("frameworkRemarks",MessageUtil.replaceMessage("UC_INSP_ERR0002","2000","4000"));
                     }
@@ -322,7 +322,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             log.debug(e.toString());
         }
         if(icDto.isTcuFlag() && StringUtil.isEmpty(icDto.getTuc())){
-            errMap.put("tcuDate","GENERAL_ERR0039");
+            errMap.put("tcuDate","GENERAL_ERR0006");
         }
         String tcuRemark = icDto.getTcuRemark();
         if(tcuRemark!=null&&tcuRemark.length()>300){

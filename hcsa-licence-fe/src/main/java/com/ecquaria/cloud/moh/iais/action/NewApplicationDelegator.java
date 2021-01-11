@@ -849,7 +849,7 @@ public class NewApplicationDelegator {
                     }
                 } else {
 //                    if(comm.getIsMandatory()){
-//                        errorMap.put(name, "GENERAL_ERR0039");
+//                        errorMap.put(name, "GENERAL_ERR0006");
 //                    }
                 }
             }
@@ -886,7 +886,7 @@ public class NewApplicationDelegator {
                         }
                     } else {
 //                        if(prem.getIsMandatory()) {
-//                            errorMap.put(name, "GENERAL_ERR0039");
+//                            errorMap.put(name, "GENERAL_ERR0006");
 //                        }
                     }
                 }

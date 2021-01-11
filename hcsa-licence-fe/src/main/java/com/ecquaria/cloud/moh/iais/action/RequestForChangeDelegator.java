@@ -747,7 +747,7 @@ public class RequestForChangeDelegator {
             }
         }
         if(StringUtil.isEmpty(email)){
-            error.put("emailError","GENERAL_ERR0039");
+            error.put("emailError","GENERAL_ERR0006");
         }
         return error;
     }
