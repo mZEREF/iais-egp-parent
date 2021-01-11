@@ -48,7 +48,7 @@
             <#if appSubStatus_HIV??>AND ${appSubStatus_HIV}</#if>
             <#if appType??> AND oev.app_type = :appType</#if>
             <#if appNo??> AND charindex(:appNo, oev.application_no)>0</#if>
-            <#if appStatus??> AND oev.status = :appStatus</#if>
+            <#if appStatus??> AND oev.appStatus = :appStatus</#if>
             <#if appStatus_APPROVED??>AND ${appStatus_APPROVED}</#if>
             <#if appGrpPmtStatus??> AND oev.PMT_STATUS = :appGrpPmtStatus</#if>
             <#if subDate??> AND oev.submit_dt >= convert(datetime,:subDate)</#if>
