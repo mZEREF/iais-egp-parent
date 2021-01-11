@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
@@ -339,8 +340,16 @@ public class ServiceMenuDelegator {
         //remove item when same svc and same premises(hci)
         List<AppAlignLicQueryDto> newAppAlignLicQueryDtos = IaisCommonUtils.genNewArrayList();
         for(AppAlignLicQueryDto appAlignLicQueryDto:appAlignLicQueryDtos){
-            String premisesHci = NewApplicationHelper.getPremisesHci(appAlignLicQueryDto);
-            if(!pendAndLicPremHci.contains(premisesHci)){
+            boolean pendPremOrExistLic = false;
+            PremisesDto premisesDto = MiscUtil.transferEntityDto(appAlignLicQueryDto,PremisesDto.class);
+            List<String> premisesHciList = NewApplicationHelper.genPremisesHciList(premisesDto);
+            for(String premisesHci:premisesHciList){
+                if(pendAndLicPremHci.contains(premisesHci)){
+                    pendPremOrExistLic = true;
+                    break;
+                }
+            }
+            if(!pendPremOrExistLic){
                 newAppAlignLicQueryDtos.add(appAlignLicQueryDto);
             }
         }
@@ -1585,6 +1594,7 @@ public class ServiceMenuDelegator {
     private List<MenuLicenceDto> removePendAndExistPrem(List<String> excludeChkBase,List<MenuLicenceDto> menuLicenceDtos,String licenseeId){
         List<MenuLicenceDto> newAppLicDtos = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(excludeChkBase) && !IaisCommonUtils.isEmpty(menuLicenceDtos) && !StringUtil.isEmpty(licenseeId)){
+            menuLicenceDtos = appSubmissionService.setPremAdditionalInfo(menuLicenceDtos);
             List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
             for(String svcId:excludeChkBase){
                 HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(svcId);
@@ -1594,9 +1604,16 @@ public class ServiceMenuDelegator {
             }
             List<String> pendAndLicPremHci = appSubmissionService.getHciFromPendAppAndLic(licenseeId,hcsaServiceDtos);
             for(MenuLicenceDto menuLicenceDto:menuLicenceDtos){
-                AppAlignLicQueryDto appAlignLicQueryDto = MiscUtil.transferEntityDto(menuLicenceDto,AppAlignLicQueryDto.class);
-                String premHci = NewApplicationHelper.getPremisesHci(appAlignLicQueryDto);
-                if(!pendAndLicPremHci.contains(premHci)){
+                PremisesDto premisesDto = MiscUtil.transferEntityDto(menuLicenceDto,PremisesDto.class);
+                List<String> premisesHciList = NewApplicationHelper.genPremisesHciList(premisesDto);
+                boolean pendPremOrExistLic = false;
+                for(String premisesHci:premisesHciList){
+                    if(pendAndLicPremHci.contains(premisesHci)){
+                        pendPremOrExistLic = true;
+                        break;
+                    }
+                }
+                if(!pendPremOrExistLic){
                     newAppLicDtos.add(menuLicenceDto);
                 }
             }

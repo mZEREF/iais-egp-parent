@@ -306,10 +306,14 @@ public class NewApplicationDelegator {
                 Map<String, AppGrpPremisesDto> newLicAppGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
                 licAppGrpPremisesDtoMap.forEach((k, v) -> {
                     List<String> premisesHciList = NewApplicationHelper.genPremisesHciList(v);
+                    boolean pendPremOrExistLic = false;
                     for(String premisesHci:premisesHciList){
                         if(pendAndLicPremHci.contains(premisesHci)){
-                           continue;
+                            pendPremOrExistLic = true;
+                           break;
                         }
+                    }
+                    if(!pendPremOrExistLic){
                         newLicAppGrpPremisesDtoMap.put(k, v);
                     }
                 });

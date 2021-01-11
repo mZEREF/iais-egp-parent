@@ -145,4 +145,7 @@ public interface LicenceClient {
 
     @GetMapping(value = "/lic-common/existing-onsite-conv--licence",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> existingOnSiteOrConveLic(@RequestParam("svcName") String svcName, @RequestParam("licenseeId") String licenseeId);
+
+    @PostMapping(value = "/hcsa-licence/get-premises-additional",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<MenuLicenceDto>> setPremAdditionalInfo(@RequestBody List<MenuLicenceDto> menuLicenceDtos);
 }
