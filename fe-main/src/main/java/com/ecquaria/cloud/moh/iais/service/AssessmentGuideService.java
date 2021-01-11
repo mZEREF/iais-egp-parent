@@ -24,4 +24,5 @@ public interface AssessmentGuideService {
     void deleteDraftNUmber(List<String> draftNumbers);
     HcsaServiceDto getServiceDtoById(String id);
     List<HcsaServiceCorrelationDto> getActiveSvcCorrelation();
+    List<MenuLicenceDto> setPremAdditionalInfo(List<MenuLicenceDto> menuLicenceDtos);
 }

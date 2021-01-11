@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnlAssessQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SelfPremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -657,8 +658,16 @@ public class HalpAssessmentGuideDelegator {
         //remove item when same svc and same premises(hci)
         List<AppAlignLicQueryDto> newAppAlignLicQueryDtos = IaisCommonUtils.genNewArrayList();
         for(AppAlignLicQueryDto appAlignLicQueryDto:appAlignLicQueryDtos){
-            String premisesHci = getPremisesHci(appAlignLicQueryDto);
-            if(!pendAndLicPremHci.contains(premisesHci)){
+            boolean pendPremOrExistLic = false;
+            PremisesDto premisesDto = MiscUtil.transferEntityDto(appAlignLicQueryDto,PremisesDto.class);
+            List<String> premisesHciList = genPremisesHciList(premisesDto);
+            for(String premisesHci:premisesHciList){
+                if(pendAndLicPremHci.contains(premisesHci)){
+                    pendPremOrExistLic = true;
+                    break;
+                }
+            }
+            if(!pendPremOrExistLic){
                 newAppAlignLicQueryDtos.add(appAlignLicQueryDto);
             }
         }
@@ -2213,6 +2222,7 @@ public class HalpAssessmentGuideDelegator {
     private List<MenuLicenceDto> removePendAndExistPrem(List<String> excludeChkBase,List<MenuLicenceDto> menuLicenceDtos,String licenseeId){
         List<MenuLicenceDto> newAppLicDtos = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(excludeChkBase) && !IaisCommonUtils.isEmpty(menuLicenceDtos) && !StringUtil.isEmpty(licenseeId)){
+            menuLicenceDtos = assessmentGuideService.setPremAdditionalInfo(menuLicenceDtos);
             List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
             for(String svcId:excludeChkBase){
                 HcsaServiceDto svcDto = HcsaServiceCacheHelper.getServiceById(svcId);
@@ -2222,9 +2232,16 @@ public class HalpAssessmentGuideDelegator {
             }
             List<String> pendAndLicPremHci = assessmentGuideService.getHciFromPendAppAndLic(licenseeId,hcsaServiceDtos);
             for(MenuLicenceDto menuLicenceDto:menuLicenceDtos){
-                AppAlignLicQueryDto appAlignLicQueryDto = MiscUtil.transferEntityDto(menuLicenceDto,AppAlignLicQueryDto.class);
-                String premHci = getPremisesHci(appAlignLicQueryDto);
-                if(!pendAndLicPremHci.contains(premHci)){
+                PremisesDto premisesDto = MiscUtil.transferEntityDto(menuLicenceDto,PremisesDto.class);
+                List<String> premisesHciList = genPremisesHciList(premisesDto);
+                boolean pendPremOrExistLic = false;
+                for(String premisesHci:premisesHciList){
+                    if(pendAndLicPremHci.contains(premisesHci)){
+                        pendPremOrExistLic = true;
+                        break;
+                    }
+                }
+                if(!pendPremOrExistLic){
                     newAppLicDtos.add(menuLicenceDto);
                 }
             }
@@ -2232,4 +2249,25 @@ public class HalpAssessmentGuideDelegator {
         return newAppLicDtos;
     }
 
+    private static List<String> genPremisesHciList(PremisesDto premisesDto){
+        List<String> premisesHciList = IaisCommonUtils.genNewArrayList();
+        if(premisesDto != null){
+            String premisesHciPre = "";
+            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesDto.getPremisesType())){
+                premisesHciPre = premisesDto.getHciName() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())){
+                premisesHciPre = premisesDto.getVehicleNo() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
+            }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())){
+                premisesHciPre = premisesDto.getPostalCode() + premisesDto.getBlkNo();
+            }
+            premisesHciList.add(premisesHciPre + premisesDto.getFloorNo() + premisesDto.getUnitNo());
+            List<PremisesOperationalUnitDto> operationalUnitDtos = premisesDto.getPremisesOperationalUnitDtos();
+            if(!IaisCommonUtils.isEmpty(operationalUnitDtos)){
+                for(PremisesOperationalUnitDto operationalUnitDto:operationalUnitDtos){
+                    premisesHciList.add(premisesHciPre + operationalUnitDto.getFloorNo() + operationalUnitDto.getUnitNo());
+                }
+            }
+        }
+        return premisesHciList;
+    }
 }

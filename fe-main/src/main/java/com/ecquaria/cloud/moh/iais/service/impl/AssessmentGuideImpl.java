@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
@@ -18,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.AssessmentGuideService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.ConfigInboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,9 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
 
     @Autowired
     private AppInboxClient appInboxClient;
+
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
 
     @Override
     public List<HcsaServiceDto> getServicesInActive() {
@@ -82,16 +87,21 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
     public List<String> getHciFromPendAppAndLic(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos) {
         List<String> result = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(licenseeId) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)){
-            List<String> svcIds = IaisCommonUtils.genNewArrayList();
             List<String> svcNames = IaisCommonUtils.genNewArrayList();
             for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
-                svcIds.add(hcsaServiceDto.getId());
                 svcNames.add(hcsaServiceDto.getSvcName());
             }
+            AppPremisesDoQueryDto appPremisesDoQueryDto = new AppPremisesDoQueryDto();
+            List<HcsaServiceDto>  HcsaServiceDtoList= hcsaConfigClient.getHcsaServiceByNames(svcNames).getEntity();
+            List<String> svcIds = IaisCommonUtils.genNewArrayList();
+            for(HcsaServiceDto hcsaServiceDto:HcsaServiceDtoList){
+                svcIds.add(hcsaServiceDto.getId());
+            }
+            appPremisesDoQueryDto.setLicenseeId(licenseeId);
+            appPremisesDoQueryDto.setSvcIdList(svcIds);
             String svcNameStr = JsonUtil.parseToJson(svcNames);
-            String svcIdStr = JsonUtil.parseToJson(svcIds);
             List<PremisesDto> premisesDtos = licenceClient.getPremisesByLicseeIdAndSvcName(licenseeId,svcNameStr).getEntity();
-            List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = appInboxClient.getPendAppPremises(licenseeId,svcIdStr).getEntity();
+            List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = appInboxClient.getPendAppPremises(appPremisesDoQueryDto).getEntity();
             if(!IaisCommonUtils.isEmpty(premisesDtos)){
                 for(PremisesDto premisesHciDto:premisesDtos){
                     result.addAll(genPremisesHciList(premisesHciDto));
@@ -133,6 +143,11 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
         }
 
         return newHcsaServiceCorrelationDtos;
+    }
+
+    @Override
+    public List<MenuLicenceDto> setPremAdditionalInfo(List<MenuLicenceDto> menuLicenceDtos) {
+        return licenceClient.setPremAdditionalInfo(menuLicenceDtos).getEntity();
     }
 
     private static List<String> setPremiseHciList(AppGrpPremisesEntityDto premisesDto, List<String> premisesHci){
