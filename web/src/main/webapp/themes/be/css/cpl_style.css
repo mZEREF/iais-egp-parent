@@ -5502,3 +5502,7 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
   height:70vh;
   overflow-y: auto;
 }
+
+.datepicker {
+  z-index:999 !important;
+}
