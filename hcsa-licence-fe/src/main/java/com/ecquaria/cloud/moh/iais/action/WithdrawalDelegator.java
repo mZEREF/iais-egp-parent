@@ -92,7 +92,9 @@ public class WithdrawalDelegator {
         String rfiWithdrawAppNo = ParamUtil.getMaskedString(bpc.request,"rfiWithdrawAppNo");
         if(entity!=null){
             String status = entity.getStatus();
-            if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
+            String applicationType = entity.getApplicationType();
+            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)
+                    && ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
                 isDoView="N";
                 rfiWithdrawAppNo= withdrawAppNo;
             }
