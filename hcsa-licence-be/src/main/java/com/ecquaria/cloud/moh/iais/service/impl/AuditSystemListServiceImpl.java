@@ -741,7 +741,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     private void add(Set<String> roleIds,String roleId, List<SelectOption> selectOptionArrayList,List<Role> roles){
         for (String item : roleIds){
             if(roleId.equalsIgnoreCase(item)){
-                selectOptionArrayList.add(new SelectOption(item,item));
+                selectOptionArrayList.add(getRoleSelectOption(roles,roleId));
                 break;
             }
         }
@@ -756,7 +756,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                 return new SelectOption(role.getId(),role.getName());
             }
         }
-        return null;
+        return  new SelectOption(roleId,roleId);
     }
     @Override
     public List<Role> getRolesByDomain(String domain) {
