@@ -232,13 +232,13 @@ public class BackendInboxDelegator {
                 return searchParamGroupFromHsca;
             }
             searchParamGroup = new SearchParam(InspectionAppGroupQueryDto.class.getName());
-            searchParamGroup.setPageSize(10);
+            searchParamGroup.setPageSize(SysParamUtil.getDefaultPageSize());
             searchParamGroup.setPageNo(1);
             searchParamGroup.setSort("SUBMIT_DT", SearchParam.ASCENDING);
         }else{
             if(searchParamGroup == null ){
                 searchParamGroup = new SearchParam(InspectionAppGroupQueryDto.class.getName());
-                searchParamGroup.setPageSize(10);
+                searchParamGroup.setPageSize(SysParamUtil.getDefaultPageSize());
                 searchParamGroup.setPageNo(1);
                 searchParamGroup.setSort("SUBMIT_DT", SearchParam.ASCENDING);
             }
@@ -906,6 +906,7 @@ public class BackendInboxDelegator {
         }
         returnFeeMap.put(applicationDto.getApplicationNo(),appStatus);
         ParamUtil.setSessionAttr(bpc.request,"BackendInboxReturnFee",(Serializable) returnFeeMap);
+        log.info(StringUtil.changeForLog("BackendInboxReturnFee:" + JsonUtil.parseToJson(returnFeeMap)));
         changePostInsForTodoAudit(applicationViewDto);
         //appeal save return fee
         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
