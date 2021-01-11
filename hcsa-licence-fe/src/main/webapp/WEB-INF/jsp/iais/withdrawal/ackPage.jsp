@@ -13,13 +13,11 @@
 <div class="main-content">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <div class="row">
-            <div class="col-lg-12 col-xs-12">
-                <div class="center-content">
+            <div class="container">
+                <div class="row center">
                     <h3 style="font-size:2rem;">${WITHDRAW_ACKMSG}</h3>
                 </div>
-            </div>
-            <div class="col-lg-12 col-xs-12">
-                <div class="center-content " style="padding-top: 10px">
+                <div style="padding-top: 10px">
                     <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em
                             class="fa fa-angle-left"></em> Back</a>
                 </div>
