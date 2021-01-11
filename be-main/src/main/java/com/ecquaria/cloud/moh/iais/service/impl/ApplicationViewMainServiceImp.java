@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -25,9 +26,11 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.EgpUserMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
+import com.ecquaria.cloud.role.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 @Service
@@ -67,6 +71,9 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
     HcsaConfigMainClient hcsaConfigClient;
     @Autowired
     OrganizationMainClient organizationClient;
+
+    @Autowired
+    EgpUserMainClient egpUserMainClient;
     @Override
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId) {
 
@@ -364,6 +371,44 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
         return   hcsaConfigClient.getStageName(serviceId,stageId,type).getEntity();
 
 
+    }
+
+    @Override
+    public List<SelectOption> getCanViewAuditRoles(Set<String> roleIds){
+        List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
+        List<Role> roles = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
+        for (String item:roleIds
+             ) {
+            add(roleIds, item,selectOptionArrayList,roles);
+        }
+        return selectOptionArrayList;
+    }
+
+    public List<Role> getRolesByDomain(String domain) {
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
+        map.put("userDomain", domain);
+        return egpUserMainClient.search(map).getEntity();
+    }
+
+    private void add(Set<String> roleIds,String roleId, List<SelectOption> selectOptionArrayList,List<Role> roles){
+        for (String item : roleIds){
+            if(roleId.equalsIgnoreCase(item)){
+                selectOptionArrayList.add(getRoleSelectOption(roles,roleId));
+                break;
+            }
+        }
+    }
+
+    private  SelectOption getRoleSelectOption(List<Role> roles,String roleId){
+        if(IaisCommonUtils.isEmpty(roles) || StringUtil.isEmpty(roleId)){
+            return null;
+        }
+        for(Role role : roles){
+            if(roleId.equalsIgnoreCase(role.getId())){
+                return new SelectOption(role.getId(),role.getName());
+            }
+        }
+        return  new SelectOption(roleId,roleId);
     }
 
     @Override

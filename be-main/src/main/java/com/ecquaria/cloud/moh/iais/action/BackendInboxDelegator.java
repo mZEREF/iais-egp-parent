@@ -132,10 +132,12 @@ public class BackendInboxDelegator {
     public void start(BaseProcessClass bpc){
 
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
-        for (String item : loginContext.getRoleIds()) {
-            selectOptionArrayList.add(new SelectOption(item,item));
-        }
+//        List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
+//        for (String item : loginContext.getRoleIds()) {
+//            selectOptionArrayList.add(new SelectOption(item,item));
+//        }
+        List<SelectOption> selectOptionArrayList = applicationViewService.getCanViewAuditRoles(loginContext.getRoleIds());
+
         log.info(StringUtil.changeForLog("the BackendInboxDelegator start ...."));
         String curRole = "";
         curRole = loginContext.getCurRoleId();
@@ -231,10 +233,10 @@ public class BackendInboxDelegator {
                 ParamUtil.setSessionAttr(request,"backSearchParamFromHcsaApplication",null);
                 return searchParamGroupFromHsca;
             }
-            newSearchParam();
+            searchParamGroup = newSearchParam();
         }else{
             if(searchParamGroup == null ){
-                newSearchParam();
+                searchParamGroup = newSearchParam();
             }
         }
 

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingS
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ApplicationViewMainService {
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId);
@@ -47,4 +49,6 @@ public interface ApplicationViewMainService {
     List<HcsaSvcRoutingStageDto> getStage(String serviceId, String stageId, String appType);
 
     void clearApprovedHclCodeByExistRejectApp( List<ApplicationDto> saveApplicationDtoList,String appGroupType,ApplicationDto applicationDtoMain);
+
+    List<SelectOption> getCanViewAuditRoles(Set<String> roleIds);
 }
