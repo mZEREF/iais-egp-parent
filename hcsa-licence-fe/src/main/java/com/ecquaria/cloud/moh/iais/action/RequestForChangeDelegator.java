@@ -698,7 +698,7 @@ public class RequestForChangeDelegator {
             log.info(StringUtil.changeForLog("The  existCount  is -->:"+existCount));
             log.info(StringUtil.changeForLog("The  licenseeKeyApptPersonDtoList.size()  is -->:"+licenseeKeyApptPersonDtoList.size()));
             log.info(StringUtil.changeForLog("The  existCount/licenseeKeyApptPersonDtoList.size() is -->:"+existCount/licenseeKeyApptPersonDtoList.size()));
-            if((licenseeKeyApptPersonDtoList.size()-existCount)/licenseeKeyApptPersonDtoList.size()>0.5){
+            if((licenseeKeyApptPersonDtoList.size()-existCount)/licenseeKeyApptPersonDtoList.size()>=0.5){
                 canTransfer = false;
             }else{
                 log.info(StringUtil.changeForLog("can transfer"));
