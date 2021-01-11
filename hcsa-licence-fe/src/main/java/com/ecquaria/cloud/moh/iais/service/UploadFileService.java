@@ -18,7 +18,7 @@ public interface UploadFileService {
 
     List<ApplicationListFileDto> parse(String data);
 
-    void  getRelatedDocuments(ApplicationListFileDto applicationListFileDto);
+    void  getRelatedDocuments(ApplicationListFileDto applicationListFileDto) throws Exception;
 
     boolean renameAndSave(String file,String groupId);
 }

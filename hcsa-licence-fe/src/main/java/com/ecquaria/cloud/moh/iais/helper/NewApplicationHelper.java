@@ -2361,7 +2361,7 @@ public class NewApplicationHelper {
 
     public static String repLength(String ... ars ) {
         int length = ars.length;
-        String general_err0041 = MessageUtil.getMessageDesc("GENERAL_ERR0041");
+        String general_err0041 = MessageUtil.getMessageDesc("GENERAL_ERR0041").intern();
         if(length==0){
             repLength(general_err0041);
         }else if(length==1){

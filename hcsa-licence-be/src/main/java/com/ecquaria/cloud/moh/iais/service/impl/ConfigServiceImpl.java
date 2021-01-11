@@ -79,7 +79,6 @@ import java.util.Set;
 @Slf4j
 public class ConfigServiceImpl implements ConfigService {
     private static final String DATE_FORMAT="yyyy-MM-dd";
-
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
@@ -146,8 +145,8 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public void viewPageInfo(HttpServletRequest request) {
-        String crud_action_value = request.getParameter("crud_action_value");
-        String crud_action_type = request.getParameter("crud_action_type");
+        String crud_action_value = request.getParameter("crud_action_value").intern();
+        String crud_action_type = request.getParameter("crud_action_type").intern();
         if("version".equals(crud_action_value)){
             String crud_action_additional = ParamUtil.getMaskedString(request,"crud_action_additional");
             log.info(crud_action_additional);
@@ -182,7 +181,7 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public void saveOrUpdate(HttpServletRequest request, HttpServletResponse response, HcsaServiceConfigDto hcsaServiceConfigDto) throws Exception{
-        String crud_action_value = request.getParameter("crud_action_value");
+        String crud_action_value = request.getParameter("crud_action_value").intern();
         if("cancel".equals(crud_action_value)){
             sendURL(request,response);
             return;
@@ -270,7 +269,7 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public void update(HttpServletRequest request,HttpServletResponse response,  HcsaServiceConfigDto hcsaServiceConfigDto) throws Exception{
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        String crud_action_value = request.getParameter("crud_action_value");
+        String crud_action_value = request.getParameter("crud_action_value").intern();
         if("cancel".equals(crud_action_value)){
             sendURL(request,response);
             return;
@@ -401,7 +400,7 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public void deleteOrCancel(HttpServletRequest request,HttpServletResponse response) {
-        String crud_action_value = request.getParameter("crud_action_value");
+        String crud_action_value = request.getParameter("crud_action_value").intern();
         if(!StringUtil.isEmpty(crud_action_value)){
             if("cancel".equals(crud_action_value)){
                 sendURL(request,response);
@@ -491,7 +490,6 @@ public class ConfigServiceImpl implements ConfigService {
                                 if(!subtypeName.contains(name2)){
                                     subtypeName.add(name2);
                                 }else {
-
                                     errorMap.put("hcsaSvcSubtypeOrSubsumed"+j,"SC_ERR011");
                                 }
 
@@ -573,12 +571,12 @@ public class ConfigServiceImpl implements ConfigService {
         }
         if (StringUtil.isEmpty(svcType)) {
             errorMap.put("svcType", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Type","field"));
-        }else if("SVTP002".equals(svcType)){
+        }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED.equals(svcType)){
             List<HcsaServiceSubTypeDto> serviceSubTypeDtos = hcsaServiceDto.getServiceSubTypeDtos();
             if(serviceSubTypeDtos.isEmpty()){
                 errorMap.put("Subsumption",MessageUtil.replaceMessage("GENERAL_ERR0006","Base Service Subsumed Under","field"));
             }
-        }else if("SVTP003".equals(svcType)){
+        }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(svcType)){
             List<HcsaServiceSubTypeDto> serviceSubTypeDtos = hcsaServiceDto.getServiceSubTypeDtos();
             if(serviceSubTypeDtos.isEmpty()){
                 errorMap.put("Prerequisite",MessageUtil.replaceMessage("GENERAL_ERR0006","Pre-requisite Base Service","field"));
@@ -587,7 +585,7 @@ public class ConfigServiceImpl implements ConfigService {
             if(StringUtil.isEmpty(categoryId)){
                 errorMap.put("serviceCategory",service_category_error);
             }
-        }else if("SVTP001".equals(svcType)){
+        }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)){
             String categoryId = hcsaServiceDto.getCategoryId();
             if(StringUtil.isEmpty(categoryId)){
                 errorMap.put("serviceCategory",service_category_error);
@@ -645,8 +643,8 @@ public class ConfigServiceImpl implements ConfigService {
                 String isMandatory = v.get(i).getIsMandatory();
                 String schemeType = v.get(i).getSchemeType();
                 String stageId = v.get(i).getStageId();
-                if("12848A70-820B-EA11-BE7D-000C29F371DC".equals(stageId)||"17848A70-820B-EA11-BE7D-000C29F371DC".equals(stageId)){
-                    if("SVTP001".equals(svcType)||"SVTP003".equals(svcType)){
+                if(HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)||HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)){
+                    if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)||ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(svcType)){
                         if(!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(k)&&
                                 !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(k)&&
                                 !ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(k)&&
@@ -679,8 +677,8 @@ public class ConfigServiceImpl implements ConfigService {
                 String isMandatory = v.get(i).getIsMandatory();
                 String stringManhourCount = v.get(i).getStringManhourCount();
                 String stageId = v.get(i).getStageId();
-                if("12848A70-820B-EA11-BE7D-000C29F371DC".equals(stageId)||"17848A70-820B-EA11-BE7D-000C29F371DC".equals(stageId)){
-                    if("SVTP001".equals(svcType)||"SVTP003".equals(svcType)){
+                if(HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)||HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)){
+                    if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)||ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(svcType)){
                         if(!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(k)&&
                                 !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(k)&&
                         !ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(k)&&
@@ -785,12 +783,12 @@ public class ConfigServiceImpl implements ConfigService {
         List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtos =
                 hcsaConfigClient.getHcsaSvcSpeRoutingSchemeByServiceId(hcsaServiceDto.getId()).getEntity();
         List<String> stageIds = IaisCommonUtils.genNewArrayList();
-        stageIds.add("12848A70-820B-EA11-BE7D-000C29F371DC");
-        stageIds.add("13848A70-820B-EA11-BE7D-000C29F371DC");
-        stageIds.add("14848A70-820B-EA11-BE7D-000C29F371DC");
-        stageIds.add("15848A70-820B-EA11-BE7D-000C29F371DC");
-        stageIds.add("16848A70-820B-EA11-BE7D-000C29F371DC");
-        stageIds.add("17848A70-820B-EA11-BE7D-000C29F371DC");
+        stageIds.add(HcsaConsts.ROUTING_STAGE_ASO);
+        stageIds.add(HcsaConsts.ROUTING_STAGE_PSO);
+        stageIds.add(HcsaConsts.ROUTING_STAGE_INS);
+        stageIds.add(HcsaConsts.ROUTING_STAGE_AO1);
+        stageIds.add(HcsaConsts.ROUTING_STAGE_AO2);
+        stageIds.add(HcsaConsts.ROUTING_STAGE_AO3);
 
         List<WorkingGroupDto> hcsa = organizationClient.getWorkingGroup("hcsa").getEntity();
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = hcsaConfigClient.getHcsaStageWorkingGroup(hcsaServiceDto.getId()).getEntity();

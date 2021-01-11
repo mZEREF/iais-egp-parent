@@ -603,7 +603,7 @@ public class ConfigServiceDelegator {
                     //todo delete
                     /*  hcsaSvcSpecificStageWorkloadDto.setId(workloadId);*/
                 }
-                if ("optional".equals(isMandatory)||"SVTP002".equals(serviceType)) {
+                if ("optional".equals(isMandatory)||ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED.equals(serviceType)) {
                     hcsaConfigPageDto.setIsMandatory("false");
                     hcsaSvcSpecificStageWorkloadDto.setIsMandatory("false");
                     hcsaSvcStageWorkingGroupDto.setIsMandatory("false");

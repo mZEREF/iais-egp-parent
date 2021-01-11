@@ -97,7 +97,7 @@
           </div>
           <div class="modal-body" style="text-align: center;">
             <div class="row">
-              <div class=""><span style="font-size: 2rem;">${newAppPopUpMsg}</span></div>
+              <div class=""><span style="font-size: 16px;">${newAppPopUpMsg}</span></div>
             </div>
           </div>
           <div class="row " style="margin-top: 5%;margin-bottom: 5%">

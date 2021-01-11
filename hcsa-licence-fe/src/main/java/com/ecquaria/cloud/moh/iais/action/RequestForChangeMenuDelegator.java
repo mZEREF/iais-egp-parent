@@ -1515,10 +1515,8 @@ public class RequestForChangeMenuDelegator {
         amendmentFeeDto.setChangeInHCIName(!b);
         amendmentFeeDto.setChangeInLocation(!isSame);
         boolean eqAddFloorNo = NewApplicationDelegator.eqAddFloorNo(appSubmissionDto, oldAppSubmissionDtoappSubmissionDto);
-        if(eqAddFloorNo){
-            amendmentFeeDto.setChangeInLocation(Boolean.TRUE);
-        }
-        if(!isSame || !b){
+
+        if(!isSame || !b || eqAddFloorNo){
             for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1){
                 appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
             }
@@ -1567,7 +1565,7 @@ public class RequestForChangeMenuDelegator {
                 appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremise);
                 appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
                 appSubmissionDtoByLicenceId.setAppGrpNo(appGrpNo);
-                if (!isSame || !b) {
+                if (!isSame || !b ||eqAddFloorNo) {
                     appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
                     List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
                     if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {

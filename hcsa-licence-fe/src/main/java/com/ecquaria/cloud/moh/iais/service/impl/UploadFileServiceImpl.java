@@ -177,7 +177,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 *
 *
 * file id */
-    private void appSvcDoc( List<AppSvcDocDto> appSvcDoc, List<AppGrpPrimaryDocDto> appGrpPrimaryDoc,List<AppPremisesSpecialDocDto> appPremisesSpecialDocEntities,String groupId){
+    private void appSvcDoc( List<AppSvcDocDto> appSvcDoc, List<AppGrpPrimaryDocDto> appGrpPrimaryDoc,List<AppPremisesSpecialDocDto> appPremisesSpecialDocEntities,String groupId) throws Exception{
         //if path is not exists create path
         File fileRepPath=new File(sharedPath+ AppServicesConsts.FILE_NAME+File.separator+groupId+File.separator+"files");
         if(!fileRepPath.exists()){
@@ -622,7 +622,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     }
 
     @Override
-    public void getRelatedDocuments(ApplicationListFileDto applicationListFileDto) {
+    public void getRelatedDocuments(ApplicationListFileDto applicationListFileDto) throws Exception{
         try{
             List<ApplicationGroupDto> applicationGroup = applicationListFileDto.getApplicationGroup();
             if(applicationGroup.isEmpty()){
@@ -640,12 +640,13 @@ public class UploadFileServiceImpl implements UploadFileService {
         }catch (Exception e){
             log.error(StringUtil.changeForLog("***************** there have a error is "+e+"***************"));
             log.error(e.getMessage(),e);
+            throw e;
         }
 
     }
 
 
-    private void getFileRep(String id,String docName,String groupId){
+    private void getFileRep(String id,String docName,String groupId) throws Exception{
         if(id==null||"".equals(id)){
             return;
         }
@@ -660,6 +661,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         }catch (Exception e){
             log.error(e.getMessage(),e);
             log.info("file stream is null");
+            throw e;
         }
     }
 }
