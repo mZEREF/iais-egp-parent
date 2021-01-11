@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
@@ -301,7 +302,8 @@ public class RemindInspectorPreInspTaskJob {
         templateMap.put("hciAddress", address);
         templateMap.put("serviceName", hcsaServiceDto.getSvcName());
         templateMap.put("applicationNo", appNo);
-        templateMap.put("appType", appType);
+        String appTypeShow = MasterCodeUtil.getCodeDesc(appType);
+        templateMap.put("appType", appTypeShow);
         templateMap.put("appDate", appDateStr);
         templateMap.put("officer_name", "officer_name");
         return templateMap;
