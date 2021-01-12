@@ -67,6 +67,7 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
+import com.ecquaria.cloud.moh.iais.service.RoleService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
@@ -80,6 +81,7 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.role.Role;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,6 +146,9 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Autowired
     private ApplicationService applicationService;
+
+    @Autowired
+    private RoleService roleService;
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
@@ -321,16 +326,19 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         int index = 0;
         String curCheckRole = "";
         for(String role : roles){
-            //set lead role
-            if(role.contains(RoleConsts.USER_LEAD)) {
-                SelectOption so = new SelectOption(index + "", role);
-                roleOptions.add(so);
-                roleMap.put(index + "", role);
-                //set current role check key
-                if (role.equals(curRole)) {
-                    curCheckRole = String.valueOf(index);
+            Role roleDto = roleService.getRoleByDomainRoleId(AppConsts.HALP_EGP_DOMAIN, role);
+            if(roleDto != null) {
+                //set lead role
+                if (role.contains(RoleConsts.USER_LEAD)) {
+                    SelectOption so = new SelectOption(index + "", roleDto.getName());
+                    roleOptions.add(so);
+                    roleMap.put(index + "", role);
+                    //set current role check key
+                    if (role.equals(curRole)) {//NOSONAR
+                        curCheckRole = String.valueOf(index);
+                    }
+                    index++;
                 }
-                index++;
             }
         }
         if(StringUtil.isEmpty(curCheckRole)){
@@ -347,14 +355,17 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         Map<String, String> roleMap = IaisCommonUtils.genNewHashMap();
         int index = 0;
         for(String role : roles){
-            SelectOption so = new SelectOption(index + "", role);
-            roleOptions.add(so);
-            roleMap.put(index + "", role);
-            //set current role check key
-            if(role.equals(curRole)){
-                poolRoleCheckDto.setCheckCurRole(index + "");
+            Role roleDto = roleService.getRoleByDomainRoleId(AppConsts.HALP_EGP_DOMAIN, role);
+            if(roleDto != null) {
+                SelectOption so = new SelectOption(index + "", roleDto.getName());
+                roleOptions.add(so);
+                roleMap.put(index + "", role);
+                //set current role check key
+                if (role.equals(curRole)) {//NOSONAR
+                    poolRoleCheckDto.setCheckCurRole(index + "");
+                }
+                index++;
             }
-            index++;
         }
         //set default role check key
         if(StringUtil.isEmpty(curRole)){
@@ -460,7 +471,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public String assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationViewDto applicationViewDto,
-                                        String internalRemarks, TaskDto taskDto, LoginContext loginContext) {
+                                          String internalRemarks, TaskDto taskDto, LoginContext loginContext) {
         List<SelectOption> inspectorCheckList = inspecTaskCreAndAssDto.getInspectorCheck();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appStatus = applicationDto.getStatus();
@@ -555,7 +566,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public String assignReschedulingTask(TaskDto td, List<String> taskUserIds, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
-                                       ApplicationGroupDto applicationGroupDto, String inspManHours, LoginContext loginContext) {
+                                         ApplicationGroupDto applicationGroupDto, String inspManHours, LoginContext loginContext) {
         //update
         td.setSlaDateCompleted(new Date());
         td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
