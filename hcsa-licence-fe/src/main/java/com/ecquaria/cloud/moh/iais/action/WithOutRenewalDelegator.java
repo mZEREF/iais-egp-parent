@@ -1052,7 +1052,7 @@ public class WithOutRenewalDelegator {
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
             AppFeeDetailsDto appFeeDetailsDto1=new AppFeeDetailsDto();
             FeeExtDto feeExtDto = detailFeeDtoList.get(index);
-            feeExtDto.setAppGroupNo(appSubmissionDto.getAppGrpNo());
+            feeExtDto.setAppGroupNo(appSubmissionDtoList.get(0).getAppGrpNo());
             String lateFeeType = feeExtDto.getLateFeeType();
             if("gradualFee".equals(lateFeeType)){
                 mix_g ++;
