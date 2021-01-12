@@ -65,6 +65,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -122,10 +124,12 @@ public class OfficerOnlineEnquiriesDelegator {
     ApplicationClient applicationClient;
     @Autowired
     AppInspectionStatusClient appInspectionStatusClient;
+    @Autowired
+    SystemParamConfig systemParamConfig;
 
     private static final String SEARCH_NO="searchNo";
     private static final String RFI_QUERY="ReqForInfoQuery";
-    private static final Integer pageSize=SysParamUtil.getDefaultPageSize();
+    private static Integer pageSize=SysParamUtil.getDefaultPageSize();
 
     FilterParameter appLicenceParameter = new FilterParameter.Builder()
             .clz(ApplicationLicenceQueryDto.class)
@@ -166,6 +170,9 @@ public class OfficerOnlineEnquiriesDelegator {
         ParamUtil.setSessionAttr(request,SEARCH_NO,null);
         appLicenceParameter.setPageNo(1);
         licenseeParameter.setPageNo(1);
+        String p = systemParamConfig.getPagingSize();
+        String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
+        pageSize= Integer.parseInt(defaultValue);
         appLicenceParameter.setPageSize(pageSize);
         licenseeParameter.setPageSize(pageSize);
         // 		Start->OnStepProcess
@@ -1290,7 +1297,7 @@ public class OfficerOnlineEnquiriesDelegator {
         List<HcsaServiceDto> entity = hcsaConfigClient.allHcsaService().getEntity();
         Map<String,String> mapIdSvcName=IaisCommonUtils.genNewHashMap();
         for (HcsaServiceDto svc:entity
-             ) {
+        ) {
             mapIdSvcName.put(svc.getId(),svc.getSvcName());
         }
         for (ReqForInfoSearchListDto info:searchListDtoSearchResult.getRows()
