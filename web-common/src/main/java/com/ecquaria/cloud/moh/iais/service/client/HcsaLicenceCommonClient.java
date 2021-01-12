@@ -27,8 +27,8 @@ public interface HcsaLicenceCommonClient {
     @GetMapping(value = "/hcsa-key-personnel/getPersonnelDtoByLicId/{licId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PersonnelsDto>> getPersonnelDtoByLicId(@PathVariable(name = "licId") String licId);
 
-    @GetMapping(value = "/hcsa-key-personnel/getMobileByRole/{role}")
-    FeignResponseEntity<List<String>> getMobileByRole(@PathVariable(name = "role") String role);
+    @GetMapping(value = "/hcsa-key-personnel/getMobileByRole/{role}/{service}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getMobileByRole(@PathVariable(name = "role") String role,@PathVariable(name = "service") String service);
 
     @PostMapping(value = "/personnel-roles",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<KeyPersonnelDto>> getKeyPersonnelByRole(@RequestBody List<String> roles);
@@ -46,8 +46,8 @@ public interface HcsaLicenceCommonClient {
     @GetMapping(value = "/lic-common/licence-one/{licId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto> getLicDtoByIdCommon(@PathVariable("licId") String licenceId);
 
-    @GetMapping(value = "/hcsa-key-personnel/getEmailByRole/{role}")
-    FeignResponseEntity<List<String>> getEmailByRole(@PathVariable(name = "role") String role);
+    @GetMapping(value = "/hcsa-key-personnel/getEmailByRole/{role}/{service}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getEmailByRole(@PathVariable(name = "role") String role,@PathVariable(name = "service") String service);
 
     @GetMapping(value = "/hcsa-licence/licence-dto-svc-name",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> getLicenceDtosBySvcName(@RequestParam("svcName") String svcName);

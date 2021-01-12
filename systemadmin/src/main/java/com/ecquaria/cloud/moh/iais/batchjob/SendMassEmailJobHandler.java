@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import com.ecquaria.cloud.moh.iais.service.SysInboxMsgService;
@@ -117,7 +118,9 @@ public class SendMassEmailJobHandler extends IJobHandler {
             JobLogger.log(StringUtil.changeForLog("RecipientsRole is " + item.getRecipientsRole()));
             if(EMAIL.equals(item.getMode()) && item.getRecipientsRole() != null){
                 EmailDto email = new EmailDto();
-                List<String> roleEmail = blastManagementListService.getEmailByRole(item.getRecipientsRole());
+                List<String> roleEmail = IaisCommonUtils.genNewArrayList();
+                roleEmail = blastManagementListService.getEmailByRole(item.getRecipientsRole(),HcsaServiceCacheHelper.getServiceByCode(item.getService()).getSvcName());
+
                 email.setContent(item.getMsgContent());
                 email.setSender(mailSender);
                 email.setSubject(item.getSubject());
@@ -201,7 +204,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
                 }
 
             }else if(item.getRecipientsRole() != null){
-                List<String> mobile = blastManagementListService.getMobileByRole(item.getRecipientsRole());
+                List<String> mobile = blastManagementListService.getMobileByRole(item.getRecipientsRole(), HcsaServiceCacheHelper.getServiceByCode(item.getService()).getSvcName());
                 sendSMS(item.getMessageId(), mobile,item.getMsgContent());
             }
             if(item.getId() != null){

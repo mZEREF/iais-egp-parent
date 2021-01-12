@@ -317,7 +317,8 @@ public class NotificationHelper {
 					if (0 == smsFlag) {
 						return;
 					}
-					sendSms(refIdType, subject, refId, smsOnlyOfficerHour, msgTemplateDto);
+					sendSms(refIdType, subject, refId, smsOnlyOfficerHour, msgTemplateDto,
+							emailParam.getSvcCodeList());
 					if (jrDto != null) {
 						List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
 						jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -542,7 +543,8 @@ public class NotificationHelper {
 		}
 	}
 
-	private void sendSms(String refIdType, String mesContext, String refId, boolean smsOnlyOfficerHour, MsgTemplateDto msgTemplateDto) {
+	private void sendSms(String refIdType, String mesContext, String refId, boolean smsOnlyOfficerHour,
+						 MsgTemplateDto msgTemplateDto, List<String> svcCodeList) {
 		try{
 			List<String> roles = null;
 			if (msgTemplateDto.getRecipient() != null && msgTemplateDto.getRecipient().size() > 0) {
@@ -561,7 +563,9 @@ public class NotificationHelper {
 			List<String> mobile = null;
 			if(!StringUtil.isEmpty(refId)){
 				if (RECEIPT_TYPE_SMS_PSN.equals(refIdType)) {
-					mobile = hcsaLicenceClient.getMobileByRole(refId).getEntity();
+					if(!IaisCommonUtils.isEmpty(svcCodeList)) {
+						mobile = getPsnMobileByRoleSvc(refId, svcCodeList);
+					}
 				} else if (RECEIPT_TYPE_SMS_APP.equals(refIdType)) {
 					mobile = getMobileAssignedOfficer(roles, refId);
 					mobile = getMobileOfficer(roles, mobile);
@@ -602,6 +606,23 @@ public class NotificationHelper {
 		}catch (Exception e){
 			log.error(StringUtil.changeForLog("error"));
 		}
+	}
+
+	private List<String> getPsnMobileByRoleSvc(String refId, List<String> svcCodeList) {
+		List<String> mobile = IaisCommonUtils.genNewArrayList();
+		for(String svcCode : svcCodeList){//NOSONAR
+			if(!StringUtil.isEmpty(svcCode)){
+				List<String> mobileSvcList = hcsaLicenceClient.getMobileByRole(refId, HcsaServiceCacheHelper.getServiceByCode(svcCode).getSvcName()).getEntity();
+				if(!IaisCommonUtils.isEmpty(mobileSvcList)){
+					for(String mobileSvc : mobileSvcList){
+						if(!StringUtil.isEmpty(mobileSvc)){
+							mobile.add(mobileSvc);
+						}
+					}
+				}
+			}
+		}
+		return mobile;
 	}
 
 	private List<String> getMobilePersonnel(List<String> roles, String licenceId) {

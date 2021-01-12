@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
@@ -137,7 +138,7 @@ public class BlastManagementDelegator {
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "blastmanagementSearchParam");
         if(neednew){
             searchParamGroup = new SearchParam(BlastManagementListDto.class.getName());
-            searchParamGroup.setPageSize(10);
+            searchParamGroup.setPageSize(SysParamUtil.getDefaultPageSize());
             searchParamGroup.setPageNo(1);
             searchParamGroup.setSort("SCHEDULE_SEND_DATE", SearchParam.DESCENDING);
         }

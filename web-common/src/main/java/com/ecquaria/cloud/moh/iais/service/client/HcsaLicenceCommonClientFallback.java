@@ -24,7 +24,7 @@ public class HcsaLicenceCommonClientFallback implements HcsaLicenceCommonClient 
     }
 
     @Override
-    public FeignResponseEntity<List<String>> getMobileByRole(String role) {
+    public FeignResponseEntity<List<String>> getMobileByRole(String role, String service) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -72,7 +72,7 @@ public class HcsaLicenceCommonClientFallback implements HcsaLicenceCommonClient 
     }
 
     @Override
-    public FeignResponseEntity<List<String>> getEmailByRole(String role) {
+    public FeignResponseEntity<List<String>> getEmailByRole(String role, String service) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

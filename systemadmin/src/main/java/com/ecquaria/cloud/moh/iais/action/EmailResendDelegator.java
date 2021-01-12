@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +64,7 @@ public class EmailResendDelegator {
         SearchParam searchParam = (SearchParam)ParamUtil.getSessionAttr(bpc.request,"resendSearchParam");
         if(searchParam == null){
             searchParam = new SearchParam(ResendListDto.class.getName());
-            searchParam.setPageSize(10);
+            searchParam.setPageSize(SysParamUtil.getDefaultPageSize());
             searchParam.setPageNo(1);
             searchParam.setSort("sent_time", SearchParam.ASCENDING);
         }
@@ -104,7 +105,7 @@ public class EmailResendDelegator {
      */
     public void search(BaseProcessClass bpc){
         SearchParam searchParam = new SearchParam(ResendListDto.class.getName());
-        searchParam.setPageSize(10);
+        searchParam.setPageSize(SysParamUtil.getDefaultPageSize());
         searchParam.setPageNo(1);
         searchParam.setSort("sent_time", SearchParam.ASCENDING);
         String start = ParamUtil.getRequestString(bpc.request,"start");

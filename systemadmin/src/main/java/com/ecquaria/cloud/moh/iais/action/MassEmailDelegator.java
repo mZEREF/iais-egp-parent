@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
@@ -76,7 +77,7 @@ public class MassEmailDelegator {
 
     public void start(BaseProcessClass bpc){
         SearchParam searchParam = new SearchParam(DistributionListDto.class.getName());
-        searchParam.setPageSize(10);
+        searchParam.setPageSize(SysParamUtil.getDefaultPageSize());
         searchParam.setPageNo(1);
         searchParam.setSort("CREATED_DT", SearchParam.DESCENDING);
         searchParam.addFilter("status", AppConsts.COMMON_STATUS_ACTIVE,true);
@@ -171,7 +172,7 @@ public class MassEmailDelegator {
         searchParam.getParams().clear();
         searchParam.getFilters().clear();
         searchParam.setPageNo(1);
-        searchParam.setPageSize(10);
+        searchParam.setPageSize(SysParamUtil.getDefaultPageSize());
         searchParam.setSort("CREATED_DT", SearchParam.DESCENDING);
         searchParam.addFilter("status", AppConsts.COMMON_STATUS_ACTIVE,true);
         if(!StringUtil.isEmpty(distributionName)){
@@ -507,7 +508,7 @@ public class MassEmailDelegator {
 
     private void setRoleSelection(BaseProcessClass bpc, String service){
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
-        if(service != null && !StringUtils.isEmpty(service)){
+        if(!StringUtils.isEmpty(service)){
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = distributionListService.roleByServiceId(service,AppConsts.COMMON_STATUS_ACTIVE);
             for (HcsaSvcPersonnelDto item:hcsaSvcPersonnelDtoList
             ) {

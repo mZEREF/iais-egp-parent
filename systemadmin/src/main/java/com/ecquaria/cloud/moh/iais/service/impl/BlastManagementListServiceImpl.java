@@ -150,12 +150,12 @@ public class BlastManagementListServiceImpl implements BlastManagementListServic
     }
 
     @Override
-    public List<String> getEmailByRole(String role){
-        return hcsaLicenceClient.getEmailByRole(role).getEntity();
+    public List<String> getEmailByRole(String role,String service){
+        return hcsaLicenceClient.getEmailByRole(role,service).getEntity();
     }
 
     @Override
-    public List<String> getMobileByRole(String role){
-        return hcsaLicenceClient.getMobileByRole(role).getEntity();
+    public List<String> getMobileByRole(String role,String service){
+        return hcsaLicenceClient.getMobileByRole(role,service).getEntity();
     }
 }

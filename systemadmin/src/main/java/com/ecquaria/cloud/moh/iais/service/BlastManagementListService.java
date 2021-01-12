@@ -39,6 +39,6 @@ public interface BlastManagementListService {
     void sendSMS(List<String> recipts, SmsDto sms, String reqRefNum);
     EmailAttachMentDto getEmailById(String id);
     void setEmailResend(String id);
-    List<String> getEmailByRole(String role);
-    List<String> getMobileByRole(String role);
+    List<String> getEmailByRole(String role,String service);
+    List<String> getMobileByRole(String role,String service);
 }
