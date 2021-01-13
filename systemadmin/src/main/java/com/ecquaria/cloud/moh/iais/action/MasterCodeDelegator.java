@@ -773,6 +773,11 @@ public class MasterCodeDelegator {
             cartOptional = masterCodeToExcelDtos.stream().filter(item -> item.getCodeValue().equals(masterCodeDto.getCodeValue())
                     && item.getCodeCategory().equals(masterCodeDto.getCodeCategory())).findFirst();
         }
+        if (AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
+            if (masterCodeDto.getEffectiveFrom().before(new Date())){
+                validationResult.setHasErrors(true);
+            }
+        }
         if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
             if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
                 validationResult.setHasErrors(true);
@@ -800,6 +805,14 @@ public class MasterCodeDelegator {
                 }
                 if (masterCodeDto.getSequence() == -2){
                     errorMap.put("sequence", mcuperrErrMsg8);
+                }
+            }
+            if (AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
+                if (masterCodeDto.getEffectiveFrom().before(new Date())){
+                    validationResult.setHasErrors(true);
+                    String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
+                    //The effective date of inactive data must be a future time
+                    errorMap.put("effectiveTo", errMsg);
                 }
             }
             if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
