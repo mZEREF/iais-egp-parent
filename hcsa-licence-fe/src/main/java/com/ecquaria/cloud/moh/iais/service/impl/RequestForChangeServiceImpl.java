@@ -1811,19 +1811,21 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         if(!IaisCommonUtils.isEmpty(appSvcDocDtos) && !IaisCommonUtils.isEmpty(oldSvcDocConfigDtos) && !IaisCommonUtils.isEmpty(svcDocConfigDtos)){
             for(AppSvcDocDto appSvcDocDto : appSvcDocDtos){
                 for(HcsaSvcDocConfigDto oldSvcDocConfigDto:oldSvcDocConfigDtos){
-                    if(appSvcDocDto.getSvcDocId().equals(oldSvcDocConfigDto.getId())){
-                        String titleName = oldSvcDocConfigDto.getDocTitle();
-                        if(!StringUtil.isEmpty(titleName)){
-                            for(HcsaSvcDocConfigDto svcDocConfigDto:svcDocConfigDtos){
-                                if(titleName.equals(svcDocConfigDto.getDocTitle())){
-                                    AppSvcDocDto newAppSvcDocDto = (AppSvcDocDto) CopyUtil.copyMutableObject(appSvcDocDto);
-                                    newAppSvcDocDto.setSvcDocId(svcDocConfigDto.getId());
-                                    newAppSvcDocDtoList.add(newAppSvcDocDto);
-                                    break;
+                    if(appSvcDocDto.getSvcDocId()!=null && oldSvcDocConfigDto.getId()!=null){
+                        if(appSvcDocDto.getSvcDocId().equals(oldSvcDocConfigDto.getId())){
+                            String titleName = oldSvcDocConfigDto.getDocTitle();
+                            if(!StringUtil.isEmpty(titleName)){
+                                for(HcsaSvcDocConfigDto svcDocConfigDto:svcDocConfigDtos){
+                                    if(titleName.equals(svcDocConfigDto.getDocTitle())){
+                                        AppSvcDocDto newAppSvcDocDto = (AppSvcDocDto) CopyUtil.copyMutableObject(appSvcDocDto);
+                                        newAppSvcDocDto.setSvcDocId(svcDocConfigDto.getId());
+                                        newAppSvcDocDtoList.add(newAppSvcDocDto);
+                                        break;
+                                    }
                                 }
                             }
+                            break;
                         }
-                        break;
                     }
                 }
             }
