@@ -1144,8 +1144,10 @@ public class RequestForChangeMenuDelegator {
 
     public void preparePersonnelBank(BaseProcessClass bpc) throws IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do prePayment start ...."));
-        PersonnelListDto personnelEditDto = (PersonnelListDto) ParamUtil.getSessionAttr(bpc.request, "personnelEditDto");
-        String emailAddr = personnelEditDto.getEmailAddr();
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = loginContext.getLicenseeId();
+        List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
+        String emailAddr = WithOutRenewalDelegator.emailAddressesToString(licenseeEmailAddrs);
         try {
             List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
             if(appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
@@ -1156,6 +1158,7 @@ public class RequestForChangeMenuDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, "emailAddress", emailAddr);
         ParamUtil.setSessionAttr(bpc.request, "pmtRefNo", "N/A");
+        ParamUtil.setSessionAttr(bpc.request, "txnRefNo", "N/A");
         ParamUtil.setSessionAttr(bpc.request, "createDate", new Date());
         ParamUtil.setSessionAttr(bpc.request, "dAmount", "$0");
         ParamUtil.setSessionAttr(bpc.request, "payMethod", "N/A");
