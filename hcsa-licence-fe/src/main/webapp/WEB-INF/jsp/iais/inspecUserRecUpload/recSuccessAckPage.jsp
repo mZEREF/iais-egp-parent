@@ -26,11 +26,11 @@
                 <div class="bg-title">
                   <h3 style="border-bottom: 0px solid">Submission successful</h3>
                 </div>
-                <iais:row>
-                  <iais:value width="7">
+                <div class="form-group">
+                  <div class="col-sm-7 col-md-7 col-xs-9">
                     <p><label><iais:message key="LOLEV_ACK038" escape="true"></iais:message></label></p>
-                  </iais:value>
-                </iais:row>
+                  </div>
+                </div>
                 <iais:action >
                   <p class="print">
                     <a class="btn btn-primary" style="float:right" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to Dashboard</a>
