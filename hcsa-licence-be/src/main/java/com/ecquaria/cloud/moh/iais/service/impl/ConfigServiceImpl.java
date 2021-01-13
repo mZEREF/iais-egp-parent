@@ -145,8 +145,8 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public void viewPageInfo(HttpServletRequest request) {
-        String crud_action_value = request.getParameter("crud_action_value").intern();
-        String crud_action_type = request.getParameter("crud_action_type").intern();
+        String crud_action_value = request.getParameter("crud_action_value");
+        String crud_action_type = request.getParameter("crud_action_type");
         if("version".equals(crud_action_value)){
             String crud_action_additional = ParamUtil.getMaskedString(request,"crud_action_additional");
             log.info(crud_action_additional);
@@ -181,7 +181,7 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public void saveOrUpdate(HttpServletRequest request, HttpServletResponse response, HcsaServiceConfigDto hcsaServiceConfigDto) throws Exception{
-        String crud_action_value = request.getParameter("crud_action_value").intern();
+        String crud_action_value = request.getParameter("crud_action_value");
         if("cancel".equals(crud_action_value)){
             sendURL(request,response);
             return;
@@ -269,7 +269,7 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public void update(HttpServletRequest request,HttpServletResponse response,  HcsaServiceConfigDto hcsaServiceConfigDto) throws Exception{
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        String crud_action_value = request.getParameter("crud_action_value").intern();
+        String crud_action_value = request.getParameter("crud_action_value");
         if("cancel".equals(crud_action_value)){
             sendURL(request,response);
             return;
@@ -400,7 +400,7 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public void deleteOrCancel(HttpServletRequest request,HttpServletResponse response) {
-        String crud_action_value = request.getParameter("crud_action_value").intern();
+        String crud_action_value = request.getParameter("crud_action_value");
         if(!StringUtil.isEmpty(crud_action_value)){
             if("cancel".equals(crud_action_value)){
                 sendURL(request,response);
