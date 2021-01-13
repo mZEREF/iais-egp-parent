@@ -186,6 +186,7 @@ public class MasterCodeDelegator {
     public void createCode(BaseProcessClass bpc) throws ParseException {
         logAboutStart("prepareCreate");
         HttpServletRequest request = bpc.request;
+        String mcuperrErrMsg8 = MessageUtil.getMessageDesc("MCUPERR008");
         List<MasterCodeToExcelDto> masterCodeToExcelDtos = masterCodeService.findAllMasterCode();
         String type = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_TYPE);
         if (!SystemAdminBaseConstants.SAVE_ACTION.equals(type)) {
@@ -214,8 +215,10 @@ public class MasterCodeDelegator {
                 }
             }
         }
-        if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2){
-            validationResult.setHasErrors(true);
+        if (masterCodeDto.getSequence() != null) {
+            if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2) {
+                validationResult.setHasErrors(true);
+            }
         }
         if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
             validationResult.setHasErrors(true);
@@ -236,13 +239,13 @@ public class MasterCodeDelegator {
                         errorMap.put("effectiveTo", errMsg);
                     }
                 }
-                if (masterCodeDto.getSequence() == -1){
-                    String errMsg = MessageUtil.getMessageDesc("MCUPERR008");
-                    errorMap.put("sequence", errMsg);
-                }
-                if (masterCodeDto.getSequence() == -2){
-                    String errMsg = MessageUtil.getMessageDesc("MCUPERR008");
-                    errorMap.put("sequence", errMsg);
+                if (masterCodeDto.getSequence() != null) {
+                    if (masterCodeDto.getSequence() == -1) {
+                        errorMap.put("sequence", mcuperrErrMsg8);
+                    }
+                    if (masterCodeDto.getSequence() == -2) {
+                        errorMap.put("sequence", mcuperrErrMsg8);
+                    }
                 }
             }
             if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
@@ -754,6 +757,7 @@ public class MasterCodeDelegator {
     public void doCreateCode(BaseProcessClass bpc) throws ParseException {
         logAboutStart("doCreate");
         HttpServletRequest request = bpc.request;
+        String mcuperrErrMsg8 = MessageUtil.getMessageDesc("MCUPERR008");
         List<MasterCodeToExcelDto> masterCodeToExcelDtos = masterCodeService.findAllMasterCode();
         String type = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_TYPE);
         if (!SystemAdminBaseConstants.SAVE_ACTION.equals(type)) {
@@ -777,8 +781,10 @@ public class MasterCodeDelegator {
         if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
             validationResult.setHasErrors(true);
         }
-        if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2){
-            validationResult.setHasErrors(true);
+        if (masterCodeDto.getSequence() != null){
+            if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2){
+                validationResult.setHasErrors(true);
+            }
         }
         if (validationResult != null && validationResult.isHasErrors()) {
             errorMap = validationResult.retrieveAll();
@@ -788,13 +794,13 @@ public class MasterCodeDelegator {
                     errorMap.put("effectiveTo", errMsg);
                 }
             }
-            if (masterCodeDto.getSequence() == -1){
-                String errMsg = MessageUtil.getMessageDesc("MCUPERR008");
-                errorMap.put("sequence", errMsg);
-            }
-            if (masterCodeDto.getSequence() == -2){
-                String errMsg = MessageUtil.getMessageDesc("MCUPERR008");
-                errorMap.put("sequence", errMsg);
+            if (masterCodeDto.getSequence() != null){
+                if (masterCodeDto.getSequence() == -1){
+                    errorMap.put("sequence", mcuperrErrMsg8);
+                }
+                if (masterCodeDto.getSequence() == -2){
+                    errorMap.put("sequence", mcuperrErrMsg8);
+                }
             }
             if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
                 validationResult.setHasErrors(true);
@@ -860,6 +866,7 @@ public class MasterCodeDelegator {
     public void doEdit(BaseProcessClass bpc) throws ParseException, CloneNotSupportedException {
         logAboutStart("doEdit");
         HttpServletRequest request = bpc.request;
+        String mcuperrErrMsg8 = MessageUtil.getMessageDesc("MCUPERR008");
         String type = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_TYPE);
         if (!SystemAdminBaseConstants.EDIT_ACTION.equals(type)) {
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
@@ -893,8 +900,10 @@ public class MasterCodeDelegator {
                 validationEditResult.setHasErrors(true);
             }
         }
-        if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2){
-            validationEditResult.setHasErrors(true);
+        if (masterCodeDto.getSequence() != null) {
+            if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2) {
+                validationEditResult.setHasErrors(true);
+            }
         }
         if (validationEditResult != null && validationEditResult.isHasErrors()) {
             logAboutStart("Edit validation");
@@ -908,13 +917,13 @@ public class MasterCodeDelegator {
                 errorMap.remove("effectiveFrom");
                 errorMap.remove("effectiveTo");
             }
-            if (masterCodeDto.getSequence() == -1){
-                String errMsg = MessageUtil.getMessageDesc("MCUPERR008");
-                errorMap.put("sequence", errMsg);
-            }
-            if (masterCodeDto.getSequence() == -2){
-                String errMsg = MessageUtil.getMessageDesc("MCUPERR008");
-                errorMap.put("sequence", errMsg);
+            if (masterCodeDto.getSequence() != null) {
+                if (masterCodeDto.getSequence() == -1) {
+                    errorMap.put("sequence", mcuperrErrMsg8);
+                }
+                if (masterCodeDto.getSequence() == -2) {
+                    errorMap.put("sequence", mcuperrErrMsg8);
+                }
             }
             if(errorMap != null && errorMap.size() > 0){
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
