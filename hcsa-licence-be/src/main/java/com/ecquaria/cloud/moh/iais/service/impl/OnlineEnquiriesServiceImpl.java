@@ -251,12 +251,12 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         List<ComplianceHistoryDto> complianceHistoryDtos= IaisCommonUtils.genNewArrayList();
         Set<String> appIds=IaisCommonUtils.genNewHashSet();
         complianceHistoryDtos= complianceHistoryDtosByLicId(complianceHistoryDtos,licenceId,appIds);
-        ParamUtil.setSessionAttr(request,"registeredWithACRA","Not Registered");
+        ParamUtil.setSessionAttr(request,"registeredWithACRA","No");
         try {
             if(StringUtil.isEmpty(organizationLicDto.getUenNo())){
-                ParamUtil.setSessionAttr(request,"registeredWithACRA","Not Registered");
+                ParamUtil.setSessionAttr(request,"registeredWithACRA","No");
             }else {
-                ParamUtil.setSessionAttr(request,"registeredWithACRA","Registered");
+                ParamUtil.setSessionAttr(request,"registeredWithACRA","Yes");
             }
         }catch (Exception e){
             log.info(e.getMessage(),e);
