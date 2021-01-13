@@ -460,7 +460,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             String premiseType = appGrpPremisesDtoList.get(i).getPremisesType();
             if (StringUtil.isEmpty(premiseType)) {
                 if("".equals(premiseTypeError)){
-                    premiseTypeError= MessageUtil.replaceMessage("GENERAL_ERR0006", "What is your premises type", "field").intern();
+                    premiseTypeError= MessageUtil.replaceMessage("GENERAL_ERR0006", "What is your premises type", "field");
                 }
                 errorMap.put("premisesType" + i, premiseTypeError);
             } else {
@@ -635,13 +635,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         }
                         String ScdfRefNo = appGrpPremisesDtoList.get(i).getScdfRefNo();
                         if(!StringUtil.isEmpty(ScdfRefNo) && ScdfRefNo.length() > 66){
-                            String general_err0041=NewApplicationHelper.repLength("Fire Safety & Shelter Bureau Ref. No.","66").intern();
+                            String general_err0041=NewApplicationHelper.repLength("Fire Safety & Shelter Bureau Ref. No.","66");
                             errorMap.put("ScdfRefNo" + i, general_err0041);
                         }
 
                         String buildingName = appGrpPremisesDtoList.get(i).getBuildingName();
                         if(!StringUtil.isEmpty(buildingName) && buildingName.length() > 66){
-                            String general_err0041=NewApplicationHelper.repLength("Building Name","66").intern();
+                            String general_err0041=NewApplicationHelper.repLength("Building Name","66");
                             errorMap.put("buildingName" + i, general_err0041);
                         }
 
@@ -650,7 +650,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             errorMap.put("hciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "HCI Name", "field"));
                         } else {
                             if(hciName.length()>100){
-                                String general_err0041=NewApplicationHelper.repLength("HCI Name","100").intern();
+                                String general_err0041=NewApplicationHelper.repLength("HCI Name","100");
                                 errorMap.put("hciName" + i, general_err0041);
                             }
                             if (masterCodeDto != null) {
@@ -674,7 +674,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             errorMap.put("offTelNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No.", "field"));
                         } else {
                             if(offTelNo.length()>8){
-                                String general_err0041=NewApplicationHelper.repLength("Office Telephone No.","8").intern();
+                                String general_err0041=NewApplicationHelper.repLength("Office Telephone No.","8");
                                 errorMap.put("offTelNo" + i, general_err0041);
                             }
                             boolean matches = offTelNo.matches("^[6][0-9]{7}$");
@@ -687,7 +687,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         if (StringUtil.isEmpty(streetName)) {
                             errorMap.put("streetName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Street Name", "field"));
                         }else if(streetName.length() > 32){
-                            String general_err0041 = NewApplicationHelper.repLength("Street Name", "32").intern();
+                            String general_err0041 = NewApplicationHelper.repLength("Street Name", "32");
                             errorMap.put("streetName" + i, general_err0041);
                         }
 
