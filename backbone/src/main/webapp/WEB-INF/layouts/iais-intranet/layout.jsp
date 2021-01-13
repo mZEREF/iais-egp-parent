@@ -29,13 +29,15 @@
 	<%
 		}
 	%>
-	<%@ include file="/WEB-INF/layouts/time-out/sessionTimeOut.jsp" %>
+	<c:if test="${'preLoginAction' ne preLoginAction}">
+		<%@ include file="/WEB-INF/layouts/time-out/sessionTimeOut.jsp" %>
+	</c:if>
 </head>
 <body>
 <div class="wrapper">
-		<jsp:include page="header.jsp" flush="true"/>
+	<jsp:include page="header.jsp" flush="true"/>
 	<nav id="sidebar">
-	  <jsp:include page="user-info.jsp" flush="true"/>
+		<jsp:include page="user-info.jsp" flush="true"/>
 		<jsp:include page="left-menu.jsp" />
 	</nav>
 	<layout:insertAttribute name="body" ignore="true" />
