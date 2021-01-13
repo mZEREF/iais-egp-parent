@@ -83,6 +83,11 @@ public class MasterCodeServiceImpl implements MasterCodeService {
     }
 
     @Override
+    public List<MasterCodeCategoryDto> getCodeCategoryIsEdit() {
+        return saMasterCodeClient.getMasterCodeCategoryIsEdit().getEntity();
+    }
+
+    @Override
     public MasterCodeCategoryDto getMasterCodeCategory(String categoryId) {
         return saMasterCodeClient.getMasterCodeCategory(categoryId).getEntity();
     }

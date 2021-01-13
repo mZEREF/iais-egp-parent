@@ -21,6 +21,7 @@ public interface MasterCodeService {
     MasterCodeDto findMasterCodeByMcId(String masterCodeId);
     String findCodeCategoryByDescription(String description);
     List<MasterCodeCategoryDto> getAllCodeCategory();
+    List<MasterCodeCategoryDto> getCodeCategoryIsEdit();
     MasterCodeCategoryDto getMasterCodeCategory(String categoryId);
     boolean masterCodeKeyIsExist(String masterCodekey);
     Boolean saveMasterCodeList(List<MasterCodeToExcelDto> masterCodeToExcelDtoList);

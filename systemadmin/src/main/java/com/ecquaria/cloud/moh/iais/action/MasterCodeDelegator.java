@@ -738,7 +738,7 @@ public class MasterCodeDelegator {
     public void prepareCode(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         prepareSelect(request);
-        List<MasterCodeCategoryDto> masterCodeCategoryDtoList = masterCodeService.getAllCodeCategory();
+        List<MasterCodeCategoryDto> masterCodeCategoryDtoList = masterCodeService.getCodeCategoryIsEdit();
         List<SelectOption> mcCategorySelectList = IaisCommonUtils.genNewArrayList();
         for (MasterCodeCategoryDto masterCodeCategoryDto : masterCodeCategoryDtoList
                 ) {

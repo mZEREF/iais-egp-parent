@@ -109,6 +109,14 @@ public class SaMasterCodeClientFallback implements SaMasterCodeClient{
     }
 
     @Override
+    public FeignResponseEntity<List<MasterCodeCategoryDto>> getMasterCodeCategoryIsEdit() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<MasterCodeCategoryDto> getMasterCodeCategory(String categoryId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
