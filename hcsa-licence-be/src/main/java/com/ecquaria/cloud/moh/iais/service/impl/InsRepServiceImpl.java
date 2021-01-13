@@ -161,22 +161,24 @@ public class InsRepServiceImpl implements InsRepService {
             inspectionReportDto.setInspectOffices(nameList);
         }
         //get application type (pre/post)
-        Integer isPre = applicationGroupDto.getIsPreInspection();
-        String appType = MasterCodeUtil.getCodeDesc(appTypeCode);
-        if(!StringUtil.isEmpty(licId)){
-            List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licId).getEntity();
-            if (!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
-                String applicationId = licAppCorrelationDtos.get(0).getApplicationId();
-                ApplicationDto applicationDtoOld = applicationClient.getApplicationById(applicationId).getEntity();
-                String applicationTypeOld = applicationDtoOld.getApplicationType();
-                appType = MasterCodeUtil.getCodeDesc(applicationTypeOld);
+        String reasonForVisit = null;
+        if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appTypeCode)){
+            reasonForVisit = "Audit Inspection";
+        }else if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appTypeCode)){
+            String appType = MasterCodeUtil.getCodeDesc(appTypeCode);
+            if(!StringUtil.isEmpty(licId)){
+                List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licId).getEntity();
+                if (!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
+                    String applicationId = licAppCorrelationDtos.get(0).getApplicationId();
+                    ApplicationDto applicationDtoOld = applicationClient.getApplicationById(applicationId).getEntity();
+                    String applicationTypeOld = applicationDtoOld.getApplicationType();
+                    appType = MasterCodeUtil.getCodeDesc(applicationTypeOld);
+                }
             }
-        }
-        String reasonForVisit;
-        if (isPre == 1) {
-            reasonForVisit = "Pre-licensing inspection for " + appType;
-        } else {
             reasonForVisit = "Post-licensing inspection for " + appType;
+        }else {
+            String appType = MasterCodeUtil.getCodeDesc(appTypeCode);
+            reasonForVisit = "Pre-licensing inspection for " + appType;
         }
 
         //serviceId transform serviceCode
