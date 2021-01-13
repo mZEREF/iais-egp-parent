@@ -4291,7 +4291,6 @@ public class NewApplicationDelegator {
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
             if (appSubmissionDto != null) {
                 if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
-                    requestForChangeService.svcDocToPresmise(appSubmissionDto);
                     List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionService.getAppGrpPremisesDto(appNo);
                     List<String> ids = IaisCommonUtils.genNewArrayList();
                     String premisesIndexNo = null;
@@ -4329,7 +4328,7 @@ public class NewApplicationDelegator {
                         }
                     }
                     appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
-
+                    requestForChangeService.svcDocToPresmise(appSubmissionDto);
                 }
             }
             InterMessageDto interMessageDto = appSubmissionService.getInterMessageById(msgId);
