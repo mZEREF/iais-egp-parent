@@ -63,11 +63,9 @@ public class BackendLoginDelegator {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
 
         }
-        ParamUtil.setRequestAttr(bpc.request, "preLoginAction", "preLoginAction");
     }
 
     public void preLogin(BaseProcessClass bpc){
-        ParamUtil.setRequestAttr(bpc.request, "preLoginAction", "preLoginAction");
     }
 
     public void doLogin(BaseProcessClass bpc) throws InvalidKeySpecException, NoSuchAlgorithmException {
@@ -81,7 +79,6 @@ public class BackendLoginDelegator {
 
             doLogin(userId, bpc.request);
         }
-        ParamUtil.setRequestAttr(bpc.request, "preLoginAction", "preLoginAction");
     }
 
     public void doLogin(String userId, HttpServletRequest request) {
@@ -157,7 +154,6 @@ public class BackendLoginDelegator {
         //Encode the token JWT Token
         String jwtt = encoder.encode(claims, base64encodedPriv);
         request.setAttribute("encryptJwtt", jwtt);
-        ParamUtil.setRequestAttr(bpc.request, "preLoginAction", "preLoginAction");
     }
 
     public void initLogin(BaseProcessClass bpc){
@@ -166,6 +162,5 @@ public class BackendLoginDelegator {
         } else {
             bpc.request.setAttribute("isFake", "N");
         }
-        ParamUtil.setRequestAttr(bpc.request, "preLoginAction", "preLoginAction");
     }
 }
