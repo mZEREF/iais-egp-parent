@@ -16,7 +16,7 @@
     <%-- BEGIN additional header --%>
     <layout:insertAttribute name="header-ext" ignore="true" />
     <%-- END additional header --%>
-    <c:if test="${'preLoginAction' ne preLoginAction}">
+    <c:if test="${not empty iais_Login_User_Info_Attr}">
         <%@ include file="/WEB-INF/layouts/time-out/sessionInterTimeOut.jsp" %>
     </c:if>
 </head>

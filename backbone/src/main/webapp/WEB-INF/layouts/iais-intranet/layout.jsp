@@ -29,7 +29,7 @@
 	<%
 		}
 	%>
-	<c:if test="${'preLoginAction' ne preLoginAction}">
+	<c:if test="${not empty iais_Login_User_Info_Attr}">
 		<%@ include file="/WEB-INF/layouts/time-out/sessionTimeOut.jsp" %>
 	</c:if>
 </head>
