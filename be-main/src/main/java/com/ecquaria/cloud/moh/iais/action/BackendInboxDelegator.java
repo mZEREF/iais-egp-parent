@@ -1466,24 +1466,19 @@ public class BackendInboxDelegator {
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
 
         if(commPools != null && !commPools.isEmpty()){
-            String inspectorValue = loginContext.getLoginId();
             StringBuilder sb = new StringBuilder("(");
             int i =0;
             for (TaskDto item: commPools) {
-                sb.append(":itemKey").append(i).append(',');
-                i++;
-            }
-            String inSql = sb.substring(0, sb.length() - 1) + ")";
-            searchParamGroup.addParam("remises_corr_id_in", inSql);
-            searchParamAjax.addParam("remises_corr_id_in", inSql);
-            i = 0;
-            for (TaskDto item: commPools) {
+                    sb.append(":itemKey").append(i).append(',');
                 searchParamGroup.addFilter("itemKey" + i,
                         item.getRefNo());
                 searchParamAjax.addFilter("itemKey" + i,
                         item.getRefNo());
-                i ++;
+                    i++;
             }
+            String inSql = sb.substring(0, sb.length() - 1) + ")";
+            searchParamGroup.addParam("remises_corr_id_in", inSql);
+            searchParamAjax.addParam("remises_corr_id_in", inSql);
 
             if(!StringUtil.isEmpty(application_no)){
                 searchParamGroup.addFilter("application_no","%" +application_no +"%" ,true);
