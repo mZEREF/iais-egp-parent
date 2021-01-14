@@ -1464,10 +1464,11 @@ public class BackendInboxDelegator {
         String hci_code = ParamUtil.getRequestString(bpc.request, "hci_code");
         String hci_address = ParamUtil.getRequestString(bpc.request, "hci_address");
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
-
+        log.info(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
         if(commPools != null && !commPools.isEmpty()){
             StringBuilder sb = new StringBuilder("(");
             int i =0;
+            log.info(StringUtil.changeForLog("commPools size = "+commPools.size()));
             for (TaskDto item: commPools) {
                     sb.append(":itemKey").append(i).append(',');
                 searchParamGroup.addFilter("itemKey" + i,
@@ -1476,6 +1477,9 @@ public class BackendInboxDelegator {
                         item.getRefNo());
                     i++;
             }
+            log.info(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
+            log.info(StringUtil.changeForLog("commPools size = "+commPools.size()));
+            log.info(StringUtil.changeForLog("i size = "+commPools.size()));
             String inSql = sb.substring(0, sb.length() - 1) + ")";
             searchParamGroup.addParam("remises_corr_id_in", inSql);
             searchParamAjax.addParam("remises_corr_id_in", inSql);
@@ -1488,7 +1492,6 @@ public class BackendInboxDelegator {
                 searchParamGroup.removeFilter("application_no");
                 searchParamAjax.removeFilter("application_no");
             }
-
             if(!StringUtil.isEmpty(application_type)){
                 searchParamGroup.addFilter("application_type", application_type,true);
                 searchParamAjax.addFilter("application_type", application_type,true);
@@ -1506,6 +1509,7 @@ public class BackendInboxDelegator {
                 searchParamGroup.removeFilter("hci_code");
                 searchParamAjax.removeFilter("hci_code");
             }
+            log.info(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
             if(!StringUtil.isEmpty(application_status)){
                 List<MasterCodeView> masterCodeViews = MasterCodeUtil.retrieveByCategory(APPSTATUSCATEID);
                 String codeValue = MasterCodeUtil.getCodeDesc(application_status);
@@ -1538,7 +1542,7 @@ public class BackendInboxDelegator {
                 searchParamGroup.removeFilter("application_status");
                 searchParamAjax.removeFilter("application_status");
             }
-
+            log.info(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
             if(!StringUtil.isEmpty(hci_address)){
                 ParamUtil.setSessionAttr(bpc.request,"hci_address",null);
                 searchParamGroup.addFilter("hci_address", "%" +hci_address +"%",true);
