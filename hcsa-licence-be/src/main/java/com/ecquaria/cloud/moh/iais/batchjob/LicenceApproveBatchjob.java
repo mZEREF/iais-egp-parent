@@ -193,7 +193,6 @@ public class LicenceApproveBatchjob {
                         eventApplicationGroupDto.setApplicationDto(updateApplicationStatusToGenerated(applicationDtos));
                         eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
                         applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
-                        updateAppealApplicationStatus(applicationDtos);
 
                     }
 

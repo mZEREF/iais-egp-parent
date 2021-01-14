@@ -65,10 +65,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * ApplicationServiceImpl
@@ -839,13 +836,32 @@ public class ApplicationServiceImpl implements ApplicationService {
                 beEicGatewayClient.updateApplication(applicationDto1, signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization()).getEntity();
             }
+            updateAppealApplicationStatus(applicationDto);
         }else{
             log.error(StringUtil.changeForLog("This applicationDto is null "));
         }
         log.info(StringUtil.changeForLog("The eicCallFeApplication end ..."));
 
     }
-
+    private void updateAppealApplicationStatus(List<ApplicationDto> applicationDtos){
+        if(applicationDtos!=null){
+            List<String> appId=new ArrayList<>(applicationDtos.size());
+            for (ApplicationDto applicationDto : applicationDtos){
+                appId.add(applicationDto.getId());
+            }
+            List<ApplicationDto> applicationDtoList = applicationClient.getAppealApplicationByApplicationIds(appId).getEntity();
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            for(ApplicationDto applicationDto : applicationDtoList){
+                if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationDto.getApplicationType())){
+                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+                    applicationClient.updateApplication(applicationDto);
+                    beEicGatewayClient.updateApplication(applicationDto,signature.date(), signature.authorization(),
+                            signature2.date(), signature2.authorization());
+                }
+            }
+        }
+    }
     @Override
     public ApplicationDto getApplicationDtoByGroupIdAndStatus(String appGroupId, String status) {
         log.info(StringUtil.changeForLog("The containStatus is start ..."));
