@@ -1910,6 +1910,7 @@ public class HcsaApplicationDelegator {
         //cessation
         if (ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus) && ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)) {
             boolean grpLic = applicationDto.isGrpLic();
+            String applicationNo = applicationDto.getApplicationNo();
             String applicationDtoId = applicationDto.getId();
             AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(applicationDtoId).getEntity();
             String hciCode = appGrpPremisesDto.getHciCode();
@@ -1924,9 +1925,10 @@ public class HcsaApplicationDelegator {
                     if (!IaisCommonUtils.isEmpty(specApplicationDtos)) {
                         for (ApplicationDto dto : specApplicationDtos) {
                             String id = dto.getId();
+                            String baseApplicationNo = dto.getBaseApplicationNo();
                             AppGrpPremisesDto appGrpPremisesSpecDto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
                             String hciCode1 = appGrpPremisesSpecDto.getHciCode();
-                            if (hciCode.equals(hciCode1)) {
+                            if (hciCode.equals(hciCode1) && applicationNo.equals(baseApplicationNo)) {
                                 dto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NEED);
                                 dto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
                                 dto.setNeedNewLicNo(true);
@@ -1943,9 +1945,12 @@ public class HcsaApplicationDelegator {
                     List<ApplicationDto> specApplicationDtos = cessationClient.getAppsByLicId(specLicIds.get(0)).getEntity();
                     if (!IaisCommonUtils.isEmpty(specApplicationDtos)) {
                         for (ApplicationDto dto : specApplicationDtos) {
-                            dto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NOT);
-                            dto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
-                            dto.setNeedNewLicNo(false);
+                            String baseApplicationNo = dto.getBaseApplicationNo();
+                            if (applicationNo.equals(baseApplicationNo)) {
+                                dto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NOT);
+                                dto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
+                                dto.setNeedNewLicNo(false);
+                            }
                         }
                     }
                     applicationClient.updateCessationApplications(specApplicationDtos);
@@ -1957,6 +1962,7 @@ public class HcsaApplicationDelegator {
         }
         if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus) && ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)) {
             String originLicenceId = applicationDto.getOriginLicenceId();
+            String applicationNo = applicationDto.getApplicationNo();
             String applicationDtoId = applicationDto.getId();
             AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(applicationDtoId).getEntity();
             String hciCode = appGrpPremisesDto.getHciCode();
@@ -1966,9 +1972,10 @@ public class HcsaApplicationDelegator {
                 if (!IaisCommonUtils.isEmpty(specApplicationDtos)) {
                     for (ApplicationDto dto : specApplicationDtos) {
                         String id = dto.getId();
+                        String baseApplicationNo = dto.getBaseApplicationNo();
                         AppGrpPremisesDto appGrpPremisesSpecDto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
                         String hciCode1 = appGrpPremisesSpecDto.getHciCode();
-                        if (hciCode.equals(hciCode1)) {
+                        if (hciCode.equals(hciCode1) && applicationNo.equals(baseApplicationNo)) {
                             dto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                         }
                     }
@@ -3108,66 +3115,89 @@ public class HcsaApplicationDelegator {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String applicationType = applicationDto.getApplicationType();
         if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)) {
+            AppCessLicDto appCessLicDto = new AppCessLicDto();
             String originLicenceId = applicationDto.getOriginLicenceId();
-            List<String> licIds = IaisCommonUtils.genNewArrayList();
-            licIds.add(originLicenceId);
-            List<String> corrIds = IaisCommonUtils.genNewArrayList();
-            corrIds.add(correlationId);
-            List<AppCessLicDto> appCessDtosByLicIds = cessationBeService.getAppCessDtosByLicIds(licIds);
-            List<AppCessMiscDto> appCessMiscDtos = cessationClient.getAppCessMiscDtosByCorrIds(corrIds).getEntity();
-            if (!IaisCommonUtils.isEmpty(appCessDtosByLicIds)) {
-                AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
-                if (!IaisCommonUtils.isEmpty(appCessMiscDtos)) {
-                    AppCessMiscDto appCessMiscDto = appCessMiscDtos.get(0);
-                    AppCessHciDto appCessHciDto = appCessLicDto.getAppCessHciDtos().get(0);
-                    Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
-                    MiscUtil.transferEntityDto(appCessMiscDto, AppCessHciDto.class, fieldMap, appCessHciDto);
-                    Boolean patNeedTrans = appCessMiscDto.getPatNeedTrans();
-                    if (patNeedTrans) {
-                        String patTransType = appCessMiscDto.getPatTransType();
-                        String patTransTo = appCessMiscDto.getPatTransTo();
-
-                        appCessHciDto.setPatientSelect(patTransType);
-                        if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
-                            appCessHciDto.setPatHciName(patTransTo);
-                        }
-                        if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
-                            appCessHciDto.setPatRegNo(patTransTo);
-                        }
-                        if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
-                            appCessHciDto.setPatOthers(patTransTo);
-                        }
-                    } else {
-                        String remarks = appCessMiscDto.getPatNoReason();
-                        appCessHciDto.setPatNoRemarks(remarks);
+            LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
+            String svcName = licenceDto.getSvcName();
+            String licenceNo = licenceDto.getLicenceNo();
+            appCessLicDto.setLicenceNo(licenceNo);
+            appCessLicDto.setSvcName(svcName);
+            AppPremiseMiscDto appPremiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
+            AppCessMiscDto appCessMiscDto = MiscUtil.transferEntityDto(appPremiseMiscDto, AppCessMiscDto.class);
+            AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
+            String blkNo = appGrpPremisesEntityDto.getBlkNo();
+            String premisesId = appGrpPremisesEntityDto.getId();
+            String streetName = appGrpPremisesEntityDto.getStreetName();
+            String buildingName = appGrpPremisesEntityDto.getBuildingName();
+            String floorNo = appGrpPremisesEntityDto.getFloorNo();
+            String unitNo = appGrpPremisesEntityDto.getUnitNo();
+            String postalCode = appGrpPremisesEntityDto.getPostalCode();
+            String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
+            AppCessHciDto appCessHciDto = new AppCessHciDto();
+            String hciName = appGrpPremisesEntityDto.getHciName();
+            String hciCode = appGrpPremisesEntityDto.getHciCode();
+            appCessHciDto.setHciCode(hciCode);
+            appCessHciDto.setHciName(hciName);
+            appCessHciDto.setPremiseId(premisesId);
+            appCessHciDto.setHciAddress(hciAddress);
+            Date effectiveDate = appCessMiscDto.getEffectiveDate();
+            String reason = appCessMiscDto.getReason();
+            String otherReason = appCessMiscDto.getOtherReason();
+            String patTransType = appCessMiscDto.getPatTransType();
+            String patTransTo = appCessMiscDto.getPatTransTo();
+            appCessHciDto.setPatientSelect(patTransType);
+            appCessHciDto.setReason(reason);
+            appCessHciDto.setOtherReason(otherReason);
+            appCessHciDto.setEffectiveDate(effectiveDate);
+            if (appCessMiscDto != null) {
+                Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
+                MiscUtil.transferEntityDto(appCessMiscDto, AppCessHciDto.class, fieldMap, appCessHciDto);
+                Boolean patNeedTrans = appCessMiscDto.getPatNeedTrans();
+                if (patNeedTrans) {
+                    appCessHciDto.setPatientSelect(patTransType);
+                    if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+                        appCessHciDto.setPatHciName(patTransTo);
                     }
-                    //spec
-                    String applicationNo = applicationDto.getApplicationNo();
-                    ApplicationDto specApp = cessationClient.getAppByBaseAppNo(applicationNo).getEntity();
-                    List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
-                    if(specApp!=null){
-                        String specId = specApp.getOriginLicenceId();
-                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicDtoById(specId).getEntity();
-                        if (specLicenceDto != null) {
-                            AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
-                            LicenceDto baseLic = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
-                            String specLicenceNo = specLicenceDto.getLicenceNo();
-                            String licenceDtoId = specLicenceDto.getId();
-                            String specSvcName = specLicenceDto.getSvcName();
-                            appSpecifiedLicDto.setBaseLicNo(baseLic.getLicenceNo());
-                            appSpecifiedLicDto.setBaseSvcName(baseLic.getSvcName());
-                            appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
-                            appSpecifiedLicDto.setSpecSvcName(specSvcName);
-                            appSpecifiedLicDto.setSpecLicId(licenceDtoId);
-                            appSpecifiedLicDtos.add(appSpecifiedLicDto);
-                        }
+                    if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+                        appCessHciDto.setPatRegNo(patTransTo);
                     }
-                    ParamUtil.setSessionAttr(request, "confirmDtos", (Serializable) appCessDtosByLicIds);
-                    ParamUtil.setSessionAttr(request, "reasonOption", (Serializable) getReasonOption());
-                    ParamUtil.setSessionAttr(request, "patientsOption", (Serializable) getPatientsOption());
-                    ParamUtil.setSessionAttr(request, "specLicInfo", (Serializable) appSpecifiedLicDtos);
+                    if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+                        appCessHciDto.setPatOthers(patTransTo);
+                    }
+                } else {
+                    String remarks = appCessMiscDto.getPatNoReason();
+                    appCessHciDto.setPatNoRemarks(remarks);
                 }
+                List<AppCessHciDto> appCessHciDtos = IaisCommonUtils.genNewArrayList();
+                appCessHciDtos.add(appCessHciDto);
+                appCessLicDto.setAppCessHciDtos(appCessHciDtos);
+                //spec
+                String applicationNo = applicationDto.getApplicationNo();
+                ApplicationDto specApp = cessationClient.getAppByBaseAppNo(applicationNo).getEntity();
+                List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
+                if (specApp != null) {
+                    String specId = specApp.getOriginLicenceId();
+                    LicenceDto specLicenceDto = hcsaLicenceClient.getLicDtoById(specId).getEntity();
+                    if (specLicenceDto != null) {
+                        AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
+                        LicenceDto baseLic = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
+                        String specLicenceNo = specLicenceDto.getLicenceNo();
+                        String licenceDtoId = specLicenceDto.getId();
+                        String specSvcName = specLicenceDto.getSvcName();
+                        appSpecifiedLicDto.setBaseLicNo(baseLic.getLicenceNo());
+                        appSpecifiedLicDto.setBaseSvcName(baseLic.getSvcName());
+                        appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
+                        appSpecifiedLicDto.setSpecSvcName(specSvcName);
+                        appSpecifiedLicDto.setSpecLicId(licenceDtoId);
+                        appSpecifiedLicDtos.add(appSpecifiedLicDto);
+                    }
+                }
+                ParamUtil.setSessionAttr(request, "confirmDto", appCessLicDto);
+                ParamUtil.setSessionAttr(request, "reasonOption", (Serializable) getReasonOption());
+                ParamUtil.setSessionAttr(request, "patientsOption", (Serializable) getPatientsOption());
+                ParamUtil.setSessionAttr(request, "specLicInfo", (Serializable) appSpecifiedLicDtos);
             }
+
         }
     }
 
