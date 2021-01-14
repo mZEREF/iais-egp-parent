@@ -231,17 +231,12 @@ public class MasterCodeDelegator {
         if (validationResult != null && validationResult.isHasErrors()) {
             errorMap = validationResult.retrieveAll();
             if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
-                if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
-                    validationResult.setHasErrors(true);
-                    String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
-                    errorMap.put("effectiveTo", errMsg);
-                }
                 if (AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
                     if (masterCodeDto.getEffectiveFrom().before(new Date())){
                         validationResult.setHasErrors(true);
                         String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
                         //The effective date of inactive data must be a future time
-                        errorMap.put("effectiveTo", errMsg);
+                        errorMap.put("effectiveFrom", errMsg);
                     }
                 }
                 if (AppConsts.COMMON_STATUS_ACTIVE.equals(masterCodeDto.getStatus())){
@@ -252,13 +247,18 @@ public class MasterCodeDelegator {
                         errorMap.put("effectiveTo", errMsg);
                     }
                 }
-                if (masterCodeDto.getSequence() != null) {
-                    if (masterCodeDto.getSequence() == -1) {
-                        errorMap.put("sequence", mcuperrErrMsg8);
-                    }
-                    if (masterCodeDto.getSequence() == -2) {
-                        errorMap.put("sequence", mcuperrErrMsg8);
-                    }
+                if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
+                    validationResult.setHasErrors(true);
+                    String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
+                    errorMap.put("effectiveTo", errMsg);
+                }
+            }
+            if (masterCodeDto.getSequence() != null) {
+                if (masterCodeDto.getSequence() == -1) {
+                    errorMap.put("sequence", mcuperrErrMsg8);
+                }
+                if (masterCodeDto.getSequence() == -2) {
+                    errorMap.put("sequence", mcuperrErrMsg8);
                 }
             }
             if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
@@ -811,12 +811,6 @@ public class MasterCodeDelegator {
         }
         if (validationResult != null && validationResult.isHasErrors()) {
             errorMap = validationResult.retrieveAll();
-            if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
-                if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
-                    String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
-                    errorMap.put("effectiveTo", errMsg);
-                }
-            }
             if (masterCodeDto.getSequence() != null){
                 if (masterCodeDto.getSequence() == -1){
                     errorMap.put("sequence", mcuperrErrMsg8);
@@ -830,7 +824,7 @@ public class MasterCodeDelegator {
                     validationResult.setHasErrors(true);
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
                     //The effective date of inactive data must be a future time
-                    errorMap.put("effectiveTo", errMsg);
+                    errorMap.put("effectiveFrom", errMsg);
                 }
             }
             if (AppConsts.COMMON_STATUS_ACTIVE.equals(masterCodeDto.getStatus())){
@@ -838,6 +832,12 @@ public class MasterCodeDelegator {
                     validationResult.setHasErrors(true);
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR009");
                     //The effective date of inactive data must be a future time
+                    errorMap.put("effectiveTo", errMsg);
+                }
+            }
+            if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
+                if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
+                    String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
                     errorMap.put("effectiveTo", errMsg);
                 }
             }
@@ -951,12 +951,6 @@ public class MasterCodeDelegator {
         }
         if (validationEditResult != null && validationEditResult.isHasErrors()) {
             logAboutStart("Edit validation");
-            if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
-                if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
-                    String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
-                    errorMap.put("effectiveTo", errMsg);
-                }
-            }
             if(AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
                 errorMap.remove("effectiveFrom");
                 errorMap.remove("effectiveTo");
@@ -966,6 +960,12 @@ public class MasterCodeDelegator {
                     validationEditResult.setHasErrors(true);
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
                     //The effective date of inactive data must be a future time
+                    errorMap.put("effectiveFrom", errMsg);
+                }
+            }
+            if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
+                if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
+                    String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
                     errorMap.put("effectiveTo", errMsg);
                 }
             }
