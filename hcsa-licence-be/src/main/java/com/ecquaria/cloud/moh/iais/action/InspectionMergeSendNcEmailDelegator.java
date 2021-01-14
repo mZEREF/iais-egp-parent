@@ -57,13 +57,11 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
-import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -100,8 +98,6 @@ public class InspectionMergeSendNcEmailDelegator {
     @Autowired
     private TaskService taskService;
     @Autowired
-    InspectionPreTaskService inspectionPreTaskService;
-    @Autowired
     ApplicationService applicationService;
     @Autowired
     ApplicationViewService applicationViewService;
@@ -109,8 +105,7 @@ public class InspectionMergeSendNcEmailDelegator {
     private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
-    @Autowired
-    EmailClient emailClient;
+
     @Autowired
     OrganizationClient organizationClient;
     @Autowired
@@ -150,7 +145,7 @@ public class InspectionMergeSendNcEmailDelegator {
 
         }
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_MAIL);
-        TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
+        TaskDto taskDto = taskService.getTaskById(taskId);
         if( taskDto == null) {
             return;
         }
@@ -170,13 +165,13 @@ public class InspectionMergeSendNcEmailDelegator {
         TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = fillupChklistService.getAppViewDto(taskDto.getId());
-        applicationViewDto.setCurrentStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getStatus()}).get(0).getText());
+        applicationViewDto.setCurrentStatus(MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getStatus()));
 
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos1=inspEmailService.getAppPremisesCorrelationsByPremises(correlationId);
 
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=IaisCommonUtils.genNewArrayList();
         for (AppPremisesCorrelationDto appPremisesCorrDto:appPremisesCorrelationDtos1
-             ) {
+        ) {
             ApplicationDto appDto = applicationService.getApplicationBytaskId(appPremisesCorrDto.getId());
             if(appDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING)){
                 appPremisesCorrelationDtos.add(appPremisesCorrDto);
@@ -369,8 +364,21 @@ public class InspectionMergeSendNcEmailDelegator {
         if("Select".equals(decision)){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
         List<String>appPremCorrIds= (List<String>) ParamUtil.getSessionAttr(request,"appPremCorrIds");
 
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=inspEmailService.getAppPremisesCorrelationsByPremises(applicationViewDto.getAppPremisesCorrelationId());
-
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos1=inspEmailService.getAppPremisesCorrelationsByPremises(applicationViewDto.getAppPremisesCorrelationId());
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=IaisCommonUtils.genNewArrayList();
+        for (AppPremisesCorrelationDto appPremisesCorrDto:appPremisesCorrelationDtos1
+        ) {
+            ApplicationDto appDto = applicationService.getApplicationBytaskId(appPremisesCorrDto.getId());
+            if(appDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING)){
+                appPremisesCorrelationDtos.add(appPremisesCorrDto);
+            }
+        }
+        if(applicationViewDto.getApplicationDto().isFastTracking()){
+            appPremisesCorrelationDtos.clear();
+            AppPremisesCorrelationDto appCorrDto =new AppPremisesCorrelationDto();
+            appCorrDto.setId(applicationViewDto.getAppPremisesCorrelationId());
+            appPremisesCorrelationDtos.add(appCorrDto);
+        }
 
         if (inspectionEmailTemplateDto.getSubject().isEmpty()){
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -606,12 +614,11 @@ public class InspectionMergeSendNcEmailDelegator {
                 emailParam.setRefId(applicationViewDto.getApplicationDto().getApplicationNo());
                 emailParam.setSubject(inspectionEmailTemplateDto.getSubject());
                 notificationHelper.sendNotification(emailParam);
-                //emailClient.sendNotification(emailDto).getEntity();
                 //msg
                 List<String> svcCode=IaisCommonUtils.genNewArrayList();
                 List<String> svcNames= (List<String>) ParamUtil.getSessionAttr(request,"svcNames");
                 for (String svcName:svcNames
-                     ) {
+                ) {
                     HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(svcName).getEntity();
                     svcCode.add(svcDto.getSvcCode());
                 }
@@ -697,7 +704,7 @@ public class InspectionMergeSendNcEmailDelegator {
     }
     private void completedTask(TaskDto taskDto, List<String> appPremCorrIds) {
         for (String refNo:appPremCorrIds
-             ) {
+        ) {
             List<TaskDto> taskDtos=taskService.getTaskByUrlAndRefNo(refNo,TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
             for (TaskDto dto:taskDtos
             ) {
