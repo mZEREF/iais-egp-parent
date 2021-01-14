@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -12,7 +13,7 @@
             <div class="center-content">
                 <div class="intranet-content">
                     <div class="bg-title">
-                        <h2>You have no privilege. </h2>
+                        <h2><iais:code code="GENERAL_ERR0044"></iais:code></h2>
                     </div>
                 </div>
             </div>
