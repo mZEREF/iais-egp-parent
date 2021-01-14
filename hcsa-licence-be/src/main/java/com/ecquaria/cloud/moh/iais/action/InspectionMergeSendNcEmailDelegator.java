@@ -477,17 +477,6 @@ public class InspectionMergeSendNcEmailDelegator {
                             }
                         }
                     }
-                    AdCheckListShowDto adCheckListShowDto = fillupChklistService.getAdhoc(appPremCorrId);
-                    if(adCheckListShowDto!=null){
-                        List<AdhocNcCheckItemDto> adItemList = adCheckListShowDto.getAdItemList();
-                        if(adItemList!=null && !adItemList.isEmpty()){
-                            for(AdhocNcCheckItemDto temp:adItemList){
-                                if(temp.getRectified()){
-                                    isNoNc=false;
-                                }
-                            }
-                        }
-                    }
                 }catch (Exception e){
                     log.error(e.getMessage(), e);
                 }
