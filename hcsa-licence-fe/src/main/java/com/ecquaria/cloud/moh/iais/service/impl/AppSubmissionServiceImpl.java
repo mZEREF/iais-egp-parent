@@ -1870,6 +1870,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             for (AppSvcDocDto appSvcDocDto : appSvcDocDtoLit) {
                 Integer docSize = appSvcDocDto.getDocSize();
                 String docName = appSvcDocDto.getDocName();
+                if(docName==null){
+                    continue;
+                }
                 Boolean flag = Boolean.FALSE;
                 String substring = docName.substring(docName.lastIndexOf('.') + 1);
                 if (docSize/1024 > uploadFileLimit) {
