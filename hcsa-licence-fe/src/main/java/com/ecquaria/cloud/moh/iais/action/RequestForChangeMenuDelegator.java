@@ -812,7 +812,7 @@ public class RequestForChangeMenuDelegator {
         String salutation1 = ParamUtil.getString(bpc.request, "salutation1");
         String psnName1 = ParamUtil.getString(bpc.request, "psnName1");
         String idType1 = ParamUtil.getString(bpc.request, "idType1");
-        String idNo1 = ParamUtil.getString(bpc.request, "idNo1");
+        String idNo1 = StringUtil.toUpperCase(ParamUtil.getString(bpc.request, "idNo1"));
         String email1 = ParamUtil.getString(bpc.request, "emailAddr1");
         String mobile1 = ParamUtil.getString(bpc.request, "mobileNo1");
         String designation1 = ParamUtil.getString(bpc.request, "designation1");

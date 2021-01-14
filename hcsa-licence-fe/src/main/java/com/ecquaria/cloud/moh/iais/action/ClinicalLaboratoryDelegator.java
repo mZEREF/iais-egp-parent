@@ -2158,7 +2158,7 @@ public class ClinicalLaboratoryDelegator {
                 appSvcCgoDto.setSalutation(salutation[i]);
                 appSvcCgoDto.setName(name[i]);
                 appSvcCgoDto.setIdType(idType[i]);
-                appSvcCgoDto.setIdNo(idNo[i]);
+                appSvcCgoDto.setIdNo(StringUtil.toUpperCase(idNo[i]));
                 appSvcCgoDto.setDesignation(designation[i]);
                 appSvcCgoDto.setProfessionType(professionType[i]);
                 appSvcCgoDto.setProfRegNo(professionRegoNo[i]);
@@ -2361,7 +2361,7 @@ public class ClinicalLaboratoryDelegator {
                     appSvcPrincipalOfficersDto.setSalutation(salutation[i]);
                     appSvcPrincipalOfficersDto.setName(name[i]);
                     appSvcPrincipalOfficersDto.setIdType(idType[i]);
-                    appSvcPrincipalOfficersDto.setIdNo(idNo[i]);
+                    appSvcPrincipalOfficersDto.setIdNo(StringUtil.toUpperCase(idNo[i]));
                     appSvcPrincipalOfficersDto.setDesignation(designation[i]);
                     appSvcPrincipalOfficersDto.setMobileNo(mobileNo[i]);
                     appSvcPrincipalOfficersDto.setOfficeTelNo(officeTelNo[i]);
@@ -2542,7 +2542,7 @@ public class ClinicalLaboratoryDelegator {
                     appSvcPrincipalOfficersDto.setSalutation(deputySalutation[i]);
                     appSvcPrincipalOfficersDto.setName(deputyName[i]);
                     appSvcPrincipalOfficersDto.setIdType(deputyIdType[i]);
-                    appSvcPrincipalOfficersDto.setIdNo(deputyIdNo[i]);
+                    appSvcPrincipalOfficersDto.setIdNo(StringUtil.toUpperCase(deputyIdNo[i]));
                     appSvcPrincipalOfficersDto.setDesignation(deputyDesignation[i]);
                     appSvcPrincipalOfficersDto.setMobileNo(deputyMobileNo[i]);
                     appSvcPrincipalOfficersDto.setOfficeTelNo(deputyOfficeTelNo[i]);
@@ -3104,7 +3104,7 @@ public class ClinicalLaboratoryDelegator {
                 appSvcPrincipalOfficersDto.setSalutation(salutation[i]);
                 appSvcPrincipalOfficersDto.setName(name[i]);
                 appSvcPrincipalOfficersDto.setIdType(idType[i]);
-                appSvcPrincipalOfficersDto.setIdNo(idNo[i]);
+                appSvcPrincipalOfficersDto.setIdNo(StringUtil.toUpperCase(idNo[i]));
                 appSvcPrincipalOfficersDto.setMobileNo(mobileNo[i]);
                 String emailAddr = "";
                 if(emailAddress != null){

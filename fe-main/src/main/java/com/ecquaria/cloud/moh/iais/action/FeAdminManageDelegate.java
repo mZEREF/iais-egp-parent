@@ -174,7 +174,7 @@ public class FeAdminManageDelegate {
             String name = ParamUtil.getString(bpc.request,"name");
             String salutation = ParamUtil.getString(bpc.request,"salutation");
             String idType = ParamUtil.getString(bpc.request,"idType");
-            String idNo = ParamUtil.getString(bpc.request,"idNo");
+            String idNo = StringUtil.toUpperCase(ParamUtil.getString(bpc.request,"idNo"));
             String designation = ParamUtil.getString(bpc.request,"designation");
             String mobileNo = ParamUtil.getString(bpc.request,"mobileNo");
             String officeNo = ParamUtil.getString(bpc.request,"officeNo");

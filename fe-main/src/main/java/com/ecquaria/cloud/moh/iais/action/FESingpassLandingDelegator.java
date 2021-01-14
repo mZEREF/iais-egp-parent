@@ -93,11 +93,11 @@ public class FESingpassLandingDelegator {
             return;
         }
 
-        String idType = IaisEGPHelper.checkIdentityNoType(identityNo);
+        String identityNoUpper = identityNo.toUpperCase();
+        String idType = IaisEGPHelper.checkIdentityNoType(identityNoUpper);
 
-        log.info(StringUtil.changeForLog("singpassCallBack nric " + identityNo));
-
-        ParamUtil.setRequestAttr(request, UserConstants.ENTITY_ID, identityNo);
+        log.debug(StringUtil.changeForLog("singpassCallBack nric " + identityNoUpper));
+        ParamUtil.setRequestAttr(request, UserConstants.ENTITY_ID, identityNoUpper);
         ParamUtil.setRequestAttr(request, UserConstants.ID_TYPE, idType);
         ParamUtil.setRequestAttr(request, UserConstants.LOGIN_SCP, scp);
         log.info("singpassCallBack===========>>>End");
