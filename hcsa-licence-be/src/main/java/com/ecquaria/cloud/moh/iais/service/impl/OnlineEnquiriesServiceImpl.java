@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
@@ -16,7 +17,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -182,12 +182,12 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         LicenceDto licenceDto=hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
         OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licenceDto.getLicenseeId()).getEntity();
         try{
-            organizationLicDto.getLicenseeDto().setLicenseeType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{organizationLicDto.getLicenseeDto().getLicenseeType()}).get(0).getText());
+            organizationLicDto.getLicenseeDto().setLicenseeType(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeDto().getLicenseeType()));
         }catch (NullPointerException e){
             log.error(e.getMessage(), e);
         }
         try{
-            organizationLicDto.getLicenseeIndividualDto().setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{organizationLicDto.getLicenseeIndividualDto().getSalutation()}).get(0).getText());
+            organizationLicDto.getLicenseeIndividualDto().setSalutation(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeDto().getLicenseeType()));
         }catch (NullPointerException e){
             log.error(e.getMessage(), e);
         }
@@ -197,19 +197,18 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         for (LicenseeKeyApptPersonDto org:organizationLicDto.getLicenseeKeyApptPersonDtos()
         ) {
             try {
-                org.setDesignation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{org.getDesignation()}).get(0).getText());
+                org.setDesignation(AcraConsts.getAppointmentPositionHeld().get(org.getDesignation()));
 
             }catch (NullPointerException e){
                 log.error(e.getMessage(), e);
             }
             try {
-                org.setIdType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{org.getIdType()}).get(0).getText());
-
+                org.setIdType(AcraConsts.getIdTypes().get(org.getIdType()));
             }catch (NullPointerException e){
                 log.error(e.getMessage(), e);
             }
             try {
-                org.setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{org.getSalutation()}).get(0).getText());
+                org.setSalutation("-");
             }catch (NullPointerException e){
                 log.error(e.getMessage(), e);
             }
@@ -217,22 +216,22 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         for (PersonnelsDto per:personnelsDto
         ) {
             try{
-                per.getLicKeyPersonnelDto().setPsnType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getLicKeyPersonnelDto().getPsnType()}).get(0).getText());
+                per.getLicKeyPersonnelDto().setPsnType(MasterCodeUtil.getCodeDesc(per.getLicKeyPersonnelDto().getPsnType()));
             }catch (NullPointerException e){
                 log.error(e.getMessage(), e);
             }
             try {
-                per.getKeyPersonnelDto().setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getSalutation()}).get(0).getText());
+                per.getKeyPersonnelDto().setSalutation(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelDto().getSalutation()));
             }catch (NullPointerException e){
                 log.error(e.getMessage(), e);
             }
             try {
-                per.getKeyPersonnelDto().setDesignation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getDesignation()}).get(0).getText());
+                per.getKeyPersonnelDto().setDesignation(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelDto().getDesignation()));
             }catch (NullPointerException e){
                 log.error(e.getMessage(), e);
             }
             try {
-                per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelExtDto().getProfessionType()}).get(0).getText());
+                per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelExtDto().getProfessionType()));
             }catch (NullPointerException e){
                 log.error(e.getMessage(), e);
                 per.setKeyPersonnelExtDto(new KeyPersonnelExtDto());
@@ -439,7 +438,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             hcsaRiskScoreDto.setBeExistAppId(applicationDto.getId());
             HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
             String riskLevel = entity.getRiskLevel();
-            inspectionReportDto.setRiskLevel(MasterCodeUtil.retrieveOptionsByCodes(new String[]{riskLevel}).get(0).getText());
+            inspectionReportDto.setRiskLevel(MasterCodeUtil.getCodeDesc(riskLevel));
         }catch (Exception e){
             inspectionReportDto.setRiskLevel("-");
             log.info(e.getMessage(),e);
@@ -604,16 +603,16 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
             if(appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.APPROVED)||appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.APPROVEDLTC)||appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.RFC_APPROVED)){
                 int recomInNumber=appPremisesRecommendationDto.getRecomInNumber();
-                String chronoUnit=MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRecommendationDto.getChronoUnit()}).get(0).getText();
+                String chronoUnit=MasterCodeUtil.getCodeDesc(appPremisesRecommendationDto.getChronoUnit());
                 if(appPremisesRecommendationDto.getChronoUnit().equals(AppointmentConstants.RECURRENCE_MONTH)){
                     if(recomInNumber/12 ==1 || recomInNumber/12 >1){
                         recomInNumber=recomInNumber/12;
-                        chronoUnit=MasterCodeUtil.retrieveOptionsByCodes(new String[]{AppointmentConstants.RECURRENCE_YEAR}).get(0).getText();
+                        chronoUnit=MasterCodeUtil.getCodeDesc(AppointmentConstants.RECURRENCE_YEAR);
                     }
                 }
                 insRepDto.setRecommendation("Approve with "+recomInNumber+" "+chronoUnit+" Licence");
             }else {
-                insRepDto.setRecommendation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRecommendationDto.getRecomDecision()}).get(0).getText());
+                insRepDto.setRecommendation(MasterCodeUtil.getCodeDesc(appPremisesRecommendationDto.getRecomDecision()));
             }
         }catch (Exception e){
             log.error(e.getMessage(), e);
@@ -687,6 +686,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
+        ParamUtil.setRequestAttr(request,"applicationViewDto",applicationViewDto);
+        ParamUtil.setRequestAttr(request,"licenseeDto",licenseeDto);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos =  appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if(IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             return;
@@ -737,26 +738,24 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             }
         }
 
-        String appType= MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationType()}).get(0).getText();
+        String appType= MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationType());
         applicationViewDto.setApplicationType(appType);
-        applicationViewDto.getApplicationDto().setApplicationType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getApplicationType()}).get(0).getText());
+        applicationViewDto.getApplicationDto().setApplicationType(MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getApplicationType()));
         List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos=applicationClient.getAppSvcPremisesScopeListByCorreId(appCorrId).getEntity();
         for (AppSvcPremisesScopeDto a:appSvcPremisesScopeDtos
-             ) {
+        ) {
             HcsaServiceSubTypeDto hcsaServiceSubTypeDto=hcsaConfigClient.getHcsaServiceSubTypeById(a.getScopeName()).getEntity();
             if(hcsaServiceSubTypeDto!=null&&hcsaServiceSubTypeDto.getSubtypeName()!=null){
                 a.setScopeName(hcsaServiceSubTypeDto.getSubtypeName());
             }
         }
-        try {
-            List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtos=organizationClient.getLicenseeKeyApptPersonDtoListByLicenseeId(licenseeDto.getId()).getEntity();
-            ParamUtil.setRequestAttr(request,"licenseeKeyApptPersonDtos",licenseeKeyApptPersonDtos);
-        }catch (Exception e){
-            log.info(e.getMessage(),e);
-        }
-        ParamUtil.setRequestAttr(request,"applicationViewDto",applicationViewDto);
+//        try {
+//            List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtos=organizationClient.getLicenseeKeyApptPersonDtoListByLicenseeId(licenseeDto.getId()).getEntity();
+//            ParamUtil.setRequestAttr(request,"licenseeKeyApptPersonDtos",licenseeKeyApptPersonDtos);
+//        }catch (Exception e){
+//            log.info(e.getMessage(),e);
+//        }
         ParamUtil.setRequestAttr(request,"appSvcRelatedInfoDto",appSvcRelatedInfoDto);
-        ParamUtil.setRequestAttr(request,"licenseeDto",licenseeDto);
         ParamUtil.setRequestAttr(request,"serviceStep",appSvcPremisesScopeDtos);
         // 		preAppInfo->OnStepProcess
     }
