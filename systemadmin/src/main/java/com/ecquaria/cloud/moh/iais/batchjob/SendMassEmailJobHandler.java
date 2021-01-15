@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
-import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -22,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import com.ecquaria.cloud.moh.iais.service.SysInboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceCommonClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -58,7 +58,8 @@ public class SendMassEmailJobHandler extends IJobHandler {
     DistributionListService distributionListService;
     @Autowired
     SysInboxMsgService sysInboxMsgService;
-
+    @Autowired
+    OrganizationClient organizationClient;
     @Autowired
     HcsaLicenceCommonClient hcsaLicenceClient;
     @Value("${iais.email.sender}")
@@ -84,7 +85,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
 
     private void sendSMS(String msgId,List<String> recipts,String content){
         try{
-            JobLogger.log(StringUtil.changeForLog("send sms content:" +  content));
+            log.info(StringUtil.changeForLog("send sms content:" +  content));
             SmsDto smsDto = new SmsDto();
             smsDto.setSender(mailSender);
             smsDto.setContent(content);
@@ -92,39 +93,43 @@ public class SendMassEmailJobHandler extends IJobHandler {
             smsDto.setReqRefNum(msgId);
             String refNo = msgId;
             if (!IaisCommonUtils.isEmpty(recipts)) {
-                JobLogger.log(StringUtil.changeForLog("send sms recipts:" +  String.join("-",recipts)));
+                log.info(StringUtil.changeForLog("send sms recipts:" +  String.join("-",recipts)));
                 blastManagementListService.sendSMS(recipts,smsDto,refNo);
             }
         }catch (Exception e){
-            JobLogger.log(e.getMessage(),e);
+            log.info(e.getMessage(),e);
         }
     }
 
     @Override
     public ReturnT<String> execute(String s) throws Exception {
-        JobLogger.log(StringUtil.changeForLog("The SendMassEmailBatchjob is start..." ));
+        log.info(StringUtil.changeForLog("The SendMassEmailBatchjob is start..." ));
         AuditTrailHelper.setupBatchJobAuditTrail(this);
         //get need send email and sms
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         List<BlastManagementDto> blastManagementDto = blastManagementListService.getBlastBySendTime(df.format(new Date()));
-        JobLogger.log(StringUtil.changeForLog("blastManagementDto count" + blastManagementDto.size() ));
+        log.info(StringUtil.changeForLog("blastManagementDto count" + blastManagementDto.size() ));
         //foreach get recipient and send
         int i = 0;
         for (BlastManagementDto item:blastManagementDto
         ) {
-            JobLogger.log(StringUtil.changeForLog("No." + i ));
-            JobLogger.log(StringUtil.changeForLog("mode is " + item.getMode()));
-            JobLogger.log(StringUtil.changeForLog("Id is " + item.getId()));
-            JobLogger.log(StringUtil.changeForLog("RecipientsRole is " + item.getRecipientsRole()));
+            log.info(StringUtil.changeForLog("No." + i ));
+            log.info(StringUtil.changeForLog("mode is " + item.getMode()));
+            log.info(StringUtil.changeForLog("Id is " + item.getId()));
+            log.info(StringUtil.changeForLog("RecipientsRole is " + item.getRecipientsRole()));
             if(EMAIL.equals(item.getMode()) && item.getRecipientsRole() != null){
                 EmailDto email = new EmailDto();
                 List<String> roleEmail = IaisCommonUtils.genNewArrayList();
-                roleEmail = blastManagementListService.getEmailByRole(item.getRecipientsRole(),HcsaServiceCacheHelper.getServiceByCode(item.getService()).getSvcName());
-
+                if("LICENSEE".equals(item.getRecipientsRole())) {
+                    List<String> licenseeIds = blastManagementListService.getLicenseeIds(HcsaServiceCacheHelper.getServiceByCode(item.getService()).getSvcName());
+                    roleEmail = organizationClient.getEmailInLicenseeIds(licenseeIds).getEntity();
+                }else{
+                    roleEmail = blastManagementListService.getEmailByRole(item.getRecipientsRole(), HcsaServiceCacheHelper.getServiceByCode(item.getService()).getSvcName());
+                }
                 email.setContent(item.getMsgContent());
                 email.setSender(mailSender);
                 email.setSubject(item.getSubject());
-                JobLogger.log(StringUtil.changeForLog("subject is " + item.getSubject()));
+                log.info(StringUtil.changeForLog("subject is " + item.getSubject()));
 
                 List<String> allemail = IaisCommonUtils.genNewArrayList();
                 List<String> allemailNoEmpty = IaisCommonUtils.genNewArrayList();
@@ -144,7 +149,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
                 email.setReceipts(allemailNoEmpty);
                 email.setReqRefNum(item.getMessageId());
                 email.setClientQueryCode(item.getMessageId());
-                JobLogger.log(StringUtil.changeForLog("ClientQueryCode is " + item.getMessageId()));
+                log.info(StringUtil.changeForLog("ClientQueryCode is " + item.getMessageId()));
                 try{
                     if(item.getAttachmentDtos() != null){
                         Map<String , byte[]> emailMap = IaisCommonUtils.genNewHashMap();
@@ -159,9 +164,9 @@ public class SendMassEmailJobHandler extends IJobHandler {
 
                     //send inbox msg
                     InterMessageDto interMessageDto = new InterMessageDto();
-                    JobLogger.log(StringUtil.changeForLog("send inbox msg"));
+                    log.info(StringUtil.changeForLog("send inbox msg"));
                     if(!StringUtil.isEmpty(item.getDistributionId())){
-                        JobLogger.log(StringUtil.changeForLog("DistributionId:" +  item.getDistributionId()));
+                        log.info(StringUtil.changeForLog("DistributionId:" +  item.getDistributionId()));
                         DistributionListWebDto dis = distributionListService.getDistributionListById(item.getDistributionId());
                         List<HcsaServiceDto> hcsaServiceDtoList = distributionListService.getServicesInActive();
                         String serviceName = "";
@@ -173,7 +178,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
                                 break;
                             }
                         }
-                        JobLogger.log(StringUtil.changeForLog("serviceName:" +  serviceName));
+                        log.info(StringUtil.changeForLog("serviceName:" +  serviceName));
                         if( svcDto == null){
                             svcDto = new HcsaServiceDto();
                         }
@@ -181,11 +186,11 @@ public class SendMassEmailJobHandler extends IJobHandler {
                         //send message to FE user.
                         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
                         interMessageDto.setSubject(item.getSubject());
-                        JobLogger.log(StringUtil.changeForLog("interMessage subject is " + item.getSubject()));
+                        log.info(StringUtil.changeForLog("interMessage subject is " + item.getSubject()));
                         interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ANNONUCEMENT);
 
                         interMessageDto.setService_id(svcDto.getSvcCode()+'@');
-                        JobLogger.log(StringUtil.changeForLog("interMessage ServiceId is " + svcDto.getSvcCode()+'@'));
+                        log.info(StringUtil.changeForLog("interMessage ServiceId is " + svcDto.getSvcCode()+'@'));
                         interMessageDto.setMsgContent(item.getMsgContent());
                         interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
                         interMessageDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
@@ -193,18 +198,24 @@ public class SendMassEmailJobHandler extends IJobHandler {
                         ) {
                             String refNo = sysInboxMsgService.getMessageNo();
                             interMessageDto.setRefNo(refNo);
-                            JobLogger.log(StringUtil.changeForLog("licenceList:" + licencedto.getLicenceNo()));
+                            log.info(StringUtil.changeForLog("licenceList:" + licencedto.getLicenceNo()));
                             interMessageDto.setUserId(licencedto.getLicenseeId());
                             sysInboxMsgService.saveInterMessage(interMessageDto);
                         }
                     }
                 }catch (Exception e){
-                    JobLogger.log(StringUtil.changeForLog("email sent failed" ));
-                    JobLogger.log(e.getMessage(),e);
+                    log.info(StringUtil.changeForLog("email sent failed" ));
+                    log.info(e.getMessage(),e);
                 }
 
             }else if(item.getRecipientsRole() != null){
-                List<String> mobile = blastManagementListService.getMobileByRole(item.getRecipientsRole(), HcsaServiceCacheHelper.getServiceByCode(item.getService()).getSvcName());
+                List<String> mobile = IaisCommonUtils.genNewArrayList();
+                if("LICENSEE".equals(item.getRecipientsRole())) {
+                    List<String> licenseeIds = blastManagementListService.getLicenseeIds(HcsaServiceCacheHelper.getServiceByCode(item.getService()).getSvcName());
+                    mobile = organizationClient.getMobileInLicenseeIds(licenseeIds).getEntity();
+                }else {
+                    mobile = blastManagementListService.getMobileByRole(item.getRecipientsRole(), HcsaServiceCacheHelper.getServiceByCode(item.getService()).getSvcName());
+                }
                 sendSMS(item.getMessageId(), mobile,item.getMsgContent());
             }
             if(item.getId() != null){
@@ -213,7 +224,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
             }
 
         }
-        JobLogger.log(StringUtil.changeForLog("Result is success"));
+        log.info(StringUtil.changeForLog("Result is success"));
         return ReturnT.SUCCESS;
     }
 }

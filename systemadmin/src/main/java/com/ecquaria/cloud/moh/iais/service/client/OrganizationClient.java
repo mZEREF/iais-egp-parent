@@ -48,4 +48,12 @@ public interface OrganizationClient {
     @GetMapping(value = "/iais-licensee/licenseesByOrgId/{orgId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenseeDto>> getLicenseeByOrgId(@PathVariable(name = "orgId") String orgId);
 
+    @RequestMapping(value = "/iais-orguser-be/email-licenseeIds",method = RequestMethod.POST,produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<String>> getEmailInLicenseeIds(@RequestBody List<String> ids);
+
+    @RequestMapping(value = "/iais-orguser-be/mobile-licenseeIds",method = RequestMethod.POST,produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<String>> getMobileInLicenseeIds(@RequestBody List<String> ids);
+
 }
