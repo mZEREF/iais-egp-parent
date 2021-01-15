@@ -798,6 +798,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity();
         String grpNo = auditCombinationDto.getEventRefNo();
         for(AppSubmissionDto entity : appSubmissionDtoList){
+            filetDoc(entity);
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = entity.getAppSvcRelatedInfoDtoList();
             String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
@@ -827,7 +828,37 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }
         return null;
     }
-
+    private void filetDoc(AppSubmissionDto appSubmissionDto){
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
+            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
+                List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                if(!IaisCommonUtils.isEmpty(appSvcDocDtoLit)){
+                    ListIterator<AppSvcDocDto> appSvcDocDtoListIterator = appSvcDocDtoLit.listIterator();
+                    while (appSvcDocDtoListIterator.hasNext()){
+                        AppSvcDocDto appSvcDocDto = appSvcDocDtoListIterator.next();
+                        String fileRepoId = appSvcDocDto.getFileRepoId();
+                        String svcDocId = appSvcDocDto.getSvcDocId();
+                        if(StringUtil.isEmpty(fileRepoId)||StringUtil.isEmpty(svcDocId)){
+                            appSvcDocDtoListIterator.remove();
+                        }
+                    }
+                }
+            }
+        }
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+        if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos)){
+            ListIterator<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoListIterator = appGrpPrimaryDocDtos.listIterator();
+            while (appGrpPrimaryDocDtoListIterator.hasNext()){
+                AppGrpPrimaryDocDto next = appGrpPrimaryDocDtoListIterator.next();
+                String fileRepoId = next.getFileRepoId();
+                String svcDocId = next.getSvcDocId();
+                if(StringUtil.isEmpty(fileRepoId)||StringUtil.isEmpty(svcDocId)){
+                    appGrpPrimaryDocDtoListIterator.remove();
+                }
+            }
+        }
+    }
     private void setRiskToDto(AppSubmissionDto appSubmissionDto) {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<RiskAcceptiionDto> riskAcceptiionDtoList = IaisCommonUtils.genNewArrayList();
