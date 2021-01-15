@@ -37,6 +37,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -194,12 +195,15 @@ public class SendMassEmailJobHandler extends IJobHandler {
                         interMessageDto.setMsgContent(item.getMsgContent());
                         interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
                         interMessageDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
+                        HashSet<String> licenseeSet = IaisCommonUtils.genNewHashSet();
                         for (LicenceDto licencedto:licenceList
                         ) {
+                            licenseeSet.add(licencedto.getLicenseeId());
+                        }
+                        for (String licensee:licenseeSet){
                             String refNo = sysInboxMsgService.getMessageNo();
                             interMessageDto.setRefNo(refNo);
-                            log.info(StringUtil.changeForLog("licenceList:" + licencedto.getLicenceNo()));
-                            interMessageDto.setUserId(licencedto.getLicenseeId());
+                            interMessageDto.setUserId(licensee);
                             sysInboxMsgService.saveInterMessage(interMessageDto);
                         }
                     }
