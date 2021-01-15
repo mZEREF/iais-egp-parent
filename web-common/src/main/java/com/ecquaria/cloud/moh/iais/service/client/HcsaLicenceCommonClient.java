@@ -46,6 +46,9 @@ public interface HcsaLicenceCommonClient {
     @GetMapping(value = "/lic-common/licence-one/{licId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto> getLicDtoByIdCommon(@PathVariable("licId") String licenceId);
 
+    @GetMapping(value = "/hcsa-key-personnel/getLicenseeIds/{service}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getLicenseeIds(@PathVariable(name = "service") String service);
+
     @GetMapping(value = "/hcsa-key-personnel/getEmailByRole/{role}/{service}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getEmailByRole(@PathVariable(name = "role") String role,@PathVariable(name = "service") String service);
 
