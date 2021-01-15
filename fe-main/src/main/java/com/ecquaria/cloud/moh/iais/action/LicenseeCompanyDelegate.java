@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
@@ -109,6 +110,11 @@ public class LicenseeCompanyDelegate {
         licenseeDto.setLicenseeType(MasterCodeUtil.getCodeDesc(licenseeDto.getLicenseeType()));
         OrganizationDto organizationDto= orgUserManageService.getOrganizationById(loginContext.getOrgId());
         List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDto = orgUserManageService.getPersonById(loginContext.getLicenseeId());
+        for (LicenseeKeyApptPersonDto item:licenseeKeyApptPersonDto
+             ) {
+            item.setIdType(AcraConsts.getIdTypes().get(item.getIdType()));
+            item.setDesignation(AcraConsts.getAppointmentPositionHeld().get(item.getDesignation()));
+        }
         ParamUtil.setRequestAttr(bpc.request,"organization",organizationDto);
         ParamUtil.setRequestAttr(bpc.request,"licensee",licenseeDto);
         ParamUtil.setRequestAttr(bpc.request,"person",licenseeKeyApptPersonDto);
