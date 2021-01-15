@@ -1411,6 +1411,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 String svcDocId = appSvcDocDto.getSvcDocId();
                 String fileRepoId = appSvcDocDto.getFileRepoId();
                 if (StringUtil.isEmpty(svcDocId)) {
+                    deleteSvcDoc.add(appSvcDocDto);
                     continue;
                 }
                 if(StringUtil.isEmpty(fileRepoId)){
@@ -1523,6 +1524,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             for (AppSvcDocDto appSvcDocDto : appSvcDocDtoLits) {
                 String svcDocId = appSvcDocDto.getSvcDocId();
                 if (StringUtil.isEmpty(svcDocId)) {
+                    removeList.add(appSvcDocDto);
                     continue;
                 }
                 HcsaSvcDocConfigDto entity = appConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
