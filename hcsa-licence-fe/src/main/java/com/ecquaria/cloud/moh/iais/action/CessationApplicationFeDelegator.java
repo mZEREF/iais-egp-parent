@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
@@ -474,25 +475,15 @@ public class CessationApplicationFeDelegator {
     }
 
     private List<SelectOption> getReasonOption() {
-        List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, "Not Profitable");
-        SelectOption so2 = new SelectOption(ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, "Reduce Workload");
-        SelectOption so3 = new SelectOption(ApplicationConsts.CESSATION_REASON_OTHER, "Others");
-        riskLevelResult.add(so1);
-        riskLevelResult.add(so2);
-        riskLevelResult.add(so3);
-        return riskLevelResult;
+        String [] arr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE,ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA,ApplicationConsts.CESSATION_REASON_OTHER};
+        List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCodes(arr);
+        return selectOptions;
     }
 
     private List<SelectOption> getPatientsOption() {
-        List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, "HCI");
-        SelectOption so2 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, "Professional Regn. No.");
-        SelectOption so3 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER, "Others");
-        riskLevelResult.add(so1);
-        riskLevelResult.add(so2);
-        riskLevelResult.add(so3);
-        return riskLevelResult;
+        String [] arr = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI,ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO,ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
+        List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCodes(arr);
+        return selectOptions;
     }
 
 }

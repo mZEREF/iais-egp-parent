@@ -142,10 +142,12 @@ public class CessationBeServiceImpl implements CessationBeService {
             licIds.clear();
             licIds.add(licId);
             AppSubmissionDto appSubmissionDto = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity().get(0);
+            filetDoc(appSubmissionDto);
             List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
             Map<String, List<String>> baseMap = transform(appSubmissionDto, premiseIds);
             if (!IaisCommonUtils.isEmpty(specLicIds)) {
                 AppSubmissionDto appSubmissionDtoSpec = hcsaLicenceClient.getAppSubmissionDtos(specLicIds).getEntity().get(0);
+                filetDoc(appSubmissionDtoSpec);
                 Map<String, List<String>> specMap = transform(appSubmissionDtoSpec, premiseIds);
                 for (String premiseId : premiseIds) {
                     List<String> baseAppIds = baseMap.get(premiseId);
@@ -675,5 +677,37 @@ public class CessationBeServiceImpl implements CessationBeService {
         appPremisesRoutingHistoryDto.setRoleId(roleId);
         appPremisesRoutingHistoryDto.setAuditTrailDto(auditTrailDto);
         return appPremisesRoutingHistoryDto;
+    }
+
+    private void filetDoc(AppSubmissionDto appSubmissionDto){
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
+            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
+                List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                if(!IaisCommonUtils.isEmpty(appSvcDocDtoLit)){
+                    ListIterator<AppSvcDocDto> appSvcDocDtoListIterator = appSvcDocDtoLit.listIterator();
+                    while (appSvcDocDtoListIterator.hasNext()){
+                        AppSvcDocDto appSvcDocDto = appSvcDocDtoListIterator.next();
+                        String fileRepoId = appSvcDocDto.getFileRepoId();
+                        String svcDocId = appSvcDocDto.getSvcDocId();
+                        if(StringUtil.isEmpty(fileRepoId)||StringUtil.isEmpty(svcDocId)){
+                            appSvcDocDtoListIterator.remove();
+                        }
+                    }
+                }
+            }
+        }
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+        if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos)){
+            ListIterator<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoListIterator = appGrpPrimaryDocDtos.listIterator();
+            while (appGrpPrimaryDocDtoListIterator.hasNext()){
+                AppGrpPrimaryDocDto next = appGrpPrimaryDocDtoListIterator.next();
+                String fileRepoId = next.getFileRepoId();
+                String svcDocId = next.getSvcDocId();
+                if(StringUtil.isEmpty(fileRepoId)||StringUtil.isEmpty(svcDocId)){
+                    appGrpPrimaryDocDtoListIterator.remove();
+                }
+            }
+        }
     }
 }

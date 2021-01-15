@@ -4,7 +4,9 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
@@ -27,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 /**
@@ -83,6 +86,7 @@ public class PostInspectionBatchJob {
             List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity();
             for (AppSubmissionDto entity : appSubmissionDtoList) {
                 try {
+                    filetDoc(entity);
                     entity.setAppGrpNo(grpNo);
                     entity.setAppType(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION);
                     entity.setAmount(0.0);
@@ -156,5 +160,37 @@ public class PostInspectionBatchJob {
             }
         }
         return null;
+    }
+
+    private void filetDoc(AppSubmissionDto appSubmissionDto){
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
+            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
+                List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                if(!IaisCommonUtils.isEmpty(appSvcDocDtoLit)){
+                    ListIterator<AppSvcDocDto> appSvcDocDtoListIterator = appSvcDocDtoLit.listIterator();
+                    while (appSvcDocDtoListIterator.hasNext()){
+                        AppSvcDocDto appSvcDocDto = appSvcDocDtoListIterator.next();
+                        String fileRepoId = appSvcDocDto.getFileRepoId();
+                        String svcDocId = appSvcDocDto.getSvcDocId();
+                        if(StringUtil.isEmpty(fileRepoId)||StringUtil.isEmpty(svcDocId)){
+                            appSvcDocDtoListIterator.remove();
+                        }
+                    }
+                }
+            }
+        }
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+        if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos)){
+            ListIterator<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoListIterator = appGrpPrimaryDocDtos.listIterator();
+            while (appGrpPrimaryDocDtoListIterator.hasNext()){
+                AppGrpPrimaryDocDto next = appGrpPrimaryDocDtoListIterator.next();
+                String fileRepoId = next.getFileRepoId();
+                String svcDocId = next.getSvcDocId();
+                if(StringUtil.isEmpty(fileRepoId)||StringUtil.isEmpty(svcDocId)){
+                    appGrpPrimaryDocDtoListIterator.remove();
+                }
+            }
+        }
     }
 }
