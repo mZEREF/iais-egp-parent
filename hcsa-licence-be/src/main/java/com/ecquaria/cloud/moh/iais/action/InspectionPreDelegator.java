@@ -125,6 +125,7 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, null);
         ParamUtil.setSessionAttr(bpc.request, "actionValue", null);
         ParamUtil.setSessionAttr(bpc.request, "inspectionHistoryShowDtos", null);
+        ParamUtil.setSessionAttr(bpc.request, "appEditSelectDto", null);
         if(StringUtil.isEmpty(preInspInitFlag)) {
             ParamUtil.setSessionAttr(bpc.request, "rfiUpWindowsCheck", null);
         }
