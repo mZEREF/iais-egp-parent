@@ -13,7 +13,7 @@
             <div class="center-content">
                 <div class="intranet-content">
                     <div class="bg-title">
-                        <h2><iais:code code="GENERAL_ERR0044"></iais:code></h2>
+                        <h2><iais:message key="GENERAL_ERR0044" escape="true"></iais:message></h2>
                     </div>
                 </div>
             </div>
