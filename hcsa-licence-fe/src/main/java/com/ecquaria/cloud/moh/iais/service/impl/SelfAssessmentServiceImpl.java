@@ -457,7 +457,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             return Boolean.TRUE;
         }
 
-        return applicationDto.getSelfAssMtFlag() == 1;
+        //if prohibit , should't submit and that  cannot access this module
+        return applicationDto.getSelfAssMtFlag() == ApplicationConsts.SUBMITTED_SELF_ASSESSMENT
+                || applicationDto.getSelfAssMtFlag() == ApplicationConsts.PROHIBIT_SUBMIT_RFI_SELF_ASSESSMENT ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override

@@ -185,7 +185,7 @@ public class SelfAssessmentDelegator {
     private void loadSelfAssessmentDetail(HttpServletRequest request) {
         int index = detailRange(request).intValue();
         List<SelfAssessment> selfAssessmentList = (List<SelfAssessment>) ParamUtil.getSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_QUERY_ATTR);
-        if (index != -1) {
+        if (index != -1 && IaisCommonUtils.isNotEmpty(selfAssessmentList)) {
             ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR, selfAssessmentList.get(index));
             String tabIndex = selfAssessmentList.get(index).getSelfAssessmentConfig().get(0).getConfigId();
             ParamUtil.setRequestAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION, tabIndex);
@@ -351,12 +351,13 @@ public class SelfAssessmentDelegator {
     private Map<String, List<PremCheckItem>> getTabQuestionByServiceId(SelfAssessment selfAssessmentDetail, String tabIndex) {
         Map<String, List<PremCheckItem>> sqMap = IaisCommonUtils.genNewHashMap();
         if (selfAssessmentDetail != null && selfAssessmentDetail.getSelfAssessmentConfig() != null) {
-            List<SelfAssessmentConfig> selfAssessmentConfigList = selfAssessmentDetail.getSelfAssessmentConfig();
+            List<SelfAssessmentConfig> confList = selfAssessmentDetail.getSelfAssessmentConfig();
 
-            selfAssessmentConfigList = selfAssessmentConfigList.stream().filter(i -> i.getConfigId().equals(tabIndex)).collect(Collectors.toList());
+            confList = confList.stream().filter(i -> i.getConfigId().equals(tabIndex)).collect(Collectors.toList());
 
-            //uncheck
-            sqMap = selfAssessmentConfigList.get(0).getSqMap();
+            if(IaisCommonUtils.isNotEmpty(confList)){
+                sqMap = confList.get(0).getSqMap();
+            }
         }
 
         return sqMap;
