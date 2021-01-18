@@ -95,7 +95,9 @@
                                                 <c:if test="${masterCodeResult.isCentrallyManage == 1}">
                                                     <button type="button" class="btn btn-default btn-sm" onclick="doEdit('${masterCodeResult.masterCodeId}')">Edit</button>
                                                 </c:if>
-                                                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal${status.index}">Delete</button>
+                                                <c:if test="${masterCodeResult.isCentrallyManage == 1}">
+                                                    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal${status.index}">Delete</button>
+                                                </c:if>
                                             </td>
                                         </tr>
                                         <!-- Modal -->
