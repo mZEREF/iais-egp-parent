@@ -4527,7 +4527,7 @@ border-radius: 18px;
 
 .mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar {
   background-color: #454545 !important;
-  width: 2px;
+  width: 6px;
   border-radius: 0;
 }
 .mCSB_scrollTools .mCSB_draggerRail {
