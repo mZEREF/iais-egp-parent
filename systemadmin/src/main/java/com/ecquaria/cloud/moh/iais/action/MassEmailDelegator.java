@@ -129,6 +129,7 @@ public class MassEmailDelegator {
     public void save(BaseProcessClass bpc){
         DistributionListWebDto distributionListDto = getDistribution(bpc);
         ParamUtil.setSessionAttr(bpc.request,"distribution",distributionListDto);
+        distributionListDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         ValidationResult validationResult = WebValidationHelper.validateProperty(distributionListDto, "save");
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
