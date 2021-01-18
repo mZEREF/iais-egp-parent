@@ -361,7 +361,7 @@ public class NewApplicationDelegator {
 
             ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
         } else {
-            log.error(StringUtil.changeForLog("do not have select the services"));
+            log.debug(StringUtil.changeForLog("do not have select the services"));
         }
 
         //addressType
@@ -1211,7 +1211,7 @@ public class NewApplicationDelegator {
                     LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
                     appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());
                 } catch (Exception e) {
-                    log.error(StringUtil.changeForLog("send email error ...."));
+                    log.debug(StringUtil.changeForLog("send email error ...."));
                 }
             }else{
                 switch2 = "loading";
@@ -3202,7 +3202,7 @@ public class NewApplicationDelegator {
             try {
                 //inspectionDateSendNewApplicationPaymentOnlineEmail(appSubmissionDto, bpc);
             } catch (Exception e) {
-                log.error(StringUtil.changeForLog("send email error ...."));
+                log.debug(StringUtil.changeForLog("send email error ...."));
             }
             String amount = String.valueOf(appSubmissionDto.getAmount());
             Map<String, String> fieldMap = new HashMap<String, String>();
@@ -3365,7 +3365,7 @@ public class NewApplicationDelegator {
         if (interInboxUserDto != null) {
             licenseeId = interInboxUserDto.getLicenseeId();
         } else {
-            log.error(StringUtil.changeForLog("interInboxUserDto null"));
+            log.debug(StringUtil.changeForLog("interInboxUserDto null"));
         }
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
         String emailAddress = WithOutRenewalDelegator.emailAddressesToString(licenseeEmailAddrs);

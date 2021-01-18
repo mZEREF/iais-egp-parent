@@ -175,7 +175,7 @@ public class CessationEffectiveDateBatchjob {
                             List<String> serviceIds = licenceApproveBatchjob.getAllServiceId(applicationLicenceDtos);
                             List<HcsaServiceDto> hcsaServiceDtos = licenceService.getHcsaServiceById(serviceIds);
                             if (hcsaServiceDtos == null || hcsaServiceDtos.size() == 0) {
-                                log.error(StringUtil.changeForLog("This serviceIds can not get the HcsaServiceDto -->:" + serviceIds));
+                                log.debug(StringUtil.changeForLog("This serviceIds can not get the HcsaServiceDto -->:" + serviceIds));
                                 continue;
                             }
                             for (ApplicationLicenceDto applicationLicenceDto : applicationLicenceDtos) {

@@ -543,7 +543,7 @@ public class HcsaApplicationDelegator {
                         errMap.put("nextStage", "You can not submit now, because there is request for information pending now.");
                     }
                 } else {
-                    log.error(StringUtil.changeForLog("There is the Data error for this Application id -->:" + rfiApplicationDto.getId()));
+                    log.debug(StringUtil.changeForLog("There is the Data error for this Application id -->:" + rfiApplicationDto.getId()));
                 }
             } else {
                 log.info(StringUtil.changeForLog("This applicationGroup do not have the rfi -->:" + applicationViewDto.getApplicationGroupDto().getGroupNo()));
@@ -796,10 +796,10 @@ public class HcsaApplicationDelegator {
                 rollBack(bpc, appPremisesRoutingHistoryDto.getStageId(), ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
                         appPremisesRoutingHistoryDto.getRoleId(), appPremisesRoutingHistoryDto.getWrkGrpId(), appPremisesRoutingHistoryDto.getActionby());
             } else {
-                log.error(StringUtil.changeForLog("can not get the appPremisesRoutingHistoryDto ..."));
+                log.debug(StringUtil.changeForLog("can not get the appPremisesRoutingHistoryDto ..."));
             }
         } else {
-            log.error(StringUtil.changeForLog("do not have the applicaiton"));
+            log.debug(StringUtil.changeForLog("do not have the applicaiton"));
         }
         log.debug(StringUtil.changeForLog("the do routeToDMS end ...."));
     }
@@ -1065,7 +1065,7 @@ public class HcsaApplicationDelegator {
                     }
                     routingTask(bpc, nextStageId, routeNextStatus, stageCode);
                 } else {
-                    log.error(StringUtil.changeForLog("RoutingStageDtoList is null"));
+                    log.debug(StringUtil.changeForLog("RoutingStageDtoList is null"));
                 }
             } else {
                 rollBack(bpc, stageId, nextStatus, roleId, wrkGrpId, userId);

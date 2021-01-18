@@ -97,7 +97,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         if(!file.exists()){
             boolean createFlag = file.createNewFile();
             if (!createFlag) {
-                log.error("Create File fail");
+                log.debug("Create File fail");
             }
         }
         File groupPath=new File(sharedPath + RequestForInformationConstants.FILE_NAME_RFI+File.separator);

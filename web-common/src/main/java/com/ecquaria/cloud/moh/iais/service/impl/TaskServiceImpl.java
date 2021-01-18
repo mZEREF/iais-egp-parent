@@ -107,7 +107,7 @@ public class TaskServiceImpl implements TaskService {
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
         TaskDto result = null;
         if(applicationDto == null  || StringUtil.isEmpty(statgId)){
-            log.error(StringUtil.changeForLog("The applicationDto or stageId is null"));
+            log.debug(StringUtil.changeForLog("The applicationDto or stageId is null"));
             return result;
         }
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
@@ -176,7 +176,7 @@ public class TaskServiceImpl implements TaskService {
                     userId, assignDate,score,TaskUrl,roleId,
                      IaisEGPHelper.getCurrentAuditTrailDto());
         }else{
-            log.error(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
+            log.debug(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
         }
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
         return result;
@@ -281,7 +281,7 @@ public class TaskServiceImpl implements TaskService {
                 result.setTaskDtoList(taskDtos);
                 result.setAppPremisesRoutingHistoryDtos(appPremisesRoutingHistoryDtos);
             }else{
-                log.error(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
+                log.debug(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
             }
         }else{
             log.info(StringUtil.changeForLog("The applicationDtos is null"));
@@ -304,7 +304,7 @@ public class TaskServiceImpl implements TaskService {
 //            this.createTasks(taskDtos);
 //            this.createHistorys(appPremisesRoutingHistoryDtos);
 //        }else {
-//            log.error(StringUtil.changeForLog("The taksDto is null !!!"));
+//            log.debug(StringUtil.changeForLog("The taksDto is null !!!"));
 //        }
 //
 //        log.debug(StringUtil.changeForLog("the do routingTaskOneUserForSubmisison end ...."));
@@ -394,7 +394,7 @@ public class TaskServiceImpl implements TaskService {
             if(appGrpPremisesEntityDto != null){
                 hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
             }else{
-                log.error(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos this APP do not have the premise :"+applicationDto.getApplicationNo()));
+                log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos this APP do not have the premise :"+applicationDto.getApplicationNo()));
             }
             hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
         }

@@ -867,7 +867,7 @@ public class BackendInboxDelegator {
                     }
                     routingTask(bpc,nextStageId,routeNextStatus,stageCode,applicationViewDto,taskDto);
                 }else{
-                    log.error(StringUtil.changeForLog("RoutingStageDtoList is null"));
+                    log.debug(StringUtil.changeForLog("RoutingStageDtoList is null"));
                 }
             }else{
                 rollBack(bpc,applicationViewDto,stageId,nextStatus,roleId,wrkGrpId,userId,taskDto);
@@ -1681,10 +1681,10 @@ public class BackendInboxDelegator {
                 rollBack(bpc,applicationViewDto,appPremisesRoutingHistoryDto.getStageId(),ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
                         appPremisesRoutingHistoryDto.getRoleId(),appPremisesRoutingHistoryDto.getWrkGrpId(),appPremisesRoutingHistoryDto.getActionby(),taskDto);
             }else{
-                log.error(StringUtil.changeForLog("can not get the appPremisesRoutingHistoryDto ..."));
+                log.debug(StringUtil.changeForLog("can not get the appPremisesRoutingHistoryDto ..."));
             }
         }else{
-            log.error(StringUtil.changeForLog("do not have the applicaiton"));
+            log.debug(StringUtil.changeForLog("do not have the applicaiton"));
         }
         log.info(StringUtil.changeForLog("the do routeToDMS end ...."));
     }

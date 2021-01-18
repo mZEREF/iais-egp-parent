@@ -146,7 +146,7 @@ public class AppealServiceImpl implements AppealService {
             trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
             hcsaLicenceClient.updateEicTrackStatus(trackDto);
         }else{
-            log.error(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
+            log.debug(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
         }
 
         return appealLicenceDto;
@@ -187,7 +187,7 @@ public class AppealServiceImpl implements AppealService {
                 log.error(StringUtil.changeForLog(e.getMessage()),e);
             }
         }else{
-            log.error(StringUtil.changeForLog("The licEicRequestTrackingDto is null ..."));
+            log.debug(StringUtil.changeForLog("The licEicRequestTrackingDto is null ..."));
         }
         return  result;
     }

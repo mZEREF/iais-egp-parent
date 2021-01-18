@@ -872,7 +872,7 @@ public class InsRepServiceImpl implements InsRepService {
                     }
                     hcsaApplicationDelegator.routingTask(bpc, nextStageId, routeNextStatus, stageCode);
                 } else {
-                    log.error(StringUtil.changeForLog("RoutingStageDtoList is null"));
+                    log.debug(StringUtil.changeForLog("RoutingStageDtoList is null"));
                 }
             } else {
                 ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, nextStatus);
@@ -1277,7 +1277,7 @@ public class InsRepServiceImpl implements InsRepService {
             if (appGrpPremisesEntityDto != null) {
                 hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
             } else {
-                log.error(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos this APP do not have the premise :" + applicationDto.getApplicationNo()));
+                log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos this APP do not have the premise :" + applicationDto.getApplicationNo()));
             }
             hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
         }

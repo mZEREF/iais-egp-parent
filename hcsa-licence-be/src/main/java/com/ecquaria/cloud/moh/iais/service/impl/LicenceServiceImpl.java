@@ -285,7 +285,7 @@ public class LicenceServiceImpl implements LicenceService {
             saveLicenceAppRiskInfoDtos(eventBusLicenceGroupDtos.getLicenceGroupDtos(),eventBusLicenceGroupDtos.getAuditTrailDto());
             hcsaLicenceClient.updateEicTrackStatus(trackDto);
         }else{
-            log.error(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
+            log.debug(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
         }
 
         return eventBusLicenceGroupDtos;
@@ -541,10 +541,10 @@ public class LicenceServiceImpl implements LicenceService {
                                     }
                                 }else{
                                     if(licenseeDto == null){
-                                        log.error(StringUtil.changeForLog("---licenseeDto == null"));
+                                        log.debug(StringUtil.changeForLog("---licenseeDto == null"));
                                     }
                                     if(orgUserDto == null){
-                                        log.error(StringUtil.changeForLog("---orgUserDto == null"));
+                                        log.debug(StringUtil.changeForLog("---orgUserDto == null"));
                                     }
                                 }
                             }

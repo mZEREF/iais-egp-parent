@@ -252,7 +252,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                     if (!curFile.exists()){
                         boolean createFlag = curFile.createNewFile();
                         if (!createFlag) {
-                            log.error("Create file fail");
+                            log.debug("Create file fail");
                             JobLogger.log("Create file fail");
                         }
                     }

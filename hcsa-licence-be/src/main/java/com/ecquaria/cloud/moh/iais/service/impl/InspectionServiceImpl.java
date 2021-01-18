@@ -408,7 +408,7 @@ public class InspectionServiceImpl implements InspectionService {
         if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)) {
             String refNo = taskDto.getRefNo();
             for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos) {
-                log.error(StringUtil.changeForLog("==============="+refNo));
+                log.debug(StringUtil.changeForLog("==============="+refNo));
                 if(appPremisesCorrelationDto != null) {
                     if (appPremisesCorrelationDto.getId().equals(taskDto.getRefNo())) {
                         List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
@@ -557,7 +557,7 @@ public class InspectionServiceImpl implements InspectionService {
             if(appGrpPremisesEntityDto != null){
                 hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
             }else{
-                log.error(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos this APP do not have the premise :"+applicationDto.getApplicationNo()));
+                log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos this APP do not have the premise :"+applicationDto.getApplicationNo()));
             }
             hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
         }

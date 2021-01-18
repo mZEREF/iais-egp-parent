@@ -281,7 +281,7 @@ public final class IaisEGPHelper extends EGPHelper {
                 log.info(StringUtil.changeForLog("isLogin do not have the loginContext..."));
             }
         }else{
-            log.error(StringUtil.changeForLog("isLogin do not have the request..."));
+            log.debug(StringUtil.changeForLog("isLogin do not have the request..."));
         }
         log.info(StringUtil.changeForLog("isLogin the  result is -->:"+result));
         log.info(StringUtil.changeForLog("Judge the if login end ..."));

@@ -1146,7 +1146,7 @@ public class MohIntranetUserDelegator {
             clientUser.setSalutation(salutation);
             intranetUserService.updateEgpUser(clientUser);
         } else {
-            log.error(StringUtil.changeForLog("===========egpUser can not found============"));
+            log.debug(StringUtil.changeForLog("===========egpUser can not found============"));
         }
     }
 

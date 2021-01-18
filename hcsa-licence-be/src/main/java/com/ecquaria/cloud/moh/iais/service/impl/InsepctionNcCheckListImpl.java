@@ -645,7 +645,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                     }
                 }
             }catch (Exception e){
-                log.error(StringUtil.changeForLog("encounter failure when sync adhoc item to fe" + e.getMessage()));
+                log.debug(StringUtil.changeForLog("encounter failure when sync adhoc item to fe" + e.getMessage()));
             }
     }
 

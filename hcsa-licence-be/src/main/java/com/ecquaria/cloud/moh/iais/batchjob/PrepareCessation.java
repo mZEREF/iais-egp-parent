@@ -45,7 +45,7 @@ public class PrepareCessation {
                 try {
                     String originLicenceId = applicationDto.getOriginLicenceId();
                     if (!StringUtil.isEmpty(originLicenceId)) {
-                        log.error(StringUtil.changeForLog("==============originLicenceId============" + originLicenceId));
+                        log.debug(StringUtil.changeForLog("==============originLicenceId============" + originLicenceId));
                         String licenceId = hcsaLicenceClient.findNewestLicId(originLicenceId).getEntity();
                         if (!StringUtil.isEmpty(licenceId)) {
                             applicationDto.setOriginLicenceId(licenceId);

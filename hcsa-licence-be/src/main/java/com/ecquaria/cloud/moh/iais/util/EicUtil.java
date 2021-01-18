@@ -26,7 +26,7 @@ public final class EicUtil {
                 log.info(StringUtil.changeForLog("The getObjectApp content is -->:"+content));
                 result = mapper.readValue(content, cls);
             } catch (IOException e) {
-                log.error(StringUtil.changeForLog(e.getMessage()),e);
+                log.debug(StringUtil.changeForLog(e.getMessage()),e);
             }
         }
         log.info(StringUtil.changeForLog("The getObjectApp end ..."));

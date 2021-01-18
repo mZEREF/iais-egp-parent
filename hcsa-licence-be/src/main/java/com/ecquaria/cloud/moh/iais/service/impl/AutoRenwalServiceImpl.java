@@ -684,7 +684,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 }
             }
         }else{
-            log.error(StringUtil.changeForLog("get applicant name error"));
+            log.debug(StringUtil.changeForLog("get applicant name error"));
         }
         return applicantName;
     }

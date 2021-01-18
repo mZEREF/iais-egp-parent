@@ -280,12 +280,12 @@ public class IntranetUserServiceImpl implements IntranetUserService {
         String fileName = sessionFile.getOriginalFilename();
         String substring = fileName.substring(fileName.lastIndexOf('.') + 1);
         if (sessionFile.getSize() > userFileSize * 1024 * 1024) {
-            log.error(StringUtil.changeForLog("size"));
+            log.debug(StringUtil.changeForLog("size"));
             fileErrorMap.put(errorKey, MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(userFileSize), "sizeMax"));
             return fileErrorMap;
         }
         if (!("xml".equalsIgnoreCase(substring))) {
-            log.error(StringUtil.changeForLog("format"));
+            log.debug(StringUtil.changeForLog("format"));
             fileErrorMap.put(errorKey, MessageUtil.replaceMessage("GENERAL_ERR0018", "XML", "fileType"));
             return fileErrorMap;
         }
@@ -298,7 +298,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
             Element root = document.getRootElement();
             //ele
             list = root.elements();
-            log.error(StringUtil.changeForLog("start kai shi jie xi xml------------"));
+            log.debug(StringUtil.changeForLog("start kai shi jie xi xml------------"));
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("read error"));
             log.error(StringUtil.changeForLog(e.getMessage()), e);
@@ -307,7 +307,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
         }
         if (!IaisCommonUtils.isEmpty(list)) {
             for (int i = 1; i <= list.size(); i++) {
-                log.error(StringUtil.changeForLog("start kai shi jie xi xml for ------------" + i));
+                log.debug(StringUtil.changeForLog("start kai shi jie xi xml for ------------" + i));
                 String userId = null;
                 String roleId = null;
                 String workingGroupId = null;

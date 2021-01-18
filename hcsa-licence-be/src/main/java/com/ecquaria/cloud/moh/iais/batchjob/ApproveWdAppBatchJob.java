@@ -65,7 +65,7 @@ public class ApproveWdAppBatchJob {
                 applicationDtoList.forEach(h -> {
                     applicationService.updateFEApplicaiton(h);
                 });
-                log.error(StringUtil.changeForLog("**** The withdraw Application List size"+applicationDtoList.size()));
+                log.debug(StringUtil.changeForLog("**** The withdraw Application List size"+applicationDtoList.size()));
                 List<String> oldAppGroupExcuted = IaisCommonUtils.genNewArrayList();
                 if(!IaisCommonUtils.isEmpty(applicationDtoList)){
                     for(ApplicationDto oldApplicationDto : applicationDtoList){

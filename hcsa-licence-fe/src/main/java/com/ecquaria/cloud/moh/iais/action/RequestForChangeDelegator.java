@@ -764,7 +764,7 @@ public class RequestForChangeDelegator {
                 boolean canTransfer = canTransfer(oldLicenseeKeyApptPersonDtos,licenseeKeyApptPersonDtoList);
                 if(canTransfer){
                     if(licenceDto.getLicenseeId().equals(licenseeDto.getId())){
-                        log.error(StringUtil.changeForLog("This Uen can not get the licensee -->:"+uen));
+                        log.debug(StringUtil.changeForLog("This Uen can not get the licensee -->:"+uen));
                         error.put("uenError","can not transfer to self");
                     }
                 }else{

@@ -543,11 +543,11 @@ public class WithOutRenewalDelegator {
             List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList = newAppSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
             List<AppGrpPremisesDto> newAppGrpPremisesDtoList = newAppSubmissionDtos.get(0).getAppGrpPremisesDtoList();
             boolean replacePerson = outRenewalService.isReplace(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
-            log.error(StringUtil.changeForLog("replacePerson"+replacePerson));
+            log.debug(StringUtil.changeForLog("replacePerson"+replacePerson));
             boolean updatePerson = outRenewalService.isUpdate(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
-            log.error(StringUtil.changeForLog("updatePerson"+updatePerson));
+            log.debug(StringUtil.changeForLog("updatePerson"+updatePerson));
             boolean editDoc = outRenewalService.isEditDoc(newAppSubmissionDtos.get(0), oldSubmissionDtos.get(0));
-            log.error(StringUtil.changeForLog("editDoc"+editDoc));
+            log.debug(StringUtil.changeForLog("editDoc"+editDoc));
             List<AppSvcPrincipalOfficersDto> poAndDpo = newAppSvcRelatedInfoDtoList.get(0).getAppSvcPrincipalOfficersDtoList();
             if(!IaisCommonUtils.isEmpty(poAndDpo)){
                 poAndDpo.sort((h1,h2)->h2.getPsnType().compareTo(h1.getPsnType()));
@@ -589,7 +589,7 @@ public class WithOutRenewalDelegator {
         if (interInboxUserDto != null) {
             licenseeId = interInboxUserDto.getLicenseeId();
         } else {
-            log.error(StringUtil.changeForLog("interInboxUserDto null"));
+            log.debug(StringUtil.changeForLog("interInboxUserDto null"));
         }
         Double total = 0d;
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
@@ -732,7 +732,7 @@ public class WithOutRenewalDelegator {
 //                    }
 //                }
 //            } else {
-//                log.error(StringUtil.changeForLog("feeDto detailFeeDtos null"));
+//                log.debug(StringUtil.changeForLog("feeDto detailFeeDtos null"));
 //            }
             //Double amount = feeDto.getTotal();
             //appFeeDetailsDto.setLaterFee(lateFee);
@@ -1279,7 +1279,7 @@ public class WithOutRenewalDelegator {
         if (interInboxUserDto != null) {
             licenseeId = interInboxUserDto.getLicenseeId();
         } else {
-            log.error(StringUtil.changeForLog("interInboxUserDto null"));
+            log.debug(StringUtil.changeForLog("interInboxUserDto null"));
         }
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
         String emailAddress = emailAddressesToString(licenseeEmailAddrs);
@@ -1906,7 +1906,7 @@ public class WithOutRenewalDelegator {
             }
             log.info(StringUtil.changeForLog("send renewal application notification end"));
         }else{
-            log.error(StringUtil.changeForLog("send email error , appSubmissionDtos is null"));
+            log.debug(StringUtil.changeForLog("send email error , appSubmissionDtos is null"));
         }
     }
 

@@ -1227,7 +1227,7 @@ public class RequestForChangeMenuDelegator {
         if (interInboxUserDto != null) {
             licenseeId = interInboxUserDto.getLicenseeId();
         } else {
-            log.error(StringUtil.changeForLog("interInboxUserDto null"));
+            log.debug(StringUtil.changeForLog("interInboxUserDto null"));
         }
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
         String emailAddress = WithOutRenewalDelegator.emailAddressesToString(licenseeEmailAddrs);
@@ -1248,7 +1248,7 @@ public class RequestForChangeMenuDelegator {
         if (interInboxUserDto != null) {
             licenseeId = interInboxUserDto.getLicenseeId();
         } else {
-            log.error(StringUtil.changeForLog("interInboxUserDto null"));
+            log.debug(StringUtil.changeForLog("interInboxUserDto null"));
         }
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
         String emailAddress = WithOutRenewalDelegator.emailAddressesToString(licenseeEmailAddrs);

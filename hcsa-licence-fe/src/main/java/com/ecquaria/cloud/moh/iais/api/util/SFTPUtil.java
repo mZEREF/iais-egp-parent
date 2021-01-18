@@ -229,12 +229,12 @@ public class SFTPUtil {
 
                 sftp.put(f.getAbsolutePath(), remoteFile);
                 if(!f.delete()){
-                    log.error(StringUtil.changeForLog(fileName + " is inexistence in service."));
+                    log.debug(StringUtil.changeForLog(fileName + " is inexistence in service."));
                 }
                 result = true;
                 log.info(StringUtil.changeForLog("file: [" + fileName + "] uploaded to remote server. "));
             }else{
-            	log.error(StringUtil.changeForLog("[" + fileName + "] not a file"));
+            	log.debug(StringUtil.changeForLog("[" + fileName + "] not a file"));
             }
         } catch (Exception e) {
         	log.error(StringUtil.changeForLog("upload file [" + fileName + "] to remote Server failed."));

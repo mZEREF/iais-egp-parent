@@ -129,7 +129,7 @@ public class LicenceApproveBatchjob {
         List<String> serviceIds = getAllServiceId(applicationLicenceDtos);
         List<HcsaServiceDto> hcsaServiceDtos = licenceService.getHcsaServiceById(serviceIds);
         if (hcsaServiceDtos == null || hcsaServiceDtos.size() == 0) {
-            log.error(StringUtil.changeForLog("This serviceIds can not get the HcsaServiceDto -->:" + serviceIds));
+            log.debug(StringUtil.changeForLog("This serviceIds can not get the HcsaServiceDto -->:" + serviceIds));
             return;
         }
 
@@ -397,7 +397,7 @@ public class LicenceApproveBatchjob {
                 result.put(GROUPLICENCE, null);
             }
         } else {
-            log.error(StringUtil.changeForLog("The sepaApplication the applicationListDtoList is null"));
+            log.debug(StringUtil.changeForLog("The sepaApplication the applicationListDtoList is null"));
         }
         log.info(StringUtil.changeForLog("The sepaApplication is end ..."));
         return result;
@@ -521,7 +521,7 @@ public class LicenceApproveBatchjob {
                 fail.add(error);
                 for (Map.Entry<String, String> ent : error.entrySet()) {
                     String value = ent.getValue();
-                    log.error(StringUtil.changeForLog("The error is -->:" + value));
+                    log.debug(StringUtil.changeForLog("The error is -->:" + value));
                 }
             } else if (!isGroupSuccess) {
                 Map<String, String> error = new HashMap();
@@ -529,7 +529,7 @@ public class LicenceApproveBatchjob {
                 fail.add(error);
                 for (Map.Entry<String, String> ent : error.entrySet()) {
                     String value = ent.getValue();
-                    log.error(StringUtil.changeForLog("The error is -->:" + value));
+                    log.debug(StringUtil.changeForLog("The error is -->:" + value));
                 }
             }
         } else if (generalResult != null) {
@@ -561,7 +561,7 @@ public class LicenceApproveBatchjob {
                 fail.add(error);
                 for (Map.Entry<String, String> ent : error.entrySet()) {
                     String value = ent.getValue();
-                    log.error(StringUtil.changeForLog("The error is -->:" + value));
+                    log.debug(StringUtil.changeForLog("The error is -->:" + value));
                 }
             }
         }
@@ -674,7 +674,7 @@ public class LicenceApproveBatchjob {
                                 licPremisesScopeAllocationDto.setLicCgoId(appSvcKeyPsnId);
                             } else {
                                 errorMsg = "can not find  the CGO for idNo is -->:" + idNo;
-                                log.error(StringUtil.changeForLog(errorMsg));
+                                log.debug(StringUtil.changeForLog(errorMsg));
                             }
                         }
                     }
@@ -889,7 +889,7 @@ public class LicenceApproveBatchjob {
                         }
                         // addDocumentToList(premisesGroupDtoList,licDocumentRelationDtos);
                     } else {
-                        log.error(StringUtil.changeForLog("This Appno do not have the OriginLicenceId -- >" + firstApplicationDto.getApplicationNo()));
+                        log.debug(StringUtil.changeForLog("This Appno do not have the OriginLicenceId -- >" + firstApplicationDto.getApplicationNo()));
                     }
                 }
 
@@ -1310,13 +1310,13 @@ public class LicenceApproveBatchjob {
                                 licPremisesScopeAllocationDto.setLicCgoId(appGrpPersonnelDto.getIdNo());
                                 licPremisesScopeGroupDto.setLicPremisesScopeAllocationDto(licPremisesScopeAllocationDto);
                             }else{
-                                log.error(StringUtil.changeForLog("this appSvcKeyPersonnelDto.getAppGrpPsnId() do not have the AppGrpPersonnelDto -->:" + appSvcKeyPersonnelDto.getAppGrpPsnId()));
+                                log.debug(StringUtil.changeForLog("this appSvcKeyPersonnelDto.getAppGrpPsnId() do not have the AppGrpPersonnelDto -->:" + appSvcKeyPersonnelDto.getAppGrpPsnId()));
                             }
                         }else{
-                            log.error(StringUtil.changeForLog("this appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId() do not have the AppSvcKeyPersonnelDto -->:" + appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId()));
+                            log.debug(StringUtil.changeForLog("this appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId() do not have the AppSvcKeyPersonnelDto -->:" + appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId()));
                         }
                     } else {
-                        log.error(StringUtil.changeForLog("this appSvcPremisesScopeDto.getId() do not have the AppSvcPremisesScopeAllocationDto -->:" + appSvcPremisesScopeDto.getId()));
+                        log.debug(StringUtil.changeForLog("this appSvcPremisesScopeDto.getId() do not have the AppSvcPremisesScopeAllocationDto -->:" + appSvcPremisesScopeDto.getId()));
                     }
                     licPremisesScopeGroupDtoList.add(licPremisesScopeGroupDto);
                 }
@@ -1742,7 +1742,7 @@ public class LicenceApproveBatchjob {
                                 log.debug(StringUtil.changeForLog("The getLicenceDto new relLicenceDto.getId() is -->:" + relLicenceDto.getId()));
                                 licenceDto.setRelLicenceId(relLicenceDto.getId());
                             }else{
-                                log.error(StringUtil.changeForLog("This relLicenceNo can not get the relLicenceDto -->:"+relLicenceNo));
+                                log.debug(StringUtil.changeForLog("This relLicenceNo can not get the relLicenceDto -->:"+relLicenceNo));
                             }
                         }
                         //alignLicenceNo
@@ -1755,7 +1755,7 @@ public class LicenceApproveBatchjob {
                                     expiryDate = alignExpiryDate;
                                 }
                             }else{
-                                log.error(StringUtil.changeForLog("This relLicenceNo can not get the relLicenceDto -->:"+relLicenceNo));
+                                log.debug(StringUtil.changeForLog("This relLicenceNo can not get the relLicenceDto -->:"+relLicenceNo));
                             }
                         }//baseApplicationNo
                         else if (!StringUtil.isEmpty(baseApplicationNo)) {
@@ -1766,7 +1766,7 @@ public class LicenceApproveBatchjob {
                             licenceDto.setAlignFlag(alignFlag);
                         }
                     }else{
-                        log.error(StringUtil.changeForLog("Tha application is null ..."));
+                        log.debug(StringUtil.changeForLog("Tha application is null ..."));
                     }
 
                 }
@@ -1824,10 +1824,10 @@ public class LicenceApproveBatchjob {
                     licenseeDto.setOrganizationId(organizationId);
                 }
             } else {
-                log.error(StringUtil.changeForLog("This licenseeId can not get he licensee -->:" + licenseeId));
+                log.debug(StringUtil.changeForLog("This licenseeId can not get he licensee -->:" + licenseeId));
             }
         } else {
-            log.error(StringUtil.changeForLog("The  licenseeId is null ..."));
+            log.debug(StringUtil.changeForLog("The  licenseeId is null ..."));
         }
         if (licenseeDto == null) {
             licenseeDto = new LicenseeDto();

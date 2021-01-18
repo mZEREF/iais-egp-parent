@@ -133,7 +133,7 @@ public class FileUtil {
 			try(InputStream is = Files.newInputStream(Paths.get(fileName))) {
 				xml = getString(is);
 				if (!f.delete()) {
-					log.error(StringUtil.changeForLog(fileName + " is inexistence in service."));
+					log.debug(StringUtil.changeForLog(fileName + " is inexistence in service."));
 				}
 			} catch (IOException e) {
 				log.error(e.getMessage(), e);
@@ -205,7 +205,7 @@ public class FileUtil {
 
 	public static boolean copyFile(File source, File target) {
 		if (!source.exists()) {
-			log.error(StringUtil.changeForLog("source file :" + source.getName() + " not exist!"));
+			log.debug(StringUtil.changeForLog("source file :" + source.getName() + " not exist!"));
 			return false;
 		}
 		if (!target.getParentFile().exists()) {

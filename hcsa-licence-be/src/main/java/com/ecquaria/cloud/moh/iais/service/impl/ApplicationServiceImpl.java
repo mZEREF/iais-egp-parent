@@ -813,12 +813,12 @@ public class ApplicationServiceImpl implements ApplicationService {
                 if(eventApplicationGroupDto!= null){
                     eicCallFeApplication(eventApplicationGroupDto);
                 }else{
-                    log.error(StringUtil.changeForLog("This eventReo can not get the EventApplicationGroupDto -->:"+eventRefNum));
+                    log.debug(StringUtil.changeForLog("This eventReo can not get the EventApplicationGroupDto -->:"+eventRefNum));
                 }
                 appEicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
                 applicationClient.updateAppEicRequestTracking(appEicRequestTrackingDto);
             }else{
-                log.error(StringUtil.changeForLog("This eventReo can not get the AppEicRequestTrackingDto -->:"+eventRefNum));
+                log.debug(StringUtil.changeForLog("This eventReo can not get the AppEicRequestTrackingDto -->:"+eventRefNum));
             }
         }
         log.info(StringUtil.changeForLog("The updateFEApplicationStatus end ..."));
@@ -838,7 +838,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
             updateAppealApplicationStatus(applicationDto);
         }else{
-            log.error(StringUtil.changeForLog("This applicationDto is null "));
+            log.debug(StringUtil.changeForLog("This applicationDto is null "));
         }
         log.info(StringUtil.changeForLog("The eicCallFeApplication end ..."));
 

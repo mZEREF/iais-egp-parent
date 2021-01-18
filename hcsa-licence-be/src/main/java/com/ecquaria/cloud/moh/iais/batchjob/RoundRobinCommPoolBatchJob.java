@@ -234,7 +234,7 @@ public class RoundRobinCommPoolBatchJob {
                                     log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob FE update success ..."));
                                 }
                             }else{
-                                log.error(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob this appNo can not get the Application"));
+                                log.debug(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob this appNo can not get the Application"));
                             }
                         }
                     }catch (Exception e ){
@@ -806,7 +806,7 @@ public class RoundRobinCommPoolBatchJob {
             if(appGrpPremisesEntityDto != null){
                 hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
             }else{
-                log.error(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos this APP do not have the premise :"+applicationDto.getApplicationNo()));
+                log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos this APP do not have the premise :"+applicationDto.getApplicationNo()));
             }
             hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
         }

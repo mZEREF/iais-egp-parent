@@ -328,7 +328,7 @@ public class AppealApproveBatchjob {
             }
 
         }else{
-           log.error(StringUtil.changeForLog("This Applicaiton  can not get the ApplicationGroupDto "+ appealApproveDto.getApplicationDto().getApplicationNo()));
+           log.debug(StringUtil.changeForLog("This Applicaiton  can not get the ApplicationGroupDto "+ appealApproveDto.getApplicationDto().getApplicationNo()));
         }
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -340,7 +340,7 @@ public class AppealApproveBatchjob {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationRejection is end ..."));
     }
     private void applicationLateRenewFee(ApplicationDto application){
-        log.error(StringUtil.changeForLog("send applicationLateRenewFee email start"));
+        log.debug(StringUtil.changeForLog("send applicationLateRenewFee email start"));
         // send return fee email
         EmailDto emailDto=new EmailDto();
         emailDto.setClientQueryCode("Appeal approved");
@@ -355,9 +355,9 @@ public class AppealApproveBatchjob {
             emailDto.setReceipts(licenseeEmailAddrs);
             emailClient.sendNotification(emailDto);
         }else{
-            log.error(StringUtil.changeForLog("licenseeEmailAddrs is none"));
+            log.debug(StringUtil.changeForLog("licenseeEmailAddrs is none"));
         }
-        log.error(StringUtil.changeForLog("send applicationLateRenewFee email end"));
+        log.debug(StringUtil.changeForLog("send applicationLateRenewFee email end"));
     }
     private void applicationAddCGO(List<ApplicationDto> appealApplicaiton,List<AppSvcKeyPersonnelDto> appealPersonnel,
                                    List<AppSvcKeyPersonnelDto> rollBackPersonnel,
@@ -500,7 +500,7 @@ public class AppealApproveBatchjob {
             //get old recommendation
             List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licenceDto.getId()).getEntity();
             if(!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
-                log.error(StringUtil.changeForLog("licAppCorrelationDtos is Not null=======> Licence Id = " + licenceDto.getId()));
+                log.debug(StringUtil.changeForLog("licAppCorrelationDtos is Not null=======> Licence Id = " + licenceDto.getId()));
                 for (LicAppCorrelationDto licAppCorrelationDto : licAppCorrelationDtos) {
                     String appId = licAppCorrelationDto.getApplicationId();
                     AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
@@ -526,13 +526,13 @@ public class AppealApproveBatchjob {
                     fillUpCheckListGetAppClient.saveAppRecom(newAppPremRecomDto);
                 }
             } else {
-                log.error(StringUtil.changeForLog(""));
+                log.debug(StringUtil.changeForLog(""));
             }
             appealLicenceDto.setExpiryDate(expiryDate);
             appPremiseMiscDtoList.add(appPremiseMiscDto);
             appealLicence.add(appealLicenceDto);
         } else {
-            log.error(StringUtil.changeForLog("licAppCorrelationDtos is null=======> Licence Id = "));
+            log.debug(StringUtil.changeForLog("licAppCorrelationDtos is null=======> Licence Id = "));
         }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence is end ..."));
     }

@@ -47,7 +47,7 @@ public class AppealApplicaionServiceImpl implements AppealApplicaionService {
             appealApplicationDto = beEicGatewayClient.updateAppealApplication(appealApplicationDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
         }else{
-            log.error(StringUtil.changeForLog("This eventReo can not get the AppEicRequestTrackingDto -->:"+eventRefNum));
+            log.debug(StringUtil.changeForLog("This eventReo can not get the AppEicRequestTrackingDto -->:"+eventRefNum));
         }
         return appealApplicationDto;
     }
