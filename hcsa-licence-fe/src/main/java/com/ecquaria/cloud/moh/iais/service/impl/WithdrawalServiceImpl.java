@@ -200,7 +200,8 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
                 eicRequestTrackingDtos.add(eicRequestTrackingDto);
                 appEicClient.updateStatus(eicRequestTrackingDtos);
-
+                log.debug(StringUtil.changeForLog("=====>>>>>recallApplicationDto result" + recallApplicationDto.getResult()));
+                log.debug(StringUtil.changeForLog("=====>>>>>recallApplicationDto message" + recallApplicationDto.getMessage()));
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
