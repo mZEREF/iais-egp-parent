@@ -119,10 +119,12 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             return selfAssessmentList;
         }
 
+        //uat bug 108659
+        appList = appList.stream().filter(i -> !ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(i.getStatus())).collect(Collectors.toList());
+
         //common data
         ChecklistConfigDto common = appConfigClient.getMaxVersionCommonConfig().getEntity();
         LinkedHashMap<String, List<PremCheckItem>> sqMap  = FeSelfChecklistHelper.loadPremisesQuestion(common, false);
-
         SelfAssessmentConfig commonConfig = new SelfAssessmentConfig();
         commonConfig.setConfigId(common.getId());
         commonConfig.setCommon(true);
@@ -220,6 +222,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         if (IaisCommonUtils.isEmpty(appList)) {
             return viewData;
         }
+
+        //uat bug 108659
+        appList = appList.stream().filter(i -> !ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(i.getStatus())).collect(Collectors.toList());
 
         for(ApplicationDto app : appList){
            String appId = app.getId();
