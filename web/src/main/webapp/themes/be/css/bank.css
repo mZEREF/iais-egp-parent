@@ -1,0 +1,206 @@
+/*! MOH-IAIS 13-09-2019 */
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+    overflow-x: hidden;
+    /* equal to footer height */
+}
+body {
+    line-height: 1;
+}
+.img-responsive{
+ width:100%
+ max-width:100%
+}
+.logobank {
+    padding:20px 20px;
+}
+.merchant{
+    color:#ffffff;
+    font-size:14px;
+    font-weight:bold;
+    padding:5px 20px;
+    background-color:#027b3e;
+    display:table;
+    width:100%;
+}
+.carddetail{
+    color:#ffffff;
+    font-size:20px;
+    font-weight:bold;
+    padding:3px 5px;
+    line-height:22px;
+    background-color:#027b3e;
+    border: 3px solid #e2fff1;
+}
+.carddetail2{
+    background-color:#027b3e;
+    border-top: 3px solid #9edebc;
+    border-bottom: 10px solid #9edebc;
+}
+.carddetail img {
+    padding-right:10px;
+}
+.carddetail div span {
+    padding-top:3px;
+    display:block;
+}
+.blockHeadSpace{
+    height: 20px;
+    background-color: #9edebc;
+}
+.detailCardName {
+    font-size: 18px;
+    font-weight: bold;
+    color: #000033;
+}
+.footer{
+    width: 100%;
+    background-color: #027b3e;
+    color: #ffffff;
+    font-size:11px;
+    padding:20px 0px
+}
+.powered_by {
+    height: 30px;
+    width: 100%;
+    background-color: #027b3e;
+}
+.powered_by_inner {
+    width: 80%;
+    height:30px;
+}
+.pbFootSpace {
+    height: 10px;
+    width: 100%;
+    background-color: #9edebc;
+}
+.img_lfw {
+    width: 16px;
+    height: 22px;
+}
+.detailSeparator {
+    background-color: #DBEFFB;
+    /*background-image: url(background/virt.gif);*/
+    width: 20px;
+    }
+.detailSeparatorSpace {
+    height: 20px;
+    width: 20px;
+    }
+
+.detailRightCol {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    color: #006600;
+    background-color: #DBEFFB;
+    }
+    .detailRightCol2 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: black;
+    line-height:15px;
+    background-color: #DBEFFB;
+    }
+.cardNo {
+    font-size: 14px;
+    font-weight: bold;
+    color: black;
+    }
+.amount {
+    font-size: 14px;
+    font-weight: bold;
+    color: #330000;
+    letter-spacing: 0.1em;
+    }
+    
+.bottomSeparator {
+    background-color: #DBEFFB;
+    /*background-image: url(../images/background/virt.gif);*/
+    height: 2px;
+    }
+.agreementSeparator {
+    height: 10px;
+    width: 100%;
+    background-color: #FFFFCC;
+    }
+
+.agreement {
+    font-family: arial, helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    color: #003300;
+    }
+
+.processingTable {
+    width: 100%;
+    background-color: #FFFFCC;
+    }
+
+.transResult {
+    font-weight: bold;
+    }
+.detailLeftCol {
+    font-family: arial, helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #006699;
+}
+input {
+    font-family: arial, helvetica, sans-serif;
+    font-size: 14px;
+    background: #FDE9EA;
+    margin-bottom:2px;
+}
+.img_pay {
+    width: 53px;
+    height: 54px;
+    background-color: #DBEFFB;
+    border: 50px;
+    margin-right:10px;
+}
+.bgexpand {
+    background-image: url('../img/powered_by_02.gif');
+    background-repeat:repeat-x; 
+    background-position: center; 
+}
+
+.footer {
+        font-family: arial, helvetica, sans-serif;
+}
+
+.containerbank {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+
+/*
+div {
+  border: solid 1px red;
+}
+p {
+  border: solid 1px green;
+}
+i  { 
+border: solid 1px yellow;   
+}
+img {
+  border: solid 2px black;
+}
+span {
+  border: solid 2px purple; 
+}
+.row {
+  border: solid 1px blue;
+}
+td {
+border: solid 1px blue;
+}
+*/

@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="interInboxQuery">
+    <sql key = "inboxQuery" remarks = "Query Inter-Inbox Data by condition">
+        <![CDATA[
+            SELECT
+                inbox.id,
+                inbox.src_system_id,
+                inbox.subject,
+                inbox.message_type,
+                inbox.ref_no,
+                inbox.service_codes,
+                inbox.msg_content,
+                inbox.status,
+                inbox.user_id,
+                inbox.created_dt
+            FROM INBOX_MSG AS inbox
+            WHERE 1=1
+            <#if id??> AND CHARINDEX(:id, inbox.id) >0</#if>
+            <#if msgSubject??> AND inbox.subject like :msgSubject</#if>
+            <#if userId??> AND inbox.user_id = :userId</#if>
+            <#if msgStatus??> AND inbox.status in :msgStatus</#if>
+            <#if messageType??> AND inbox.message_type = :messageType</#if>
+            <#if interService??> AND inbox.service_codes LIKE :interService</#if>
+        ]]>
+    </sql>
+
+    <sql key = "assessmentWithdrawAppQuery" remarks = "Query Inter-Application Data by condition">
+        <![CDATA[
+            SELECT * FROM (SELECT
+                id,
+                application_no,
+                app_grp_id,
+                (select LICENSEE_ID from application_group as ag where ag.ID =  app.APP_GRP_ID) as licensee_id,
+                app_type,
+                status,
+                service_id,
+                repalceService as code,
+                self_assmt_flag,
+                is_fast_tracking,
+                created_dt,
+                version
+            FROM APPLICATION AS app where app.app_type in ('APTY001','APTY005','APTY002')) AS wapp
+            WHERE wapp.status in ('APST001','APST003','APST004','APST007','APST010','APST011','APST012','APST013','APST014','APST021',
+                                    'APST023','APST027','APST028','APST029','APST031','APST032','APST033','APST034','APST039','APST040',
+                                    'APST041','APST048','APST049','APST061','APST062','APST063','APST064','APST065','APST066','APST067',
+                                    'APST068','APST069','APST070','APST071','APST077','APST090','APST091','APST092','APST037','APST019',
+                                    'APST020','APST022')
+            <#if licenseeId??> AND wapp.licensee_id = :licenseeId</#if>
+            <#if createDtStart??> AND wapp.created_dt > :createDtStart</#if>
+        ]]>
+    </sql>
+
+    <sql key = "applicationQuery" remarks = "Query Inter-Application Data by condition">
+        <![CDATA[
+         SELECT *
+            FROM (SELECT
+                    app.id,
+                    app.application_no,
+                    app.app_grp_id,
+                    (select LICENSEE_ID from application_group as ag where ag.ID =  app.APP_GRP_ID) as licensee_id,
+                    app.app_type,
+                    app.status,
+                    app.service_id,
+                    repalceService  as code,
+                    app.self_assmt_flag,
+                    app.is_fast_tracking,
+                    app.created_dt,
+                    app.version
+                FROM APPLICATION AS app
+                join (select application_no,MAX(version) as version from application GROUP BY application_no) as app2
+                on app.APPLICATION_NO = app2.application_no and app.version = app2.version
+                union
+                select
+                    A.ID as id,A.DRAFT_NO AS application_no,A.app_grp_id,A.licensee_id,A.app_type,'APST008' as status,NULL as service_id,A.SERVICE_CODES as code,null,null,A.CREATED_DT,1
+                from
+                    app_grp_submission_draft AS A
+                where  A.status = 'CMSTAT001') AS B
+             WHERE B.STATUS != 'CMSTAT002' AND B.STATUS !='APST009'
+             AND B.STATUS !='APST051' AND B.STATUS != 'APST072'
+             AND B.STATUS != 'APST074'
+             AND B.STATUS != 'APST073'
+             AND B.STATUS != 'APST079'
+             AND B.STATUS != 'APST080'
+             AND B.STATUS != 'APST081'
+             AND B.STATUS != 'APST083'
+             AND B.APP_TYPE != 'APTY007'
+            <#if id??> AND CHARINDEX(:id, app.id) >0</#if>
+            <#if appType??> AND B.app_type = :appType</#if>
+            <#if licenseeId??> AND B.licensee_id = :licenseeId</#if>
+            <#if serviceType??> AND B.service_id = :serviceType</#if>
+            <#if appNo??> AND B.application_no like :appNo</#if>
+            <#if appStatus??> AND ${appStatus}</#if>
+            <#if service_id??> AND ${service_id}</#if>
+            <#if createDtStart??> AND B.created_dt > :createDtStart</#if>
+            <#if serviceCode??> AND B.code like :serviceCode</#if>
+            <#if createDtEnd??> AND B.created_dt < :createDtEnd</#if>
+        ]]>
+    </sql>
+
+    <sql key = "licenceQuery" remarks = "Query Inter-Licence Data by condition">
+        <![CDATA[
+             SELECT DISTINCT
+                lic.id,
+                lic.licence_no,
+                lic.svc_name,
+                lic.licensee_id,
+                lic.status,
+                lic.start_date,
+                lic.expiry_date,
+                ltrim(case
+                    when p3.premCount < '2' then
+                        CONCAT(p.BLK_NO ,
+                           case p.STREET_NAME
+                              when null then null
+                              when '' then null
+                              else ' '+p.STREET_NAME end
+                           , case p.BUILDING_NAME
+                              when null then null
+                              when '' then null
+                              else ' '+p.BUILDING_NAME end
+                           , case p.FLOOR_NO
+                              when null then null
+                              when '' then null
+                              else ' # '+p.FLOOR_NO end
+                           , case p.UNIT_NO
+                              when null then null
+                              when '' then null
+                              else '-'+p.UNIT_NO end
+                           , case p.POSTAL_CODE
+                              when null then null
+                              when '' then null
+                              else ', '+p.POSTAL_CODE end
+                          )
+                    else 'multi' end
+                    ) as address
+                FROM LICENCE AS lic
+                JOIN lic_premises lp on lp.LICENCE_ID  = lic.ID
+                JOIN premises p on p.ID  = lp.PREMISES_ID
+                JOIN (
+                	select count(*) as premCount,lp2.LICENCE_ID from hcsal.dbo.lic_premises lp2
+                	JOIN hcsal.dbo.premises p2 on lp2.PREMISES_ID = p2.ID GROUP  by lp2.LICENCE_ID
+                )p3 on lic.id = p3.licence_id
+            WHERE 1=1
+            <#if id??> AND CHARINDEX(:id, lic.id) >0</#if>
+            <#if serviceType??> AND lic.svc_name = :serviceType</#if>
+            <#if licStatus??> AND lic.status = :licStatus</#if>
+            <#if licenseeId??> AND lic.licensee_id = :licenseeId</#if>
+            <#if fStartDate??> AND lic.start_date >= :fStartDate</#if>
+            <#if eStartDate??> AND lic.start_date <= :eStartDate</#if>
+            <#if fExpiryDate??> AND lic.expiry_date >= :fExpiryDate</#if>
+            <#if eExpiryDate??> AND lic.expiry_date <= :eExpiryDate</#if>
+            <#if licNo??> AND lic.licence_no like :licNo</#if>
+        ]]>
+    </sql>
+
+    <sql  key = "feUserList" remarks = "Query user admin ">
+        <![CDATA[
+            SELECT DISTINCT
+                acc.ID,
+                acc.DISPLAY_NAME,
+               acc.SALUTATION,
+               acc.ID_TYPE,
+               acc.ID_NO,
+               acc.DESIGNATION,
+               acc.STATUS,
+               role.ROLE_ID
+               FROM user_account acc
+               JOIN organization org ON acc.ORGANIZATION_ID = org.ID
+               JOIN user_role role ON acc.ID = role.USER_ACCT_ID
+                where role.STATUS = 'CMSTAT001'
+                <#if orgid??>AND org.ID = :orgid</#if>
+                <#if roleid??>AND role.ROLE_ID = :roleid</#if>
+
+        ]]>
+    </sql>
+    <sql remarks="Query" key="queryPremises">
+        <![CDATA[
+         SELECT lp.ID as LIC_PREMISE_ID, li.ID as LICENCE_ID,li.LICENCE_NO as LICENCE_NO,li.STATUS as LICENCE_STATUS, li.SVC_NAME as SVC_NAME,
+                p.ID as PREMISES_ID, p.HCI_CODE , p.HCI_NAME, p.HCI_CONTACT_NO, p.SCDF_REF_NO,
+                 p.CERT_ISSUED_DT, p.VEHICLE_NO, p.PREMISES_TYPE, p.POSTAL_CODE, p.ADDR_TYPE,
+                  p.BLK_NO, p.FLOOR_NO, p.UNIT_NO, p.STREET_NAME, p.BUILDING_NAME, p.VERSION,
+                   p.STATUS, ltrim(CONCAT(p.BLK_NO ,
+                       case p.STREET_NAME
+                          when null then null
+                          when '' then null
+                          else ' '+p.STREET_NAME end
+                       , case p.BUILDING_NAME
+                          when null then null
+                          when '' then null
+                          else ' '+p.BUILDING_NAME end
+                       , case p.FLOOR_NO
+                          when null then null
+                          when '' then null
+                          else ' # '+p.FLOOR_NO end
+                       , case p.UNIT_NO
+                          when null then null
+                          when '' then null
+                          else '-'+p.UNIT_NO end
+                       , case p.POSTAL_CODE
+                          when null then null
+                          when '' then null
+                          else ', '+p.POSTAL_CODE end ))
+	               as address,p.ORGANIZATION_ID FROM
+                   licence as li  join lic_premises lp on li.ID = lp.LICENCE_ID
+                   join premises p on lp.PREMISES_ID = p.ID WHERE 1 = 1 <#if licenseeId??>   and li.LICENSEE_ID =:licenseeId </#if>
+                    and p.PREMISES_TYPE in ('ONSITE','OFFSITE','CONVEYANCE') and
+                   li.STATUS ='LICEST001' and p.ID in (
+                           SELECT  MAX(li.PREMISES_ID) FROM
+                   lic_premises as li WHERE li.LICENCE_ID in
+                   (SELECT b.ID FROM licence as b WHERE b.STATUS='LICEST001' <#if licenseeId??>   and b.LICENSEE_ID =:licenseeId </#if>)GROUP by li.LICENCE_ID)
+            ]]>
+    </sql>
+    <sql key = "appPersonnelQuery" remarks = "Query Application Data by condition">
+        <![CDATA[
+            SELECT DISTINCT T3.ID
+                FROM hcsal.dbo.key_personnel T1
+                join hcsal.dbo.lic_key_personnel T2 on T1.ID = T2.PERSON_ID
+                join hcsal.dbo.licence T3 on t2.LICENCE_ID = t3.ID
+                AND t3.STATUS = 'LICEST001'
+			    <#if licenseeId??>AND t3.LICENSEE_ID =:licenseeId</#if>
+			    <#if idNo??> AND T1.ID_NO =:idNo</#if>
+        ]]>
+    </sql>
+    <sql key="getLicenceBySerName" remarks="getLicenceBySerName">
+        <![CDATA[
+        SELECT  top(1) ID,
+                '' as LICENCE_NO,
+                'first' as SVC_NAME,
+                '' as START_DATE,
+                '' as POSTAL_CODE,
+                '' as BLK_NO,
+                '' as FLOOR_NO,
+                '' as UNIT_NO,
+                '' as STREET_NAME,
+                '' as BUILDING_NAME,
+                '' as EXPIRY_DATE,
+                '' as HCI_NAME,
+                '' as VEHICLE_NO,
+                '' as PREMISES_TYPE
+                from LICENCE
+        UNION
+        SELECT  T3.ID,
+                T1.LICENCE_NO,
+                T1.SVC_NAME,
+                T1.START_DATE,
+                T3.POSTAL_CODE,
+                T3.BLK_NO,
+                T3.FLOOR_NO,
+                T3.UNIT_NO,
+                T3.STREET_NAME,
+                T3.BUILDING_NAME,
+                T1.EXPIRY_DATE,
+                T3.HCI_NAME ,
+                T3.VEHICLE_NO,
+                T3.PREMISES_TYPE
+          FROM LICENCE T1
+          JOIN LIC_PREMISES T2 on T2.LICENCE_ID = T1.id
+          JOIN PREMISES T3 on T2.PREMISES_ID = T3.id
+          where T1.status in ('LICEST001')
+          <#if serName??> and T1.SVC_NAME IN ${serName} </#if>
+          <#if licenseeId??> AND T1.LICENSEE_ID = :licenseeId</#if>
+        ]]>
+    </sql>
+</sqls>

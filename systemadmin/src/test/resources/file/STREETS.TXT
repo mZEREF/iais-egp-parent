@@ -1,0 +1,34 @@
+ADM0005ADMIRALTY ROAD WEST                   
+ARK0001ARK LANE                              
+BED0029BEDOK SOUTH ROAD                      
+CHA0009CHANDER ROAD                          
+CHW0001CHWEE CHIAN ROAD                      
+CLE0003CLEMENTI AVENUE 2                     
+CLE0011CLEMENTI STREET 11                    
+CLE0012CLEMENTI STREET 12                    
+COM0005COMMONWEALTH DRIVE                    
+EDG0002EDGWARE ROAD                          
+EUN0022EUNOS ROAD 8                          
+JOO0004JOO CHIAT PLACE                       
+KAL0007KALLANG JUNCTION                      
+LIM0003LIM CHU KANG LANE 1                   
+LIM0020LIM CHU KANG LANE 6                   
+LOR0174LORONG HOW SUN                        
+MAR0005MARGARET DRIVE                        
+MAR0041MARINA GROVE                          
+MAR0043MARINA PARK                           
+NEO0014NEO TIEW ROAD                         
+NEO0015NEO TIEW CRESCENT                     
+PAN0004PANDAN LOOP                           
+PAS0007PASIR PANJANG ROAD                    
+PHI0003PHILLIP STREET                        
+QUE0010QUEENSWAY                             
+ROS0005ROSYTH ROAD                           
+SOU0002SOUTH BUONA VISTA ROAD                
+SUN0008SUNGEI GEDONG ROAD                    
+TEL0003TELOK AYER STREET                     
+TEM0002TEMASEK BOULEVARD                     
+TUR0003TURUT TRACK                           
+UPP0047UPPER CROSS STREET                    
+WES0028WEST COAST FERRY ROAD                 
+WOO0014WOODLANDS ROAD                        

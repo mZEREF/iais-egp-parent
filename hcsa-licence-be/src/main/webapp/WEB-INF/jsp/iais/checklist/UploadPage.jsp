@@ -1,0 +1,116 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %><%--
+  Created by IntelliJ IDEA.
+  User: yichen
+  Date: 10/6/2019
+  Time: 3:10 PM
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
+<webui:setLayout name="iais-intranet"/>
+
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%
+  sop.webflow.rt.api.BaseProcessClass process =
+          (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
+%>
+
+<style>
+  .col-md-10 {
+    width: 100%;
+  }
+
+  .btn.btn-primary {
+    font-size: 12px;
+  }
+
+</style>
+<div class="main-content">
+  <form  method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
+
+    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+    <br>
+
+    <br><br>
+    <div class="tab-pane active" id="tabInbox" role="tabpanel">
+        <div class="document-info-list">
+          <ul>
+            <li>
+              <p><iais:message key="GENERAL_ERR0043" replaceName="configNum" propertiesKey="iais.system.upload.file.limit"></iais:message></p>
+            </li>
+            <li>
+              <p>Acceptable file formats are XLSX. </p>
+            </li>
+          </ul>
+        </div>
+
+      <div class="tab-content">
+        <div class="document-upload-gp">
+            <h2>${switchUploadPage}</h2>
+          <div class="document-upload-list">
+            <div class="error-msg"></div>
+            <div class="file-upload-gp">
+              <div class="fileNameDisplay"></div>
+
+              <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div>
+        <span id="error_fileUploadError" name="iaisErrorMsg" class="error-msg"></span>
+      </div>
+    </div>
+
+
+      <div class="row">
+        <div class="col-xs-6 col-md-4">
+          <a id = "docBack" class="back"><em class="fa fa-angle-left"></em> Back</a>
+        </div>
+        <div class="col-xs-50 col-md-10 text-right">
+          <div class="nav">
+
+            <br><br><br>
+            <div class="text-right text-center-mobile">
+                <div class="button-group"><a class="btn btn-primary next" id="docNext">Next</a></div>
+
+
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+  </form>
+</div>
+
+<%@include file="/WEB-INF/jsp/include/validation.jsp" %>
+<%@include file="/WEB-INF/jsp/include/utils.jsp"%>
+<script type="text/javascript">
+    $('#docBack').click(function () {
+        SOP.Crud.cfxSubmit("mainForm", "doBack");
+    });
+
+    $('#selectedFile').change(function () {
+        let maxFileSize = 100;
+        let error = validateUploadSizeMaxOrEmpty(maxFileSize, 'selectedFile');
+        if (error == "N"){
+          $(this).closest('.document-upload-list').find('.error-msg').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+          $(".fileNameDisplay").text("");
+          $(this).val(null);
+        }else{
+          $(this).closest('.document-upload-list').find('.error-msg').html('');
+        }
+
+        let file = $(this).val();
+        let fileName = Utils.getFileName(file);
+        $(".fileNameDisplay").text(fileName);
+    })
+
+    $('#docNext').click(function () {
+        SOP.Crud.cfxSubmit("mainForm", "doUpload");
+    });
+</script>

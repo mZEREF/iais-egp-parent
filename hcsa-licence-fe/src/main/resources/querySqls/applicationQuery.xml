@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="applicationQuery">
+    <sql key = "appQuery" remarks = "Query Application Data by condition">
+        <![CDATA[
+            SELECT app.id,
+                   app.APPLICATION_NO,
+                   app.APP_TYPE,
+                   app.SERVICE_ID,
+                   app.LICENCE_ID,
+                   app.ORIGIN_LICENCE_ID,
+                   app.BASE_APP_ID,
+                   app.BASE_LICENCE_ID,
+                   app.NEED_INSPECTION,
+                   app.STATUS,
+                   app.APP_GRP_ID,
+                   app.CREATED_DT,
+                   app.CREATED_BY,
+                   app.UPDATED_DT,
+                   app.UPDATED_BY
+            FROM APPLICATION AS app
+            WHERE 1=1
+            <#if APPLICATION_NO??> AND CHARINDEX(:APPLICATION_NO, app.APPLICATION_NO) >0</#if>
+            <#if STATUS??> AND app.STATUS = :STATUS</#if>
+            <#if APP_TYPE??> AND app.APP_TYPE = :APP_TYPE</#if>
+        ]]>
+    </sql>
+
+    <sql key="listSelfDesc" remarks="query self desc config">
+        <![CDATA[
+            select sec_item.id as id, chkl.id as config_id,  item_pool.id as item_id,  chkl.is_common as common, chkl.svc_code as svc_code, hs.svc_name as svc_name, chkl.svc_subtype_name as svc_subtype_name, chkl.module as module, chkl.[type] as svc_type,
+            chkl.hci_code as hci_code, sec.section_name as section_name, sec.section_desc as section_desc, sec.[order] as section_order,
+            item_pool.question as checklist_item, item_pool.answer_type, item_pool.risk_level as risk_level,
+            regulation.clause_no as clause_no, regulation.clause as clause, hs.id as service_id
+            from  chkl_config_hcsa_service chkl
+            inner join chkl_config_hcsa_svc_section sec on chkl.id = sec.chkl_config_id
+            inner join chkl_config_hcsa_svc_section_item sec_item on sec_item.section_id = sec.id
+            inner join  chkl_config_hcsa_svc_item_pool item_pool  on sec_item.item_id = item_pool.id
+            inner join  chkl_config_hcsa_svc_regulation regulation on item_pool.regulation_id = regulation.id
+            left join hcsa_service hs on hs.svc_code = chkl.svc_code where 1=1
+            <#if svc_code??> and chkl.svc_code in (:svc_code)</#if>
+            <#if svc_type??> and chkl.[type] = :svc_type</#if>
+            <#if common??> and chkl.is_common = :common</#if>
+            <#if configId??> and chkl.id = :configId</#if>
+        ]]>
+    </sql>
+
+
+    <sql key="getSvcNameAndSvcCodeBySvcId" remarks="query service name and service code by servce id">
+        <![CDATA[
+           select chkl.id as config_id, hcsa.id as service_id, hcsa.svc_name as svc_name, hcsa.svc_code as svc_code, chkl.is_common as common from chkl_config_hcsa_service chkl
+            left join hcsa_service hcsa on chkl.svc_code = hcsa.svc_code
+            where chkl.[TYPE] = 'Self-Assessment'
+            UNION
+            select chkl.id as config_id, hcsa.id as service_id, hcsa.svc_name as svc_name, hcsa.svc_code as svc_code, chkl.is_common as common from chkl_config_hcsa_service chkl
+            left join hcsa_service hcsa on chkl.svc_code = hcsa.svc_code
+            where chkl.[TYPE] = 'Self-Assessment'
+            <#if svcId??> ${svcId}</#if>
+        ]]>
+    </sql>
+
+
+    <sql key="getPrefInspPeriodList"  remarks="Get Pref InspPeriod List, day">
+        <![CDATA[
+                select
+                T1.ID AS ID,
+                T2.SVC_NAME AS SVC_NAME,
+                T2.SVC_TYPE AS SVC_TYPE,
+                T1.SERVICE_CODE AS SERVICE_CODE ,
+                T1.PERIOD_AFTER_APP AS PERIOD_AFTER_APP,
+                T1.PERIOD_BEFORE_EXP AS PERIOD_BEFORE_EXP,
+                T1.NON_REPLY_WINDOW AS NON_REPLY_WINDOW,
+                T1.STATUS,
+                T1.VERSION
+                from hcsa_service_specific_inspect_period T1, hcsa_service T2
+                WHERE T1.STATUS = 'CMSTAT001' AND T2.STATUS = 'CMSTAT001' AND T1.SERVICE_CODE = T2.SVC_CODE
+                <#if id??> AND T1.ID = :id</#if>
+                <#if svcName??> AND T2.SVC_NAME = :svcName</#if>
+                <#if svcType??> AND T2.SVC_TYPE = :svcType</#if>
+                <#if svcCode??> AND T1.SERVICE_CODE = :svcCode</#if>
+                <#if periodAfterApp??> AND T1.PERIOD_AFTER_APP = :periodAfterApp</#if>
+                <#if periodBeforeExp??> AND T1.PERIOD_BEFORE_EXP = :periodBeforeExp</#if>
+                <#if nonReplyWindow??> AND T1.NON_REPLY_WINDOW = :nonReplyWindow</#if>
+        ]]>
+
+    </sql>
+
+    <sql key="getLicenceBySerName" remarks="getLicenceBySerName">
+        <![CDATA[
+        SELECT  top(1) ID,
+                '' as LICENCE_NO,
+                'first' as SVC_NAME,
+                '' as START_DATE,
+                '' as POSTAL_CODE,
+                '' as BLK_NO,
+                '' as FLOOR_NO,
+                '' as UNIT_NO,
+                '' as STREET_NAME,
+                '' as BUILDING_NAME,
+                '' as EXPIRY_DATE,
+                '' as HCI_NAME,
+                '' as VEHICLE_NO,
+                '' as PREMISES_TYPE
+                from LICENCE
+        UNION
+        SELECT  T3.ID,
+                T1.LICENCE_NO,
+                T1.SVC_NAME,
+                T1.START_DATE,
+                T3.POSTAL_CODE,
+                T3.BLK_NO,
+                T3.FLOOR_NO,
+                T3.UNIT_NO,
+                T3.STREET_NAME,
+                T3.BUILDING_NAME,
+                T1.EXPIRY_DATE,
+                T3.HCI_NAME ,
+                T3.VEHICLE_NO,
+                T3.PREMISES_TYPE
+          FROM LICENCE T1
+          JOIN LIC_PREMISES T2 on T2.LICENCE_ID = T1.id
+          JOIN PREMISES T3 on T2.PREMISES_ID = T3.id
+          where T1.status in ('LICEST001')
+          <#if serName??> and T1.SVC_NAME IN ${serName} </#if>
+          <#if licenseeId??> AND T1.LICENSEE_ID = :licenseeId</#if>
+        ]]>
+    </sql>
+</sqls>
+

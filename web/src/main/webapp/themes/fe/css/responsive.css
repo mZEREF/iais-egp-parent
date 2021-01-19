@@ -1,0 +1,243 @@
+/*! MOH-IAIS 13-09-2019 */
+
+/* -------------------------------------------------- 
+-    Extra Small Device, Phones 320 and BELOW
+-------------------------------------------------- */ 
+@media screen and (max-width : 320px) {
+  /*Nav Tabs*/
+  .nav-tabs > li > a 		{ font-size: 30px; padding: 5px 10px;}
+  .navbar-default .navbar-nav > li > a { padding-bottom:3px;}
+  .navbar-default .navbar-nav > li > a:first-child { top:-10px;}
+  /*form Buttons*/
+  .form .btn {margin-right: 0;clear: both;width:90%;}
+  .form-group .btn {margin-right: 0;clear: both;width:90%;}
+  /*Table*/
+  .panel-heading .mesg-count 	{ width: 100%;}
+  .panel-body {padding:0px; margin:0px;}
+  /*Header Title*/
+  .wrapper-content h4 {margin-left: 0px;}
+  .wrapper-content .subheader {padding-left: 0px;}
+  /*Fix StepbyStep Confirm Page Aligment*/
+  .content-body div.control { display:block;}
+  /*Signin Login Center*/
+  .form-signin {margin:35px auto 0; position: relative; transform: translateY(0%) !important;}
+  /*Navigation*/
+  .dropdown-menu li > a:hover {color:#f8ca2c !important;background:#1448a6 !important; line-height:35px;}
+  .navbar-default .navbar-nav .open .dropdown-menu>li>a {white-space: normal;}
+  /*Pagination*/
+  .pagejump {margin-bottom:10px;}
+  /*Message*/
+  .msg-datetime { float: left; text-align:left; font-size:16px; padding-left:0px !important}
+}
+/* -------------------------------------------------- 
+-         Super Small Device, Phones 360 
+-------------------------------------------------- */ 
+@media screen and (max-width : 360px) {
+  /*Nav Tabs*/
+  .nav-tabs > li > a 		{ font-size: 30px; padding: 5px 10px;}
+  .nav-tabs > li > a span { display: none;}
+  .navbar-default .navbar-nav > li > a:first-child { top:-10px;}
+  /*form Buttons*/
+  .form .btn {margin-right: 0;clear: both;width:100%;}
+  .form-group .btn {margin-right: 0;clear: both;width:100%;}
+  /*Table*/
+  .panel-heading .mesg-count 	{ width: 100%;}
+  .panel-body {padding:0px; margin:0px;}
+  /*Header Title*/
+  .wrapper-content h4 {margin-left: 0px;}
+  .wrapper-content .subheader {padding-left: 0px;}
+  /*Fix StepbyStep Confirm Page Aligment*/
+  .content-body div.control { display:block !important;}
+  /*Fix Login Background*/
+  #login-bg { height:650px; }
+  /*Signin Login Center*/
+  .form-signin {margin:35px auto 0; position: relative; transform: translateY(0%) !important;}
+  /*Navigation*/
+  .dropdown-menu li > a:hover {color:#f8ca2c !important;background:#1448a6 !important;}
+  .navbar-default .navbar-nav .open .dropdown-menu>li>a {white-space: normal;}
+  /*Pagination */
+  .pagejump {margin-bottom:10px; }
+  /*Message*/
+  .msg-datetime { float: left; text-align:left; font-size:16px; padding-left:0px !important}
+}
+/* -------------------------------------------------- 
+-         Extra Small Devices, Phones 480
+-------------------------------------------------- */ 
+@media screen and (max-width : 480px) {
+  /*Nav Tabs*/
+  .nav-tabs > li > a 		{ font-size: 30px; padding: 5px 10px;}
+  .nav-tabs > li > a span { display: none;}
+  .navbar-default .navbar-nav > li > a:first-child { top:-10px;}
+  /*form Buttons*/
+  .form .btn {margin-right: 0;clear: both;width:100%;}
+  .form-group .btn {margin-right: 0;clear: both;width:100%;}
+  /*Table*/
+  .mesg-btn { margin: 0px !important;}
+  .panel-heading .mesg-count 	{ width: 100%;}
+  th {text-align:center;}
+  table.noti_datatable th, table.noti_datatable tfoot tr td { padding-right:5px !important; word-break: break-all;}
+  table.noti_datatable td {}
+  .table-responsive-wrap  { overflow: auto; width: 100%;}
+  /*Header Title*/
+  .wrapper-content h4 {margin-left: 0px;}
+  .wrapper-content .subheader {padding-left: 0px;}
+  /*Fix StepbyStep Confirm Page Aligment*/
+  .content-body div.control { display:block !important; text-align:center;}
+  .content-body div.field {text-align: center!important; width:0% !important;}
+  .content-body div.field2 {text-align: center!important; width:0% !important;}
+  /*Signn Login Center*/
+  .form-signin {margin:35px auto 0; position: relative; transform: translateY(0%) !important;}
+  /*Navigation*/
+  .logo-text {font-size:14px !important; top:18px !important;}
+  .dropdown-menu li > a:hover {color:#f8ca2c !important; background:#1448a6 !important;}
+  /*Pagination */
+  .pagejump {float:right!important; margin-bottom:10px;}
+  /*Message*/
+  .msg-datetime { float: left; text-align:left; font-size:16px; padding-left:15px;}
+  /*Bank*/
+  .detailSeparatorSpace { width:10px !important;; height:10px !important; }
+  .logobank { margin:auto;}
+  .mer-name { float: left !important;}
+    /*Bank*/
+  .detailLeftCol {width:40%}
+  .detailLeftCol2, {font-size:11px !important;}
+  .agreement { font-size:12px !important;}
+  .containerbank {padding-right: 10px !important;padding-left: 5px !important;margin-right: auto; margin-left: auto;}
+  /*Popup*/
+  .pop-up .content-body {text-align:center; padding:10px 0px !important;}
+}
+/* -------------------------------------------------- 
+-               Tablets, Desktop 767
+-------------------------------------------------- */ 
+@media (max-width: 768px) {
+  /*Nav Tabs*/
+  .nav-tabs > li > a 		{ font-size: 30px; padding: 5px 10px;}
+  .nav-tabs > li > a span { display: none;}
+  .navbar-default .navbar-nav > li > a:first-child { top:-10px;}
+  /*form Buttons*/
+  .form .btn {margin-right: 0;clear: both;width:100%;}
+  .form-group .btn {margin-right: 0;clear: both;width:100%;}
+  /*PopupForm*/
+  .form-group .pop {margin-right: 0;clear: both;width:95%;}
+  /*Table*/
+  .mesg-btn { margin: 0px !important;}
+  .panel-heading .mesg-count  { width: 100%;}
+  th {text-align:center;}
+  table.noti_datatable th, table.noti_datatable tfoot tr td { padding-right:5px !important; word-break: break-all;}
+  table.noti_datatable td { text-align:center;}
+  .panel-darkBlue >.panel-footer > nav > ul > li {text-align:center !important;}
+ /*Header Title*/
+  .wrapper-content h4 {margin-left: 0px;}
+  .wrapper-content .subheader {padding-left: 0px;}
+  /*Signin Login Center*/
+  .form-signin {margin:35px auto 0;}
+  /*Navigation*/
+  .navbar-default .navbar-nav .open .dropdown-menu>li>a { color:#ffffff;} 
+  .navbar-default .navbar-nav .open .dropdown-menu>li>a:hover {color:#f8ca2c; }
+  .navbar-default .navbar-nav .open .dropdown-menu li {border-bottom:none !important;}
+  .dropdown-menu li > a:hover {color:#f8ca2c !important;background:#1448a6 !important;}
+  /*MultiSteps*/
+  .multi-steps > li:before {width:32px;height:32px;line-height:30px;}
+  #pagination {float:none; text-align:center;}
+  #paginationrow {margin:0px;}
+  /*Popup*/
+  .pop-up .content-body {padding:10px 0px !important;}
+  /*2ColumnForm*/
+  .form-group .formoutline {margin-right: 0;clear: both;width:100%;}
+  /*Form*/
+  .caldate {width:90% !important;}
+  .control .control-input-span input[type="text"], .control .control-input-span textarea {
+  width: 100%!important;
+  max-width: 200px;}
+  .modal-content body { text-align:center; }
+  /*2 columns table layout*/
+  td[class="2columns"] .spacer { display: none;}
+  td[class="2columns"] .col { width: 100%;display: block;}
+  td[class="2columns"] .col:first-child {margin-bottom: 30px;}
+        .content-body div.control {margin:auto;} 
+}
+/* -------------------------------------------------- 
+-               Fix Login Height
+-------------------------------------------------- */ 
+@media(min-height:760px) and (max-height:1600px) {
+  .form-signin {margin:35px auto 0; position: relative; transform: translateY(35%);}
+}
+/* -------------------------------------------------- 
+-               Tablets, iPads 
+-------------------------------------------------- */
+/* iPads (landscape) ----------- */
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) 
+and (orientation : landscape) {
+.form-signin {margin:35px auto 0; position: relative; top:100px; transform: translateY(35%);}
+}
+/* iPads (portrait) ----------- */
+@media only screen
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) 
+and (orientation : portrait) {
+.form-signin {margin:35px auto 0; position: relative; top:100px; transform: translateY(35%);}
+}
+/* -------------------------------------------------- 
+-               Tablets, Desktop 991
+-------------------------------------------------- */ 
+@media screen and (max-width : 991px) {
+  .otherresources, .border h1, h2, h3, h4, p { text-align: center;}
+  /*Toggle To Menu*/
+  .navbar-default .navbar-nav > li > a:first-child { top:-10px;}
+  .navbar-header { float: none;}
+  .navbar-toggle {display: block;}
+  .navbar-collapse {border-top: 1px solid transparent;margin-top:6px;}
+  .navbar-collapse.collapse { display: none!important;}
+  .navbar-collapse.collapse.in {display: block!important;}
+  .navbar-nav{float: none!important;margin:0px; padding-bottom:10px;border-right:none; overflow: auto; }
+  .navbar-default .navbar-nav li {border-right:none; }
+  .navbar-nav>li { float: none; }
+  .navbar-nav>li>a { padding-top: 10px;padding-bottom: 10px; }
+  .navbar-default .navbar-nav .open .dropdown-menu li {border-bottom:none !important;}
+  .navbar-form {
+   padding: 10px 15px;
+   margin-top: 8px;
+   margin-right: -15px;
+   margin-bottom: 8px;
+   margin-left: -15px;
+   border-top: 1px solid transparent;
+   border-bottom: 1px solid transparent;
+   -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 1px 0 rgba(255, 255, 255, .1);
+   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 1px 0 rgba(255, 255, 255, .1);
+   width:auto;
+   float:none!important;}
+   /*Dropdown Menu*/
+   .navbar-nav .open .dropdown-menu {
+    position: static;
+    float: none;
+    width: auto;
+    margin-top: 0;
+    background-color: transparent;
+    border: 0;
+    -webkit-box-shadow: none;               
+    box-shadow: none;}
+    .navbar-nav .open .dropdown-menu > li > a,
+    .navbar-nav .open .dropdown-menu .dropdown-header { padding: 5px 15px 5px 25px; }
+    .navbar-nav .open .dropdown-menu > li > a {line-height: 30px;}
+    .navbar-nav .open .dropdown-menu > li > a:hover,
+    .navbar-nav .open .dropdown-menu > li > a:focus {background-a a one;}
+    /*Form fix 4 buttons*/
+    .form-group-four .btn {margin-right: 0;clear: both;width:100%;}
+    /*2 columns table layout*/
+    td[class="2columns"] table { width: 99%;}
+}
+/* -------------------------------------------------- 
+-           Desktop 992 to 2560(30inc LCD)
+-------------------------------------------------- */ 
+@media (min-width: 992px) and (max-width: 2560px) {
+    html, body, p, label, td, .alert, .btn-round-lg, .displaypage { font-size: 100% !important; }
+    .textmandatory{ font-size: 14px !important;}
+    .btn-green {font-size: 14px !important;}
+    .wrapper-content > ul > li { font-size: 100% !important; }
+    /*2 columns table layout*/
+    td[class="2columns"] table { width: 99%;}
+}
+
+

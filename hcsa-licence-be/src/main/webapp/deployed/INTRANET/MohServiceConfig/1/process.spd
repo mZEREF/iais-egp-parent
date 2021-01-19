@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohServiceConfig" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="disable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Step1" x="-60" y="130">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="start" x="120" y="60">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Step3" x="380" y="60">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step3_OnStepProcess_0" name="step3_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="addNewService" x="320" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="addNewService_OnStepProcess_0" name="addNewService_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="list" x="670" y="-60">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="list_OnStepProcess_0" name="list_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Step6" x="920" y="0">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step6_OnStepProcess_0" name="step6_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="edit" x="1160" y="190">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="edit_OnStepProcess_0" name="edit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="delete" x="1240" y="-160">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="delete_OnStepProcess_0" name="delete_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="save" x="680" y="180">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="save_OnStepProcess_0" name="save_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="saveOrUpdate" x="530" y="340">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="saveOrUpdate_OnStepProcess_0" name="saveOrUpdate_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Step8" x="880" y="-160">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step8_OnStepProcess_0" name="step8_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="Step9" processname="MohBackendInbox" project="INTRANET" version="-1" x="380" y="-190">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="cancel" processname="MohBackendInbox" project="INTRANET" version="-1" x="780" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="editView" x="1330" y="600">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="editView_OnStepProcess_0" name="editView_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Step5" x="1400" y="180">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step5_OnStepProcess_0" name="step5_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Step2" x="940" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step2_OnStepProcess_0" name="step2_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="Step4" processname="MohBackendInbox" project="INTRANET" version="-1" x="800" y="50">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="kpiConfig" processname="MohKPIAndReminder" project="INTRANET" version="-1" x="770" y="320">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="Checklists" processname="MohChecklistConfig" project="INTRANET" version="-1" x="770" y="410">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="RiskScore" processname="MohRiskScoreConfiguration" project="INTRANET" version="-1" x="770" y="490">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="ServiceFees" processname="" project="" version="" x="770" y="580">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="ServiceFeeBundles" processname="" project="" version="" x="760" y="660">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="selectVersionAsNewTem" x="1090" y="460">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="selectVersionAsNewTem_OnStepProcess_0" name="selectVersionAsNewTem_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="230" y="60">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="configService" stageIndicator="" x="380" y="400">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="listing" stageIndicator="" x="820" y="-60">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="delete" stageIndicator="" x="1020" y="-160">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="updatePage" stageIndicator="" x="1080" y="580">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="editPage" stageIndicator="" x="1280" y="190">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/start" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1" style="oblique">
+   <position>{(-40,150)(140,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/start" style="oblique">
+   <position>{(140,80)(250,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step3" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Page1" style="oblique">
+   <position>{(250,80)(400,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Step3" style="oblique">
+   <position>{(400,80)(490,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/addNewService" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(490,80)(340,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/list" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(490,80)(690,-40)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/listing" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/list" style="oblique">
+   <position>{(690,-40)(840,-40)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/configService" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/addNewService" style="oblique">
+   <position>{(340,250)(400,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step6" linkstyle="Direct" name="" sourceName="/Pages/WebPage/listing" style="oblique">
+   <position>{(840,-40)(940,20)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Step6" style="oblique">
+   <position>{(940,20)(1060,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/edit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(1060,120)(1180,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/delete" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(1060,120)(1260,-140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/delete" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/delete" style="oblique">
+   <position>{(1260,-140)(1040,-140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/saveOrUpdate" linkstyle="Direct" name="" sourceName="/Pages/WebPage/configService" style="oblique">
+   <position>{(400,420)(550,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/saveOrUpdate" style="oblique">
+   <position>{(550,360)(560,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/save" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(560,220)(700,200)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step8" linkstyle="Direct" name="" sourceName="/Pages/WebPage/delete" style="oblique">
+   <position>{(1040,-140)(900,-140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch4" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Step8" style="oblique">
+   <position>{(900,-140)(700,-230)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Step9" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
+   <position>{(700,-230)(400,-170)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/cancel" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(560,220)(800,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/editPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/edit" style="oblique">
+   <position>{(1180,210)(1300,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step5" linkstyle="Direct" name="" sourceName="/Pages/WebPage/editPage" style="oblique">
+   <position>{(1300,210)(1420,200)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch6" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Step5" style="oblique">
+   <position>{(1420,200)(1480,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/editView" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch6" style="oblique">
+   <position>{(1480,450)(1350,620)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/list" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
+   <position>{(700,-230)(546,17)(690,-40)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/list" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/save" style="oblique">
+   <position>{(700,200)(690,-40)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/start" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(1060,120)(1020,554)(303,565)(140,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/addNewService" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(560,220)(340,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step2" linkstyle="Direct" name="" sourceName="/Pages/WebPage/updatePage" style="oblique">
+   <position>{(1100,600)(960,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch5" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Step2" style="oblique">
+   <position>{(960,420)(930,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/save" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
+   <position>{(930,240)(700,200)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/editView" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
+   <position>{(930,240)(1151,366)(1350,620)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Step4" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
+   <position>{(930,240)(820,70)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step2" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch6" style="oblique">
+   <position>{(1480,450)(960,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/delete" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
+   <position>{(700,-230)(919,-257)(1144,-266)(1260,-140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/kpiConfig" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(560,220)(790,340)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Checklists" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(560,220)(790,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/RiskScore" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(560,220)(790,510)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/ServiceFees" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(560,220)(790,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/ServiceFeeBundles" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(560,220)(780,680)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/selectVersionAsNewTem" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
+   <position>{(930,240)(1110,480)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/updatePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/editView" style="oblique">
+   <position>{(1350,620)(1100,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/editView" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/selectVersionAsNewTem" style="oblique">
+   <position>{(1110,480)(1350,620)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/start" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(560,220)(140,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/list" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch6" style="oblique">
+   <position>{(1480,450)(690,-40)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/edit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
+   <position>{(930,240)(1180,210)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/list" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="470" y="60">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/addNewService" value="&quot;addNewService&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/list" value="&quot;list&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="1040" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/edit" value="&quot;edit&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/delete" value="&quot;delete&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/start" value="&quot;back&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/save" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="540" y="200">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/save" value="&quot;save&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/cancel" value="&quot;cancel&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/addNewService" value="&quot;dovalidate&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/kpiConfig" value="&quot;configKpi&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/Checklists" value="&quot;checkList&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/RiskScore" value="&quot;riskScore&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/ServiceFees" value="&quot;serviceFee&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/ServiceFeeBundles" value="&quot;feeBundles&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/start" value="&quot;back&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch4" x="680" y="-250">
+   <Description/>
+   <SwitchCase component="/Steps/InvokeStep/Step9" value="&quot;cancel&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/list" value="&quot;delete&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/delete" value=""/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch6" x="1460" y="430">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/editView" value="&quot;edit&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Step2" value="&quot;save&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/list" value="&quot;back&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/save" executor="" icon="" leftOperand="crud_action_type" name="Switch5" x="910" y="220">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/save" value="&quot;save&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/editView" value="&quot;validate&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/Step4" value="&quot;cancel&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/selectVersionAsNewTem" value="&quot;version&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/edit" value="   &quot;back&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

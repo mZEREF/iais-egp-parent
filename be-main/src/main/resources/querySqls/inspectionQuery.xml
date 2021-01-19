@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="inspectionQuery">
+    <sql key = "assignInspector" remarks = "AO Assign Task For Inspector">
+        <![CDATA[
+            SELECT T5.ID, T5.APPLICATION_NO, T5.APP_TYPE, T5.STATUS, T5.HCI_CODE, T5.HCI_NAME, T5.SUBMIT_DT FROM
+            (SELECT T1.ID, T1.APPLICATION_NO, T1.APP_TYPE, T1.STATUS, T3.HCI_CODE, T3.HCI_NAME, T4.SUBMIT_DT,
+             T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME, T3.POSTAL_CODE
+             FROM APPLICATION T1
+             JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID
+             JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
+             JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
+             WHERE 1 = 1
+             <#if applicationNo_list??> and ${applicationNo_list} </#if>
+            ) T5
+            WHERE 1 = 1
+            <#if application_no??> and T5.APPLICATION_NO = :application_no</#if>
+            <#if application_type??> and T5.APP_TYPE = :application_type</#if>
+            <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
+            <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
+            <#if sub_date??> and T5.SUBMIT_DT >= :sub_date</#if>
+            <#if blk_no??> and charindex(:blk_no, T5.BLK_NO) >0 </#if>
+            <#if floor_no??> and charindex(:floor_no, T5.FLOOR_NO) >0 </#if>
+            <#if unit_no??> and charindex(:unit_no, T5.UNIT_NO) >0 </#if>
+            <#if street_name??> and charindex(:street_name, T5.STREET_NAME) >0 </#if>
+            <#if building_name??> and charindex(:building_name, T5.BUILDING_NAME) >0 </#if>
+            <#if postal_code??> and charindex(:postal_code, T5.POSTAL_CODE) >0 </#if>
+        ]]>
+    </sql>
+
+    <sql key = "assignInspectorSupper" remarks = "Inspector Leader / Inspector Assign Task For Inspector">
+        <![CDATA[
+            SELECT T5.ID, T5.APPLICATION_NO, T5.APP_TYPE, T5.SERVICE_ID, T5.STATUS, T5.HCI_CODE, T5.HCI_NAME, T5.SUBMIT_DT, T5.IS_PRE_INSPECTION FROM
+            (SELECT T1.ID, T1.APPLICATION_NO, T1.APP_TYPE, T1.STATUS, T1.SERVICE_ID, T3.HCI_CODE, T3.HCI_NAME, T4.SUBMIT_DT, T4.IS_PRE_INSPECTION,
+             T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME, T3.POSTAL_CODE
+             FROM APPLICATION T1
+             JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID
+             JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
+             JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
+             WHERE 1 = 1
+             <#if applicationNo_list??> and ${applicationNo_list} </#if>
+            ) T5
+            WHERE 1 = 1
+            <#if application_no??> and T5.APPLICATION_NO = :application_no</#if>
+            <#if appNo_list??> and ${appNo_list} </#if>
+            <#if application_type??> and T5.APP_TYPE = :application_type</#if>
+            <#if application_status??> and T5.STATUS = :application_status</#if>
+            <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
+            <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
+            <#if blk_no??> and charindex(:blk_no, T5.BLK_NO) >0 </#if>
+            <#if floor_no??> and charindex(:floor_no, T5.FLOOR_NO) >0 </#if>
+            <#if unit_no??> and charindex(:unit_no, T5.UNIT_NO) >0 </#if>
+            <#if street_name??> and charindex(:street_name, T5.STREET_NAME) >0 </#if>
+            <#if building_name??> and charindex(:building_name, T5.BUILDING_NAME) >0 </#if>
+            <#if postal_code??> and charindex(:postal_code, T5.POSTAL_CODE) >0 </#if>
+        ]]>
+    </sql>
+
+    <sql key="listChklItem"  remarks="query chechlist items">
+        <![CDATA[
+                select item.id as ITEM_ID, regulation.CLAUSE_NO as CLAUSE_NO, regulation.clause as CLAUSE,
+                item.question AS CHECKLISTITEM, item.answer_type as ANSWER_TYPE, item.risk_level as RISK_LEVEL,
+                item.status as STATUS from chkl_config_hcsa_svc_item_pool item, chkl_config_hcsa_svc_regulation regulation where 1 = 1
+                and item.regulation_id = regulation.id and item.status = 'CMSTAT001'
+                <#if itemId??> and charindex(:itemId, item.id) >0</#if>
+                <#if regulationClauseNo??> and charindex(:regulationClauseNo, regulation.clause_no) >0 </#if>
+                <#if regulationClause??> and charindex(:regulationClause, regulation.clause) >0 </#if>
+                <#if checklistItem??> and charindex(:checklistitem, item.question) >0</#if>
+                <#if answerType??> and item.answer_type = :answerType</#if>
+                <#if riskLevel??> and item.risk_level = :riskLevel</#if>
+                <#if status??> and item.status = :status</#if>
+        ]]>
+
+    </sql>
+    <sql key="AppGroup"  remarks="query AppGroup items">
+        <![CDATA[
+                SELECT DISTINCT T5.GROUP_NO, T5.APP_TYPE, T5.SUBMIT_DT, T5.PMT_STATUS, T5.cou, T5.ID FROM
+               (SELECT DISTINCT T4.GROUP_NO, T4.APP_TYPE, T4.SUBMIT_DT, T4.PMT_STATUS,T4.ID,T6.cou,T2.ID as corrid,T1.APPLICATION_NO,T1.STATUS,T3.HCI_CODE,T3.HCI_NAME,
+               CONCAT(T3.BLK_NO ,
+               case T3.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.STREET_NAME end
+               , case T3.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.BUILDING_NAME end
+               , case T3.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+T3.FLOOR_NO end
+               , case T3.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+T3.UNIT_NO end
+               , case T3.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+T3.POSTAL_CODE end
+              ) AS address
+                 FROM APPLICATION T1
+                JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID
+                JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
+                JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
+                JOIN (SELECT COUNT(DISTINCT application.APPLICATION_NO) COU, APP_GRP_ID FROM application GROUP BY app_grp_id) as T6 ON T4.ID = T6.app_grp_id
+                ) T5  WHERE 1 = 1
+                <#if remises_corr_id_in??> and CONVERT(NVARCHAR(36), T5.corrid) IN ${remises_corr_id_in} </#if>
+                <#if application_no??> and (T5.APPLICATION_NO like :application_no)</#if>
+                <#if application_type??> and T5.APP_TYPE = :application_type</#if>
+                <#if application_status??> and T5.STATUS IN ${application_status}</#if>
+                <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
+                <#if hci_address??> and (T5.address like :hci_address)</#if>
+                <#if hci_name??> and (T5.HCI_NAME like :hci_name)</#if>
+            ]]>
+    </sql>
+
+    <sql key="AppByGroupAjax"  remarks="query App items">
+        <![CDATA[
+          SELECT DISTINCT T5.APPLICATION_ID,T5.APPLICATION_NO, T5.SERVICE_ID, T5.LICENCE_ID, T5.STATUS, T5.HCI_CODE, T5.ID,T5.address,T5.VERSION,
+           T5.BLK_NO, T5.FLOOR_NO, T5.UNIT_NO, T5.STREET_NAME, T5.BUILDING_NAME, T5.POSTAL_CODE FROM
+           (SELECT DISTINCT T1.ID APPLICATION_ID,T1.APPLICATION_NO,T1.SERVICE_ID, T1.ORIGIN_LICENCE_ID LICENCE_ID, T1.STATUS,T1.VERSION, T3.HCI_CODE,T2.ID,T4.GROUP_NO,T1.APP_TYPE,T3.HCI_NAME,T4.SUBMIT_DT,
+           T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME, T3.POSTAL_CODE,
+           CONCAT(T3.BLK_NO ,
+               case T3.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.STREET_NAME end
+               , case T3.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.BUILDING_NAME end
+               , case T3.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+T3.FLOOR_NO end
+               , case T3.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+T3.UNIT_NO end
+               , case T3.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+T3.POSTAL_CODE end
+              ) AS address
+             FROM APPLICATION T1
+                JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID
+                JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
+                JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
+        ) T5  WHERE 1 = 1
+                <#if remises_corr_id_in??> and CONVERT(NVARCHAR(36), T5.ID) IN ${remises_corr_id_in} </#if>
+                <#if groupNo??> and T5.GROUP_NO = :groupNo</#if>
+                <#if application_no??> and (T5.APPLICATION_NO like :application_no)</#if>
+                <#if application_type??> and T5.APP_TYPE = :application_type</#if>
+                <#if application_status??> and T5.STATUS IN ${application_status}</#if>
+                <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
+                <#if sub_date??> and T5.SUBMIT_DT >= :sub_date</#if>
+                 <#if hci_address??> and (T5.address like :hci_address)</#if>
+                <#if hci_name??> and (T5.HCI_NAME like :hci_name)</#if>
+            ]]>
+    </sql>
+</sqls>

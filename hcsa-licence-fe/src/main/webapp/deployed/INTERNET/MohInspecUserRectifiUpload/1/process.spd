@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/InspecUserRectifiUploadStart" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInspecUserRectifiUpload" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="disable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="InspecUserRectifiUploadStart" x="80" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadStart_OnStepProcess_0" name="inspecUserRectifiUploadStart_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspecUserRectifiUploadInit" x="290" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadInit_OnStepProcess_0" name="inspecUserRectifiUploadInit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspecUserRectifiUploadPre" x="480" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadPre_OnStepProcess_0" name="inspecUserRectifiUploadPre_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspecUserRectifiUploadVali" x="1300" y="380">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadVali_OnStepProcess_0" name="inspecUserRectifiUploadVali_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspecUserRectifiUploadSuccess" x="1060" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadSuccess_OnStepProcess_0" name="inspecUserRectifiUploadSuccess_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspecUserRectifiUploadConfirm" x="1280" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadConfirm_OnStepProcess_0" name="inspecUserRectifiUploadConfirm_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Step1" x="940" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspecUserRectifiUploadAdd" x="860" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadAdd_OnStepProcess_0" name="inspecUserRectifiUploadAdd_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspecUserRectifiUploadDel" x="860" y="380">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadDel_OnStepProcess_0" name="inspecUserRectifiUploadDel_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspecUserRectifiUploadSubmit" x="1280" y="-20">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadSubmit_OnStepProcess_0" name="inspecUserRectifiUploadSubmit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspecUserRectifiUploadReviewPage" stageIndicator="" x="650" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspecUserRectifiUploadConfPage" stageIndicator="" x="1280" y="230">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspecUserRectifiUploadAckPage" stageIndicator="" x="1500" y="380">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadInit" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/InspecUserRectifiUploadStart" style="rectanular">
+   <position>{(100,120)(310,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadPre" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadInit" style="rectanular">
+   <position>{(310,120)(500,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspecUserRectifiUploadReviewPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadPre" style="rectanular">
+   <position>{(500,120)(670,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/InspecUserRectifiUploadCond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadVali" style="rectanular">
+   <position>{(1320,400)(1320,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadConfirm" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(1150,120)(1300,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadSuccess" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(1150,120)(1080,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspecUserRectifiUploadConfPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadConfirm" style="rectanular">
+   <position>{(1300,120)(1300,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadPre" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(1150,120)(1151,38)(560,38)(500,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspecUserRectifiUploadReviewPage" style="rectanular">
+   <position>{(670,120)(960,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step1" style="rectanular">
+   <position>{(960,120)(1150,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadVali" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspecUserRectifiUploadConfPage" style="rectanular">
+   <position>{(1300,250)(1320,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadConfirm" linkstyle="Direct" name="" sourceName="/Conditions/Condition/InspecUserRectifiUploadCond1" style="oblique">
+   <position>{(1320,540)(1459,540)(1459,119)(1300,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadAdd" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(1150,120)(880,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadAdd" style="oblique">
+   <position>{(880,250)(814,421)(1160,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadDel" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(1150,120)(880,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadDel" style="oblique">
+   <position>{(880,400)(1160,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/InspecUserRectifiUploadCond1" style="rectanular">
+   <position>{(1320,540)(1160,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step1" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(1160,540)(692,540)(960,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadPre" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadSuccess" style="oblique">
+   <position>{(1080,250)(500,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadSubmit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(1150,120)(1300,0)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadSubmit" style="rectanular">
+   <position>{(1300,0)(1590,0)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspecUserRectifiUploadAckPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(1590,0)(1520,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadPre" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(1590,0)(1590,-112)(561,-112)(500,120)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/InspecUserRectifiUploadConfirm" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="flag" name="InspecUserRectifiUploadCond1" operator="=" rightOperand="&quot;true&quot;" x="1300" y="520">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/InspecUserRectifiUploadPre" componentIfTrue="/Pages/WebPage/InspecUserRectifiUploadAckPage" defClass="" executor="" icon="" leftOperand="subflag" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="1570" y="-20">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="inspecUserRecUploadType" name="Switch1" x="1130" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/InspecUserRectifiUploadConfirm" value="&quot;confirm&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspecUserRectifiUploadSuccess" value="&quot;success&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspecUserRectifiUploadPre" value="&quot;review&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspecUserRectifiUploadAdd" value="&quot;add&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspecUserRectifiUploadDel" value="&quot;delete&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspecUserRectifiUploadSubmit" value="&quot;submit&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1140" y="520">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

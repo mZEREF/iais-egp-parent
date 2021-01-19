@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohBackendInbox" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="disable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="50" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareData" x="250" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="SearchInit" x="160" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="searchInit_OnStepProcess_0" name="searchInit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="SearchStart" x="550" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="searchStart_OnStepProcess_0" name="searchStart_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="DoSearch" x="660" y="220">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doSearch_OnStepProcess_0" name="doSearch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="SearchPage" x="550" y="220">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="searchPage_OnStepProcess_0" name="searchPage_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="SearchSort" x="760" y="220">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="searchSort_OnStepProcess_0" name="searchSort_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="SearchQuery" x="730" y="420">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="searchQuery_OnStepProcess_0" name="searchQuery_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Approve" x="860" y="220">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="approve_OnStepProcess_0" name="approve_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ChangeRole" x="460" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="changeRole_OnStepProcess_0" name="changeRole_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InboxPage" stageIndicator="" x="410" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="successPage" stageIndicator="" x="850" y="420">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SearchInit" style="oblique">
+   <position>{(180,120)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SearchInit" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(70,120)(180,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/SearchStartSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SearchStart" style="oblique">
+   <position>{(570,120)(720,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DoSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/SearchStartSwitch" style="oblique">
+   <position>{(720,120)(680,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SearchPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/SearchStartSwitch" style="oblique">
+   <position>{(720,120)(570,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SearchSort" linkstyle="Direct" name="" sourceName="/Switches/Switch/SearchStartSwitch" style="oblique">
+   <position>{(720,120)(780,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SearchQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DoSearch" style="oblique">
+   <position>{(680,240)(750,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SearchQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SearchSort" style="oblique">
+   <position>{(780,240)(750,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SearchQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SearchPage" style="oblique">
+   <position>{(570,240)(750,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SearchStart" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InboxPage" style="rectanular">
+   <position>{(430,120)(570,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SearchQuery" style="oblique">
+   <position>{(750,440)(280,358)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareData" style="rectanular">
+   <position>{(270,120)(370,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InboxPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(370,120)(430,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SearchStart" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(370,120)(370,74)(580,38)(570,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Approve" linkstyle="Direct" name="" sourceName="/Switches/Switch/SearchStartSwitch" style="oblique">
+   <position>{(720,120)(880,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/successPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Approve" style="rectanular">
+   <position>{(880,240)(870,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SearchInit" linkstyle="Direct" name="" sourceName="/Pages/WebPage/successPage" style="oblique">
+   <position>{(870,440)(180,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ChangeRole" linkstyle="Direct" name="" sourceName="/Switches/Switch/SearchStartSwitch" style="oblique">
+   <position>{(720,120)(480,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SearchQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ChangeRole" style="oblique">
+   <position>{(480,250)(750,440)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/SearchStart" componentIfTrue="/Pages/WebPage/InboxPage" defClass="" executor="" icon="" leftOperand="flag" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="350" y="100">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/DoSearch" executor="" icon="" leftOperand="SearchSwitchType" name="SearchStartSwitch" x="700" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/DoSearch" value="&quot;search&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/SearchPage" value="&quot;page&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/SearchSort" value="&quot;sort&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Approve" value="&quot;approve&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/ChangeRole" value="&quot;changeRole&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

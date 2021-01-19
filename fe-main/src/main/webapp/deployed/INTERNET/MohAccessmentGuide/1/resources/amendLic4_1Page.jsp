@@ -1,0 +1,1 @@
+<%@include file="/WEB-INF/jsp/iais/assessmentGuide/amendLicence/updatePersonnelInfo/amendUpdatePersonnelInfo.jsp"%>

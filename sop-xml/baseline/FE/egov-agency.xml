@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<agencies>
+    <agency>
+        <agencyId>hcsa</agencyId>
+        <shortName>hcsa</shortName>
+        <name>hcsa</name>
+        <description></description>
+        <createdUserDomain>egovadmin</createdUserDomain>
+        <createdUserId>egovadmin</createdUserId>
+        <updatedUserDomain>egovadmin</updatedUserDomain>
+        <updatedUserId>egovadmin</updatedUserId>
+        <tags></tags>
+    </agency>
+</agencies>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="hcsaconfig">
+    <sql key = "queryHcsaService" remarks="query hcsa service parameter of checklist">
+        <![CDATA[
+            select stype.id as service_id, scategory.id as category_id, scategory.name as category_name, stype.name as service_name
+            from iais.dbo.hcsa_service_type stype, iais.dbo.hcsa_service_category scategory where stype.category_id = scategory.id
+        ]]>
+    </sql>
+
+    <sql key="listChklItem"  remarks="use for checklist crud function">
+        <![CDATA[
+                select item.id as ITEM_ID, regulation.CLAUSE_NO as CLAUSE_NO, regulation.clause as CLAUSE,
+                item.question AS CHECKLISTITEM, item.answer_type as ANSWER_TYPE, item.risk_level as RISK_LEVEL,
+                item.status as STATUS from chkl_config_hcsa_svc_item_pool item, chkl_config_hcsa_svc_regulation regulation where 1 = 1
+                and item.regulation_id = regulation.id
+                and (item.status = 'CMSTAT001' or item.status = 'CMSTAT003')
+                <#if itemId??> and charindex(:itemId, item.id) >0</#if>
+                <#if regulationClauseNo??> and charindex(:regulationClauseNo, regulation.clause_no) >0 </#if>
+                <#if regulationClause??> and charindex(:regulationClause, regulation.clause) >0 </#if>
+                <#if checklistItem??> and charindex(:checklistItem, item.question) >0</#if>
+                <#if answerType??> and item.answer_type = :answerType</#if>
+                <#if riskLevel??> and item.risk_level = :riskLevel</#if>
+                <#if status??> and item.status = :status</#if>
+                <#if adhocItemId??> and ${adhocItemId} </#if>
+                <#if selectedItemIdToConfig??> and ${selectedItemIdToConfig} </#if>
+                <#if itemStatus??> and item.status = :itemStatus </#if>
+        ]]>
+
+    </sql>
+
+    <sql key="queryChecklistItem"  remarks="use for adhoc item of inspection">
+        <![CDATA[
+                select item.id as ITEM_ID, regulation.CLAUSE_NO as CLAUSE_NO, regulation.clause as CLAUSE,
+                item.question AS CHECKLISTITEM, item.answer_type as ANSWER_TYPE, item.risk_level as RISK_LEVEL,
+                item.status as STATUS from chkl_config_hcsa_svc_item_pool item, chkl_config_hcsa_svc_regulation regulation where 1 = 1
+                and item.regulation_id = regulation.id
+                and item.status = 'CMSTAT001'
+                <#if itemId??> and charindex(:itemId, item.id) >0</#if>
+                <#if regulationClauseNo??> and charindex(:regulationClauseNo, regulation.clause_no) >0 </#if>
+                <#if regulationClause??> and charindex(:regulationClause, regulation.clause) >0 </#if>
+                <#if checklistItem??> and charindex(:checklistItem, item.question) >0</#if>
+                <#if answerType??> and item.answer_type = :answerType</#if>
+                <#if riskLevel??> and item.risk_level = :riskLevel</#if>
+                <#if status??> and item.status = :status</#if>
+                <#if adhocItemId??> and ${adhocItemId} </#if>
+                <#if selectedItemIdToConfig??> and ${selectedItemIdToConfig} </#if>
+                <#if itemStatus??> and item.status = :itemStatus </#if>
+        ]]>
+
+    </sql>
+
+    <sql key="regulationQuery"  remarks="query regulation">
+        <![CDATA[
+                SELECT ID, CLAUSE_NO, CLAUSE, STATUS, CREATED_DT, CREATED_BY, UPDATED_DT, UPDATED_BY
+                FROM chkl_config_hcsa_svc_regulation where status = 'CMSTAT001'
+                <#if id??> and id = :id</#if>
+                <#if clauseNo??> and charindex(:clauseNo, CLAUSE_NO) > 0  </#if>
+                <#if clause??> and charindex(:clause, CLAUSE) > 0</#if>
+        ]]>
+
+    </sql>
+
+    <sql key="listChecklistItemByItemId"  remarks="query chechlist items by item id">
+        <![CDATA[
+                select item.id as item_id, regulation.clause_no as clause_num, regulation.clause as clause,
+                item.question as checklistitem, item.answer_type as answer_type, item.risk_level as risk_level,
+                item.status as status from chkl_config_hcsa_svc_item_pool item, chkl_config_hcsa_svc_regulation regulation where 1 = 1
+                and item.regulation_id = regulation.id and item.status = 'cmstat001'
+                <#if itemid??> item.id in(:itemid)</#if>
+        ]]>
+
+    </sql>
+
+    <sql key="listChecklistConfig" remarks="query results of checklist config">
+        <![CDATA[
+            select distinct svc.id as config_id,
+            svc.module as module,
+            svc.svc_subtype_name as subtype_name,
+            svc.hci_code as hci_code,
+            svc.[type] as type,
+            svc.is_common as is_common,
+            hcsa.svc_name as service,
+            svc.effective_date as start_date,
+            svc.end_date as END_DATE,
+            svc.version as version
+            from chkl_config_hcsa_service svc
+            left join hcsa_service hcsa on svc.svc_code = hcsa.svc_code
+            where (svc.is_common = 1 or svc.is_common = 0) and svc.status = 'CMSTAT001'
+             <#if svcName??> and hcsa.svc_name = :svcName</#if>
+             <#if common??> and svc.is_common = :common</#if>
+             <#if svcSubType??> and svc.svc_subtype_name = :svcSubType</#if>
+             <#if module??> and ${module} </#if>
+             <#if type??> and ${type} </#if>
+        ]]>
+
+    </sql>
+
+
+
+    <sql key="listRegulationClauseNo"  remarks="query regulation no">
+        <![CDATA[
+                 select DISTINCT CLAUSE_NO as CLAUSE_NO from chkl_config_hcsa_svc_regulation
+        ]]>
+
+    </sql>
+
+    <sql key="getPrefInspPeriodList"  remarks="Get Pref InspPeriod List, week">
+        <![CDATA[
+                select
+                T1.ID AS ID,
+                T2.SVC_NAME AS SVC_NAME,
+                T2.SVC_TYPE AS SVC_TYPE,
+                T1.SERVICE_CODE AS SERVICE_CODE ,
+                T1.PERIOD_AFTER_APP / 7 AS PERIOD_AFTER_APP,
+                T1.PERIOD_BEFORE_EXP / 7 AS PERIOD_BEFORE_EXP,
+                T1.NON_REPLY_WINDOW AS NON_REPLY_WINDOW,
+                T1.STATUS,
+                T1.VERSION
+                from hcsa_service_specific_inspect_period T1, hcsa_service T2
+                WHERE T1.STATUS = 'CMSTAT001' AND T2.STATUS = 'CMSTAT001' AND T1.SERVICE_CODE = T2.SVC_CODE
+                <#if id??> AND T1.ID = :id</#if>
+                <#if svcName??> AND T2.SVC_NAME = :svcName</#if>
+                <#if svcType??> AND T2.SVC_TYPE = :svcType</#if>
+                <#if svcCode??> AND T1.SERVICE_CODE = :svcCode</#if>
+                <#if periodAfterApp??> AND T1.PERIOD_AFTER_APP = :periodAfterApp</#if>
+                <#if periodBeforeExp??> AND T1.PERIOD_BEFORE_EXP = :periodBeforeExp</#if>
+                <#if nonReplyWindow??> AND T1.NON_REPLY_WINDOW = :nonReplyWindow</#if>
+        ]]>
+
+    </sql>
+
+
+
+</sqls>
+

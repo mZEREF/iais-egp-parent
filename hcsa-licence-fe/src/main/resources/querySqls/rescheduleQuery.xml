@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="rescheduleQuery">
+
+
+    <sql remarks="Query" key="queryApptGrpPremises">
+        <![CDATA[
+                SELECT distinct
+                app.id,app.application_no,app.app_type,app.status,app.service_id,app.IS_FAST_TRACKING,
+                T2.id APP_CORR_ID,T4.ID APP_GRP_ID,
+                T3.HCI_CODE,T3.HCI_NAME,T3.VEHICLE_NO,T3.ID APP_GRP_PREM_ID,
+                T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME,T3.POSTAL_CODE,
+                CONCAT(case T3.BLK_NO
+                  when null then null
+                  when '' then null
+                  else ' '+T3.BLK_NO end ,
+                case T3.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+T3.FLOOR_NO end
+               , case T3.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+T3.UNIT_NO end
+               , case T3.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+T3.POSTAL_CODE end,
+                case T3.PREM_TYPE
+                  when null then null
+                  when '' then null
+                  else ', '+T3.PREM_TYPE end,
+                case T3.VEHICLE_NO
+                  when null then null
+                  when '' then null
+                  else ', '+T3.VEHICLE_NO end) PREMISES_ADDRESS,
+                CONCAT(case T3.BLK_NO
+                  when null then null
+                  when '' then null
+                  else ''+T3.BLK_NO end ,
+               case T3.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.STREET_NAME end
+               , case T3.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.BUILDING_NAME end
+               , case T3.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+T3.FLOOR_NO end
+               , case T3.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+T3.UNIT_NO end
+               , case T3.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+T3.POSTAL_CODE end
+              ) AS ADDRESS,
+                T4.LICENSEE_ID,
+                appRec.RECOM_IN_DATE ,
+                insAppt.RESCHEDULE_COUNT,insApptCorr.STATUS INS_APPT_STATUS
+
+            FROM APPLICATION_GROUP T4
+             LEFT JOIN APP_GRP_PREMISES T3 ON T4.ID = T3.APP_GRP_ID
+             LEFT JOIN APP_PREMISES_CORRELATION T2 ON T2.APP_GRP_PREM_ID = T3.ID
+             LEFT JOIN APPLICATION AS app ON T2.APPLICATION_ID = app.ID
+             LEFT JOIN app_premises_inspector_correlation insApptCorr ON (insApptCorr.APPLICATION_NO = app.APPLICATION_NO AND insApptCorr.STATUS='CMSTAT001')
+             LEFT JOIN app_premises_recommendation appRec ON (appRec.APP_PREM_CORRE_ID = T2.ID AND appRec.RECOM_TYPE='RETYPE006' AND appRec.STATUS='CMSTAT001')
+             LEFT JOIN app_premises_inspection_appt insAppt ON (insAppt.APP_PREM_CORRE_ID = T2.ID AND insAppt.STATUS='CMSTAT001')
+            WHERE app.STATUS != 'APST009'
+            AND appRec.RECOM_IN_DATE is not null
+            AND insAppt.RESCHEDULE_COUNT is not null
+            <#if licenseeId??>AND T4.licensee_id = :licenseeId</#if>
+            ]]>
+    </sql>
+</sqls>

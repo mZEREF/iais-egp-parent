@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="inspectionQuery">
+    <sql key = "assignCommonTask" remarks = "Search Common Pool Task By Application Group">
+        <![CDATA[
+            SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.PMT_STATUS, T5.APP_TYPE, T5.SUBMIT_DT, T5.COU FROM
+            (SELECT DISTINCT T4.ID, T4.GROUP_NO, T4.PMT_STATUS, T1.ID AS APP_PREM_CORRID, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS, T3.HCI_CODE, T3.HCI_NAME, T4.SUBMIT_DT,
+             CONCAT(T3.BLK_NO ,
+               case T3.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.STREET_NAME end
+               , case T3.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.BUILDING_NAME end
+               , case T3.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+T3.FLOOR_NO end
+               , case T3.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+T3.UNIT_NO end
+               , case T3.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+T3.POSTAL_CODE end
+              ) AS PREMISE,
+             T6.COU
+             FROM APP_PREMISES_CORRELATION T1
+             JOIN APPLICATION T2 ON T2.ID = T1.APPLICATION_ID
+             JOIN APP_GRP_PREMISES T3 ON T3.ID = T1.APP_GRP_PREM_ID
+             JOIN APPLICATION_GROUP T4 ON T4.ID = T2.APP_GRP_ID
+             JOIN (SELECT COUNT(DISTINCT application.APPLICATION_NO) COU, APP_GRP_ID FROM application GROUP BY app_grp_id) as T6 ON T4.ID = T6.app_grp_id
+             WHERE 1 = 1
+             <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T1.ID) IN ${appCorrId_list} </#if>
+            ) T5
+            WHERE 1 = 1
+            <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
+            <#if application_type??> and T5.APP_TYPE = :application_type</#if>
+            <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
+            <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
+            <#if sub_date??> and T5.SUBMIT_DT >= :sub_date</#if>
+            <#if hci_address??> and charindex(:hci_address, T5.PREMISE) >0 </#if>
+        ]]>
+    </sql>
+
+    <sql key = "supervisorPoolSearch" remarks = "Leader Assign Task For Members">
+        <![CDATA[
+            SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.APP_TYPE FROM
+            (SELECT DISTINCT T4.ID, T1.ID AS APP_PREM_CORR_ID, T4.GROUP_NO, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS, T3.HCI_CODE, T3.HCI_NAME,
+             CONCAT(T3.BLK_NO ,
+               case T3.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.STREET_NAME end
+               , case T3.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.BUILDING_NAME end
+               , case T3.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+T3.FLOOR_NO end
+               , case T3.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+T3.UNIT_NO end
+               , case T3.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+T3.POSTAL_CODE end
+              ) AS PREMISE
+             FROM APP_PREMISES_CORRELATION T1
+             JOIN APPLICATION T2 ON T2.ID = T1.APPLICATION_ID
+             JOIN APP_GRP_PREMISES T3 ON T3.ID = T1.APP_GRP_PREM_ID
+             JOIN APPLICATION_GROUP T4 ON T4.ID = T2.APP_GRP_ID
+             WHERE 1 = 1
+             <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T1.ID) IN ${appCorrId_list} </#if>
+            ) T5
+            WHERE 1 = 1
+            <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
+            <#if appCorId_list??> and CONVERT(NVARCHAR(36), T5.APP_PREM_CORR_ID) IN ${appCorId_list} </#if>
+            <#if application_type??> and T5.APP_TYPE = :application_type</#if>
+            <#if application_status??> and T5.STATUS = :application_status</#if>
+            <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
+            <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
+            <#if hci_address??> and charindex(:hci_address, T5.PREMISE) >0 </#if>
+        ]]>
+    </sql>
+
+    <sql key = "supervisorPoolDropdown" remarks = "Leader Assign Task For Members Dropdown">
+        <![CDATA[
+            SELECT DISTINCT T1.ID, T1.REF_NO, T1.USER_ID, T1.TASK_TYPE, T1.WRK_GRP_ID
+            FROM TASK T1
+            WHERE 1 = 1
+            <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T1.REF_NO) IN ${appCorrId_list} </#if>
+            <#if taskStatus??> and T1.TASK_STATUS IN ${taskStatus} </#if>
+            <#if workGroupId??> and CONVERT(NVARCHAR(36), T1.WRK_GRP_ID) IN ${workGroupId} </#if>
+            <#if userId??> and T1.USER_ID = :userId </#if>
+        ]]>
+    </sql>
+
+    <sql key = "systemGroupPoolSearch" remarks = "System User Task By Group">
+        <![CDATA[
+            SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.APP_TYPE, T5.PMT_STATUS FROM
+            (SELECT DISTINCT T4.PMT_STATUS, T4.ID, T1.ID AS APP_PREM_CORR_ID, T4.GROUP_NO, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS, T3.HCI_CODE, T3.HCI_NAME,
+             CONCAT(T3.BLK_NO ,
+               case T3.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.STREET_NAME end
+               , case T3.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.BUILDING_NAME end
+               , case T3.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+T3.FLOOR_NO end
+               , case T3.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+T3.UNIT_NO end
+               , case T3.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+T3.POSTAL_CODE end
+              ) AS PREMISE
+             FROM APP_PREMISES_CORRELATION T1
+             JOIN APPLICATION T2 ON T2.ID = T1.APPLICATION_ID
+             JOIN APP_GRP_PREMISES T3 ON T3.ID = T1.APP_GRP_PREM_ID
+             JOIN APPLICATION_GROUP T4 ON T4.ID = T2.APP_GRP_ID
+             WHERE 1 = 1
+             <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T1.ID) IN ${appCorrId_list} </#if>
+            ) T5
+            WHERE 1 = 1
+            <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
+            <#if application_type??> and T5.APP_TYPE = :application_type</#if>
+            <#if application_status??> and T5.STATUS = :application_status</#if>
+            <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
+            <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
+            <#if hci_address??> and charindex(:hci_address, T5.PREMISE) >0 </#if>
+        ]]>
+    </sql>
+
+    <sql key = "systemPoolDropdown" remarks = "System User Assign Task For Members Dropdown">
+        <![CDATA[
+            SELECT DISTINCT T1.ID, T1.REF_NO, T1.USER_ID, T1.TASK_TYPE, T1.WRK_GRP_ID
+            FROM TASK T1
+            WHERE 1 = 1
+            <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T1.REF_NO) IN ${appCorrId_list} </#if>
+            <#if taskStatus??> and T1.TASK_STATUS IN ${taskStatus} </#if>
+            <#if userId??> and T1.USER_ID = :userId </#if>
+        ]]>
+    </sql>
+
+    <sql key="listChklItem"  remarks="query chechlist items">
+        <![CDATA[
+                select item.id as ITEM_ID, regulation.CLAUSE_NO as CLAUSE_NO, regulation.clause as CLAUSE,
+                item.question AS CHECKLISTITEM, item.answer_type as ANSWER_TYPE, item.risk_level as RISK_LEVEL,
+                item.status as STATUS from chkl_config_hcsa_svc_item_pool item, chkl_config_hcsa_svc_regulation regulation where 1 = 1
+                and item.regulation_id = regulation.id and item.status = 'CMSTAT001'
+                <#if itemId??> and charindex(:itemId, item.id) >0</#if>
+                <#if regulationClauseNo??> and charindex(:regulationClauseNo, regulation.clause_no) >0 </#if>
+                <#if regulationClause??> and charindex(:regulationClause, regulation.clause) >0 </#if>
+                <#if checklistItem??> and charindex(:checklistitem, item.question) >0</#if>
+                <#if answerType??> and item.answer_type = :answerType</#if>
+                <#if riskLevel??> and item.risk_level = :riskLevel</#if>
+                <#if status??> and item.status = :status</#if>
+        ]]>
+
+    </sql>
+
+    <sql key="aduitSystemList"  remarks="query system aduitList">
+        <![CDATA[
+               SELECT
+                 rowNum,id,hclcode,hclName,address,licId,serviceName,postalCode,
+                 premisesType,AUDIT_TYPE,AUDIT_RISK_TYPE,lic_premises_audit_id,
+                 INSPECTOR_ID,TCU_DATE,IS_TCU_NEEDED,REMARKS,INS_GRP_ID,
+                 lic_prem_insp_grp_correlation_id,licensee_id,licenceDueDate,
+                 licence_no,svc_code,financial_score,leadership_score,legislative_breaches_score,
+                 fir_ins_socre,sec_ins_socre,risk_score,risk_type,
+                 last_insp_start,last_insp_end,RESULT_COMPLICANCE
+                FROM (
+               SELECT
+               ROW_NUMBER() OVER(ORDER BY
+                   replaceSql
+               desc) rowNum,
+               t3.ID as id,t3.LICENCE_ID as licId,t3.PREMISES_ID,t3.IS_POST_INSP_NEEDED,t3.TCU_DATE,t3.IS_TCU_NEEDED,
+               t4.LICENCE_NO as licence_no,t4.SVC_NAME as serviceName,t4.START_DATE,t4.EXPIRY_DATE as licenceDueDate,t4.IS_GRP_LIC,t4.ORIGIN_LICENCE_ID,t4.IS_MIGRATED,t4.MIGRATED_DT,
+               t4.IS_FEE_RETRO_NEEDED,t4.VERSION as licence_version,t4.LICENSEE_ID as licensee_id,t4.END_DATE,
+               t5.HCI_CODE as  hclcode,t5.HCI_NAME as hclName,t5.HCI_CONTACT_NO,t5.SCDF_REF_NO,t5.CERT_ISSUED_DT,t5.VEHICLE_NO,t5.PREMISES_TYPE as premisesType,t5.POSTAL_CODE  as postalCode,
+               t5.ADDR_TYPE,t5.BLK_NO,t5.FLOOR_NO,t5.UNIT_NO,t5.STREET_NAME,t5.BUILDING_NAME,t5.VERSION as premises_version ,t5.STATUS,t5.ORGANIZATION_ID,
+               t5.WRK_TIME_FROM,t5.WRK_TIME_TO,t5.IS_LOCATE_WITH_OTHERS,
+               isnull(t5.BLK_NO,'')+
+		      ' '+isnull(t5.STREET_NAME,'')
+		      +' '+isnull(t5.BUILDING_NAME,'')
+		      + (case isnull(t5.FLOOR_NO,'')
+		         when '' then ''
+		         else ' # ' end)
+		       +isnull(t5.FLOOR_NO,'')
+		       +(case isnull(t5.UNIT_NO,'')
+		           when '' then ''
+		           else '-' end)
+		        +isnull(t5.UNIT_NO,'')
+		        +', '+isnull(t5.POSTAL_CODE,'') as address,
+               t1.ID as lic_premises_audit_id,t1.AUDIT_TYPE,t1.AUDIT_RISK_TYPE,t1.REMARKS,t1.IS_IN_RISK_SCORE,t1.INCLUDE_RISK_TYPE,t1.STATUS as audit_status,
+               t2.INSPECTOR_ID,
+               t6.ID as lic_prem_insp_grp_correlation_id,t6.INS_GRP_ID,t6.STATUS as lic_prem_insp_grp_correlation_status,
+               t7.PREFER_END_DATE ,t7.PREFER_START_DATE,t7.STATUS as lic_inspection_group_status,
+               t8.SVC_CODE as svc_code,t8.risk_type_financial_score as financial_score,t8.risk_type_leadership_score as leadership_score,
+               t8.risk_type_legislative_breaches_score as legislative_breaches_score,t8.risk_type_fir_ins_socre as fir_ins_socre,
+               t8.risk_type_sec_ins_socre as sec_ins_socre,t8.risk_score as risk_score,t8.risk_type as risk_type,
+               t8.last_insp_start as last_insp_start,t8.last_insp_end as last_insp_end,t8.RESULT_COMPLICANCE as RESULT_COMPLICANCE
+               FROM lic_premises t3
+               LEFT JOIN (Select * FROM lic_premises_audit  WHERE STATUS = 'CMSTAT001' OR STATUS = 'AUTACPS001') t1
+               on t1.LIC_PREM_ID = t3.ID
+               left join lic_premises_audit_inspector t2
+               on t1.ID  = t2.AUDIT_ID
+               LEFT JOIN (Select * FROM licence WHERE STATUS = 'LICEST001') t4
+               ON
+               t3.LICENCE_ID = t4.ID
+               left join   premises t5
+               on
+               t3.PREMISES_ID  = t5.ID
+               left  join  (select * FROM lic_prem_insp_grp_correlation WHERE lic_prem_insp_grp_correlation.STATUS = 'CMSTAT001') t6 on
+               t1.LIC_PREM_ID = t6.LIC_PREM_ID
+               left join  (select * FROM lic_inspection_group WHERE lic_inspection_group.STATUS ='CMSTAT001') t7
+               on  t6.INS_GRP_ID = t7.ID left join  (SELECT * FROM hcsal.dbo.licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LIC_PREMISES_ID = t3.ID
+               WHERE   t4.STATUS = 'LICEST001' AND (t1.STATUS is NULL OR (t1.STATUS != 'AUTACPS001'))
+            <#if serviceNameList??> and t4.SVC_NAME IN ${serviceNameList} </#if>
+            <#if postalCode??> and charindex(:postalCode,t5.POSTAL_CODE)!=0 </#if>
+            <#if hclCode??> and charindex(:hclCode,t5.HCI_CODE)!=0 </#if>
+            <#if premType??> and charindex(:premType,t5.PREMISES_TYPE) != 0 </#if>
+            <#if isTcuNeeded??> and t3.IS_TCU_NEEDED = :isTcuNeeded </#if>
+            <#if aduitInspectionMonthBeforeTcu??>
+             and  DATEDIFF(DAY, getdate() ,t3.TCU_DATE) <= :aduitInspectionMonthBeforeTcu
+             </#if>
+                <#if last_insp_start??>
+                and DATEDIFF(DAY, :last_insp_start ,t8.last_insp_start) >=0
+                </#if>
+                <#if last_insp_end??>
+                 and DATEDIFF(DAY, :last_insp_end ,t8.last_insp_end) <=0
+                </#if>
+                   <#if riskType??>
+                     and charindex(:riskType,t8.risk_type) != 0
+                     </#if>
+                           <#if resultComplicance??>
+                     and charindex(:resultComplicance,t8.RESULT_COMPLICANCE) != 0
+                     </#if>
+               )
+             tableall   WHERE 1=1
+               <#if number_generate??>
+               and tableall.rowNum<= :number_generate
+              </#if>
+                <#if ins_id??>
+               and tableall.INSPECTOR_ID = :ins_id
+              </#if>
+        ]]>
+    </sql>
+
+    <sql key="aduitChangeStatusList"  remarks="query get aduitList for inactive finish audit">
+        <![CDATA[
+                  SELECT
+                  id,hclcode,hclName,address,licId,serviceName,postalCode,
+                 premisesType,AUDIT_TYPE,AUDIT_RISK_TYPE,lic_premises_audit_id,
+                 INSPECTOR_ID,TCU_DATE,IS_TCU_NEEDED,REMARKS,INS_GRP_ID,
+                 lic_prem_insp_grp_correlation_id,licensee_id,licenceDueDate,
+                 licence_no,svc_code,financial_score,leadership_score,legislative_breaches_score,
+                 fir_ins_socre,sec_ins_socre,risk_score,risk_type,
+                 last_insp_start,last_insp_end,RESULT_COMPLICANCE
+                FROM (
+             SELECT
+               t3.ID as id,t3.LICENCE_ID as licId,t3.PREMISES_ID,t3.IS_POST_INSP_NEEDED,t3.TCU_DATE,t3.IS_TCU_NEEDED,
+               t4.LICENCE_NO as licence_no,t4.SVC_NAME as serviceName,t4.START_DATE,t4.EXPIRY_DATE as licenceDueDate,t4.IS_GRP_LIC,t4.ORIGIN_LICENCE_ID,t4.IS_MIGRATED,t4.MIGRATED_DT,
+               t4.IS_FEE_RETRO_NEEDED,t4.VERSION as licence_version,t4.LICENSEE_ID as licensee_id,t4.END_DATE,
+               t5.HCI_CODE as  hclcode,t5.HCI_NAME as hclName,t5.HCI_CONTACT_NO,t5.SCDF_REF_NO,t5.CERT_ISSUED_DT,t5.VEHICLE_NO,t5.PREMISES_TYPE as premisesType,t5.POSTAL_CODE  as postalCode,
+               t5.ADDR_TYPE,t5.BLK_NO,t5.FLOOR_NO,t5.UNIT_NO,t5.STREET_NAME,t5.BUILDING_NAME,t5.VERSION,t5.STATUS,t5.ORGANIZATION_ID,
+               t5.WRK_TIME_FROM,t5.WRK_TIME_TO,t5.IS_LOCATE_WITH_OTHERS,
+               isnull(t5.BLK_NO,'')+
+		      ' '+isnull(t5.STREET_NAME,'')
+		      +' '+isnull(t5.BUILDING_NAME,'')
+		      + (case isnull(t5.FLOOR_NO,'')
+		         when '' then ''
+		         else ' # ' end)
+		       +isnull(t5.FLOOR_NO,'')
+		       +(case isnull(t5.UNIT_NO,'')
+		           when '' then ''
+		           else '-' end)
+		        +isnull(t5.UNIT_NO,'')
+		        +', '+isnull(t5.POSTAL_CODE,'') as address,
+               t1.ID as lic_premises_audit_id,t1.AUDIT_TYPE,t1.AUDIT_RISK_TYPE,t1.REMARKS,t1.IS_IN_RISK_SCORE,t1.INCLUDE_RISK_TYPE,t1.STATUS as audit_status,
+               t2.INSPECTOR_ID,
+               t6.ID as lic_prem_insp_grp_correlation_id,t6.INS_GRP_ID,t6.STATUS as lic_prem_insp_grp_correlation_status,
+               t7.PREFER_END_DATE ,t7.PREFER_START_DATE,t7.STATUS as lic_inspection_group_status,
+               t8.SVC_CODE as svc_code,t8.risk_type_financial_score as financial_score,t8.risk_type_leadership_score as leadership_score,
+               t8.risk_type_legislative_breaches_score as legislative_breaches_score,t8.risk_type_fir_ins_socre as fir_ins_socre,
+               t8.risk_type_sec_ins_socre as sec_ins_socre,t8.risk_score as risk_score,t8.risk_type as risk_type,
+               t8.last_insp_start as last_insp_start,t8.last_insp_end as last_insp_end,t8.RESULT_COMPLICANCE as RESULT_COMPLICANCE
+               FROM lic_premises t3
+               LEFT JOIN (Select * FROM lic_premises_audit  WHERE STATUS = 'CMSTAT001' OR STATUS = 'AUTACPS001') t1
+               on t1.LIC_PREM_ID = t3.ID
+               left join lic_premises_audit_inspector t2
+               on t1.ID  = t2.AUDIT_ID
+               LEFT JOIN (Select * FROM licence WHERE STATUS = 'LICEST001') t4
+               ON
+               t3.LICENCE_ID = t4.ID
+               left join   premises t5
+               on
+               t3.PREMISES_ID  = t5.ID
+               left  join  (select * FROM lic_prem_insp_grp_correlation WHERE lic_prem_insp_grp_correlation.STATUS = 'CMSTAT001') t6 on
+               t1.LIC_PREM_ID = t6.LIC_PREM_ID
+               left join  (select * FROM lic_inspection_group WHERE lic_inspection_group.STATUS ='CMSTAT001') t7
+               on  t6.INS_GRP_ID = t7.ID
+               left join  (SELECT * FROM hcsal.dbo.licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LIC_PREMISES_ID = t3.ID
+               WHERE   t4.STATUS = 'LICEST001' AND (t1.STATUS = 'CMSTAT001' OR t1.STATUS = 'AUTACPS001') )    tableall
+        ]]>
+    </sql>
+
+    <sql key="aduitCancelTaskList"  remarks="query aduit cancel task">
+        <![CDATA[
+                SELECT
+                  id,hclcode,hclName,address,licId,serviceName,postalCode,
+                 premisesType,AUDIT_TYPE,AUDIT_RISK_TYPE,lic_premises_audit_id,
+                 INSPECTOR_ID,TCU_DATE,IS_TCU_NEEDED,REMARKS,INS_GRP_ID,
+                 lic_prem_insp_grp_correlation_id,licensee_id,licenceDueDate,
+                 licence_no,svc_code,financial_score,leadership_score,legislative_breaches_score,
+                 fir_ins_socre,sec_ins_socre,risk_score,risk_type,
+                 last_insp_start,last_insp_end,RESULT_COMPLICANCE
+                FROM (
+             SELECT
+               t3.ID as id,t3.LICENCE_ID as licId,t3.PREMISES_ID,t3.IS_POST_INSP_NEEDED,t3.TCU_DATE,t3.IS_TCU_NEEDED,
+               t4.LICENCE_NO as licence_no,t4.SVC_NAME as serviceName,t4.START_DATE,t4.EXPIRY_DATE as licenceDueDate,t4.IS_GRP_LIC,t4.ORIGIN_LICENCE_ID,t4.IS_MIGRATED,t4.MIGRATED_DT,
+               t4.IS_FEE_RETRO_NEEDED,t4.VERSION as licence_version,t4.LICENSEE_ID as licensee_id,t4.END_DATE,
+               t5.HCI_CODE as  hclcode,t5.HCI_NAME as hclName,t5.HCI_CONTACT_NO,t5.SCDF_REF_NO,t5.CERT_ISSUED_DT,t5.VEHICLE_NO,t5.PREMISES_TYPE as premisesType,t5.POSTAL_CODE  as postalCode,
+               t5.ADDR_TYPE,t5.BLK_NO,t5.FLOOR_NO,t5.UNIT_NO,t5.STREET_NAME,t5.BUILDING_NAME,t5.VERSION,t5.STATUS,t5.ORGANIZATION_ID,
+               t5.WRK_TIME_FROM,t5.WRK_TIME_TO,t5.IS_LOCATE_WITH_OTHERS,
+               isnull(t5.BLK_NO,'')+
+		      ' '+isnull(t5.STREET_NAME,'')
+		      +' '+isnull(t5.BUILDING_NAME,'')
+		      + (case isnull(t5.FLOOR_NO,'')
+		         when '' then ''
+		         else ' # ' end)
+		       +isnull(t5.FLOOR_NO,'')
+		       +(case isnull(t5.UNIT_NO,'')
+		           when '' then ''
+		           else '-' end)
+		        +isnull(t5.UNIT_NO,'')
+		        +', '+isnull(t5.POSTAL_CODE,'') as address,
+               t1.ID as lic_premises_audit_id,t1.AUDIT_TYPE,t1.AUDIT_RISK_TYPE,t1.REMARKS,t1.IS_IN_RISK_SCORE,t1.INCLUDE_RISK_TYPE,t1.STATUS as audit_status,
+               t2.INSPECTOR_ID,
+               t6.ID as lic_prem_insp_grp_correlation_id,t6.INS_GRP_ID,t6.STATUS as lic_prem_insp_grp_correlation_status,
+               t7.PREFER_END_DATE ,t7.PREFER_START_DATE,t7.STATUS as lic_inspection_group_status,
+               t8.SVC_CODE as svc_code,t8.risk_type_financial_score as financial_score,t8.risk_type_leadership_score as leadership_score,
+               t8.risk_type_legislative_breaches_score as legislative_breaches_score,t8.risk_type_fir_ins_socre as fir_ins_socre,
+               t8.risk_type_sec_ins_socre as sec_ins_socre,t8.risk_score as risk_score,t8.risk_type as risk_type,
+               t8.last_insp_start as last_insp_start,t8.last_insp_end as last_insp_end,t8.RESULT_COMPLICANCE as RESULT_COMPLICANCE
+               FROM lic_premises t3
+               LEFT JOIN (Select * FROM lic_premises_audit  WHERE  STATUS = 'AUTACPS001') t1
+               on t1.LIC_PREM_ID = t3.ID
+               left join lic_premises_audit_inspector t2
+               on t1.ID  = t2.AUDIT_ID
+               LEFT JOIN (Select * FROM licence WHERE STATUS = 'LICEST001') t4
+               ON
+               t3.LICENCE_ID = t4.ID
+               left join   premises t5
+               on
+               t3.PREMISES_ID  = t5.ID
+               left  join  (select * FROM lic_prem_insp_grp_correlation WHERE lic_prem_insp_grp_correlation.STATUS = 'CMSTAT001') t6 on
+               t1.LIC_PREM_ID = t6.LIC_PREM_ID
+               left join  (select * FROM lic_inspection_group WHERE lic_inspection_group.STATUS ='CMSTAT001') t7
+               on  t6.INS_GRP_ID = t7.ID
+               left join  (SELECT * FROM hcsal.dbo.licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LIC_PREMISES_ID = t3.ID
+               WHERE   t4.STATUS = 'LICEST001' AND  t1.STATUS = 'AUTACPS001' ) tableall
+        ]]>
+    </sql>
+    <sql key="commonPoolAjax"  remarks="get Application By App Group in Common Pool">
+        <![CDATA[
+            SELECT DISTINCT T5.ID, T5.APP_PREM_ID, T5.APPLICATION_NO, T5.SERVICE_ID, T5.STATUS, T5.HCI_CODE
+            FROM
+                (
+                    SELECT DISTINCT T3.ID as APP_PREM_ID, T1.APPLICATION_NO, T1.SERVICE_ID, T1.STATUS, T3.HCI_CODE, T2.ID, T4.GROUP_NO, T1.APP_TYPE
+                    FROM APPLICATION T1
+                    JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID
+                    JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
+                    JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
+                    <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T2.ID) IN ${appCorrId_list} </#if>
+                ) T5
+            WHERE 1 = 1
+            <#if groupNo??> and T5.GROUP_NO = :groupNo</#if>
+        ]]>
+    </sql>
+    <sql key="reschedulingSearch"  remarks="Moh Officers Search Premises to Rescheduling">
+        <![CDATA[
+            SELECT DISTINCT T1.ID, T1.APPLICATION_NO, T3.HCI_NAME, T4.RECOM_IN_DATE,
+                (CASE T1.APP_TYPE
+                WHEN 'APTY007' then 'Audit'
+                ELSE 'Inspection' END) AS TASK_TYPE
+            FROM APPLICATION T1
+            JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID
+            JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
+            JOIN APP_PREMISES_RECOMMENDATION T4 ON T4.APP_PREM_CORRE_ID = T2.ID AND RECOM_TYPE = 'RETYPE006' AND T4.STATUS = 'CMSTAT001'
+            WHERE 1 = 1
+            <#if application_no??> and T1.APPLICATION_NO IN ${application_no}</#if>
+            <#if appNo??> and T1.APPLICATION_NO = :appNo</#if>
+        ]]>
+    </sql>
+</sqls>
