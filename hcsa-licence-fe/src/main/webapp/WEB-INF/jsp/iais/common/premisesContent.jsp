@@ -74,8 +74,7 @@
                                 <tr>
                                     <td >
                                         <div class="col-xs-12 col-md-12 form-check" style="padding:0px 15px;margin-top:15px">
-                                            <input class="form-check-input" disabled type="checkbox" checked="checked" value="<iais:mask name="licenceName${status.index}" value="${licence.id}"/>" name="licenceName${status.index}" aria-invalid="false">
-                                            <label class="form-check-label"><span class="check-square"></span>${licence.svcName}</label>
+                                            <label style="font-weight: normal"><span class="check-square"></span>${licence.svcName}</label>
                                         </div></td>
                                     <td class="form-check col-sm-3">${licence.licenceNo}</td>
                                 </tr>

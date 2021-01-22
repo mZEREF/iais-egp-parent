@@ -14,9 +14,13 @@
 
     <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
     <div class="main-content">
-        <div class="container">
             <div class="row">
-                <div class="col-xs-12">
+                <div class="col-lg-12 col-xs-12">
+                <div class="center-content">
+                <div class="intranet-content">
+<iais:body>
+    <div class="">
+    <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
 
                         <%@ include file="./navTabs.jsp" %>
@@ -53,8 +57,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+    </iais:body>
     </div>
+</div>
+</div></div></div>
 </form>
 </div>
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp" %>

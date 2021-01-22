@@ -4,8 +4,12 @@ import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -48,8 +52,16 @@ public class AppReturnFeeRefundJobHandler extends IJobHandler {
     }
 
     private void doRefunds(List<AppReturnFeeDto> saveReturnFeeDtos){
-        List<PaymentRequestDto> paymentRequestDtos= applicationService.eicFeStripeRefund(saveReturnFeeDtos);
-        for (PaymentRequestDto refund:paymentRequestDtos
+        List<AppReturnFeeDto> saveReturnFeeDtosStripe= IaisCommonUtils.genNewArrayList();
+        for (AppReturnFeeDto appreturn:saveReturnFeeDtos
+        ) {
+            ApplicationDto applicationDto=applicationClient.getAppByNo(appreturn.getApplicationNo()).getEntity();
+            ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+            if(applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
+                saveReturnFeeDtosStripe.add(appreturn);
+            }
+        }
+        List<PaymentRequestDto> paymentRequestDtos= applicationService.eicFeStripeRefund(saveReturnFeeDtosStripe);        for (PaymentRequestDto refund:paymentRequestDtos
         ) {
             for (AppReturnFeeDto appreturn:saveReturnFeeDtos
             ) {

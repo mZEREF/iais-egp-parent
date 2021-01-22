@@ -11,7 +11,7 @@ $(document).ready(function() {
     $('select').niceSelect();
     setTimeout(function() {}, 500);
 
-    $('.nice-select ul').mCustomScrollbar();
+    // $('.nice-select ul').mCustomScrollbar();
 
     if ($('.tab-nav-mobile').length > 0) {
         mobileTabHeader();

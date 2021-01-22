@@ -110,7 +110,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		msg.setMerchantTxnDtm(merchantTxnDtm);
 		msg.setPaymentType("SALE");
 		msg.setCurrencyCode("SGD");
-		msg.setPaymentMode("");
+		msg.setPaymentMode(GatewayConfig.eNetsPaymentMethod);
 		msg.setMerchantTimeZone("+8:00");
 		msg.setNetsMidIndicator("U");
 		msg.setB2sTxnEndURL(b2sUrl);

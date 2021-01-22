@@ -34,6 +34,7 @@ public class UpdateMasterCodeStatusJobHandler extends IJobHandler {
         AuditTrailHelper.setupBatchJobAuditTrail(this);
         try {
             AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
+            masterCodeService.activeMasterCode(auditTrailDto);
             masterCodeService.inactiveMasterCode(auditTrailDto);
             MasterCodeUtil.refreshCache();
             JobLogger.log(StringUtil.changeForLog("The InactiveMasterCodeJobHandler end..." ));

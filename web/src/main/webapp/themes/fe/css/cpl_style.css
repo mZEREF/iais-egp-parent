@@ -2307,6 +2307,7 @@ span.error-msg {
   transition: all 0.1s ease;
   white-space: normal;
   text-overflow: inherit;
+  overflow: hidden;
 }
 .nice-select span.current {
   line-height: 22px;
@@ -2383,6 +2384,7 @@ span.error-msg {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
   border-bottom: 0;
+  overflow: inherit;
 }
 .nice-select.open ul.list {
   border-color: #1989BF;
@@ -2391,6 +2393,7 @@ span.error-msg {
   -ms-transform: none;
   -o-transform: none;
   transform: none;
+  overflow-y: auto;
 }
 .nice-select.open:after {
   -webkit-transform: none;

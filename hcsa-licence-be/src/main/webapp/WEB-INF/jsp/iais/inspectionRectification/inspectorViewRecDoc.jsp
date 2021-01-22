@@ -46,7 +46,12 @@
                       <label style="font-size: 16px">Inspection Start Time (HH MM)</label>
                     </div>
                     <div class="col-md-6">
-                      <span style="font-size: 16px"><c:out value="${inspectionReportDto.inspectionStartTime}"/></span>
+                      <c:if test="${empty inspectionReportDto.inspectionStartTime}">
+                        <span style="font-size: 16px"><c:out value="-"/></span>
+                      </c:if>
+                      <c:if test="${not empty inspectionReportDto.inspectionStartTime}">
+                        <span style="font-size: 16px"><c:out value="${inspectionReportDto.inspectionStartTime}"/></span>
+                      </c:if>
                     </div>
                   </div>
                   <p></p>
@@ -55,7 +60,12 @@
                       <label style="font-size: 16px">Inspection End Time (HH MM)</label>
                     </div>
                     <div class="col-md-6">
-                      <span style="font-size: 16px"><c:out value="${inspectionReportDto.inspectionEndTime}"/></span>
+                      <c:if test="${empty inspectionReportDto.inspectionStartTime}">
+                        <span style="font-size: 16px"><c:out value="-"/></span>
+                      </c:if>
+                      <c:if test="${not empty inspectionReportDto.inspectionStartTime}">
+                        <span style="font-size: 16px"><c:out value="${inspectionReportDto.inspectionEndTime}"/></span>
+                      </c:if>
                     </div>
                   </div>
                   <p></p>

@@ -1434,6 +1434,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 previewAndSubmitMap.put("service", MessageUtil.replaceMessage("GENERAL_ERR0006","service","field"));
                 String mapStr = JsonUtil.parseToJson(map);
                 log.info(StringUtil.changeForLog("map json str:" + mapStr));
+                sB.append(serviceId);
             }
             NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),map,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
         }

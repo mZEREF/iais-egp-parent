@@ -82,7 +82,7 @@
                                             <c:if test="${GroupLicenceConfig != null && AppSubmissionDto.appType == 'APTY002' && requestInformationConfig == null}">
                                                 <div class="form-check">
                                                     <input class="form-check-input" id="groupLicence" type="checkbox" <c:if test="${AppSubmissionDto.groupLic}">checked="checked"</c:if> name="isGroupLic" aria-invalid="false" value="1">
-                                                    <label class="form-check-label" for="groupLicence"><span class="check-square"></span>Would you like to apply as a group licence? </label>
+                                                    <label class="form-check-label" for="groupLicence"><span class="check-square"></span><iais:message key="ACK_DEC003"></iais:message></label>
                                                 </div>
                                             </c:if>
                                             <div class="form-check">
@@ -116,7 +116,14 @@
                                                         <a class="btn btn-secondary" id = "SaveDraft"  >Save as Draft</a>
 
                                                 </c:if>
-                                                <a class="next btn btn-primary" id = "Next">SUBMIT & PAY </a></div>
+                                                <c:choose>
+                                                    <c:when test="${requestInformationConfig != null}">
+                                                        <a class="next btn btn-primary" id = "Next">Submit </a></div>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <a class="next btn btn-primary" id = "Next">SUBMIT & PAY </a></div>
+                                                    </c:otherwise>
+                                                </c:choose>
                                         </div>
                                     </div>
                                 </div>
