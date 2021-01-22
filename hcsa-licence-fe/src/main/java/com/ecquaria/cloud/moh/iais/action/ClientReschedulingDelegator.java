@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AppointmentUtil;
@@ -27,7 +28,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
-import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApptConfirmReSchDateService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
@@ -66,7 +67,7 @@ public class ClientReschedulingDelegator {
             .clz(ReschApptGrpPremsQueryDto.class)
             .searchAttr("SearchParam")
             .resultAttr("SearchResult")
-            .sortField("appRec.RECOM_IN_DATE").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(SysParamUtil.getDefaultPageSize()).build();
+            .sortField("appRec.RECOM_IN_DATE").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(SystemParamUtil.getDefaultPageSize()).build();
 
     @Autowired
     private SystemParamConfig systemParamConfig;
@@ -98,7 +99,7 @@ public class ClientReschedulingDelegator {
     public void start(BaseProcessClass bpc)  {
         rescheduleParameter.setSortField("appRec.RECOM_IN_DATE");
         rescheduleParameter.setPageNo(1);
-        rescheduleParameter.setPageSize(SysParamUtil.getDefaultPageSize());
+        rescheduleParameter.setPageSize(SystemParamUtil.getDefaultPageSize());
         ParamUtil.setSessionAttr(bpc.request,"appIds",null);
         ParamUtil.setSessionAttr(bpc.request, "apptViewDtosMap", null);
     }
@@ -106,6 +107,7 @@ public class ClientReschedulingDelegator {
     public void init(BaseProcessClass bpc)  {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
+        rescheduleParameter.setPageNo(0);
         SearchParam rescheduleParam = SearchResultHelper.getSearchParam(bpc.request, rescheduleParameter,true);
         StringBuilder stringBuilder=new StringBuilder();
         List<String> appStatus=IaisCommonUtils.genNewArrayList();
@@ -131,7 +133,20 @@ public class ClientReschedulingDelegator {
         if(keyIds!=null){
             keys.addAll(Arrays.asList(keyIds));
         }
-
+        String pageNo = ParamUtil.getString(bpc.request, "pageJumpNoTextchangePage");
+        String pageSize = ParamUtil.getString(bpc.request, "pageJumpNoPageSize");
+        int pgNo;
+        int pgSize;
+        if(StringUtil.isEmpty(pageNo)){
+            pgNo=1;
+        }else {
+            pgNo=Integer.parseInt(pageNo);
+        }
+        if(StringUtil.isEmpty(pageSize)){
+            pgSize=SystemParamUtil.getDefaultPageSize();
+        }else {
+            pgSize=Integer.parseInt(pageSize);
+        }
 
         try {
             SearchResult<ReschApptGrpPremsQueryDto> result  = feEicGatewayClient.eicSearchApptReschPrem(rescheduleParam, signature.date(), signature.authorization(),
@@ -189,10 +204,21 @@ public class ClientReschedulingDelegator {
                      ) {
                     apptViewDtos1.add(entry.getValue());
                 }
-                ParamUtil.setRequestAttr(bpc.request, "apptViewDtos", apptViewDtos1);
+                List<ApptViewDto> apptViewDtos2=IaisCommonUtils.genNewArrayList();
+                for(int i=0;i<pgSize;i++){
+                    if(apptViewDtos1.size()>((pgNo-1)*pgSize+i)){
+                        apptViewDtos2.add(apptViewDtos1.get((pgNo-1)*pgSize+i));
+                    }
+                }
+                result.setRowCount(apptViewDtos1.size());
+                ParamUtil.setRequestAttr(bpc.request, "apptViewDtos", apptViewDtos2);
                 ParamUtil.setSessionAttr(bpc.request, "apptViewDtosMap", apptViewDtos);
                 ParamUtil.setRequestAttr(bpc.request,"SearchResult",result);
             }
+
+
+            rescheduleParam.setPageNo(pgNo);
+            rescheduleParam.setPageSize(pgSize);
             ParamUtil.setRequestAttr(bpc.request,"SearchParam",rescheduleParam);
         }catch (Exception e){
             log.info(e.getMessage(),e);

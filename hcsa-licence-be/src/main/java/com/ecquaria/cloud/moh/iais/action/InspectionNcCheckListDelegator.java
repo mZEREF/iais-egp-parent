@@ -29,11 +29,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
-import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
-import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
-import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListItemValidate;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
@@ -61,15 +57,13 @@ import java.util.Map;
 @Slf4j
 public class InspectionNcCheckListDelegator {
     @Autowired
-    FillupChklistService fillupChklistService;
+    private FillupChklistService fillupChklistService;
     @Autowired
-    InsepctionNcCheckListService insepctionNcCheckListService;
+    private InsepctionNcCheckListService insepctionNcCheckListService;
     @Autowired
-    TaskService taskService;
+    private TaskService taskService;
     @Autowired
-    AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
-    @Autowired
-    InspectionAssignTaskService inspectionAssignTaskService;
+    private AdhocChecklistService adhocChecklistService;
     private static final String SERLISTDTO="serListDto";
     private static final String COMMONDTO="commonDto";
     private static final String ADHOCLDTO="adchklDto";
@@ -80,6 +74,7 @@ public class InspectionNcCheckListDelegator {
     private static final String INSPECTION_ADHOC_CHECKLIST_LIST_ATTR  = "inspection_adhoc_checklist_list_attr";
     private static final String INSPECTION_USERS = "inspectorsParticipant";
     private static final String INSPECTION_USER_FINISH = "inspectorUserFinishChecklistId";
+    private static final String ACTION_ADHOC_OWN = "action_adhoc_own";
     public InspectionNcCheckListDelegator(InsepctionNcCheckListService insepctionNcCheckListService){
         this.insepctionNcCheckListService = insepctionNcCheckListService;
     }
@@ -252,6 +247,7 @@ public class InspectionNcCheckListDelegator {
             serListDto = getOtherInfo(mulReq);
             serListDto.setCheckListTab("chkList");
             ParamUtil.setSessionAttr(mulReq,SERLISTDTO,serListDto);
+            ParamUtil.setSessionAttr(mulReq,ACTION_ADHOC_OWN,IaisEGPConstant.YES);
         } else{
             serListDto = getOtherInfo(mulReq);
             ParamUtil.setSessionAttr(mulReq,SERLISTDTO,serListDto);
@@ -574,8 +570,9 @@ public class InspectionNcCheckListDelegator {
 
     public void listAhocs(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        String actionAdhoc =(String) ParamUtil.getSessionAttr(request,ACTION_ADHOC_OWN);
         AdhocCheckListConifgDto adhocCheckListConifgDto = (AdhocCheckListConifgDto) ParamUtil.getSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR);
-        if( adhocCheckListConifgDto == null){
+        if( IaisEGPConstant.YES.equalsIgnoreCase(actionAdhoc) && adhocCheckListConifgDto == null){
             TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request,TASKDTO);
             if(taskDto != null ){
                 ParamUtil.setSessionAttr(request, INSPECTION_ADHOC_CHECKLIST_LIST_ATTR,fillupChklistService.getAdhocCheckListConifgDtoByCorId(taskDto.getRefNo()));
@@ -583,6 +580,7 @@ public class InspectionNcCheckListDelegator {
             }else {
                 log.info("-----------taskdto is null-------");
             }
+            ParamUtil.setSessionAttr(request,ACTION_ADHOC_OWN,IaisEGPConstant.NO);
         }
     }
 
@@ -605,6 +603,10 @@ public class InspectionNcCheckListDelegator {
         boolean editAhoc = fillupChklistService.editAhocByAdhocCheckListConifgDtoAndOldAdhocCheckListConifgDto(adhocCheckListConifgDto,adhocCheckListConifgDtoOld);
         if(editAhoc){
             fillupChklistService.saveAdhocDto(adhocCheckListConifgDto);
+            if(adhocCheckListConifgDto == null && adhocCheckListConifgDtoOld != null){
+                adhocCheckListConifgDtoOld.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDtoOld);
+            }
             List<TaskDto> taskDtos = (List<TaskDto>) ParamUtil.getSessionAttr(request,TASKDTOLIST);
             String appPremCorrId = taskDto.getRefNo();
             AdCheckListShowDto adchklDto = fillupChklistService.getAdhocDraftByappCorrId(appPremCorrId);

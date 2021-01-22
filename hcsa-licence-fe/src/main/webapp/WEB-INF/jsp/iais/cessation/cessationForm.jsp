@@ -237,8 +237,8 @@
                                        <table class="table-gp tablebox">
                                            <tr style="text-align:center">
                                                <th style="text-align:center;width: 0%">S/N</th>
-                                               <th style="text-align:center;width: 25%">Specified Service Licence No.</th>
-                                               <th style="text-align:center;width: 25%">Specified Service Name</th>
+                                               <th style="text-align:center;width: 25%">Special Licensable Service Licence No.</th>
+                                               <th style="text-align:center;width: 25%">Special Licensable Service Name</th>
                                                <th style="text-align:center;width: 25%">Base Service Licence No.</th>
                                                <th style="text-align:center;width: 25%">Base Service Name</th>
                                            </tr>
@@ -294,7 +294,7 @@
                 <div class="row">
                     <div>
                     <span style="padding-right: 10%" class="components">
-                        <a href="/main-web/eservice/INTERNET/MohInternetInbox"><em
+                        <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initLic"><em
                                 class="fa fa-angle-left"></em> Back</a>
                     </span>
                         <span style="padding-left: 73%" class="components">
@@ -314,7 +314,7 @@
                 </div>
                 <div class="modal-body" style="text-align: center;">
                     <div class="row">
-                        <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem;">PRS  mock server down</span></div>
+                        <div class="col-md-12"><span style="font-size: 2rem;">PRS  mock server down</span></div>
                     </div>
                 </div>
                 <div class="row " style="margin-top: 5%;margin-bottom: 5%">

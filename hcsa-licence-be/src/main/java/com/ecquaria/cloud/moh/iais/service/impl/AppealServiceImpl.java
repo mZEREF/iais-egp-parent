@@ -183,7 +183,7 @@ public class AppealServiceImpl implements AppealService {
             try {
                 result = mapper.readValue(licEicRequestTrackingDto.getDtoObject(), cls);
             } catch (IOException e) {
-                log.error(StringUtil.changeForLog("can not get the licEicRequestTrackingDto"));
+                log.debug(StringUtil.changeForLog("can not get the licEicRequestTrackingDto"));
                 log.error(StringUtil.changeForLog(e.getMessage()),e);
             }
         }else{

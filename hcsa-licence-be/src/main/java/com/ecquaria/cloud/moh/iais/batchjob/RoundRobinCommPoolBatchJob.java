@@ -238,7 +238,7 @@ public class RoundRobinCommPoolBatchJob {
                             }
                         }
                     }catch (Exception e ){
-                        log.error(StringUtil.changeForLog("This  Task can not assign id-->:"+taskDto.getId()));
+                        log.debug(StringUtil.changeForLog("This  Task can not assign id-->:"+taskDto.getId()));
                         log.error(e.getMessage(),e);
                     }
                 }else{
@@ -273,7 +273,7 @@ public class RoundRobinCommPoolBatchJob {
                             }
                         }
                     }catch (Exception e ){
-                        log.error(StringUtil.changeForLog("This  Task can not assign id-->:"+taskDto.getId()));
+                        log.debug(StringUtil.changeForLog("This  Task can not assign id-->:"+taskDto.getId()));
                         log.error(e.getMessage(),e);
                     }
                 }else{

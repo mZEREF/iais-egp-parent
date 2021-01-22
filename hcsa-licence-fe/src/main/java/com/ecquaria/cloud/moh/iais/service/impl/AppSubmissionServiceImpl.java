@@ -77,6 +77,7 @@ import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -102,6 +103,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * AppSubmisionServiceImpl
@@ -123,6 +125,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private LicenceClient licenceClient;
     @Autowired
     private EventBusHelper eventBusHelper;
+    @Autowired
+    private AppEicClient appEicClient;
 
     @Override
     public int hashCode() {
@@ -170,6 +174,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String applicationType =  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
             int index = 0;
             StringBuilder stringBuilderAPPNum = new StringBuilder();
+            String temp = "have";
+            if(appSubmissionDto.getApplicationDtos().size() == 1){
+                temp = "has";
+            }
             for(ApplicationDto applicationDtoApp : appSubmissionDto.getApplicationDtos()){
                 if(index == 0){
                     stringBuilderAPPNum.append(applicationDtoApp.getApplicationNo());
@@ -184,6 +192,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String applicationTypeShow = MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
             subMap.put("ApplicationType", applicationTypeShow);
             subMap.put("ApplicationNumber", applicationNumber);
+            subMap.put("temp", temp);
             String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL,subMap);
             String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_SMS,subMap);
             String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_MSG,subMap);
@@ -384,7 +393,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public AppSubmissionDto submitRequestRfcRenewInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process) {
-        appSubmissionRequestInformationDto.setEventRefNo(appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpNo());
+        appSubmissionRequestInformationDto.setEventRefNo(UUID.randomUUID().toString());
         SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
                 generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_REQUEST_RFC_RENEW_INFORMATION_SUBMIT,
@@ -903,7 +912,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     private void  informationEventBus(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process){
         //prepare request parameters
-        appSubmissionRequestInformationDto.setEventRefNo(appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpNo());
+        appSubmissionRequestInformationDto.setEventRefNo(UUID.randomUUID().toString());
         SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
                 generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_REQUEST_INFORMATION,
@@ -1044,7 +1053,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public void transform(AppSubmissionDto appSubmissionDto, String licenseeId) {
+    public void transform(AppSubmissionDto appSubmissionDto, String licenseeId) throws Exception{
         Double amount = 0.0;
         AuditTrailDto internet = AuditTrailHelper.getCurrentAuditTrailDto();
         String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE).getEntity();
@@ -1056,17 +1065,21 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String svcCode = hcsaServiceDto.getSvcCode();
             appSvcRelatedInfoDto.setServiceId(svcId);
             appSvcRelatedInfoDto.setServiceCode(svcCode);
+            List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(svcId);
+            if(hcsaSvcSubtypeOrSubsumedDtos!=null && !hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
+                appSubmissionService.changeSvcScopeIdByConfigName(hcsaSvcSubtypeOrSubsumedDtos,appSubmissionDto);
+            }
         }
-
         appSubmissionDto.setAppGrpNo(grpNo);
         appSubmissionDto.setFromBe(false);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+        requestForChangeService.changeDocToNewVersion(appSubmissionDto);
         appSubmissionDto.setAmount(amount);
         appSubmissionDto.setAuditTrailDto(internet);
         appSubmissionDto.setPreInspection(true);
         appSubmissionDto.setRequirement(true);
         appSubmissionDto.setLicenseeId(licenseeId);
-        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
         appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
         String draftNo = appSubmissionDto.getDraftNo();
         if(draftNo==null){
@@ -1137,6 +1150,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public void updateMsgStatus(String msgId, String status) {
         feMessageClient.updateMsgStatus(msgId,status);
     }
+
+
 
     @Override
     public InterMessageDto getInterMessageById(String msgId) {
@@ -1267,6 +1282,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
                 docConfigIds.add(appGrpPrimaryDocDto.getSvcComDocId());
             }
+            log.debug(StringUtil.changeForLog("docConfigIds size:"+docConfigIds.size()));
             List<HcsaSvcDocConfigDto> oldHcsaSvcDocConfigDtos = serviceConfigService.getPrimaryDocConfigByIds(docConfigIds);
             if(!IaisCommonUtils.isEmpty(oldHcsaSvcDocConfigDtos)){
                 if(rfcOrRenwOrNew && !isRfi){
@@ -1274,8 +1290,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
                             if(oldDocConfig.getId().equals(appGrpPrimaryDocDto.getSvcComDocId())){
                                 String oldDocTitle = oldDocConfig.getDocTitle();
+                                log.debug(StringUtil.changeForLog("old doc title:"+oldDocTitle));
                                 for(HcsaSvcDocConfigDto docConfig:primaryDocConfig){
-                                    if(docConfig.getDocTitle().equals(oldDocTitle)){
+                                    String newConfigDocTitle = docConfig.getDocTitle();
+                                    log.debug(StringUtil.changeForLog("new config doc title:"+newConfigDocTitle));
+                                    if(newConfigDocTitle.equals(oldDocTitle)){
                                         AppGrpPrimaryDocDto newGrpPrimaryDoc = (AppGrpPrimaryDocDto) CopyUtil.copyMutableObject(appGrpPrimaryDocDto);
                                         newGrpPrimaryDoc.setSvcComDocId(docConfig.getId());
                                         newGrpPrimaryDoc.setSvcComDocName(docConfig.getDocTitle());
@@ -1289,6 +1308,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         }
                     }
                 }else if(isRfi){
+                    log.debug(StringUtil.changeForLog("set doc title for rfi ..."));
                     //set title name
                     for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
                         for(HcsaSvcDocConfigDto oldDocConfig:oldHcsaSvcDocConfigDtos){
@@ -1322,7 +1342,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 notEmptyDocList.add(appGrpPrimaryDocDto);
             }
         }
-        log.debug(StringUtil.changeForLog("notEmptyDocList size:" +  notEmptyDocList.size()));
+        log.debug(StringUtil.changeForLog("notEmptyDocList size:" +  notEmptyDocList.size()));//NOSONAR
         //add empty doc
         List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(null);
         List<AppGrpPrimaryDocDto> newPrimaryDocList = IaisCommonUtils.genNewArrayList();
@@ -1669,7 +1689,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
     }
-
+    /*
+     *change new version subtype
+     * -------------------------
+     * version 1 subtype id is A
+     * -------------------------
+     * update to version 2 id is B
+     * -------------------------
+     * change licnece XXX (version 1 ) subtype id A -> B
+    */
     @Override
     public void changeSvcScopeIdByConfigName(List<HcsaSvcSubtypeOrSubsumedDto> newConfigInfo,AppSubmissionDto appSubmissionDto) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("do changeSvcScopeIdByConfigName start ..."));
@@ -1863,6 +1891,26 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             appEditSelectDto.setServiceEdit(true);
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         }
+    }
+
+    public void  updateInboxMsgStatus(String eventRefNum ,String submissionId){
+        log.debug("---updateInboxMsgStatus start---------------");
+        if( !StringUtil.isEmpty(eventRefNum)) {
+            log.debug(StringUtil.changeForLog("--------------- releaseTimeForInsUserCallBack eventRefNum :" + eventRefNum + " submissionId :" + submissionId + "--------------------"));
+            EicRequestTrackingDto eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eventRefNum).getEntity();
+            String jsonObj = eicRequestTrackingDto.getDtoObject();
+            if(!StringUtil.isEmpty(jsonObj)){
+                AppSubmissionDto appSubmissionDto = JsonUtil.parseToObject(jsonObj,AppSubmissionDto.class);
+                if(appSubmissionDto != null){
+                    String rfiMsgId = appSubmissionDto.getRfiMsgId();
+                    log.debug(StringUtil.changeForLog("rfiMsgId:"+rfiMsgId));
+                    feMessageClient.updateMsgStatus(rfiMsgId,MessageConstants.MESSAGE_STATUS_RESPONSE);
+                }
+            }else{
+                log.debug(StringUtil.changeForLog("jsonObj is empty"));
+            }
+        }
+        log.debug("---updateInboxMsgStatus end---------------");
     }
 
     private static void doSvcDocument(Map<String, String> map, List<AppSvcDocDto> appSvcDocDtoLit, String serviceId, StringBuilder sB, int uploadFileLimit, String sysFileType) {

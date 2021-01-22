@@ -68,15 +68,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * LicenceViewServiceDelegator
@@ -652,6 +644,7 @@ public class LicenceViewServiceDelegator {
                 String svcDocId = appSvcDocDto.getSvcDocId();
                 String fileRepoId = appSvcDocDto.getFileRepoId();
                 if(StringUtil.isEmpty(svcDocId)){
+                    deleteSvcDoc.add(appSvcDocDto);
                     continue;
                 }
                 if(StringUtil.isEmpty(fileRepoId)){
@@ -978,8 +971,8 @@ public class LicenceViewServiceDelegator {
                                 AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto2 = map.get(entity1.getParentId());
                                 if(appSvcDisciplineAllocationDto2!=null){
                                     int i = reloadDisciplineAllocation.indexOf(appSvcDisciplineAllocationDto2);
-                                    appSvcDisciplineAllocationDto1.setChkLstName(appSvcDisciplineAllocationDto1.getChkLstName()+" ("+v.getOtherScopeName()+")");
-                                    reloadDisciplineAllocation.set(i,appSvcDisciplineAllocationDto1);
+                                    appSvcDisciplineAllocationDto2.setChkLstName(appSvcDisciplineAllocationDto2.getChkLstName()+" ("+v.getOtherScopeName()+")");
+                                    reloadDisciplineAllocation.set(i,appSvcDisciplineAllocationDto2);
                                     reloadDisciplineAllocation.remove(appSvcDisciplineAllocationDto);
                                 }
                             }
@@ -1144,8 +1137,8 @@ public class LicenceViewServiceDelegator {
                                     AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto2 = map.get(entity1.getParentId());
                                     if(appSvcDisciplineAllocationDto2!=null){
                                         int i = reloadDisciplineAllocation.indexOf(appSvcDisciplineAllocationDto2);
-                                        appSvcDisciplineAllocationDto1.setChkLstName(appSvcDisciplineAllocationDto1.getChkLstName()+" ("+v.getOtherScopeName()+")");
-                                        reloadDisciplineAllocation.set(i,appSvcDisciplineAllocationDto1);
+                                        appSvcDisciplineAllocationDto2.setChkLstName(appSvcDisciplineAllocationDto2.getChkLstName()+" ("+v.getOtherScopeName()+")");
+                                        reloadDisciplineAllocation.set(i,appSvcDisciplineAllocationDto2);
                                         reloadDisciplineAllocation.remove(appSvcDisciplineAllocationDto);
                                     }
                                 }
@@ -1513,7 +1506,7 @@ public class LicenceViewServiceDelegator {
             }
         }
     }
-    private void deleteGroup(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtos,String preVal){
+    private static void deleteGroup(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtos,String preVal){
         if(appSvcDisciplineAllocationDtos==null){
             return;
         }
@@ -1526,7 +1519,7 @@ public class LicenceViewServiceDelegator {
         appSvcDisciplineAllocationDtos.clear();
         appSvcDisciplineAllocationDtos.addAll(list);
     }
-    private void creatAppSvcDisciplineAllocation(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList ,List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList,String premiseVal,String oldPremiseVal,Map<String,String> map) throws Exception{
+    private static void creatAppSvcDisciplineAllocation(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList ,List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList,String premiseVal,String oldPremiseVal,Map<String,String> map) throws Exception{
         if(appSvcDisciplineAllocationDtoList==null || oldAppSvcDisciplineAllocationDtoList==null){
             return;
         }
@@ -1554,7 +1547,7 @@ public class LicenceViewServiceDelegator {
         }
     }
 
-    private void removePriDocFileIdIsNull( List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos ){
+    private static void removePriDocFileIdIsNull( List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos ){
         ListIterator<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoListIterator = appGrpPrimaryDocDtos.listIterator();
         while(appGrpPrimaryDocDtoListIterator.hasNext()){
             AppGrpPrimaryDocDto next = appGrpPrimaryDocDtoListIterator.next();
@@ -1565,7 +1558,7 @@ public class LicenceViewServiceDelegator {
         }
     }
 
-    private void removeSvcDocFileIdIsNull( List<AppSvcDocDto> appSvcDocDtoLit){
+    private static void removeSvcDocFileIdIsNull( List<AppSvcDocDto> appSvcDocDtoLit){
         ListIterator<AppSvcDocDto> appSvcDocDtoListIterator = appSvcDocDtoLit.listIterator();
         while(appSvcDocDtoListIterator.hasNext()){
             AppSvcDocDto next = appSvcDocDtoListIterator.next();
@@ -1575,7 +1568,7 @@ public class LicenceViewServiceDelegator {
             }
         }
     }
-    private void setCopyAppSvcDisciplineAllocationDtoList(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList ,List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList, List<AppSvcDisciplineAllocationDto> copyAppSvcDisciplineAllocationDtoList,List<AppSvcDisciplineAllocationDto> copyOldAppSvcDisciplineAllocationDtoList,String premiseVal,Map<String,String> map) throws  Exception{
+    private static void setCopyAppSvcDisciplineAllocationDtoList(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList ,List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList, List<AppSvcDisciplineAllocationDto> copyAppSvcDisciplineAllocationDtoList,List<AppSvcDisciplineAllocationDto> copyOldAppSvcDisciplineAllocationDtoList,String premiseVal,Map<String,String> map) throws  Exception{
         for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
             String chkLstConfId = appSvcDisciplineAllocationDto.getChkLstConfId();
             String s = map.get(chkLstConfId);
@@ -1772,7 +1765,7 @@ public class LicenceViewServiceDelegator {
         }
     }
 
-    private void primaryDoc(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos,List<AppGrpPrimaryDocDto> copyAppGrpPrimaryDocDtos,List<AppGrpPrimaryDocDto> copyOldAppGrpPrimaryDocDtos){
+    private static void primaryDoc(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos,List<AppGrpPrimaryDocDto> copyAppGrpPrimaryDocDtos,List<AppGrpPrimaryDocDto> copyOldAppGrpPrimaryDocDtos){
         for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){
             if(appGrpPrimaryDocDto.getFileRepoId()==null){
                 continue;
@@ -1817,8 +1810,8 @@ public class LicenceViewServiceDelegator {
                 oldAppSvcDocDtoLit.add(svcDocDto);
             }
         }else if(appSvcDocDtoLit!=null&&oldAppSvcDocDtoLit!=null){
-            Set<AppSvcDocDto> appSvcDocDtoSet=IaisCommonUtils.genNewHashSet();
-            Set<AppSvcDocDto> oldAppSvcDocDtoSet=IaisCommonUtils.genNewHashSet();
+            List<AppSvcDocDto> appSvcDocDtoSet=IaisCommonUtils.genNewArrayList();
+            List<AppSvcDocDto> oldAppSvcDocDtoSet=IaisCommonUtils.genNewArrayList();
             serviceDoc(appSvcDocDtoLit,oldAppSvcDocDtoLit,appSvcDocDtoSet,oldAppSvcDocDtoSet);
             serviceDoc(oldAppSvcDocDtoLit,appSvcDocDtoLit,oldAppSvcDocDtoSet,appSvcDocDtoSet);
             appSvcDocDtoLit.clear();
@@ -1828,7 +1821,7 @@ public class LicenceViewServiceDelegator {
         }
     }
 
-    private void serviceDoc(List<AppSvcDocDto> appSvcDocDtos,  List<AppSvcDocDto> oldAppSvcDocDtos,Set<AppSvcDocDto> copyAppSvcDocDtos,Set<AppSvcDocDto> copyOldAppSvcDocDtos){
+    private void serviceDoc(List<AppSvcDocDto> appSvcDocDtos,  List<AppSvcDocDto> oldAppSvcDocDtos,List<AppSvcDocDto> copyAppSvcDocDtos,List<AppSvcDocDto> copyOldAppSvcDocDtos){
 
         for(AppSvcDocDto appSvcDocDto : appSvcDocDtos){
             if(appSvcDocDto.getFileRepoId()==null){

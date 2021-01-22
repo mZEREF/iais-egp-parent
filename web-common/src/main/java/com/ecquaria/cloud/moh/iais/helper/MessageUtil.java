@@ -105,7 +105,7 @@ public class MessageUtil {
         } else if(msg.contains("{") && msg.contains("}")){
             return msg.replace(replacePart,replaceString).replace("{","").replace("}","");
         } else {
-            return msg.replace(replacePart, replaceString);
+            return msg;
         }
     }
 }

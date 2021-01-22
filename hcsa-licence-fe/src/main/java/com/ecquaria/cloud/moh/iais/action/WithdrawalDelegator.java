@@ -81,9 +81,10 @@ public class WithdrawalDelegator {
         int configFileSize = systemParamConfig.getUploadFileLimit();
         ParamUtil.setSessionAttr(bpc.request, "withdrawDtoView", null);
         ParamUtil.setSessionAttr(bpc.request,"configFileSize",configFileSize);
-
-
    //     String withdrawAppId = ParamUtil.getMaskedString(bpc.request, "withdrawAppId");
+        if (StringUtil.isEmpty(isDoView)){
+            isDoView = "N";
+        }
         ApplicationDto entity=null;
         if (!StringUtil.isEmpty(withdrawAppNo)){
             ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", withdrawAppNo);

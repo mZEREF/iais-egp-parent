@@ -72,7 +72,7 @@
                           </div>
                           <div class="col-sm-5 col-md-4 text-right" >
                             <c:if test="${status.index - poMandatoryCount >=0}">
-                              <h4 class="text-danger"><em class="fa fa-times-circle removePoBtn cursorPointer"></em></h4>
+                              <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removePoBtn cursorPointer"></em></h4>
                             </c:if>
                           </div>
                           <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null}">
@@ -101,6 +101,7 @@
                           <div class=" form-group form-horizontal formgap">
                             <div class="col-sm-6 control-label formtext col-md-4">
                               <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a Principal Officer</label>
+                              <span class="mandatory">*</span>
                               <span class="upload_controls"></span>
                             </div>
                             <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
@@ -354,7 +355,7 @@
                           </div>
                           <div class="col-sm-5 col-md-4 text-right" >
                             <c:if test="${status.index - dpoMandatoryCount >=0}">
-                              <h4 class="text-danger"><em class="fa fa-times-circle removeDpoBtn cursorPointer"></em></h4>
+                              <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeDpoBtn cursorPointer"></em></h4>
                             </c:if>
                           </div>
                           <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null) && '1' == DeputyPoFlag }">
@@ -383,6 +384,7 @@
                         <div class=" form-group form-horizontal formgap">
                           <div class="col-sm-6 control-label formtext col-md-4" style="font-size: 1.6rem;">
                             Assign a Deputy Principal Officer
+                            <span class="mandatory">*</span>
                           </div>
                           <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
                             <iais:select cssClass="deputyPoSelect"  name="deputyPoSelect" options="DeputyPrincipalOfficersAssignSelect" needSort="false" value="${deputy.assignSelect}" ></iais:select>

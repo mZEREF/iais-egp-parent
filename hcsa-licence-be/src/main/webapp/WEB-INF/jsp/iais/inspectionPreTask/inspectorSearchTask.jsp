@@ -41,7 +41,7 @@
                     <div class="form-horizontal">
                       <div class="form-group">
                         <label class="col-xs-12 col-md-4 control-label">Role</label>
-                        <div class="col-xs-8 col-sm-6 col-md-5">
+                        <div class="col-xs-8 col-sm-6 col-md-6">
                           <iais:select name="supervisorRoleId" cssClass="roleIds" options="superPoolRoleIds" id="supervisorPoolRole" value="${poolRoleCheckDto.checkCurRole}"></iais:select>
                         </div>
                       </div>

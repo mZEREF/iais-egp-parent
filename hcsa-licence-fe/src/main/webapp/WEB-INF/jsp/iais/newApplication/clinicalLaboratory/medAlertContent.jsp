@@ -68,7 +68,7 @@
                             </div>
                             <div class="col-sm-5 col-md-4 text-right">
                                 <c:if test="${status.index - mandatoryCount >=0}">
-                                    <h4 class="text-danger"><em class="fa fa-times-circle mapDelBtn cursorPointer"></em></h4>
+                                    <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 mapDelBtn cursorPointer"></em></h4>
                                 </c:if>
                             </div>
                             <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null}">
@@ -96,6 +96,7 @@
                             <div class=" form-group form-horizontal formgap">
                                 <div class="col-sm-6 control-label formtext col-md-5">
                                     <label  class="control-label control-set-font control-font-label">Assign a MedAlert Person</label>
+                                    <span class="mandatory">*</span>
                                 </div>
                                 <div class="col-sm-5 col-md-7" id="assignSelect">
                                     <div class="">

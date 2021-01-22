@@ -124,7 +124,7 @@
                                                                             <c:if test="${status.index - HcsaSvcPersonnel.mandatoryCount >=0}">
                                                                                 <div class="">
                                                                                     <h4 class="text-danger"><em
-                                                                                            class="fa fa-times-circle removeBtn cursorPointer"></em>
+                                                                                            class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
                                                                                     </h4>
                                                                                 </div>
                                                                             </c:if>
@@ -151,6 +151,7 @@
                                                                         <div class="<c:if test="${'-1' != currentCgo.assignSelect}"> hidden </c:if>">
                                                                             <div class="col-sm-5 control-label formtext ">
                                                                                 <label class="control-label control-set-font control-font-label">Add/Assign a Clinical Governance Officer</label>
+                                                                                <span class="mandatory">*</span>
                                                                                 <span class="upload_controls"></span>
                                                                             </div>
                                                                             <div class="col-sm-5 col-md-7" id="assignSelect${suffix}">
@@ -184,7 +185,7 @@
                                                                         <c:if test="${status.index - HcsaSvcPersonnel.mandatoryCount >=0}">
                                                                             <div class="">
                                                                                 <h4 class="text-danger"><em
-                                                                                        class="fa fa-times-circle cursorPointer removeBtn"></em>
+                                                                                        class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em>
                                                                                 </h4>
                                                                             </div>
                                                                         </c:if>
@@ -198,6 +199,7 @@
                                                                         <label id="control--runtime--2--label"
                                                                                class="control-label control-set-font control-font-label">Add/Assign
                                                                             a Clinical Governance Officer</label>
+                                                                        <span class="mandatory">*</span>
                                                                         <span class="upload_controls"></span>
                                                                     </div>
                                                                     <div class="col-sm-5 col-md-7"
@@ -380,7 +382,6 @@
                                                                                        class="control-label control-set-font control-font-label">
                                                                                     Professional Regn. No.
                                                                                 </label>
-                                                                                <span class="mandatory">*</span>
                                                                                 <span class="upload_controls"></span>
                                                                             </div>
                                                                             <div class="col-sm-5 col-md-7">
@@ -468,7 +469,7 @@
                                                                             <div class="col-sm-4 control-label formtext ">
                                                                                 <label id="control--runtime--32--label"
                                                                                        class="control-label control-set-font control-font-label">
-                                                                                    Subspecialty or relevant
+                                                                                    Sub-specialty or relevant
                                                                                     qualification
                                                                                 </label>
                                                                             </div>
@@ -596,7 +597,7 @@
             </div>
             <div class="modal-body" style="text-align: center;">
                 <div class="row">
-                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem;">PRS  mock server down</span></div>
+                    <div class="col-md-12"><span style="font-size: 2rem;">PRS  mock server down</span></div>
                 </div>
             </div>
             <div class="row " style="margin-top: 5%;margin-bottom: 5%">

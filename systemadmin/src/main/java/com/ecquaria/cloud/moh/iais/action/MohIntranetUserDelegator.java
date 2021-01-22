@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloud.role.Role;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -896,6 +897,8 @@ public class MohIntranetUserDelegator {
                 } else if (IntranetUserConstant.DEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
                     orgUserDto.setAuditTrailDto(auditTrailDto);
+                    String endDate = DateFormatUtils.format(new Date(), "dd/MM/yyyy");
+                    orgUserDto.setEndDateStr(endDate);
                     intranetUserService.updateOrgUser(orgUserDto);
                     clientUser.setAccountStatus(ClientUser.STATUS_INACTIVE);
                     intranetUserService.updateEgpUser(clientUser);
@@ -1053,9 +1056,12 @@ public class MohIntranetUserDelegator {
         orgUserDto.setMobileNo(mobileNo);
         orgUserDto.setOfficeTelNo(officeNo);
         orgUserDto.setRemarks(remarks);
+        Date today = new Date();
         orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+        if(startDate.after(today)){
+            orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
+        }
         orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
-
         return orgUserDto;
     }
 
@@ -1083,7 +1089,6 @@ public class MohIntranetUserDelegator {
         } else {
             orgUserDto.setAvailable(Boolean.TRUE);
         }
-
         orgUserDto.setOrganization(organization);
         orgUserDto.setFirstName(firstName);
         orgUserDto.setLastName(lastName);

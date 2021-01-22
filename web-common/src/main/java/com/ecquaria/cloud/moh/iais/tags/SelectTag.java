@@ -43,7 +43,7 @@ public class SelectTag extends DivTagSupport {
 
     // resets local state
     @Override
-    protected void init() {
+    protected final void init() {
         setId(null);
         name = null; //NOSONAR
         setCodeCategory("");

@@ -19,7 +19,7 @@
                 <div class="center-content">
                     <div class="intranet-content">
                         <iais:body>
-                        <div class="container">
+                        <div class="">
                             <div class="col-xs-12">
                                 <div class="tab-gp dashboard-tab">
 

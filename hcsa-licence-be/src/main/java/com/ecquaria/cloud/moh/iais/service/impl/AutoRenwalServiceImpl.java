@@ -4,14 +4,16 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -776,43 +778,6 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         }
     }
 
-
-    private void sendEmailToOffice(LicenceDto licenceDto  )throws IOException, TemplateException{
-        List<String> ASOEmailAddrs = IaisCommonUtils.genNewArrayList();
-        organizationClient.retrieveUserRoleByRoleId(RoleConsts.USER_ROLE_ASO).getEntity().stream().forEach(v ->{
-            ASOEmailAddrs.add(v.getEmail());
-        });
-
-        Date expiryDate = licenceDto.getExpiryDate();
-        String id = licenceDto.getId();
-        List<String> useLicenceIdFindHciNameAndAddress = useLicenceIdFindHciNameAndAddress(id);
-        for (String every:useLicenceIdFindHciNameAndAddress) {
-            String svcName = licenceDto.getSvcName();
-            String hciName = every.substring(0, every.indexOf('/'));
-            String address = every.substring(every.indexOf('/') + 1);
-            Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
-            String format = simpleDateFormat.format(expiryDate);
-            map.put("HCIName",hciName);
-            map.put("HCI_Address",address);
-            map.put("serviceName",svcName);
-            map.put("licenceExpiryDate",format);
-            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SEND_TO_OFFICER_SEVENTH).getEntity();
-
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), map);
-
-            EmailDto emailDto=new EmailDto();
-            emailDto.setContent(templateMessageByContent);
-            emailDto.setSubject(EMAIL_TO_OFFICER_SUBJECT);
-            emailDto.setSender(mailSender);
-            emailDto.setClientQueryCode(licenceDto.getLicenseeId());
-
-
-            if(!ASOEmailAddrs.isEmpty()){
-                emailDto.setReceipts(ASOEmailAddrs);
-                emailClient.sendNotification(emailDto).getEntity();
-            }
-        }
-    }
     /*
     * remind sended email
     *

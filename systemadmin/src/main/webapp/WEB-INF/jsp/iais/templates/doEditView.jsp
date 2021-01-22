@@ -11,7 +11,7 @@
     String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
-<div class="main-content">
+<div class="main-content" style="min-height: 73vh;">
     <form class="form-horizontal" method="post" id="TemplateEditForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="crud_action_type" value="">
@@ -110,30 +110,16 @@
                         <div class="form-group">
                             <c:choose>
                                 <c:when test="${'DEMD002' eq MsgTemplateDto.deliveryMode}">
-                                    <textarea  rows="20" cols="140" name="messageContent" class="textarea" id="msgContentTxtArea">
-                                            ${MsgTemplateDto.messageContent}
-                                    </textarea>
+                                    <textarea rows="20" cols="140" name="messageContent" class="textarea" id="msgContentTxtArea">${MsgTemplateDto.messageContent}</textarea>
                                 </c:when>
                                 <c:otherwise>
-                                    <textarea rows="40" name="messageContent" class="textarea" id="htmlEditor"
-                                              title="content">
-                                            ${MsgTemplateDto.messageContent}
-                                    </textarea>
+                                    <textarea rows="40" name="messageContent" class="textarea" id="htmlEditor" title="content">${MsgTemplateDto.messageContent}</textarea>
                                 </c:otherwise>
                             </c:choose>
+                            <br>
                             <span id="error_messageContent" name="iaisErrorMsg" class="error-msg"></span>
                         </div>
-                        <c:if test="${'DEMD002' eq MsgTemplateDto.deliveryMode}">
-                            <div class="form-group">
-                                <iais:value>
-                                    <div class="col-xs-9 col-sm-9 col-md-9" >
-                                        <div id="confirm_msg" style="display: flex;border:1px solid #000;">
-                                            <span style="font-size: 35px;text-align: center;align-self: center; width: 15%;" class="glyphicon glyphicon-info-sign"></span><label>${confirm_err_msg}</label>
-                                        </div>
-                                    </div>
-                                </iais:value>
-                            </div>
-                        </c:if>
+
                         <div class="form-group">
                             <div class="col-xs-2 col-sm-2" style="padding-top: 30px;">
                                 <a href="/system-admin-web/eservice/INTRANET/MohAlertNotificationTemplate"><em class="fa fa-angle-left"></em> Back</a>
@@ -150,6 +136,9 @@
         </div>
 
     <iais:confirm msg="${confirm_err_msg}" needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
+    <iais:confirm msg="${confirm_err_msg}" needCancel="false" callBack="smscancel()" popupOrder="smssupport" ></iais:confirm>
+    <input hidden name="mcId" id="mcId" value="">
+    <input hidden name="deliveryMode" id="deliveryMode" value="">
     </form>
     <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>
@@ -179,17 +168,30 @@
     function cancel() {
         $('#support').modal('hide');
     }
+    function smscancel() {
+        $('#support').modal('hide');
+        var length = $("#msgContentTxtArea").val().length
+        var mcId = $("#mcId").val();
+        var deliveryMode = $("#deliveryMode").val();
+        $("#template_content_size").val(length);
+        $("[name='crud_action_value']").val(mcId);
+        $("[name='crud_action_delivery_mode']").val(deliveryMode);
+        submit("edit");
+    }
 
     function doEdit(mcId,deliveryMode) {
         var deliveryMode = deliveryMode;
         console.log("deliveryMode-->"+deliveryMode);
         if ('DEMD002' == deliveryMode) {
-            var length = $("#msgContentTxtArea").val().length;
-            $("#template_content_size").val(length);
-            $("[name='crud_action_value']").val(mcId);
-            $("[name='crud_action_delivery_mode']").val(deliveryMode);
-            submit("edit");
-
+            var length = $("#msgContentTxtArea").val().length
+            if(length > 160){
+                $('#smssupport').modal('show');
+            }else {
+                $("#template_content_size").val(length);
+                $("[name='crud_action_value']").val(mcId);
+                $("[name='crud_action_delivery_mode']").val(deliveryMode);
+                submit("edit");
+            }
         }else{
             var length = tinymce_getContentLength();
             if(length > 8000){

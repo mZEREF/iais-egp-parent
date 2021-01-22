@@ -56,4 +56,9 @@ public class INTRANET___MohAduitTcuList___1 extends BaseProcessClass {
         EngineHelper.delegate(DELEGATOR, "doPage", this);
 	}
 
+	public void searchRole_OnStepProcess_0() throws Exception {
+		// 		searchRole->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "searchRole", this);
+	}
+
 }

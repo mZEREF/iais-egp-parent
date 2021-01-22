@@ -154,6 +154,16 @@ public class EventbusCallBackDelegate {
             invokeMethod(submissionId, eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.AuditSystemListServiceImpl",
                     "releaseTimeForInsUserCallBack");
+        }else if(EventBusConsts.OPERATION_REQUEST_INFORMATION.equalsIgnoreCase(operation)){
+            log.info("-------do request information  call back ----");
+            invokeMethod(submissionId, eventRefNum,
+                    "com.ecquaria.cloud.moh.iais.service.impl.AppSubmissionServiceImpl",
+                    "updateInboxMsgStatus");
+        }else if(EventBusConsts.OPERATION_REQUEST_RFC_RENEW_INFORMATION_SUBMIT.equals(operation)){
+            log.info("-------do rfc/renew request information call back ----");
+            invokeMethod(submissionId, eventRefNum,
+                    "com.ecquaria.cloud.moh.iais.service.impl.AppSubmissionServiceImpl",
+                    "updateInboxMsgStatus");
         }
     }
 

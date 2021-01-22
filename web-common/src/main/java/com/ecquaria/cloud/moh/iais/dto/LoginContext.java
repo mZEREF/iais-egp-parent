@@ -1,11 +1,11 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serializable;
-import java.util.Set;
 
 /**
  * LoginContext
@@ -22,7 +22,7 @@ public class LoginContext implements Serializable {
     @Setter private String userDomain;
     @Setter private String userName;
     @Setter private String nricNum;
-    private Set<String> roleIds;
+    private ArrayList<String> roleIds;
     @Setter private String curRoleId;
     // BE User Info
     private Set<String> wrkGrpIds;
@@ -35,6 +35,6 @@ public class LoginContext implements Serializable {
 
     public LoginContext() {
         wrkGrpIds = IaisCommonUtils.genNewHashSet();
-        roleIds = IaisCommonUtils.genNewHashSet();
+        roleIds = IaisCommonUtils.genNewArrayList();
     }
 }

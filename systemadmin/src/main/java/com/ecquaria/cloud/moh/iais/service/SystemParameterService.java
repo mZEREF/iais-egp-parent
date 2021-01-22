@@ -14,4 +14,11 @@ public interface SystemParameterService {
     SystemParameterDto getParameterByPid(String rowguid);
 
     OrgUserDto retrieveOrgUserAccountById(String userId);
+
+    void initPropertyKeyOffset();
+
+    boolean getPropertyOffsetStatus(String propertiesKey);
+
+    void setPropertyOffset(String propertiesKey, boolean flag);
+
 }

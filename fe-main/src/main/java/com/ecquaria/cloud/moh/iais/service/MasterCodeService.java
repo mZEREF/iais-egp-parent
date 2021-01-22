@@ -9,4 +9,5 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
  */
 public interface MasterCodeService {
     void inactiveMasterCode(AuditTrailDto auditTrailDto);
+    void activeMasterCode(AuditTrailDto auditTrailDto);
 }

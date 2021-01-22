@@ -120,15 +120,7 @@
                                                     <p><c:out value="${item.service}"/></p>
                                                 </td>
                                                 <td>
-                                                    <c:choose>
-                                                        <c:when test="${'LICENSEE' == item.role}">
-                                                            <p>Licensee</p>
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <p><c:out value="${item.role}"/></p>
-                                                        </c:otherwise>
-                                                    </c:choose>
-
+                                                    <p><c:out value="${item.role}"/></p>
                                                 </td>
                                                 <td>
                                                     <p><c:out value="${item.mode}"/></p>

@@ -41,7 +41,7 @@ public class LoginInfoFilter implements Filter {
             if (uri.indexOf("FE_Landing") < 0 && uri.indexOf("FE_Corppass_Landing") < 0
                     && uri.indexOf("FE_Singpass_Landing") < 0 && uri.indexOf("halp-event-callback") < 0
                     && uri.indexOf("IntraLogin") < 0 && uri.indexOf("health") < 0
-                    && uri.indexOf("/INTERNET/Payment") < 0) {
+                    && uri.indexOf("/INTERNET/Payment") < 0 ) {
                 LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
                 if (loginContext == null) {
                     log.info(StringUtil.changeForLog("No Login Context ===> " + uri));

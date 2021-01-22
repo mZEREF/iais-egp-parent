@@ -293,7 +293,7 @@
                                   <div class=" form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext ">
                                       <label id="control--runtime--32--label" class="control-label control-set-font control-font-label">
-                                        Subspecialty or relevant qualification
+                                        Sub-specialty or relevant qualification
                                       </label>
                                     </div>
                                     <div class="col-sm-5 col-md-7">

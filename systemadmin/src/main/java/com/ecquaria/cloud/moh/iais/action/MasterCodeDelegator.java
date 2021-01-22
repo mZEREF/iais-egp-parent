@@ -508,7 +508,7 @@ public class MasterCodeDelegator {
                             Integer.parseInt(masterCodeToExcelDto.getSequence());
                         }
                     }catch (Exception e){
-                        String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0040","Sequence","field");
+                        String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
                         errItems.add(errMsg);
                         result = true;
                     }
@@ -523,7 +523,7 @@ public class MasterCodeDelegator {
                     try{
                         codeEffFrom = masterCodeToExcelDto.getEffectiveFrom();
                     }catch (Exception e){
-                        String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0040","Effective Start Date","field");
+                        String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
                         errItems.add(errMsg);
                         result = true;
                     }
@@ -536,7 +536,7 @@ public class MasterCodeDelegator {
                     try{
                         codeEffTo = masterCodeToExcelDto.getEffectiveTo();
                     }catch (Exception e){
-                        String errMsg =  MessageUtil.replaceMessage("GENERAL_ERR0040","Effective End Date","field");
+                        String errMsg =  MessageUtil.getMessageDesc("GENERAL_ERR0006");
                         errItems.add(errMsg);
                         result = true;
                     }
@@ -564,7 +564,7 @@ public class MasterCodeDelegator {
                             && item.getCodeCategory().equals(masterCodeToExcelDto.getCodeCategory())).findFirst();
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
-                    if (cartOptional != null && cartOptional.isPresent()) {
+                    if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
                         MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
                         if(masterCodeToExcelDto1.getFilterValue() != null){
                             log.info(StringUtil.changeForLog("masterCodeToExcelDto1 hua ===========> " + masterCodeToExcelDto1.getFilterValue()));
@@ -598,7 +598,7 @@ public class MasterCodeDelegator {
                     }else if ("Inactive".equals(masterCodeToExcelDto.getStatus())){
                         masterCodeToExcelDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                     }else{
-                        String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0040","Status","field");
+                        String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
                         errItems.add(errMsg);
                         result = true;
                     }
@@ -606,7 +606,7 @@ public class MasterCodeDelegator {
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getVersion())){
                     String uploadVersion = masterCodeToExcelDto.getVersion();
                     if( !StringUtil.stringIsFewDecimal(uploadVersion,2)){
-                        String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0040","Version","field");
+                        String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
                         errItems.add(errMsg);
                         result = true;
                     }else {
@@ -619,7 +619,7 @@ public class MasterCodeDelegator {
                         }else {
                             double inputVer = Double.parseDouble(uploadVersion);
                             if(inputVer >= 10){
-                                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0040","Version","field");
+                                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
                                 errItems.add(errMsg);
                                 result = true;
                             }else {
@@ -650,7 +650,7 @@ public class MasterCodeDelegator {
                     errItems.add( MessageUtil.getMessageDesc("GENERAL_ERR0041",stringMap));
                     result = true;
                 }
-                if (cartOptional != null && cartOptional.isPresent()) {
+                if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
                     MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
                     masterCodeToExcelDto.setMasterCodeId(masterCodeToExcelDto1.getMasterCodeId());
                     masterCodeToExcelDto.setMasterCodeKey(masterCodeToExcelDto1.getMasterCodeKey());
@@ -711,7 +711,7 @@ public class MasterCodeDelegator {
      * @param bpc
      * @throws
      */
-    public void doDelete(BaseProcessClass bpc) {
+    public void doDelete(BaseProcessClass bpc) throws ParseException {
         logAboutStart("doDelete");
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_TYPE);
@@ -722,6 +722,11 @@ public class MasterCodeDelegator {
                 if (masterCodeDto.getEffectiveFrom().before(new Date())) {
                     String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
                     masterCodeDto.setCodeCategory(codeCategory);
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(new Date());
+                    c.add(Calendar.DAY_OF_MONTH, -1);
+                    Date yesterday = Formatter.changeDateToMax(c.getTime());
+                    masterCodeDto.setEffectiveTo(yesterday);
                     masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                     masterCodeService.updateMasterCode(masterCodeDto);
                     List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
@@ -972,11 +977,13 @@ public class MasterCodeDelegator {
                 }
             }
             if (AppConsts.COMMON_STATUS_ACTIVE.equals(masterCodeDto.getStatus())){
-                if (masterCodeDto.getEffectiveTo().before(new Date())){
-                    validationEditResult.setHasErrors(true);
-                    String errMsg = MessageUtil.getMessageDesc("MCUPERR009");
-                    //The effective date of inactive data must be a future time
-                    errorMap.put("effectiveTo", errMsg);
+                if ((masterCodeDto.getEffectiveTo() != null)){
+                    if (masterCodeDto.getEffectiveTo().before(new Date())){
+                        validationEditResult.setHasErrors(true);
+                        String errMsg = MessageUtil.getMessageDesc("MCUPERR009");
+                        //The effective date of inactive data must be a future time
+                        errorMap.put("effectiveTo", errMsg);
+                    }
                 }
             }
             if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {

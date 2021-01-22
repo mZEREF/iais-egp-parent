@@ -42,7 +42,7 @@
     }
 %>
 
-<div class="main-content">
+<div class="main-content" style="min-height: 73vh;">
 <c:if test="${not empty bAnner_AlERt_Msg__atTR || not empty schEdule_AlERt_Msg__atTR}">
   <div class="col-md-12">
   <c:if test="${not empty schEdule_AlERt_Msg__atTR}">

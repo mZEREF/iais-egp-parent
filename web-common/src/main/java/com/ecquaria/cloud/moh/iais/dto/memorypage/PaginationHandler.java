@@ -3,7 +3,7 @@ package com.ecquaria.cloud.moh.iais.dto.memorypage;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -49,8 +49,8 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
     public PaginationHandler(String paginationDiv, String recordsDiv) {
         this.paginationDiv = paginationDiv;
         this.recordsDiv = recordsDiv;
-        this.pageSize = SysParamUtil.getDefaultPageSize();
-        this.pageSizeDrop = SysParamUtil.toPageSizeArray();
+        this.pageSize = SystemParamUtil.getDefaultPageSize();
+        this.pageSizeDrop = SystemParamUtil.toPageSizeArray();
         this.currentPageNo = 1 ;
         doPaging();
         ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr", this);
@@ -61,8 +61,8 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         this.paginationDiv = paginationDiv;
         this.recordsDiv = recordsDiv;
         this.checkType = checkType;
-        this.pageSize = SysParamUtil.getDefaultPageSize();
-        this.pageSizeDrop = SysParamUtil.toPageSizeArray();
+        this.pageSize = SystemParamUtil.getDefaultPageSize();
+        this.pageSizeDrop = SystemParamUtil.toPageSizeArray();
         this.currentPageNo = 1 ;
         doPaging();
         ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr", this);
@@ -72,8 +72,8 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
     public PaginationHandler(String paginationDiv, String recordsDiv, Collection<T>allData) {
         this.paginationDiv = paginationDiv;
         this.recordsDiv = recordsDiv;
-        this.pageSize = SysParamUtil.getDefaultPageSize();
-        this.pageSizeDrop = SysParamUtil.toPageSizeArray();
+        this.pageSize = SystemParamUtil.getDefaultPageSize();
+        this.pageSizeDrop = SystemParamUtil.toPageSizeArray();
         setAllData(allData);
         this.currentPageNo = 1 ;
         doPaging();

@@ -21,7 +21,7 @@
         modalHtml += '<div class="modal-dialog">';
         modalHtml += '<div class="modal-content">';
         modalHtml += '<div class="modal-header">';
-        modalHtml += '<h4 class="modal-title">' + title + '</h4>';
+        modalHtml += '<h5 class="modal-title">' + title + '</h5>';
         modalHtml += '<button type="button" class="close" data-toggle="tooltip" data-dismiss="modal" title="Close"><span>&times;</span></button>';
         modalHtml += '</div>';
         modalHtml += '<div class="modal-body">' + options.msg + '</div>';

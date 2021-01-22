@@ -14,7 +14,7 @@
                               </div>
                             </div>
                             <div class="col-sm-5 col-md-4 text-right">
-                              <h4 class="text-danger"><em class="fa fa-times-circle removeSpBtn cursorPointer"></em></h4>
+                              <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeSpBtn cursorPointer"></em></h4>
                             </div>
                           </div>
                         </div>

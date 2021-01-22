@@ -970,10 +970,9 @@ public class InterInboxDelegator {
             inboxParam.removeFilter("serviceType");
         }else{
             if (!StringUtil.isEmpty(applicationStatus) && ApplicationConsts.APPLICATION_STATUS_DRAFT.equals(applicationStatus)){
-                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceType);
-                String svcCode = hcsaServiceDto.getSvcCode();
-                if (!StringUtil.isEmpty(svcCode)){
-                    inboxParam.addFilter("serviceCode", "%" + svcCode + "%",true);
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceType);
+                if (hcsaServiceDto != null && !StringUtil.isEmpty(hcsaServiceDto.getSvcCode())){
+                    inboxParam.addFilter("serviceCode", "%" + hcsaServiceDto.getSvcCode() + "%",true);
                 }
             }else{
 //                String moduleStr = SqlHelper.constructInCondition("svc.module", mcb.length);

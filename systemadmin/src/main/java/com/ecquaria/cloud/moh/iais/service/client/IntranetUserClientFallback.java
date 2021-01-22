@@ -169,4 +169,14 @@ public class IntranetUserClientFallback implements IntranetUserClient{
     public FeignResponseEntity<List<String>> retrieveUserRoles(String userId) {
         return null;
     }
+
+    @Override
+    public FeignResponseEntity<List<OrgUserDto>> searchActiveBeUser() {
+        return null;
+    }
+
+    @Override
+    public FeignResponseEntity<List<OrgUserDto>> searchInActiveBeUser() {
+        return null;
+    }
 }

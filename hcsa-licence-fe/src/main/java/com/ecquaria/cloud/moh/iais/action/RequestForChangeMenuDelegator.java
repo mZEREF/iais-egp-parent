@@ -61,7 +61,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
-import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
@@ -129,7 +129,7 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do start start ...."));
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
         HcsaServiceCacheHelper.flushServiceMapping();
-        premiseFilterParameter.setPageSize(SysParamUtil.getDefaultPageSize());
+        premiseFilterParameter.setPageSize(SystemParamUtil.getDefaultPageSize());
         premiseFilterParameter.setPageNo(1);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_PREMISES_LIST);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
@@ -160,7 +160,7 @@ public class RequestForChangeMenuDelegator {
      */
     public void personnleListStart(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do personnleListStart start ...."));
-        filterParameter.setPageSize(SysParamUtil.getDefaultPageSize());
+        filterParameter.setPageSize(SystemParamUtil.getDefaultPageSize());
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
         ParamUtil.setSessionAttr(bpc.request, ACKMESSAGE, null);
@@ -832,7 +832,7 @@ public class RequestForChangeMenuDelegator {
         if (psnTypes.contains("CGO")) {
             personnelEditDto.setDesignation(designation);
         }
-        if (psnTypes.contains("PO")) {
+        if (psnTypes.contains("PO")||psnTypes.contains("DPO")) {
             personnelEditDto.setDesignation(designation);
             personnelEditDto.setOfficeTelNo(officeTelNo);
         }
@@ -863,10 +863,7 @@ public class RequestForChangeMenuDelegator {
                 }
             }
             String generalSixSal = MessageUtil.replaceMessage("GENERAL_ERR0006", "Salutation", "field");
-            if (psnTypes.contains("CGO") && StringUtil.isEmpty(salutation1)) {
-                errMap.put("salutation1", generalSixSal);
-            }
-            if (psnTypes.contains("PO") && StringUtil.isEmpty(salutation1)) {
+            if (StringUtil.isEmpty(salutation1)) {
                 errMap.put("salutation1", generalSixSal);
             }
             if (StringUtil.isEmpty(psnName1)) {
@@ -894,13 +891,13 @@ public class RequestForChangeMenuDelegator {
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(designation1)) {
                 errMap.put("designation1", generalSixDes);
             }
-            if (psnTypes.contains("PO") && StringUtil.isEmpty(designation1)) {
+            if ((psnTypes.contains("PO")||psnTypes.contains("DPO")) && StringUtil.isEmpty(designation1)) {
                 errMap.put("designation1", generalSixDes);
             }
-            if (psnTypes.contains("PO") && StringUtil.isEmpty(officeTelNo1)) {
+            if ((psnTypes.contains("PO")||psnTypes.contains("DPO")) && StringUtil.isEmpty(officeTelNo1)) {
                 errMap.put("officeTelNo1", MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
             }
-            if (psnTypes.contains("PO") && !StringUtil.isEmpty(officeTelNo1) && !officeTelNo1.matches("^[6][0-9]{7}$")) {
+            if ((psnTypes.contains("PO")||psnTypes.contains("DPO")) && !StringUtil.isEmpty(officeTelNo1) && !officeTelNo1.matches("^[6][0-9]{7}$")) {
                 errMap.put("officeTelNo1", "GENERAL_ERR0015");
             }
         }
@@ -928,13 +925,13 @@ public class RequestForChangeMenuDelegator {
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(designation)) {
                 errMap.put("designation", generalSixDes);
             }
-            if (psnTypes.contains("PO") && StringUtil.isEmpty(designation)) {
+            if ((psnTypes.contains("PO")||psnTypes.contains("DPO")) && StringUtil.isEmpty(designation)) {
                 errMap.put("designation", generalSixDes);
             }
-            if (psnTypes.contains("PO") && StringUtil.isEmpty(officeTelNo)) {
+            if ((psnTypes.contains("PO")||psnTypes.contains("DPO")) && StringUtil.isEmpty(officeTelNo)) {
                 errMap.put("officeTelNo", MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No.", "field"));
             }
-            if (psnTypes.contains("PO") && !StringUtil.isEmpty(officeTelNo) && !officeTelNo.matches("^[6][0-9]{7}$")) {
+            if ((psnTypes.contains("PO")||psnTypes.contains("DPO")) && !StringUtil.isEmpty(officeTelNo) && !officeTelNo.matches("^[6][0-9]{7}$")) {
                 errMap.put("officeTelNo", "GENERAL_ERR0015");
             }
         }
@@ -974,7 +971,7 @@ public class RequestForChangeMenuDelegator {
                     }
                 }
                 if ((psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getSalutation()))
-                    || (psnTypes.contains("PO") && StringUtil.isEmpty(newPerson.getSalutation()))) {
+                    || ((psnTypes.contains("PO")||psnTypes.contains("DPO")) && StringUtil.isEmpty(newPerson.getSalutation()))) {
                     errMap.put("salutation2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Salutation", "field"));
                 }
                 if (StringUtil.isEmpty(newPerson.getPsnName())) {
@@ -989,14 +986,14 @@ public class RequestForChangeMenuDelegator {
                 if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getDesignation())) {
                     errMap.put("designation2", generalSixDes);
                 }
-                if (psnTypes.contains("PO") && StringUtil.isEmpty(newPerson.getDesignation())) {
+                if ((psnTypes.contains("PO")||psnTypes.contains("DPO")) && StringUtil.isEmpty(newPerson.getDesignation())) {
                     errMap.put("designation2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
                 }
                 String generalSixTelNo = MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No", "field");
-                if (psnTypes.contains("PO") && StringUtil.isEmpty(newPerson.getOfficeTelNo())) {
+                if ((psnTypes.contains("PO")||psnTypes.contains("DPO")) && StringUtil.isEmpty(newPerson.getOfficeTelNo())) {
                     errMap.put("officeTelNo2", generalSixTelNo);
                 }
-                if (psnTypes.contains("PO") && !StringUtil.isEmpty(newPerson.getOfficeTelNo()) && !newPerson.getOfficeTelNo().matches("^[6][0-9]{7}$")) {
+                if ((psnTypes.contains("PO")||psnTypes.contains("DPO")) && !StringUtil.isEmpty(newPerson.getOfficeTelNo()) && !newPerson.getOfficeTelNo().matches("^[6][0-9]{7}$")) {
                     errMap.put("officeTelNo", generalSixTelNo);
                 }
             }
@@ -1429,6 +1426,10 @@ public class RequestForChangeMenuDelegator {
 
             bpc.request.setAttribute("pmtRefNo", pmtRefNo);
         }
+        String txnDt = ParamUtil.getMaskedString(bpc.request, "txnDt");
+        String txnRefNo = ParamUtil.getMaskedString(bpc.request, "txnRefNo");
+        ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
+        ParamUtil.setSessionAttr(bpc.request, "txnRefNo", txnRefNo);
         ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, switchValue);
         log.debug(StringUtil.changeForLog("the do doPayment end ...."));
     }
@@ -1444,7 +1445,7 @@ public class RequestForChangeMenuDelegator {
         }
     }
 
-    public void doSubmit(BaseProcessClass bpc) throws CloneNotSupportedException {
+    public void doSubmit(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
         List<LicenceDto> selectLicence = (List<LicenceDto>) bpc.request.getSession().getAttribute("licenceDtoList");
         AppSubmissionDto oldAppSubmissionDtoappSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "oldAppSubmissionDto");

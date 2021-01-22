@@ -93,7 +93,7 @@
                     <div class="col-xs-6 text-right">
                         <c:choose>
                             <c:when test="${!status.first && requestInformationConfig==null && 'APTY004' !=AppSubmissionDto.appType && 'APTY005' !=AppSubmissionDto.appType}">
-                                <h4 class="text-danger"><em class="fa fa-times-circle removeBtn"></em></h4>
+                                <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeBtn"></em></h4>
                                 <c:set var="canEdit" value="false"/>
                             </c:when>
                             <c:when test="${((requestInformationConfig != null && appGrpPremisesDto.rfiCanEdit) || 'APTY004' ==AppSubmissionDto.appType || 'APTY005' ==AppSubmissionDto.appType) && '1' != appGrpPremisesDto.existingData }">
@@ -335,7 +335,7 @@
                                             <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
                                         </div>
                                         <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
-                                            <p class="text-danger opDel"><em class="fa fa-times-circle"></em></p>
+                                            <p class="text-danger opDel"><em class="fa fa-times-circle del-size-36"></em></p>
                                         </div>
                                     </iais:row>
                                 </div>
@@ -445,7 +445,7 @@
                                         <c:if test="${!phStat.first}">
                                             <div class=" col-xs-7 col-sm-4 col-md-3">
                                                 <div class="form-check removePhBtn">
-                                                    <div class="fa fa-times-circle text-danger"></div>
+                                                    <div class="fa fa-times-circle del-size-36 text-danger"></div>
                                                 </div>
                                             </div>
                                         </c:if>
@@ -623,7 +623,7 @@
                                         <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
                                     </div>
                                     <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
-                                        <p class="text-danger opDel"><em class="fa fa-times-circle"></em></p>
+                                        <p class="text-danger opDel"><em class="fa fa-times-circle del-size-36"></em></p>
                                     </div>
                                 </iais:row>
                             </div>
@@ -705,7 +705,7 @@
                                         <c:if test="${!phStat.first}">
                                             <div class=" col-xs-7 col-sm-4 col-md-3">
                                                 <div class="form-check removePhBtn">
-                                                    <div class="fa fa-times-circle text-danger"></div>
+                                                    <div class="fa fa-times-circle del-size-36 text-danger"></div>
                                                 </div>
                                             </div>
                                         </c:if>
@@ -878,7 +878,7 @@
                                         <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
                                     </div>
                                     <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
-                                        <p class="text-danger opDel"><em class="fa fa-times-circle"></em></p>
+                                        <p class="text-danger opDel"><em class="fa fa-times-circle del-size-36"></em></p>
                                     </div>
                                 </iais:row>
                             </div>
@@ -960,7 +960,7 @@
                                         <c:if test="${!phStat.first}">
                                             <div class=" col-xs-7 col-sm-4 col-md-3">
                                                 <div class="form-check removePhBtn">
-                                                    <div class="fa fa-times-circle text-danger"></div>
+                                                    <div class="fa fa-times-circle del-size-36 text-danger"></div>
                                                 </div>
                                             </div>
                                         </c:if>

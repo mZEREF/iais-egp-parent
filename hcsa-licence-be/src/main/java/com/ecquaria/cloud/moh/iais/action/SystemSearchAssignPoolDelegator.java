@@ -24,7 +24,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
@@ -174,7 +174,7 @@ public class SystemSearchAssignPoolDelegator {
 
     private SearchParam getSearchParam(BaseProcessClass bpc,boolean isNew){
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "systemSearchParam");
-        int pageSize = SysParamUtil.getDefaultPageSize();
+        int pageSize = SystemParamUtil.getDefaultPageSize();
         if(searchParam == null || isNew){
             searchParam = new SearchParam(SystemAssignSearchQueryDto.class.getName());
             searchParam.setPageSize(pageSize);

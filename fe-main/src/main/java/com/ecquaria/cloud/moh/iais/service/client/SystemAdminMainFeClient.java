@@ -45,4 +45,7 @@ public interface SystemAdminMainFeClient {
 
     @GetMapping(value = "/iais-messageTemplate/alert/{domain}")
     FeignResponseEntity<List<MsgTemplateDto>> getAlertMsgTemplate(@PathVariable("domain") String domain);
+
+    @PutMapping(value = "/iais-mastercode/master-code/active-master-code",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> activeMasterCode(@RequestBody AuditTrailDto auditTrailDto);
 }

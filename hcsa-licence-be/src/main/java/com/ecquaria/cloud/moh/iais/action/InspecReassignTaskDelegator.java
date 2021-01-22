@@ -168,11 +168,10 @@ public class InspecReassignTaskDelegator {
 
     private SearchParam getSearchParam(BaseProcessClass bpc, boolean isNew) {
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "supTaskSearchParam");
-        int pageSize = SysParamUtil.getDefaultPageSize();
+        int pageSize = SystemParamUtil.getDefaultPageSize();
         if (searchParam == null || isNew) {
             searchParam = new SearchParam(InspectionSubPoolQueryDto.class.getName());
             searchParam.setPageSize(pageSize);
-            searchParam.setPageSize(10);
             searchParam.setPageNo(1);
             searchParam.setSort("GROUP_NO", SearchParam.ASCENDING);
         }
@@ -484,7 +483,7 @@ public class InspecReassignTaskDelegator {
         try {
 //            sendEmail(bpc.request);
         } catch (Exception e) {
-            log.error(StringUtil.changeForLog("reassign email error"));
+            log.debug(StringUtil.changeForLog("reassign email error"));
         }
     }
 

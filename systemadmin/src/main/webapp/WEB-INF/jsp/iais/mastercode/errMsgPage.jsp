@@ -18,7 +18,7 @@
     }
 
 </style>
-<div class="main-content">
+<div class="main-content" style="min-height: 73vh;">
     <form  method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
         <span id="error_fileUploadError" name="iaisErrorMsg" class="error-msg"></span>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>

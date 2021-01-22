@@ -86,7 +86,7 @@
                     </div>
                     <div class="modal-body">
                       <div class="row">
-                        <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">You already have UEN, please login with corppass</span></div>
+                        <div class="col-md-12"><span style="font-size: 2rem">You already have UEN, please login with corppass</span></div>
                       </div>
                     </div>
                     <div class="modal-footer">

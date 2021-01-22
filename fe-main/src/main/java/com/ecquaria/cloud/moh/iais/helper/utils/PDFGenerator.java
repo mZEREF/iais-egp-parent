@@ -45,7 +45,7 @@ public class PDFGenerator {
 
 	public void generate(OutputStream os, String ftlName, Map<String, String> params) throws IOException, TemplateException,DocumentException {
 		if (StringUtils.isEmpty(ftlName) || IaisCommonUtils.isEmpty(params)){
-			log.error("params is empty !!!");
+			log.debug("params is empty !!!");
 			return;
 		}
 
@@ -54,7 +54,7 @@ public class PDFGenerator {
 		if (!optHtmlFile.exists()){
 			boolean flag = optHtmlFile.createNewFile();
 			if (!flag) {
-				log.error("Creat File Error.");
+				log.debug("Creat File Error.");
 			}
 		}
 

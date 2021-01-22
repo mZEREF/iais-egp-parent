@@ -4,7 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
@@ -108,7 +108,7 @@ public class PaginationTag extends DivTagSupport {
         sb.append("<select class=\"table-select\" id = \"pageJumpNoPageSize\" name = \"pageJumpNoPageSize\" >");
 
         //Don't catch null NullPointerException
-        int[] pageSizeArr = SysParamUtil.toPageSizeArray();
+        int[] pageSizeArr = SystemParamUtil.toPageSizeArray();
         if (pageSizeArr != null && pageSizeArr.length > 0){
             for (int s : pageSizeArr){
                 if (s == pageSize){

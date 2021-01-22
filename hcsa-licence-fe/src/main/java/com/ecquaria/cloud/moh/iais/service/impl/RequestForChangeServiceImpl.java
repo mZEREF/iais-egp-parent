@@ -662,7 +662,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 }
                             }
                             if (StringUtil.isEmpty(licenseeId)) {
-                                licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
+                                //licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
+                                log.debug(StringUtil.changeForLog("can not found licenseeId"));
                             }
                             List<AppGrpPremisesDto> entity = applicationFeClient.getAppGrpPremisesDtoByHciName(hciName, licenseeId).getEntity();
                             if (!entity.isEmpty()) {
@@ -1393,7 +1394,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         return errorMap;
     }
 
-
+    /*
+    * if svc doc have primary doc ,change doc -> primary doc (only rfc ,renew now)
+    * */
     @Override
     public void svcDocToPresmise(AppSubmissionDto appSubmissionDto) {
         if (appSubmissionDto == null) {
@@ -1680,6 +1683,46 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             log.error(e.getMessage(),e);
         }
     }
+    /*--------------------------------
+    * appSubmissionDto application type must be determine
+    * -------------------------------
+    * version 1 doc id is A
+    * ------------------------
+    * update version 2 doc id is B
+    * ------------------
+    * licence XXX(version 1) change doc id A ->B
+    * */
+    @Override
+    public void changeDocToNewVersion(AppSubmissionDto appSubmissionDto) throws Exception{
+        log.debug(StringUtil.changeForLog("do changeDocToNewVersion start ..."));
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+            boolean isRfi = false;
+            List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
+            //rfc/renew for primary doc
+            List<AppGrpPrimaryDocDto> newGrpPrimaryDocList = appSubmissionService.syncPrimaryDoc(appSubmissionDto.getAppType(),isRfi,appGrpPrimaryDocDtos,primaryDocConfig);
+            log.debug(StringUtil.changeForLog("newGrpPrimaryDocList size: "+newGrpPrimaryDocList.size()));
+            appSubmissionDto.setAppGrpPrimaryDocDtos(newGrpPrimaryDocList);
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                String currentSvcId = appSvcRelatedInfoDto.getServiceId();
+                if(!StringUtil.isEmpty(currentSvcId)){
+                    List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                    List<String> svcDocConfigIdList = IaisCommonUtils.genNewArrayList();
+                    if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
+                        for(AppSvcDocDto appSvcDocDto:appSvcDocDtos){
+                            svcDocConfigIdList.add(appSvcDocDto.getSvcDocId());
+                        }
+                    }
+                    List<HcsaSvcDocConfigDto>  oldSvcDocConfigDtos = serviceConfigService.getPrimaryDocConfigByIds(svcDocConfigIdList);
+                    List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
+                    appSvcDocDtos =updateSvcDoc(appSvcDocDtos,oldSvcDocConfigDtos,svcDocConfig);
+                    appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
+                }
+            }
+        }
+        log.debug(StringUtil.changeForLog("do changeDocToNewVersion end ..."));
+    }
 
     @Override
     public boolean serviceConfigIsChange(List<String> serviceId, String presmiseType) {
@@ -1736,7 +1779,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 emailMap.put("Online_PAY", "true");
             }
         }
-         if("$0.0".equals(appSubmissionDto.getAmountStr())){
+         if(0.0==a){
              emailMap.remove("GIRO_PAY");
              emailMap.remove("Online_PAY");
          }

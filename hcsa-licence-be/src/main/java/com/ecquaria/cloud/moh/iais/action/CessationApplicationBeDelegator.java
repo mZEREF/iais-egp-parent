@@ -133,7 +133,7 @@ public class CessationApplicationBeDelegator {
         String actionType = ParamUtil.getRequestString(bpc.request, "crud_action_type");
         if ("back".equals(actionType)) {
             StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName()).append("/hcsa-licence-web/eservice/INTRANET/MohLicenceManagement");
+            url.append("https://").append(bpc.request.getServerName()).append("/hcsa-licence-web/eservice/INTRANET/MohOnlineEnquiries/1/check");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
             return;

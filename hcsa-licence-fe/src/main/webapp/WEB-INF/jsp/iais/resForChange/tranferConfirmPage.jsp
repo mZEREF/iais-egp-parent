@@ -11,7 +11,7 @@
 <br/>
 <%@include file="../common/dashboard.jsp" %>
 <form method="post" enctype="multipart/form-data" id="mainForm" action=<%=process.runtime.continueURL()%>>
-  <<input type="hidden" name="maxFile" id ="maxFile" value="${maxFile}">
+  <input type="hidden" name="maxFile" id ="maxFile" value="${maxFile}">
   <div class="row">
     <div class="container">
       <div class="col-xs-12">

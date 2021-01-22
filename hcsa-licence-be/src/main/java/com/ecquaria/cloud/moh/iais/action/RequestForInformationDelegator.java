@@ -529,8 +529,12 @@ public class RequestForInformationDelegator {
         String id = (String) ParamUtil.getSessionAttr(bpc.request, "reqInfoId");
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(id);
         String date=ParamUtil.getString(request, "Due_date");
-        if(date!=null){
+        String errMsg=ParamUtil.getRequestString(request,IntranetUserConstant.ERRORMSG);
+        if(errMsg==null&&date!=null){
             licPremisesReqForInfoDto.setDueDateSubmission(Formatter.parseDate(date));
+        }
+        if(errMsg!=null&&date==null){
+            licPremisesReqForInfoDto.setDueDateSubmission(null);
         }
 
         ParamUtil.setRequestAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
@@ -727,21 +731,25 @@ public class RequestForInformationDelegator {
         }
         String errTitle=MessageUtil.replaceMessage("GENERAL_ERR0006","Title","field");
         if(docChk!=null&&systemParamConfig.getAdhocRfiMultipleRequest()>0){
+            int i=0;
             for (String len:lengths
             ) {
                 String s=ParamUtil.getString(request,"docTitle"+len);
                 if(StringUtil.isEmpty(s)){
-                    errMap.put("docTitle"+len,errTitle);
+                    errMap.put("docTitle"+i,errTitle);
                 }
+                i++;
             }
         }
         if(infoChk!=null&&systemParamConfig.getAdhocRfiMultipleRequest()>0){
+            int i=0;
             for (String len:lengthsInfo
             ) {
                 String s=ParamUtil.getString(request,"infoTitle"+len);
                 if(StringUtil.isEmpty(s)){
-                    errMap.put("infoTitle"+len,errTitle);
+                    errMap.put("infoTitle"+i,errTitle);
                 }
+                i++;
             }
         }
         String date=ParamUtil.getDate(request, "Due_date");

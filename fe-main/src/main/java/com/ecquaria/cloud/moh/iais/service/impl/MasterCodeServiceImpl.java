@@ -21,4 +21,9 @@ public class MasterCodeServiceImpl implements MasterCodeService {
     public void inactiveMasterCode(AuditTrailDto auditTrailDto) {
         systemAdminMainFeClient.inactiveMasterCode(auditTrailDto);
     }
+
+    @Override
+    public void activeMasterCode(AuditTrailDto auditTrailDto) {
+        systemAdminMainFeClient.activeMasterCode(auditTrailDto);
+    }
 }

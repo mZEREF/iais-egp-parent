@@ -11,9 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-
 import java.util.List;
-import java.util.Set;
 
 public interface ApplicationViewMainService {
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId);
@@ -50,5 +48,5 @@ public interface ApplicationViewMainService {
 
     void clearApprovedHclCodeByExistRejectApp( List<ApplicationDto> saveApplicationDtoList,String appGroupType,ApplicationDto applicationDtoMain);
 
-    List<SelectOption> getCanViewAuditRoles(Set<String> roleIds);
+    List<SelectOption> getCanViewAuditRoles(List<String> roleIds);
 }

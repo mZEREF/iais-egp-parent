@@ -65,7 +65,7 @@
                                   <div class="col-sm-8 text-right">
                                     <c:if test="${status.index - HcsaSvcPersonnel.mandatoryCount >=0}">
                                       <div class="">
-                                        <h4 class="text-danger"><em class="fa fa-times-circle removeBtn cursorPointer"></em></h4>
+                                        <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em></h4>
                                       </div>
                                     </c:if>
                                     <div class="hidden">
@@ -97,7 +97,7 @@
                                 <div class="col-sm-8 text-right">
                                   <c:if test="${status.index - HcsaSvcPersonnel.mandatoryCount >=0}">
                                     <div class="">
-                                      <h4 class="text-danger"><em class="fa fa-times-circle cursorPointer removeBtn"></em></h4>
+                                      <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em></h4>
                                     </div>
                                   </c:if>
                                 </div>
@@ -293,7 +293,7 @@
                                   <div class=" form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext ">
                                       <label id="control--runtime--32--label" class="control-label control-set-font control-font-label">
-                                        Subspecialty or relevant qualification
+                                        Sub-specialty or relevant qualification
                                       </label>
                                     </div>
                                     <div class="col-sm-5 col-md-7">

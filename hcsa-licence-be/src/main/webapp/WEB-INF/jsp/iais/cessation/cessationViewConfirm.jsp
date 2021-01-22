@@ -91,7 +91,7 @@
                                                                                aria-invalid="false"
                                                                                disabled>
                                                                         <label class="form-check-label"
-                                                                               for=radioYes"><span
+                                                                               for="radioYes"><span
                                                                                 class="check-circle"></span>Yes</label>
                                                                     </div>
                                                                 </div>
@@ -230,11 +230,11 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
+                    <div class="modal-title" id="gridSystemModalLabel" style="font-size:2rem;">Confirmation Box</div>
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-10 col-md-offset-2"><span style="font-size: 2rem">Please confirm the cessation of this licence</span>
+                        <div class="col-md-12"><span style="font-size: 2rem">Please confirm the cessation of this licence</span>
                         </div>
                     </div>
                 </div>

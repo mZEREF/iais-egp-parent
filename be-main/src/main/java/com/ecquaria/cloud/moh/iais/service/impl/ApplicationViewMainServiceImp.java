@@ -31,16 +31,14 @@ import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import com.ecquaria.cloud.role.Role;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 
 @Service
@@ -374,7 +372,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
     }
 
     @Override
-    public List<SelectOption> getCanViewAuditRoles(Set<String> roleIds){
+    public List<SelectOption> getCanViewAuditRoles(List<String> roleIds){
         List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
         List<Role> roles = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
         for (String item:roleIds
@@ -390,7 +388,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
         return egpUserMainClient.search(map).getEntity();
     }
 
-    private void add(Set<String> roleIds,String roleId, List<SelectOption> selectOptionArrayList,List<Role> roles){
+    private void add(List<String> roleIds,String roleId, List<SelectOption> selectOptionArrayList,List<Role> roles){
         for (String item : roleIds){
             if(roleId.equalsIgnoreCase(item)){
                 selectOptionArrayList.add(getRoleSelectOption(roles,roleId));

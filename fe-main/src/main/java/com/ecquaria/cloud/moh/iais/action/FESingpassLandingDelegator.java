@@ -26,6 +26,7 @@ import com.ncs.secureconnect.sim.lite.SIMUtil;
 import lombok.extern.slf4j.Slf4j;
 import ncs.secureconnect.sim.entities.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -40,6 +41,8 @@ public class FESingpassLandingDelegator {
     @Autowired
     private OrgUserManageService orgUserManageService;
 
+    @Value("${moh.halp.login.test.mode}")
+    private String openTestMode;
 
     @Autowired
     private MyInfoAjax myInfoAjax;
@@ -72,8 +75,7 @@ public class FESingpassLandingDelegator {
         String identityNo;
         String scp = null;
 
-        String testMode = FeLoginHelper.getTestMode(request);
-        if (FELandingDelegator.LOGIN_MODE_REAL.equals(testMode)) {
+        if (FELandingDelegator.LOGIN_MODE_REAL.equals(openTestMode)) {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
             LoginInfo oLoginInfo = SIMUtil.doSingPassArtifactResolution(request, samlArt);
             if (oLoginInfo == null){
@@ -123,9 +125,9 @@ public class FESingpassLandingDelegator {
 
     public void hasMohIssueUen(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String identityNo = ParamUtil.getRequestString(request, UserConstants.ENTITY_ID);
-        String idType = ParamUtil.getRequestString(request, UserConstants.ID_TYPE);
-        String scp = ParamUtil.getRequestString(request, UserConstants.LOGIN_SCP);
+        String identityNo = (String) ParamUtil.getRequestAttr(request, UserConstants.ENTITY_ID);
+        String idType = (String) ParamUtil.getRequestAttr(request, UserConstants.ID_TYPE);
+        String scp = (String) ParamUtil.getRequestAttr(request, UserConstants.LOGIN_SCP);
         FeUserDto userSession = new FeUserDto();
         userSession.setScp(scp);
         userSession.setIdentityNo(identityNo);
@@ -248,17 +250,6 @@ public class FESingpassLandingDelegator {
         }
 
         log.info("initSingpassInfo===========>>>End");
-    }
-
-
-    /**
-     * StartStep: redirectToInbox
-     *
-     * @param bpc
-     * @throws
-     */
-    public void redirectToInbox(BaseProcessClass bpc){
-        IaisEGPHelper.sendRedirect(bpc.request, bpc.response, FeLoginHelper.INBOX_URL);
     }
 
     public void initLoginInfo(BaseProcessClass bpc){

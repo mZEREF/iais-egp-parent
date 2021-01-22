@@ -42,7 +42,7 @@
                                     <span class="error-msg" id="error_selectedOne" name="iaisErrorMsg"></span>
                                   <c:if test="${isSelectedAudit}">
                                       <tr>
-                                   <td colspan="7" align="center">
+                                   <td colspan="7" align="left">
                                    <iais:message key="GENERAL_ACK018" escape="true"/>
                                    </td>
                                       </tr>

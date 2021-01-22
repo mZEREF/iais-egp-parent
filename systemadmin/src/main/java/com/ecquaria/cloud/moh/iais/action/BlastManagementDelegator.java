@@ -29,7 +29,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
@@ -138,7 +138,7 @@ public class BlastManagementDelegator {
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "blastmanagementSearchParam");
         if(neednew){
             searchParamGroup = new SearchParam(BlastManagementListDto.class.getName());
-            searchParamGroup.setPageSize(SysParamUtil.getDefaultPageSize());
+            searchParamGroup.setPageSize(SystemParamUtil.getDefaultPageSize());
             searchParamGroup.setPageNo(1);
             searchParamGroup.setSort("SCHEDULE_SEND_DATE", SearchParam.DESCENDING);
         }
@@ -386,12 +386,21 @@ public class BlastManagementDelegator {
         String content = messageContent.replaceAll("\\&[a-zA-Z]{1,10};", "").replaceAll("<[^>]*>", "").replaceAll("\\r", "").replaceAll("\\n", "");
         blastManagementDto.setSubject(subject);
         blastManagementDto.setMsgContent(messageContent);
-        if(StringUtil.isEmpty(content)){
-            Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-            errMap.put("content", MessageUtil.replaceMessage("GENERAL_ERR0006","Content","field"));
-            if(StringUtil.isEmpty(subject)){
-                errMap.put("subject",MessageUtil.replaceMessage("GENERAL_ERR0006","Subject","field"));
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        for (AttachmentDto item:blastManagementDto.getAttachmentDtos()
+             ) {
+            if(item.getDocName().length() > 100){
+                errMap.put("fileUploadError", "GENERAL_ERR0022");
+                break;
             }
+        }
+        if(StringUtil.isEmpty(content)){
+            errMap.put("content", MessageUtil.replaceMessage("GENERAL_ERR0006","Content","field"));
+        }
+        if(StringUtil.isEmpty(subject)){
+            errMap.put("subject",MessageUtil.replaceMessage("GENERAL_ERR0006","Subject","field"));
+        }
+         if(errMap.size() > 0){
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
         }else{

@@ -18,7 +18,7 @@
             </div>
             <div class="modal-body" style="text-align: center">
                 <div class="row">
-                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem;">${LAEM}</span></div>
+                    <div class="col-md-12"><span style="font-size: 2rem;">${LAEM}</span></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -37,7 +37,7 @@
             </div>
             <div class="modal-body" style="text-align: center">
                 <div class="row">
-                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem;">
+                    <div class="col-md-12"><span style="font-size: 2rem;">
                                         ${cessationError}
                                         </span>
                     </div>

@@ -97,7 +97,7 @@ public class MyinfoUtil {
 		if(signatureVerified){
 			encipheredData = jws.getPayload();
 		}else {
-			log.error("jws check is failed");
+			log.debug("jws check is failed");
 		}
 		return  encipheredData;
 	}

@@ -117,7 +117,7 @@
                             </c:if>
                             <tr>
                                 <td class="col-xs-8">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Subspecialty or relevant qualification </p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Sub-specialty or relevant qualification </p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.subSpeciality}</p>

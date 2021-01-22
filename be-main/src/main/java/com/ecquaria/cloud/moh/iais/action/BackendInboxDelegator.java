@@ -247,7 +247,7 @@ public class BackendInboxDelegator {
 
     private SearchParam newSearchParam(){
         SearchParam searchParamGroup = new SearchParam(InspectionAppGroupQueryDto.class.getName());
-        searchParamGroup.setPageSize(SysParamUtil.getDefaultPageSize());
+        searchParamGroup.setPageSize(SystemParamUtil.getDefaultPageSize());
         searchParamGroup.setPageNo(1);
         searchParamGroup.setSort("SUBMIT_DT", SearchParam.ASCENDING);
         return searchParamGroup;

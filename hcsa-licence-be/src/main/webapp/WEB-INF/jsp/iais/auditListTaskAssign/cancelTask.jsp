@@ -17,7 +17,7 @@
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.AuditCancelTaskValidateDto"/>
-
+        <input type="hidden" name="cancelActionValue" id="cancelActionValue"/>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
@@ -83,6 +83,7 @@
             </div>
 </form>
 </div>
+<iais:confirm msg='Please click "Yes" to confirm cancellation.' title="  " needCancel="true" callBack="cancelAuditBack()" popupOrder="actionCancel" yesBtnDesc="Yes" cancelBtnDesc="No"></iais:confirm>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@ include file="/WEB-INF/jsp/include/yesNoConfirm.jsp" %>
 <script type="text/javascript">
@@ -92,13 +93,15 @@
     }
 
     function cancelAudit(act) {
-        showPopupConfirmation({"msg":"Please click \"Yes\" to confirm cancellation.",
+        $('#actionCancel').modal('show');
+        $('#cancelActionValue').val(act);
+       /* showPopupConfirmation({"msg":"Please click \"Yes\" to confirm cancellation.",
             'confirmCallback':'cancelAuditBack','data':{"act":act},"confirmBtn" : "Yes","cancelBtn":"No"
-        });
+        });*/
     }
 
-    function cancelAuditBack(data) {
+    function cancelAuditBack() {
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm",data.act);
+        SOP.Crud.cfxSubmit("mainForm", $('#cancelActionValue').val());
     }
 </script>

@@ -69,7 +69,7 @@ public interface AppSubmissionService {
      void updateApplicationsStatus(String appGroupId,String stuts);
      boolean checkRenewalStatus(String licenceId);
      AppSubmissionDto getExistBaseSvcInfo(List<String> licenceIds);
-    void transform(AppSubmissionDto appSubmissionDto,String licenseeId);
+    void transform(AppSubmissionDto appSubmissionDto,String licenseeId) throws Exception;
     void saveAppsubmission(AppSubmissionDto appSubmissionDto );
     void setDraftNo(AppSubmissionDto appSubmissionDto);
     void  saveAppGrpMisc(AppGroupMiscDto appGroupMiscDto);

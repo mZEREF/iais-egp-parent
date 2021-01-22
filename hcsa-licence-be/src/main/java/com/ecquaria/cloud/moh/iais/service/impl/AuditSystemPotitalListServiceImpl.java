@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemPotitalListService;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
@@ -59,7 +60,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         AuditSystemPotentialDto dto = new AuditSystemPotentialDto();
         SearchParam searchParam = new SearchParam(AuditTaskDataDto.class.getName());
         dto.setPageNo(1);
-        dto.setPageSize(10);
+        dto.setPageSize(SystemParamUtil.getDefaultPageSize());
         searchParam.setSort("risk_score", SearchParam.DESCENDING);
         dto.setSearchParam(searchParam);
         return dto;
@@ -99,10 +100,11 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     }
     @Override
     public List<AuditTaskDataFillterDto> getSystemPotentailAdultCancelList() {
-        if( !isLimitedCancel()){
+        List<String> svcCodes = isLimitedCancel();
+        if( IaisCommonUtils.isEmpty(svcCodes)){
             return null;
         }
-        SearchParam searchParam = getAduitCancelSearchParamFrom();
+        SearchParam searchParam = getAduitCancelSearchParamFrom(svcCodes);
         SearchResult<AuditTaskDataDto> searchResult = getAuditSysParam(searchParam);
         if(searchResult != null && searchResult.getRows() != null){
             List<AuditTaskDataDto> auditTaskDataDtos = searchResult.getRows();
@@ -115,15 +117,15 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         return  null;
     }
     @Override
-    public boolean isLimitedCancel(){
+    public List<String> isLimitedCancel(){
         String userGuid = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid();
         List<String> workGrps = comSystemAdminClient.getWorkGrpsByUserId(userGuid).getEntity();
         if(IaisCommonUtils.isEmpty(workGrps)){
-            return false;
+            return IaisCommonUtils.genNewArrayList();
         }
         List<String> workGroupsActives = hcsaConfigClient. getWorkGroupIdsByStageId(HcsaConsts.ROUTING_STAGE_INS).getEntity();
         if(IaisCommonUtils.isEmpty(workGroupsActives)){
-            return false;
+            return IaisCommonUtils.genNewArrayList();
         }
         List<String> compathyWorkGroups = IaisCommonUtils.genNewArrayList();
          for(String workGrp : workGrps){
@@ -142,11 +144,11 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
              routingStageSearchDto.setWrokGroupIds(compathyWorkGroups);
              List<String> svcIds =  hcsaConfigClient.getSvcIdsByStageIdAndWorkgroupIdsAndAppType(routingStageSearchDto).getEntity();
              if(IaisCommonUtils.isEmpty(svcIds)){
-                 return false;
+                 return IaisCommonUtils.genNewArrayList();
              }
-             return true;
+             return svcIds;
          }
-        return false;
+        return IaisCommonUtils.genNewArrayList();
     }
     public  AuditTaskDataFillterDto getAuditTaskDataFillterDto(AuditTaskDataDto auditTaskDataDto,Boolean isCancelTask,Boolean needCancelReason){
      return getAuditTaskDataFillterDto(auditTaskDataDto,isCancelTask,needCancelReason,Boolean.TRUE);
@@ -277,8 +279,21 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         return hcsaLicenceClient.searchSysAduit(searchParam).getEntity();
     }
 
-    public SearchParam getAduitCancelSearchParamFrom() {
+    public SearchParam getAduitCancelSearchParamFrom( List<String> svcCodes) {
         SearchParam searchParam = new SearchParam(AuditTaskDataDto.class.getName());
+        StringBuilder sb = new StringBuilder("(");
+        for(int i=0;i < svcCodes.size();i++) {
+            sb.append(":svcCode")
+                    .append(i)
+                    .append(',');
+         }
+        String inSql = sb.substring(0, sb.length() - 1) + ")";
+            searchParam.addParam("svcCodes", inSql);
+            int i = 0;
+            for(String svcCode : svcCodes){
+                searchParam.addFilter("svcCode" + i, svcCode);
+                i++;
+            }
         QueryHelp.setMainSql("inspectionQuery", "aduitCancelTaskList", searchParam);
         return searchParam;
     }

@@ -16,6 +16,7 @@
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
+    <input type="hidden" name="rfiListGo" value="1">
     <div class="main-content">
         <br><br><br>
 

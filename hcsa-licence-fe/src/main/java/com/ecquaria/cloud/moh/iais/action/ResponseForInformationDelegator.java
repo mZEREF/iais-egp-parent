@@ -78,7 +78,7 @@ public class ResponseForInformationDelegator {
             licenseeId= (String) ParamUtil.getSessionAttr(request,"licenseeId");
         }
         String messageId= (String) ParamUtil.getSessionAttr(request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
-        messageClient.updateMsgStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
+        //messageClient.updateMsgStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
         InterMessageDto messageDto=messageClient.getInterMessageById(messageId).getEntity();
         ParamUtil.setSessionAttr(request,"msg_action_id",messageId);
         ParamUtil.setSessionAttr(request,"msg_action_type",messageDto.getMessageType());
@@ -106,6 +106,15 @@ public class ResponseForInformationDelegator {
         try {
             String id =  ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(id);
+            String str=ParamUtil.getRequestString(request,"rfiListGo");
+            if(!StringUtil.isEmpty(str)){
+                for (LicPremisesReqForInfoDocDto licDoc:licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()
+                ) {
+                    if(!StringUtil.isEmpty(licDoc.getDocName())){
+                        licDoc.setPassDocValidate(true);
+                    }
+                }
+            }
             logAbout("ReqForInfoId:"+licPremisesReqForInfoDto.getId());
         }catch (Exception e){
             licPremisesReqForInfoDto= (LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(request,"licPreReqForInfoDto");
@@ -143,6 +152,7 @@ public class ResponseForInformationDelegator {
         try {
             for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
                 CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+doc.getId());
+                String commDelFlag = ParamUtil.getString(mulReq, "commDelFlag"+doc.getId());
                 if(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename())){
                     file.getFileItem().setFieldName("selectedFile");
                     long size = file.getSize() / 1024;
@@ -150,6 +160,13 @@ public class ResponseForInformationDelegator {
                     doc.setDocSize(Integer.valueOf(String.valueOf(size)));
                     String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
                     doc.setFileRepoId(fileRepoGuid);
+                    doc.setSubmitDt(new Date());
+                    doc.setSubmitBy(licPremisesReqForInfoDto.getLicenseeId());
+                    doc.setPassDocValidate(false);
+                }else if("N".equals(commDelFlag)){
+                    doc.setDocName(null);
+                    doc.setDocSize(null);
+                    doc.setFileRepoId(null);
                     doc.setSubmitDt(new Date());
                     doc.setSubmitBy(licPremisesReqForInfoDto.getLicenseeId());
                     doc.setPassDocValidate(false);
@@ -195,7 +212,8 @@ public class ResponseForInformationDelegator {
         responseForInformationService.compressFile(licPremisesReqForInfoDto1.getId());
         log.info("------------------- compressFile  end --------------");
         ParamUtil.setSessionAttr(bpc.request,"licPreReqForInfoDto",null);
-
+        String messageId= (String) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+        messageClient.updateMsgStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
 
         // 		doSubmit->OnStepProcess
     }
@@ -212,24 +230,53 @@ public class ResponseForInformationDelegator {
                 CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+doc.getId());
                 String errDocument=MessageUtil.replaceMessage("GENERAL_ERR0006","Supporting Documents","field");
                 String commDelFlag = ParamUtil.getString(mulReq, "commDelFlag"+doc.getId());
-                if(licPremisesReqForInfoDto.isNeedDocument()&&("N".equals(commDelFlag)||doc.getDocSize()==null)){
+                String commValidFlag = ParamUtil.getString(mulReq, "commValidFlag"+doc.getId());
+                List<String> fileTypes = Arrays.asList(systemParamConfig.getUploadFileType().split(","));
+                Long fileSize=(systemParamConfig.getUploadFileLimit() * 1024 *1024L);
+                if(licPremisesReqForInfoDto.isNeedDocument()&&("N".equals(commValidFlag)||doc.getDocSize()==null)){
 
                     if(file == null || file.getSize() == 0){
                         doc.setPassDocValidate(false);
                         errMap.put("UploadFile"+doc.getId(),errDocument);
                     }else{
-                        List<String> fileTypes = Arrays.asList(systemParamConfig.getUploadFileType().split(","));
-                        Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file,fileTypes,(systemParamConfig.getUploadFileLimit() * 1024 *1024l));
-                        //Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file);
-                        Boolean fileSize = booleanMap.get("fileSize");
-                        Boolean fileType = booleanMap.get("fileType");
+                        Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file,fileTypes,fileSize);
                         //size
-                        if(!fileSize){
+                        if(!booleanMap.get("fileSize")){
                             doc.setPassDocValidate(false);
                             errMap.put("UploadFile"+doc.getId(), MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(systemParamConfig.getUploadFileLimit()),"sizeMax"));
                         }
                         //type
-                        if(!fileType){
+                        if(!booleanMap.get("fileType")){
+                            doc.setPassDocValidate(false);
+                            errMap.put("UploadFile"+doc.getId(),MessageUtil.replaceMessage("GENERAL_ERR0018", systemParamConfig.getUploadFileType(),"fileType"));
+                        }
+                    }
+                }
+                if(licPremisesReqForInfoDto.isNeedDocument()&&("Y".equals(commValidFlag)&&doc.getDocSize()!=null)||(file == null || file.getSize() == 0)&& "Y".equals(commDelFlag)){
+                    Map<String, Boolean> map = IaisCommonUtils.genNewHashMap();
+                    if (doc.getDocSize() != null) {
+                        long size = doc.getDocSize();
+                        String filename = doc.getDocName();
+                        String fileType = filename.substring(filename.lastIndexOf(46) + 1);
+                        String s = fileType.toUpperCase();
+                        if (!fileTypes.contains(s)) {
+                            map.put("fileType", Boolean.FALSE);
+                        } else {
+                            map.put("fileType", Boolean.TRUE);
+                        }
+
+                        if (size > fileSize) {
+                            map.put("fileSize", Boolean.FALSE);
+                        } else {
+                            map.put("fileSize", Boolean.TRUE);
+                        }
+                        //size
+                        if(!map.get("fileSize")){
+                            doc.setPassDocValidate(false);
+                            errMap.put("UploadFile"+doc.getId(), MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(systemParamConfig.getUploadFileLimit()),"sizeMax"));
+                        }
+                        //type
+                        if(!map.get("fileType")){
                             doc.setPassDocValidate(false);
                             errMap.put("UploadFile"+doc.getId(),MessageUtil.replaceMessage("GENERAL_ERR0018", systemParamConfig.getUploadFileType(),"fileType"));
                         }

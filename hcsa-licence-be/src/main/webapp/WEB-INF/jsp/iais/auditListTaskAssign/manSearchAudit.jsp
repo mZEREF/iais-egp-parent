@@ -21,12 +21,15 @@
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <div class="bg-title"><h2>Search HCI and Services</h2></div>
         <iais:section title="" id="potentialAuditableHCIs">
+        <div hidden="hidden">
             <iais:row>
                 <iais:field value="Role"/>
                 <iais:value width="8">
                     <iais:select name="roleIdsForAuditSelect" options="roleIdsForAudit"  value="${roleIdsForAuditSelect}"/>
                 </iais:value>
             </iais:row>
+        </div>
+            <div id="clearFiterForSearch" name="clearFiterForSearch">
             <iais:row>
                 <iais:field value="Service Name"/>
                 <iais:value width="8">
@@ -99,6 +102,7 @@
                 </iais:value>
             </iais:row>
 
+            </div>
         </iais:section>
 
         <iais:action style="text-align:right;">
@@ -137,7 +141,7 @@
         clearSelectFiled('hclCode');
         clearSelectFiled('premType');
         clearSelectFiled('riskType');
-        $(".current").text("Please Select");
+        $("#clearFiterForSearch .current").text("Please Select");
     }
 
     function  clearSelectFiled(id) {

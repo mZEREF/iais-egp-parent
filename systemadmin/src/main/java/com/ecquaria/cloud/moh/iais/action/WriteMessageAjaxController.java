@@ -37,6 +37,9 @@ public class WriteMessageAjaxController {
         if(blastManagementDto != null){
             long size = selectedFile.getSize()/1024;
             String fileName = selectedFile.getOriginalFilename();
+            if(fileName.indexOf("\\") > 0){
+                fileName = fileName.substring(fileName.lastIndexOf('\\') + 1);
+            }
             File toFile = FileUtils.multipartFileToFile(selectedFile);
             byte[] fileToByteArray = FileUtils.readFileToByteArray(toFile);
             AttachmentDto attachmentDto = new AttachmentDto();
@@ -87,7 +90,7 @@ public class WriteMessageAjaxController {
     }
 
     private String setHtmlValue(List<AttachmentDto> attachmentDtoList){
-        String data = "";
+        StringBuilder data = new StringBuilder();
         if(!IaisCommonUtils.isEmpty(attachmentDtoList)){
             for(AttachmentDto temp : attachmentDtoList){
                 StringBuilder box = new StringBuilder();
@@ -102,9 +105,9 @@ public class WriteMessageAjaxController {
                         .append("<input hidden name='fileSize' value='")
                         .append(temp.getDocSize())
                         .append("'/>\n");
-                data=box.toString();
+                data.append(box.toString());
             }
         }
-        return data;
+        return data.toString();
     }
 }

@@ -28,7 +28,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
-import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserAccountSampleService;
 import lombok.extern.slf4j.Slf4j;
@@ -267,7 +267,7 @@ public class OrgUserAccountSampleDelegator {
             getValueFromPage(accountDto, request);
             ValidationResult validationResult =WebValidationHelper.validateProperty(accountDto, "edit");
             if (validationResult.isHasErrors()){
-                log.error("****************Error");
+                log.debug("****************Error");
                 Map<String,String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(request,DemoConstants.ERRORMAP,errorMap);
                 ParamUtil.setRequestAttr(request,DemoConstants.ISVALID,"N");
@@ -296,7 +296,7 @@ public class OrgUserAccountSampleDelegator {
         SearchParam param = (SearchParam) ParamUtil.getSessionAttr(request, DemoConstants.SEARCH_PARAM);
         if(param == null || isNew){
             param = new SearchParam(DemoQueryDto.class.getName());
-            param.setPageSize(SysParamUtil.getDefaultPageSize());
+            param.setPageSize(SystemParamUtil.getDefaultPageSize());
             param.setPageNo(1);
             param.setSort("user_id", SearchParam.ASCENDING);
             ParamUtil.setSessionAttr(request, DemoConstants.SEARCH_PARAM, param);

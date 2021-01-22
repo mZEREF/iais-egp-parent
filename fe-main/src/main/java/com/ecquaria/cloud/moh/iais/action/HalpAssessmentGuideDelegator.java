@@ -496,6 +496,10 @@ public class HalpAssessmentGuideDelegator {
                     bpc.request.getSession().setAttribute("DraftNumber", null);
                 }else if("resume".equals(crud_action_value)){
                     bpc.request.getSession().setAttribute("DraftNumber", attribute);
+                }else if(attribute!=null){
+                    //back to curr page
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_BASE_SVC);
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"doBack");
                 }
                 appSelectSvcDto.setBasePage(true);
             }
@@ -570,7 +574,7 @@ public class HalpAssessmentGuideDelegator {
         }else {
             licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
         }
-
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos=(List<AppSvcRelatedInfoDto>)ParamUtil.getSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST);
         List<String> licenceList =(List<String>) ParamUtil.getSessionAttr(bpc.request, "licence");
         List<String> baseServiceIds=IaisCommonUtils.genNewArrayList();
         if(StringUtil.isEmpty(licenceList)){
@@ -589,6 +593,16 @@ public class HalpAssessmentGuideDelegator {
             List<String> serviceCodeList = new ArrayList<>(hcsaServiceDtosById.size());
             for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtosById) {
                 serviceCodeList.add(hcsaServiceDto.getSvcCode());
+            }
+            if(appSvcRelatedInfoDtos!=null){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos){
+                    String serviceCode = appSvcRelatedInfoDto.getServiceCode();
+                    if(serviceCode!=null){
+                        if(!serviceCodeList.contains(serviceCode)){
+                            serviceCodeList.add(serviceCode);
+                        }
+                    }
+                }
             }
             serviceCodeList.sort(String::compareTo);
             Map<String, Object> map = new HashMap<>();

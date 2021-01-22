@@ -7,7 +7,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="closeUploadDoc()">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Upload Internal Document</h4>
+                <div class="modal-title" id="myModalLabel" style="font-size: 2rem;">Upload Internal Document</div>
             </div>
             <div class="modal-body">
                 <form id="fileUploadForm" name="fileUploadForm" enctype="multipart/form-data"
@@ -23,11 +23,11 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-md-4 control-label">Upload your files <span style="color: red"> *</span></label>
                         <div class="col-xs-8 col-sm-8 col-md-8">
-                            <div style="margin-left: -15px" class="col-md-5">
+                            <div style="margin-left:-10%" class="col-md-5">
                             <p><input  id = "selectedFileShowText" name = "selectedFileShowText"  type="text"   value="Select File" readonly>
                                 </p>
                             </div>
-                            <div style="margin-left: -15px" class="col-md-8">
+                            <div style="margin-left:-10%" class="col-md-8">
                                 <input  id = "selectedFileShowTextName" name = "selectedFileShowTextName"  type="text"   readonly>
                                 <small class="error"><span id="selectedFileShow" style="color: #D22727; font-size: 1.6rem"></span></small>
                             </div>

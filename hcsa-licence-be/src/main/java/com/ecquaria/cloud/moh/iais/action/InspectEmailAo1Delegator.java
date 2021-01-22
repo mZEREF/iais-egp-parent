@@ -162,7 +162,7 @@ public class InspectEmailAo1Delegator {
             }
 
         }
-        TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
+        TaskDto taskDto = taskService.getTaskById(taskId);
         if( taskDto == null) {
             return;
         }
@@ -799,8 +799,9 @@ public class InspectEmailAo1Delegator {
                     //delete file
                     insepctionNcCheckListService.deleteInvalidFile(serListDto);
                     //save file
-                    if( size <= 10240)
-                    appIntranetDocDto.setFileRepoId(insepctionNcCheckListService.saveFiles(file));
+                    if( size <= 10240) {
+                        appIntranetDocDto.setFileRepoId(insepctionNcCheckListService.saveFiles(file));
+                    }
                     serListDto.setAppPremisesSpecialDocDto(appIntranetDocDto);
                 }
             }
@@ -827,10 +828,11 @@ public class InspectEmailAo1Delegator {
                 licPremisesAuditDto.setInRiskSocre(0);
                 if(!StringUtil.isEmpty(periods)){
                     licPremisesAuditDto.setIncludeRiskType(periods);
-                    if(periods.equalsIgnoreCase(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY))
+                    if(periods.equalsIgnoreCase(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY)) {
                         licPremisesAuditDto.setLgrRemarks(frameworkRemarks );
-                    else
+                    } else {
                         licPremisesAuditDto.setLgrRemarks(null);
+                    }
                 } else {
                     licPremisesAuditDto.setIncludeRiskType(null);
                     licPremisesAuditDto.setLgrRemarks(null);

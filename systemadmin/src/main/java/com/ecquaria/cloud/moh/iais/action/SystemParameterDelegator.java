@@ -93,7 +93,6 @@ public class SystemParameterDelegator {
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("systemAdmin", "querySystemParam", searchParam);
-
         SearchResult searchResult = parameterService.doQuery(searchParam);
         ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_SEARCH, searchParam);
         ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_SEARCHRESULT, searchResult);
@@ -111,17 +110,16 @@ public class SystemParameterDelegator {
             return;
         }
 
-        SystemParameterQueryDto systemParameterQuery = new SystemParameterQueryDto();
-
+        SystemParameterQueryDto query = new SystemParameterQueryDto();
         String domainType = ParamUtil.getString(request, SystemParameterConstant.PARAM_DOMAIN_TYPE);
         String module = ParamUtil.getString(request, SystemParameterConstant.PARAM_MODULE);
         String status = ParamUtil.getString(request, SystemParameterConstant.PARAM_STATUS);
         String description = ParamUtil.getString(request, SystemParameterConstant.PARAM_DESCRIPTION);
 
-        systemParameterQuery.setDomainType(domainType);
-        systemParameterQuery.setModule(module);
-        systemParameterQuery.setStatus(status);
-        systemParameterQuery.setDescription(description);
+        query.setDomainType(domainType);
+        query.setModule(module);
+        query.setStatus(status);
+        query.setDescription(description);
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 
         ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_DOMAIN_TYPE, domainType);
@@ -129,9 +127,9 @@ public class SystemParameterDelegator {
         ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_STATUS, status);
         ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_DESCRIPTION, description);
 
-        ValidationResult validationResult = WebValidationHelper.validateProperty(systemParameterQuery, "search");
-        if(validationResult != null && validationResult.isHasErrors()) {
-            Map<String, String> errorMap = validationResult.retrieveAll();
+        ValidationResult vr = WebValidationHelper.validateProperty(query, "search");
+        if(vr != null && vr.isHasErrors()) {
+            Map<String, String> errorMap = vr.retrieveAll();
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
         }else {
@@ -173,26 +171,39 @@ public class SystemParameterDelegator {
             return;
         }
 
+
         String value = ParamUtil.getString(request, SystemParameterConstant.PARAM_VALUE);
         String description = ParamUtil.getString(request, SystemParameterConstant.PARAM_DESCRIPTION);
-
         SystemParameterDto editDto = (SystemParameterDto) ParamUtil.getSessionAttr(request, SystemParameterConstant.PARAMETER_REQUEST_DTO);
         AuditTrailDto att = IaisEGPHelper.getCurrentAuditTrailDto();
         editDto.setAuditTrailDto(att);
         editDto.setValue(value);
         editDto.setDescription(description);
-        ValidationResult validationResult = WebValidationHelper.validateProperty(editDto, "edit");
-        if(validationResult != null && validationResult.isHasErrors()){
-            Map<String,String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
-        }else {
-            beforeSave(editDto);
-            parameterService.saveSystemParameter(editDto);
+        boolean exclusive = parameterService.getPropertyOffsetStatus(editDto.getPropertiesKey());
+        if (!exclusive){
+            ValidationResult validationResult = WebValidationHelper.validateProperty(editDto, "edit");
+            if(validationResult != null && validationResult.isHasErrors()){
+                Map<String,String> errorMap = validationResult.retrieveAll();
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            }else {
+                beforeSave(editDto);
+                exclusive =  parameterService.getPropertyOffsetStatus(editDto.getPropertiesKey());
+                if(!exclusive){
+                    parameterService.setPropertyOffset(editDto.getPropertiesKey(), true);
+                    parameterService.saveSystemParameter(editDto);
+                    parameterService.setPropertyOffset(editDto.getPropertiesKey(), false);
+                    ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+                    ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("SYSPAM_ACK001"));
+                    ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAMETER_REQUEST_DTO, editDto);
+                }
+            }
+        }
 
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-            ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("SYSPAM_ACK001"));
-            ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAMETER_REQUEST_DTO, editDto);
+        if (exclusive){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("customErrorMessage",
+                    MessageUtil.getMessageDesc("SYSPAM_ERROR0009")));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }
     }
 
@@ -227,8 +238,6 @@ public class SystemParameterDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, PRE_SAVE_USER_ID, null);
         String pid = ParamUtil.getString(bpc.request, IntranetUserConstant.CRUD_ACTION_VALUE);
-
-
         if (!StringUtils.isEmpty(pid)){
             SearchResult<SystemParameterQueryDto> result = (SearchResult<SystemParameterQueryDto>) ParamUtil.getSessionAttr(request, SystemParameterConstant.PARAM_SEARCHRESULT);
             if (result != null){

@@ -86,7 +86,7 @@
                             </div>
                             <div class="col-sm-5 col-md-4 text-right">
                               <c:if test="${status.index - spMandatoryCount >=0}">
-                                <h4 class="text-danger"><em class="fa fa-times-circle removeSpBtn cursorPointer"></em></h4>
+                                <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeSpBtn cursorPointer"></em></h4>
                               </c:if>
                             </div>
                           </div>
@@ -255,7 +255,7 @@
       </div>
       <div class="modal-body" style="text-align: center;">
         <div class="row">
-          <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem;">PRS  mock server down</span></div>
+          <div class="col-md-12"><span style="font-size: 2rem;">PRS  mock server down</span></div>
         </div>
       </div>
       <div class="row " style="margin-top: 5%;margin-bottom: 5%">

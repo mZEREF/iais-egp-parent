@@ -1,8 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.dto.QueryHelperResultDto;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -17,7 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -161,7 +162,7 @@ public class DeleteHelperFeDelegator {
             if(file.exists()){
                 sql = readFile(file,replaceNo,targetString);
             }else{
-                log.error("file no exists");
+                log.debug("file no exists");
             }
         }
         return sql;
@@ -169,7 +170,10 @@ public class DeleteHelperFeDelegator {
 
     private synchronized String readFile(File file,String replaceNo, String targetString) {
         StringBuilder sql = new StringBuilder();
-        try ( BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)))){
+        try (
+             FileReader fr = new FileReader(file);
+             BufferedReader br= new BufferedReader(fr);
+             ){
             String temp = null;
             while((temp = br.readLine())!=null){
                 if(temp.contains(targetString)){

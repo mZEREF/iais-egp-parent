@@ -19,5 +19,5 @@ public interface AuditSystemPotitalListService {
     void inActiveAudit(AuditTaskDataFillterDto auditTaskDataFillterDto,AuditTrailDto intranet);
     AuditSystemPotentialDto initDtoForSearch();
     List<AuditTaskDataFillterDto> getSystemPotentailAdultListForAuditTcu( AuditSystemPotentialDto dto);
-    boolean isLimitedCancel();
+    List<String> isLimitedCancel();
 }

@@ -160,7 +160,7 @@ public class LicenceApproveBatchjob {
                             generalGenerateResult = generateLIcence(generalApplicationLicenceDto, hcsaServiceDtos);
                         }
                     } catch (Exception exception) {
-                        log.error(StringUtil.changeForLog("This  applicaiton group  have error -- >" + applicationGroupDto.getGroupNo()));
+                        log.debug(StringUtil.changeForLog("This  applicaiton group  have error -- >" + applicationGroupDto.getGroupNo()));
                         log.error(exception.getMessage(), exception);
                     }
                     toDoResult(licenceGroupDtos, generalGenerateResult, groupGenerateResult, success, fail, applicationGroupDto);
@@ -212,7 +212,7 @@ public class LicenceApproveBatchjob {
             iaisUENDto.setLicenseeId(applicationGroupDto.getLicenseeId());
             acraUenBeClient.generateUen(iaisUENDto);
         }catch (Throwable t){
-           log.error(StringUtil.changeForLog("The Error for Generate UEN -->:"+applicationGroupDto.getGroupNo()));
+           log.debug(StringUtil.changeForLog("The Error for Generate UEN -->:"+applicationGroupDto.getGroupNo()));
            log.error(StringUtil.changeForLog( t.getMessage()),t);
         }
         log.info(StringUtil.changeForLog("The generateUen end ..."));
@@ -228,11 +228,13 @@ public class LicenceApproveBatchjob {
               HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
               HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             for(ApplicationDto applicationDto : applicationDtoList){
-                  applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
-                  applicationClient.updateApplication(applicationDto);
-                  beEicGatewayClient.updateApplication(applicationDto,signature.date(), signature.authorization(),
-                          signature2.date(), signature2.authorization());
-              }
+                if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationDto.getApplicationType())){
+                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+                    applicationClient.updateApplication(applicationDto);
+                    beEicGatewayClient.updateApplication(applicationDto,signature.date(), signature.authorization(),
+                            signature2.date(), signature2.authorization());
+                    }
+                }
           }
     }
     private void setOriginLicenceLicBaseSpecifiedCorrelationDtos(List<LicenceGroupDto> licenceGroupDtos){

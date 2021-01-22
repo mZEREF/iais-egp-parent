@@ -472,8 +472,9 @@ public class NewApplicationDelegator {
         if (appGrpPrimaryDocDtoList != null && appGrpPrimaryDocDtoList.size() > 0) {
             Map<String, AppGrpPrimaryDocDto> reloadDocMap = IaisCommonUtils.genNewHashMap();
             for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList) {
-                if(!StringUtil.isEmpty(appGrpPrimaryDocDto.getPrimaryDocReloadName())){
-                    reloadDocMap.put(appGrpPrimaryDocDto.getPrimaryDocReloadName(), appGrpPrimaryDocDto);
+                String primaryDocReloadName = appGrpPrimaryDocDto.getPrimaryDocReloadName();
+                if(!StringUtil.isEmpty(primaryDocReloadName)){
+                    reloadDocMap.put(primaryDocReloadName, appGrpPrimaryDocDto);
                 }
             }
             ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, (Serializable) reloadDocMap);
@@ -1211,7 +1212,7 @@ public class NewApplicationDelegator {
                     LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
                     appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());
                 } catch (Exception e) {
-                    log.debug(StringUtil.changeForLog("send email error ...."));
+                    log.error(StringUtil.changeForLog("send email error ...."));
                 }
             }else{
                 switch2 = "loading";
@@ -1687,13 +1688,15 @@ public class NewApplicationDelegator {
             appSvcRelatedInfoDtoList.addAll(appSvcRelatedInfoDtoList1);
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         }
+        String msgId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+        appSubmissionDto.setRfiMsgId(msgId);
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
         //update message statusdo
-        String msgId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
-        appSubmissionService.updateMsgStatus(msgId, MessageConstants.MESSAGE_STATUS_RESPONSE);
+        //appSubmissionService.updateMsgStatus(msgId, MessageConstants.MESSAGE_STATUS_RESPONSE);
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
-            appSubmissionDto= appSubmissionService.submitRequestRfcRenewInformation(appSubmissionRequestInformationDto,bpc.process);
+            appSubmissionDto= appSubmissionService.submitRequestRfcRenewInformation(appSubmissionRequestInformationDto, bpc.process);
+          /*  appSubmissionDto= applicationFeClient.saveRFCOrRenewRequestInformation(appSubmissionRequestInformationDto).getEntity();*/
         }else {
             appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
         }
@@ -3202,7 +3205,7 @@ public class NewApplicationDelegator {
             try {
                 //inspectionDateSendNewApplicationPaymentOnlineEmail(appSubmissionDto, bpc);
             } catch (Exception e) {
-                log.debug(StringUtil.changeForLog("send email error ...."));
+                log.error(StringUtil.changeForLog("send email error ...."));
             }
             String amount = String.valueOf(appSubmissionDto.getAmount());
             Map<String, String> fieldMap = new HashMap<String, String>();

@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class HalpActiveMcJobHandler extends IJobHandler {
         try {
             AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
             masterCodeService.activeMasterCode(auditTrailDto);
+            MasterCodeUtil.refreshCache();
             JobLogger.log(StringUtil.changeForLog("The InactiveMasterCodeJobHandler end..." ));
             return ReturnT.SUCCESS;
         }catch (Throwable e){

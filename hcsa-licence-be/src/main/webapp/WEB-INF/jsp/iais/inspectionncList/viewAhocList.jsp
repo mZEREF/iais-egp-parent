@@ -51,7 +51,7 @@
                                     </c:forEach>
                                     </c:if>
                                        <c:if test="${empty adhocCheckListAttr || empty adhocCheckListAttr.allAdhocItem}">
-                                           <tr>  <td  colspan="3" align="center"> <p> <iais:message key="GENERAL_ACK018" escape="true"/></p> </td></tr>
+                                           <tr>  <td  colspan="3" align="left"> <p> <iais:message key="GENERAL_ACK018" escape="true"/></p> </td></tr>
                                        </c:if>
                                     </tbody>
                                 </table>

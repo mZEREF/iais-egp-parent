@@ -22,7 +22,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.PublicHolidayService;
 import lombok.extern.slf4j.Slf4j;
@@ -86,7 +86,7 @@ public class PublicHolidayDelegate {
         ParamUtil.setSessionAttr(bpc.request,"searchStatus",null);
 
         SearchParam holidaySearchParam = new SearchParam(PublicHolidayQueryDto.class.getName());
-        holidaySearchParam.setPageSize(SysParamUtil.getDefaultPageSize());
+        holidaySearchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
         holidaySearchParam.setPageNo(1);
         holidaySearchParam.setSort("FROM_DATE", SearchParam.DESCENDING);
         ParamUtil.setSessionAttr(bpc.request,"holidaySearchParam",holidaySearchParam);

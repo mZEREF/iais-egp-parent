@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.impl.SoapiS2S;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
@@ -21,7 +22,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ecq.commons.helper.StringHelper;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.json.JSONObject;
 import org.apache.commons.codec.binary.Base64;
 import sop.config.ConfigUtil;
 import sop.util.DateUtil;
@@ -213,17 +213,35 @@ public class PaymentNetsProxy extends PaymentProxy {
 		}
 		log.info(StringUtil.changeForLog("MERCHANT APP : in hmac received :" + header));
 		log.info(StringUtil.changeForLog("MERCHANT APP : in hmac generated :" + generatedHmac));
-
+		String keyId= GatewayConfig.eNetsKeyId;
+		String secretKey=GatewayConfig.eNetsSecretKey ;
+		SoapiS2S soapiTxnQueryReq=new SoapiS2S();
+		soapiTxnQueryReq.setSs("1");
+		SoapiS2S.Msg msg=new SoapiS2S.Msg();
+		msg.setNetsMid(GatewayConfig.eNetsUmId);
+		msg.setMerchantTxnRef(paymentRequestDto.getMerchantTxnRef());
+		msg.setNetsMidIndicator("U");
+		soapiTxnQueryReq.setMsg(msg);
+		String eNetsStatus= "1";
 		try {
-			JSONObject jsonObject = JSONObject.fromObject(txnRes);
-			Soapi txnResObj = (Soapi) JSONObject.toBean(jsonObject, Soapi.class);
-			log.info(StringUtil.changeForLog("MERCHANT APP : in receiveb2sTxnEnd :" + txnResObj));
-			if ("0".equals(txnResObj.getMsg().getNetsTxnStatus())) {
-				status = PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
-			}
-		} catch (Exception ex) {
-			log.info(ex.getMessage(),ex);
+			eNetsStatus = PaymentBaiduriProxyUtil.getPaymentService().sendTxnQueryReqToGW(secretKey,keyId,soapiTxnQueryReq);
+		} catch (Exception e) {
+			log.debug(e.getMessage(),e);
 		}
+		if("0".equals(eNetsStatus)){
+			status = PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
+		}
+
+//		try {
+//			JSONObject jsonObject = JSONObject.fromObject(txnRes);
+//			Soapi txnResObj = (Soapi) JSONObject.toBean(jsonObject, Soapi.class);
+//			log.info(StringUtil.changeForLog("MERCHANT APP : in receiveb2sTxnEnd :" + txnResObj));
+//			if ("0".equals(txnResObj.getMsg().getNetsTxnStatus())) {
+//				status = PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
+//			}
+//		} catch (Exception ex) {
+//			log.info(ex.getMessage(),ex);
+//		}
 
 		String response = "payment success";
 		setPaymentResponse(response);

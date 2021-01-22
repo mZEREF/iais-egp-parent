@@ -1,5 +1,10 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 
+<%
+  String openTestMode = ConfigHelper.getString("moh.halp.login.test.mode", "prod");
+  request.setAttribute("openTestMode", openTestMode);
+%>
+
 <c:choose>
   <c:when test="${'Dummy.NoPass' eq openTestMode || 'Dummy.WithPass' eq openTestMode}">
     <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
@@ -80,6 +85,7 @@
     <%@ page import="com.ncs.secureconnect.sim.lite.SIMUtil" %>
     <%@ page import="com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper" %>
     <%@ page import="com.ecquaria.cloud.moh.iais.helper.FeLoginHelper" %>
+    <%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
     <%!
       static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger("singpass.jsp");
     %>

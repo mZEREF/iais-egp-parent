@@ -44,7 +44,7 @@ public class MessageDelegator {
             .clz(MessageQueryDto.class)
             .searchAttr(MessageConstants.PARAM_MESSAGE_SEARCH)
             .resultAttr(MessageConstants.PARAM_MESSAGE_SEARCH_RESULT)
-            .sortField("msg_id").sortType(SearchParam.ASCENDING).build();
+            .sortFieldToMap("msg_type", SearchParam.ASCENDING).sortFieldToMap("module", SearchParam.ASCENDING).build();
 
     private  final MessageService messageService;
 
@@ -59,9 +59,7 @@ public class MessageDelegator {
      */
     private void preSelectOption(HttpServletRequest request){
         List<SelectOption> moduleList =  IaisCommonUtils.genNewArrayList();
-
         String[] option = getMsgModuleType();
-
         for (String i : option){
             moduleList.add(new SelectOption(i, i));
         }
@@ -99,7 +97,6 @@ public class MessageDelegator {
         HttpServletRequest request = bpc.request;
 
         preSelectOption(request);
-
         SearchParam param = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("systemAdmin", "queryMessage", param);
         SearchResult searchResult = messageService.doQuery(param);

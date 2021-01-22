@@ -36,43 +36,43 @@
                             </tr>
                             </thead>
                             <tbody>
-                                <c:choose>
-                                    <c:when test="${empty apptViewDtos}">
+                            <c:choose>
+                                <c:when test="${empty apptViewDtos}">
+                                    <tr>
+                                        <td colspan="7">
+                                            <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                        </td>
+                                    </tr>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="pool" items="${apptViewDtos}" varStatus="status">
                                         <tr>
-                                            <td colspan="7">
-                                                <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
-                                            </td>
-                                        </tr>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:forEach var="pool" items="${apptViewDtos}" varStatus="status">
-                                            <tr>
-                                                <c:if test="${pool.canReschedule}">
-                                                    <td class="form-check" >
-                                                        <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
-                                                               name="appIds" value="${pool.viewCorrId}" onclick="javascript:controlCease()"  >
-                                                        <label class="form-check-label" for="licence${status.index + 1}"><span
-                                                                class="check-square"></span>
-                                                        </label>
-                                                    </td>
-                                                </c:if>
-                                                <c:if test="${!pool.canReschedule}">
-                                                    <td >
-                                                    </td>
-                                                </c:if>
-                                                <td class="row_no"><c:out value="${status.index + 1}"/></td>
-                                                <td><c:out value="${pool.address}"/></td>
-                                                <td>
-                                                    <c:forEach var="svcId" items="${pool.svcIds}">
-                                                        <iais:service value="${svcId}"></iais:service><br>
-                                                    </c:forEach>
+                                            <c:if test="${pool.canReschedule}">
+                                                <td class="form-check" >
+                                                    <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
+                                                           name="appIds" value="${pool.viewCorrId}" onclick="javascript:controlCease()"  >
+                                                    <label class="form-check-label" for="licence${status.index + 1}"><span
+                                                            class="check-square"></span>
+                                                    </label>
                                                 </td>
-                                                <td><fmt:formatDate value="${pool.inspStartDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
+                                            </c:if>
+                                            <c:if test="${!pool.canReschedule}">
+                                                <td >
+                                                </td>
+                                            </c:if>
+                                            <td class="row_no"><c:out value="${status.index + 1+ (SearchParam.pageNo - 1) * SearchParam.pageSize}"/></td>
+                                            <td><c:out value="${pool.address}"/></td>
+                                            <td>
+                                                <c:forEach var="svcId" items="${pool.svcIds}">
+                                                    <iais:service value="${svcId}"></iais:service><br>
+                                                </c:forEach>
+                                            </td>
+                                            <td><fmt:formatDate value="${pool.inspStartDate}" pattern="${AppConsts.DEFAULT_DATE_TIME_FORMAT}" /></td>
 
-                                            </tr>
-                                        </c:forEach>
-                                    </c:otherwise>
-                                </c:choose>
+                                        </tr>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
                             </tbody>
                         </table>
 

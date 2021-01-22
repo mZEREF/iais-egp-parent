@@ -198,7 +198,17 @@
                                     </span></p>
                                 </div>
                             </div>
-                            <c:forEach items="${appGrpPremDto.appPremPhOpenPeriodList}" var="appPremPhOpenPeriod" varStatus="statu">
+                            <%--<c:forEach items="${appGrpPremDto.appPremPhOpenPeriodList}" var="appPremPhOpenPeriod" varStatus="statu">--%>
+                            <c:choose>
+                                <c:when test="${!empty appGrpPremDto.appPremPhOpenPeriodList}">
+                                    <c:set var="phLength" value="${appGrpPremDto.appPremPhOpenPeriodList.size()-1}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:set var="phLength" value="0"/>
+                                </c:otherwise>
+                            </c:choose>
+                            <c:forEach begin="0" end="${phLength}" step="1" varStatus="statu">
+                                <c:set var="appPremPhOpenPeriod" value="${appGrpPremDto.appPremPhOpenPeriodList[statu.index]}"/>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span>Select Public Holiday</span></p>
@@ -214,6 +224,9 @@
                                     <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span>
                                              <c:choose>
+                                                 <c:when test="${empty appPremPhOpenPeriod}">
+
+                                                 </c:when>
                                                  <c:when test="${appPremPhOpenPeriod.onsiteStartFromHH.length()>1}">
                                                      ${appPremPhOpenPeriod.onsiteStartFromHH}
                                                  </c:when>
@@ -221,8 +234,13 @@
                                                      0${appPremPhOpenPeriod.onsiteStartFromHH}
                                                  </c:otherwise>
                                              </c:choose>
-                                            :
+                                            <c:if test="${!empty appPremPhOpenPeriod}">
+                                                :
+                                            </c:if>
                                             <c:choose>
+                                                <c:when test="${empty appPremPhOpenPeriod}">
+
+                                                </c:when>
                                                 <c:when test="${appPremPhOpenPeriod.onsiteStartFromMM.length()>1}">
                                                     ${appPremPhOpenPeriod.onsiteStartFromMM}
                                                 </c:when>
@@ -241,6 +259,9 @@
                                     <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span>
                                             <c:choose>
+                                                <c:when test="${empty appPremPhOpenPeriod}">
+
+                                                </c:when>
                                                 <c:when test="${appPremPhOpenPeriod.onsiteEndToHH.length()>1}">
                                                     ${appPremPhOpenPeriod.onsiteEndToHH}
                                                 </c:when>
@@ -248,8 +269,13 @@
                                                     0${appPremPhOpenPeriod.onsiteEndToHH}
                                                 </c:otherwise>
                                             </c:choose>
-                                            :
+                                            <c:if test="${!empty appPremPhOpenPeriod}">
+                                                :
+                                            </c:if>
                                             <c:choose>
+                                                <c:when test="${empty appPremPhOpenPeriod}">
+
+                                                </c:when>
                                                 <c:when test="${appPremPhOpenPeriod.onsiteEndToMM.length()>1}">
                                                     ${appPremPhOpenPeriod.onsiteEndToMM}
                                                 </c:when>
@@ -395,7 +421,17 @@
                                     </span></p>
                                 </div>
                             </div>
-                            <c:forEach items="${appGrpPremDto.appPremPhOpenPeriodList}" var="appPremPhOpenPeriod" varStatus="statu">
+                            <%--<c:forEach items="${appGrpPremDto.appPremPhOpenPeriodList}" var="appPremPhOpenPeriod" varStatus="statu">--%>
+                            <c:choose>
+                                <c:when test="${!empty appGrpPremDto.appPremPhOpenPeriodList}">
+                                    <c:set var="phLength" value="${appGrpPremDto.appPremPhOpenPeriodList.size()-1}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:set var="phLength" value="0"/>
+                                </c:otherwise>
+                            </c:choose>
+                            <c:forEach begin="0" end="${phLength}" step="1" varStatus="statu">
+                                <c:set var="appPremPhOpenPeriod" value="${appGrpPremDto.appPremPhOpenPeriodList[statu.index]}"/>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span>Select Public Holiday</span></p>
@@ -411,6 +447,9 @@
                                     <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span>
                                             <c:choose>
+                                                <c:when test="${empty appPremPhOpenPeriod}">
+
+                                                </c:when>
                                                 <c:when test="${appPremPhOpenPeriod.convStartFromHH.length()>1}">
                                                     ${appPremPhOpenPeriod.convStartFromHH}
                                                 </c:when>
@@ -418,8 +457,13 @@
                                                     0${appPremPhOpenPeriod.convStartFromHH}
                                                 </c:otherwise>
                                             </c:choose>
-                                            :
+                                            <c:if test="${!empty appPremPhOpenPeriod}">
+                                                :
+                                            </c:if>
                                             <c:choose>
+                                                <c:when test="${empty appPremPhOpenPeriod}">
+
+                                                </c:when>
                                                 <c:when test="${appPremPhOpenPeriod.convStartFromMM.length()>1}">
                                                     ${appPremPhOpenPeriod.convStartFromMM}
                                                 </c:when>
@@ -437,6 +481,9 @@
                                     <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span>
                                             <c:choose>
+                                                <c:when test="${empty appPremPhOpenPeriod}">
+
+                                                </c:when>
                                                 <c:when test="${appPremPhOpenPeriod.convEndToHH.length()>1}">
                                                     ${appPremPhOpenPeriod.convEndToHH}
                                                 </c:when>
@@ -444,8 +491,13 @@
                                                     0${appPremPhOpenPeriod.convEndToHH}
                                                 </c:otherwise>
                                             </c:choose>
-                                            :
+                                            <c:if test="${!empty appPremPhOpenPeriod}">
+                                                :
+                                            </c:if>
                                             <c:choose>
+                                                <c:when test="${empty appPremPhOpenPeriod}">
+
+                                                </c:when>
                                                 <c:when test="${appPremPhOpenPeriod.convEndToMM.length()>1}">
                                                     ${appPremPhOpenPeriod.convEndToMM}
                                                 </c:when>
@@ -460,6 +512,14 @@
                         </c:if>
 
                         <c:if test="${'OFFSITE'==appGrpPremDto.premisesType}">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Postal Code</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.offSitePostalCode}</span></p>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>Address Type</span></p>
@@ -574,7 +634,17 @@
                                     </span></p>
                                 </div>
                             </div>
-                            <c:forEach items="${appGrpPremDto.appPremPhOpenPeriodList}" var="appPremPhOpenPeriod" varStatus="statu">
+                            <%--<c:forEach items="${appGrpPremDto.appPremPhOpenPeriodList}" var="appPremPhOpenPeriod" varStatus="statu">--%>
+                            <c:choose>
+                                <c:when test="${!empty appGrpPremDto.appPremPhOpenPeriodList}">
+                                    <c:set var="phLength" value="${appGrpPremDto.appPremPhOpenPeriodList.size()-1}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:set var="phLength" value="0"/>
+                                </c:otherwise>
+                            </c:choose>
+                            <c:forEach begin="0" end="${phLength}" step="1" varStatus="statu">
+                                <c:set var="appPremPhOpenPeriod" value="${appGrpPremDto.appPremPhOpenPeriodList[statu.index]}"/>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span>Select Public Holiday</span></p>
@@ -590,6 +660,9 @@
                                     <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span>
                                             <c:choose>
+                                                <c:when test="${empty appPremPhOpenPeriod}">
+
+                                                </c:when>
                                                 <c:when test="${appPremPhOpenPeriod.offSiteStartFromHH.length()>1}">
                                                     ${appPremPhOpenPeriod.offSiteStartFromHH}
                                                 </c:when>
@@ -597,8 +670,13 @@
                                                     0${appPremPhOpenPeriod.offSiteStartFromHH}
                                                 </c:otherwise>
                                             </c:choose>
-                                            :
+                                            <c:if test="${!empty appPremPhOpenPeriod}">
+                                                :
+                                            </c:if>
                                             <c:choose>
+                                                <c:when test="${empty appPremPhOpenPeriod}">
+
+                                                </c:when>
                                                 <c:when test="${appPremPhOpenPeriod.offSiteStartFromMM.length()>1}">
                                                     ${appPremPhOpenPeriod.offSiteStartFromMM}
                                                 </c:when>
@@ -616,6 +694,9 @@
                                     <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span>
                                             <c:choose>
+                                                <c:when test="${empty appPremPhOpenPeriod}">
+
+                                                </c:when>
                                                 <c:when test="${appPremPhOpenPeriod.offSiteEndToHH.length()>1}">
                                                     ${appPremPhOpenPeriod.offSiteEndToHH}
                                                 </c:when>
@@ -623,8 +704,13 @@
                                                     0${appPremPhOpenPeriod.offSiteEndToHH}
                                                 </c:otherwise>
                                             </c:choose>
-                                            :
+                                            <c:if test="${!empty appPremPhOpenPeriod}">
+                                                :
+                                            </c:if>
                                             <c:choose>
+                                                <c:when test="${empty appPremPhOpenPeriod}">
+
+                                                </c:when>
                                                 <c:when test="${appPremPhOpenPeriod.offSiteEndToMM.length()>1}">
                                                     ${appPremPhOpenPeriod.offSiteEndToMM}
                                                 </c:when>

@@ -140,7 +140,7 @@ public class InspecEmailDelegator {
             }
 
         }
-        TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
+        TaskDto taskDto = taskService.getTaskById(taskId);
         if( taskDto == null) {
             return;
         }
@@ -213,7 +213,7 @@ public class InspecEmailDelegator {
                     mapTemplate.put("ApplicantName", orgUserDto.getDisplayName());
                 }
             }
-            mapTemplate.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getApplicationType()}).get(0).getText());
+            mapTemplate.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getApplicationType()));
             mapTemplate.put("ApplicationNumber", applicationViewDto.getApplicationDto().getApplicationNo());
             mapTemplate.put("ApplicationDate", applicationViewDto.getSubmissionDate());
             mapTemplate.put("systemLink", loginUrl);

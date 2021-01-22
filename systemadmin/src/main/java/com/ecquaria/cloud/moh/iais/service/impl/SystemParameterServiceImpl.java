@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -10,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterQueryDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
@@ -26,11 +28,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.util.Date;
+import java.util.HashMap;
 
 @Service
 @Slf4j
 public class SystemParameterServiceImpl implements SystemParameterService {
+    private final static  HashMap<String, Long> propertiesBitIndex =  new HashMap<>();;
+    private final static String SYSTEM_PARAM_EDIT_OFFSET = "cache_system_param_edit_offset";
 
     @Autowired
     private SystemClient systemClient;
@@ -63,9 +69,13 @@ public class SystemParameterServiceImpl implements SystemParameterService {
     @Value("${iais.current.domain}")
     private String currentDomain;
 
+    @Autowired
+    private RedisCacheHelper redisCacheHelper;
+
     @Override
     @SearchTrack(catalog = "systemAdmin",key = "querySystemParam")
     public SearchResult<SystemParameterQueryDto> doQuery(SearchParam param) {
+        initPropertyKeyOffset();
         return systemClient.doQuery(param).getEntity();
     }
 
@@ -74,30 +84,34 @@ public class SystemParameterServiceImpl implements SystemParameterService {
         log.info(StringUtil.changeForLog("test val" + val));
         log.info("save system parameter start....");
         dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        dto.setModifiedAt(new Date());
         SystemParameterDto postUpdate = systemClient.saveSystemParameter(dto).getEntity();
+        if (postUpdate != null){
+            log.debug(StringUtil.changeForLog("go to update fe param =========>>>>>>>>>>>>>>>>>" + JsonUtil.parseToJson(postUpdate)));
+            EicRequestTrackingDto postSaveTrack = trackingHelper.clientSaveEicRequestTracking(EicClientConstant.SYSTEM_ADMIN_CLIENT, SystemParameterServiceImpl.class.getName(),
+                    "callEicCreateSystemParameter", currentApp + "-" + currentDomain,
+                    SystemParameterDto.class.getName(), JsonUtil.parseToJson(postUpdate));
 
-        EicRequestTrackingDto postSaveTrack = trackingHelper.clientSaveEicRequestTracking(EicClientConstant.SYSTEM_ADMIN_CLIENT, SystemParameterServiceImpl.class.getName(),
-                "callEicCreateSystemParameter", currentApp + "-" + currentDomain,
-                SystemParameterDto.class.getName(), JsonUtil.parseToJson(postUpdate));
-
-        try {
-            FeignResponseEntity<EicRequestTrackingDto> fetchResult = trackingHelper.getEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
-            if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
-                EicRequestTrackingDto entity = fetchResult.getEntity();
-                if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
-                    callEicCreateSystemParameter(postUpdate);
-                    entity.setProcessNum(1);
-                    Date now = new Date();
-                    entity.setFirstActionAt(now);
-                    entity.setLastActionAt(now);
-                    entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                    trackingHelper.getOrgTrackingClient().saveEicTrack(entity);
+            try {
+                FeignResponseEntity<EicRequestTrackingDto> fetchResult = trackingHelper.getEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
+                if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
+                    EicRequestTrackingDto entity = fetchResult.getEntity();
+                    if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
+                        callEicCreateSystemParameter(postUpdate);
+                        entity.setProcessNum(1);
+                        Date now = new Date();
+                        entity.setFirstActionAt(now);
+                        entity.setLastActionAt(now);
+                        entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                        trackingHelper.getOrgTrackingClient().saveEicTrack(entity);
+                    }
                 }
-            }
 
-        }catch (Exception e){
-            log.error(StringUtil.changeForLog("encounter failure when sync parameter to fe " + e.getMessage()), e);
+            }catch (Exception e){
+                log.error(StringUtil.changeForLog("encounter failure when sync parameter to fe " + e.getMessage()), e);
+            }
         }
+
 
         log.info("save system parameter end....");
     }
@@ -119,5 +133,46 @@ public class SystemParameterServiceImpl implements SystemParameterService {
     @Override
     public OrgUserDto retrieveOrgUserAccountById(String userId) {
         return userClient.findIntranetUserById(userId).getEntity();
+    }
+
+    @Override
+    public void initPropertyKeyOffset() {
+        if(IaisCommonUtils.isEmpty(propertiesBitIndex)){
+            Long index = 0L;
+            Class clz = SystemParamConfig.class;
+            Field[] fields = clz.getDeclaredFields();
+            for (Field f : fields){
+                Value value = f.getAnnotation(Value.class);
+                if (value != null){
+                    String propertyKey = value.value();
+                    if (StringUtil.isNotEmpty(propertyKey)){
+                        propertyKey = propertyKey.replace("${", "").replace("}", "");
+                        log.debug(StringUtil.changeForLog("offset PropertyKey" + propertyKey));
+                        propertiesBitIndex.put(propertyKey, index++);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean getPropertyOffsetStatus(String propertyKey) {
+        if (propertyKey == null || StringUtil.isEmpty(propertyKey)){
+            throw new NullPointerException();
+        }
+
+        long offset = propertiesBitIndex.get(propertyKey);
+        return redisCacheHelper.getBitValue(SYSTEM_PARAM_EDIT_OFFSET, offset);
+    }
+
+    @Override
+    public void setPropertyOffset(String propertyKey, boolean flag) {
+        if (propertyKey == null || StringUtil.isEmpty(propertyKey)){
+            throw new NullPointerException();
+        }
+
+        long offset = propertiesBitIndex.get(propertyKey);
+        //cache 5 minute
+        redisCacheHelper.setBit(SYSTEM_PARAM_EDIT_OFFSET, offset, flag, 300L);
     }
 }

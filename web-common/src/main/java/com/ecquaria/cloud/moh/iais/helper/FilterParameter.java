@@ -1,10 +1,13 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /*
@@ -23,17 +26,19 @@ public final class FilterParameter {
     private String searchAttr;
     private String resultAttr;
     private String sortField;
+    private LinkedHashMap<String, String> sortFieldMap;
     private String sortType;
     private Map<String,Object> filters;
 
     public static class Builder{
         private int pageNo = 1;
-        private int pageSize = SysParamUtil.getDefaultPageSize();
+        private int pageSize = SystemParamUtil.getDefaultPageSize();
         private Class<? extends Serializable> clz;
         private String searchAttr;
         private String resultAttr;
         private String sortField;
         private String sortType = SearchParam.ASCENDING;
+        private LinkedHashMap<String, String> sortFieldMap;
 
         public Builder clz(Class<? extends Serializable> val){
             clz = val;
@@ -70,6 +75,16 @@ public final class FilterParameter {
             return this;
         }
 
+        public Builder sortFieldToMap(String val, String sortType){
+            if (StringUtil.isNotEmpty(val) && StringUtil.isNotEmpty(sortType)){
+                if (IaisCommonUtils.isEmpty(sortFieldMap)){
+                    sortFieldMap = new LinkedHashMap<>(10);
+                }
+                sortFieldMap.put(val, sortType);
+            }
+            return this;
+        }
+
         public FilterParameter build() {
             return new FilterParameter(this);
         }
@@ -83,6 +98,7 @@ public final class FilterParameter {
         searchAttr = builder.searchAttr;
         resultAttr = builder.resultAttr;
         sortField  = builder.sortField;
+        sortFieldMap  = builder.sortFieldMap;
         sortType = builder.sortType;
     }
 }

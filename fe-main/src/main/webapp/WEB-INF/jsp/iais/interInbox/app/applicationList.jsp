@@ -244,9 +244,6 @@
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
                                                     <option value="Continue">Continue</option>
-                                                    <c:if test="${app.selfAssmtFlag == 0}">
-                                                        <option value="Assessment">Assessment</option>
-                                                    </c:if>
                                                     <c:if test="${app.canInspection}">
                                                         <option value="Inspection">Indicate Preferred Inspection Date</option>
                                                     </c:if>
@@ -281,9 +278,6 @@
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
                                                     <option value="Continue">Continue</option>
-                                                    <c:if test="${app.selfAssmtFlag == 0}">
-                                                        <option value="Assessment">Assessment</option>
-                                                    </c:if>
                                                 </select>
                                             </c:if>
                                             <c:if test="${app.status == 'APST002'
@@ -347,7 +341,7 @@
                         </div>
                         <div class="modal-body" style="text-align: center;">
                             <div class="row">
-                                <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem;"> ${ARR} </span></div>
+                                <div class="col-md-12"><span style="font-size: 2rem;"> ${ARR} </span></div>
                             </div>
                         </div>
                         <div class="modal-footer">

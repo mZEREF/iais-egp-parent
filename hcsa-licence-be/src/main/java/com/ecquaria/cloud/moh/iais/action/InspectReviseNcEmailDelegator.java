@@ -164,7 +164,7 @@ public class InspectReviseNcEmailDelegator {
             }
 
         }
-        TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
+        TaskDto taskDto = taskService.getTaskById(taskId);
         if( taskDto == null) {
             return;
         }
@@ -182,7 +182,7 @@ public class InspectReviseNcEmailDelegator {
         InspectionFDtosDto serListDto =  fillupChklistService.getInspectionFDtosDto(appPremCorrId,taskDto,cDtoList);
         AdCheckListShowDto adchklDto =insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
-        appViewDto.setCurrentStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appViewDto.getApplicationDto().getStatus()}).get(0).getText());
+        appViewDto.setCurrentStatus(MasterCodeUtil.getCodeDesc(appViewDto.getApplicationDto().getStatus()));
 
         // change common data;
         insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(commonDto);
@@ -849,8 +849,9 @@ public class InspectReviseNcEmailDelegator {
                     //delete file
                     insepctionNcCheckListService.deleteInvalidFile(serListDto);
                     //save file
-                    if( size <= 10240)
-                    appIntranetDocDto.setFileRepoId(insepctionNcCheckListService.saveFiles(file));
+                    if( size <= 10240) {
+                        appIntranetDocDto.setFileRepoId(insepctionNcCheckListService.saveFiles(file));
+                    }
                     serListDto.setAppPremisesSpecialDocDto(appIntranetDocDto);
                 }
             }
@@ -876,10 +877,11 @@ public class InspectReviseNcEmailDelegator {
                 licPremisesAuditDto.setInRiskSocre(0);
                 if(!StringUtil.isEmpty(periods)){
                     licPremisesAuditDto.setIncludeRiskType(periods);
-                    if(periods.equalsIgnoreCase(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY))
+                    if(periods.equalsIgnoreCase(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY)) {
                         licPremisesAuditDto.setLgrRemarks(frameworkRemarks );
-                    else
+                    } else {
                         licPremisesAuditDto.setLgrRemarks(null);
+                    }
                 } else {
                     licPremisesAuditDto.setIncludeRiskType(null);
                     licPremisesAuditDto.setLgrRemarks(null);

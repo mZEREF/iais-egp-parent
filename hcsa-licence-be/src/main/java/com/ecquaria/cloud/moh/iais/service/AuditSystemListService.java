@@ -4,9 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
 import com.ecquaria.cloud.role.Role;
-
 import java.util.List;
-import java.util.Set;
 
 /**
  * @Author: jiahao
@@ -38,9 +36,11 @@ public interface AuditSystemListService {
 
     void sendEmailToInsForSms(String emailKey,String appGroupNo);
 
-    List<SelectOption> getCanViewAuditRoles(Set<String> roleIds);
+    List<SelectOption> getCanViewAuditRoles(List<String> roleIds);
 
     List<Role> getRolesByDomain(String domain);
 
     SelectOption getRoleSelectOption(List<Role> roles,String roleId);
+
+    boolean  rightControlForRole(List<SelectOption> roleSels,String roleId);
 }

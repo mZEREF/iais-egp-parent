@@ -33,7 +33,7 @@
           <div class="center-content">
             <div class="intranet-content">
               <iais:body >
-                <div class="container">
+                <div class="">
                   <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
                       <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
@@ -382,7 +382,7 @@
             $("#actionValue").val('acccond');
             inspectorProRecSubmit("acccond");
         } else {
-            var errMsg = 'This is mandatory';
+            var errMsg = 'This field is mandatory';
             $("#error_selectValue").text(errMsg);
             dismissWaiting();
         }

@@ -86,4 +86,10 @@ public interface IntranetUserClient {
 
     @GetMapping(value = "/iais-orgUserRole/user-roles/{user_id}")
     FeignResponseEntity<List<String>> retrieveUserRoles(@PathVariable("user_id") String userId);
+
+    @GetMapping(value = "/iais-orguser-be/further-active-user", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<OrgUserDto>> searchActiveBeUser();
+
+    @GetMapping(value = "/iais-orguser-be/inActive-user", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<OrgUserDto>> searchInActiveBeUser();
 }

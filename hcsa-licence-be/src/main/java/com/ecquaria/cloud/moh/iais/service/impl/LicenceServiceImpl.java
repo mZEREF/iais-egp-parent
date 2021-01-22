@@ -51,6 +51,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
@@ -460,8 +461,10 @@ public class LicenceServiceImpl implements LicenceService {
                             msgParam.setSubject(msgSubject);
                             msgParam.setQueryCode(licenceDto.getLicenceNo());
                             msgParam.setReqRefNum(licenceDto.getLicenceNo());
+
                             List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-                            svcCodeList.add(licenceDto.getSvcCode());
+                            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
+                            svcCodeList.add(hcsaServiceDto.getSvcCode());
                             msgParam.setSvcCodeList(svcCodeList);
                             msgParam.setRefId(licenceDto.getId());
                             msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);

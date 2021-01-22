@@ -5,7 +5,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <div class="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
     <div class="container">
-        <div class="navigation-gp">
+        <div class="center-content">
             <div class="row">
                 <%@ include file="../common/dashboardDropDown.jsp" %>
                 <div class="col-xs-12">

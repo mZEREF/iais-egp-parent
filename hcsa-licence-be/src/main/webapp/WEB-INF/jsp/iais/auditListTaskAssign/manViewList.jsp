@@ -43,7 +43,7 @@
                                 <span class="error-msg" id="error_selectedOne" name="iaisErrorMsg"></span>
                                 <c:if test="${empty auditTaskDataDtos}">
                                     <tr>
-                                        <td colspan="10" align="center">
+                                        <td colspan="10" align="left">
                                             <iais:message key="GENERAL_ACK018" escape="true"/>
                                         </td>
                                     </tr>
@@ -73,9 +73,11 @@
                                     onclick="javascript:cancel();">
                                 Cancel
                             </button>
+                            <c:if test="${not empty auditTaskDataDtos}">
                             <button class="btn btn-primary next" type="button" onclick="javascript:addToAudit();;">
                              ADD INTO MANUAL AUDIT LIST
                             </button>
+                            </c:if>
                         </iais:action>
                     </div>
 

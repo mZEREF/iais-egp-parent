@@ -98,7 +98,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         if(!file.exists()){
             boolean createFlag = file.createNewFile();
             if (!createFlag) {
-                log.error("Create File fail");
+                log.debug("Create File fail");
             }
         }
         File groupPath=new File(sharedPath +File.separator+ RequestForInformationConstants.FILE_NAME_AUDIT+File.separator);
@@ -206,7 +206,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
                     File curFile =new File(sharedOutPath + File.separator + s + RequestForInformationConstants.ZIP_NAME);
                     boolean renameFlag = file.renameTo(curFile);
                     if (!renameFlag) {
-                        log.error("Rename file fail");
+                        log.debug("Rename file fail");
                     }
                     log.info(StringUtil.changeForLog("----------- new zip file name is"
                             +sharedOutPath+File.separator+s+RequestForInformationConstants.ZIP_NAME));

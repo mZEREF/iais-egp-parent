@@ -8,12 +8,13 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@include file="./dashboard.jsp" %>
-<div class="main-content">
+<div class="container">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="app_action_type" value="">
         <input type="hidden" name="withdraw_app_list" value="">
         <input type="hidden" id="configFileSize" value="${configFileSize}"/>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <div class="navigation-gp">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="internet-content">
@@ -64,7 +65,7 @@
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        <h4 class="modal-title">Select application for withdrawal</h4>
+                                        <div class="modal-title" style="font-size: 2rem;">Select application for withdrawal</div>
                                     </div>
                                     <div id="withdrawPagDiv"></div>
                                     <table class="table">
@@ -157,6 +158,11 @@
                                 </div>
                             </div>
                         </div>
+                        <c:if test="${isDoView == 'Y'}">
+                            <div class="components">
+                                <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em class="fa fa-angle-left"></em> Back</a>
+                            </div>
+                        </c:if>
                     </div>
                 </div>
                 <c:if test="${isDoView != 'Y'}">
@@ -169,14 +175,8 @@
                         </div>
                     </div>
                 </c:if>
-                <c:if test="${isDoView == 'Y'}">
-                    <div class="center-content">
-                        <div class="components">
-                            <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
-                        </div>
-                    </div>
-                </c:if>
             </div>
+        </div>
         </div>
         <div class="modal fade" id="isAppealModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
             <div class="modal-dialog" role="document">
@@ -186,7 +186,7 @@
                     </div>
                     <div class="modal-body" style="text-align: center;">
                         <div class="row">
-                            <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem;"> ${ARR} </span></div>
+                            <div class="col-md-12"><span style="font-size: 2rem;"> ${ARR} </span></div>
                         </div>
                     </div>
                     <div class="modal-footer">

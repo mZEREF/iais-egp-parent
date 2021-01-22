@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -146,19 +147,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
-    @Value("${iais.email.sender}")
-    private String mailSender;
-    @Autowired
-    private EmailClient emailClient;
-
     @Autowired
     private ApplicationGroupService applicationGroupService;
 
     @Autowired
     private InspectionAssignTaskService inspectionAssignTaskService;
-
-    @Autowired
-    private ApplicationViewService applicationViewService;
 
     @Autowired
     private SystemParamConfig systemParamConfig;
@@ -201,7 +194,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 if(processFileTrackDto!=null){
                     AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
                     processFileTrackDto.setAuditTrailDto(intranet);
-                    processFileTrackDto.setStatus("PFT002");
+                    processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SAVE_SUCCESSFUL);
                     try {
                         applicationClient.updateProcessFileTrack(processFileTrackDto);
                     }catch (Exception e){
@@ -347,7 +340,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         try{
                             fileInputStream=Files.newInputStream(filzz.toPath());
                             ByteArrayOutputStream by=new ByteArrayOutputStream();
-                            int count=0;
+                            int count;
                             byte [] size=new byte[1024];
                             count=fileInputStream.read(size);
                             while(count!=-1){
@@ -392,7 +385,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     bis=new BufferedInputStream(is);
                     cos=new CheckedInputStream(bis,new CRC32());
                     byte []b=new byte[1024];
-                    int count =0;
+                    int count ;
                     count=cos.read(b);
                     while(count!=-1){
                         bos.write(b,0,count);
@@ -532,7 +525,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         applicationNewAndRequstDto.setAuditTrailDto(intranet);
         applicationNewAndRequstDto.setProcessFileTrackDto(processFileTrackDto);
         applicationListDto.setApplicationNewAndRequstDto(applicationNewAndRequstDto);
-        processFileTrackDto.setStatus("PFT003");
+        processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_COMPLETE);
         applicationListDto.setProcessFileTrackDto(processFileTrackDto);
         applicationListDto.setEventRefNo(l.toString());
         applicationListDto.setRefNo(l.toString());
@@ -840,7 +833,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             moveFile(file);
             log.info("update file track start");
             ProcessFileTrackDto processFileTrackDto = applicationNewAndRequstDto.getProcessFileTrackDto();
-            processFileTrackDto.setStatus("PFT005");
+            processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SEND_TSAK_SUCCESS);
             applicationClient.updateProcessFileTrack(processFileTrackDto);
             /**
              * Send Email

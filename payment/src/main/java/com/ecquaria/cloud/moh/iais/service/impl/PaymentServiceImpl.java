@@ -4,18 +4,19 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.PaymentService;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentAppGrpClient;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
-import com.ecquaria.egp.core.payment.api.config.GatewayNetsConfig;
 import com.ecquaria.egp.core.payment.runtime.PaymentNetsProxy;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -31,7 +32,18 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @Slf4j
 public class PaymentServiceImpl implements PaymentService {
+    @Value("${iais.hmac.keyId}")
+    private String keyId1;
+    @Value("${iais.inter.gateway.url}")
+    private String gateWayUrl;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
 
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey1;
+
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
     @Autowired
     private PaymentClient paymentClient;
     @Autowired
@@ -42,7 +54,6 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public void retrieveNetsPayment(PaymentRequestDto paymentRequestDto) throws Exception {
-        String strGWPostURL= GatewayNetsConfig.nets_gateway_post_url;
         String keyId= GatewayConfig.eNetsKeyId;
         String secretKey=GatewayConfig.eNetsSecretKey ;
         SoapiS2S soapiTxnQueryReq=new SoapiS2S();
@@ -52,7 +63,7 @@ public class PaymentServiceImpl implements PaymentService {
         msg.setMerchantTxnRef(paymentRequestDto.getMerchantTxnRef());
         msg.setNetsMidIndicator("U");
         soapiTxnQueryReq.setMsg(msg);
-        String status=sendTxnQueryReqToGW(strGWPostURL,secretKey,keyId,soapiTxnQueryReq);
+        String status=sendTxnQueryReqToGW(secretKey,keyId,soapiTxnQueryReq);
 
         PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();
         String appGrpNo;
@@ -89,22 +100,29 @@ public class PaymentServiceImpl implements PaymentService {
     /**
      * KEY-ID - provided by eNETS
      * SECRET-KEY - provided by eNETS
-     * @param strGWPostURL - https://<domain-name>/GW2/TxnQuery
      * @param soapiTxnQueryReq - pojo contains getter setter based on message
     format
      * @throws Exception
      *
      */
-    public String sendTxnQueryReqToGW(String strGWPostURL, String secretKey,
-                                    String keyId, SoapiS2S soapiTxnQueryReq) throws Exception {
+    @Override
+    public String sendTxnQueryReqToGW( String secretKey,
+                                       String keyId, SoapiS2S soapiTxnQueryReq) throws Exception {
+        String strGWPostURL= gateWayUrl+"/v1/enets/GW2/TxnQuery";
         ObjectMapper mapper = new ObjectMapper();
         String soapiToGW = mapper.writeValueAsString(soapiTxnQueryReq);
         String singatureForReq =
                 PaymentNetsProxy.generateSignature(soapiToGW,secretKey); // refer to step b
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId1, secretKey1);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("keyId",keyId);
         headers.set("hmac", singatureForReq);
+        headers.set("date", signature.date());
+        headers.set("authorization", signature.authorization());
+        headers.set("date-Secondary", signature2.date());
+        headers.set("authorization-Secondary", signature2.authorization());
         HttpEntity<String> entity = new HttpEntity<String>(soapiToGW,
                 headers);
         ResponseEntity<String> response =

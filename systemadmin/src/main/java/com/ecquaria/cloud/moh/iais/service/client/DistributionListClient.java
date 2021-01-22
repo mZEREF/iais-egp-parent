@@ -18,7 +18,7 @@ import java.util.List;
  * @author guyin
  * @date 2019/12/28 10:45
  */
-@FeignClient(name = "system-admin", configuration = FeignConfiguration.class, fallback = IntranetUserClientFallback.class)
+@FeignClient(name = "system-admin", configuration = FeignConfiguration.class, fallback = DistributionListClientFallback.class)
 public interface DistributionListClient {
 
 
@@ -30,6 +30,9 @@ public interface DistributionListClient {
 
     @PostMapping(value = "/iais-emails/saveDistributionList", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<DistributionListWebDto> saveDistributionList(@RequestBody DistributionListWebDto distributionListDto);
+
+    @PostMapping(value = "/iais-emails/saveDistributionRole", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<DistributionListWebDto> saveDistributionRole(@RequestBody DistributionListWebDto distributionListDto);
 
     @PostMapping(value = "/iais-emails/deleteDistributionList", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> deleteDistributionList(@RequestBody List<String> list);

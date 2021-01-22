@@ -16,7 +16,7 @@
                 || "Amend a Licence" == menuName) {
                 msgToLicPage();
                 $.cookie('menuToPage', 'licPage');
-            } else if ("Edit a Drafted Application" == menuName
+            } else if ("Edit a Draft Application" == menuName
                 || "Withdraw an Application" == menuName) {
                 msgToAppPage();
                 $.cookie('menuToPage', 'appPage');
@@ -33,7 +33,7 @@
                 || "Request to Cease a Licence" == menuName
                 || "Amend a Licence" == menuName) {
             }
-            else if ("Edit a Drafted Application" == menuName
+            else if ("Edit a Draft Application" == menuName
                 || "Withdraw an Application" == menuName) {
                 licToAppPage();
                 $.cookie('menuToPage', 'appPage');

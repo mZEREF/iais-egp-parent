@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -11,12 +10,10 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ncs.secureconnect.sim.lite.SIMUtil;
 import com.ncs.secureconnect.sim.lite.SIMUtil4Corpass;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * @author: yichen
@@ -30,9 +27,6 @@ public class FELandingDelegator {
 	public static final String LOGIN_MODE_REAL 					= "Prod";
 	public static final String LOGIN_MODE_DUMMY_NOPASS 			= "Dummy.NoPass";
 	public static final String LOGIN_MODE_DUMMY_WITHPASS 	    = "Dummy.WithPass";
-
-	@Value("${moh.halp.login.test.mode}")
-	private String openTestMode;
 
 
 	/**
@@ -58,14 +52,6 @@ public class FELandingDelegator {
 			url.append("https://").append(bpc.request.getServerName())
 					.append("/main-web/eservice/INTERNET/MohInternetInbox");
 			IaisEGPHelper.sendRedirect(bpc.request, bpc.response, url.toString());
-		}
-
-		ParamUtil.setSessionAttr(bpc.request, "openTestMode", openTestMode);
-
-		List<String> issueUenList = (List<String>) ParamUtil.getSessionAttr(bpc.request, "uenList");
-		ParamUtil.setSessionAttr(bpc.request, "uenList", null);
-		if (!IaisCommonUtils.isEmpty(issueUenList)){
-			ParamUtil.setRequestAttr(bpc.request, "uenList", issueUenList);
 		}
 	}
 

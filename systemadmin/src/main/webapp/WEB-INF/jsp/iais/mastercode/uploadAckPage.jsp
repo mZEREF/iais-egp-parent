@@ -10,7 +10,7 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 
-<div class="main-content">
+<div class="main-content" style="min-height: 73vh;">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="crud_action_type" value="">

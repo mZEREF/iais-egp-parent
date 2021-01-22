@@ -411,9 +411,20 @@ public final class IaisEGPHelper extends EGPHelper {
         try {
             if(searchParam == null || isNew){
                 searchParam = new SearchParam(filter.getClz().getName());
-                searchParam.setPageSize(SysParamUtil.getDefaultPageSize());
+                searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
                 searchParam.setPageNo(filter.getPageNo());
-                searchParam.setSort(filter.getSortField(), SearchParam.ASCENDING);
+                String sortType;
+                if (StringUtil.isEmpty(sortType = filter.getSortType())){
+                    sortType = SearchParam.ASCENDING;
+                }
+
+                searchParam.setSort(filter.getSortField(), sortType);
+                if (IaisCommonUtils.isNotEmpty(filter.getSortFieldMap())){
+                    for (Map.Entry<String, String> entry : filter.getSortFieldMap().entrySet()){
+                        searchParam.addSort(entry.getKey(), entry.getValue());
+                    }
+                }
+
                 ParamUtil.setSessionAttr(request, filter.getSearchAttr(), searchParam);
             }
         }catch (NullPointerException e){
@@ -759,8 +770,9 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     public static String checkIdentityNoType(String identityNo){
-        boolean b = SgNoValidator.validateNric(identityNo);
-        boolean b1 = SgNoValidator.validateFin(identityNo);
+        String upper = identityNo.toUpperCase();
+        boolean b = SgNoValidator.validateNric(upper);
+        boolean b1 = SgNoValidator.validateFin(upper);
         if (b){
             return OrganizationConstants.ID_TYPE_NRIC;
         }

@@ -142,7 +142,7 @@
             </div>
             <div class="modal-body" style="text-align: center;">
                 <div class="row">
-                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
+                    <div class="col-md-12"><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
                 </div>
             </div>
             <div class="row " style="margin-top: 5%;margin-bottom: 5%">

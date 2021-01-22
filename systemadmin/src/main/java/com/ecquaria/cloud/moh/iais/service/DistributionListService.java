@@ -18,6 +18,7 @@ public interface DistributionListService {
     List<DistributionListWebDto> getDistributionList(String mode);
     List<HcsaServiceDto> getServicesInActive();
     DistributionListWebDto saveDistributionList(DistributionListWebDto distributionListDto);
+    DistributionListWebDto saveDistributionRole(DistributionListWebDto distributionListDto);
     void deleteDistributionList(List<String> list);
     DistributionListWebDto getDistributionListById(String id);
     List<HcsaSvcPersonnelDto> roleByServiceId(String serviceId,String status);

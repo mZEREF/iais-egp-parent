@@ -6,13 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroGroupDataDto;
-import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentDto;
-import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentXmlDto;
-import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroXmlPaymentBackDto;
-import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroXmlPaymentDto;
-import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.InputDetailBackDto;
-import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.InputDetailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.*;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
@@ -27,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -40,15 +35,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPaymentStatusClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.Calculator;
 import ecq.commons.config.Config;
@@ -109,7 +96,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     private EicRequestTrackingHelper eicRequestTrackingHelper;
     @Autowired
     private AppEicClient appEicClient;
-
+    @Autowired
+    private OrganizationLienceseeClient organizationLienceseeClient;
     @Override
     public List<HcsaServiceDto> getHcsaServiceDtosById(List<String> ids) {
 
@@ -415,12 +403,12 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
               giroPaymentXmlDtosGen.add(giroPaymentXmlDto) ;
           }
       }
-      //todo change filename
-        String xml = genXmlByGiroPaymentXmlDtos(giroPaymentXmlDtosGen);
-        // todo need change for sftp down file
-        String tag = "uploadGiro"+Formatter.formatDateTime(new Date(),Formatter.DATE_REF_NUMBER)+".xml";
+        GiroXmlPaymentDto grioXmlPaymentDto = getGiroXmlPaymentDtoByGiroPaymentXmlDtos(giroPaymentXmlDtos);
+        String xml = genXmlByGiroPaymentXmlDtos(grioXmlPaymentDto);
+        String uploadGrioFileData = dbsFileDataByGiroXmlPaymentDto(grioXmlPaymentDto);
+        String tag = genFileNameUploadSFTP();
         String fileName = ApplicationConsts.GIRO_UPLOAD_FILE_PATH+Config.get("sftp.linux.seperator")+ tag;
-        if(genXmlFileToSftp(xml,fileName)){
+        if(genXmlFileToSftp(uploadGrioFileData,fileName)){
             GiroPaymentXmlDto giroPaymentXmlDtoSend = new GiroPaymentXmlDto();
             giroPaymentXmlDtoSend.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             giroPaymentXmlDtoSend.setTag(tag);
@@ -431,8 +419,29 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             appPaymentStatusClient.updateGiroPaymentXmlDtos(giroPaymentXmlDtosGen);
         }
     }
-    private  String  genXmlByGiroPaymentXmlDtos(List<GiroPaymentXmlDto> giroPaymentXmlDtos){
-        GiroXmlPaymentDto grioXmlPaymentDto = getGiroXmlPaymentDtoByGiroPaymentXmlDtos(giroPaymentXmlDtos);
+    private String genFileNameUploadSFTP(){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(Config.get("col.giro.dbs.genfile.prefix","UFF2.FORMAT362")).
+                append('.').append(Config.get("col.giro.dbs.genfile.HQ_ID","MIOFHE01")).
+                append('.').append(Config.get("col.giro.dbs.genfile.subsi_ID","MIOFHE01"))
+                .append('.').append(Config.get("col.giro.dbs.genfile.tag","GIRO_"))
+                .append(Formatter.formatDateTime(new Date(),Formatter.DATE_FILE_NAME)).
+                append('.').append(Config.get("col.giro.dbs.genfile.suffix","txt.DBSSSGSG"));
+           return stringBuilder.toString();
+    }
+    private String dbsFileDataByGiroXmlPaymentDto(GiroXmlPaymentDto grioXmlPaymentDto){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(grioXmlPaymentDto.getINPUT_HEADER().toString());
+        List<InputDetailDto> inputDetailDtos = grioXmlPaymentDto.getINPUT_DETAIL();
+        if(!IaisCommonUtils.isEmpty(inputDetailDtos)){
+            for(InputDetailDto inputDetailDto : inputDetailDtos){
+                stringBuilder.append(inputDetailDto.toString());
+            }
+        }
+        stringBuilder.append(grioXmlPaymentDto.getINPUT_TRAILER());
+        return stringBuilder.toString();
+    }
+    private  String  genXmlByGiroPaymentXmlDtos(GiroXmlPaymentDto grioXmlPaymentDto){
         String xml ="";
         try{
             xml = XmlBindUtil.convertToXml(grioXmlPaymentDto);
@@ -443,19 +452,162 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     }
     private GiroXmlPaymentDto getGiroXmlPaymentDtoByGiroPaymentXmlDtos(List<GiroPaymentXmlDto> giroPaymentXmlDtos){
         GiroXmlPaymentDto grioXmlPaymentDto = new GiroXmlPaymentDto();
+        grioXmlPaymentDto.setINPUT_HEADER(getInputHeaderDto());
         //todo need change giroPaymentXmlDtos to grioXmlPaymentDto
         List<InputDetailDto> INPUT_DETAIL = IaisCommonUtils.genNewArrayList();
+        InputTrailerDto inputTrailerDto = new InputTrailerDto();
+        int totalNoOfTransactions = giroPaymentXmlDtos.size();
+        inputTrailerDto.setTotalNoOfTransactions(totalNoOfTransactions);
+        double totalTransactionAmount = 0.0;
+        String recordTypeData = Config.get("col.giro.dbs.data.record.type.dec","PAYMENT");
+        String productTypeData =  Config.get("col.giro.dbs.data.product.type","COL");
+        String paymentCurrency =  Config.get( "col.giro.dbs.data.account.currency","SGD");
+        String newDateString   = Formatter.formatDateTime(new Date(),Formatter.DATE_CMS_INTERFACE);
+        String receivingPartyName = Config.get( "col.giro.dbs.data.receiving.party.name","client 1");
+        String receivingAccountNumber = Config.get( "col.giro.dbs.data.receiving.account.number","1234566777");
+        String beneficiaryBankSWIFTBIC = Config.get( "col.giro.dbs.data.beneficiar.bank","OCBCSGSGXXX");
+        String transactionCode = Config.get( "col.giro.dbs.data.transaction.code","30");
+        String particulars = Config.get( "col.giro.dbs.data.particulars","321922");
+        String ddaReference = Config.get("col.giro.dbs.data.dda.reference","TM199206031W");
+        String paymentDetails =Config.get("col.giro.dbs.data.payment.details","M Log Trust");
+        String purposeofPayment = Config.get("col.giro.dbs.data.purposeofpayment","SUPP");
+        String deliveryMode = Config.get("col.giro.dbs.data.delivery.mode","B");
+        String email1 =Config.get("col.giro.dbs.data.email1","xxx@ecquaria.com");
+        String phone1 = Config.get("col.giro.dbs.data.phonename1","88888888");
         for(GiroPaymentXmlDto giroPaymentXmlDto : giroPaymentXmlDtos){
             GiroGroupDataDto giroGroupDataDto = JsonUtil.parseToObject(giroPaymentXmlDto.getXmlData(),GiroGroupDataDto.class);
-            InputDetailDto inputDetailDto = new InputDetailDto();
-            inputDetailDto.setAPPLICATION_NUMBER( giroGroupDataDto.getAppGroupNo());
-            inputDetailDto.setPAID_AMT(giroGroupDataDto.getResidualPayment());
-            INPUT_DETAIL.add(inputDetailDto);
+            String giroAccount = getGiroAccountByGroupNo(giroGroupDataDto.getAppGroupNo());
+            if(!StringUtil.isEmpty(giroAccount)){
+                InputDetailDto inputDetailDto = new InputDetailDto();
+                inputDetailDto.setAppGroupNo(giroGroupDataDto.getAppGroupNo());
+                inputDetailDto.setRecordType(recordTypeData);
+                inputDetailDto.setProductType(productTypeData);
+                inputDetailDto.setOriginatingAccountNumber(giroAccount);
+                inputDetailDto.setOriginatingAccountCurrency(paymentCurrency);
+                //todo set customerReferenceOrBatchReference
+                inputDetailDto.setCustomerReferenceOrBatchReference("20022515122");
+                inputDetailDto.setPaymentCurrency(paymentCurrency);
+                //todo set batch job id
+                inputDetailDto.setBatchID("03871");
+                //todo setPayDate
+                inputDetailDto.setPaymentDate(newDateString);
+                inputDetailDto.setBankCharges("");
+                inputDetailDto.setDebitAccountforBankCharges("");
+                inputDetailDto.setReceivingPartyName( receivingPartyName);
+                inputDetailDto.setPayableTo("");
+                inputDetailDto.setReceivingPartyAddress1("");
+                inputDetailDto.setReceivingPartyAddress2("");
+                inputDetailDto.setReceivingPartyAddress3("");
+                inputDetailDto.setReceivingAccountNumber(receivingAccountNumber);
+                inputDetailDto.setCountrySpecific("");
+                inputDetailDto.setReceivingBankCode("");
+                inputDetailDto. setReceivingBranchCode("");
+                inputDetailDto. setClearingCode("");
+                inputDetailDto.setBeneficiaryBankSWIFTBIC(beneficiaryBankSWIFTBIC);
+                inputDetailDto.setBeneficiaryBankName("");
+                inputDetailDto.setBeneficiaryBankAddress("");
+                inputDetailDto.setBeneficiaryBankCountry("");
+                inputDetailDto.setRoutingCode("");
+                inputDetailDto.setIntermediaryBankSWIFTBIC("");
+                inputDetailDto.setAmountCurrency("");
+                inputDetailDto.setAmount(giroGroupDataDto.getResidualPayment());
+                inputDetailDto.setFxContractReference1("");
+                inputDetailDto.setAmounttobeUtilized1("");
+                inputDetailDto.setFxContractReference2("");
+                inputDetailDto.setAmounttobeUtilized2 ("");
+                inputDetailDto.setTransactionCode(transactionCode);
+                inputDetailDto.setParticulars(particulars);
+                inputDetailDto.setDdaReference(ddaReference);
+                inputDetailDto.setPaymentDetails(paymentDetails);
+                inputDetailDto.setInstructiontoOrderingBank("");
+                inputDetailDto.setBeneficiaryResidentStatus("");
+                inputDetailDto.setBeneficiaryCategory("");
+                inputDetailDto.setTransactionRelationship("");
+                inputDetailDto.setPayeeRole("");
+                inputDetailDto.setRemitterIdentity("");
+                inputDetailDto.setPurposeofPayment(purposeofPayment);
+                inputDetailDto.setSupplementaryInfo("");
+                inputDetailDto.setDeliveryMode(deliveryMode);
+                inputDetailDto.setPrintAtLocation("");
+                inputDetailDto.setPayableLocation("");
+                inputDetailDto.setMailtoPartyName("");
+                inputDetailDto.setMailtoPartyAddress1("");
+                inputDetailDto.setMailtoPartyAddress2("");
+                inputDetailDto.setMailtoPartyAddress3("");
+                inputDetailDto.setReservedField("");
+                inputDetailDto.setPostalCode("");
+                if("E".equalsIgnoreCase(inputDetailDto.getDeliveryMode())){
+                    inputDetailDto.setEmail1(email1);
+                }else {
+                    inputDetailDto.setEmail1("");
+                }
+                inputDetailDto.setEmail2("");
+                inputDetailDto.setEmail3("");
+                inputDetailDto.setEmail4("");
+                inputDetailDto.setEmail5("");
+                if("F".equalsIgnoreCase(inputDetailDto.getDeliveryMode())){
+                    inputDetailDto.setPhoneNumber1(phone1);
+                }else {
+                    inputDetailDto.setPhoneNumber1("");
+                }
+                inputDetailDto.setPhoneNumber2("");
+                inputDetailDto.setPhoneNumber3("");
+                inputDetailDto.setPhoneNumber4("");
+                inputDetailDto.setPhoneNumber5("");
+                if("E".equalsIgnoreCase(inputDetailDto.getDeliveryMode())){
+                    InvoiceDetailsDto invoiceDetailsDto = new InvoiceDetailsDto();
+                    //todo true data
+                    invoiceDetailsDto.setSNo("001");
+                    invoiceDetailsDto.setInvoiceNo("1010039098");
+                    invoiceDetailsDto.setInvDate(newDateString);
+                    invoiceDetailsDto.setAmount(giroGroupDataDto.getResidualPayment());
+                    invoiceDetailsDto.setTotal(giroGroupDataDto.getResidualPayment());
+                    inputDetailDto.setInvoiceDetails( invoiceDetailsDto.toString());
+                }else {
+                    inputDetailDto.setInvoiceDetails("");
+                }
+                inputDetailDto.setClientReference1("");
+                inputDetailDto.setClientReference2("");
+                inputDetailDto.setClientReference3("");
+                inputDetailDto.setClientReference4("");
+                INPUT_DETAIL.add(inputDetailDto);
+                totalTransactionAmount = Calculator.add(totalTransactionAmount,giroGroupDataDto.getResidualPayment());
+            }else {
+                 totalNoOfTransactions--;
+                log.info(StringUtil.changeForLog("----------appgroupno :"+ giroGroupDataDto.getAppGroupNo() + " is no grio accout -------------"));
+            }
         }
         grioXmlPaymentDto.setINPUT_DETAIL(INPUT_DETAIL);
+        inputTrailerDto.setTotalTransactionAmount(totalTransactionAmount);
+        String recordTypeTra = Config.get("col.giro.dbs.trailer.record.type.dec","TRAILER");
+        inputTrailerDto.setRecordType(  recordTypeTra);
+        grioXmlPaymentDto.setINPUT_TRAILER(inputTrailerDto);
         return  grioXmlPaymentDto;
     }
-
+    private InputHeaderDto getInputHeaderDto(){
+        InputHeaderDto inputHeaderDto = new InputHeaderDto();
+         String recordType = Config.get("col.giro.dbs.head.record.type.dec","HEADER");
+        inputHeaderDto.setRecordType(recordType);
+        String fileCreationDate = Formatter.formatDateTime(new Date(),Formatter.DATE_CMS_INTERFACE);
+        inputHeaderDto.setFileCreationDate(fileCreationDate);
+        String organizationID = Config.get("col.giro.organization.id","MIOFHE01");
+        inputHeaderDto.setOrganizationID(organizationID);
+        String senderName = Config.get("col.giro.sender.name","MINISTRY OF HEALTH");
+        inputHeaderDto.setSenderName(senderName);
+        return inputHeaderDto;
+    }
+    private String getGiroAccountByGroupNo(String groupNo){
+        ApplicationGroupDto applicationGroupDto = applicationFeClient.getAppGrpByAppNo(groupNo+"-01").getEntity();
+        if( applicationGroupDto == null){
+            return "";
+        }
+        String licenseeId = applicationGroupDto.getLicenseeId();
+        OrgGiroAccountInfoDto orgGiroAccountInfoDto = organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity();;
+        if(orgGiroAccountInfoDto!= null && !StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())&& AppConsts.COMMON_STATUS_ACTIVE.equalsIgnoreCase(orgGiroAccountInfoDto.getStatus())){
+            return orgGiroAccountInfoDto.getAcctNo();
+        }
+        return "";
+    }
     private boolean genXmlFileToSftp(String xmlData,String fileName){
         try{
             if( FileUtil.writeToFile(fileName,xmlData)){
@@ -490,6 +642,12 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                       String xml = FileUtil.getString(downPath+fileName);
                       //todo The XML should be parsed directly into GiroXmlPaymentBackDto
                       xml = getXmlByGiroXmlPaymentDtoXml(xml);
+                      if(StringUtil.isEmpty(xml)){
+                          xml = getXmlByGiroXmlPaymentDtoXml(giroPaymentXmlDto.getXmlData());
+                      }
+                      if(StringUtil.isEmpty(xml)){
+                          continue;
+                      }
                       GiroXmlPaymentBackDto giroXmlPaymentBackDto = (GiroXmlPaymentBackDto) XmlBindUtil.convertToObject(GiroXmlPaymentBackDto.class,xml);
                       getGiroPaymentDtosByGiroXmlPaymentBackDto(giroXmlPaymentBackDto);
                       saveXml( xml,AppConsts.COMMON_STATUS_ACTIVE,ApplicationConsts.GIRO_DOWN_XML_SFTP,tag);
@@ -594,19 +752,24 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     //todo only get upload xml get down xml need change
     private String getXmlByGiroXmlPaymentDtoXml(String xml)throws Exception{
-        GiroXmlPaymentDto giroXmlPaymentDto = (GiroXmlPaymentDto)  XmlBindUtil.convertToObject(GiroXmlPaymentDto.class,xml);
-         List<InputDetailDto>  inputDetailDtos = giroXmlPaymentDto.getINPUT_DETAIL();
-        GiroXmlPaymentBackDto giroXmlPaymentBackDto = new GiroXmlPaymentBackDto();
-         if(!IaisCommonUtils.isEmpty(inputDetailDtos)){
-             List<InputDetailBackDto> inputDetailBackDtos  = IaisCommonUtils.genNewArrayList();
-             for(InputDetailDto inputDetailDto : inputDetailDtos){
-                 InputDetailBackDto inputDetailBackDto = new InputDetailBackDto();
-                 inputDetailBackDto.setAPPLICATION_NUMBER(inputDetailDto.getAPPLICATION_NUMBER());
-                 inputDetailBackDtos.add(inputDetailBackDto);
-             }
-             giroXmlPaymentBackDto.setINPUT_DETAIL(inputDetailBackDtos);
-         }
-        return  XmlBindUtil.convertToXml(giroXmlPaymentBackDto);
+        try{
+            GiroXmlPaymentDto giroXmlPaymentDto = (GiroXmlPaymentDto)  XmlBindUtil.convertToObject(GiroXmlPaymentDto.class,xml);
+            List<InputDetailDto>  inputDetailDtos = giroXmlPaymentDto.getINPUT_DETAIL();
+            GiroXmlPaymentBackDto giroXmlPaymentBackDto = new GiroXmlPaymentBackDto();
+            if(!IaisCommonUtils.isEmpty(inputDetailDtos)){
+                List<InputDetailBackDto> inputDetailBackDtos  = IaisCommonUtils.genNewArrayList();
+                for(InputDetailDto inputDetailDto : inputDetailDtos){
+                    InputDetailBackDto inputDetailBackDto = new InputDetailBackDto();
+                    inputDetailBackDto.setAPPLICATION_NUMBER(inputDetailDto.getAppGroupNo());
+                    inputDetailBackDtos.add(inputDetailBackDto);
+                }
+                giroXmlPaymentBackDto.setINPUT_DETAIL(inputDetailBackDtos);
+            }
+            return  XmlBindUtil.convertToXml(giroXmlPaymentBackDto);
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+        return "";
     }
 
 

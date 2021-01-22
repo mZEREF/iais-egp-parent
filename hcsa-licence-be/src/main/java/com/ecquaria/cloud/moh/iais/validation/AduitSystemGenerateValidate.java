@@ -37,7 +37,7 @@ public class AduitSystemGenerateValidate implements CustomizeValidator {
                IaisEGPHelper.parseToDate(inspectionStartDate);
                isDateS = true;
            }catch (Exception e){
-               errMap.put("inspectionStartDate","GENERAL_ERR0033");
+               errMap.put("inspectionStartDate","Date Format Error");
                isDateS = false;
            }
 
@@ -45,7 +45,7 @@ public class AduitSystemGenerateValidate implements CustomizeValidator {
                IaisEGPHelper.parseToDate(inspectionEndDate);
                isDateE = true;
            }catch (Exception e){
-               errMap.put("inspectionEndDate","GENERAL_ERR0033");
+               errMap.put("inspectionEndDate","Date Format Error");
                isDateE = false;
            }
 

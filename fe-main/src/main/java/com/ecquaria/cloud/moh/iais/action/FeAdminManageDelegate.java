@@ -221,7 +221,7 @@ public class FeAdminManageDelegate {
             ValidationResult validationResult = WebValidationHelper.validateProperty(feUserDto, "edit");
 
             if (validationResult.isHasErrors()){
-                log.error("****************Error");
+                log.debug("****************Error");
                 Map<String,String> errorMap = validationResult.retrieveAll();
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));

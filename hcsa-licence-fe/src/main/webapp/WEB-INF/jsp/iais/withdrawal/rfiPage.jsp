@@ -8,7 +8,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@include file="./dashboard.jsp" %>
-<div class="main-content">
+<div class="container">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="app_action_type" value="">
         <input type="hidden" name="withdraw_app_list" value="">
@@ -18,18 +18,19 @@
             <c:when test="${!empty rfi_already_err}">
                 <div class="row ">
                     <div class="container">
-                        <div class="row center">
+                        <div class="row center-content" style="padding-top: 0px">
                             <h3>${rfi_already_err}</h3>
                         </div>
                         <div class="row margin-bottom-10 text-right">
                             <div class="col-lg-12 col-xs-12">
-                                    <a class="btn btn-primary aMarginleft col-md-2 pull-right" id="toDashBoard" href="/main-web/eservice/INTERNET/MohInternetInbox">Go to <br>Dashboard</a>
+                                    <a class="btn btn-primary aMarginleft col-md-2 pull-right" id="toDashBoard" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp">Go to <br>Dashboard</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </c:when>
             <c:otherwise>
+            <div class="navigation-gp">
                 <div class="row">
                     <div class="col-lg-12 col-xs-12">
                         <div class="internet-content">
@@ -58,7 +59,7 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                            <h4 class="modal-title">Select application for withdrawal</h4>
+                                            <div class="modal-title" style="font-size: 2rem;">Select application for withdrawal</div>
                                         </div>
                                         <div id="withdrawPagDiv"></div>
                                         <table class="table">
@@ -117,13 +118,11 @@
                                                 <input id="selectedFile" type="file" style="display: none;" name = "selectedFile"
                                                        aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary"
                                                                                     href="javascript:void(0);">Upload</a>
-                                                <c:if test="${!empty rfiWithdrawDto.appPremisesSpecialDocDto.docName}">
-                                                <div id="delFile" style="margin-top: 13px;color: #1F92FF;">
+                                                <div id="delFile" style="margin-top: 13px;color: #1F92FF;" <c:if test="${empty rfiWithdrawDto.appPremisesSpecialDocDto.docName}">hidden</c:if>>
                                                     <strong id="fileName">${rfiWithdrawDto.appPremisesSpecialDocDto.docName}</strong>
                                                     <button type="button" class="btn btn-danger btn-sm" onclick="deleteWdFile()"><em
                                                             class="fa fa-times"></em></button>
                                                 </div>
-                                                </c:if>
                                             </div>
                                             <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
                                             <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
@@ -143,6 +142,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
             </c:otherwise>
         </c:choose>
     </form>
@@ -172,7 +172,6 @@
         $("[name='app_action_type']").val(action);
         $("#mainForm").submit();
     }
-
 
 
     $("#selectedFile").change(function () {

@@ -120,7 +120,9 @@
                     <h3>
                         <span>Search Results</span>
                     </h3>
-                    <table class="table">
+                    <div class="table-responsive">
+                        <div class="table-gp">
+                        <table class="table">
                         <thead>
                         <tr>
                             <iais:sortableHeader needSort="false" field="" value="No."></iais:sortableHeader>
@@ -134,7 +136,7 @@
                                                  value="Active directory ID"></iais:sortableHeader>
 
                             <iais:sortableHeader needSort="true" field="entity_id"
-                                                 value="CorpPass Id"></iais:sortableHeader>
+                                                 value="CorpPass ID"></iais:sortableHeader>
 
                             <iais:sortableHeader needSort="true" field="nric_number"
                                                  value="CorpPass NRIC"></iais:sortableHeader>
@@ -345,6 +347,9 @@
                         </c:choose>
                         </tbody>
                     </table>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>

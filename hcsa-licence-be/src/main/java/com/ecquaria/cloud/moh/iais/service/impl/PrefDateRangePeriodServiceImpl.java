@@ -95,7 +95,7 @@ public class PrefDateRangePeriodServiceImpl implements PrefDateRangePeriodServic
                     }
                 }
             }catch (Exception e){
-                log.error(StringUtil.changeForLog("encounter failure when sync inspection period date to fe" + e.getMessage()));
+                log.debug(StringUtil.changeForLog("encounter failure when sync inspection period date to fe" + e.getMessage()));
             }
 
             return Boolean.TRUE;

@@ -187,7 +187,7 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public InspectionTaskPoolListDto inputInspectorOption(InspectionTaskPoolListDto inspectionTaskPoolListDto, LoginContext loginContext) {
-        Set<String> roles = loginContext.getRoleIds();
+        List<String> roles = loginContext.getRoleIds();
         List<String> roleList = new ArrayList<>(roles);
         inspectionTaskPoolListDto.setCurRole(loginContext.getCurRoleId());
         inspectionTaskPoolListDto.setRoles(roleList);
@@ -207,7 +207,7 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public InspectionTaskPoolListDto reassignInspectorOption(InspectionTaskPoolListDto inspectionTaskPoolListDto, LoginContext loginContext,String taskId){
-        Set<String> roles = loginContext.getRoleIds();
+        List<String> roles = loginContext.getRoleIds();
         List<String> roleList = new ArrayList<>(roles);
         inspectionTaskPoolListDto.setCurRole(loginContext.getCurRoleId());
         inspectionTaskPoolListDto.setRoles(roleList);

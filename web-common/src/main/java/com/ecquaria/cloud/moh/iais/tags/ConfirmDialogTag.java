@@ -81,12 +81,12 @@ public class ConfirmDialogTag extends TagSupport {
         if (StringUtil.isEmpty(title)) {
             setTitle("Confirmation Box");
         }
-        html.append(" <h5 class=\"modal-title\" id=\"gridSystemModalLabel\">").append(StringUtil.viewHtml(title)).append("</h5></div>");
+        html.append(" <div class=\"modal-title\" id=\"gridSystemModalLabel\" style=\"font-size:2rem;\">").append(StringUtil.viewHtml(title)).append("</div></div>");
         html.append("<div class=\"modal-body\"><div class=\"row\">");
         if (needFungDuoJi) {
             html.append("<input type=\"hidden\" name=\"fangDuoJi").append(divId).append("\" id=\"fangDuoJi").append(divId).append("\"/>");
         }
-        html.append("<div class=\"col-md-8 col-md-offset-2\"><span style=\"font-size: 2rem\">");
+        html.append("<div class=\"col-md-12\"><span style=\"font-size: 2rem\">");
         if (needEscapHtml) {
             html.append(StringUtil.viewHtml(MessageUtil.getMessageDesc(msg)));
         } else {

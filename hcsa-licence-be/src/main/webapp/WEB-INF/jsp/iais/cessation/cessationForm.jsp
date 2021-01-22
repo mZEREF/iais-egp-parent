@@ -299,7 +299,7 @@
                 <div class="application-tab-footer">
                     <div class="row">
                         <div class="col-xs-12 col-sm-6">
-                            <a href="/hcsa-licence-web/eservice/INTRANET/MohLicenceManagement"><em
+                            <a href="/hcsa-licence-web/eservice/INTRANET/MohOnlineEnquiries/1/check"><em
                                     class="fa fa-angle-left"></em> Back</a>
                         </div>
                         <div class="col-xs-12 col-sm-6">

@@ -24,7 +24,7 @@
     <input id="nowTabIn" name="nowTabIn" value="${nowTabIn == null ? 'Combined' : nowTabIn}" type="hidden">
     <input id="nowComTabIn" name="nowComTabIn" value="${nowComTabIn == null ? 'General' : nowComTabIn}" type="hidden">
     <div class="main-content">
-        <div class="container">
+        <div class="">
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">

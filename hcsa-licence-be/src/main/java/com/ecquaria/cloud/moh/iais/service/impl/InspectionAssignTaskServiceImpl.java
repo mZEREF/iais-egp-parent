@@ -383,7 +383,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             return;
         }
         List<SelectOption> inspectorList = IaisCommonUtils.genNewArrayList();
-        Set<String> roles = loginContext.getRoleIds();
+        List<String> roles = loginContext.getRoleIds();
         List<String> roleList = new ArrayList<>(roles);
         //get current lead role
         String curRole = loginContext.getCurRoleId();
@@ -471,7 +471,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public String assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationViewDto applicationViewDto,
-                                          String internalRemarks, TaskDto taskDto, LoginContext loginContext) {
+                                        String internalRemarks, TaskDto taskDto, LoginContext loginContext) {
         List<SelectOption> inspectorCheckList = inspecTaskCreAndAssDto.getInspectorCheck();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appStatus = applicationDto.getStatus();
@@ -566,7 +566,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public String assignReschedulingTask(TaskDto td, List<String> taskUserIds, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
-                                         ApplicationGroupDto applicationGroupDto, String inspManHours, LoginContext loginContext) {
+                                       ApplicationGroupDto applicationGroupDto, String inspManHours, LoginContext loginContext) {
         //update
         td.setSlaDateCompleted(new Date());
         td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
@@ -1075,7 +1075,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     private String assignBroadcastTask(TaskDto td, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto, LoginContext loginContext) {
         //get role and stage
-        Set<String> roleIdSet = loginContext.getRoleIds();
+        List<String> roleIdSet = loginContext.getRoleIds();
         List<String> roleIds = new ArrayList<>(roleIdSet);
         Map<String, String> stageRoleMap = MiscUtil.getStageRoleByBroadcast(roleIds);
         if(stageRoleMap != null){

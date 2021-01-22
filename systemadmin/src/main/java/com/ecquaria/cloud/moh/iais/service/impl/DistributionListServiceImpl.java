@@ -77,6 +77,12 @@ public class DistributionListServiceImpl implements DistributionListService {
     }
 
     @Override
+    public DistributionListWebDto saveDistributionRole(DistributionListWebDto distributionListDto){
+        return distributionListClient.saveDistributionRole(distributionListDto).getEntity();
+    }
+
+
+    @Override
     public void deleteDistributionList(List<String> list){
         distributionListClient.deleteDistributionList(list).getEntity();
     }

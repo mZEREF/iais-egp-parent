@@ -373,6 +373,8 @@
                on  t6.INS_GRP_ID = t7.ID
                left join  (SELECT * FROM hcsal.dbo.licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LIC_PREMISES_ID = t3.ID
                WHERE   t4.STATUS = 'LICEST001' AND  t1.STATUS = 'AUTACPS001' ) tableall
+               WHERE 1=1
+               <#if svcCodes??> and svc_code IN ${svcCodes} </#if>
         ]]>
     </sql>
     <sql key="commonPoolAjax"  remarks="get Application By App Group in Common Pool">

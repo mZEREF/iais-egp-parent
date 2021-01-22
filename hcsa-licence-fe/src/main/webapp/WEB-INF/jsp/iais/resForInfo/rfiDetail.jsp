@@ -49,7 +49,7 @@
                                             <iais:field value="Due Date "/>
                                             <iais:value width="18">
                                                 <label class="control-label"><fmt:formatDate value="${licPreReqForInfoDto.dueDateSubmission}"
-                                                                      pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/></label>
+                                                                                             pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/></label>
                                             </iais:value>
                                         </iais:row>
                                         <c:if test="${ licPreReqForInfoDto.needDocument or not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos }">
@@ -79,11 +79,11 @@
                                                 <iais:value width="18">
                                                     <label>
                                                         <textarea  maxlength="1000" name="userReply${infoReply.id}"
-                                                                  rows="8" style=" font-weight:normal;"
-                                                                  cols="130">${infoReply.userReply}</textarea>
+                                                                   rows="8" style=" font-weight:normal;"
+                                                                   cols="130">${infoReply.userReply}</textarea>
                                                     </label>
                                                     <span id="error_userReply${infoReply.id}" name="iaisErrorMsg"
-                                                            class="error-msg"></span>
+                                                          class="error-msg"></span>
                                                 </iais:value>
                                             </iais:row>
                                         </c:forEach>
@@ -98,8 +98,18 @@
                                                 <iais:row>
                                                     <iais:value width="18">
                                                         <div class="file-upload-gp">
-                                                            <input class="hidden delFlag" type="hidden" name="commDelFlag${rfiDoc.id}" <c:if test="${rfiDoc.passDocValidate}">value="Y"</c:if> <c:if test="${!rfiDoc.passDocValidate}">value="N"</c:if>/>
-                                                            <span><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${rfiDoc.fileRepoId}"/>&fileRepoName=${rfiDoc.docName}">${rfiDoc.docName}</a></span>
+                                                            <input class="hidden validFlag" type="hidden" name="commValidFlag${rfiDoc.id}" <c:if test="${rfiDoc.passDocValidate}">value="Y"</c:if> <c:if test="${!rfiDoc.passDocValidate}">value="N"</c:if>/>
+                                                            <input class="hidden delFlag" type="hidden" name="commDelFlag${rfiDoc.id}" value="Y"/>
+                                                            <span>
+                                                                <c:choose>
+                                                                    <c:when test="${rfiDoc.passDocValidate}">
+                                                                        <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${rfiDoc.fileRepoId}"/>&fileRepoName=${rfiDoc.docName}">${rfiDoc.docName}</a>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        ${rfiDoc.docName}
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </span>
                                                             <c:choose>
                                                                 <c:when test="${rfiDoc.docName == '' || rfiDoc.docName == null }">
                                                                 </c:when>
@@ -167,7 +177,7 @@
         $(this).parent().children('span:eq(0)').html(getFileName(file));
         $(this).parent().children('span:eq(0)').next().html('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>');
         $(this).parent().children('span:eq(0)').next().removeClass("hidden");
-        $(this).parent().children('input.delFlag').val('N');
+        $(this).parent().children('input.validFlag').val('N');
     });
 
     $('.delBtn').click(function () {
@@ -175,7 +185,8 @@
         $(this).parent().children('span:eq(0)').next().html();
         $(this).parent().children('span:eq(0)').next().addClass("hidden");
         $(this).parent().children('input.selectedFile').val('');
-        $(this).parent().children('input.delFlag').val('Y');
+        $(this).parent().children('input.validFlag').val('N');
+        $(this).parent().children('input.delFlag').val('N');
 
     });
 

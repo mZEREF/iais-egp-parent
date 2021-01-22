@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.service.impl.SoapiS2S;
 
 /**
  * @author weilu
@@ -11,4 +12,5 @@ public interface PaymentService {
 
 
     void retrieveNetsPayment(PaymentRequestDto paymentRequestDto) throws Exception;
+    String sendTxnQueryReqToGW( String secretKey, String keyId, SoapiS2S soapiTxnQueryReq)throws Exception;
 }

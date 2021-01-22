@@ -556,9 +556,41 @@ public class AppealServiceImpl implements AppealService {
         if("APPEAL001".equals(appealType)){
             request.getSession().setAttribute(TYPE, APPLICATION);
             typeApplicationOrLicence(request,APPLICATION,entity2.getRelateRecId());
+            List<SelectOption> selectOptionList=new ArrayList<>(5);
+            SelectOption selectOption1=new SelectOption();
+            selectOption1.setValue("MS008");
+            selectOption1.setText("Appeal against use of restricted words in HCI Name");
+            SelectOption selectOption2=new SelectOption();
+            selectOption1.setValue("MS007");
+            selectOption1.setText("Others");
+            SelectOption selectOption3=new SelectOption();
+            selectOption1.setValue("MS003");
+            selectOption1.setText("Appeal for appointment of additional CGO to a service");
+            SelectOption selectOption4=new SelectOption();
+            selectOption1.setValue("MS002");
+            selectOption1.setText("Appeal against late renewal fee");
+            SelectOption selectOption5=new SelectOption();
+            selectOption1.setValue("MS001");
+            selectOption1.setText("Appeal against rejection");
+            selectOptionList.add(selectOption5);
+            selectOptionList.add(selectOption4);
+            selectOptionList.add(selectOption1);
+            selectOptionList.add(selectOption2);
+            selectOptionList.add(selectOption3);
+            request.getSession().setAttribute("selectOptionList",selectOptionList);
         }else if("APPEAL002".equals(appealType)){
             request.getSession().setAttribute(TYPE, LICENCE);
             typeApplicationOrLicence(request,LICENCE,entity2.getRelateRecId());
+            List<SelectOption> selectOptionList=new ArrayList<>(2);
+            SelectOption selectOption1=new SelectOption();
+            selectOption1.setText("Appeal for change of licence period");
+            selectOption1.setValue("MS004");
+            SelectOption selectOption=new SelectOption();
+            selectOption.setValue("MS007");
+            selectOption.setText("Others");
+            selectOptionList.add(selectOption1);
+            selectOptionList.add(selectOption);
+            request.getSession().setAttribute("selectOptionList",selectOptionList);
         }
 
     }
@@ -926,12 +958,6 @@ public class AppealServiceImpl implements AppealService {
         StringBuilder stringBuilder = new StringBuilder(appNo);
         String s = stringBuilder.append("-01").toString();
         List<AppGrpPremisesDto> premisesDtos = new ArrayList<>(1);
-      /*  for (PremisesDto every : premisess) {
-            AppGrpPremisesDto appGrpPremisesDto = MiscUtil.transferEntityDto(every, AppGrpPremisesDto.class);
-            appGrpPremisesDto.setOffTelNo(every.getHciContactNo());
-            premisesDtos.add(appGrpPremisesDto);
-            break;
-        }*/
         if(!StringUtil.isEmpty(premisess)){
             AppGrpPremisesDto appGrpPremisesDto = MiscUtil.transferEntityDto(premisess.get(0), AppGrpPremisesDto.class);
             appGrpPremisesDto.setOffTelNo(premisess.get(0).getHciContactNo());

@@ -31,7 +31,7 @@
                     <div class="search-wrap">
                         <div class="input-group">
                             <input class="form-control" placeholder="Search Your Keywords" value="${personName}" type="text" name="personName">
-                            <span class="input-group-btn"><button class="btn btn-default buttonsearch"><i class="fa fa-search"></i></button></span>
+                            <span class="input-group-btn"><button class="btn btn-default buttonsearch"><em class="fa fa-search"></em></button></span>
                         </div>
                     </div>
                 </div>

@@ -152,6 +152,7 @@ public class NewApplicationHelper {
                 boolean licPerson = appSvcCgoList.get(i).isLicPerson();
                 String idTypeNoKey = "idTypeNo"+i;
                 errMap = doPsnCommValidate(errMap,idTyp,idNo,licPerson,licPersonMap,idTypeNoKey,svcCode);
+                boolean newErr0006 = StringUtil.isEmpty(errMap.get(idTypeNoKey));
 //                String idTypeNoErr = errMap.get(idTypeNoKey);
 //                if(!StringUtil.isEmpty(idTypeNoErr)){
 //                    continue;
@@ -186,9 +187,9 @@ public class NewApplicationHelper {
                 String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
                 String qualification = appSvcCgoList.get(i).getSubSpeciality();
                 if(StringUtil.isEmpty(professionRegoNo)){
-                    errMap.put("professionRegoNo"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn. No.","field"));
+                    //errMap.put("professionRegoNo"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn. No.","field"));
                     if(StringUtil.isEmpty(qualification)){
-                        errMap.put("qualification"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Subspecialty or relevant qualification ","field"));
+                        errMap.put("qualification"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Sub-specialty or relevant qualification ","field"));
                     }
                 }else if(professionRegoNo.length() > 20){
                     String general_err0041=repLength("Professional Regn. No.","20");
@@ -196,7 +197,7 @@ public class NewApplicationHelper {
                 }
 
                 if(!StringUtil.isEmpty(qualification) && qualification.length() > 100){
-                    String general_err0041=repLength("Subspecialty or relevant qualification","100");
+                    String general_err0041=repLength("Sub-specialty or relevant qualification","100");
                     errMap.put("qualification" + i, general_err0041);
                 }
                 //to do
@@ -213,7 +214,7 @@ public class NewApplicationHelper {
                             errMap.put("idNo"+i,"RFC_ERR0012");
                         }
                         stringBuilder1.append(idTyp).append(idNo);
-                        if(!StringUtil.isEmpty(stringBuilder1.toString())){
+                        if(newErr0006 && !StringUtil.isEmpty(stringBuilder1.toString())){
                             if(stringList.contains(stringBuilder1.toString())){
                                 errMap.put("idNo"+i,"NEW_ERR0012");
                             }else {
@@ -228,7 +229,7 @@ public class NewApplicationHelper {
                         }
                         stringBuilder1.append(idTyp).append(idNo);
 
-                        if(!StringUtil.isEmpty(stringBuilder1.toString())){
+                        if(newErr0006 && !StringUtil.isEmpty(stringBuilder1.toString())){
                             if(stringList.contains(stringBuilder1.toString())){
                                 errMap.put("idNo"+i,"NEW_ERR0012");
                             }else {
@@ -397,6 +398,7 @@ public class NewApplicationHelper {
                     boolean licPerson = poDto.get(i).isLicPerson();
                     String poIdTypeNoKey = "poIdTypeNo" + i;
                     oneErrorMap = doPsnCommValidate(oneErrorMap,idType,idNo,licPerson,licPersonMap,poIdTypeNoKey,svcCode);
+                    boolean newErr0006 = StringUtil.isEmpty(oneErrorMap.get(poIdTypeNoKey));
 //                    String idTypeNoErr = oneErrorMap.get(poIdTypeNoKey);
 //                    if(!StringUtil.isEmpty(idTypeNoErr)){
 //                        continue;
@@ -429,7 +431,7 @@ public class NewApplicationHelper {
                             }else {
                                 stringBuilder.append(idType).append(idNo);
                                 String s = stringBuilder.toString();
-                                if(stringList.contains(s)){
+                                if(newErr0006 && stringList.contains(s)){
                                     oneErrorMap.put("poNRICFIN"+poIndex,"NEW_ERR0012");
                                 }
                             }
@@ -441,7 +443,7 @@ public class NewApplicationHelper {
                             }else {
                                 stringBuilder.append(idType).append(idNo);
                                 String s = stringBuilder.toString();
-                                if(stringList.contains(s)){
+                                if(newErr0006 && stringList.contains(s)){
                                     oneErrorMap.put("poNRICFIN"+poIndex,"NEW_ERR0012");
                                 }
                             }
@@ -510,7 +512,7 @@ public class NewApplicationHelper {
                 boolean licPerson = poDto.get(i).isLicPerson();
                 String dpoIdTypeNoKey = "dpoIdTypeNo"+dpoIndex;
                 oneErrorMap = doPsnCommValidate(oneErrorMap,idType,idNo,licPerson,licPersonMap,dpoIdTypeNoKey,svcCode);
-                String idTypeNoErr = oneErrorMap.get(dpoIdTypeNoKey);
+                boolean newErr0006 = StringUtil.isEmpty(oneErrorMap.get(dpoIdTypeNoKey));
 //                if(!StringUtil.isEmpty(idTypeNoErr)){
 //                    continue;
 //                }
@@ -559,7 +561,7 @@ public class NewApplicationHelper {
                             }else {
                                 stringBuilder.append(idType).append(idNo);
                                 String s = stringBuilder.toString();
-                                if(stringList.contains(s)){
+                                if(newErr0006 && stringList.contains(s)){
                                     oneErrorMap.put("deputyIdNo"+dpoIndex,"NEW_ERR0012");
                                 }
                             }
@@ -571,7 +573,7 @@ public class NewApplicationHelper {
                             }else {
                                 stringBuilder.append(idType).append(idNo);
                                 String s = stringBuilder.toString();
-                                if(stringList.contains(s)){
+                                if(newErr0006 && stringList.contains(s)){
                                     oneErrorMap.put("deputyIdNo"+dpoIndex,"NEW_ERR0012");
                                 }
                             }
@@ -997,6 +999,7 @@ public class NewApplicationHelper {
                 boolean licPerson = medAlertPsnDtos.get(i).isLicPerson();
                 String idTypeNoKey = "idTypeNo"+i;
                 errMap = doPsnCommValidate(errMap,idTyp,idNo,licPerson,licPersonMap,idTypeNoKey,svcCode);
+                boolean newErr0006 = StringUtil.isEmpty(errMap.get(idTypeNoKey));
 //                String idTypeNoErr = errMap.get(idTypeNoKey);
 //                if(!StringUtil.isEmpty(idTypeNoErr)){
 //                    continue;
@@ -1023,7 +1026,7 @@ public class NewApplicationHelper {
                             errMap.put("idNo"+i,"RFC_ERR0012");
                         }
                         stringBuilder1.append(idTyp).append(idNo);
-                        if(!StringUtil.isEmpty(stringBuilder1.toString())){
+                        if(newErr0006 && !StringUtil.isEmpty(stringBuilder1.toString())){
                             if(stringList.contains(stringBuilder1.toString())){
                                 errMap.put("idNo"+i,"NEW_ERR0012");
                             }
@@ -1035,7 +1038,7 @@ public class NewApplicationHelper {
                             errMap.put("idNo"+i,"RFC_ERR0012");
                         }
                         stringBuilder1.append(idTyp).append(idNo);
-                        if(!StringUtil.isEmpty(stringBuilder1.toString())){
+                        if(newErr0006 && !StringUtil.isEmpty(stringBuilder1.toString())){
                             if(stringList.contains(stringBuilder1.toString())){
                                 errMap.put("idNo"+i,"NEW_ERR0012");
                             }
@@ -1117,7 +1120,8 @@ public class NewApplicationHelper {
             return personMap;
         }
         for(AppSvcPrincipalOfficersDto psnDto:psnDtos){
-            if(StringUtil.isEmpty(psnDto.getIdNo()) || StringUtil.isEmpty(psnDto.getIdType())){
+            boolean partValidate = psnDoPartValidate(psnDto.getIdType(),psnDto.getIdNo(),psnDto.getName());
+            if(!partValidate){
                 continue;
             }
             String personMapKey = psnDto.getIdType()+","+psnDto.getIdNo();
@@ -2481,6 +2485,17 @@ public class NewApplicationHelper {
         }
 
     }
+    public static void setPremAddress(AppSubmissionDto appSubmissionDto){
+        if(appSubmissionDto != null){
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                    setPremAddressForSvcScope(appSubmissionDto.getAppGrpPremisesDtoList(),appSvcRelatedInfoDto);
+                }
+            }
+        }
+    }
+
 
     //=============================================================================
     //private method
@@ -2619,19 +2634,27 @@ public class NewApplicationHelper {
     }
 
 
+    private static void setPremAddressForSvcScope(List<AppGrpPremisesDto> appGrpPremisesDtos,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtos =appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcLaboratoryDisciplinesDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+            for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtos) {
+                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                    String premIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+                    String premval = appSvcLaboratoryDisciplinesDto.getPremiseVal();
+                    if (!StringUtil.isEmpty(premIndexNo) && premIndexNo.equals(premval)) {
+                        appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(appGrpPremisesDto.getAddress());
+                    }
+                }
+            }
+            appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtos);
+        }
+    }
+
     private static void setSvcScopeInfo(List<AppGrpPremisesDto> appGrpPremisesDtos,AppSvcRelatedInfoDto appSvcRelatedInfoDto,Map<String, HcsaSvcSubtypeOrSubsumedDto> map){
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtos =appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
         if(!IaisCommonUtils.isEmpty(appSvcLaboratoryDisciplinesDtos)){
+            setPremAddressForSvcScope(appGrpPremisesDtos,appSvcRelatedInfoDto);
             for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtos){
-                if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
-                    for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
-                        String premIndexNo = appGrpPremisesDto.getPremisesIndexNo();
-                        String premval = appSvcLaboratoryDisciplinesDto.getPremiseVal();
-                        if(!StringUtil.isEmpty(premIndexNo) && premIndexNo.equals(premval)){
-                            appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(appGrpPremisesDto.getAddress());
-                        }
-                    }
-                }
                 if(!IaisCommonUtils.isEmpty(appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList())){
                     for(AppSvcChckListDto appSvcChckListDto:appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList()){
                         HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto = map.get(appSvcChckListDto.getChkLstConfId());
@@ -2832,6 +2855,31 @@ public class NewApplicationHelper {
                     break;
                 }
             }
+        }
+        return result;
+    }
+
+    private static boolean psnDoPartValidate(String idType,String idNo,String name){
+        boolean result = true;
+        if(StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo) || StringUtil.isEmpty(name)){
+            result = false;
+        }else{
+            if(idNo.length() > 9){
+                result = false;
+            }
+            if("FIN".equals(idType)){
+                boolean b = SgNoValidator.validateFin(idNo);
+                if(!b){
+                    result = false;
+                }
+            }
+            if("NRIC".equals(idType)){
+                boolean b1 = SgNoValidator.validateNric(idNo);
+                if(!b1){
+                    result = false;
+                }
+            }
+
         }
         return result;
     }

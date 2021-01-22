@@ -8,6 +8,22 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
+<style>
+    body {counter-reset:section;}
+    #infohidden {counter-reset:subsection1;}
+    #dochidden {counter-reset:subsection;}
+
+    .infoTitIndex:before
+    {
+        counter-increment:subsection1;
+        content:counter(subsection1);
+    }
+    .docTitIndex:before
+    {
+        counter-increment:subsection;
+        content:counter(subsection);
+    }
+</style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="crud_action_type" value="">
@@ -84,7 +100,7 @@
                                                     </div>
                                                     <div class="row" >
                                                         <label class="col-xs-9 col-md-3 control-label" ></label>
-                                                        <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"> <div class="infoTitIndex"><c:if test="${ newRfi.infoChk!=null}">1</c:if> Title of Information Required <strong style="color:#ff0000;">*</strong></div></label>
+                                                        <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"> <div class="infoTitIndex"> Title of Information Required <strong style="color:#ff0000;">*</strong></div></label>
                                                     </div>
                                                     <div class="row" >
                                                         <label class="col-xs-9 col-md-3 control-label" ></label>
@@ -123,7 +139,7 @@
                                                                 </div>
                                                                 <div class="row" >
                                                                     <label class="col-xs-9 col-md-3 control-label" ></label>
-                                                                    <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"> ${statusInfo.index+1} Title of Information Required <strong style="color:#ff0000;">*</strong></label>
+                                                                    <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"><div class="infoTitIndex"> Title of Information Required <strong style="color:#ff0000;">*</strong></div></label>
                                                                 </div>
                                                                 <div class="row" >
                                                                     <label class="col-xs-9 col-md-3 control-label" ></label>
@@ -164,7 +180,7 @@
                                                     </div>
                                                     <div class="row" >
                                                         <label class="col-xs-9 col-md-3 control-label" ></label>
-                                                        <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"> <div class="docTitIndex"><c:if test="${ newRfi.docChk!=null}">1</c:if> Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div></label>
+                                                        <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"> <div class="docTitIndex"> Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div></label>
                                                     </div>
                                                     <div class="row" >
                                                         <label class="col-xs-9 col-md-3 control-label" ></label>
@@ -204,7 +220,7 @@
                                                                 </div>
                                                                 <div class="row" >
                                                                     <label class="col-xs-9 col-md-3 control-label" ></label>
-                                                                    <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"> ${statusDoc.index+1} Title of Supporting Documents <strong style="color:#ff0000;">*</strong></label>
+                                                                    <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"><div class="docTitIndex"> Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div></label>
                                                                 </div>
                                                                 <div class="row" >
                                                                     <label class="col-xs-9 col-md-3 control-label" ></label>
@@ -309,7 +325,7 @@
                         });
                         length=length+1;
                         var text=$('.docTitIndex');
-                        text.html('1 Title of Supporting Documents <strong style="color:#ff0000;">*</strong>');
+                        text.html(' Title of Supporting Documents <strong style="color:#ff0000;">*</strong>');
                     },
                     'error':function () {
                     }
@@ -325,7 +341,7 @@
             length=length-1;
             if(length===1){
                 var text=$('.docTitIndex');
-                text.html('1 Title of Supporting Documents <strong style="color:#ff0000;">*</strong>');
+                text.html(' Title of Supporting Documents <strong style="color:#ff0000;">*</strong>');
             }
         });
     }
@@ -376,7 +392,7 @@
                         });
                         lengthInfo=lengthInfo+1;
                         var text=$('.infoTitIndex');
-                        text.html('1 Title of Information Required <strong style="color:#ff0000;">*</strong>');
+                        text.html(' Title of Information Required <strong style="color:#ff0000;">*</strong>');
                     },
                     'error':function () {
                     }
@@ -394,7 +410,7 @@
             lengthInfo=lengthInfo-1;
             if(lengthInfo===1){
                 var text=$('.infoTitIndex');
-                text.html('1 Title of Information Required <strong style="color:#ff0000;">*</strong>');
+                text.html(' Title of Information Required <strong style="color:#ff0000;">*</strong>');
             }
         });
     }

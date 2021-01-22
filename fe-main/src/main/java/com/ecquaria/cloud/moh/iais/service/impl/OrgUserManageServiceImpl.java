@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.jwt.JwtEncoder;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -47,7 +46,6 @@ import sop.rbac.user.UserIdentifier;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -412,6 +410,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         organizationDto.setStatus(organizationById.getStatus());
         organizationDto.setUenNo(organizationById.getUenNo());
         organizationDto.setId(organizationById.getId());
+        organizationDto.setLicenseeDto(licenseeDto);
         updateUserBe(organizationDto);
         if(amendLicensee){
             //update licensee

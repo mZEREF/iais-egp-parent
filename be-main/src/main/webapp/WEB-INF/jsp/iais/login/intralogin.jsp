@@ -37,7 +37,7 @@
                                 </label>
 
                             </div>
-                            <span id="error_submit" class="error-msg" hidden> This is mandatory</span>
+                            <span id="error_submit" class="error-msg" hidden> This field is mandatory</span>
 
                         </div>
                     </div>

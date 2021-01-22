@@ -208,8 +208,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
                         }
                     }
                 }catch (Exception e){
-                    log.info(StringUtil.changeForLog("email sent failed" ));
-                    log.info(e.getMessage(),e);
+                    log.error(StringUtil.changeForLog("email sent failed" ),e);
                 }
 
             }else if(item.getRecipientsRole() != null){

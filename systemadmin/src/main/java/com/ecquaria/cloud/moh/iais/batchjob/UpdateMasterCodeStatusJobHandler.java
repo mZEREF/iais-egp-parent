@@ -4,11 +4,10 @@ import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.BatchJobConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +35,7 @@ public class UpdateMasterCodeStatusJobHandler extends IJobHandler {
         try {
             AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
             masterCodeService.inactiveMasterCode(auditTrailDto);
+            MasterCodeUtil.refreshCache();
             JobLogger.log(StringUtil.changeForLog("The InactiveMasterCodeJobHandler end..." ));
             return ReturnT.SUCCESS;
         }catch (Throwable e){

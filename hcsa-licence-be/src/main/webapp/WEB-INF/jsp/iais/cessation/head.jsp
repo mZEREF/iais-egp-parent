@@ -5,21 +5,21 @@
 %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <div class="dashboard" id="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')">
-    <div class="container">
-        <div class="navigation-gp">
-            <div class="row">
-                <webui:setLayout name="iais-intranet"/>
-                <div class="col-xs-12">
-                    <div class="dashboard-page-title">
-                        <div class="col-xs-12">
-                            <br/><br/>
-                            <h1 class="font-weight 0">Cessation Form</h1>
+        <div style="margin-left: 190px">
+            <div class="navigation-gp">
+                <div class="row">
+                    <webui:setLayout name="iais-intranet"/>
+                    <div class="col-xs-12">
+                        <div class="dashboard-page-title">
+                            <div class="col-xs-12">
+                                <br/><br/>
+                                <h1 class="font-weight 0">Cessation Form</h1>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 </div>
 
 <style>

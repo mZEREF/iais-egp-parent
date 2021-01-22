@@ -756,7 +756,10 @@
           $('#Pre-requisite').attr("style","display:none");
         }else if("SVTP003"==val){
             $('#Subsumption').attr("style","display:none");
-            $('#Pre-requisite').attr("style","display:style")
+            $('#Pre-requisite').attr("style","display:style");
+          $("select[name='selectCategoryId']").next().find('.current').html('Specified Services');
+          $("select[name='selectCategoryId']").next().attr('class','nice-select disabled');
+          $("select[name='selectCategoryId']").val('06639A5E-D8FA-E911-BE7B-000C29F371DC');
         }else {
             $('#Subsumption').attr("style","display:none");
             $('#Pre-requisite').attr("style","display:none");
@@ -785,18 +788,24 @@
             $('#selectCategoryId').attr("style","display:block");
             $('#Subsumption').attr("style","display:none");
             $('#Pre-requisite').attr("style","display:none");
+          $("select[name='selectCategoryId']").next().attr('class','nice-select');
         } else if("SVTP002"==val){
             $('#Subsumption').attr("style","display:block");
             $('#Pre-requisite').attr("style","display:none");
             $('#selectCategoryId').attr("style","display:none");
+          $("select[name='selectCategoryId']").next().attr('class','nice-select');
         }else  if("SVTP003"==val){
             $('#Pre-requisite').attr("style","display:block");
             $('#Subsumption').attr("style","display:none");
             $('#selectCategoryId').attr("style","display:block");
+          $("select[name='selectCategoryId']").next().find('.current').html('Specified Services');
+          $("select[name='selectCategoryId']").next().attr('class','nice-select disabled');
+          $("select[name='selectCategoryId']").val('06639A5E-D8FA-E911-BE7B-000C29F371DC')
         }else {
             $('#Subsumption').attr("style","display:none");
             $('#Pre-requisite').attr("style","display:none");
             $('#selectCategoryId').attr("style","display:none");
+          $("select[name='selectCategoryId']").next().attr('class','nice-select');
         }
 
     });

@@ -21,7 +21,7 @@
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <div class="main-content">
-        <div class="container">
+        <div class="">
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
@@ -86,7 +86,7 @@
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
                                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                                        <h5 class="modal-title"></h5>
+                                                                        <div class="modal-title" style="font-size: 2rem;"></div>
                                                                     </div>
                                                                     <div class="modal-body">
                                                                         <div class="row">
@@ -166,7 +166,7 @@
                                                                       <div class="modal-content">
                                                                           <div class="modal-header">
                                                                               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                                              <h5 class="modal-title"></h5>
+                                                                              <div class="modal-title" style="font-size: 2rem;"></div>
                                                                           </div>
                                                                           <div class="modal-body">
                                                                               <div class="row">

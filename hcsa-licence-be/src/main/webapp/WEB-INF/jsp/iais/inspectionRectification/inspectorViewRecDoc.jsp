@@ -72,7 +72,7 @@
                   <p></p>
                   <div class="row">
                     <div class="col-md-2">
-                      <label style="font-size: 16px">Inspection Officer (s)</label>
+                      <label style="font-size: 16px">Inspection Officer(s)</label>
                     </div>
                     <div class="col-md-6">
                       <c:forEach var = "insepctor" items = "${inspectionReportDto.inspectors}">

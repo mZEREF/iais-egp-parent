@@ -9,6 +9,10 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 
+<%
+  String openTestMode = ConfigHelper.getString("moh.halp.login.test.mode", "prod");
+  request.setAttribute("openTestMode", openTestMode);
+%>
 
 <c:choose>
   <c:when test="${'Dummy.NoPass' eq openTestMode || 'Dummy.WithPass' eq openTestMode}">
@@ -123,6 +127,7 @@
     <%@ page import="com.ncs.secureconnect.sim.lite.SIMUtil4Corpass" %>
     <%@ page import="com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper" %>
     <%@ page import="com.ecquaria.cloud.moh.iais.helper.FeLoginHelper" %>
+    <%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
     <%
       try {
         SIMUtil4Corpass.doCorpPassLogin(request, response);

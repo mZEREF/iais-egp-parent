@@ -81,12 +81,19 @@ public class ConfigServiceDelegator {
         log.info("*********prepare  start***********");
 
     }
-
+    /*
+    * list all service oder by service name (First ranking) , version (Second ranking)
+    * */
     public void list(BaseProcessClass bpc){
         log.info("*********list  start***********");
         List<HcsaServiceDto> allHcsaServices = configService.getAllHcsaServices();
         bpc.request.setAttribute("hcsaServiceDtos", allHcsaServices);
     }
+
+    /*
+    * add new service
+    *
+    * */
     public void addNewService(BaseProcessClass bpc){
         log.info("*********addNewService  start***********");
         bpc.request.getSession().removeAttribute("routingStage");
@@ -96,6 +103,9 @@ public class ConfigServiceDelegator {
             bpc.request.setAttribute("individualPremises","0");
         }
     }
+    /*
+    * update service to new version
+    * */
     public void saveOrUpdate(BaseProcessClass bpc) throws Exception{
         log.info("*********saveOrUpdate  start***********");
         HcsaServiceConfigDto dateOfHcsaService = getDateOfHcsaService(bpc.request);
@@ -109,7 +119,10 @@ public class ConfigServiceDelegator {
         log.info("*********editOrDelete  start***********");
 
     }
-
+    /*
+    * edit or choose other version service to edit
+    *
+    * */
     public void edit(BaseProcessClass bpc){
         log.info("*********edit  start***********");
         configService.viewPageInfo(bpc.request);
@@ -131,12 +144,18 @@ public class ConfigServiceDelegator {
 
 
     }
+
+    /*
+    * view page
+    * */
     public void editView(BaseProcessClass bpc){
         log.info("*********editView  start***********");
 
         configService.viewPageInfo(bpc.request);
     }
-
+    /*
+    * delete service if service never used
+    * */
     public void delete(BaseProcessClass bpc){
 
         log.info("*********delete  start***********");
@@ -164,7 +183,15 @@ public class ConfigServiceDelegator {
         configService.update(bpc.request,bpc.response,dateOfHcsaService);
 
     }
-
+    /*
+    * get page all data
+    * -----------------------
+    * service name ,service code ...
+    * --------------------------
+    * ( NEW APPLICATION ) ; ( REQUEST FOR CHANGE ) ...BUTTON
+    * these info in session
+     *
+    * */
     private HcsaServiceConfigDto getDateOfHcsaService(HttpServletRequest request)  {
         HcsaServiceConfigDto hcsaServiceConfigDto = new HcsaServiceConfigDto();
         HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();

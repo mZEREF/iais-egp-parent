@@ -23,10 +23,25 @@
            value="com.ecquaria.cloud.moh.iais.dto.AuditAssginListValidateDto"/>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="actionTodo" id="actionTodo" />
-
             <div class="row">
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
+                        <div hidden="hidden">
+                        <c:if test="${ISTUC}">
+                            <iais:section title="" id="searchRole">
+                                <iais:row>
+                                    <iais:field value="Role"/>
+                                    <iais:value width="8">
+                                        <iais:select name="roleIdsForAuditSelect" options="roleIdsForAudit"  value="${roleIdsForAuditSelect}"/>
+                                    </iais:value>
+                                </iais:row>
+                            </iais:section>
+                            <iais:action style="text-align:right;">
+                                <button class="btn btn-primary next" type="button" onclick="javascript:doNextSearch();">Search
+                                </button>
+                            </iais:action>
+                        </c:if>
+                        </div>
                         <h2>${modulename}</h2>
                         <c:if test="${modulename != 'Manual Audit List'}">
                             <iais:pagination param="auditTaskDataDtos_pram" result="auditTaskDataDtosResult"/>
@@ -34,6 +49,21 @@
                         <div class="table-gp">
                             <table class="table">
                                 <thead>
+                   <c:if test="${empty auditTaskDataDtos || (not empty auditTaskDataDtos && roleIdsForAuditSelect != 'APO')}">
+                       <tr>
+                           <th >HCI Code</th>
+                           <th >HCI Name</th>
+                           <th >Address</th>
+                           <th >Service Name</th>
+                           <th>Audit Type</th>
+                           <c:if test="${ISTUC}">
+                               <th>TCU Audit Due Date </th>
+                           </c:if>
+                           <th >Assign task to Inspector</th>
+                           <th >Select for Audit</th>
+                       </tr>
+                   </c:if>
+                    <c:if test="${not empty auditTaskDataDtos && roleIdsForAuditSelect eq 'APO'}">
                                 <tr>
                                     <th width="10%">HCI Code</th>
                                     <th width="10%">HCI Name</th>
@@ -41,18 +71,18 @@
                                     <th width="10%">Service Name</th>
                                     <th width="19%">Audit Type</th>
                                     <c:if test="${ISTUC}">
-                                        <th>TCU Audit Due Date
-                                        </th>
+                                        <th>TCU Audit Due Date  </th>
                                     </c:if>
                                     <th width="19%">Assign task to Inspector</th>
                                     <th width="6%">Select for Audit</th>
                                 </tr>
+                    </c:if>
                                 </thead>
                                 <tbody>
                                 <span class="error-msg" id="error_selectedOne" name="iaisErrorMsg"></span>
                                 <c:if test="${empty auditTaskDataDtos}">
                                     <tr>
-                                        <td colspan="${ISTUC ? 8 : 9}" align="center">
+                                        <td colspan="${ISTUC ? 8 : 9}" align="left">
                                             <iais:message key="GENERAL_ACK018" escape="true"/>
                                         </td>
                                     </tr>
@@ -64,7 +94,7 @@
                                         <td  width="10%"><c:out value="${empty item.hclName ? 'N/A' :item.hclName}"/></td>
                                         <td  width="28%"><c:out value="${empty item.address ? 'N/A' : item.address}"/></td>
                                         <td width="10%"><c:out value="${item.svcName}"/></td>
-                                        <td  width="17%"><c:if test="${ !item.audited}">
+                                        <td  width="10%"><c:if test="${ !item.audited}">
                                             <iais:select name="${id}auditType" options="aduitTypeOp"
                                                          firstOption="Please Select" value="${item.auditType}"></iais:select>
                                             <c:set value="error_${id}adtype" var="erradtype"/>
@@ -115,7 +145,7 @@
                                 <button type="button" class="btn btn-secondary" onclick="javascript:cancel();">Cancel
                                 </button>
                             </c:if>
-                            <c:if test="${auditSystemPotentialDtoForSearch.selectRole eq 'APO'}">
+                            <c:if test="${roleIdsForAuditSelect eq 'APO'}">
                             <button type="button" class="btn btn-primary next" onclick="javascript:confirm();">Confirm
                                 to Audit
                             </button>
@@ -160,5 +190,10 @@
 
     function jumpToPagechangePage() {
         SOP.Crud.cfxSubmit("mainForm", "changePage");
+    }
+
+
+    function  doNextSearch(){
+        SOP.Crud.cfxSubmit("mainForm", "serach");
     }
 </script>

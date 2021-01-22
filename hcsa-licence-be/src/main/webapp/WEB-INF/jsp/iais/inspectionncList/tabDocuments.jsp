@@ -23,7 +23,7 @@
                 <tbody>
                 <c:if test="${applicationViewDto.applicationDto.applicationType =='APTY008' || applicationViewDto.applicationDto.applicationType == 'APTY007'}">
                     <tr>
-                        <td colspan="6" align="center">
+                        <td colspan="6" align="left">
                             <iais:message key="GENERAL_ACK018"
                                           escape="true"/>
                         </td>
@@ -33,7 +33,7 @@
                 <c:if test="${applicationViewDto.applicationDto.applicationType !='APTY008' && applicationViewDto.applicationDto.applicationType != 'APTY007'}">
                     <c:if test="${empty applicationViewDto.appSupDocDtoList}">
                         <tr>
-                            <td colspan="6" align="center">
+                            <td colspan="6" align="left">
                                 <iais:message key="GENERAL_ACK018"
                                               escape="true"/>
                             </td>
@@ -91,7 +91,7 @@
                 <tbody id="tbodyFileListId">
                 <c:if test="${applicationViewDto.applicationDto.applicationType =='APTY008'}">
                     <tr>
-                        <td colspan="6" align="center">
+                        <td colspan="6" align="left">
                             <iais:message key="GENERAL_ACK018"
                                           escape="true"/>
                         </td>
@@ -101,7 +101,7 @@
                     <c:choose>
                         <c:when test="${empty applicationViewDto.appIntranetDocDtoList}">
                             <tr>
-                                <td colspan="6" align="center">
+                                <td colspan="6" align="left">
                                     <iais:message key="GENERAL_ACK018"
                                                   escape="true"/>
                                 </td>

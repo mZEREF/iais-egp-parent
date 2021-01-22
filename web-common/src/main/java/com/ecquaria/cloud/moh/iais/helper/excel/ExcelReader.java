@@ -5,10 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -124,8 +122,7 @@ public final class ExcelReader {
         Workbook workBook = null;
         try (InputStream in = Files.newInputStream(file.toPath())){
             char indexChar = ".".charAt(0);
-            String suffix = file.getName().substring(file.getName().indexOf(indexChar) + 1);
-            workBook = suffix.equals(FileUtils.EXCEL_TYPE_XSSF) ? new XSSFWorkbook(in) : new HSSFWorkbook(in);
+            workBook = new XSSFWorkbook(in);
             return workBook.getSheetAt(sheetAt);
         } catch (Exception e) {
             log.error(e.getMessage(),e);

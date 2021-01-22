@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import ncs.secureconnect.sim.entities.Constants;
 import ncs.secureconnect.sim.entities.corpass.UserInfoToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -40,6 +41,9 @@ public class FECorppassLandingDelegator {
     public static final String IS_DECLARE = "isDeclare";
     public static final String IS_KEY_APPOINTMENT = "isKeyAppointment";
 
+    @Value("${moh.halp.login.test.mode}")
+    private String openTestMode;
+
     @Autowired
     private OrgUserManageService orgUserManageService;
 
@@ -50,16 +54,6 @@ public class FECorppassLandingDelegator {
      * @throws
      */
     public void startStep(BaseProcessClass bpc){
-    }
-
-    /**
-     * StartStep: redirectToInbox
-     *
-     * @param bpc
-     * @throws
-     */
-    public void redirectToInbox(BaseProcessClass bpc){
-        IaisEGPHelper.sendRedirect(bpc.request, bpc.response, FeLoginHelper.INBOX_URL);
     }
 
     /**
@@ -82,8 +76,7 @@ public class FECorppassLandingDelegator {
         String identityNo;
         String scp = null;
 
-        String testMode = FeLoginHelper.getTestMode(request);
-        if (FELandingDelegator.LOGIN_MODE_REAL.equals(testMode)) {
+        if (FELandingDelegator.LOGIN_MODE_REAL.equals(openTestMode)) {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
             LoginInfo loginInfo = SIMUtil4Corpass.doCorpPassArtifactResolution(request, samlArt);
 
@@ -117,10 +110,11 @@ public class FECorppassLandingDelegator {
             return;
         }
 
-        String idType = IaisEGPHelper.checkIdentityNoType(identityNo);
+        String identityNoUpper = identityNo.toUpperCase();
+        String idType = IaisEGPHelper.checkIdentityNoType(identityNoUpper);
         FeUserDto userSession = new FeUserDto();
         userSession.setUenNo(uen);
-        userSession.setIdentityNo(identityNo);
+        userSession.setIdentityNo(identityNoUpper);
         userSession.setIdType(idType);
         userSession.setScp(scp);
 

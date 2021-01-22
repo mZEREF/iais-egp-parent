@@ -1,4 +1,4 @@
-<div class="main-content">
+<div class="main-content" style="min-height: 73vh;">
     <form method="post" id="MasterCodeForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="crud_action_type" value="">
@@ -106,11 +106,11 @@
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                        <h5 class="modal-title" id="deleteModalLabel">Confirmation Box</h5>
+                                                        <div class="modal-title" id="deleteModalLabel" style="font-size: 2rem;">Confirmation Box</div>
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class="row">
-                                                            <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the Delete ?</span></div>
+                                                            <div class="col-md-12"><span style="font-size: 2rem">Do you confirm the Delete ?</span></div>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">

@@ -72,7 +72,7 @@ public class SFTPUtil {
             	sftp = (ChannelSftp) channel;
             }
         } catch (Exception e) {
-        	log.error(StringUtil.changeForLog("Failed to connect to remote SFTP Server."));
+        	log.debug(StringUtil.changeForLog("Failed to connect to remote SFTP Server."));
             log.error(e.getMessage(), e);
         }
     }

@@ -63,19 +63,21 @@ public class AuditManualListDelegator {
         ParamUtil.setSessionAttr(request,"modulename",AuditTrailConsts.FUNCTION_MANUAL_AUDIT_LIST);
         ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST,null);
         ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_TRUE_RESULT,null);
+        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SESSION_ROLEIDS_FOR_AUDIT,null);
+        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SESSION_ROLEIDS_FOR_AUDIT_SELECT, null);
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<SelectOption> roleIds = auditSystemListService.getCanViewAuditRoles(loginContext.getRoleIds());
+        if(!IaisCommonUtils.isEmpty(roleIds)){
+            ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SESSION_ROLEIDS_FOR_AUDIT, (Serializable) roleIds);
+            ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SESSION_ROLEIDS_FOR_AUDIT_SELECT,  roleIds.get(0).getValue());
+        }
     }
     public void pre(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
-        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        List<SelectOption> roleIds = auditSystemListService.getCanViewAuditRoles(loginContext.getRoleIds());
-        if(!IaisCommonUtils.isEmpty(roleIds)){
-            ParamUtil.setRequestAttr(request, "roleIdsForAudit", (Serializable) roleIds);
-            ParamUtil.setRequestAttr(request, "roleIdsForAuditSelect",  roleIds.get(0).getValue());
-        }
         AuditSystemPotentialDto dto = (AuditSystemPotentialDto) ParamUtil.getSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME);
         if(dto != null){
-            ParamUtil.setRequestAttr(request, "roleIdsForAuditSelect",  dto.getSelectRole());
+            ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SESSION_ROLEIDS_FOR_AUDIT_SELECT,  dto.getSelectRole());
         }
         List<HcsaServiceDto> hcsaServiceDtos = auditSystemListService.getActiveHCIServices();
         ParamUtil.setRequestAttr(request, "activeHCIServiceNames", (Serializable) auditSystemListService.getActiveHCIServicesByNameOrCode(hcsaServiceDtos, HcsaLicenceBeConstant.GET_HCI_SERVICE_SELECTION_NAME_TAG));
@@ -164,7 +166,8 @@ public class AuditManualListDelegator {
         String riskType = ParamUtil.getString(request, "riskType");
         String svcNameSelect = ParamUtil.getStringsToString(request, "svcName");
         String svcNameCodeSelect = ParamUtil.getStringsToString(request, "hclSCode");
-        String selectRole = ParamUtil.getString(request,"roleIdsForAuditSelect");
+        String selectRole = ParamUtil.getString(request,HcsaLicenceBeConstant.SESSION_ROLEIDS_FOR_AUDIT_SELECT);
+        List<SelectOption> roles = ( List<SelectOption>) ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.SESSION_ROLEIDS_FOR_AUDIT);
         AuditSystemPotentialDto dto = auditSystemPotitalListService.initDtoForSearch();
         List<String> serviceNmaeList = IaisCommonUtils.genNewArrayList();
         if(serviceNames != null && serviceNames.length >0){
@@ -185,23 +188,20 @@ public class AuditManualListDelegator {
         dto.setResultLastCompliance(complianceLastResult);
         dto.setPremisesType(premType);
         dto.setTypeOfRisk(riskType);
-        dto.setSelectRole(selectRole);
+        if(!auditSystemListService.rightControlForRole(roles,selectRole)){
+            log.info(StringUtil.changeForLog("--Illegal Role ID :" + selectRole+"---------"));
+            dto.setSelectRole(roles.get(0).getValue());
+        } else {
+            ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SESSION_ROLEIDS_FOR_AUDIT_SELECT, selectRole);
+            dto.setSelectRole(selectRole);
+        }
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, dto);
         AduitSystemGenerateValidate auditTestValidate = new AduitSystemGenerateValidate();
         Map<String, String> errMap = auditTestValidate.validate(request);
         if (errMap.isEmpty()) {
             List<SelectOption> aduitTypeOp = auditSystemListService.getAuditOp();
             ParamUtil.setSessionAttr(request,"aduitTypeOp",(Serializable) aduitTypeOp);
-            List<AuditTaskDataFillterDto> auditTaskDataDtos =  auditSystemPotitalListService.getSystemPotentailAdultList(dto);
-            auditTaskDataDtos = auditSystemListService.getInspectors(auditTaskDataDtos);
-            if( !IaisCommonUtils.isEmpty(auditTaskDataDtos)){
-                for(AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDataDtos ){
-                    ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());
-                }
-            }
-            ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT,(Serializable) auditTaskDataDtos);
-            ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST,dto.getSearchParam());
-            ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_TRUE_RESULT,dto.getSearchResult());
+            getData(dto,request);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         } else {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
@@ -209,7 +209,18 @@ public class AuditManualListDelegator {
         }
 
     }
-
+    private void getData( AuditSystemPotentialDto dto,HttpServletRequest request){
+        List<AuditTaskDataFillterDto> auditTaskDataDtos = auditSystemPotitalListService.getSystemPotentailAdultList(dto);
+        auditTaskDataDtos =  auditSystemListService.getInspectors(auditTaskDataDtos);
+        if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){
+            for(AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDataDtos ){
+                ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());
+            }
+        }
+        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT, (Serializable) auditTaskDataDtos);
+        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST,dto.getSearchParam());
+        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_TRUE_RESULT,dto.getSearchResult());
+    }
     public void doPage(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doPage start ...."));
         HttpServletRequest request = bpc.request;
@@ -223,16 +234,7 @@ public class AuditManualListDelegator {
             dto.setPageSize(Integer.parseInt(pageSize));
         }
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME,dto);
-        List<AuditTaskDataFillterDto> auditTaskDataDtos = auditSystemPotitalListService.getSystemPotentailAdultList(dto);
-        auditTaskDataDtos =  auditSystemListService.getInspectors(auditTaskDataDtos);
-        if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){
-            for(AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDataDtos ){
-                ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());
-            }
-        }
-        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT, (Serializable) auditTaskDataDtos);
-        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST,dto.getSearchParam());
-        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_TRUE_RESULT,dto.getSearchResult());
+        getData(dto,request);
     }
 
     public void next(BaseProcessClass bpc) {

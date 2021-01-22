@@ -20,12 +20,15 @@
                value="com.ecquaria.cloud.moh.iais.dto.AduitSystemGenerateValidateDto"/>
         <div class="bg-title"><h2>Risk Score Module</h2></div>
         <iais:section title="" id="potentialAuditableHCIs">
+            <div hidden="hidden">
             <iais:row>
                 <iais:field value="Role"/>
                 <iais:value width="8">
                     <iais:select name="roleIdsForAuditSelect" options="roleIdsForAudit"  value="${roleIdsForAuditSelect}"/>
                 </iais:value>
             </iais:row>
+            </div>
+        <div id="clearFiterForSearch" name="clearFiterForSearch">
             <iais:row>
             <iais:field value="Service Name"/>
                 <iais:value width="8">
@@ -104,8 +107,9 @@
                     <span id="error_genNum" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
             </iais:row>
-        </iais:section>
 
+        </div>
+        </iais:section>
         <iais:action style="text-align:right;">
             <button class="btn btn-secondary" id="clearbtn" type="button"
                     onclick="javascript:doClear();">
@@ -139,7 +143,7 @@
         clearSelectFiled('hclCode');
         clearSelectFiled('premType');
         clearSelectFiled('riskType');
-        $(".current").text("Please Select");
+        $("#clearFiterForSearch .current").text("Please Select");
         $("#genNum").val("");
     }
 

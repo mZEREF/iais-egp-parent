@@ -1385,7 +1385,7 @@ public class HcsaApplicationDelegator {
             }
             applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, loginContext, externalRemarks);
         } catch (Exception e) {
-            log.error(StringUtil.changeForLog("send application RfiAndEmail error"));
+            log.debug(StringUtil.changeForLog("send application RfiAndEmail error"));
             log.error(e.getMessage(), e);
         }
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
@@ -1784,7 +1784,7 @@ public class HcsaApplicationDelegator {
             try {
                 rejectSendNotification(bpc, applicationViewDto);
             } catch (Exception e) {
-                log.error(StringUtil.changeForLog("send reject notification error"), e);
+                log.debug(StringUtil.changeForLog("send reject notification error"), e);
             }
             String originLicenceId = applicationDto.getOriginLicenceId();
             if (!StringUtil.isEmpty(originLicenceId)) {
@@ -1888,7 +1888,7 @@ public class HcsaApplicationDelegator {
                 }
             }
         } catch (Exception e) {
-            log.error(StringUtil.changeForLog("save return fee error"), e);
+            log.debug(StringUtil.changeForLog("save return fee error"), e);
         }
         try {
             doRefunds(broadcastApplicationDto.getReturnFeeDtos());
@@ -1916,10 +1916,12 @@ public class HcsaApplicationDelegator {
             String hciCode = appGrpPremisesDto.getHciCode();
             String originLicenceId = applicationDto.getOriginLicenceId();
             List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(originLicenceId).getEntity();
+            List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
             if (grpLic) {
                 applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NEED);
                 applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
                 applicationDto.setNeedNewLicNo(true);
+                applicationDtos.add(applicationDto);
                 if (!IaisCommonUtils.isEmpty(specLicIds)) {
                     List<ApplicationDto> specApplicationDtos = cessationClient.getAppsByLicId(specLicIds.get(0)).getEntity();
                     if (!IaisCommonUtils.isEmpty(specApplicationDtos)) {
@@ -1932,15 +1934,17 @@ public class HcsaApplicationDelegator {
                                 dto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NEED);
                                 dto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
                                 dto.setNeedNewLicNo(true);
+                                applicationDtos.add(dto);
                             }
                         }
                     }
-                    applicationClient.updateCessationApplications(specApplicationDtos);
                 }
+                applicationClient.updateCessationApplications(applicationDtos);
             } else {
                 applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NOT);
                 applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
                 applicationDto.setNeedNewLicNo(false);
+                applicationDtos.add(applicationDto);
                 if (!IaisCommonUtils.isEmpty(specLicIds)) {
                     List<ApplicationDto> specApplicationDtos = cessationClient.getAppsByLicId(specLicIds.get(0)).getEntity();
                     if (!IaisCommonUtils.isEmpty(specApplicationDtos)) {
@@ -1950,10 +1954,11 @@ public class HcsaApplicationDelegator {
                                 dto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NOT);
                                 dto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
                                 dto.setNeedNewLicNo(false);
+                                applicationDtos.add(dto);
                             }
                         }
                     }
-                    applicationClient.updateCessationApplications(specApplicationDtos);
+                    applicationClient.updateCessationApplications(applicationDtos);
                 }
             }
         }
@@ -1984,6 +1989,9 @@ public class HcsaApplicationDelegator {
             }
         }
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType)){
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+        }
         broadcastApplicationDto.setApplicationDto(applicationDto);
         // send the task
         if (!StringUtil.isEmpty(stageId)) {
@@ -2026,7 +2034,8 @@ public class HcsaApplicationDelegator {
                     newTaskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     broadcastOrganizationDto.setCreateTask(newTaskDto);
                 }
-                List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+                String appGrpId = applicationDto.getAppGrpId();
+                List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(appGrpId);
                 applicationDtoList = removeFastTrackingAndTransfer(applicationDtoList);
                 List<ApplicationDto> saveApplicationDtoList = IaisCommonUtils.genNewArrayList();
                 CopyUtil.copyMutableObjectList(applicationDtoList, saveApplicationDtoList);
@@ -2128,7 +2137,41 @@ public class HcsaApplicationDelegator {
             } else {
                 log.info(StringUtil.changeForLog("This RFI  this application -->:" + applicationDto.getApplicationNo()));
             }
-
+            //cessation
+            if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
+                String appGrpId = applicationDto.getAppGrpId();
+                List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(appGrpId);
+                List<ApplicationGroupDto> applicationGroupDtos = IaisCommonUtils.genNewArrayList();
+                Set<String> statusList = IaisCommonUtils.genNewHashSet();
+                for(ApplicationDto  applicationDto1 : applicationDtoList){
+                    String status = applicationDto1.getStatus();
+                    statusList.add(status);
+                }
+                if(statusList.size()==1&&statusList.contains(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE)){
+                    ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGrpId).getEntity();
+                    applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_LICENCE_GENERATED);
+                    applicationGroupDtos.add(applicationGroupDto);
+                }
+                //spec
+                ApplicationDto specApp = cessationClient.getAppByBaseAppNo(applicationDto.getApplicationNo()).getEntity();
+                if(specApp!=null){
+                    String appGrpIdSpec = specApp.getAppGrpId();
+                    List<ApplicationDto> applicationDtoListSpec = applicationService.getApplicaitonsByAppGroupId(appGrpIdSpec);
+                    Set<String> statusListSpec = IaisCommonUtils.genNewHashSet();
+                    for(ApplicationDto  applicationDto1 : applicationDtoListSpec){
+                        String status = applicationDto1.getStatus();
+                        statusListSpec.add(status);
+                    }
+                    if(statusListSpec.size()==1&&statusListSpec.contains(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE)){
+                        ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGrpIdSpec).getEntity();
+                        applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_LICENCE_GENERATED);
+                        applicationGroupDtos.add(applicationGroupDto);
+                    }
+                }
+                if(!IaisCommonUtils.isEmpty(applicationGroupDtos)){
+                    applicationClient.updateApplications(applicationGroupDtos);
+                }
+            }
         }
 
         //set inspector leads
@@ -2402,7 +2445,7 @@ public class HcsaApplicationDelegator {
         try {
             applicationService.updateFEApplicaitons(applications);
         } catch (Exception e) {
-            log.error(StringUtil.changeForLog("update fe applications error"));
+            log.debug(StringUtil.changeForLog("update fe applications error"));
         }
     }
 

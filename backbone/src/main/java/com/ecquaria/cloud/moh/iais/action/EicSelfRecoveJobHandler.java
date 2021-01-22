@@ -36,6 +36,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class EicSelfRecoveJobHandler extends IJobHandler {
+    private static final int RETRY_LIMIT = 5;
+
     @Autowired
     private AtEicClient atEicClient;
     @Autowired
@@ -125,6 +127,9 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
             method.invoke(actObj, obj);
             ert.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
         } catch (Exception e) {
+            if (ert.getProcessNum() > RETRY_LIMIT) {
+                ert.setStatus(AppConsts.EIC_STATUS_PROCESSING_LOCKED);
+            }
             log.error("Error for EIC tracking id " + StringUtil.changeForLog(ert.getId()), e);
             JobLogger.log(e);
         }

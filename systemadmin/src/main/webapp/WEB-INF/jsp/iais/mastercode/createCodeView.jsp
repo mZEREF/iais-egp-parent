@@ -7,7 +7,7 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
-<div class="main-content">
+<div class="main-content" style="min-height: 73vh;">
     <form class="form-horizontal" method="post" id="MasterCodeCategoryCreateForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="crud_action_type" value="">

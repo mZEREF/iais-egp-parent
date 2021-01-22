@@ -77,7 +77,7 @@ public class UploadDelegator {
                     map.put("newStatus",newStatus);
                     uploadFileService.changeStatus(applicationListFileDto,map);
                 }
-            }catch (Exception e){
+            }catch (Throwable e){
                 Map<String,List<String>> errorMap=new HashMap();
                 List<String> newStatus=IaisCommonUtils.genNewArrayList();
                 List<String> errorOldStatus= IaisCommonUtils.genNewArrayList();

@@ -153,7 +153,7 @@
                                                         name="idNoShow" value="${personnelEditDto.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO')}">
+                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO') || psnTypes.contains('DPO')}">
                                         <iais:row>
                                             <iais:field value="Designation " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
@@ -173,7 +173,7 @@
                                                         needDisabled="true"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${psnTypes.contains('PO')}">
+                                    <c:if test="${psnTypes.contains('PO') || psnTypes.contains('DPO')}">
                                         <iais:row>
                                             <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -224,7 +224,7 @@
                                                         name="idNo" value="${personnelEditDto.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO')}">
+                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO') || psnTypes.contains('DPO')}">
                                         <iais:row>
                                             <iais:field value="Designation " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
@@ -243,7 +243,7 @@
                                                         value="${personnelEditDto.mobileNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${psnTypes.contains('PO')}">
+                                    <c:if test="${psnTypes.contains('PO') || psnTypes.contains('DPO')}">
                                         <iais:row>
                                             <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -299,7 +299,7 @@
                                                         name="idNo1" value="${newPerson.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO')}">
+                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO') || psnTypes.contains('DPO')}">
                                         <iais:row>
                                             <iais:field value="Designation " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
@@ -317,7 +317,7 @@
                                                         value="${newPerson.mobileNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${psnTypes.contains('PO')}">
+                                    <c:if test="${psnTypes.contains('PO') || psnTypes.contains('DPO')}">
                                         <iais:row>
                                             <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -361,7 +361,7 @@
                                                         name="idNo2" value="${newPerson.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO')}">
+                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO') || psnTypes.contains('DPO')}">
                                         <iais:row>
                                             <iais:field value="Designation " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
@@ -381,7 +381,7 @@
                                                         value="${newPerson.mobileNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${psnTypes.contains('PO')}">
+                                    <c:if test="${psnTypes.contains('PO') || psnTypes.contains('DPO')}">
                                         <iais:row>
                                             <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">

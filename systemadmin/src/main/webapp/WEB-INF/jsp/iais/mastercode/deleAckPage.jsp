@@ -9,7 +9,7 @@
     String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
-<div class="main-content">
+<div class="main-content" style="min-height: 73vh;">
     <form method="post" id="ackForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <div class="row">

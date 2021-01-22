@@ -12,61 +12,60 @@ import org.springframework.context.ApplicationContext;
 
 @Slf4j
 public class SystemParamUtil {
-    private static ApplicationContext context;
-    private static SystemParamConfig systemParamConfig;
-    static {
-        context = SpringContextHelper.getContext();
-
-        if (context != null){
-            systemParamConfig = context.getBean(SystemParamConfig.class);
-
-            if (systemParamConfig == null){
-                log.info("systemParamConfig  is null .........");
-            }
-        }else {
-            log.info("application context is null .........");
-        }
-    }
-
     private SystemParamUtil(){}
 
     public static int getFileMaxLimit(){
-       return systemParamConfig.getUploadFileLimit();
-    }
-
-    public static String getIntraServerName(){
-       return systemParamConfig.getIntraServerName();
-    }
-
-    public static String getInterServerName(){
-       return systemParamConfig.getInterServerName();
-    }
-
-    public static int getReminderRectification(){
-        return systemParamConfig.getReminderRectification();
-    }
-
-    public static int getOneTimeIdCount() {
-        return systemParamConfig.getOneTimeIdCount();
-    }
-
-    public static int getLicGenDay() {
-        return systemParamConfig.getLicGenDay();
-    }
-
-    public static int getRoundRobinCpDays() {
-        return systemParamConfig.getRoundRobinCpDays();
-    }
-
-    public static String getUploadFileType() {
-        return systemParamConfig.getUploadFileType();
-    }
-
-    public static int getLicenceIsEligible() {
-        return systemParamConfig.getLicenceIsEligible();
+       ApplicationContext applicationContext = SpringContextHelper.getContext();
+       SystemParamConfig spc = applicationContext.getBean(SystemParamConfig.class);
+       return spc.getUploadFileLimit();
     }
 
     public static int getAuditTrailSearchWeek() {
-        return systemParamConfig.getAuditTrailSearchWeek();
+        ApplicationContext applicationContext = SpringContextHelper.getContext();
+        SystemParamConfig spc = applicationContext.getBean(SystemParamConfig.class);
+        return spc.getAuditTrailSearchWeek();
+    }
+
+    public static String getInterServerName(){
+        ApplicationContext applicationContext = SpringContextHelper.getContext();
+        SystemParamConfig spc = applicationContext.getBean(SystemParamConfig.class);
+       return spc.getInterServerName();
+    }
+
+    public static String getUploadFileType() {
+        ApplicationContext applicationContext = SpringContextHelper.getContext();
+        SystemParamConfig spc = applicationContext.getBean(SystemParamConfig.class);
+        return spc.getUploadFileType();
+    }
+
+    public static int getDefaultPageSize(){
+        ApplicationContext applicationContext = SpringContextHelper.getContext();
+        if (applicationContext == null){
+            return 10;
+        }
+
+        SystemParamConfig spc = applicationContext.getBean(SystemParamConfig.class);
+        String p = spc.getPagingSize();
+        String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
+        return Integer.parseInt(defaultValue);
+    }
+
+    public static int[] toPageSizeArray(){
+        ApplicationContext applicationContext = SpringContextHelper.getContext();
+        if (applicationContext == null){
+            return null;
+        }
+
+        SystemParamConfig spc = applicationContext.getBean(SystemParamConfig.class);
+        String p = spc.getPagingSize();
+        String[] from = IaisEGPHelper.getPageSizeByStrings(p);
+
+        int[] to = new int[from.length];
+
+        for (int i = 0; i < from.length; i++){
+            to[i] = Integer.parseInt(from[i]);
+        }
+
+        return to;
     }
 }

@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditSystemPotentialDto;
@@ -11,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AuditAssginListValidateDto;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -47,18 +49,34 @@ public class AuditTcuListDelegator {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_TCU_AUDIT_LIST);
+        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SESSION_ROLEIDS_FOR_AUDIT,null);
+        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SESSION_ROLEIDS_FOR_AUDIT_SELECT, null);
     }
 
     public void init(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
+        AuditSystemPotentialDto dto = auditSystemPotitalListService.initDtoForSearch();
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<SelectOption> roleIds = auditSystemListService.getCanViewAuditRoles(loginContext.getRoleIds());
+        if(!IaisCommonUtils.isEmpty(roleIds)){
+            ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SESSION_ROLEIDS_FOR_AUDIT, (Serializable) roleIds);
+            String selectRole =  roleIds.get(0).getValue();
+            ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SESSION_ROLEIDS_FOR_AUDIT_SELECT,selectRole);
+            dto.setSelectRole(selectRole);
+        }
         ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST,null);
         ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_TRUE_RESULT,null);
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, null);
         ParamUtil.setSessionAttr(request,"ISTUC",Boolean.TRUE);
-        AuditSystemPotentialDto dto = auditSystemPotitalListService.initDtoForSearch();
-        List<AuditTaskDataFillterDto> auditTaskDataDtos = auditSystemPotitalListService.getSystemPotentailAdultListForAuditTcu(dto);
         List<SelectOption> aduitTypeOp = auditSystemListService.getAuditOp();
+        ParamUtil.setSessionAttr(request, "aduitTypeOp", (Serializable) aduitTypeOp);
+        getData(dto,request);
+        ParamUtil.setSessionAttr(request, "modulename", AuditTrailConsts.FUNCTION_TCU_AUDIT_LIST);
+    }
+
+    private void getData( AuditSystemPotentialDto dto,HttpServletRequest request){
+        List<AuditTaskDataFillterDto> auditTaskDataDtos = auditSystemPotitalListService.getSystemPotentailAdultListForAuditTcu(dto);
         auditTaskDataDtos = auditSystemListService.getInspectors(auditTaskDataDtos);
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, dto);
         ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT, (Serializable) auditTaskDataDtos);
@@ -69,9 +87,26 @@ public class AuditTcuListDelegator {
                 ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());
             }
         }
-        ParamUtil.setSessionAttr(request, "aduitTypeOp", (Serializable) aduitTypeOp);
-        ParamUtil.setSessionAttr(request, "modulename", AuditTrailConsts.FUNCTION_TCU_AUDIT_LIST);
     }
+
+    public void searchRole(BaseProcessClass bpc){
+        log.info("------searchRole------------");
+        HttpServletRequest request = bpc.request;
+        AuditSystemPotentialDto dto = auditSystemPotitalListService.initDtoForSearch();
+        String selectRole = ParamUtil.getString(request,HcsaLicenceBeConstant.SESSION_ROLEIDS_FOR_AUDIT_SELECT);
+        List<SelectOption> roles = ( List<SelectOption>) ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.SESSION_ROLEIDS_FOR_AUDIT);
+        if(!auditSystemListService.rightControlForRole(roles,selectRole)){
+            log.info(StringUtil.changeForLog("--Illegal Role ID :" + selectRole+"---------"));
+            dto.setSelectRole(roles.get(0).getValue());
+        }else {
+            dto.setSelectRole(selectRole);
+            ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SESSION_ROLEIDS_FOR_AUDIT_SELECT,selectRole);
+        }
+        ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, dto);
+        getData(dto,request);
+        log.info("------end searchRole------------");
+    }
+
 
     public void doPage(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doPage start ...."));
@@ -86,16 +121,7 @@ public class AuditTcuListDelegator {
             dto.setPageSize(Integer.parseInt(pageSize));
         }
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME,dto);
-        List<AuditTaskDataFillterDto> auditTaskDataDtos = auditSystemPotitalListService.getSystemPotentailAdultList(dto);
-        auditTaskDataDtos =  auditSystemListService.getInspectors(auditTaskDataDtos);
-        if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){
-            for(AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDataDtos ){
-                ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());
-            }
-        }
-        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT, (Serializable) auditTaskDataDtos);
-        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST,dto.getSearchParam());
-        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_TRUE_RESULT,dto.getSearchResult());
+        getData(dto,request);
     }
 
     public void pre(BaseProcessClass bpc) {

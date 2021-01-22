@@ -13,10 +13,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
@@ -25,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -61,6 +58,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -360,13 +358,6 @@ public class RequestForChangeDelegator {
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         String uen = (String) ParamUtil.getSessionAttr(bpc.request, "UEN");
         String[] selectCheakboxs = null;
-//        if(appSubmissionDto.isGroupLic()){
-//            selectCheakboxs = ParamUtil.getStrings(bpc.request, "premisesInput");
-//        }else {
-//            String premisesIndexNo = (String)ParamUtil.getSessionAttr(bpc.request,"premisesIndexNo");
-//            selectCheakboxs = new String[]{premisesIndexNo};
-//            log.info(StringUtil.changeForLog("The doTransfer premisesIndexNo is -->:"+premisesIndexNo));
-//        }
 
         selectCheakboxs =  (String[])ParamUtil.getSessionAttr(bpc.request,"premisesInput");
 
@@ -393,11 +384,18 @@ public class RequestForChangeDelegator {
             log.info(StringUtil.changeForLog("The fileType is -->:"+fileType));
             Map<String,Boolean> fileValidate =  ValidationUtils.validateFile(file,Arrays.asList(FileUtils.fileTypeToArray(fileType)),(maxFile * 1024 *1024L));
            if(fileValidate != null && fileValidate.size() >0){
+               String errorMsg = "";
                if(!fileValidate.get("fileType")){
-                   error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0018",fileType,"fileType"));
+                   errorMsg = MessageUtil.replaceMessage("GENERAL_ERR0018",fileType,"fileType");
+                   error.put("selectedFileError",errorMsg);
                }
                if(!fileValidate.get("fileSize")){
-                   error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxFile),"sizeMax"));
+                   errorMsg = MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxFile),"sizeMax");
+                   error.put("selectedFileError",errorMsg);
+               }
+               log.info(StringUtil.changeForLog("The errorMsg is -->:"+errorMsg));
+               if(!StringUtil.isEmpty(errorMsg)){
+                   appPremisesSpecialDocDto.setErrorMsg(errorMsg);
                }
                appPremisesSpecialDocDto.setDocName(file.getOriginalFilename());
                //0066841
@@ -414,8 +412,10 @@ public class RequestForChangeDelegator {
                    appPremisesSpecialDocDto.setSubmitDt(new Date());
                }
            }
-        }else if(appPremisesSpecialDocDto == null || StringUtil.isEmpty(appPremisesSpecialDocDto.getFileRepoId())){
+        }else if(appPremisesSpecialDocDto == null ){
             error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0006","Letter of Undertaking","field"));
+        }else if(StringUtil.isEmpty(appPremisesSpecialDocDto.getFileRepoId())){
+            error.put("selectedFileError",appPremisesSpecialDocDto.getErrorMsg());
         }
         if(!isEmail){
             error.put("emailError","GENERAL_ERR0014");
@@ -596,6 +596,7 @@ public class RequestForChangeDelegator {
                     IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
                 log.info(StringUtil.changeForLog("appSubmissionDto incomplete , licenceId:"+licenceId));
             }else{
+                log.debug(StringUtil.changeForLog("do request for change ------ licence no:"+appSubmissionDto.getLicenceNo()));
                 AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
                 //set audit trail licNo
                 String appType = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
@@ -603,49 +604,29 @@ public class RequestForChangeDelegator {
                 appSubmissionDto.setAppType(appType);
                 String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
                 HcsaServiceDto hcsaServiceDto = serviceConfigService.getActiveHcsaServiceDtoByName(svcName);
-                List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
-                hcsaServiceDtoList.add(hcsaServiceDto);
-                ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
                 for(AppGrpPremisesDto appGrpPremisesDto:appSubmissionDto.getAppGrpPremisesDtoList()){
                     NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                 }
                 //set svcInfo
                 NewApplicationHelper.setSubmissionDtoSvcData(bpc.request,appSubmissionDto);
                 //set laboratory disciplines info
-                if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)){
-                    List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(hcsaServiceDtoList.get(0).getId());
+                if(hcsaServiceDto != null){
+                    String currSvcId = hcsaServiceDto.getId();
+                    log.debug(StringUtil.changeForLog("current svc id:"+ currSvcId));
+                    List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
+                    hcsaServiceDtoList.add(hcsaServiceDto);
+                    ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+                    List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(currSvcId);
 //                    NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto,hcsaSvcSubtypeOrSubsumedDtos);
                     //use new config id
                     appSubmissionService.changeSvcScopeIdByConfigName(hcsaSvcSubtypeOrSubsumedDtos,appSubmissionDto);
-
-                    ParamUtil.setSessionAttr(bpc.request, "SvcId",hcsaServiceDtoList.get(0).getId());
+                    //set address
+                    NewApplicationHelper.setPremAddress(appSubmissionDto);
+                    ParamUtil.setSessionAttr(bpc.request, "SvcId",currSvcId);
                 }
                 //set doc info
-                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-                if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
-                    List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-                    boolean isRfi = false;
-                    List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
-                    //rfc/renew for primary doc
-                    List<AppGrpPrimaryDocDto> newGrpPrimaryDocList = appSubmissionService.syncPrimaryDoc(appType,isRfi,appGrpPrimaryDocDtos,primaryDocConfig);
-                    appSubmissionDto.setAppGrpPrimaryDocDtos(newGrpPrimaryDocList);
-                    for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                        String currentSvcId = appSvcRelatedInfoDto.getServiceId();
-                        if(!StringUtil.isEmpty(currentSvcId)){
-                            List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                            List<String> svcDocConfigIdList = IaisCommonUtils.genNewArrayList();
-                            if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
-                                for(AppSvcDocDto appSvcDocDto:appSvcDocDtos){
-                                    svcDocConfigIdList.add(appSvcDocDto.getSvcDocId());
-                                }
-                            }
-                            List<HcsaSvcDocConfigDto>  oldSvcDocConfigDtos = serviceConfigService.getPrimaryDocConfigByIds(svcDocConfigIdList);
-                            List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
-                            appSvcDocDtos = requestForChangeService.updateSvcDoc(appSvcDocDtos,oldSvcDocConfigDtos,svcDocConfig);
-                            appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
-                        }
-                    }
-                }
+                requestForChangeService.changeDocToNewVersion(appSubmissionDto);
+
                 requestForChangeService.svcDocToPresmise(appSubmissionDto);
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
                 appSubmissionDto.setOldAppSubmissionDto(oldAppSubmissionDto);
@@ -697,8 +678,13 @@ public class RequestForChangeDelegator {
             }
             log.info(StringUtil.changeForLog("The  existCount  is -->:"+existCount));
             log.info(StringUtil.changeForLog("The  licenseeKeyApptPersonDtoList.size()  is -->:"+licenseeKeyApptPersonDtoList.size()));
-            log.info(StringUtil.changeForLog("The  existCount/licenseeKeyApptPersonDtoList.size() is -->:"+existCount/licenseeKeyApptPersonDtoList.size()));
-            if((licenseeKeyApptPersonDtoList.size()-existCount)/licenseeKeyApptPersonDtoList.size()>=0.5){
+            log.info(StringUtil.changeForLog("The  existCount/licenseeKeyApptPersonDtoList.size() is -->:"+new BigDecimal(existCount).
+                    divide(new BigDecimal(licenseeKeyApptPersonDtoList.size()))));
+            int diffrent = licenseeKeyApptPersonDtoList.size()- existCount;
+            log.info(StringUtil.changeForLog("The  diffrent  is -->:"+diffrent));
+            BigDecimal ratio = new BigDecimal(diffrent).divide(new BigDecimal(licenseeKeyApptPersonDtoList.size()));
+            log.info(StringUtil.changeForLog("The  ratio  is -->:"+ratio));
+            if(ratio.compareTo(BigDecimal.valueOf(0.5))>=0){
                 canTransfer = false;
             }else{
                 log.info(StringUtil.changeForLog("can transfer"));

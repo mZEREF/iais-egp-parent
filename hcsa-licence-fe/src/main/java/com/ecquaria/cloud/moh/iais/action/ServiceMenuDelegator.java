@@ -919,6 +919,10 @@ public class ServiceMenuDelegator {
                     bpc.request.getSession().setAttribute("DraftNumber", null);
                 }else if("resume".equals(crud_action_value)){
                     bpc.request.getSession().setAttribute("DraftNumber", attribute);
+                }else if(attribute!=null){
+                    //back to curr page
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_BASE_SVC);
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"loading");
                 }
                 appSelectSvcDto.setBasePage(true);
             }
@@ -1216,7 +1220,7 @@ public class ServiceMenuDelegator {
     private void getDraft(BaseProcessClass bpc){
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
-
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos=(List<AppSvcRelatedInfoDto>)ParamUtil.getSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST);
         List<String> licenceList =(List<String>) ParamUtil.getSessionAttr(bpc.request, "licence");
         List<String> baseServiceIds=IaisCommonUtils.genNewArrayList();
         if(StringUtil.isEmpty(licenceList)){
@@ -1235,6 +1239,16 @@ public class ServiceMenuDelegator {
             List<String> serviceCodeList = new ArrayList<>(hcsaServiceDtosById.size());
             for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtosById) {
                 serviceCodeList.add(hcsaServiceDto.getSvcCode());
+            }
+            if(appSvcRelatedInfoDtos!=null){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos){
+                    String serviceCode = appSvcRelatedInfoDto.getServiceCode();
+                    if(serviceCode!=null){
+                        if(!serviceCodeList.contains(serviceCode)){
+                            serviceCodeList.add(serviceCode);
+                        }
+                    }
+                }
             }
             serviceCodeList.sort(String::compareTo);
             Map<String, Object> map = new HashMap<>();

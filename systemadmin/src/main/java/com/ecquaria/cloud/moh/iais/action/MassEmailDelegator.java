@@ -24,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
@@ -47,6 +46,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -77,7 +77,7 @@ public class MassEmailDelegator {
 
     public void start(BaseProcessClass bpc){
         SearchParam searchParam = new SearchParam(DistributionListDto.class.getName());
-        searchParam.setPageSize(SysParamUtil.getDefaultPageSize());
+        searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
         searchParam.setPageNo(1);
         searchParam.setSort("CREATED_DT", SearchParam.DESCENDING);
         searchParam.addFilter("status", AppConsts.COMMON_STATUS_ACTIVE,true);
@@ -139,7 +139,8 @@ public class MassEmailDelegator {
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
             ParamUtil.setRequestAttr(bpc.request,"distribution",distributionListDto);
         }else{
-            distributionListService.saveDistributionList(distributionListDto);
+            distributionListDto = distributionListService.saveDistributionList(distributionListDto);
+            distributionListService.saveDistributionRole(distributionListDto);
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
         }
 
@@ -173,7 +174,7 @@ public class MassEmailDelegator {
         searchParam.getParams().clear();
         searchParam.getFilters().clear();
         searchParam.setPageNo(1);
-        searchParam.setPageSize(SysParamUtil.getDefaultPageSize());
+        searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
         searchParam.setSort("CREATED_DT", SearchParam.DESCENDING);
         searchParam.addFilter("status", AppConsts.COMMON_STATUS_ACTIVE,true);
         if(!StringUtil.isEmpty(distributionName)){
@@ -437,11 +438,12 @@ public class MassEmailDelegator {
                     int lastcell = row.getLastCellNum();
 
                     for (int j = firstcell; j < lastcell; j++) {
-                        Cell cell = row.getCell(j);
 
+                        Cell cell = row.getCell(j);
                         if (cell != null) {
                             System.out.print(cell + "\t");
-                            String cellString = cell.toString();
+                            DecimalFormat df = new DecimalFormat("0");
+                            String cellString = df.format(cell.getNumericCellValue());
                             if(!StringUtil.isEmpty(cellString)){
                                 list.add(cellString);
                             }
