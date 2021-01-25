@@ -282,6 +282,7 @@ public class CessationApplicationBeDelegator {
                         String patientSelect = appCessHciDto.getPatientSelect();
                         String patTransType = appCessHciDto.getPatTransType();
                         String patTransTo = appCessHciDto.getPatTransTo();
+                        String patHciName = appCessHciDto.getPatHciName();
                         String patRegNo = appCessHciDto.getPatRegNo();
                         String patNoRemarks = appCessHciDto.getPatNoRemarks();
                         String patOthers = appCessHciDto.getPatOthers();
@@ -296,6 +297,7 @@ public class CessationApplicationBeDelegator {
                         appCessationDto.setPatTransType(patTransType);
                         appCessationDto.setPatTransTo(patTransTo);
                         appCessationDto.setPatRegNo(patRegNo);
+                        appCessationDto.setPatHciName(patHciName);
                         appCessationDto.setPatOthers(patOthers);
                         appCessationDto.setPatNoRemarks(patNoRemarks);
                         appCessationDto.setPremiseId(whichTodo);
