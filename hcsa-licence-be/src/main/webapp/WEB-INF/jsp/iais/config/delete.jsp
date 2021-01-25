@@ -441,6 +441,39 @@
                         >Supervisor Assign</option>
 
                       </select>
+                      <c:if test="${routingStage.stageCode=='INS'}">
+                        <p>Inspector</p>
+                      </c:if>
+                      <c:if test="${routingStage.stageCode=='INS'}">
+                        <c:forEach items="${routingStage.hcsaSvcSpeRoutingSchemeDtos}" var="hcsaSvcSpeRoutingSchemeDto">
+                          <select  disabled name="RoutingScheme${routingStage.stageCode}${routingStages.key}${hcsaSvcSpeRoutingSchemeDto.insOder}"  >
+                            <option value="" >Please Select</option>
+                            <option value="common"
+                                    <c:choose>
+                                      <c:when test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='common'}">
+                                        selected="selected"
+                                      </c:when>
+                                    </c:choose>
+                            >Common Pool</option>
+                            <option value="round"
+                                    <c:choose>
+                                      <c:when test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='round'}">
+                                        selected="selected"
+                                      </c:when>
+                                    </c:choose>
+                            >Round Robin</option>
+                            <option value="assign"
+                                    <c:if test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='assign'}">selected="selected" </c:if>
+                            >Supervisor Assign</option>
+                          </select>
+                          <c:if test="${hcsaSvcSpeRoutingSchemeDto.insOder==0}">
+                            <p>Inspector AO1</p>
+                          </c:if>
+                          <c:if test="${hcsaSvcSpeRoutingSchemeDto.insOder==1}">
+                            <p>Inspector Lead</p>
+                          </c:if>
+                        </c:forEach>
+                      </c:if>
                     </div>
 
 
