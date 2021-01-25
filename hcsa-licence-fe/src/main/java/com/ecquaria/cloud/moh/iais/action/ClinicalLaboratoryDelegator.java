@@ -2665,6 +2665,14 @@ public class ClinicalLaboratoryDelegator {
                         errorMap.put(premKey, err19);
                     }
                 }
+                if(docName.length() > 100){
+                    String generalErr22 = MessageUtil.getMessageDesc("GENERAL_ERR0022");
+                    if(StringUtil.isEmpty(premVal)){
+                        errorMap.put(id + "selectedFile", generalErr22);
+                    }else{
+                        errorMap.put(premKey, generalErr22);
+                    }
+                }
                 Boolean flag = Boolean.FALSE;
                 String substring = docName.substring(docName.lastIndexOf('.') + 1);
                 String sysFileType = systemParamConfig.getUploadFileType();
