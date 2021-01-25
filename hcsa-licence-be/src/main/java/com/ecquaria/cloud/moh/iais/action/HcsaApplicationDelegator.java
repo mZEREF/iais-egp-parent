@@ -395,7 +395,8 @@ public class HcsaApplicationDelegator {
                 appPremisesRecommendationDto.setRecomInNumber(0);
                 appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
                 if (isAppealType || isWithdrawal || isCessation) {
-                    appPremisesRecommendationDto.setRecomDecision("reject");
+//                    appPremisesRecommendationDto.setRecomDecision("reject");
+                    appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_REJECTED);
                 }
                 appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 //save date
@@ -413,7 +414,8 @@ public class HcsaApplicationDelegator {
                 appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
                 appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.APPROVED);
                 if (isAppealType || isWithdrawal || isCessation) {
-                    appPremisesRecommendationDto.setRecomDecision("approve");
+//                    appPremisesRecommendationDto.setRecomDecision("approve");
+                    appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_APPROVED);
                 }
                 if ("other".equals(recommendationStr)) {
                     if ((isAppealType && isChangePeriodAppealType) || !isAppealType) {
@@ -425,7 +427,8 @@ public class HcsaApplicationDelegator {
                         }
                     }
                     if (isAppealType) {
-                        appPremisesRecommendationDto.setRecomDecision("approve");
+//                        appPremisesRecommendationDto.setRecomDecision("approve");
+                        appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_APPROVED);
                         if (isLateFeeAppealType) {
                             String returnFee = ParamUtil.getString(bpc.request, "returnFee");
                             appPremisesRecommendationDto.setRemarks(returnFee);
@@ -1774,7 +1777,7 @@ public class HcsaApplicationDelegator {
                 }
             } else {
                 String recomDecision = appPremisesRecommendationDto.getRecomDecision();
-                if ("reject".equals(recomDecision)) {
+                if ("reject".equals(recomDecision) || InspectionReportConstants.RFC_REJECTED.equals(recomDecision) || InspectionReportConstants.REJECTED.equals(recomDecision)) {
                     appStatus = ApplicationConsts.APPLICATION_STATUS_REJECTED;
                 }
             }
@@ -3485,8 +3488,9 @@ public class HcsaApplicationDelegator {
                 String recomDecision = appPremisesRecommendationDto.getRecomDecision();
                 Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
                 String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
-                boolean isAppealApprove = "approve".equals(recomDecision);
-                boolean isAppealReject = "reject".equals(recomDecision);
+//                boolean isAppealApprove = "approve".equals(recomDecision);
+                boolean isAppealApprove = (InspectionReportConstants.APPROVED.equals(recomDecision)) || "approve".equals(recomDecision) || InspectionReportConstants.RFC_APPROVED.equals(recomDecision);
+                boolean isAppealReject = (InspectionReportConstants.REJECTED.equals(recomDecision)) || "reject".equals(recomDecision) || InspectionReportConstants.RFC_REJECTED.equals(recomDecision);
                 boolean isAso = HcsaConsts.ROUTING_STAGE_ASO.equals(taskKey) || RoleConsts.USER_ROLE_ASO.equals(roleId);
                 boolean isPso = HcsaConsts.ROUTING_STAGE_PSO.equals(taskKey) || RoleConsts.USER_ROLE_PSO.equals(roleId);
                 boolean isAO = RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO3.equals(roleId);
