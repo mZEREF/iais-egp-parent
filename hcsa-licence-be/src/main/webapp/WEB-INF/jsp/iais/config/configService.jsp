@@ -522,6 +522,10 @@
               >Supervisor Assign</option>
 
            </select>
+            <c:if test="${routingStage.stageCode=='INS'}">
+              <p>Inspector</p>
+            </c:if>
+            <c:if test="${routingStage.stageCode=='INS'}">
             <span  name="iaisErrorMsg" class="error-msg" id="error_schemeType${routingStages.key}${status.index}"></span>
           </div>
 
