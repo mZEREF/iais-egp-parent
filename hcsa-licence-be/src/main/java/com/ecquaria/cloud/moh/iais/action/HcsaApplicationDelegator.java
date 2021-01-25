@@ -2580,11 +2580,13 @@ public class HcsaApplicationDelegator {
                 isCharity = false;
             }
             for (ApplicationDto applicationDto : applicationDtos) {
+                log.debug(StringUtil.changeForLog("set reject return fee , app no : " + applicationDto.getApplicationNo()));
+                applicationDto.setIsCharity(isCharity);
+                applicationDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
                 if (applicationId.equals(applicationDto.getId())) {
-                    applicationDto.setIsCharity(isCharity);
                     applicationDto.setStatus(status);
-                    applicationDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
                 }
+                log.debug(StringUtil.changeForLog("set reject return fee , charity : " + applicationDto.getIsCharity()));
             }
         }
     }

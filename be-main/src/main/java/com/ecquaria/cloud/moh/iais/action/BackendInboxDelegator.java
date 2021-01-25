@@ -1398,13 +1398,13 @@ public class BackendInboxDelegator {
             }
             for (ApplicationDto applicationDto : applicationDtos) {
                 log.info(StringUtil.changeForLog("****application return fee applicationDto***** " + applicationDto.getApplicationNo()));
+                applicationDto.setIsCharity(isCharity);
+                applicationDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
                 for (Map.Entry<String, String> entry : returnFee.entrySet()) {
                     log.info(StringUtil.changeForLog("****application return fee returnFee***** " + entry.getKey()));
                     if (entry.getKey().equals(applicationDto.getApplicationNo())) {
                         log.info(StringUtil.changeForLog("****application return fee***** " + entry.getKey() + " *****" + entry.getValue()));
                         applicationDto.setStatus(entry.getValue());
-                        applicationDto.setIsCharity(isCharity);
-                        applicationDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
                     }
                 }
             }
