@@ -43,6 +43,35 @@ public class PDFGenerator {
 		resolver.addFont(fontPath, encoding, embedded);
 	}
 
+	public void generate(OutputStream os, String ftlName, Map<String, String> params) throws IOException, TemplateException,DocumentException {
+		if (StringUtils.isEmpty(ftlName) || IaisCommonUtils.isEmpty(params)){
+			log.error("params is empty !!!");
+			return;
+		}
+
+		String optHtmlName = System.currentTimeMillis() + FILE_HTML ;
+		File optHtmlFile = new File(optHtmlName);
+		if (!optHtmlFile.exists()){
+			boolean flag = optHtmlFile.createNewFile();
+			if (!flag) {
+				log.error("Creat File Error.");
+			}
+		}
+
+		try (Writer out = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(Paths.get(optHtmlFile.getPath())), Charsets.UTF_8.name()))){
+			Template tp = cfg.getTemplate(ftlName);
+			tp.process(params, out);
+			ITextRenderer renderer = new ITextRenderer();
+			renderer.setDocument(optHtmlFile.getPath());
+			renderer.layout();
+			renderer.createPDF(os);
+		}catch (TemplateNotFoundException | DocumentException e){
+			throw e;
+		}finally {
+			IaisCommonUtils.deleteTempFile(optHtmlFile);
+		}
+	}
+
 	public byte[] convertHtmlToPDF(String ftlName, Map<String, String> params) throws IOException, TemplateException{
 		byte[] bytes = null;
 		if (StringUtils.isEmpty(ftlName) || IaisCommonUtils.isEmpty(params)){
