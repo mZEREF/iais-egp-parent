@@ -3247,11 +3247,12 @@ public class HcsaApplicationDelegator {
                         appSpecifiedLicDto.setSpecLicId(licenceDtoId);
                         appSpecifiedLicDtos.add(appSpecifiedLicDto);
                     }
+                    ParamUtil.setSessionAttr(request, "specLicInfo", (Serializable) appSpecifiedLicDtos);
                 }
                 ParamUtil.setSessionAttr(request, "confirmDto", appCessLicDto);
                 ParamUtil.setSessionAttr(request, "reasonOption", (Serializable) getReasonOption());
                 ParamUtil.setSessionAttr(request, "patientsOption", (Serializable) getPatientsOption());
-                ParamUtil.setSessionAttr(request, "specLicInfo", (Serializable) appSpecifiedLicDtos);
+
             }
 
         }

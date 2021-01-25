@@ -3,7 +3,7 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<webui:setLayout name="iais-internet"/>
+<webui:setLayout name="iais-intranet"/>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
