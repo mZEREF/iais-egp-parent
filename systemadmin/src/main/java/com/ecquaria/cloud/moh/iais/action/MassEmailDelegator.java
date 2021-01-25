@@ -523,7 +523,7 @@ public class MassEmailDelegator {
             selectOptions.add(new SelectOption("Licensee","Licensee"));
             selectOptions.add(new SelectOption("Authorised Person","Authorised Person"));
             selectOptions.add(new SelectOption("Principal Officer","Principal Officer"));
-            selectOptions.add(new SelectOption("Deputy Principal Officer","Deputy Principal Officer"));
+            selectOptions.add(new SelectOption("Nominee","Nominee"));
             selectOptions.add(new SelectOption("Clinical Governance Officer","Clinical Governance Officer"));
             selectOptions.add(new SelectOption("Service Personnel","Service Personnel"));
             selectOptions.add(new SelectOption("MedAlert","MedAlert"));
@@ -554,7 +554,7 @@ public class MassEmailDelegator {
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE,"Licensee"));
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_AP,"Authorised Person"));
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_PO,"Principal Officer"));
-            selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO,"Deputy Principal Officer"));
+            selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO,"Nominee"));
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,"Clinical Governance Officer"));
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL,"Service Personnel"));
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT,"MedAlert"));
@@ -582,6 +582,9 @@ public class MassEmailDelegator {
                 break;
             case ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL:
                 roleName = ApplicationConsts.PERSONNEL_PSN_TYPE_SVC;
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE:
+                roleName = "Licensee";
                 break;
                 default:
                     roleName = roleAbbreviation;
