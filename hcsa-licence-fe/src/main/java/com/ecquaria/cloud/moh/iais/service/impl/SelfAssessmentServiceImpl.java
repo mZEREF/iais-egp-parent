@@ -120,8 +120,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         }
 
         //uat bug 108659
-        appList = appList.stream().filter(i -> !ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(i.getStatus())
-        || !ApplicationConsts.APPLICATION_STATUS_RECALLED.equals(i.getStatus())).collect(Collectors.toList());
+        appList = appList.stream()
+                .filter(i -> !ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(i.getStatus()))
+                .filter(i -> !ApplicationConsts.APPLICATION_STATUS_RECALLED.equals(i.getStatus())).collect(Collectors.toList());
 
         //common data
         ChecklistConfigDto common = appConfigClient.getMaxVersionCommonConfig().getEntity();
@@ -225,8 +226,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         }
 
         //uat bug 108659
-        appList = appList.stream().filter(i -> !ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(i.getStatus())
-        || !ApplicationConsts.APPLICATION_STATUS_RECALLED.equals(i.getStatus())).collect(Collectors.toList());
+        appList = appList.stream()
+                .filter(i -> !ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(i.getStatus()))
+                .filter(i -> !ApplicationConsts.APPLICATION_STATUS_RECALLED.equals(i.getStatus())).collect(Collectors.toList());
 
         for(ApplicationDto app : appList){
            String appId = app.getId();
@@ -237,7 +239,6 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 dataByCorrId.forEach(i -> viewData.add(i));
             }
         }
-
 
         return viewData;
     }

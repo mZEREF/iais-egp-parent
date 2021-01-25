@@ -3,6 +3,7 @@
 <div class="modal fade" id="uploadDoc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <input type="hidden" id="fileMaxSize" name="fileMaxSize" value="${applicationViewDto.systemMaxFileSize}">
     <input type="hidden" id="fileUploadType" name="fileUploadType" value="${applicationViewDto.systemFileType}">
+    <input type="hidden" id="fileMaxLengthMessage" name="fileMaxLengthMessage" value="<iais:message key="GENERAL_ERR0022"/>">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -23,11 +24,11 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-md-4 control-label">Upload your files <span style="color: red"> *</span></label>
                         <div class="col-xs-8 col-sm-8 col-md-8">
-                            <div style="margin-left:-10%" class="col-md-5">
+                            <div style="margin-left: -5%" class="col-md-5">
                             <p><input  id = "selectedFileShowText" name = "selectedFileShowText"  type="text"   value="Select File" readonly>
                                 </p>
                             </div>
-                            <div style="margin-left:-10%" class="col-md-8">
+                            <div style="margin-left: -8%" class="col-md-8">
                                 <input  id = "selectedFileShowTextName" name = "selectedFileShowTextName"  type="text"   readonly>
                                 <small class="error"><span id="selectedFileShow" style="color: #D22727; font-size: 1.6rem"></span></small>
                             </div>
@@ -200,6 +201,11 @@
 
             try {
                 var fileName =  getFileName($("#selectedFile").val());
+                if(fileName.length > 100){
+                    $('#selectedFileShow').html($("#fileMaxLengthMessage").val());
+                    $('#uploadFileButton').attr("disabled", false);
+                    return false;
+                }
                 var list = fileName.split(".");
                 fileName = list[list.length-1];
                 if(fileType.indexOf(fileName.toUpperCase()) == -1){

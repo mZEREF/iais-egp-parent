@@ -16,7 +16,7 @@
     <div class="col-xs-12 col-md-7">
         <div class="self-assessment-checkbox-gp gradient-light-grey">
             <div class="form-check-gp" style="width: 50%;float: right">
-                <p class="assessment-title">Special Services</p>
+                <p class="assessment-title">Specified Services</p>
                 <c:forEach var="specified" items="${specifiedService}">
                     <div class="form-check">
                         <input class="form-check-input"

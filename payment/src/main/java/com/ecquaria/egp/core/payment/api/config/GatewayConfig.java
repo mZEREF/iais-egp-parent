@@ -7,7 +7,7 @@ import java.util.Properties;
 
 @Slf4j
 public class GatewayConfig {
-	
+
 	static Properties properties = new Properties();
 	static{
 		try {
@@ -46,6 +46,8 @@ public class GatewayConfig {
 	public static final String eNetsKeyId = properties.getProperty("eNets.key.id");
 
 	public static final String eNetsSecretKey = properties.getProperty("eNets.secret.key");
+
+	public static final String eNetsPaymentMethod = properties.getProperty("eNets.payment.method");
 
 	//"http://192.168.6.80:8088/egp/process/EGOV/CommPayment?";
 	public static final String common_gateway_url = properties.getProperty("payment.gateway.url");

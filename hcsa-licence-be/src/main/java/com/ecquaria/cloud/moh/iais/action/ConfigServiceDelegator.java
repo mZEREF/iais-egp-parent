@@ -28,11 +28,7 @@ import com.ecquaria.cloud.moh.iais.service.ConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.common.collect.Maps;
@@ -73,17 +69,17 @@ public class ConfigServiceDelegator {
     }
     private Stack stack=new Stack();
     public void switchOr(BaseProcessClass bpc){
-    log.info("*********switchOr  start***********");
+        log.info("*********switchOr  start***********");
 
-    log.info("*********switchOr  end***********");
+        log.info("*********switchOr  end***********");
     }
     public void prepare(BaseProcessClass bpc){
         log.info("*********prepare  start***********");
 
     }
     /*
-    * list all service oder by service name (First ranking) , version (Second ranking)
-    * */
+     * list all service oder by service name (First ranking) , version (Second ranking)
+     * */
     public void list(BaseProcessClass bpc){
         log.info("*********list  start***********");
         List<HcsaServiceDto> allHcsaServices = configService.getAllHcsaServices();
@@ -91,9 +87,9 @@ public class ConfigServiceDelegator {
     }
 
     /*
-    * add new service
-    *
-    * */
+     * add new service
+     *
+     * */
     public void addNewService(BaseProcessClass bpc){
         log.info("*********addNewService  start***********");
         bpc.request.getSession().removeAttribute("routingStage");
@@ -104,8 +100,8 @@ public class ConfigServiceDelegator {
         }
     }
     /*
-    * update service to new version
-    * */
+     * update service to new version
+     * */
     public void saveOrUpdate(BaseProcessClass bpc) throws Exception{
         log.info("*********saveOrUpdate  start***********");
         HcsaServiceConfigDto dateOfHcsaService = getDateOfHcsaService(bpc.request);
@@ -120,9 +116,9 @@ public class ConfigServiceDelegator {
 
     }
     /*
-    * edit or choose other version service to edit
-    *
-    * */
+     * edit or choose other version service to edit
+     *
+     * */
     public void edit(BaseProcessClass bpc){
         log.info("*********edit  start***********");
         configService.viewPageInfo(bpc.request);
@@ -146,16 +142,16 @@ public class ConfigServiceDelegator {
     }
 
     /*
-    * view page
-    * */
+     * view page
+     * */
     public void editView(BaseProcessClass bpc){
         log.info("*********editView  start***********");
 
         configService.viewPageInfo(bpc.request);
     }
     /*
-    * delete service if service never used
-    * */
+     * delete service if service never used
+     * */
     public void delete(BaseProcessClass bpc){
 
         log.info("*********delete  start***********");
@@ -184,14 +180,14 @@ public class ConfigServiceDelegator {
 
     }
     /*
-    * get page all data
-    * -----------------------
-    * service name ,service code ...
-    * --------------------------
-    * ( NEW APPLICATION ) ; ( REQUEST FOR CHANGE ) ...BUTTON
-    * these info in session
+     * get page all data
+     * -----------------------
+     * service name ,service code ...
+     * --------------------------
+     * ( NEW APPLICATION ) ; ( REQUEST FOR CHANGE ) ...BUTTON
+     * these info in session
      *
-    * */
+     * */
     private HcsaServiceConfigDto getDateOfHcsaService(HttpServletRequest request)  {
         HcsaServiceConfigDto hcsaServiceConfigDto = new HcsaServiceConfigDto();
         HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
@@ -558,10 +554,12 @@ public class ConfigServiceDelegator {
         Map<String,List<HcsaSvcSpecificStageWorkloadDto>> hcsaSvcSpecificStageWorkloadDtoMap=IaisCommonUtils.genNewHashMap();
         Map<String,List<HcsaSvcStageWorkingGroupDto>> hcsaSvcStageWorkingGroupDtoMap=IaisCommonUtils.genNewHashMap();
         Map<String, List<HcsaSvcSpeRoutingSchemeDto>> hcsaSvcSpeRoutingSchemeDtoMap=IaisCommonUtils.genNewHashMap();
+        Map<String,List<HcsaSvcSpeRoutingSchemeDto>> newHashMap=IaisCommonUtils.genNewHashMap();
         for(String every:type){
             List<HcsaSvcSpecificStageWorkloadDto> workloadDtos=IaisCommonUtils.genNewArrayList();
             List<HcsaSvcStageWorkingGroupDto> workingGroupDtos=IaisCommonUtils.genNewArrayList();
             List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos=IaisCommonUtils.genNewArrayList();
+            List<HcsaSvcSpeRoutingSchemeDto> svcSpeRoutingSchemeDtoList=new ArrayList<>(2);
             boolean flag=false;
             if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(every) ||
                     ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(every)){
@@ -572,6 +570,8 @@ public class ConfigServiceDelegator {
                 HcsaSvcSpecificStageWorkloadDto hcsaSvcSpecificStageWorkloadDto = new HcsaSvcSpecificStageWorkloadDto();
                 HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto = new HcsaSvcSpeRoutingSchemeDto();
                 HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+                HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto1=new HcsaSvcSpeRoutingSchemeDto();
+                HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto2=new HcsaSvcSpeRoutingSchemeDto();
                 String stageCode = hcsaSvcRoutingStageDto.getStageCode();
                 String id = hcsaSvcRoutingStageDto.getId();
                 String routingScheme = request.getParameter("RoutingScheme" + stageCode+every);
@@ -630,6 +630,14 @@ public class ConfigServiceDelegator {
                     //todo delete
                     /*  hcsaSvcSpecificStageWorkloadDto.setId(workloadId);*/
                 }
+                if("INS".equals(stageCode)){
+                    String parameter0 = request.getParameter("RoutingScheme" + stageCode + every + "0");
+                    String parameter1 = request.getParameter("RoutingScheme" + stageCode + every + "1");
+                    hcsaSvcSpeRoutingSchemeDto1.setSchemeType(parameter0);
+                    hcsaSvcSpeRoutingSchemeDto2.setSchemeType(parameter1);
+                    hcsaSvcSpeRoutingSchemeDto1.setInsOder(String.valueOf(0));
+                    hcsaSvcSpeRoutingSchemeDto2.setInsOder(String.valueOf(1));
+                }
                 if ("optional".equals(isMandatory)||ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED.equals(serviceType)) {
                     hcsaConfigPageDto.setIsMandatory("false");
                     hcsaSvcSpecificStageWorkloadDto.setIsMandatory("false");
@@ -642,7 +650,13 @@ public class ConfigServiceDelegator {
                     hcsaSvcSpecificStageWorkloadDto.setStringManhourCount(workloadManhours);
                     hcsaSvcSpecificStageWorkloadDto.setStageId(id);
                     workloadDtos.add(hcsaSvcSpecificStageWorkloadDto);
-
+                    if("INS".equals(stageCode)){
+                        hcsaSvcSpeRoutingSchemeDto1.setIsMandatory("false");
+                        hcsaSvcSpeRoutingSchemeDto2.setIsMandatory("false");
+                        svcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto1);
+                        svcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto2);
+                        hcsaConfigPageDto.setHcsaSvcSpeRoutingSchemeDtos(svcSpeRoutingSchemeDtoList);
+                    }
                 }else if("mandatory".equals(isMandatory)){
                     hcsaSvcStageWorkingGroupDto.setIsMandatory("true");
                     workingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
@@ -660,14 +674,16 @@ public class ConfigServiceDelegator {
                     hcsaSvcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto);
                     hcsaSvcSpeRoutingSchemeDtos.add(hcsaSvcSpeRoutingSchemeDto);
                     if("INS".equals(stageCode)){
-                        HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto1=new HcsaSvcSpeRoutingSchemeDto();
-                        HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto2=new HcsaSvcSpeRoutingSchemeDto();
                         hcsaSvcSpeRoutingSchemeDto1.setStageId(id);
-                        hcsaSvcSpeRoutingSchemeDto1.setSchemeType(routingScheme);
                         hcsaSvcSpeRoutingSchemeDto1.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                         hcsaSvcSpeRoutingSchemeDto1.setAppType(every);
+                        hcsaSvcSpeRoutingSchemeDto1.setIsMandatory("true");
+                        hcsaSvcSpeRoutingSchemeDto2.setIsMandatory("true");
                         hcsaSvcSpeRoutingSchemeDto2.setStageId(id);
-                        hcsaSvcSpeRoutingSchemeDto2.setSchemeType(routingScheme);
+                        if(flag){
+                            hcsaSvcSpeRoutingSchemeDto1.setSchemeType(routingScheme);
+                            hcsaSvcSpeRoutingSchemeDto2.setSchemeType(routingScheme);
+                        }
                         hcsaSvcSpeRoutingSchemeDto2.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                         hcsaSvcSpeRoutingSchemeDto2.setAppType(every);
                         HcsaSvcStageWorkingGroupDto order3=new HcsaSvcStageWorkingGroupDto();
@@ -690,12 +706,20 @@ public class ConfigServiceDelegator {
                         hcsaSvcStageWorkingGroupDtos.add(order3);
                         hcsaSvcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto1);
                         hcsaSvcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto2);
+                        svcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto1);
+                        svcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto2);
+                        hcsaConfigPageDto.setHcsaSvcSpeRoutingSchemeDtos(svcSpeRoutingSchemeDtoList);
                     }
                     hcsaConfigPageDto.setIsMandatory("true");
                 }else if("".equals(isMandatory)) {
                     workingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
                     hcsaSvcSpeRoutingSchemeDtos.add(hcsaSvcSpeRoutingSchemeDto);
                     workloadDtos.add(hcsaSvcSpecificStageWorkloadDto);
+                    if("INS".equals(stageCode)){
+                        svcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto1);
+                        svcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto2);
+                        hcsaConfigPageDto.setHcsaSvcSpeRoutingSchemeDtos(svcSpeRoutingSchemeDtoList);
+                    }
 
                     hcsaSvcStageWorkingGroupDto.setIsMandatory("");
                     hcsaSvcSpeRoutingSchemeDto.setIsMandatory("");
@@ -709,6 +733,7 @@ public class ConfigServiceDelegator {
             hcsaSvcSpecificStageWorkloadDtoMap.put(every,workloadDtos);
             hcsaSvcSpeRoutingSchemeDtoMap.put(every,hcsaSvcSpeRoutingSchemeDtos);
             hcsaSvcStageWorkingGroupDtoMap.put(every,workingGroupDtos);
+            newHashMap.put(every,svcSpeRoutingSchemeDtoList);
         }
 
         String startDate = request.getParameter("StartDate");
@@ -783,6 +808,7 @@ public class ConfigServiceDelegator {
         hcsaServiceConfigDto.setHcsaSvcStageWorkingGroupDtos(hcsaSvcStageWorkingGroupDtos);
         request.setAttribute("hcsaConfigPageDtos", hcsaConfigPageDtos);
         request.setAttribute("hcsaServiceStepSchemeDtos", hcsaServiceStepSchemeDtos);
+        request.setAttribute("insRoutingStage",newHashMap);
         hcsaServiceConfigDto.setHcsaSvcSpecificStageWorkloadDtoMap(hcsaSvcSpecificStageWorkloadDtoMap);
         hcsaServiceConfigDto.setHcsaSvcStageWorkingGroupDtoMap(hcsaSvcStageWorkingGroupDtoMap);
         hcsaServiceConfigDto.setHcsaSvcSpeRoutingSchemeDtoMap(hcsaSvcSpeRoutingSchemeDtoMap);

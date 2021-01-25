@@ -1434,6 +1434,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 previewAndSubmitMap.put("service", MessageUtil.replaceMessage("GENERAL_ERR0006","service","field"));
                 String mapStr = JsonUtil.parseToJson(map);
                 log.info(StringUtil.changeForLog("map json str:" + mapStr));
+                sB.append(serviceId);
             }
             NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),map,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
         }
@@ -1630,6 +1631,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
             Boolean flag = Boolean.FALSE;
             String name = appGrpPrimaryDocDto.getDocName();
+            if(name.length() > 100){
+                errorMap.put(keyName,MessageUtil.getMessageDesc("GENERAL_ERR0022"));
+            }
             String substring = name.substring(name.lastIndexOf('.') + 1);
             String sysFileType = systemParamConfig.getUploadFileType();
             String[] sysFileTypeArr = FileUtils.fileTypeToArray(sysFileType);
@@ -1925,6 +1929,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 String substring = docName.substring(docName.lastIndexOf('.') + 1);
                 if (docSize/1024 > uploadFileLimit) {
                     sB.append(serviceId);
+                    map.put("svcDocError","error");
+                }
+
+                if(docName.length() > 100){
                     map.put("svcDocError","error");
                 }
 

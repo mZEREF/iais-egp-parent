@@ -146,9 +146,13 @@ public class EventbusCallBackDelegate {
                     "updateFEAppealLicenceDto");
         }else if(EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING.equals(operation)){
             log.info("-------send task call back----");
-            invokeMethod(submissionId, eventRefNum,
-                    "com.ecquaria.cloud.moh.iais.service.impl.LicenceFileDownloadServiceImpl",
-                    "removeFile");
+            try {
+                invokeMethod(submissionId, eventRefNum,
+                        "com.ecquaria.cloud.moh.iais.service.impl.LicenceFileDownloadServiceImpl",
+                        "removeFile");
+            }catch (ClassNotFoundException e){
+
+            }
         }else if(EventBusConsts.OPERATION__AUDIT_TASK_CANCELED.equalsIgnoreCase(operation)){
             log.info("-------cancel audit task call back ----");
             invokeMethod(submissionId, eventRefNum,

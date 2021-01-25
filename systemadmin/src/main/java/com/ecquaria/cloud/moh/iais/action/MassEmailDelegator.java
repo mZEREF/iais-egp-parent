@@ -262,7 +262,7 @@ public class MassEmailDelegator {
         }else {
             String mode = mulReq.getParameter("mode");
             List<String> filelist = IaisCommonUtils.genNewArrayList();
-            filelist = getAllData(file);
+            filelist = getAllData(file,mode);
             if(SMS.equals(mode)){
                 List<String> address = getEmail(bpc,"mobile");
                 if(filelist != null && repeatList(filelist)){
@@ -424,7 +424,7 @@ public class MassEmailDelegator {
         ParamUtil.setRequestAttr(bpc.request,"crud_action_type",type);
     }
 
-    private List<String> getAllData(MultipartFile mulfile) throws IOException {
+    private List<String> getAllData(MultipartFile mulfile,String mode) throws IOException {
         List<String> list = IaisCommonUtils.genNewArrayList();
         try{
             File file = FileUtils.multipartFileToFile(mulfile);
@@ -442,8 +442,13 @@ public class MassEmailDelegator {
                         Cell cell = row.getCell(j);
                         if (cell != null) {
                             System.out.print(cell + "\t");
-                            DecimalFormat df = new DecimalFormat("0");
-                            String cellString = df.format(cell.getNumericCellValue());
+                            String cellString;
+                            if(SMS.equals(mode)) {
+                                DecimalFormat df = new DecimalFormat("0");
+                                 cellString = df.format(cell.getNumericCellValue());
+                            }else{
+                                 cellString = cell.toString();
+                            }
                             if(!StringUtil.isEmpty(cellString)){
                                 list.add(cellString);
                             }
@@ -523,7 +528,7 @@ public class MassEmailDelegator {
             selectOptions.add(new SelectOption("Licensee","Licensee"));
             selectOptions.add(new SelectOption("Authorised Person","Authorised Person"));
             selectOptions.add(new SelectOption("Principal Officer","Principal Officer"));
-            selectOptions.add(new SelectOption("Deputy Principal Officer","Deputy Principal Officer"));
+            selectOptions.add(new SelectOption("Nominee","Nominee"));
             selectOptions.add(new SelectOption("Clinical Governance Officer","Clinical Governance Officer"));
             selectOptions.add(new SelectOption("Service Personnel","Service Personnel"));
             selectOptions.add(new SelectOption("MedAlert","MedAlert"));
@@ -554,7 +559,7 @@ public class MassEmailDelegator {
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE,"Licensee"));
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_AP,"Authorised Person"));
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_PO,"Principal Officer"));
-            selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO,"Deputy Principal Officer"));
+            selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO,"Nominee"));
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,"Clinical Governance Officer"));
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL,"Service Personnel"));
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT,"MedAlert"));
@@ -582,6 +587,9 @@ public class MassEmailDelegator {
                 break;
             case ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL:
                 roleName = ApplicationConsts.PERSONNEL_PSN_TYPE_SVC;
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE:
+                roleName = "Licensee";
                 break;
                 default:
                     roleName = roleAbbreviation;

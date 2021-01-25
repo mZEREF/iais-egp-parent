@@ -97,7 +97,7 @@
         <iais:pagination param="appParam" result="appResult"/>
     </form>
 </div>
-<div class="row" style="padding-bottom: 40px;">
+<div class="row" style="padding-bottom: 83px;">
     <div class="col-xs-12">
         <div class="table-gp">
             <table class="table">

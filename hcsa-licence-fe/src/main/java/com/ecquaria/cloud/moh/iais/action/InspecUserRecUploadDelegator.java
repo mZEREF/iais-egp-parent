@@ -279,6 +279,12 @@ public class InspecUserRecUploadDelegator {
             } else {
                 inspecUserRecUploadDto.setFileSize(1);
             }
+            if(!StringUtil.isEmpty(fileName)){
+                if(fileName.length() > 100){
+                    errorMap.put(errorKey, "GENERAL_ERR0022");
+                    return errorMap;
+                }
+            }
             inspecUserRecUploadDto.setFileName(fileName);
         }
         return errorMap;

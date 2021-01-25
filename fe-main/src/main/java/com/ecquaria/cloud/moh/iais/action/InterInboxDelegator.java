@@ -944,9 +944,9 @@ public class InterInboxDelegator {
             }else if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationStatus)){
                 inParams = MasterCodeUtil.getCodeKeyByCodeValue("Approved");
             }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING.equals(applicationStatus)){
-                inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Appointment Re-Scheduling");
+                inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Re-Scheduling");
             }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING.equals(applicationStatus)){
-                inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Appointment Scheduling");
+                inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Scheduling");
             }else if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(applicationStatus)){
                 inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Clarification");
             }

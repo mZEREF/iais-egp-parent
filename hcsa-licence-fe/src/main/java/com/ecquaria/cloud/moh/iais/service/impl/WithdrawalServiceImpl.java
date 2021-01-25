@@ -268,7 +268,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(oldApplication.getApplicationType())){
                     isRfc = true;
                 }
-                sendNMS(h,isRfc);
+                sendNMS(h,isRfc,charity);
             });
         }
         autoApproveApplicationDtoList.forEach(h -> {
@@ -277,11 +277,11 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(oldApplication.getApplicationType())){
                 isRfc = true;
             }
-            sendWithdrawApproveNMS(h,isRfc);
+            sendWithdrawApproveNMS(h,isRfc,charity);
         });
     }
 
-    private void sendWithdrawApproveNMS(WithdrawnDto withdrawnDto,boolean isRfc){
+    private void sendWithdrawApproveNMS(WithdrawnDto withdrawnDto,boolean isRfc,boolean charity){
         Double fee = 0.0;
         String applicantName = "";
         List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
@@ -301,6 +301,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             applicationDtoList.add(oldApplicationDto);
             for(ApplicationDto applicationDto1 : applicationDtoList){
                 applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                applicationDto1.setIsCharity(charity);
             }
             List<ApplicationDto> applicationDtoList2 = hcsaConfigFeClient.returnFee(applicationDtoList).getEntity();
             if (!IaisCommonUtils.isEmpty(applicationDtoList2)){
@@ -344,7 +345,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         }
     }
 
-    private void sendNMS(WithdrawnDto withdrawnDto,boolean isRfc){
+    private void sendNMS(WithdrawnDto withdrawnDto,boolean isRfc,boolean charity){
         List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto appSubmissionDto = applicationFeClient.gainSubmissionDto(withdrawnDto.getApplicationNo()).getEntity();
         if (appSubmissionDto != null){
@@ -361,6 +362,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
                 for(ApplicationDto applicationDto1 : applicationDtoList){
                     applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                    applicationDto1.setIsCharity(charity);
                 }
                 List<ApplicationDto> applicationDtoList2 = hcsaConfigFeClient.returnFee(applicationDtoList).getEntity();
                 if (!IaisCommonUtils.isEmpty(applicationDtoList2)){

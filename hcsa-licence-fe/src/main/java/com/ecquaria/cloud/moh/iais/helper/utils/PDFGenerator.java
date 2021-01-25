@@ -71,4 +71,38 @@ public class PDFGenerator {
 			IaisCommonUtils.deleteTempFile(optHtmlFile);
 		}
 	}
+
+	public byte[] convertHtmlToPDF(String ftlName, Map<String, String> params) throws IOException, TemplateException{
+		byte[] bytes = null;
+		if (StringUtils.isEmpty(ftlName) || IaisCommonUtils.isEmpty(params)){
+			log.error("params is empty !!!");
+			return bytes;
+		}
+
+		String optHtmlName = System.currentTimeMillis() + FILE_HTML ;
+		File optHtmlFile = new File(optHtmlName);
+		if (!optHtmlFile.exists()){
+			boolean flag = optHtmlFile.createNewFile();
+			if (!flag) {
+				log.error("Creat File Error.");
+			}
+		}
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try (Writer out = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(Paths.get(optHtmlFile.getPath())), Charsets.UTF_8.name()))){
+			Template tp = cfg.getTemplate(ftlName);
+			tp.process(params, out);
+			ITextRenderer renderer = new ITextRenderer();
+			renderer.setDocument(optHtmlFile.getPath());
+			renderer.layout();
+			renderer.createPDF(baos);
+		}catch (TemplateNotFoundException e){
+			log.error(e.getMessage(),e);
+		}catch ( DocumentException e){
+			log.error(e.getMessage(),e);
+		} finally{
+			IaisCommonUtils.deleteTempFile(optHtmlFile);
+		}
+		bytes = baos.toByteArray();
+		return bytes;
+	}
 }

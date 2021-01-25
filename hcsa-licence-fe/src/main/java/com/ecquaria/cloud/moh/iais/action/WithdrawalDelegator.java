@@ -353,6 +353,9 @@ public class WithdrawalDelegator {
                     //isValid = IaisEGPConstant.NO;
                     if (commonsMultipartFile !=null && commonsMultipartFile.getSize() > 0){
                         ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",commonsMultipartFile.getFileItem().getName());
+                    }else{
+                        withdrawnDto.setAppPremisesSpecialDocDto(null);
+
                     }
                     ParamUtil.setRequestAttr(bpc.request,"withdrawDtoView",withdrawnDto);
                     wdIsValid = IaisEGPConstant.NO;

@@ -34,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -487,6 +488,7 @@ public class WithOutRenewalDelegator {
                     sendEmail(bpc.request,appSubmissionDtos);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
+                    log.error(StringUtil.changeForLog("send email error"));
                 }
                 ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE4);
             } else {
@@ -1845,87 +1847,114 @@ public class WithOutRenewalDelegator {
             String applicationName = loginContext.getUserName();
             log.info(StringUtil.changeForLog("send renewal application notification applicationName : " + applicationName));
             log.info(StringUtil.changeForLog("send renewal application notification paymentMethod : " + paymentMethod));
-            int index = 1;
+            int appNoIndex = 1;
             String appNo = groupNo;
             String appDate = Formatter.formatDateTime(new Date(), "dd/MM/yyyy");
+            log.info(StringUtil.changeForLog("send email appSubmissionDtos size : " + appSubmissionDtos.size()));
+            StringBuilder stringBuilderAPPNum = new StringBuilder();
+            String temp = "have";
             for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
-                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDto.getServiceName());
-                List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-                svcCodeList.add(hcsaServiceDto.getSvcCode());
-                String amountStr = (String)ParamUtil.getSessionAttr(request, "totalStr");
-                appNo = getAppNo(groupNo,index);
-                log.info(StringUtil.changeForLog("send renewal application notification application no : " + appNo));
-                log.info(StringUtil.changeForLog("send renewal application notification amountStr : " + amountStr));
-                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-                map.put("ApplicantName", applicationName);
-                map.put("ApplicationType", applicationTypeShow);
-                map.put("ApplicationNumber", appNo);
-                map.put("ApplicationDate", appDate);
-                map.put("paymentAmount", amountStr);
-                map.put("systemLink", loginUrl);
-                map.put("emailAddress", systemAddressOne);
-                map.put("MOH_AGENCY_NAME", MohName);
-                if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(paymentMethod)
-                        || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(paymentMethod)
-                        || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(paymentMethod)) {
-                    paymentMethodName = "onlinePayment";
-                    map.put("paymentMethod", paymentMethodName);
-                    log.info(StringUtil.changeForLog("send renewal application notification paymentMethodName : " + paymentMethodName));
-                } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(paymentMethod)) {
-                    //todo GIRO payment method
-//                    paymentMethodName = "GIRO";
+                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+                if(!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)){
+                    for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+                        String hciName = appGrpPremisesDto.getHciName();
+                        log.info(StringUtil.changeForLog("hci name : " + hciName));
+                        appNo = getAppNo(groupNo,appNoIndex);
+                        if(appNoIndex == 1){
+                            stringBuilderAPPNum.append(appNo);
+                        }else {
+                            stringBuilderAPPNum.append(" and ");
+                            stringBuilderAPPNum.append(appNo);
+                        }
+                        appNoIndex ++;
+                    }
                 }
-                try {
+            }
+             if(appNoIndex == 1){
+                temp = "has";
+            }
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDtos.get(0).getServiceName());
+            List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+            svcCodeList.add(hcsaServiceDto.getSvcCode());
+            String amountStr = (String)ParamUtil.getSessionAttr(request, "totalStr");
+            String applicationNumber = stringBuilderAPPNum.toString();
+            log.info(StringUtil.changeForLog("send renewal application notification application no : " + appNo));
+            log.info(StringUtil.changeForLog("send renewal application notification subject no : " + applicationNumber));
+            log.info(StringUtil.changeForLog("send renewal application notification amountStr : " + amountStr));
+            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+            map.put("ApplicantName", applicationName);
+            map.put("ApplicationType", applicationTypeShow);
+            map.put("ApplicationNumber", applicationNumber);
+            map.put("ApplicationDate", appDate);
+            map.put("paymentAmount", amountStr);
+            map.put("systemLink", loginUrl);
+            map.put("emailAddress", systemAddressOne);
+            map.put("MOH_AGENCY_NAME", MohName);
+            if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(paymentMethod)
+                    || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(paymentMethod)
+                    || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(paymentMethod)) {
+                paymentMethodName = "onlinePayment";
+                map.put("paymentMethod", paymentMethodName);
+                log.info(StringUtil.changeForLog("send renewal application notification paymentMethodName : " + paymentMethodName));
+            } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(paymentMethod)) {
+                //GIRO payment method
+                paymentMethodName = "GIRO";
+                map.put("usualDeduction","next 7 working days");
+                OrgGiroAccountInfoDto entity = organizationLienceseeClient.getGiroAccByLicenseeId(appSubmissionDtos.get(0).getLicenseeId()).getEntity();
+                map.put("accountNumber",entity.getAcctNo());
+                map.put("paymentMethod", paymentMethodName);
+            }
+            try {
 //                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ appNo +" has been submitted";
-                    Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-                    subMap.put("ApplicationType", applicationTypeShow);
-                    subMap.put("ApplicationNumber", appNo);
-                    String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED,subMap);
-                    String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_SMS,subMap);
-                    String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_MESSAGE,subMap);
-                    log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
-                    log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
-                    log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
-                    EmailParam emailParam = new EmailParam();
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED);
-                    emailParam.setTemplateContent(map);
-                    emailParam.setQueryCode(appNo);
-                    emailParam.setReqRefNum(appNo);
-                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                    emailParam.setRefId(appNo);
-                    emailParam.setSubject(emailSubject);
-                    //send email
-                    log.info(StringUtil.changeForLog("send renewal application email"));
-                    notificationHelper.sendNotification(emailParam);
-                    log.info(StringUtil.changeForLog("send renewal application email end"));
-                    //send sms
-                    EmailParam smsParam = new EmailParam();
-                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_SMS);
-                    smsParam.setSubject(smsSubject);
-                    smsParam.setQueryCode(appNo);
-                    smsParam.setReqRefNum(appNo);
-                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                    smsParam.setRefId(appNo);
-                    log.info(StringUtil.changeForLog("send renewal application sms"));
-                    notificationHelper.sendNotification(smsParam);
-                    log.info(StringUtil.changeForLog("send renewal application sms end"));
-                    //send message
-                    EmailParam messageParam = new EmailParam();
-                    messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_MESSAGE);
-                    messageParam.setTemplateContent(map);
-                    messageParam.setQueryCode(appNo);
-                    messageParam.setReqRefNum(appNo);
-                    messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                    messageParam.setRefId(appNo);
-                    messageParam.setSubject(messageSubject);
-                    messageParam.setSvcCodeList(svcCodeList);
-                    log.info(StringUtil.changeForLog("send renewal application message"));
-                    notificationHelper.sendNotification(messageParam);
-                    log.info(StringUtil.changeForLog("send renewal application message end"));
-                }catch (Exception e){
-                    log.error(e.getMessage(), e);
-                }
-                index ++;
+                Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+                subMap.put("ApplicationType", applicationTypeShow);
+                subMap.put("ApplicationNumber", applicationNumber);
+                subMap.put("temp", temp);
+                String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED,subMap);
+                String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_SMS,subMap);
+                String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_MESSAGE,subMap);
+                log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
+                log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
+                log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
+                EmailParam emailParam = new EmailParam();
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED);
+                emailParam.setTemplateContent(map);
+                emailParam.setQueryCode(appNo);
+                emailParam.setReqRefNum(appNo);
+                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                emailParam.setRefId(appNo);
+                emailParam.setSubject(emailSubject);
+                //send email
+                log.info(StringUtil.changeForLog("send renewal application email"));
+                notificationHelper.sendNotification(emailParam);
+                log.info(StringUtil.changeForLog("send renewal application email end"));
+                //send sms
+                EmailParam smsParam = new EmailParam();
+                smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_SMS);
+                smsParam.setSubject(smsSubject);
+                smsParam.setQueryCode(appNo);
+                smsParam.setReqRefNum(appNo);
+                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                smsParam.setRefId(appNo);
+                log.info(StringUtil.changeForLog("send renewal application sms"));
+                notificationHelper.sendNotification(smsParam);
+                log.info(StringUtil.changeForLog("send renewal application sms end"));
+                //send message
+                EmailParam messageParam = new EmailParam();
+                messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_MESSAGE);
+                messageParam.setTemplateContent(map);
+                messageParam.setQueryCode(appNo);
+                messageParam.setReqRefNum(appNo);
+                messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                messageParam.setRefId(appNo);
+                messageParam.setSubject(messageSubject);
+                messageParam.setSvcCodeList(svcCodeList);
+                log.info(StringUtil.changeForLog("send renewal application message"));
+                notificationHelper.sendNotification(messageParam);
+                log.info(StringUtil.changeForLog("send renewal application message end"));
+            }catch (Exception e){
+                log.error(e.getMessage(), e);
+                log.error(StringUtil.changeForLog("send email error"));
             }
             log.info(StringUtil.changeForLog("send renewal application notification end"));
         }else{

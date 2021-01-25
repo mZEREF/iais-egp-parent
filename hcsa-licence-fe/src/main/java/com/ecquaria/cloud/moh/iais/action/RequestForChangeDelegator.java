@@ -389,6 +389,10 @@ public class RequestForChangeDelegator {
                    errorMsg = MessageUtil.replaceMessage("GENERAL_ERR0018",fileType,"fileType");
                    error.put("selectedFileError",errorMsg);
                }
+               if(!fileValidate.get("fileNameLength")){
+                   errorMsg = MessageUtil.getMessageDesc("GENERAL_ERR0022");
+                   error.put("selectedFileError",errorMsg);
+               }
                if(!fileValidate.get("fileSize")){
                    errorMsg = MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxFile),"sizeMax");
                    error.put("selectedFileError",errorMsg);

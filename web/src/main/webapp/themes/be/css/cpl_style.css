@@ -2346,6 +2346,7 @@ span.error-msg {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
   border-bottom: 0;
+  overflow: inherit;
 }
 .nice-select.open ul.list {
   border-color: #1989BF;
@@ -2354,6 +2355,7 @@ span.error-msg {
   -ms-transform: none;
   -o-transform: none;
   transform: none;
+  overflow-y: auto;
 }
 .nice-select.open:after {
   -webkit-transform: none;

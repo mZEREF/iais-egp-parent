@@ -69,7 +69,7 @@
                         <div class="form-group">
                             <iais:field value="Sequence" required="true"/>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="sequence" type="text" value="<fmt:formatNumber type="number" value="${MasterCodeDto.sequence  / 1000}" maxFractionDigits="2" pattern="0"/>" name="codeSequenceEd" maxlength="3">
+                                <input id="sequence" type="text" value="<fmt:formatNumber type="number" value="${empty MasterCodeDto.sequence? null : MasterCodeDto.sequence / 1000}" maxFractionDigits="2" pattern="0"/>" name="codeSequenceEd" maxlength="3">
                                 <span id="error_sequence" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>

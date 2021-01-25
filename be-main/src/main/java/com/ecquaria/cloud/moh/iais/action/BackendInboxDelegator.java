@@ -1205,8 +1205,16 @@ public class BackendInboxDelegator {
     }
 
     private void doRefunds(List<AppReturnFeeDto> saveReturnFeeDtos){
-        List<PaymentRequestDto> paymentRequestDtos= applicationViewService.eicFeStripeRefund(saveReturnFeeDtos);
-        for (PaymentRequestDto refund:paymentRequestDtos
+        List<AppReturnFeeDto> saveReturnFeeDtosStripe=IaisCommonUtils.genNewArrayList();
+        for (AppReturnFeeDto appreturn:saveReturnFeeDtos
+        ) {
+            ApplicationDto applicationDto=applicationMainClient.getAppByNo(appreturn.getApplicationNo()).getEntity();
+            ApplicationGroupDto applicationGroupDto=applicationMainClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+            if(applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
+                saveReturnFeeDtosStripe.add(appreturn);
+            }
+        }
+        List<PaymentRequestDto> paymentRequestDtos= applicationViewService.eicFeStripeRefund(saveReturnFeeDtosStripe);        for (PaymentRequestDto refund:paymentRequestDtos
         ) {
             for (AppReturnFeeDto appreturn:saveReturnFeeDtos
             ) {
@@ -1390,13 +1398,13 @@ public class BackendInboxDelegator {
             }
             for (ApplicationDto applicationDto : applicationDtos) {
                 log.info(StringUtil.changeForLog("****application return fee applicationDto***** " + applicationDto.getApplicationNo()));
+                applicationDto.setIsCharity(isCharity);
+                applicationDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
                 for (Map.Entry<String, String> entry : returnFee.entrySet()) {
                     log.info(StringUtil.changeForLog("****application return fee returnFee***** " + entry.getKey()));
                     if (entry.getKey().equals(applicationDto.getApplicationNo())) {
                         log.info(StringUtil.changeForLog("****application return fee***** " + entry.getKey() + " *****" + entry.getValue()));
                         applicationDto.setStatus(entry.getValue());
-                        applicationDto.setIsCharity(isCharity);
-                        applicationDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
                     }
                 }
             }
