@@ -20,13 +20,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JarFileUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.utils.PDFGenerator;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
@@ -43,6 +46,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -1212,6 +1216,25 @@ public class NewApplicationAjaxController {
         ajaxResDto.setResultJson(sql);
         return ajaxResDto;
     }
+
+    @GetMapping(value = "/new-app-ack-print")
+    public @ResponseBody void generateAckPdf(HttpServletRequest request,HttpServletResponse response) throws Exception {
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,NewApplicationDelegator.APPSUBMISSIONDTO);
+        String txndt = (String) ParamUtil.getSessionAttr(request, "txnDt");
+        String txnRefNo = (String) ParamUtil.getSessionAttr(request, "txnRefNo");
+        boolean isRfi = NewApplicationHelper.checkIsRfi(request);
+        byte[] bytes = doPrint(appSubmissionDto,isRfi,txnRefNo,txndt);
+        if(bytes != null){
+            response.setContentType("application/OCTET-STREAM");
+            response.addHeader("Content-Disposition", "attachment;filename=newAppAck.pdf");
+            response.addHeader("Content-Length", "" + bytes.length);
+            OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+            ops.write(bytes);
+            ops.close();
+            ops.flush();
+        }
+    }
+
     //=============================================================================
     //private method
     //=============================================================================
@@ -1242,5 +1265,68 @@ public class NewApplicationAjaxController {
         AppPsnEditDto appPsnEditDto = NewApplicationHelper.setNeedEditField(person);
         person.setPsnEditDto(appPsnEditDto);
         return person;
+    }
+
+    private static byte[] doPrint(AppSubmissionDto appSubmissionDto,boolean isRfi,String txnRefNo,String txnDt) throws Exception {
+        byte[] bytes = null;
+        if(appSubmissionDto != null){
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                Map<String,String> paramMap = IaisCommonUtils.genNewHashMap();
+
+                List<String> svcNameList = IaisCommonUtils.genNewArrayList();
+                StringBuilder serviceName = new StringBuilder();
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                    svcNameList.add("<strong>"+appSvcRelatedInfoDto.getServiceName()+"</strong>");
+                    serviceName.append("<div class=\"col-xs-12\"><p class=\"ack-font-20\">- <strong>")
+                            .append(appSvcRelatedInfoDto.getServiceName())
+                            .append("</strong></p></div>");
+                }
+                String serviceNameTitle = String.join(" | ",svcNameList);
+                List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(appSubmissionDto.getLicenseeId());
+                String emailAddress = WithOutRenewalDelegator.emailAddressesToString(licenseeEmailAddrs);
+
+                String newAck005 = MessageUtil.getMessageDesc("NEW_ACK005");
+                String emptyStr = "N/A";
+                paramMap.put("serviceNameTitle", serviceNameTitle);
+                paramMap.put("serviceName",serviceName.toString());
+                paramMap.put("emailAddress",StringUtil.viewHtml(emailAddress));
+                paramMap.put("NEW_ACK005",StringUtil.viewHtml(newAck005));
+                paramMap.put("appGrpNo",StringUtil.viewHtml(appSubmissionDto.getAppGrpNo()));
+                if(StringUtil.isEmpty(txnDt)){
+                    paramMap.put("txnDt",StringUtil.viewHtml(emptyStr));
+                }else{
+                    paramMap.put("txnDt",StringUtil.viewHtml(txnDt));
+                }
+
+                paramMap.put("amountStr",StringUtil.viewHtml(appSubmissionDto.getAmountStr()));
+                if(StringUtil.isEmpty(appSubmissionDto.getPaymentMethod())){
+                    paramMap.put("paymentMethod",StringUtil.viewHtml(emptyStr));
+                }else {
+                    String pmtName = MasterCodeUtil.getCodeDesc(appSubmissionDto.getPaymentMethod());
+                    paramMap.put("paymentMethod",StringUtil.viewHtml(pmtName));
+                }
+
+                paramMap.put("dateColumn",StringUtil.viewHtml("Date & Time"));
+                //rfi
+                if(!isRfi){
+                    paramMap.put("txnRefNoColumn","<th>Transactional No.</th>");
+                    if(StringUtil.isEmpty(txnRefNo)){
+                        paramMap.put("txnRefNo",StringUtil.viewHtml(emptyStr));
+                    }else{
+                        paramMap.put("txnRefNo",StringUtil.viewHtml(txnRefNo));
+                    }
+                }else{
+                    paramMap.put("txnRefNoColumn",null);
+                    paramMap.put("txnRefNo",null);
+                }
+                File pdfFile = new File("new application report.pdf");
+                JarFileUtil.copyFileToDir("pdfTemplate", "newAppAck.ftl");
+                File templateDir = new File(JarFileUtil.DEFAULT_TMP_DIR_PATH + "/pdfTemplate");
+                PDFGenerator pdfGenerator = new PDFGenerator(templateDir);
+                bytes = pdfGenerator.convertHtmlToPDF("newAppAck.ftl", paramMap);
+            }
+        }
+        return bytes;
     }
 }
