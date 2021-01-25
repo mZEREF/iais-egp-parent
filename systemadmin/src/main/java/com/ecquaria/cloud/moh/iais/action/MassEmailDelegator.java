@@ -262,7 +262,7 @@ public class MassEmailDelegator {
         }else {
             String mode = mulReq.getParameter("mode");
             List<String> filelist = IaisCommonUtils.genNewArrayList();
-            filelist = getAllData(file);
+            filelist = getAllData(file,mode);
             if(SMS.equals(mode)){
                 List<String> address = getEmail(bpc,"mobile");
                 if(filelist != null && repeatList(filelist)){
@@ -424,7 +424,7 @@ public class MassEmailDelegator {
         ParamUtil.setRequestAttr(bpc.request,"crud_action_type",type);
     }
 
-    private List<String> getAllData(MultipartFile mulfile) throws IOException {
+    private List<String> getAllData(MultipartFile mulfile,String mode) throws IOException {
         List<String> list = IaisCommonUtils.genNewArrayList();
         try{
             File file = FileUtils.multipartFileToFile(mulfile);
@@ -442,8 +442,13 @@ public class MassEmailDelegator {
                         Cell cell = row.getCell(j);
                         if (cell != null) {
                             System.out.print(cell + "\t");
-                            DecimalFormat df = new DecimalFormat("0");
-                            String cellString = df.format(cell.getNumericCellValue());
+                            String cellString;
+                            if(SMS.equals(mode)) {
+                                DecimalFormat df = new DecimalFormat("0");
+                                 cellString = df.format(cell.getNumericCellValue());
+                            }else{
+                                 cellString = cell.toString();
+                            }
                             if(!StringUtil.isEmpty(cellString)){
                                 list.add(cellString);
                             }

@@ -56,8 +56,9 @@ public class DistributionListServiceImpl implements DistributionListService {
              ) {
             String name = userNameList.get(item.getCreateBy());
             item.setCreateBy(name);
-
-            item.setService(HcsaServiceCacheHelper.getServiceByCode(item.getService()).getSvcName());
+            if (HcsaServiceCacheHelper.getServiceByCode(item.getService()) != null){
+                item.setService(HcsaServiceCacheHelper.getServiceByCode(item.getService()).getSvcName());
+            }
         }
         return distributionListDtoSearchResult;
     }
