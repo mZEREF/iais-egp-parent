@@ -719,6 +719,7 @@ public class AppealServiceImpl implements AppealService {
             Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file,fileTypes,(configFileSize * 1024 *1024L));
             Boolean fileSize = booleanMap.get("fileSize");
             Boolean fileType = booleanMap.get("fileType");
+            Boolean fileNameLength = booleanMap.get("fileNameLength");
             //size
             if(!fileSize){
                 map.put("file", MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(configFileSize),"sizeMax"));
@@ -726,6 +727,9 @@ public class AppealServiceImpl implements AppealService {
             //type
             if(!fileType){
                 map.put("file",MessageUtil.replaceMessage("GENERAL_ERR0018", configFileType,"fileType"));
+            }
+            if(!fileNameLength){
+                map.put("file",MessageUtil.getMessageDesc("GENERAL_ERR0022"));
             }
             AppPremisesSpecialDocDto specialDocDto=new AppPremisesSpecialDocDto();
             long size = file.getSize() / 1024;
@@ -753,6 +757,9 @@ public class AppealServiceImpl implements AppealService {
                 }
                 if (!flag) {
                     map.put("file",MessageUtil.replaceMessage("GENERAL_ERR0018", configFileType,"fileType"));
+                }
+                if(filename.length()>100){
+                    map.put("file",MessageUtil.getMessageDesc("GENERAL_ERR0022"));
                 }
             }
 
@@ -808,7 +815,9 @@ public class AppealServiceImpl implements AppealService {
                         }
                         String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
                         if (StringUtil.isEmpty(professionRegoNo)) {
+/*
                             map.put("professionRegoNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn. No.  ","field"));
+*/
                         }else {
                             if("Y".equals(prsFlag)){
                                 ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
