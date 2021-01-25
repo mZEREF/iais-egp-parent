@@ -209,12 +209,19 @@
            var file = $(this).val();
            var  fileName = getFileName(file);
            if( fileName != null && fileName.trim() != ""){
-               $("#licFileNameDe").attr("hidden",false);
-               $("#licFileName").html( fileName);
-               $('#litterFile').val(fileName);
-               $('#litterFileId').val("");
+                if(fileName.length > 100){
+                    doDeleteFile();
+                    $('#error_litterFile_Show').html($("#fileMaxLengthMessage").val());
+                }else {
+                    $("#licFileNameDe").attr("hidden",false);
+                    $("#licFileName").html( fileName);
+                    $('#litterFile').val(fileName);
+                    $('#litterFileId').val("");
+                    $('#error_litterFile_Show').html("");
+                }
+           }else {
+               $('#error_litterFile_Show').html("");
            }
-           $('#error_litterFile_Show').html("");
        }else {
            if(error == "N"){
                doDeleteFile();
