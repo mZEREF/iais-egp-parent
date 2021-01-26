@@ -181,6 +181,8 @@ public class ClientReschedulingDelegator {
                         apptViewDto.setCanReschedule(Boolean.FALSE);
                     }
                     apptViewDto.setSvcIds(svcIds);
+                    apptViewDto.setAppGrpId(reschApptGrpPremsQueryDto.getAppGrpPremId());
+                    apptViewDto.setApplicationNo(reschApptGrpPremsQueryDto.getApplicationNo());
                     apptViewDto.setVehicleNo(reschApptGrpPremsQueryDto.getVehicleNo());
                     apptViewDto.setAppId(reschApptGrpPremsQueryDto.getId());
                     apptViewDto.setAppCorrId(reschApptGrpPremsQueryDto.getAppCorrId());

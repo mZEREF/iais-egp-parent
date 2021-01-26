@@ -58,7 +58,6 @@ public interface ApptConfirmReSchDateService {
 
     void updateAppStatusCommPool(List<ApptViewDto> apptViewDtos);
 
-    ProcessReSchedulingDto getApptComPolSystemDateByCorrId(String appPremCorrId);
 
     void comPolReschedulingDate(ProcessReSchedulingDto processReSchedulingDto);
 }
