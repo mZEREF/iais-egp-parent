@@ -59,7 +59,7 @@ $('document').ready(function() {
     });
 
     $('table.control-grid tbody tr td select').niceSelect();
-    $('.nice-select ul').mCustomScrollbar();
+    // $('.nice-select ul').mCustomScrollbar();
 
     $('select.officer-select').on('change', function() {
         $parentEle = $(this).closest('td.first');
