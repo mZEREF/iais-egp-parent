@@ -506,8 +506,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 subMap.put("count", "1st");
                 subMap.put("ServiceName", serviceName);
                 MsgTemplateDto emailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER).getEntity();
-                MsgTemplateDto smsTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER).getEntity();
-                MsgTemplateDto messageTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER).getEntity();
+                MsgTemplateDto smsTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER_SMS).getEntity();
+                MsgTemplateDto messageTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER_MESSAGE).getEntity();
                 String emailSubject = getEmailSubject(emailTemplateDto,subMap);
                 String smsSubject = getEmailSubject(smsTemplateDto,subMap);
                 String messageSubject = getEmailSubject(messageTemplateDto,subMap);
