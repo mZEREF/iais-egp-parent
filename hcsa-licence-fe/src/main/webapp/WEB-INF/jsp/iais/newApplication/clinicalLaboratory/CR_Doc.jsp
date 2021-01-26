@@ -67,7 +67,7 @@
               <c:choose>
                 <c:when test="${svcDoc.docName == '' || svcDoc.docName == null }">
                   <span class="hidden delBtn">
-                    &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
+                    &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
                   </span>
                 </c:when>
                 <c:otherwise>
@@ -121,7 +121,7 @@
                 <c:choose>
                   <c:when test="${premSvcDoc.docName == '' || premSvcDoc.docName == null }">
                     <span class="hidden delBtn">
-                      &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
+                      &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
                     </span>
                   </c:when>
                   <c:otherwise>
@@ -161,7 +161,7 @@
         var file = $(this).val();
         var documentDiv = $(this).closest('.document-upload-list');
         documentDiv.find('.fileNameSpan').html(getFileName(file));
-        documentDiv.find('.delBtn').html('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>');
+        documentDiv.find('.delBtn').html('&nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>');
         documentDiv.find('.delBtn').removeClass('hidden');
         var $fileUploadContentEle = $(this).closest('div.file-upload-gp');
         $fileUploadContentEle.find('.delBtn').removeClass('hidden');

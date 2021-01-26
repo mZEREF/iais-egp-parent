@@ -94,14 +94,16 @@
                           <c:choose>
                             <c:when test="${file.docName == '' || file.docName == null }">
                               <span class="hidden delBtn">
-                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
+                                &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
                               </span>
+                                <br/>
                             </c:when>
                             <c:otherwise>
                               <%--<span class="existFile delBtn <c:if test="${!isClickEdit || AppSubmissionDto.onlySpecifiedSvc}">hidden</c:if>">--%>
                               <span class="existFile delBtn <c:if test="${!isClickEdit}">hidden</c:if>">
                                 &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
                               </span>
+                                <br/>
                             </c:otherwise>
                           </c:choose>
                           <br/>
@@ -135,7 +137,7 @@
                             <c:choose>
                               <c:when test="${primaryDoc.docName == '' || primaryDoc.docName == null }">
                               <span class="hidden delBtn">
-                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
+                                &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
                               </span>
                               </c:when>
                               <c:otherwise>
@@ -258,7 +260,7 @@
     $('.selectedFile').change(function () {
         var file = $(this).val();
         $(this).parent().children('span:eq(0)').html(getFileName(file));
-        $(this).parent().children('span:eq(0)').next().html('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>');
+        $(this).parent().children('span:eq(0)').next().html('&nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>');
         $(this).parent().children('span:eq(0)').next().removeClass("hidden");
         $(this).parent().children('input delFlag').val('N');
     });
