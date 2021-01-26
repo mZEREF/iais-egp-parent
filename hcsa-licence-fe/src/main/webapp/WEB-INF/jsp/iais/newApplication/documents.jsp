@@ -259,10 +259,13 @@
 
     $('.selectedFile').change(function () {
         var file = $(this).val();
-        $(this).parent().children('span:eq(0)').html(getFileName(file));
-        $(this).parent().children('span:eq(0)').next().html('&nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>');
-        $(this).parent().children('span:eq(0)').next().removeClass("hidden");
-        $(this).parent().children('input delFlag').val('N');
+        if(file != null && file != '' && file != undefined){
+            $(this).parent().children('span:eq(0)').html(getFileName(file));
+            $(this).parent().children('span:eq(0)').next().html('&nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>');
+            $(this).parent().children('span:eq(0)').next().removeClass("hidden");
+            $(this).parent().children('input delFlag').val('N');
+            submit('documents',null,null);
+        }
     });
 
     $('.delBtn').click(function () {
