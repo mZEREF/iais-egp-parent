@@ -16,10 +16,8 @@ import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
 import com.ecquaria.egp.core.payment.PaymentTransaction;
-import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
-import com.stripe.net.RequestOptions;
 import com.stripe.param.checkout.SessionCreateParams;
 import ecq.commons.helper.StringHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -99,8 +97,8 @@ public class PaymentStripeProxy extends PaymentProxy {
 			List<PaymentRequestDto> paymentRequestDto1s = PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNoLike(appGrgNo).getEntity();
 			for(PaymentRequestDto paymentRequestDto1:paymentRequestDto1s){
 				if("stripe".equals(paymentRequestDto1.getPayMethod())&&paymentRequestDto1.getQueryCode()!=null&&!paymentRequestDto1.getStatus().equals(PaymentTransactionEntity.TRANS_STATUS_FAILED)){
-					Session session=PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDto.getQueryCode());
-					PaymentIntent paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentIntent(session.getPaymentIntent());
+					Session session=PaymentBaiduriProxyUtil.getStripeService().retrieveEicSession(paymentRequestDto.getQueryCode());
+					PaymentIntent paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrieveEicPaymentIntent(session.getPaymentIntent());
 					if("succeeded".equals(paymentIntent.getStatus())){
 						paymentRequestDto1.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
 						PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto1);
@@ -122,12 +120,9 @@ public class PaymentStripeProxy extends PaymentProxy {
 		}
 
 		try {
-			RequestOptions requestOptions=PaymentBaiduriProxyUtil.getStripeService().authentication();
-			PaymentBaiduriProxyUtil.getStripeService().connectedAccounts("acct_1Gnz03BQeqajk1lG");
 			SessionCreateParams createParams =
 					SessionCreateParams.builder()
 							.addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-//							.addPaymentMethodType(SessionCreateParams.PaymentMethodType.IDEAL)
 							.setMode(SessionCreateParams.Mode.PAYMENT)
 							.setSuccessUrl(fields.get("vpc_ReturnURL"))
 							.setCancelUrl(fields.get("vpc_ReturnURL"))
@@ -145,11 +140,11 @@ public class PaymentStripeProxy extends PaymentProxy {
 															.build())
 											.build())
 							.build();
-			Session session= PaymentBaiduriProxyUtil.getStripeService().createSession(createParams);
+			Session session= PaymentBaiduriProxyUtil.getStripeService().createEicSession(createParams);
 			paymentRequestDto.setQueryCode(session.getId());
 			ParamUtil.setSessionAttr(bpc.request,"CHECKOUT_SESSION_ID",session.getId());
 
-		} catch (StripeException e) {
+		} catch (Exception e) {
 			log.info(e.getMessage(),e);
 			try {
 				RedirectUtil.redirect(failUrl, bpc.request, bpc.response);
@@ -214,14 +209,14 @@ public class PaymentStripeProxy extends PaymentProxy {
 		PaymentIntent paymentIntent=null;
 		try{
 
-			Session checkoutSession=PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDto.getQueryCode());
-			paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentIntent(checkoutSession.getPaymentIntent());
+			Session checkoutSession=PaymentBaiduriProxyUtil.getStripeService().retrieveEicSession(paymentRequestDto.getQueryCode());
+			paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrieveEicPaymentIntent(checkoutSession.getPaymentIntent());
 			log.info(StringUtil.changeForLog("Payment Intent: "+paymentIntent.getStatus()) );
 		}catch (Exception e){
 			log.info(e.getMessage(),e);
 			try {
-				Session checkoutSession=PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDto.getQueryCode());
-				paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentIntent(checkoutSession.getPaymentIntent());
+				Session checkoutSession=PaymentBaiduriProxyUtil.getStripeService().retrieveEicSession(paymentRequestDto.getQueryCode());
+				paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrieveEicPaymentIntent(checkoutSession.getPaymentIntent());
 			}catch (Exception e1){
 				log.info(e.getMessage(),e1);
 			}
