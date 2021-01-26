@@ -64,7 +64,7 @@
                                             <c:if test="${licPreReqForInfoDto.status!='RFIST002'&&licPreReqForInfoDto.status!='RFIST004'}">
                                                 <div class="col-sm-7 col-md-2 col-xs-10">
                                                     <button class="btn btn-secondary" type="button" data-toggle="modal" data-target= "#extendsDueDate">
-                                                        Extends
+                                                        Extend
                                                     </button>
                                                 </div>
                                             </c:if>
