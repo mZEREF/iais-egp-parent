@@ -827,12 +827,12 @@
                         removePo();
                         retrieveData();
                         <!--set Scrollbar -->
-                        $("div.poSelect->ul").mCustomScrollbar({
+                        /*$("div.poSelect->ul").mCustomScrollbar({
                                 advanced:{
                                     updateOnContentResize: true
                                 }
                             }
-                        );
+                        );*/
                         //hidden add more
                         var psnLength = $('.po-content').length-1;
                         if(psnLength >='${poHcsaSvcPersonnelDto.maximumCount}'){
@@ -879,12 +879,12 @@
                         removeDpo();
                         dpoRetrieveData();
                         <!--set Scrollbar -->
-                        $("div.deputyPoSelect->ul").mCustomScrollbar({
+                        /*$("div.deputyPoSelect->ul").mCustomScrollbar({
                                 advanced:{
                                     updateOnContentResize: true
                                 }
                             }
-                        );
+                        );*/
                         //hidden add more
                         var psnLength = $('.dpo-content').length-1;
                         if(psnLength >='${dpoHcsaSvcPersonnelDto.maximumCount}'){

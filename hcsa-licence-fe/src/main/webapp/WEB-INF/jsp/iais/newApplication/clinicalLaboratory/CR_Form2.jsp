@@ -760,12 +760,12 @@
                     <!--change psn item -->
                     changePsnItem();
                     <!--set Scrollbar -->
-                    $("div.assignSel->ul").mCustomScrollbar({
+                    /*$("div.assignSel->ul").mCustomScrollbar({
                             advanced: {
                                 updateOnContentResize: true
                             }
                         }
-                    );
+                    );*/
                     //hidden add more
                     var psnLength = $('.assignContent').length - 1;
                     if (psnLength >= '${HcsaSvcPersonnel.maximumCount}') {

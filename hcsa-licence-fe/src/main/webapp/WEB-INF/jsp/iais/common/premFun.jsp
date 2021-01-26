@@ -308,12 +308,12 @@
                     autoclose:true
                 });
                 <!--set Scrollbar -->
-                $("div.premSelect->ul").mCustomScrollbar({
+                /*$("div.premSelect->ul").mCustomScrollbar({
                         advanced:{
                             updateOnContentResize: true
                         }
                     }
-                );
+                );*/
                 <!--trigger tooltip -->
                 $("[data-toggle='tooltip']").tooltip();
                 dismissWaiting();
@@ -423,12 +423,12 @@
                     $('.removePhBtn').unbind('click');
                     removePH();
 
-                    $("div.premSelect->ul").mCustomScrollbar({
+                    /*$("div.premSelect->ul").mCustomScrollbar({
                             advanced:{
                                 updateOnContentResize: true
                             }
                         }
-                    );
+                    );*/
                     dismissWaiting();
                 },
                 'error':function () {
@@ -480,12 +480,12 @@
                 //remove del
                 $contentDivEle.find('.removePhBtn').remove();
 
-                $("div.premSelect->ul").mCustomScrollbar({
+                /*$("div.premSelect->ul").mCustomScrollbar({
                         advanced:{
                             updateOnContentResize: true
                         }
                     }
-                );
+                );*/
             },
             'error':function () {
             }
@@ -895,12 +895,12 @@
         var phHtml = currPhForm.find('.pubHolidayContent').get(0).outerHTML;
         currPhForm.find('.pubHolidayContent').remove();
         currPhForm.find('.phFormMarkPoint').after(phHtml);
-        $("div.premSelect->ul").mCustomScrollbar({
+        /*$("div.premSelect->ul").mCustomScrollbar({
                 advanced:{
                     updateOnContentResize: true
                 }
             }
-        );
+        );*/
         //init data
         var data = {};
         var $Ele = currPhForm.find('.pubHolidayContent:eq(0)');

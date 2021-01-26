@@ -390,12 +390,12 @@
 
                         retrieveData();
                         <!--set Scrollbar -->
-                        $("div.assignSel->ul").mCustomScrollbar({
+                        /*$("div.assignSel->ul").mCustomScrollbar({
                                 advanced:{
                                     updateOnContentResize: true
                                 }
                             }
-                        );
+                        );*/
                         //hidden add more
                         var psnLength = $('.medAlertContent').length-1;
                         if(psnLength >='${mapHcsaSvcPersonnel.maximumCount}'){
