@@ -97,7 +97,8 @@
                     <input id="selectedFileView" name="selectedFileView" type="file" style="display: none;" aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
                     <span id="licFileName"> &nbsp; &nbsp; &nbsp; &nbsp;${serListDto.appPremisesSpecialDocDto.docName}</span>
                     <span id="licFileNameDe" <c:if test="${empty serListDto.appPremisesSpecialDocDto}">hidden</c:if> >
-                                &nbsp;&nbsp;<button type="button" onclick="javascript:doDeleteFile()">Delete</button>
+                                &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm" onclick="javascript:doDeleteFile()">
+                                                <em class="fa fa-times"></em></button>
                 </span>
                     <input id="litterFile" name="litterFile" type="hidden" value="<c:out value="${serListDto.appPremisesSpecialDocDto.docName}"></c:out>" />
                     <input id="litterFileId" name="litterFileId" type="hidden" value="<iais:mask name="litterFileId" value="${serListDto.appPremisesSpecialDocDto.id}"/>"/>
