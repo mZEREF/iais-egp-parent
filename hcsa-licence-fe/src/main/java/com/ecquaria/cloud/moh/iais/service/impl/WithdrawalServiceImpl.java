@@ -176,9 +176,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             recallApplicationDto.setRefNo(refNoList);
             recallApplicationDto.setAppNo(newApplication.getApplicationNo());
             recallApplicationDto.setAppGrpId(oldApplication.getAppGrpId());
-
+            recallApplicationDto.setCharity(charity);
             recallApplicationDto.setNewAppId(h.getNewApplicationId());
-            if ( !charity&&!StringUtil.isEmpty(oldApplicationGroupDtox.getPayMethod())
+            if (!charity&&!StringUtil.isEmpty(oldApplicationGroupDtox.getPayMethod())
                     && !ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(oldApplication.getApplicationType())){
                 recallApplicationDto.setNeedReturnFee(true);
             }else{
