@@ -170,7 +170,7 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                 List<String> sms = IaisCommonUtils.genNewArrayList();
                                 email.add(leader.getEmail());
                                 sms.add(leader.getMobileNo());
-                                String subject = StringUtil.changeForLog("Reminder for "+applicationDto.getApplicationNo()+" processing for "+leader.getDisplayName());
+                                String subject = StringUtil.changeForLog("Reminder for "+applicationDto.getApplicationNo()+" processing for "+ item.getUserName());
                                 MsgTemplateDto msgTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_UNPROCESSED_TASK_2).getEntity();
                                 Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
                                 templateContent.put("officer", item.getUserName());
