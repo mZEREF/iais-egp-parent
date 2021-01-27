@@ -190,9 +190,10 @@ public class StripeServiceImpl implements StripeService {
 
         HttpEntity<byte[]> entity = new HttpEntity<byte[]>(null,
                 headers);
-        ResponseEntity<PaymentIntent> response =
-                restTemplate.exchange(url, HttpMethod.POST, entity, PaymentIntent.class);
-        return response.getBody();
+        ResponseEntity<String> response =
+                restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+        PaymentIntent session=ApiResource.GSON.fromJson(response.getBody(), PaymentIntent.class);
+        return session;
     }
 
     @Override
@@ -241,9 +242,11 @@ public class StripeServiceImpl implements StripeService {
         HttpContent httpContent= FormEncoder.createHttpContent(params.toMap());
         HttpEntity<byte[]> entity = new HttpEntity<byte[]>(httpContent.byteArrayContent(),
                 headers);
-        ResponseEntity<Session> response =
-                restTemplate.exchange(url, HttpMethod.POST, entity, Session.class);
-        return response.getBody();
+
+        ResponseEntity<String> response =
+                restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+        Session session=ApiResource.GSON.fromJson(response.getBody(), Session.class);
+        return session;
     }
 
     @Override
@@ -291,9 +294,10 @@ public class StripeServiceImpl implements StripeService {
         }
         HttpEntity<byte[]> entity = new HttpEntity<byte[]>(null,
                 headers);
-        ResponseEntity<Session> response =
-                restTemplate.exchange(url, HttpMethod.GET, entity, Session.class);
-        return response.getBody();
+        ResponseEntity<String> response =
+                restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+        Session session=ApiResource.GSON.fromJson(response.getBody(), Session.class);
+        return session;
     }
     private static com.stripe.net.HttpHeaders buildHeaders(ApiResource.RequestMethod method, RequestOptions options) throws AuthenticationException {
         Map<String, List<String>> headerMap = new HashMap<String, List<String>>();
