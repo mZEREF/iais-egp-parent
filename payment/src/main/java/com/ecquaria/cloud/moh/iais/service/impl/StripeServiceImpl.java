@@ -163,7 +163,7 @@ public class StripeServiceImpl implements StripeService {
     @Override
     public Session createEicSession(SessionCreateParams params) {
         Stripe.apiKey = GatewayConfig.stripeKey;
-        String strGWPostURL= gateWayUrl+"/v1/enets/GW2/TxnQuery";
+        String strGWPostURL= gateWayUrl+"/v1/stripe/v1/checkout/sessions";
 
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
