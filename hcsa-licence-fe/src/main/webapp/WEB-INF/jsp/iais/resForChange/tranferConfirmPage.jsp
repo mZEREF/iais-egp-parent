@@ -77,16 +77,16 @@
               <c:choose>
                 <c:when test="${appPremisesSpecialDocDto.docName == '' || appPremisesSpecialDocDto.docName == null }">
                               <span class="hidden delBtn">
-                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
+                                &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
                               </span>
                 </c:when>
                 <c:otherwise>
                               <span class="existFile delBtn">
-                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
+                                &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
                               </span>
                 </c:otherwise>
               </c:choose>
-                <input class="selectedFile" id="selectedFile"  name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile" >
+                <input class="selectedFile" id="selectedFile"  name = "selectedFile" type="file" onclick="fileClicked(event)" onchange="fileChangedTransfer(event)" style="display: none;" aria-label="selectedFile" >
                 <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Upload</a>
               </div>
               </p>
@@ -143,18 +143,29 @@
         var pos = o.lastIndexOf("\\");
         return o.substring(pos + 1);
     }
-    $('.selectedFile').change(function () {
-        var file = $(this).val();
-        $(this).parent().children('span:eq(0)').html(getFileName(file));
-        $(this).parent().children('span:eq(0)').next().removeClass("hidden");
-        $(this).parent().children('input delFlag').val('N');
+    function fileChangedTransfer(event) {
+        var fileElement = event.target;
+        if (fileElement.value == "") {
+            fileChanged(event);
+        }else{
+            fileSelectChange();
+        }
+    }
+    // $('.selectedFile').change(function () {
+    //     fileSelectChange();
+    // });
+    function fileSelectChange(){
+        var file = $('#selectedFile');
+        file.parent().children('span:eq(0)').html(getFileName(file.val()));
+        file.parent().children('span:eq(0)').next().removeClass("hidden");
+        file.parent().children('input delFlag').val('N');
         var maxSize = $("#maxFile").val();
         var error  = validateUploadSizeMaxOrEmpty(maxSize,'selectedFile');
         if(error == "N"){
             doDeleteFile();
             $('#error_selectedFileError').html('The file has exceeded the maximum upload size of '+ maxSize + 'M.');
         }
-    });
+    }
     function doDeleteFile() {
         $('#selectedFile').val("");
     }
