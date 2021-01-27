@@ -1380,12 +1380,12 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(request, "licStatus", LicenceStatusList);
 
         List<SelectOption> LicenceTypeList = IaisCommonUtils.genNewArrayList();
-        LicenceTypeList.add(new SelectOption("Tissue Banking", "Tissue Banking"));
         LicenceTypeList.add(new SelectOption("Blood Banking", "Blood Banking"));
-        LicenceTypeList.add(new SelectOption("Radiological Service", "Radiological Service"));
         LicenceTypeList.add(new SelectOption("Clinical Laboratory", "Clinical Laboratory"));
         LicenceTypeList.add(new SelectOption("Nuclear Medicine (Assay)", "Nuclear Medicine (Assay)"));
         LicenceTypeList.add(new SelectOption("Nuclear Medicine (Imaging)", "Nuclear Medicine (Imaging)"));
+        LicenceTypeList.add(new SelectOption("Radiological Service", "Radiological Service"));
+        LicenceTypeList.add(new SelectOption("Tissue Banking", "Tissue Banking"));
         ParamUtil.setRequestAttr(request, "licType", LicenceTypeList);
 
         List<SelectOption> LicenceActionsList = IaisCommonUtils.genNewArrayList();
