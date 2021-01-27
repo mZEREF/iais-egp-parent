@@ -485,6 +485,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
 
     @Override
     public void updateAppStatusCommPool(List<ApptViewDto> apptViewDtos) {
+        log.debug(StringUtil.changeForLog("apptViewDtos debug:========="+apptViewDtos.toString()));
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos= applicationFeClient.appPremCorrDtosByApptViewDtos(apptViewDtos).getEntity();
 
         for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
