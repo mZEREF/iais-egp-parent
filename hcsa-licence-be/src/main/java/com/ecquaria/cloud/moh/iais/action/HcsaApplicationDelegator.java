@@ -2238,8 +2238,23 @@ public class HcsaApplicationDelegator {
                             applicationService.closeTaskWhenWhAppApprove(withdrawApplicationDto.getId());
                             List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
                             applicationDtoList.add(oldApplication);
+                            String entityType = "";
+                            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+                            if (licenseeDto != null) {
+                                LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
+                                if (licenseeEntityDto != null) {
+                                    entityType = licenseeEntityDto.getEntityType();
+                                }
+                            }
+                            boolean isCharity = false;
+                            if (AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)) {
+                                isCharity = true;
+                            } else {
+                                isCharity = false;
+                            }
                             for (ApplicationDto applicationDto1 : applicationDtoList) {
                                 applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                                applicationDto1.setIsCharity(isCharity);
                             }
                             List<ApplicationDto> applicationDtoList2 = hcsaConfigClient.returnFee(applicationDtoList).getEntity();
                             applicationDtoList2.add(applicationDto);
