@@ -150,7 +150,14 @@
                                             </td>
                                             <td>
                                                 <p>
-                                                    <a onclick="edit('${massIndex}')">Edit</a>
+                                                    <c:choose>
+                                                        <c:when test="${!empty item.actual}">
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <a onclick="edit('${massIndex}')">Edit</a>
+                                                        </c:otherwise>
+                                                    </c:choose>
+
                                                     <a onclick="audit('${item.messageId}','${item.mode}')">Audit</a>
                                                 </p>
                                             </td>

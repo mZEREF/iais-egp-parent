@@ -34,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +82,8 @@ public class BlastManagementDelegator {
     BlastManagementListService blastManagementListService;
     @Autowired
     private SystemParamConfig systemParamConfig;
-
+    @Autowired
+    OrganizationClient organizationClient;
     @Autowired
     DistributionListService distributionListService;
 
@@ -387,11 +389,13 @@ public class BlastManagementDelegator {
         blastManagementDto.setSubject(subject);
         blastManagementDto.setMsgContent(messageContent);
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-        for (AttachmentDto item:blastManagementDto.getAttachmentDtos()
-             ) {
-            if(item.getDocName().length() > 100){
-                errMap.put("fileUploadError", "GENERAL_ERR0022");
-                break;
+        if(blastManagementDto.getAttachmentDtos() != null && blastManagementDto.getAttachmentDtos().size() > 0){
+            for (AttachmentDto item:blastManagementDto.getAttachmentDtos()
+                 ) {
+                if(item.getDocName().length() > 100){
+                    errMap.put("fileUploadError", "GENERAL_ERR0022");
+                    break;
+                }
             }
         }
         if(StringUtil.isEmpty(content)){
@@ -702,12 +706,37 @@ public class BlastManagementDelegator {
     public void auditTrial(BaseProcessClass bpc){
         String msgid =  ParamUtil.getString(bpc.request, "editBlast");
         String mode =  ParamUtil.getString(bpc.request, "mode");
+        BlastManagementDto blastManagementDto = blastManagementListService.getBlastByMsgId(msgid);
+
         SearchParam auditSearchParam = new SearchParam(EmailAuditTrailDto.class.getName());
         auditSearchParam.setSort("sent_time", SearchParam.ASCENDING);
         auditSearchParam.addFilter("REQUEST_REF_NO", msgid,true);
         CrudHelper.doPaging(auditSearchParam,bpc.request);
         QueryHelp.setMainSql("systemAdmin", "audit",auditSearchParam);
         SearchResult<EmailAuditTrailDto> searchResult = blastManagementListService.auditList(auditSearchParam);
+//        String errMsg = null;
+//        if(searchResult.getRowCount() == 0){
+//            if(!StringUtil.isEmpty(blastManagementDto.getActual())){
+//                List<String> roleEmail = IaisCommonUtils.genNewArrayList();
+//                if("LICENSEE".equals(blastManagementDto.getRecipientsRole())) {
+//                    List<String> licenseeIds = blastManagementListService.getLicenseeIds(HcsaServiceCacheHelper.getServiceByCode(blastManagementDto.getService()).getSvcName());
+//                    roleEmail = organizationClient.getEmailInLicenseeIds(licenseeIds).getEntity();
+//                }else{
+//                    roleEmail = blastManagementListService.getEmailByRole(blastManagementDto.getRecipientsRole(), HcsaServiceCacheHelper.getServiceByCode(blastManagementDto.getService()).getSvcName());
+//                }
+//                if(roleEmail.size() > 0){
+//
+//                }else{
+//
+//                }
+//
+//            }else{
+//                errMsg = MessageUtil.getMessageDesc("GENERAL_ACK018");
+//            }
+//        }else{
+//            errMsg = null;
+//        }
+        //
         ParamUtil.setRequestAttr(bpc.request,"searchResult",searchResult);
         ParamUtil.setRequestAttr(bpc.request,"auditSearchParam",auditSearchParam);
         ParamUtil.setRequestAttr(bpc.request,"mode",mode);
