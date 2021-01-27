@@ -107,7 +107,7 @@ public class ResponseForInformationDelegator {
             String id =  ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(id);
             String str=ParamUtil.getRequestString(request,"rfiListGo");
-            if(!StringUtil.isEmpty(str)){
+            if(!StringUtil.isEmpty(str)&&licPremisesReqForInfoDto.isNeedDocument()){
                 for (LicPremisesReqForInfoDocDto licDoc:licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()
                 ) {
                     if(!StringUtil.isEmpty(licDoc.getDocName())){
@@ -149,31 +149,33 @@ public class ResponseForInformationDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
 
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=(LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(bpc.request,"licPreReqForInfoDto");;
-        try {
-            for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
-                CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+doc.getId());
-                String commDelFlag = ParamUtil.getString(mulReq, "commDelFlag"+doc.getId());
-                if(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename())){
-                    file.getFileItem().setFieldName("selectedFile");
-                    long size = file.getSize() / 1024;
-                    doc.setDocName(file.getOriginalFilename());
-                    doc.setDocSize(Integer.valueOf(String.valueOf(size)));
-                    String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
-                    doc.setFileRepoId(fileRepoGuid);
-                    doc.setSubmitDt(new Date());
-                    doc.setSubmitBy(licPremisesReqForInfoDto.getLicenseeId());
-                    doc.setPassDocValidate(false);
-                }else if("N".equals(commDelFlag)){
-                    doc.setDocName(null);
-                    doc.setDocSize(null);
-                    doc.setFileRepoId(null);
-                    doc.setSubmitDt(new Date());
-                    doc.setSubmitBy(licPremisesReqForInfoDto.getLicenseeId());
-                    doc.setPassDocValidate(false);
+        if(licPremisesReqForInfoDto.isNeedDocument()){
+            try {
+                for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
+                    CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+doc.getId());
+                    String commDelFlag = ParamUtil.getString(mulReq, "commDelFlag"+doc.getId());
+                    if(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename())){
+                        file.getFileItem().setFieldName("selectedFile");
+                        long size = file.getSize() / 1024;
+                        doc.setDocName(file.getOriginalFilename());
+                        doc.setDocSize(Integer.valueOf(String.valueOf(size)));
+                        String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
+                        doc.setFileRepoId(fileRepoGuid);
+                        doc.setSubmitDt(new Date());
+                        doc.setSubmitBy(licPremisesReqForInfoDto.getLicenseeId());
+                        doc.setPassDocValidate(false);
+                    }else if("N".equals(commDelFlag)){
+                        doc.setDocName(null);
+                        doc.setDocSize(null);
+                        doc.setFileRepoId(null);
+                        doc.setSubmitDt(new Date());
+                        doc.setSubmitBy(licPremisesReqForInfoDto.getLicenseeId());
+                        doc.setPassDocValidate(false);
+                    }
                 }
+            }catch (Exception e){
+                log.info(e.getMessage(),e);
             }
-        }catch (Exception e){
-            log.info(e.getMessage(),e);
         }
         ParamUtil.setSessionAttr(bpc.request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
         try {

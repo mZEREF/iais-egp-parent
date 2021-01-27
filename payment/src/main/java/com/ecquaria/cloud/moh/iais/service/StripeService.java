@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
-import com.stripe.net.RequestOptions;
 import com.stripe.param.checkout.SessionCreateParams;
 
 /**
@@ -16,9 +15,11 @@ import com.stripe.param.checkout.SessionCreateParams;
 public interface StripeService {
     Session createSession(SessionCreateParams params) throws StripeException;
     Session retrieveSession(String csId) throws StripeException;
-    RequestOptions connectedAccounts(String id) ;
-    RequestOptions authentication();
     PaymentIntent retrievePaymentIntent(String pi);
     void retrievePayment(PaymentRequestDto paymentRequestDto) throws StripeException;
+
+    PaymentIntent retrieveEicPaymentIntent(String pi);
+    Session createEicSession(SessionCreateParams params) ;
+    Session retrieveEicSession(String csId) ;
 }
 

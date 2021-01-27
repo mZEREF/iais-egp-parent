@@ -64,7 +64,7 @@
                                             <c:if test="${licPreReqForInfoDto.status!='RFIST002'&&licPreReqForInfoDto.status!='RFIST004'}">
                                                 <div class="col-sm-7 col-md-2 col-xs-10">
                                                     <button class="btn btn-secondary" type="button" data-toggle="modal" data-target= "#extendsDueDate">
-                                                        Extends
+                                                        Extend
                                                     </button>
                                                 </div>
                                             </c:if>
@@ -174,7 +174,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
-                <div class="modal-title" id="gridSystemModalLabel" style="font-size: 2rem;">Confirmation Box</div>
+                <div class="modal-title" id="gridSystemModalLabel" style="font-size:2rem;">Confirmation Box</div>
             </div>
             <div class="modal-body">
                 <div class="row">

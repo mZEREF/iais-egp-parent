@@ -112,7 +112,7 @@ public class ClientReschedulingDelegator {
         StringBuilder stringBuilder=new StringBuilder();
         List<String> appStatus=IaisCommonUtils.genNewArrayList();
         for (String appSt: AppointmentUtil.getNoReschdulingAppStatus()
-             ) {
+        ) {
             appStatus.add(appSt);
             stringBuilder.append(appSt).append("','");
         }
@@ -181,6 +181,8 @@ public class ClientReschedulingDelegator {
                         apptViewDto.setCanReschedule(Boolean.FALSE);
                     }
                     apptViewDto.setSvcIds(svcIds);
+                    apptViewDto.setAppGrpId(reschApptGrpPremsQueryDto.getAppGrpPremId());
+                    apptViewDto.setApplicationNo(reschApptGrpPremsQueryDto.getApplicationNo());
                     apptViewDto.setVehicleNo(reschApptGrpPremsQueryDto.getVehicleNo());
                     apptViewDto.setAppId(reschApptGrpPremsQueryDto.getId());
                     apptViewDto.setAppCorrId(reschApptGrpPremsQueryDto.getAppCorrId());
@@ -201,7 +203,7 @@ public class ClientReschedulingDelegator {
                 }
                 List<ApptViewDto> apptViewDtos1=IaisCommonUtils.genNewArrayList();
                 for (Map.Entry<String,ApptViewDto> entry:apptViewDtos.entrySet()
-                     ) {
+                ) {
                     apptViewDtos1.add(entry.getValue());
                 }
                 List<ApptViewDto> apptViewDtos2=IaisCommonUtils.genNewArrayList();
@@ -275,7 +277,7 @@ public class ClientReschedulingDelegator {
 
         List<ApptViewDto> apptViewDtos1=IaisCommonUtils.genNewArrayList();
         for (String key: keyIds
-             ) {
+        ) {
             ApptViewDto apptViewDto=apptViewDtos.get(key);
             String reason=ParamUtil.getString(bpc.request,"reason"+key);
             apptViewDto.setReason(reason);

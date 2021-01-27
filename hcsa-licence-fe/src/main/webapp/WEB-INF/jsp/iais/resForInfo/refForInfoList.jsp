@@ -18,58 +18,60 @@
     <input type="hidden" name="crud_action_additional" value="">
     <input type="hidden" name="rfiListGo" value="1">
     <div class="main-content">
-        <br><br><br>
-
+        <br>
         <div class="container">
             <div class="col-xs-12">
                 <div class="components">
-                    <h3>
-                        <span>Request For Information</span>
-                    </h3>
-                    <div class="table-gp">
-                        <iais:action style="text-align:left;">
-                            <div align="left"><span><a  href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initMsgView"><em class="fa fa-angle-left"> </em> Back</a></span></div>
-                        </iais:action>
-                        <table class="table">
-                            <thead>
-                            <tr align="center">
-                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="LICENCE_NO" value="Licence No."></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="REQUEST_DATE " value="Start Date"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="DUE_DATE " value="Due Date"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="REQUESTER_ID" value="Requester ID"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <c:choose>
-                                <c:when test="${empty reqForInfoSearchList}">
-                                    <tr>
-                                        <td colspan="7">
-                                            <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
-                                        </td>
-                                    </tr>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:forEach var="pool" items="${reqForInfoSearchList}" varStatus="status">
+                    <div class="tab-gp">
+                        <div class="tab-content">
+                            <h3>
+                                <span>Request For Information</span>
+                            </h3>
+                            <br><br>
+                            <table class="table">
+                                <thead>
+                                <tr align="center">
+                                    <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="false"  field="LICENCE_NO" value="Licence No."></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="false"  field="REQUEST_DATE " value="Start Date"></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="false"  field="DUE_DATE " value="Due Date"></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="false"  field="REQUESTER_ID" value="Requester ID"></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:choose>
+                                    <c:when test="${empty reqForInfoSearchList}">
                                         <tr>
-                                            <td class="row_no"><c:out value="${status.index + 1}"/></td>
-                                            <td><c:out value="${pool.licenceNo}"/></td>
-                                            <td><fmt:formatDate value="${pool.requestDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
-                                            <td><fmt:formatDate value="${pool.dueDateSubmission}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
-                                            <td><c:out value="${pool.requestUser}" /></td>
-                                            <td>
-                                                <iais:action >
-                                                    <a onclick="javascript:doView('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.id)}');" >View</a>
-                                                </iais:action>
+                                            <td colspan="7">
+                                                <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                                             </td>
                                         </tr>
-                                    </c:forEach>
-                                </c:otherwise>
-                            </c:choose>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach var="pool" items="${reqForInfoSearchList}" varStatus="status">
+                                            <tr>
+                                                <td class="row_no"><c:out value="${status.index + 1}"/></td>
+                                                <td><c:out value="${pool.licenceNo}"/></td>
+                                                <td><fmt:formatDate value="${pool.requestDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
+                                                <td><fmt:formatDate value="${pool.dueDateSubmission}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
+                                                <td><c:out value="${pool.requestUser}" /></td>
+                                                <td>
+                                                    <iais:action >
+                                                        <a onclick="javascript:doView('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.id)}');" >View</a>
+                                                    </iais:action>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
 
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                            <iais:action style="text-align:left;">
+                                <div align="left"><span><a  href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initMsgView"><em class="fa fa-angle-left"> </em> Back</a></span></div>
+                            </iais:action>
+                        </div>
                     </div>
                 </div>
             </div>
