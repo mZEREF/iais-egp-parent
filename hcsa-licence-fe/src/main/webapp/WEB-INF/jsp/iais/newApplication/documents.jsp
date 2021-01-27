@@ -107,7 +107,7 @@
                             </c:otherwise>
                           </c:choose>
                           <br/>
-                          <input class="selectedFile commDoc" id="commonDoc"  name = "${commKey}" type="file" style="display: none;" aria-label="selectedFile1" >
+                          <input class="selectedFile commDoc" id="commonDoc"  name = "${commKey}" type="file" style="display: none;" onclick="fileClickedLocal(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1" >
                           <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Upload</a><br/>
                           <span name="iaisErrorMsg" class="error-msg" id="error_${commKey}"></span>
                         </div>
@@ -147,7 +147,7 @@
                               </c:otherwise>
                             </c:choose>
                             <br/>
-                            <input class="selectedFile premDoc"  name = "${premKey}" type="file" style="display: none;" aria-label="selectedFile1">
+                            <input class="selectedFile premDoc"  name = "${premKey}" type="file" onclick="fileClickedLocal(event)" onchange="fileChangedLocal(this,event)" style="display: none;" aria-label="selectedFile1">
                             <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Upload</a><br/>
                             <span name="iaisErrorMsg" class="error-msg" id="error_${premKey}"></span>
                           </div>
@@ -237,6 +237,43 @@
         doEdit();
     });
 
+    <!-- 108635 start-->
+    var clone = {};
+    var debug = false;
+    // FileClicked()
+    function fileClickedLocal(event) {
+        var fileElement = event.target;
+        console.log("click fileElement:"+fileElement);
+        if (fileElement.value != "") {
+            if (debug) { console.log("Clone( #" + fileElement.id + " ) : " + fileElement.value.split("\\").pop()) }
+            clone[fileElement.id] = $(fileElement).clone(); //'Saving Clone'
+        }
+        //What ever else you want to do when File Chooser Clicked
+    }
+
+    // FileChanged()
+    function fileChangedLocal(obj,event) {
+        var fileElement = event.target;
+        console.log("change fileElement:"+fileElement);
+        if (fileElement.value == "") {
+            if (debug) { console.log("Restore( #" + fileElement.id + " ) : " + clone[fileElement.id].val().split("\\").pop()) }
+            clone[fileElement.id].insertBefore(fileElement); //'Restoring Clone'
+            $(fileElement).remove(); //'Removing Original'
+            if (evenMoreListeners) { addEventListenersTo(clone[fileElement.id]) }//If Needed Re-attach additional Event Listeners
+        }else{
+            var file = obj.value;
+            if(file != null && file != '' && file != undefined){
+                var currGrp = $(obj).closest('.file-upload-gp');
+                currGrp.find('span:eq(0)').html(getFileName(file));
+                currGrp.find('span:eq(0)').next().html('&nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>');
+                currGrp.find('span:eq(0)').next().removeClass("hidden");
+                currGrp.find('input delFlag').val('N');
+            }
+        }
+        //What ever else you want to do when File Chooser Changed
+    }
+    <!-- 108635 end-->
+
     function validateUploadSizeMaxOrEmpty(maxSize,$fileEle) {
         var fileV = $fileEle.val();
         var file = $fileEle.get(0).files[0];
@@ -257,16 +294,16 @@
         return o.substring(pos + 1);
     }
 
-    $('.selectedFile').change(function () {
+    /*$('.selectedFile').change(function () {
         var file = $(this).val();
+
         if(file != null && file != '' && file != undefined){
             $(this).parent().children('span:eq(0)').html(getFileName(file));
             $(this).parent().children('span:eq(0)').next().html('&nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>');
             $(this).parent().children('span:eq(0)').next().removeClass("hidden");
             $(this).parent().children('input delFlag').val('N');
-            submit('documents',null,null);
         }
-    });
+    });*/
 
     $('.delBtn').click(function () {
         $(this).parent().children('span:eq(0)').html('');

@@ -77,7 +77,7 @@
                 </c:otherwise>
               </c:choose>
             </div>
-            <input class="selectedFile svcDoc"  name = "${docConfig.id}selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a><br/>
+            <input class="selectedFile svcDoc"  name = "${docConfig.id}selectedFile" type="file" style="display: none;" onclick="fileClickedLocal(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a><br/>
             <span name="iaisErrorMsg" class="error-msg" id="error_${docConfig.id}selectedFile"></span>
           </div>
         </div>
@@ -131,7 +131,7 @@
                   </c:otherwise>
                 </c:choose>
               </div>
-              <input class="selectedFile svcDoc"  name = "${premKey}" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a><br/>
+              <input class="selectedFile svcDoc"  name = "${premKey}" type="file" style="display: none;" onclick="fileClickedLocal(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a><br/>
               <span name="iaisErrorMsg" class="error-msg" id="error_${premKey}"></span>
             </div>
           </div>
@@ -152,12 +152,55 @@
         doEdit();
     });
 
+    <!-- 108635 start-->
+    var clone = {};
+    var debug = false;
+    // FileClicked()
+    function fileClickedLocal(event) {
+        var fileElement = event.target;
+        console.log("click fileElement:"+fileElement);
+        if (fileElement.value != "") {
+            if (debug) { console.log("Clone( #" + fileElement.id + " ) : " + fileElement.value.split("\\").pop()) }
+            clone[fileElement.id] = $(fileElement).clone(); //'Saving Clone'
+        }
+        //What ever else you want to do when File Chooser Clicked
+    }
+
+    // FileChanged()
+    function fileChangedLocal(obj,event) {
+        var fileElement = event.target;
+        console.log("change fileElement:"+fileElement);
+        if (fileElement.value == "") {
+            if (debug) { console.log("Restore( #" + fileElement.id + " ) : " + clone[fileElement.id].val().split("\\").pop()) }
+            clone[fileElement.id].insertBefore(fileElement); //'Restoring Clone'
+            $(fileElement).remove(); //'Removing Original'
+            if (evenMoreListeners) { addEventListenersTo(clone[fileElement.id]) }//If Needed Re-attach additional Event Listeners
+        }else{
+            var file = obj.value;
+            if(file != null && file != '' && file != undefined){
+                var documentDiv = $(obj).closest('.document-upload-list');
+                documentDiv.find('.fileNameSpan').html(getFileName(file));
+                documentDiv.find('.delBtn').html('&nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>');
+                documentDiv.find('.delBtn').removeClass('hidden');
+                var $fileUploadContentEle = $(obj).closest('div.file-upload-gp');
+                $fileUploadContentEle.find('.delBtn').removeClass('hidden');
+
+                /*currGrp.find('span:eq(0)').html(getFileName(file));
+                currGrp.find('span:eq(0)').next().html('&nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>');
+                currGrp.find('span:eq(0)').next().removeClass("hidden");
+                currGrp.find('input delFlag').val('N');*/
+            }
+        }
+        //What ever else you want to do when File Chooser Changed
+    }
+    <!-- 108635 end-->
+
     function getFileName(o) {
         var pos = o.lastIndexOf("\\");
         return o.substring(pos + 1);
     };
 
-    $('.selectedFile').change(function () {
+    /*$('.selectedFile').change(function () {
         var file = $(this).val();
         var documentDiv = $(this).closest('.document-upload-list');
         documentDiv.find('.fileNameSpan').html(getFileName(file));
@@ -165,7 +208,7 @@
         documentDiv.find('.delBtn').removeClass('hidden');
         var $fileUploadContentEle = $(this).closest('div.file-upload-gp');
         $fileUploadContentEle.find('.delBtn').removeClass('hidden');
-    });
+    });*/
 
     $('.delBtn').click(function () {
         var documentDiv = $(this).closest('.document-upload-list');
