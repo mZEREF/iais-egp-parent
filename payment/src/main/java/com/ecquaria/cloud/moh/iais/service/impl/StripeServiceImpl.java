@@ -4,17 +4,23 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.StripeService;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentAppGrpClient;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
 import com.stripe.Stripe;
+import com.stripe.exception.AuthenticationException;
+import com.stripe.exception.InvalidRequestException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
+import com.stripe.net.ApiResource;
+import com.stripe.net.FormEncoder;
+import com.stripe.net.HttpContent;
+import com.stripe.net.RequestOptions;
 import com.stripe.param.checkout.SessionCreateParams;
+import com.stripe.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,6 +32,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * StripeServiceImpl
@@ -41,18 +54,8 @@ public class StripeServiceImpl implements StripeService {
     @Autowired
     PaymentAppGrpClient paymentAppGrpClient;
 
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
     @Value("${iais.inter.gateway.url}")
     private String gateWayUrl;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
 
     @Qualifier(value = "iaisRestTemplate")
     private RestTemplate restTemplate=new RestTemplate();
@@ -103,7 +106,7 @@ public class StripeServiceImpl implements StripeService {
 
 
     @Override
-    public void retrievePayment(PaymentRequestDto paymentRequestDto)  {
+    public void retrievePayment(PaymentRequestDto paymentRequestDto) throws AuthenticationException, InvalidRequestException {
         Session session=retrieveEicSession(paymentRequestDto.getQueryCode());
         PaymentIntent paymentIntent=retrieveEicPaymentIntent(session.getPaymentIntent());
 
@@ -140,66 +143,197 @@ public class StripeServiceImpl implements StripeService {
     }
 
     @Override
-    public PaymentIntent retrieveEicPaymentIntent(String pi) {
+    public PaymentIntent retrieveEicPaymentIntent(String pi) throws AuthenticationException, InvalidRequestException {
         Stripe.apiKey = GatewayConfig.stripeKey;
-        String strGWPostURL= gateWayUrl+"/v1/stripe/v1/payment_intents";
+        String strGWPostURL= gateWayUrl+"/v1/stripe";
+        String url = String.format("%s%s", strGWPostURL, String.format("/v1/payment_intents/%s", ApiResource.urlEncodeId(pi)));
 
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        headers.set("date", signature.date());
-        headers.set("authorization", signature.authorization());
-        headers.set("date-Secondary", signature2.date());
-        headers.set("authorization-Secondary", signature2.authorization());
-        HttpEntity<String> entity = new HttpEntity<String>(pi,
+        ApiResource.RequestMethod method=ApiResource.RequestMethod.GET;
+        RequestOptions options=RequestOptions.getDefault();
+        // Accept
+        headers.set("Accept", "application/json");
+        // Accept-Charset
+        headers.set("Accept-Charset", ApiResource.CHARSET.name());
+        // Authorization
+        String apiKey = GatewayConfig.stripeKey;
+        if (apiKey == null) {
+            throw new AuthenticationException("No API key provided. Set your API key using `Stripe.apiKey = \"<API-KEY>\"`. You can generate API keys from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", null, null, 0);
+        } else if (apiKey.isEmpty()) {
+            throw new AuthenticationException("Your API key is invalid, as it is an empty string. You can double-check your API key from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", null, null, 0);
+        } else if (StringUtils.containsWhitespace(apiKey)) {
+            throw new AuthenticationException("Your API key is invalid, as it contains whitespace. You can double-check your API key from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", null, null, 0);
+        }
+        headers.set("Authorization", String.format("Bearer %s", apiKey));
+        // Stripe-Version
+        if (options.getStripeVersionOverride() != null) {
+            headers.set("Stripe-Version", options.getStripeVersionOverride());
+        } else if (options.getStripeVersion() != null) {
+            headers.set("Stripe-Version", options.getStripeVersion());
+        } else {
+            throw new IllegalStateException("Either `stripeVersion` or `stripeVersionOverride` value must be set.");
+        }
+        // Stripe-Account
+        if (options.getStripeAccount() != null) {
+            headers.set("Stripe-Account",
+                    options.getStripeAccount());
+        }
+        // Idempotency-Key
+        if (options.getIdempotencyKey() != null) {
+            headers.set("Idempotency-Key", options.getIdempotencyKey());
+        } else if (method == ApiResource.RequestMethod.POST) {
+            headers.set("Idempotency-Key", UUID.randomUUID().toString());
+        }
+
+        HttpEntity<byte[]> entity = new HttpEntity<byte[]>(null,
                 headers);
-        ResponseEntity<PaymentIntent> response =
-                restTemplate.exchange(strGWPostURL, HttpMethod.POST, entity, PaymentIntent.class);
-        return response.getBody();
+        ResponseEntity<String> response =
+                restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+        PaymentIntent session=ApiResource.GSON.fromJson(response.getBody(), PaymentIntent.class);
+        return session;
     }
 
     @Override
-    public Session createEicSession(SessionCreateParams params) {
+    public Session createEicSession(SessionCreateParams params) throws AuthenticationException, IOException {
         Stripe.apiKey = GatewayConfig.stripeKey;
-        String strGWPostURL= gateWayUrl+"/v1/stripe/v1/checkout/sessions";
+        String strGWPostURL= gateWayUrl+"/v1/stripe";
+        String url = String.format("%s%s", strGWPostURL, "/v1/checkout/sessions");
 
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        headers.set("date", signature.date());
-        headers.set("authorization", signature.authorization());
-        headers.set("date-Secondary", signature2.date());
-        headers.set("authorization-Secondary", signature2.authorization());
-        HttpEntity<SessionCreateParams> entity = new HttpEntity<SessionCreateParams>(params,
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        ApiResource.RequestMethod method=ApiResource.RequestMethod.POST;
+        RequestOptions options=RequestOptions.getDefault();
+        // Accept
+        headers.set("Accept", "application/json");
+        // Accept-Charset
+        headers.set("Accept-Charset", ApiResource.CHARSET.name());
+        // Authorization
+        String apiKey = GatewayConfig.stripeKey;
+        if (apiKey == null) {
+            throw new AuthenticationException("No API key provided. Set your API key using `Stripe.apiKey = \"<API-KEY>\"`. You can generate API keys from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", null, null, 0);
+        } else if (apiKey.isEmpty()) {
+            throw new AuthenticationException("Your API key is invalid, as it is an empty string. You can double-check your API key from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", null, null, 0);
+        } else if (StringUtils.containsWhitespace(apiKey)) {
+            throw new AuthenticationException("Your API key is invalid, as it contains whitespace. You can double-check your API key from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", null, null, 0);
+        }
+        headers.set("Authorization", String.format("Bearer %s", apiKey));
+        // Stripe-Version
+        if (options.getStripeVersionOverride() != null) {
+            headers.set("Stripe-Version", options.getStripeVersionOverride());
+        } else if (options.getStripeVersion() != null) {
+            headers.set("Stripe-Version", options.getStripeVersion());
+        } else {
+            throw new IllegalStateException("Either `stripeVersion` or `stripeVersionOverride` value must be set.");
+        }
+        // Stripe-Account
+        if (options.getStripeAccount() != null) {
+            headers.set("Stripe-Account",
+                    options.getStripeAccount());
+        }
+        // Idempotency-Key
+        if (options.getIdempotencyKey() != null) {
+            headers.set("Idempotency-Key", options.getIdempotencyKey());
+        } else if (method == ApiResource.RequestMethod.POST) {
+            headers.set("Idempotency-Key", UUID.randomUUID().toString());
+        }
+        HttpContent httpContent= FormEncoder.createHttpContent(params.toMap());
+        HttpEntity<byte[]> entity = new HttpEntity<byte[]>(httpContent.byteArrayContent(),
                 headers);
-        ResponseEntity<Session> response =
-                restTemplate.exchange(strGWPostURL, HttpMethod.POST, entity, Session.class);
-        return response.getBody();
+
+        ResponseEntity<String> response =
+                restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+        Session session=ApiResource.GSON.fromJson(response.getBody(), Session.class);
+        return session;
     }
 
     @Override
-    public Session retrieveEicSession(String csId) {
+    public Session retrieveEicSession(String csId) throws AuthenticationException, InvalidRequestException {
         Stripe.apiKey = GatewayConfig.stripeKey;
-        String strGWPostURL= gateWayUrl+"/v1/stripe/v1/checkout/sessions";
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        String strGWPostURL= gateWayUrl+"/v1/stripe/";
+        String url = String.format("%s%s", strGWPostURL, String.format("/v1/checkout/sessions/%s", ApiResource.urlEncodeId(csId)));
+
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        headers.set("date", signature.date());
-        headers.set("authorization", signature.authorization());
-        headers.set("date-Secondary", signature2.date());
-        headers.set("authorization-Secondary", signature2.authorization());
-        HttpEntity<String> entity = new HttpEntity<String>(csId,
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        ApiResource.RequestMethod method=ApiResource.RequestMethod.GET;
+        RequestOptions options=RequestOptions.getDefault();
+        // Accept
+        headers.set("Accept", "application/json");
+        // Accept-Charset
+        headers.set("Accept-Charset", ApiResource.CHARSET.name());
+        // Authorization
+        String apiKey = GatewayConfig.stripeKey;
+        if (apiKey == null) {
+            throw new AuthenticationException("No API key provided. Set your API key using `Stripe.apiKey = \"<API-KEY>\"`. You can generate API keys from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", null, null, 0);
+        } else if (apiKey.isEmpty()) {
+            throw new AuthenticationException("Your API key is invalid, as it is an empty string. You can double-check your API key from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", null, null, 0);
+        } else if (StringUtils.containsWhitespace(apiKey)) {
+            throw new AuthenticationException("Your API key is invalid, as it contains whitespace. You can double-check your API key from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", null, null, 0);
+        }
+        headers.set("Authorization", String.format("Bearer %s", apiKey));
+        // Stripe-Version
+        if (options.getStripeVersionOverride() != null) {
+            headers.set("Stripe-Version", options.getStripeVersionOverride());
+        } else if (options.getStripeVersion() != null) {
+            headers.set("Stripe-Version", options.getStripeVersion());
+        } else {
+            throw new IllegalStateException("Either `stripeVersion` or `stripeVersionOverride` value must be set.");
+        }
+        // Stripe-Account
+        if (options.getStripeAccount() != null) {
+            headers.set("Stripe-Account",
+                    options.getStripeAccount());
+        }
+        // Idempotency-Key
+        if (options.getIdempotencyKey() != null) {
+            headers.set("Idempotency-Key", options.getIdempotencyKey());
+        } else if (method == ApiResource.RequestMethod.POST) {
+            headers.set("Idempotency-Key", UUID.randomUUID().toString());
+        }
+        HttpEntity<byte[]> entity = new HttpEntity<byte[]>(null,
                 headers);
-        ResponseEntity<Session> response =
-                restTemplate.exchange(strGWPostURL, HttpMethod.GET, entity, Session.class);
-        return response.getBody();
+        ResponseEntity<String> response =
+                restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+        Session session=ApiResource.GSON.fromJson(response.getBody(), Session.class);
+        return session;
     }
-
+    private static com.stripe.net.HttpHeaders buildHeaders(ApiResource.RequestMethod method, RequestOptions options) throws AuthenticationException {
+        Map<String, List<String>> headerMap = new HashMap<String, List<String>>();
+        // Accept
+        headerMap.put("Accept", Arrays.asList("application/json"));
+        // Accept-Charset
+        headerMap.put("Accept-Charset", Arrays.asList(ApiResource.CHARSET.name()));
+        // Authorization
+        String apiKey = options.getApiKey();
+        if (apiKey == null) {
+            throw new AuthenticationException("No API key provided. Set your API key using `Stripe.apiKey = \"<API-KEY>\"`. You can generate API keys from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", null, null, 0);
+        } else if (apiKey.isEmpty()) {
+            throw new AuthenticationException("Your API key is invalid, as it is an empty string. You can double-check your API key from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", null, null, 0);
+        } else if (StringUtils.containsWhitespace(apiKey)) {
+            throw new AuthenticationException("Your API key is invalid, as it contains whitespace. You can double-check your API key from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", null, null, 0);
+        }
+        headerMap.put("Authorization", Arrays.asList(String.format("Bearer %s", apiKey)));
+        // Stripe-Version
+        if (options.getStripeVersionOverride() != null) {
+            headerMap.put("Stripe-Version", Arrays.asList(options.getStripeVersionOverride()));
+        } else if (options.getStripeVersion() != null) {
+            headerMap.put("Stripe-Version", Arrays.asList(options.getStripeVersion()));
+        } else {
+            throw new IllegalStateException("Either `stripeVersion` or `stripeVersionOverride` value must be set.");
+        }
+        // Stripe-Account
+        if (options.getStripeAccount() != null) {
+            headerMap.put("Stripe-Account", Arrays.asList(options.getStripeAccount()));
+        }
+        // Idempotency-Key
+        if (options.getIdempotencyKey() != null) {
+            headerMap.put("Idempotency-Key", Arrays.asList(options.getIdempotencyKey()));
+        } else if (method == ApiResource.RequestMethod.POST) {
+            headerMap.put("Idempotency-Key", Arrays.asList(UUID.randomUUID().toString()));
+        }
+        return com.stripe.net.HttpHeaders.of(headerMap);
+    }
 
 }
