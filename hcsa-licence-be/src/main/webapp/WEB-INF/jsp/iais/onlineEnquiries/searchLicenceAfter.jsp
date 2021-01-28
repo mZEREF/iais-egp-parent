@@ -245,8 +245,8 @@
                                                             <iais:field value="HCI Postal Code"/>
                                                             <div class="col-sm-7 col-md-4 col-xs-10">
 
-                                                                <input type="text" maxlength="6"
-                                                                       style=" font-weight:normal;"
+                                                                <input type="text" maxlength="6" onkeypress="keyPress()" oncontextmenu="return false" onpaste="return false;"
+                                                                       style=" font-weight:normal; "
                                                                        name="hci_postal_code"
                                                                        value="${SearchParam.filters['hciPostalCode']}"/>
 
@@ -374,18 +374,10 @@
                                             </div>
                                         </div>
                                     </c:if>
-                                    <br>
-                                    <br>
-                                    <iais:action style="text-align:left;">
-                                        <a onclick="javascript:doLicBack()"><em class="fa fa-angle-left"> </em> Back</a>
-                                    </iais:action>
                                     <iais:action style="text-align:right;">
-                                        <button class="btn btn-secondary" type="button"
-                                                onclick="javascript:doLicClear()">Clear
-                                        </button>
-                                        <button class="btn btn-primary" type="button"
-                                                onclick="javascript:doLicSearch()">Search
-                                        </button>
+                                        <a style=" float:left;padding-top: 1.1%;text-decoration:none;" onclick="javascript:doLicBack()"><em class="fa fa-angle-left"> </em> Back</a>
+                                        <button  class="btn btn-secondary" type="button"  onclick="javascript:doLicClear()">Clear</button>
+                                        <button  class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Search</button>
                                     </iais:action>
                                 </div>
                                 <br>
