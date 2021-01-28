@@ -191,7 +191,7 @@ public class StripeServiceImpl implements StripeService {
         HttpEntity<byte[]> entity = new HttpEntity<byte[]>(null,
                 headers);
         ResponseEntity<String> response =
-                restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+                restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         PaymentIntent session=ApiResource.GSON.fromJson(response.getBody(), PaymentIntent.class);
         return session;
     }
@@ -295,7 +295,7 @@ public class StripeServiceImpl implements StripeService {
         HttpEntity<byte[]> entity = new HttpEntity<byte[]>(null,
                 headers);
         ResponseEntity<String> response =
-                restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+                restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         Session session=ApiResource.GSON.fromJson(response.getBody(), Session.class);
         return session;
     }
