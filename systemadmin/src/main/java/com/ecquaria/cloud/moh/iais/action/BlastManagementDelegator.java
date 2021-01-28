@@ -131,7 +131,7 @@ public class BlastManagementDelegator {
             String name = userNameList.get(item.getCreateBy());
             item.setCreateBy(name);
             if(StringUtil.isEmpty(item.getDocName())){
-                item.setDocName("empty");
+                item.setDocName("No");
             }else{
                 item.setDocName("Yes");
             }
@@ -525,6 +525,11 @@ public class BlastManagementDelegator {
                 }
                 if(item.getCreateDt() != null){
                     item.setCreateDt(getDate(item.getCreateDt()));
+                }
+                if(StringUtil.isEmpty(item.getDocName())){
+                    item.setDocName("No");
+                }else{
+                    item.setDocName("Yes");
                 }
             }
 
