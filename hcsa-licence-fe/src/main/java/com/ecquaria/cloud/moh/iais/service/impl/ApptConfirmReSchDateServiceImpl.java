@@ -485,6 +485,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
 
     @Override
     public void updateAppStatusCommPool(List<ApptViewDto> apptViewDtos) {
+        log.debug(StringUtil.changeForLog("apptViewDtos debug:========="+apptViewDtos.toString()));
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos= applicationFeClient.appPremCorrDtosByApptViewDtos(apptViewDtos).getEntity();
 
         for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
@@ -493,12 +494,12 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             String appCorrId=appPremisesCorrelationDto.getId();
             ApplicationDto applicationDto= applicationFeClient.getApplicationById(appId).getEntity();
             ProcessReSchedulingDto processReSchedulingDto;
-            processReSchedulingDto = getApptComPolSystemDateByCorrId(appCorrId);
+            processReSchedulingDto = getApptComPolSystemDateByCorrId(appCorrId,applicationDto);
             for (ApptViewDto appt:apptViewDtos
             ) {
-                if(appt.getAppId().equals(appId)){
+                if(appt.getAppGrpId().equals(appPremisesCorrelationDto.getAppGrpPremId())){
                     for (AppPremisesInspecApptDto insAppt: processReSchedulingDto.getAppPremisesInspecApptDtoList()
-                         ) {
+                    ) {
                         insAppt.setReason(appt.getReason());
                     }
                 }
@@ -510,18 +511,20 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         }
     }
 
-    @Override
-    public ProcessReSchedulingDto getApptComPolSystemDateByCorrId(String appPremCorrId) {
+
+    private ProcessReSchedulingDto getApptComPolSystemDateByCorrId(String appPremCorrId ,ApplicationDto applicationDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         ProcessReSchedulingDto processReSchedulingDto = new ProcessReSchedulingDto();
         //get All CorrDto From Same Premises
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationFeClient.getLastAppPremisesCorrelationDtoByCorreId(appPremCorrId).getEntity();
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = IaisCommonUtils.genNewArrayList();
+        appPremisesCorrelationDtos.add(applicationFeClient.getCorrelationByAppNo(applicationDto.getApplicationNo()).getEntity());
         //set All TaskRefNo (AppPremCorrIds)
         List<String> taskRefNo = getTaskRefNoList(appPremisesCorrelationDtos);
         processReSchedulingDto.setTaskRefNo(taskRefNo);
         if(!StringUtil.isEmpty(appPremCorrId)) {
-            List<ApplicationDto> applicationDtos = applicationFeClient.getPremisesApplicationsByCorreId(appPremCorrId).getEntity();
+            List<ApplicationDto> applicationDtos =IaisCommonUtils.genNewArrayList();
+            applicationDtos.add(applicationDto);
             //set appNo and appPremCorrId map
             processReSchedulingDto = setAppNoAndAppPremCorrIdMap(applicationDtos, processReSchedulingDto);
             processReSchedulingDto.setApplicationDtos(applicationDtos);
