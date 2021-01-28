@@ -126,7 +126,7 @@
                                                             <br/>
                                                             <input class="selectedFile commDoc" id="commonDoc${rfiDoc.id}"
                                                                    name="UploadFile${rfiDoc.id}" type="file"
-                                                                   style="display: none;"
+                                                                   style="display: none;" onclick="fileClicked(event)" onchange="fileChanged(event)"
                                                                    aria-label="selectedFile">
                                                             <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Attachment</a><br>
                                                             <span name="iaisErrorMsg" class="error-msg"
