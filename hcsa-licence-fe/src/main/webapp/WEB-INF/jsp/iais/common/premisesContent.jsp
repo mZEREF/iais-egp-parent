@@ -64,7 +64,7 @@
             <c:if test="${AppSubmissionDto.appType=='APTY005'||AppSubmissionDto.appType=='APTY004'}">
                 <c:if test="${fn:length(appGrpPremisesDto.licenceDtos)>0}">
                     <div class="form-check col-sm-12" >
-                        <table>
+                        <table class="impactedLic">
                             <tr>
                                 <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence  </td>
                                 <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence No.</td>
