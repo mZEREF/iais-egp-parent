@@ -84,7 +84,7 @@
                             <thead>
                             <tr align="center">
                                 <th></th>
-                                <th>Message ID</th>
+                                <th>S/N</th>
                                 <th>Message Name</th>
                                 <th>Distribution Name</th>
                                 <th>Mode of Delivery</th>
