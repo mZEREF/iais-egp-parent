@@ -199,7 +199,7 @@
     });
 
     $('#Back').click(function (){
-      location.href="https://${pageContext.request.serverName}/main-web<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox",request)%>?initPage=initApp";
+      location.href="https://${pageContext.request.serverName}/main-web<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox?initPage=initApp",request)%>";
 
     });
     $('#submit').click(function () {

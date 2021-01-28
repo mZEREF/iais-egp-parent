@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -66,9 +67,14 @@
                                     <div class="application-tab-footer">
                                         <div class="row">
                                             <div class="col-xs-12 col-sm-3">
-                                                <c:if test="${DoDraftConfig == null}">
-                                                <a id = "Back" class="back" ><em class="fa fa-angle-left"></em> Back</a>
-                                                </c:if>
+                                                <c:choose>
+                                                    <c:when test="${DoDraftConfig == null}">
+                                                        <a id = "Back" class="back" ><em class="fa fa-angle-left"></em> Back</a>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <a id = "RFC_BACK" class="back" ><em class="fa fa-angle-left"></em> Back</a>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </div>
                                             <div class="col-xs-12 col-sm-3">
                                                 <div class="button-group">
@@ -124,5 +130,7 @@
 
     });
 
-
+    $('#RFC_BACK').click(function (){
+        location.href="https://${pageContext.request.serverName}/main-web<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox?initPage=initApp",request)%>";
+    });
 </script>
