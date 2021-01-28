@@ -54,6 +54,7 @@ import java.util.Map;
 
 @Slf4j
 public final class ChecklistHelper {
+    private final static Integer FILE_NAME_LENGTH = 100;
     private ChecklistHelper(){}
 
     public static boolean validateFile(HttpServletRequest request, MultipartFile file){
@@ -67,6 +68,12 @@ public final class ChecklistHelper {
         String originalFileName = file.getOriginalFilename();
         if (!FileUtils.isExcel(originalFileName)){
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR040"));
+            return true;
+        }
+
+        originalFileName = originalFileName.substring(0, originalFileName.lastIndexOf("."));
+        if (FileUtils.fileNameLimitBy(originalFileName, FILE_NAME_LENGTH)){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0022"));
             return true;
         }
 

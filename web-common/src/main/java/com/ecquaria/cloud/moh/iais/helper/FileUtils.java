@@ -150,6 +150,13 @@ public final class FileUtils {
         return false;
     }
 
+    public static boolean fileNameLimitBy(String fileName, int limitLength){
+        if (StringUtil.isNotEmpty(fileName) && fileName.length() > limitLength){
+            return true;
+        }
+        return false;
+    }
+
     public static boolean isExcel(String originalFileName){
         if (originalFileName.endsWith("." + EXCEL_TYPE_XSSF)){
             return true;
