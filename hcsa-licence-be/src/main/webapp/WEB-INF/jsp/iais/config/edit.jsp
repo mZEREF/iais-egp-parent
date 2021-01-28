@@ -196,8 +196,8 @@
         <div class="col-xs-12 col-md-9" >
           <label class="col-xs-12 col-md-7 control-label" >Principal Officer (PO)&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2" >
-            <input type="text" name="man-principalOfficer" maxlength="2" value="${PO.pageMandatoryCount}" placeholder="minimum count">
             <input type="text" name="poId" style="display: none" maxlength="2" value="${PO.id}">
+            <input type="text" name="man-principalOfficer" maxlength="2" value="${PO.pageMandatoryCount}" placeholder="minimum count">
             <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount0"></span>
           </div>
           <div class="col-xs-12 col-md-2" >
