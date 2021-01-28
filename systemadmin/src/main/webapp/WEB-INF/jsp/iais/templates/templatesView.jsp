@@ -27,6 +27,32 @@
         $("#TemplatesForm").submit();
     }
 
+    $("#msgType").change(function () {
+        $.ajax({
+            data:{
+                deliveryMode:$(this).children('option:selected').val()
+            },
+            type:"POST",
+            dataType: 'json',
+            url:'/system-admin-web/emailAjax/deliveryModeCheck.do',
+            error:function(data){
+
+            },
+            success:function(data){
+                var html = '<label class="col-xs-12 col-md-4 control-label">Delivery Mode</label><div class="col-xs-6 col-sm-6 col-md-6">';
+                html += data.deliveryModeSelect;
+                html += ' </div>';
+                $("#deliveryMode").html(html);
+                /*$("div.distributionList->ul").mCustomScrollbar({
+                        advanced:{
+                            updateOnContentResize: true
+                        }
+                    }
+                );*/
+            }
+        });
+    });
+
     function doPreview(msgId) {
         $("[name='crud_action_value']").val(msgId);
         submit("preview");
