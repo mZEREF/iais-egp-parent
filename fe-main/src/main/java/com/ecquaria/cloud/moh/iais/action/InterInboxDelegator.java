@@ -1050,6 +1050,13 @@ public class InterInboxDelegator {
             appId= ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
         }
          List<LicenceDto> licenceDtos = licenceInboxClient.isNewApplication(appId).getEntity();
+        ApplicationDto applicationDto = appInboxClient.getApplicationById(appId).getEntity();
+        if(applicationDto!=null && applicationDto.getOriginLicenceId()!=null){
+            LicenceDto entity = licenceInboxClient.getLicdtoByOrgId(applicationDto.getOriginLicenceId()).getEntity();
+            if(entity!=null){
+                licenceDtos.add(entity);
+            }
+        }
         if(!licenceDtos.isEmpty()){
             //change APPEAL_ACK002
             ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("APPEAL_ACK002"));
@@ -1090,7 +1097,6 @@ public class InterInboxDelegator {
                 return;
             }
         }
-        ApplicationDto applicationDto = appInboxClient.getApplicationById(appId).getEntity();
         Calendar calendar=Calendar.getInstance();
         Date createAt = applicationDto.getCreateAt();
         calendar.setTime(createAt);
