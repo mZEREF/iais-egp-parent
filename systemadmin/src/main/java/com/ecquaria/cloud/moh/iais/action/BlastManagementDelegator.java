@@ -122,6 +122,9 @@ public class BlastManagementDelegator {
             if(item.getSchedule() != null){
                 item.setSchedule(getDate(item.getSchedule()));
             }
+            if(item.getCreateDt() != null){
+                item.setCreateDt(getDate(item.getCreateDt()));
+            }
             if(item.getActual() != null){
                 item.setActual(getDate(item.getActual()));
             }
@@ -708,10 +711,11 @@ public class BlastManagementDelegator {
 
     }
 
-    public void auditTrial(BaseProcessClass bpc){
-        String msgid =  ParamUtil.getString(bpc.request, "editBlast");
+    public void auditTrial(BaseProcessClass bpc) throws ParseException {
+        String msgid =  ParamUtil.getString(bpc.request, "msgId");
         String mode =  ParamUtil.getString(bpc.request, "mode");
-        BlastManagementDto blastManagementDto = blastManagementListService.getBlastByMsgId(msgid);
+        String createby =  ParamUtil.getString(bpc.request, "createby");
+        String createDt =  ParamUtil.getString(bpc.request, "createDt");
 
         SearchParam auditSearchParam = new SearchParam(EmailAuditTrailDto.class.getName());
         auditSearchParam.setSort("sent_time", SearchParam.ASCENDING);
@@ -745,6 +749,8 @@ public class BlastManagementDelegator {
         ParamUtil.setRequestAttr(bpc.request,"searchResult",searchResult);
         ParamUtil.setRequestAttr(bpc.request,"auditSearchParam",auditSearchParam);
         ParamUtil.setRequestAttr(bpc.request,"mode",mode);
+        ParamUtil.setRequestAttr(bpc.request,"createDt",createDt);
+        ParamUtil.setRequestAttr(bpc.request,"createby",createby);
         ParamUtil.setRequestAttr(bpc.request,"editBlast",msgid);
     }
 
