@@ -127,6 +127,11 @@ public class BlastManagementDelegator {
             }
             String name = userNameList.get(item.getCreateBy());
             item.setCreateBy(name);
+            if(StringUtil.isEmpty(item.getDocName())){
+                item.setDocName("empty");
+            }else{
+                item.setDocName("Yes");
+            }
         }
 
         getDistribution(bpc,(String)searchParam.getFilters().get("mode"));
