@@ -8,18 +8,18 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
-<div class="main-content">
-    <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <div class="main-content">
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <div class="row">
+        <div class="container">
             <div class="center-content">
                 <div class="intranet-content">
-                    <div class="col-xs-12">
-                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                            <br>
-                            <h2>
-                                <span>Advanced Search Criteria</span>
-                            </h2>
+                    <iais:body>
+                        <div class="bg-title col-xs-9 col-md-9">
+                            <h2>Advanced Search Criteria</h2>
+                        </div>
+                        <div class="row">&nbsp;</div>
+                        <div class="panel-group " id="accordion" role="tablist" aria-multiselectable="true">
                             <c:if test="${count=='3'||count=='2'}">
                                 <h4>
                         <span >
@@ -287,26 +287,28 @@
                                     </div>
                                 </div>
                             </c:if>
-                            <iais:action style="text-align:right;">
-                                <a style=" float:left;padding-top: 1.1%;text-decoration:none;" onclick="javascript:doLicBack()"><em class="fa fa-angle-left"> </em> Back</a>
-                                <button class="btn btn-secondary" type="button"  onclick="javascript:doLicClear()">Clear</button>
-                                <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Search</button>
-                            </iais:action>
+                            <div class="col-xs-9 col-md-9">
+                                <iais:action style="text-align:right;">
+                                    <a style=" float:left;padding-top: 1.1%;text-decoration:none;" onclick="javascript:doLicBack()"><em class="fa fa-angle-left"> </em> Back</a>
+                                    <button class="btn btn-secondary" type="button"  onclick="javascript:doLicClear()">Clear</button>
+                                    <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Search</button>
+                                </iais:action>
+                            </div>
                         </div>
-                    </div>
+                    </iais:body>
                 </div>
             </div>
         </div>
-    </form>
-</div>
+    </div>
+</form>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script type="text/javascript">
     function doLicSearch(){
         showWaiting();
 
-        $('input[name="pageJumpNoTextchangePage"]').val(1);
-        SOP.Crud.cfxSubmit("mainForm", "search");
+            $('input[name="pageJumpNoTextchangePage"]').val(1);
+            SOP.Crud.cfxSubmit("mainForm", "search");
 
     }
     function doLicBack(){

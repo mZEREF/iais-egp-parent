@@ -12,347 +12,345 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
-<div class="main-content">
-    <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
+<form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
+    <div class="main-content">
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <div class="row">
-            <div class="col-lg-12 col-xs-12">
-                <div class="center-content">
-                    <div class="intranet-content">
-                        <div class="bg-title">
-                            <h2>Basic Search Criteria</h2>
+        <div class="center-content">
+            <div class="intranet-content">
+                <iais:body>
+                    <div class="bg-title col-xs-9 col-md-9">
+                        <h2>Basic Search Criteria</h2>
+                    </div>
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="row">
+                            <div class="col-xs-9 col-md-9">
+                                <div class="components">
+                                    <a class="btn btn-secondary" data-toggle="collapse"
+                                       data-target="#searchCondition">Filter</a>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-lg-12 col-xs-12">
-                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                                <div class="row">
-                                    <div class="col-xs-12 col-md-12">
-                                        <div class="components">
-                                            <a class="btn btn-secondary" data-toggle="collapse"
-                                               data-target="#searchCondition">Filter</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="searchCondition" class="collapse">
-                                    <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel"
-                                         aria-labelledby="headingOne" aria-expanded="true" style="">
-                                        <div class="panel-body">
-                                            <div class="panel-main-content">
-                                                <iais:section title="" id="supPoolList">
-                                                    <iais:row>
-                                                        <iais:field value="Keyword search or part of"/>
-                                                        <iais:value width="18">
-                                                            <label>
-                                                                <input type="text"
-                                                                       style="width:180%; font-weight:normal;"
-                                                                       name="searchNo" maxlength="100"
-                                                                       value="${searchNo}"/>
-                                                            </label>
-                                                        </iais:value>
-                                                    </iais:row>
-                                                    <iais:row>
-                                                        <iais:value width="18">
-                                                            <input id="hciChk" type="radio"
-                                                                   name="searchChk" value="1"
-                                                                   <c:if test="${count=='1'}">checked</c:if> />&nbsp;HCI Name
-                                                        </iais:value>
-                                                        <iais:value width="18" cssClass="form-check">
-                                                            <input id="applicationChk" type="radio"
-                                                                   <c:if test="${count=='2'}">checked</c:if>
-                                                                   name="searchChk"
-                                                                   value="2"/>&nbsp;Application No
-                                                        </iais:value>
-                                                        <iais:value width="18" cssClass="form-check">
-                                                            <input id="licenceChk" type="radio"
-                                                                   <c:if test="${count=='3'}">checked</c:if> value="3"
-                                                                   name="searchChk"/>&nbsp;Licence No
-                                                        </iais:value>
-                                                        <iais:value width="18" cssClass="form-check">
-                                                            <input id="licenseeChk" type="radio"
-                                                                   <c:if test="${count=='4'}">checked</c:if> value="4"
-                                                                   name="searchChk"/>&nbsp;Licensee Name
-                                                        </iais:value>
-                                                        <iais:value width="18" cssClass="form-check">
-                                                            <input id="servicePersonnelChk" type="radio"
-                                                                   value="5"
-                                                                   <c:if test="${count=='5'}">checked</c:if>
-                                                                   name="searchChk"/>&nbsp;Service Personnel Name
-                                                        </iais:value>
-                                                    </iais:row>
-                                                    <iais:row id="selectSearchChkMsg" style="display: none">
-                                                        <div class="row" height="1"
-                                                             style="font-size: 1.6rem; color: #D22727; padding-left: 20px"
-                                                             id="selectSearchChkMsg">
-                                                            <iais:message key="OEN_ERR004"
-                                                                          escape="flase"></iais:message>
-                                                        </div>
-                                                    </iais:row>
-                                                    <iais:action style="text-align:right;">
-                                                        <button type="button" class="btn btn-secondary" type="button"
-                                                                onclick="javascript:doClear();">Clear
-                                                        </button>
-                                                        <button type="button" class="btn btn-primary" type="button"
-                                                                onclick="javascript:doSearch();">Search
-                                                        </button>
-                                                        <button type="button" class="btn btn-primary" type="button"
-                                                                onclick="javascript:doAdvancedSearch();">Advanced Search
-                                                        </button>
-                                                    </iais:action>
-                                                </iais:section>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <br>
-                                <div class="tab-content">
-                                    <div class="row">
-
-                                        <div class="col-lg-12 col-xs-12">
-                                            <div class="intarnet-content">
-                                                <h3>
-                                                    <span>Search Results</span>
-                                                </h3>
-                                                <iais:pagination param="SearchParam" result="SearchResult"/>
-                                                <div class="table-responsive">
-                                                    <div class="table-gp">
-                                                        <table class="table">
-                                                            <thead>
-                                                            <tr align="center">
-                                                                <c:if test="${cease==1}">
-                                                                    <th class="form-check">
-                                                                        <c:if test="${!empty SearchResult.rows}">
-                                                                            <input class="form-check-input licenceCheck"
-                                                                                   type="checkbox" name="userUids"
-                                                                                   id="checkboxAll"
-                                                                                   onchange="javascirpt:checkAll('${isASO}');"/>
-                                                                            <label class="form-check-label"
-                                                                                   for="checkboxAll">
-                                                                                <span class="check-square"></span>
-                                                                            </label>
-                                                                        </c:if>
-                                                                    </th>
-                                                                </c:if>
-                                                                <iais:sortableHeader needSort="false" field=""
-                                                                                     value="S/N"/>
-                                                                <iais:sortableHeader needSort="false"
-                                                                                     field="APPLICATION_NO"
-                                                                                     value="Application No."/>
-                                                                <iais:sortableHeader needSort="false"
-                                                                                     field="APP_TYPE"
-                                                                                     value="Application Type"/>
-                                                                <iais:sortableHeader needSort="false"
-                                                                                     field="LICENCE_NO"
-                                                                                     value="Licence No."/>
-                                                                <iais:sortableHeader needSort="false"
-                                                                                     field="HCI_CODE"
-                                                                                     value="HCI Code"/>
-                                                                <iais:sortableHeader needSort="false"
-                                                                                     field="HCI_NAME"
-                                                                                     value="HCI Name "/>
-                                                                <iais:sortableHeader needSort="false"
-                                                                                     field="HCI_ADDRESS"
-                                                                                     value="HCI Address"/>
-                                                                <iais:sortableHeader needSort="false"
-                                                                                     field="LICENSEE_NAME"
-                                                                                     value="Licensee Name"/>
-                                                                <iais:sortableHeader needSort="false"
-                                                                                     field="SERVICE_NAME"
-                                                                                     value="Service Name"/>
-                                                                <iais:sortableHeader needSort="false"
-                                                                                     field="Licence_Period"
-                                                                                     value="Licence Period"/>
-                                                                <iais:sortableHeader needSort="false"
-                                                                                     field="Licence_Status"
-                                                                                     value="Licence Status"/>
-                                                                <iais:sortableHeader needSort="false"
-                                                                                     field="2nd_last_compliance_history"
-                                                                                     value="2nd Last Compliance History"/>
-                                                                <iais:sortableHeader needSort="false"
-                                                                                     field="last_compliance_history"
-                                                                                     value="Last Compliance History"/>
-                                                                <iais:sortableHeader needSort="false"
-                                                                                     field="current_risk_tagging"
-                                                                                     value="Current Risk Tagging"/>
-                                                            </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                            <c:choose>
-                                                                <c:when test="${empty SearchResult.rows}">
-                                                                    <tr>
-                                                                        <td colspan="15">
-                                                                            <iais:message key="GENERAL_ACK018"
-                                                                                          escape="true"/>
-                                                                        </td>
-                                                                    </tr>
-                                                                </c:when>
-                                                                <c:otherwise>
-                                                                    <style>
-                                                                        .nice-select {
-                                                                            /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#efefef+0,ffffff+100 */
-                                                                            background: #efefef;
-                                                                            /* Old browsers */
-                                                                            background: -moz-linear-gradient(left, #efefef 0%, white 100%);
-                                                                            /* FF3.6-15 */
-                                                                            background: -webkit-linear-gradient(left, #efefef 0%, white 100%);
-                                                                            /* Chrome10-25,Safari5.1-6 */
-                                                                            background: linear-gradient(to right, #efefef 0%, white 100%);
-                                                                            border: 1px solid #6c6c6c;
-                                                                            border-radius: 14px;
-                                                                            font-size: 1.6rem;
-                                                                            padding: 14px 40px 14px 15px;
-                                                                            height: auto;
-                                                                            line-height: 22px;
-                                                                            width: 100%;
-                                                                            -webkit-transition: all 0.1s ease;
-                                                                            -moz-transition: all 0.1s ease;
-                                                                            -ms-transition: all 0.1s ease;
-                                                                            -o-transition: all 0.1s ease;
-                                                                            transition: all 0.1s ease;
-                                                                            white-space: normal;
-                                                                            text-overflow: inherit;
-                                                                        }
-                                                                    </style>
-                                                                    <c:forEach var="pool"
-                                                                               items="${SearchResult.rows}"
-                                                                               varStatus="status">
-                                                                        <tr>
-                                                                            <c:if test="${cease==1}">
-                                                                                <td class="form-check"
-                                                                                    onclick="javascript:controlCease('${isASO}')">
-                                                                                    <input class="form-check-input licenceCheck"
-                                                                                           id="licence${status.index + 1}"
-                                                                                           type="checkbox"
-                                                                                           name="appIds"
-                                                                                           value="${pool.appId}|${pool.isCessation}|${pool.licenceId}|${pool.licenceStatus}">
-                                                                                    <label class="form-check-label"
-                                                                                           for="licence${status.index + 1}"><span
-                                                                                            class="check-square"></span>
-                                                                                    </label>
-                                                                                </td>
-                                                                            </c:if>
-                                                                            <td class="row_no">
-                                                                                <c:out value="${status.index + 1+ (SearchParam.pageNo - 1) * SearchParam.pageSize}"/>
-                                                                            </td>
-                                                                            <td>
-                                                                                <c:if test="${pool.appCorrId==null}">${pool.applicationNo}</c:if>
-                                                                                <c:if test="${pool.appCorrId!=null}"><a
-                                                                                        onclick="javascript:doAppInfo('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.appCorrId)}')">${pool.applicationNo}</a></c:if>
-                                                                            </td>
-                                                                            <td><c:out
-                                                                                    value="${pool.applicationType}"/></td>
-                                                                            <td>
-                                                                                <c:if test="${pool.licenceId!=null&&pool.licenceStatus!='Inactive'}"><a
-                                                                                        onclick="javascript:doLicInfo('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.licenceId)}')">${pool.licenceNo}</a></c:if>
-                                                                                <c:if test="${pool.licenceId==null|| pool.licenceStatus=='Inactive'}">${pool.licenceNo}</c:if>
-                                                                            </td>
-                                                                            <td><c:out
-                                                                                    value="${pool.hciCode}"/><c:if
-                                                                                    test="${empty pool.hciCode}">-</c:if></td>
-                                                                            <td><c:out
-                                                                                    value="${pool.hciName}"/></td>
-                                                                            <td>
-                                                                                <c:if test="${pool.licenceNo==null}">
-                                                                                    <c:choose>
-                                                                                        <c:when test="${pool.address.size() == 0}">
-                                                                                            <c:out value="-"/>
-                                                                                        </c:when>
-                                                                                        <c:otherwise>
-                                                                                            <c:out value="${pool.address[0]}"/>
-                                                                                        </c:otherwise>
-                                                                                    </c:choose>
-                                                                                </c:if>
-                                                                                <c:if test="${pool.licenceNo!=null}">
-                                                                                    <c:choose>
-                                                                                        <c:when test="${pool.address.size() == 1}">
-                                                                                            <c:out value="${pool.address[0]}"/>
-                                                                                        </c:when>
-                                                                                        <c:otherwise>
-                                                                                            <select>
-                                                                                                <option value="">
-                                                                                                    Multiple
-                                                                                                </option>
-                                                                                                <c:forEach
-                                                                                                        items="${pool.address}"
-                                                                                                        var="address"
-                                                                                                        varStatus="index">
-                                                                                                    <option value="${address}">${address}</option>
-                                                                                                </c:forEach>
-                                                                                            </select>
-                                                                                        </c:otherwise>
-                                                                                    </c:choose>
-                                                                                </c:if>
-                                                                            </td>
-                                                                            <td><c:out
-                                                                                    value="${pool.licenseeName}"/></td>
-                                                                            <td><iais:service
-                                                                                    value="${pool.serviceName}"/></td>
-                                                                            <td><fmt:formatDate
-                                                                                    value="${pool.startDate}"
-                                                                                    pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>-<fmt:formatDate
-                                                                                    value="${pool.expiryDate}"
-                                                                                    pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/></td>
-                                                                            <td><c:out
-                                                                                    value="${pool.licenceStatus}"/></td>
-                                                                            <td><c:out
-                                                                                    value="${pool.getTwoLastComplianceHistory()}"/></td>
-                                                                            <td><c:out
-                                                                                    value="${pool.getLastComplianceHistory()}"/></td>
-                                                                            <td><c:out
-                                                                                    value="${pool.currentRiskTagging}"/></td>
-                                                                        </tr>
-                                                                    </c:forEach>
-                                                                </c:otherwise>
-                                                            </c:choose>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                    <c:if test="${blank}">
-                                                        <div class="row">&nbsp;</div>
-                                                        <div class="row">&nbsp;</div>
-                                                        <div class="row">&nbsp;</div>
-                                                        <div class="row">&nbsp;</div>
-                                                        <div class="row">&nbsp;</div>
-                                                        <div class="row">&nbsp;</div>
-                                                        <div class="row">&nbsp;</div>
-                                                        <div class="row">&nbsp;</div>
-                                                    </c:if>
-                                                </div>
-                                                <div class="row">&nbsp;</div>
+                        <div id="searchCondition" class="collapse">
+                            <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel"
+                                 aria-labelledby="headingOne" aria-expanded="true" style="">
+                                <div class="panel-body">
+                                    <div class="panel-main-content">
+                                        <iais:section title="" id="supPoolList">
+                                            <iais:row>
+                                                <iais:field value="Keyword search or part of"/>
+                                                <iais:value width="18">
+                                                    <label>
+                                                        <input type="text"
+                                                               style="width:180%; font-weight:normal;"
+                                                               name="searchNo" maxlength="100"
+                                                               value="${searchNo}"/>
+                                                    </label>
+                                                </iais:value>
+                                            </iais:row>
+                                            <iais:row>
+                                                <iais:value width="18">
+                                                    <input id="hciChk" type="radio"
+                                                           name="searchChk" value="1"
+                                                           <c:if test="${count=='1'}">checked</c:if> />&nbsp;HCI Name
+                                                </iais:value>
+                                                <iais:value width="18" cssClass="form-check">
+                                                    <input id="applicationChk" type="radio"
+                                                           <c:if test="${count=='2'}">checked</c:if>
+                                                           name="searchChk"
+                                                           value="2"/>&nbsp;Application No
+                                                </iais:value>
+                                                <iais:value width="18" cssClass="form-check">
+                                                    <input id="licenceChk" type="radio"
+                                                           <c:if test="${count=='3'}">checked</c:if> value="3"
+                                                           name="searchChk"/>&nbsp;Licence No
+                                                </iais:value>
+                                                <iais:value width="18" cssClass="form-check">
+                                                    <input id="licenseeChk" type="radio"
+                                                           <c:if test="${count=='4'}">checked</c:if> value="4"
+                                                           name="searchChk"/>&nbsp;Licensee Name
+                                                </iais:value>
+                                                <iais:value width="18" cssClass="form-check">
+                                                    <input id="servicePersonnelChk" type="radio"
+                                                           value="5"
+                                                           <c:if test="${count=='5'}">checked</c:if>
+                                                           name="searchChk"/>&nbsp;Service Personnel Name
+                                                </iais:value>
+                                            </iais:row>
+                                            <iais:row id="selectSearchChkMsg" style="display: none">
                                                 <div class="row" height="1"
-                                                     style="display: none ;font-size: 1.6rem; color: #D22727; padding-left: 20px"
-                                                     id="selectDecisionMsg">
-                                                    <iais:message key="CESS_ERR006" escape="flase"></iais:message>
+                                                     style="font-size: 1.6rem; color: #D22727; padding-left: 20px"
+                                                     id="selectSearchChkMsg">
+                                                    <iais:message key="OEN_ERR004"
+                                                                  escape="flase"></iais:message>
                                                 </div>
-                                                <div class="row" height="1"
-                                                     style="display: none ;font-size: 1.6rem; color: #D22727;padding-left: 20px"
-                                                     id="selectDecisionMsgActive">
-                                                    <iais:message key="CESS_ERR005" escape="flase"></iais:message>
-                                                </div>
+                                            </iais:row>
+                                            <div class="col-xs-9 col-md-9">
                                                 <iais:action style="text-align:right;">
-                                                    <a class="btn btn-secondary"
-                                                       href="${pageContext.request.contextPath}/officer-online-enquiries-information-file">Download</a>
-                                                    <c:if test="${cease==1}">
-                                                        <button type="button" class="btn btn-primary ReqForInfoBtn"
-                                                                disabled
-                                                                onclick="javascript:doReqForInfo();">ReqForInfo
-                                                        </button>
-                                                        <button type="button" class="btn btn-primary CeaseBtn"
-                                                                disabled
-                                                                onclick="javascript:doCessation();">Cease
-                                                        </button>
-                                                    </c:if>
+                                                    <button type="button" class="btn btn-secondary" type="button"
+                                                            onclick="javascript:doClear();">Clear
+                                                    </button>
+                                                    <button type="button" class="btn btn-primary" type="button"
+                                                            onclick="javascript:doSearch();">Search
+                                                    </button>
+                                                    <button type="button" class="btn btn-primary" type="button"
+                                                            onclick="javascript:doAdvancedSearch();">Advanced Search
+                                                    </button>
                                                 </iais:action>
                                             </div>
+                                        </iais:section>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="tab-content">
+                            <div class="row">
+
+                                <div class="col-xs-9 col-md-9">
+                                    <div class="intarnet-content">
+                                        <h3>
+                                            <span>Search Results</span>
+                                        </h3>
+                                        <iais:pagination param="SearchParam" result="SearchResult"/>
+                                        <div class="table-responsive">
+                                            <div class="table-gp">
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr align="center">
+                                                        <c:if test="${cease==1}">
+                                                            <th class="form-check">
+                                                                <c:if test="${!empty SearchResult.rows}">
+                                                                    <input class="form-check-input licenceCheck"
+                                                                           type="checkbox" name="userUids"
+                                                                           id="checkboxAll"
+                                                                           onchange="javascirpt:checkAll('${isASO}');"/>
+                                                                    <label class="form-check-label"
+                                                                           for="checkboxAll">
+                                                                        <span class="check-square"></span>
+                                                                    </label>
+                                                                </c:if>
+                                                            </th>
+                                                        </c:if>
+                                                        <iais:sortableHeader needSort="false" field=""
+                                                                             value="S/N"/>
+                                                        <iais:sortableHeader needSort="false"
+                                                                             field="APPLICATION_NO"
+                                                                             value="Application No."/>
+                                                        <iais:sortableHeader needSort="false"
+                                                                             field="APP_TYPE"
+                                                                             value="Application Type"/>
+                                                        <iais:sortableHeader needSort="false"
+                                                                             field="LICENCE_NO"
+                                                                             value="Licence No."/>
+                                                        <iais:sortableHeader needSort="false"
+                                                                             field="HCI_CODE"
+                                                                             value="HCI Code"/>
+                                                        <iais:sortableHeader needSort="false"
+                                                                             field="HCI_NAME"
+                                                                             value="HCI Name "/>
+                                                        <iais:sortableHeader needSort="false"
+                                                                             field="HCI_ADDRESS"
+                                                                             value="HCI Address"/>
+                                                        <iais:sortableHeader needSort="false"
+                                                                             field="LICENSEE_NAME"
+                                                                             value="Licensee Name"/>
+                                                        <iais:sortableHeader needSort="false"
+                                                                             field="SERVICE_NAME"
+                                                                             value="Service Name"/>
+                                                        <iais:sortableHeader needSort="false"
+                                                                             field="Licence_Period"
+                                                                             value="Licence Period"/>
+                                                        <iais:sortableHeader needSort="false"
+                                                                             field="Licence_Status"
+                                                                             value="Licence Status"/>
+                                                        <iais:sortableHeader needSort="false"
+                                                                             field="2nd_last_compliance_history"
+                                                                             value="2nd Last Compliance History"/>
+                                                        <iais:sortableHeader needSort="false"
+                                                                             field="last_compliance_history"
+                                                                             value="Last Compliance History"/>
+                                                        <iais:sortableHeader needSort="false"
+                                                                             field="current_risk_tagging"
+                                                                             value="Current Risk Tagging"/>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <c:choose>
+                                                        <c:when test="${empty SearchResult.rows}">
+                                                            <tr>
+                                                                <td colspan="15">
+                                                                    <iais:message key="GENERAL_ACK018"
+                                                                                  escape="true"/>
+                                                                </td>
+                                                            </tr>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <style>
+                                                                .nice-select {
+                                                                    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#efefef+0,ffffff+100 */
+                                                                    background: #efefef;
+                                                                    /* Old browsers */
+                                                                    background: -moz-linear-gradient(left, #efefef 0%, white 100%);
+                                                                    /* FF3.6-15 */
+                                                                    background: -webkit-linear-gradient(left, #efefef 0%, white 100%);
+                                                                    /* Chrome10-25,Safari5.1-6 */
+                                                                    background: linear-gradient(to right, #efefef 0%, white 100%);
+                                                                    border: 1px solid #6c6c6c;
+                                                                    border-radius: 14px;
+                                                                    font-size: 1.6rem;
+                                                                    padding: 14px 40px 14px 15px;
+                                                                    height: auto;
+                                                                    line-height: 22px;
+                                                                    width: 100%;
+                                                                    -webkit-transition: all 0.1s ease;
+                                                                    -moz-transition: all 0.1s ease;
+                                                                    -ms-transition: all 0.1s ease;
+                                                                    -o-transition: all 0.1s ease;
+                                                                    transition: all 0.1s ease;
+                                                                    white-space: normal;
+                                                                    text-overflow: inherit;
+                                                                }
+                                                            </style>
+                                                            <c:forEach var="pool"
+                                                                       items="${SearchResult.rows}"
+                                                                       varStatus="status">
+                                                                <tr>
+                                                                    <c:if test="${cease==1}">
+                                                                        <td class="form-check"
+                                                                            onclick="javascript:controlCease('${isASO}')">
+                                                                            <input class="form-check-input licenceCheck"
+                                                                                   id="licence${status.index + 1}"
+                                                                                   type="checkbox"
+                                                                                   name="appIds"
+                                                                                   value="${pool.appId}|${pool.isCessation}|${pool.licenceId}|${pool.licenceStatus}">
+                                                                            <label class="form-check-label"
+                                                                                   for="licence${status.index + 1}"><span
+                                                                                    class="check-square"></span>
+                                                                            </label>
+                                                                        </td>
+                                                                    </c:if>
+                                                                    <td class="row_no">
+                                                                        <c:out value="${status.index + 1+ (SearchParam.pageNo - 1) * SearchParam.pageSize}"/>
+                                                                    </td>
+                                                                    <td>
+                                                                        <c:if test="${pool.appCorrId==null}">${pool.applicationNo}</c:if>
+                                                                        <c:if test="${pool.appCorrId!=null}"><a
+                                                                                onclick="javascript:doAppInfo('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.appCorrId)}')">${pool.applicationNo}</a></c:if>
+                                                                    </td>
+                                                                    <td><c:out
+                                                                            value="${pool.applicationType}"/></td>
+                                                                    <td>
+                                                                        <c:if test="${pool.licenceId!=null&&pool.licenceStatus!='Inactive'}"><a
+                                                                                onclick="javascript:doLicInfo('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.licenceId)}')">${pool.licenceNo}</a></c:if>
+                                                                        <c:if test="${pool.licenceId==null|| pool.licenceStatus=='Inactive'}">${pool.licenceNo}</c:if>
+                                                                    </td>
+                                                                    <td><c:out
+                                                                            value="${pool.hciCode}"/><c:if
+                                                                            test="${empty pool.hciCode}">-</c:if></td>
+                                                                    <td><c:out
+                                                                            value="${pool.hciName}"/></td>
+                                                                    <td>
+                                                                        <c:if test="${pool.licenceNo==null}">
+                                                                            <c:choose>
+                                                                                <c:when test="${pool.address.size() == 0}">
+                                                                                    <c:out value="-"/>
+                                                                                </c:when>
+                                                                                <c:otherwise>
+                                                                                    <c:out value="${pool.address[0]}"/>
+                                                                                </c:otherwise>
+                                                                            </c:choose>
+                                                                        </c:if>
+                                                                        <c:if test="${pool.licenceNo!=null}">
+                                                                            <c:choose>
+                                                                                <c:when test="${pool.address.size() == 1}">
+                                                                                    <c:out value="${pool.address[0]}"/>
+                                                                                </c:when>
+                                                                                <c:otherwise>
+                                                                                    <select>
+                                                                                        <option value="">
+                                                                                            Multiple
+                                                                                        </option>
+                                                                                        <c:forEach
+                                                                                                items="${pool.address}"
+                                                                                                var="address"
+                                                                                                varStatus="index">
+                                                                                            <option value="${address}">${address}</option>
+                                                                                        </c:forEach>
+                                                                                    </select>
+                                                                                </c:otherwise>
+                                                                            </c:choose>
+                                                                        </c:if>
+                                                                    </td>
+                                                                    <td><c:out
+                                                                            value="${pool.licenseeName}"/></td>
+                                                                    <td><iais:service
+                                                                            value="${pool.serviceName}"/></td>
+                                                                    <td><fmt:formatDate
+                                                                            value="${pool.startDate}"
+                                                                            pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>-<fmt:formatDate
+                                                                            value="${pool.expiryDate}"
+                                                                            pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/></td>
+                                                                    <td><c:out
+                                                                            value="${pool.licenceStatus}"/></td>
+                                                                    <td><c:out
+                                                                            value="${pool.getTwoLastComplianceHistory()}"/></td>
+                                                                    <td><c:out
+                                                                            value="${pool.getLastComplianceHistory()}"/></td>
+                                                                    <td><c:out
+                                                                            value="${pool.currentRiskTagging}"/></td>
+                                                                </tr>
+                                                            </c:forEach>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <c:if test="${blank}">
+                                                <div class="row">&nbsp;</div>
+                                                <div class="row">&nbsp;</div>
+                                                <div class="row">&nbsp;</div>
+                                                <div class="row">&nbsp;</div>
+                                                <div class="row">&nbsp;</div>
+                                                <div class="row">&nbsp;</div>
+                                                <div class="row">&nbsp;</div>
+                                                <div class="row">&nbsp;</div>
+                                            </c:if>
                                         </div>
+                                        <div class="row">&nbsp;</div>
+                                        <div class="row" height="1"
+                                             style="display: none ;font-size: 1.6rem; color: #D22727; padding-left: 20px"
+                                             id="selectDecisionMsg">
+                                            <iais:message key="CESS_ERR006" escape="flase"></iais:message>
+                                        </div>
+                                        <div class="row" height="1"
+                                             style="display: none ;font-size: 1.6rem; color: #D22727;padding-left: 20px"
+                                             id="selectDecisionMsgActive">
+                                            <iais:message key="CESS_ERR005" escape="flase"></iais:message>
+                                        </div>
+                                        <iais:action style="text-align:right;">
+                                            <a class="btn btn-secondary"
+                                               href="${pageContext.request.contextPath}/officer-online-enquiries-information-file">Download</a>
+                                            <c:if test="${cease==1}">
+                                                <button type="button" class="btn btn-primary ReqForInfoBtn"
+                                                        disabled
+                                                        onclick="javascript:doReqForInfo();">ReqForInfo
+                                                </button>
+                                                <button type="button" class="btn btn-primary CeaseBtn"
+                                                        disabled
+                                                        onclick="javascript:doCessation();">Cease
+                                                </button>
+                                            </c:if>
+                                        </iais:action>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </iais:body>
             </div>
         </div>
-    </form>
-</div>
+    </div>
+</form>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
 
