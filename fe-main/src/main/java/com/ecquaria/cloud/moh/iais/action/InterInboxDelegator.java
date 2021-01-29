@@ -1053,8 +1053,8 @@ public class InterInboxDelegator {
         ApplicationDto applicationDto = appInboxClient.getApplicationById(appId).getEntity();
         //68521
         if(applicationDto!=null && applicationDto.getOriginLicenceId()!=null){
-            LicenceDto entity = licenceInboxClient.getLicdtoByOrgId(applicationDto.getOriginLicenceId()).getEntity();
-            if(entity!=null){
+            LicenceDto entity = licenceInboxClient.getLicDtoById(applicationDto.getOriginLicenceId()).getEntity();
+            if(entity!=null && ApplicationConsts.LICENCE_STATUS_IACTIVE.equals(entity.getStatus())){
                 licenceDtos.add(entity);
             }
         }
