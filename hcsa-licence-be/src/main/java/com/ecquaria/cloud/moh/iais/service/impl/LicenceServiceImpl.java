@@ -653,6 +653,7 @@ public class LicenceServiceImpl implements LicenceService {
         emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
         emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
         EmailParam emailParam = new EmailParam();
+        emailParam.setNeedSendNewLicensee(true);
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED);
         emailParam.setTemplateContent(emailMap);
         emailParam.setQueryCode(applicationDto.getApplicationNo());
