@@ -628,10 +628,10 @@ public class RequestForChangeDelegator {
                     NewApplicationHelper.setPremAddress(appSubmissionDto);
                     ParamUtil.setSessionAttr(bpc.request, "SvcId",currSvcId);
                 }
-                //set doc info
-                requestForChangeService.changeDocToNewVersion(appSubmissionDto);
 
                 requestForChangeService.svcDocToPresmise(appSubmissionDto);
+                //set doc info
+                requestForChangeService.changeDocToNewVersion(appSubmissionDto);
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
                 appSubmissionDto.setOldAppSubmissionDto(oldAppSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request,"SvcName",svcName);
