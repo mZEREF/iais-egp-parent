@@ -67,7 +67,7 @@
               <c:choose>
                 <c:when test="${svcDoc.docName == '' || svcDoc.docName == null }">
                   <span class="hidden delBtn">
-                    &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
+                    &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
                   </span>
                 </c:when>
                 <c:otherwise>
@@ -77,7 +77,7 @@
                 </c:otherwise>
               </c:choose>
             </div>
-            <input class="selectedFile svcDoc"  name = "${docConfig.id}selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a><br/>
+            <input class="selectedFile svcDoc"  name = "${docConfig.id}selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a><br/>
             <span name="iaisErrorMsg" class="error-msg" id="error_${docConfig.id}selectedFile"></span>
           </div>
         </div>
@@ -121,7 +121,7 @@
                 <c:choose>
                   <c:when test="${premSvcDoc.docName == '' || premSvcDoc.docName == null }">
                     <span class="hidden delBtn">
-                      &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
+                      &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
                     </span>
                   </c:when>
                   <c:otherwise>
@@ -131,7 +131,7 @@
                   </c:otherwise>
                 </c:choose>
               </div>
-              <input class="selectedFile svcDoc"  name = "${premKey}" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a><br/>
+              <input class="selectedFile svcDoc"  name = "${premKey}" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a><br/>
               <span name="iaisErrorMsg" class="error-msg" id="error_${premKey}"></span>
             </div>
           </div>
@@ -152,20 +152,40 @@
         doEdit();
     });
 
+    <!-- 108635 start-->
+    // FileChanged()
+    function fileChangedLocal(obj,event) {
+        var fileElement = event.target;
+        if (fileElement.value == "") {
+            fileChanged(event);
+        }else{
+            var file = obj.value;
+            if(file != null && file != '' && file != undefined){
+                var documentDiv = $(obj).closest('.document-upload-list');
+                documentDiv.find('.fileNameSpan').html(getFileName(file));
+                documentDiv.find('.delBtn').html('&nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>');
+                documentDiv.find('.delBtn').removeClass('hidden');
+                var $fileUploadContentEle = $(obj).closest('div.file-upload-gp');
+                $fileUploadContentEle.find('.delBtn').removeClass('hidden');
+            }
+        }
+    }
+    <!-- 108635 end-->
+
     function getFileName(o) {
         var pos = o.lastIndexOf("\\");
         return o.substring(pos + 1);
     };
 
-    $('.selectedFile').change(function () {
+    /*$('.selectedFile').change(function () {
         var file = $(this).val();
         var documentDiv = $(this).closest('.document-upload-list');
         documentDiv.find('.fileNameSpan').html(getFileName(file));
-        documentDiv.find('.delBtn').html('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>');
+        documentDiv.find('.delBtn').html('&nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>');
         documentDiv.find('.delBtn').removeClass('hidden');
         var $fileUploadContentEle = $(this).closest('div.file-upload-gp');
         $fileUploadContentEle.find('.delBtn').removeClass('hidden');
-    });
+    });*/
 
     $('.delBtn').click(function () {
         var documentDiv = $(this).closest('.document-upload-list');

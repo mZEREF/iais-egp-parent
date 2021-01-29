@@ -1214,7 +1214,8 @@ public class BackendInboxDelegator {
                 saveReturnFeeDtosStripe.add(appreturn);
             }
         }
-        List<PaymentRequestDto> paymentRequestDtos= applicationViewService.eicFeStripeRefund(saveReturnFeeDtosStripe);        for (PaymentRequestDto refund:paymentRequestDtos
+        List<PaymentRequestDto> paymentRequestDtos= applicationViewService.eicFeStripeRefund(saveReturnFeeDtosStripe);
+        for (PaymentRequestDto refund:paymentRequestDtos
         ) {
             for (AppReturnFeeDto appreturn:saveReturnFeeDtos
             ) {
@@ -1477,6 +1478,7 @@ public class BackendInboxDelegator {
             StringBuilder sb = new StringBuilder("(");
             int i =0;
             log.info(StringUtil.changeForLog("commPools size = "+commPools.size()));
+
             for (TaskDto item: commPools) {
                     sb.append(":itemKey").append(i).append(',');
                 searchParamGroup.addFilter("itemKey" + i,
@@ -1484,6 +1486,11 @@ public class BackendInboxDelegator {
                 searchParamAjax.addFilter("itemKey" + i,
                         item.getRefNo());
                     i++;
+            }
+            while (!StringUtil.isEmpty(searchParamGroup.getFilters().get("itemKey" + i))){
+                searchParamGroup.removeFilter("itemKey" + i);
+                searchParamAjax.removeFilter("itemKey" + i);
+                i++;
             }
             log.info(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
             log.info(StringUtil.changeForLog("commPools size = "+commPools.size()));

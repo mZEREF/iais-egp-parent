@@ -628,10 +628,10 @@ public class RequestForChangeDelegator {
                     NewApplicationHelper.setPremAddress(appSubmissionDto);
                     ParamUtil.setSessionAttr(bpc.request, "SvcId",currSvcId);
                 }
-                //set doc info
-                requestForChangeService.changeDocToNewVersion(appSubmissionDto);
 
                 requestForChangeService.svcDocToPresmise(appSubmissionDto);
+                //set doc info
+                requestForChangeService.changeDocToNewVersion(appSubmissionDto);
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
                 appSubmissionDto.setOldAppSubmissionDto(oldAppSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request,"SvcName",svcName);
@@ -646,6 +646,7 @@ public class RequestForChangeDelegator {
         String action = "doAmend";
         if(!StringUtil.isEmpty(draftNo)){
             log.info(StringUtil.changeForLog("draftNo is not empty"));
+            bpc.request.setAttribute("RFC_DRAFT_NO",draftNo);
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
                 requestForChangeService.svcDocToPresmise(appSubmissionDto);
@@ -727,7 +728,7 @@ public class RequestForChangeDelegator {
             error.put("premisesError","RFC_ERR005");
         }
         if(StringUtil.isEmpty(uen) || uen.length() > 10){
-            error.put("uenError",MessageUtil.replaceMessage("GENERAL_ERR0006","UEN of Licence to transfer licence to","field"));
+            error.put("uenError",MessageUtil.replaceMessage("GENERAL_ERR0006","UEN of Licensee to transfer licence to","field"));
 
         }else{
             try{

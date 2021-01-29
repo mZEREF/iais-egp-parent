@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -308,9 +309,8 @@ public class AppealApproveBatchjob {
         AppPremisesRecommendationDto newAppPremisesRecommendationDto = appealApproveDto.getNewAppPremisesRecommendationDto();
         if(applicationGroupDto!=null && appPremisesRecommendationDto !=null && newAppPremisesRecommendationDto!=null && appealApplicationDto!=null){
             String recomDecision = newAppPremisesRecommendationDto.getRecomDecision();
-            if("approve".equals(recomDecision)){
-
-                    rollBackApplication.add(appealApplicationDto);
+            if("approve".equals(recomDecision) || InspectionReportConstants.RFC_APPROVED.equals(recomDecision) || InspectionReportConstants.APPROVED.equals(recomDecision)){
+                rollBackApplication.add(appealApplicationDto);
                     ApplicationDto newAppealApplicaitonDto = (ApplicationDto) CopyUtil.copyMutableObject(appealApplicationDto);
                     newAppealApplicaitonDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                     appealApplicaiton.add(newAppealApplicaitonDto);

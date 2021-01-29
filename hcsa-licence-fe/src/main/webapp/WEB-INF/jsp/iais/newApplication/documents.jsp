@@ -94,18 +94,20 @@
                           <c:choose>
                             <c:when test="${file.docName == '' || file.docName == null }">
                               <span class="hidden delBtn">
-                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
+                                &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
                               </span>
+                                <br/>
                             </c:when>
                             <c:otherwise>
                               <%--<span class="existFile delBtn <c:if test="${!isClickEdit || AppSubmissionDto.onlySpecifiedSvc}">hidden</c:if>">--%>
                               <span class="existFile delBtn <c:if test="${!isClickEdit}">hidden</c:if>">
                                 &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
                               </span>
+                                <br/>
                             </c:otherwise>
                           </c:choose>
                           <br/>
-                          <input class="selectedFile commDoc" id="commonDoc"  name = "${commKey}" type="file" style="display: none;" aria-label="selectedFile1" >
+                          <input class="selectedFile commDoc" id="commonDoc"  name = "${commKey}" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1" >
                           <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Upload</a><br/>
                           <span name="iaisErrorMsg" class="error-msg" id="error_${commKey}"></span>
                         </div>
@@ -135,7 +137,7 @@
                             <c:choose>
                               <c:when test="${primaryDoc.docName == '' || primaryDoc.docName == null }">
                               <span class="hidden delBtn">
-                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
+                                &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
                               </span>
                               </c:when>
                               <c:otherwise>
@@ -145,7 +147,7 @@
                               </c:otherwise>
                             </c:choose>
                             <br/>
-                            <input class="selectedFile premDoc"  name = "${premKey}" type="file" style="display: none;" aria-label="selectedFile1">
+                            <input class="selectedFile premDoc"  name = "${premKey}" type="file" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" style="display: none;" aria-label="selectedFile1">
                             <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Upload</a><br/>
                             <span name="iaisErrorMsg" class="error-msg" id="error_${premKey}"></span>
                           </div>
@@ -235,6 +237,25 @@
         doEdit();
     });
 
+    <!-- 108635 start-->
+    // FileChanged()
+    function fileChangedLocal(obj,event) {
+        var fileElement = event.target;
+        if (fileElement.value == "") {
+            fileChanged(event);
+        }else{
+            var file = obj.value;
+            if(file != null && file != '' && file != undefined){
+                var currGrp = $(obj).closest('.file-upload-gp');
+                currGrp.find('span:eq(0)').html(getFileName(file));
+                currGrp.find('span:eq(0)').next().html('&nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>');
+                currGrp.find('span:eq(0)').next().removeClass("hidden");
+                currGrp.find('input delFlag').val('N');
+            }
+        }
+    }
+    <!-- 108635 end-->
+
     function validateUploadSizeMaxOrEmpty(maxSize,$fileEle) {
         var fileV = $fileEle.val();
         var file = $fileEle.get(0).files[0];
@@ -255,13 +276,16 @@
         return o.substring(pos + 1);
     }
 
-    $('.selectedFile').change(function () {
+    /*$('.selectedFile').change(function () {
         var file = $(this).val();
-        $(this).parent().children('span:eq(0)').html(getFileName(file));
-        $(this).parent().children('span:eq(0)').next().html('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>');
-        $(this).parent().children('span:eq(0)').next().removeClass("hidden");
-        $(this).parent().children('input delFlag').val('N');
-    });
+
+        if(file != null && file != '' && file != undefined){
+            $(this).parent().children('span:eq(0)').html(getFileName(file));
+            $(this).parent().children('span:eq(0)').next().html('&nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>');
+            $(this).parent().children('span:eq(0)').next().removeClass("hidden");
+            $(this).parent().children('input delFlag').val('N');
+        }
+    });*/
 
     $('.delBtn').click(function () {
         $(this).parent().children('span:eq(0)').html('');

@@ -112,20 +112,19 @@
                                                             </span>
                                                             <c:choose>
                                                                 <c:when test="${rfiDoc.docName == '' || rfiDoc.docName == null }">
+                                                                    <span class="existFile delBtn "></span>
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <%--<span class="existFile delBtn <c:if test="${!isClickEdit || AppSubmissionDto.onlySpecifiedSvc}">hidden</c:if>">--%>
                                                                     <span class="existFile delBtn ">
-                                                                        &nbsp;&nbsp;<button type="button"
-                                                                                            class="btn btn-danger btn-sm"><em
-                                                                            class="fa fa-times"></em></button>
-                                                                        </span>
+                                                                        &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
+                                                                    </span>
                                                                 </c:otherwise>
                                                             </c:choose>
                                                             <br/>
                                                             <input class="selectedFile commDoc" id="commonDoc${rfiDoc.id}"
                                                                    name="UploadFile${rfiDoc.id}" type="file"
-                                                                   style="display: none;"
+                                                                   style="display: none;" onclick="fileClicked(event)" onchange="fileChanged(event)"
                                                                    aria-label="selectedFile">
                                                             <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Attachment</a><br>
                                                             <span name="iaisErrorMsg" class="error-msg"

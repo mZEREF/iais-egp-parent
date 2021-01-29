@@ -1992,7 +1992,7 @@ public class HcsaApplicationDelegator {
             }
         }
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType)){
+        if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType) && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
         }
         broadcastApplicationDto.setApplicationDto(applicationDto);
@@ -2238,8 +2238,23 @@ public class HcsaApplicationDelegator {
                             applicationService.closeTaskWhenWhAppApprove(withdrawApplicationDto.getId());
                             List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
                             applicationDtoList.add(oldApplication);
+                            String entityType = "";
+                            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+                            if (licenseeDto != null) {
+                                LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
+                                if (licenseeEntityDto != null) {
+                                    entityType = licenseeEntityDto.getEntityType();
+                                }
+                            }
+                            boolean isCharity = false;
+                            if (AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)) {
+                                isCharity = true;
+                            } else {
+                                isCharity = false;
+                            }
                             for (ApplicationDto applicationDto1 : applicationDtoList) {
                                 applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                                applicationDto1.setIsCharity(isCharity);
                             }
                             List<ApplicationDto> applicationDtoList2 = hcsaConfigClient.returnFee(applicationDtoList).getEntity();
                             applicationDtoList2.add(applicationDto);

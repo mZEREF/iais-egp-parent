@@ -1070,6 +1070,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 appSubmissionService.changeSvcScopeIdByConfigName(hcsaSvcSubtypeOrSubsumedDtos,appSubmissionDto);
             }
         }
+        requestForChangeService.svcDocToPresmise(appSubmissionDto);
         appSubmissionDto.setAppGrpNo(grpNo);
         appSubmissionDto.setFromBe(false);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
@@ -1088,6 +1089,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
         appSubmissionDto.setAppGrpId(null);
         setRiskToDto(appSubmissionDto);
+        requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
     }
 
     @Override

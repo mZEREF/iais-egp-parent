@@ -403,7 +403,12 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     @Override
     public void removeFiles(String id){
-        fileRepoClient.removeFileById(id);
+        log.info(StringUtil.changeForLog("----- remove id : "+ id+"-------"));
+        try {
+            fileRepoClient.removeFileById(id);
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
     }
 
     @Override

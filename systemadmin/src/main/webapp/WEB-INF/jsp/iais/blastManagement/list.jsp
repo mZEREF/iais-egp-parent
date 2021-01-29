@@ -84,7 +84,7 @@
                             <thead>
                             <tr align="center">
                                 <th></th>
-                                <th>Message ID</th>
+                                <th>S/N</th>
                                 <th>Message Name</th>
                                 <th>Distribution Name</th>
                                 <th>Mode of Delivery</th>
@@ -150,8 +150,15 @@
                                             </td>
                                             <td>
                                                 <p>
-                                                    <a onclick="edit('${massIndex}')">Edit</a>
-                                                    <a onclick="audit('${item.messageId}','${item.mode}')">Audit</a>
+                                                    <c:choose>
+                                                        <c:when test="${!empty item.actual}">
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <a onclick="edit('${massIndex}')">Edit</a>
+                                                        </c:otherwise>
+                                                    </c:choose>
+
+                                                    <a onclick="audit('${item.messageId}','${item.mode}','${item.createBy}','${item.createDt}')">Audit</a>
                                                 </p>
                                             </td>
                                         </tr>
@@ -179,6 +186,9 @@
         <iais:confirm msg="The message cannot be amended as it has been sent out to recipients."  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
         <iais:confirm msg="Are you sure you want to delete this item?" yesBtnCls="okBtn btn btn-primary"   needCancel="true" callBack="deleteDis()" popupOrder="deleteSupport" ></iais:confirm>
         <input hidden id="editBlast" name="editBlast" value="">
+        <input hidden id="msgId" name="msgId" value="">
+        <input hidden id="createby" name="createby" value="">
+        <input hidden id="createDt" name="createDt" value="">
         <input hidden id="mode" name="mode" value="">
     </form>
 </div>
@@ -236,9 +246,11 @@
         $("#editBlast").val(id);
         SOP.Crud.cfxSubmit("mainForm", "preview");
     }
-    function audit(id,mode) {
-        $("#editBlast").val(id);
+    function audit(id,mode,createby,createDt) {
+        $("#msgId").val(id);
         $("#mode").val(mode);
+        $("#createby").val(createby);
+        $("#createDt").val(createDt);
         SOP.Crud.cfxSubmit("mainForm", "audit");
     }
 
@@ -276,12 +288,12 @@
                 html += data.distributionSelect;
                 html += ' </div>';
                 $("#distributiondiv").html(html);
-                $("div.distributionList->ul").mCustomScrollbar({
+                /*$("div.distributionList->ul").mCustomScrollbar({
                         advanced:{
                             updateOnContentResize: true
                         }
                     }
-                );
+                );*/
             }
         });
     })

@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
@@ -10,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import lombok.extern.slf4j.Slf4j;
@@ -132,6 +134,23 @@ public class EmailAjaxController {
         result.put("distributionSelect",distributionSelect);
         return result;
     }
+
+    @RequestMapping(value = "deliveryModeCheck.do", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, String> deliveryModeCheck(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, String> result = new HashMap<>();
+        Map<String,String> distributionAttr = IaisCommonUtils.genNewHashMap();
+        distributionAttr.put("class", "deliveryMode");
+        distributionAttr.put("id", "deliveryMode");
+        distributionAttr.put("name", "deliveryMode");
+        distributionAttr.put("style", "display: none;");
+        List<SelectOption> selectOptions = getDeliveyMode(request);
+        doSortSelOption(selectOptions);
+        String deliveryModeSelect = generateDropDownHtml(distributionAttr, selectOptions, "Please Select", null);
+        result.put("deliveryModeSelect",deliveryModeSelect);
+        return result;
+    }
+
     @RequestMapping(value = "distributionEditCheck.do", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, String> distributionEditCheck(HttpServletRequest request, HttpServletResponse response) {
@@ -214,6 +233,40 @@ public class EmailAjaxController {
         ) {
             selectOptions.add(new SelectOption(item.getId(),item.getDisname()));
         }
+        return selectOptions;
+    }
+
+
+    private List<SelectOption> getDeliveyMode(HttpServletRequest request){
+        String deliveyMode = ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE);
+        String email = MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_EMAIL;
+        String sms = MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_SMS;
+        String msg = MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_MSG;
+        String na = MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_NA;
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+
+        switch (deliveyMode){
+            case MsgTemplateConstants.MSG_TEMPLATE_TYPE_ALERT:
+                selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+                break;
+            case MsgTemplateConstants.MSG_TEMPLATE_TYPE_BANNER_ALERT:
+                selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+                break;
+            case MsgTemplateConstants.MSG_TEMPLATE_TYPE_SCHEDULED_MAINTENANCE:
+                selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+                break;
+            case MsgTemplateConstants.MSG_TEMPLATE_TYPE_LETTER:
+                selectOptions.add(new SelectOption(email,MasterCodeUtil.getCodeDesc(email)));
+                selectOptions.add(new SelectOption(msg,MasterCodeUtil.getCodeDesc(msg)));
+                break;
+            case MsgTemplateConstants.MSG_TEMPLATE_TYPE_NOTIFICATION:
+                selectOptions.add(new SelectOption(email,MasterCodeUtil.getCodeDesc(email)));
+                selectOptions.add(new SelectOption(msg,MasterCodeUtil.getCodeDesc(msg)));
+                selectOptions.add(new SelectOption(sms,MasterCodeUtil.getCodeDesc(sms)));
+                break;
+            default: ;
+        }
+
         return selectOptions;
     }
 

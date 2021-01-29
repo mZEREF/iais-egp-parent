@@ -705,11 +705,6 @@ public class WithOutRenewalDelegator {
                                 }
                                 appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
                                 appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
-                                if (!amendmentFeeDto.getChangeInHCIName() && !amendmentFeeDto.getChangeInLocation()) {
-                                    appSubmissionDtoByLicenceId.setAutoRfc(true);
-                                } else {
-                                    appSubmissionDtoByLicenceId.setAutoRfc(false);
-                                }
                                 RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
                                 requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
                                 if (appSubmissionDtoByLicenceId.isAutoRfc()) {

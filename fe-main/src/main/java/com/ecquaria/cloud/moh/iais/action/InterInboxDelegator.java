@@ -1050,6 +1050,14 @@ public class InterInboxDelegator {
             appId= ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
         }
          List<LicenceDto> licenceDtos = licenceInboxClient.isNewApplication(appId).getEntity();
+        ApplicationDto applicationDto = appInboxClient.getApplicationById(appId).getEntity();
+        //68521
+        if(applicationDto!=null && applicationDto.getOriginLicenceId()!=null){
+            LicenceDto entity = licenceInboxClient.getLicDtoById(applicationDto.getOriginLicenceId()).getEntity();
+            if(entity!=null && ApplicationConsts.LICENCE_STATUS_IACTIVE.equals(entity.getStatus())){
+                licenceDtos.add(entity);
+            }
+        }
         if(!licenceDtos.isEmpty()){
             //change APPEAL_ACK002
             ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("APPEAL_ACK002"));
@@ -1090,7 +1098,6 @@ public class InterInboxDelegator {
                 return;
             }
         }
-        ApplicationDto applicationDto = appInboxClient.getApplicationById(appId).getEntity();
         Calendar calendar=Calendar.getInstance();
         Date createAt = applicationDto.getCreateAt();
         calendar.setTime(createAt);
@@ -1317,10 +1324,10 @@ public class InterInboxDelegator {
         List<SelectOption> inboxServiceSelectList = IaisCommonUtils.genNewArrayList();
         inboxServiceSelectList.add(new SelectOption("BLB@", "Blood Banking"));
         inboxServiceSelectList.add(new SelectOption("CLB@", "Clinical Laboratory"));
-        inboxServiceSelectList.add(new SelectOption("RDS@", "Radiological Service"));
-        inboxServiceSelectList.add(new SelectOption("TSB@", "Tissue Banking"));
         inboxServiceSelectList.add(new SelectOption("NMA@", "Nuclear Medicine (Assay)"));
         inboxServiceSelectList.add(new SelectOption("NMI@", "Nuclear Medicine (Imaging)"));
+        inboxServiceSelectList.add(new SelectOption("RDS@", "Radiological Service"));
+        inboxServiceSelectList.add(new SelectOption("TSB@", "Tissue Banking"));
         ParamUtil.setRequestAttr(request, "inboxServiceSelect", inboxServiceSelectList);
 
         List<SelectOption> inboxTypSelectList = IaisCommonUtils.genNewArrayList();
@@ -1359,33 +1366,33 @@ public class InterInboxDelegator {
         List<SelectOption> appServiceTypeSelectList = IaisCommonUtils.genNewArrayList();
         appServiceTypeSelectList.add(new SelectOption("Blood Banking", "Blood Banking"));
         appServiceTypeSelectList.add(new SelectOption("Clinical Laboratory", "Clinical Laboratory"));
-        appServiceTypeSelectList.add(new SelectOption("Radiological Service", "Radiological Service"));
-        appServiceTypeSelectList.add(new SelectOption("Tissue Banking", "Tissue Banking"));
         appServiceTypeSelectList.add(new SelectOption("Nuclear Medicine (Assay)", "Nuclear Medicine (Assay)"));
         appServiceTypeSelectList.add(new SelectOption("Nuclear Medicine (Imaging)", "Nuclear Medicine (Imaging)"));
+        appServiceTypeSelectList.add(new SelectOption("Radiological Service", "Radiological Service"));
+        appServiceTypeSelectList.add(new SelectOption("Tissue Banking", "Tissue Banking"));
         ParamUtil.setRequestAttr(request, "appServiceType", appServiceTypeSelectList);
     }
 
     private void prepareLicSelectOption(HttpServletRequest request){
         List<SelectOption> LicenceStatusList = IaisCommonUtils.genNewArrayList();
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_ACTIVE, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_ACTIVE)));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_APPROVED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_APPROVED)));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_CEASED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_CEASED)));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_EXPIRY, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_EXPIRY)));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_LAPSED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_LAPSED)));
-        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_APPROVED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_APPROVED)));
-        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_SUSPENDED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_SUSPENDED)));
-        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_REVOKED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_REVOKED)));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_IACTIVE, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_IACTIVE)));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_REVOKED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_REVOKED)));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_SUSPENDED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_SUSPENDED)));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_TRANSFERRED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_TRANSFERRED)));
         ParamUtil.setRequestAttr(request, "licStatus", LicenceStatusList);
 
         List<SelectOption> LicenceTypeList = IaisCommonUtils.genNewArrayList();
-        LicenceTypeList.add(new SelectOption("Tissue Banking", "Tissue Banking"));
         LicenceTypeList.add(new SelectOption("Blood Banking", "Blood Banking"));
-        LicenceTypeList.add(new SelectOption("Radiological Service", "Radiological Service"));
         LicenceTypeList.add(new SelectOption("Clinical Laboratory", "Clinical Laboratory"));
         LicenceTypeList.add(new SelectOption("Nuclear Medicine (Assay)", "Nuclear Medicine (Assay)"));
         LicenceTypeList.add(new SelectOption("Nuclear Medicine (Imaging)", "Nuclear Medicine (Imaging)"));
+        LicenceTypeList.add(new SelectOption("Radiological Service", "Radiological Service"));
+        LicenceTypeList.add(new SelectOption("Tissue Banking", "Tissue Banking"));
         ParamUtil.setRequestAttr(request, "licType", LicenceTypeList);
 
         List<SelectOption> LicenceActionsList = IaisCommonUtils.genNewArrayList();

@@ -50,11 +50,23 @@
             <h2>${switchUploadPage}</h2>
           <div class="document-upload-list">
             <div class="error-msg"></div>
-            <div class="file-upload-gp">
-              <div class="fileNameDisplay"></div>
 
-              <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+            <div class="file-upload-gp">
+                <p>
+                  <span class="fileNameDisplay">
+                  </span>
+                  <span class="existFile delBtn hidden">
+                      &nbsp;&nbsp;
+                      <button type="button" class="btn btn-danger btn-sm">
+                        <em class="fa fa-times"></em>
+                      </button>
+                  </span>
+                </p>
+              <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1">
+
+              <a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
             </div>
+
           </div>
         </div>
 
@@ -112,5 +124,16 @@
 
     $('#docNext').click(function () {
         SOP.Crud.cfxSubmit("mainForm", "doUpload");
+    });
+
+    $('#selectedFile').change(function () {
+        $('.existFile').removeClass("hidden")
+    });
+
+    $('.existFile').click(function () {
+      let selectFile = $('#selectedFile');
+      selectFile.val(null);
+      $('.existFile').addClass("hidden");
+      $(".fileNameDisplay").text(null);
     });
 </script>

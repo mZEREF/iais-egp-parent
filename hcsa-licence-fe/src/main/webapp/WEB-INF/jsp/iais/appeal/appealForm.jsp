@@ -19,18 +19,18 @@
     <input type="hidden" name="crud_action_additional" id="crud_action_additional" value="">
     <input type="hidden" name="crud_action_type" id="crud_action_type" value="">
     <input type="hidden" id="configFileSize" value="${configFileSize}"/>
-  <div class="form-group">
-    <div class="col-xs-12 col-md-10" style="margin-left: 2%">
-      <label style="font-size: 25px">You are appealing for:</label>
-    </div>
+    <div class="form-group">
+      <div class="col-xs-12 col-md-10" style="margin-left: 2%">
+        <label style="font-size: 25px">You are appealing for:</label>
+      </div>
 
-    <div  class="col-xs-12 col-md-10">
-      <div class="col-xs-12 col-md-6" style="margin-left: 1%">
-        <input type="text" name="appealingFor" disabled  value="${appealNo}" >
-        <span name="iaisErrorMsg" class="error-msg" id="error_submit"></span>
+      <div  class="col-xs-12 col-md-10">
+        <div class="col-xs-12 col-md-6" style="margin-left: 1%">
+          <input type="text" name="appealingFor" disabled  value="${appealNo}" >
+          <span name="iaisErrorMsg" class="error-msg" id="error_submit"></span>
+        </div>
       </div>
     </div>
-  </div>
 
     <div class="form-group">
       <div class="col-xs-12 col-md-10" style="margin-left: 1%">
@@ -41,33 +41,33 @@
             <c:forEach items="${selectOptionList}" var="selectOption">
               <option value="${selectOption.value}" <c:if test="${appPremiseMiscDto.reason==selectOption.value}">selected="selected"</c:if> >${selectOption.text}</option>
             </c:forEach>
-           <%-- <c:if test="${rejectEqDay==true}">
-              <c:if test="${type=='application'}"><c:if test="${applicationAPPROVED=='APPROVED'}">
-                <option value="MS001" <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option></c:if>
-              </c:if>
-            </c:if>
-            <c:if test="${feeEqDay==true}">
-              <c:if test="${lateFee==true}">
-                <option value="MS002" <c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option>
-              </c:if>
-            </c:if>
-            <c:if test="${cgoEqDay==true}">
-              <c:if test="${maxCGOnumber==true}">
-                <c:if test="${type=='application'}">
-                  <option value="MS003" <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option>
-                </c:if>
-              </c:if>
-            </c:if>
-            <c:if test="${nameEqDay==true}">
-              <c:if test="${type=='application'}"><option value="MS008" <c:if test="${appPremiseMiscDto.reason=='MS008'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option></c:if>
-            </c:if>
-            <c:if test="${periodEqDay==true}">
-              <c:if test="${type=='licence'}"> <option value="MS004" <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option></c:if>
-            </c:if>
-            <c:if test="${otherEqDay==true}">
-              <option value="MS007" <c:if test="${appPremiseMiscDto.reason=='MS007'}">selected="selected"</c:if>>Others</option>
-            </c:if>--%>
-             <%--<option value="MS006" <c:if test="${appPremiseMiscDto.reason=='MS006'}">selected="selected"</c:if>>Appeal against revocation</option>--%>
+            <%-- <c:if test="${rejectEqDay==true}">
+               <c:if test="${type=='application'}"><c:if test="${applicationAPPROVED=='APPROVED'}">
+                 <option value="MS001" <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option></c:if>
+               </c:if>
+             </c:if>
+             <c:if test="${feeEqDay==true}">
+               <c:if test="${lateFee==true}">
+                 <option value="MS002" <c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option>
+               </c:if>
+             </c:if>
+             <c:if test="${cgoEqDay==true}">
+               <c:if test="${maxCGOnumber==true}">
+                 <c:if test="${type=='application'}">
+                   <option value="MS003" <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option>
+                 </c:if>
+               </c:if>
+             </c:if>
+             <c:if test="${nameEqDay==true}">
+               <c:if test="${type=='application'}"><option value="MS008" <c:if test="${appPremiseMiscDto.reason=='MS008'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option></c:if>
+             </c:if>
+             <c:if test="${periodEqDay==true}">
+               <c:if test="${type=='licence'}"> <option value="MS004" <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option></c:if>
+             </c:if>
+             <c:if test="${otherEqDay==true}">
+               <option value="MS007" <c:if test="${appPremiseMiscDto.reason=='MS007'}">selected="selected"</c:if>>Others</option>
+             </c:if>--%>
+            <%--<option value="MS006" <c:if test="${appPremiseMiscDto.reason=='MS006'}">selected="selected"</c:if>>Appeal against revocation</option>--%>
           </select>
 
           <div style="margin-top: 1%"> <span  class="error-msg" name="iaisErrorMsg" id="error_reason"></span></div>
@@ -101,17 +101,17 @@
         </div>
 
       </div>
-      </div>
+    </div>
     <div style="display: none;margin-top: 10px;margin-left: 1%" id="cgo" class="col-xs-12 col-md-9" >
       <%--     <a class="btn  btn-secondary" onclick="deletes()" style="margin-left: 20px;"  >delete</a>--%>
       <%@include file="cgo.jsp"%>
 
     </div>
-      <div class="col-xs-12 col-md-10" style="margin-left: 2%">
+    <div class="col-xs-12 col-md-10" style="margin-left: 2%">
 
-        <label style="font-size: 25px">Any supporting remarks<span class="mandatory"> *</span></label>
+      <label style="font-size: 25px">Any supporting remarks<span class="mandatory"> *</span></label>
 
-      </div >
+    </div >
     <div  class="col-xs-12 col-md-10" style="margin-left: 2%" >
 
       <textarea cols="120" style="font-size: 20px" rows="10" name="remarks" maxlength="300" >${appPremiseMiscDto.remarks}</textarea>
@@ -122,40 +122,40 @@
 
 
     <div class="form-group">
-  <div >
-    <div>
-      <div class="col-xs-12 col-md-10" >
-        <label style="font-size: 25px;margin-top: 25px;margin-left: 1%" >File Upload For Appeal Reasons</label>
-      </div>
+      <div >
+        <div>
+          <div class="col-xs-12 col-md-10" >
+            <label style="font-size: 25px;margin-top: 25px;margin-left: 1%" >File Upload For Appeal Reasons</label>
+          </div>
 
-      <div class="col-xs-12">
-        <div class="document-upload-list">
-          <div class="file-upload-gp">
-            <div class="fileContent col-xs-2">
-              ${upFile.originalFilename}
-              <input class="selectedFile"  id="selectedFile" name = "selectedFile"  type="file" style="display: none;" aria-label="selectedFile1" onchange="javascript:doUserRecUploadConfirmFile()">
-              <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Upload</a>
+          <div class="col-xs-12">
+            <div class="document-upload-list">
+              <div class="file-upload-gp">
+                <div class="fileContent col-xs-2">
+                  ${upFile.originalFilename}
+                  <input class="selectedFile"  id="selectedFile" name = "selectedFile"  onclick="fileClicked(event)"  type="file" style="display: none;" aria-label="selectedFile1" onchange="javascript:doUserRecUploadConfirmFile()">
+                  <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Upload</a>
 
-            </div>
-            <div class="col-xs-12 col-md-4" >
+                </div>
+                <div class="col-xs-12 col-md-4" >
               <span  name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
                   <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${fileReportIdForAppeal}"/>&fileRepoName=${filename}" title="Download" class="downloadFile">${filename}</a></span>
-              <input type="text" value="Y" style="display: none" name="isDelete" id="isDelete">
-              <input type="text" value="${filename}" style="display: none" id="isFile">
+                  <input type="text" value="Y" style="display: none" name="isDelete" id="isDelete">
+                  <input type="text" value="${filename}" style="display: none" id="isFile">
 
-              <a class="btn btn-danger btn-sm" style="margin-left: 20px;display: none" name="delete" id="delete" href="javascript:void(0);">X</a>
+                  <a class="btn btn-danger btn-sm" style="margin-left: 20px;display: none" name="delete" id="delete" href="javascript:void(0);">X</a>
+                </div>
+              </div>
             </div>
+            <div class="col-xs-12">
+              <span name="iaisErrorMsg" class="error-msg" id="error_file"></span>
+              <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
+            </div>
+
           </div>
-        </div>
-        <div class="col-xs-12">
-          <span name="iaisErrorMsg" class="error-msg" id="error_file"></span>
-          <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
-        </div>
 
+        </div>
       </div>
-
-    </div>
-  </div>
     </div>
 
     <br>
@@ -186,56 +186,66 @@
 </style>
 <script  type="text/javascript">
   $(document).ready(function () {
-      if($('#saveDraftSuccess').val()=='success'){
-          $('#saveDraft').modal('show');
-      }
-      var reason= $('#reasonSelect option:selected').val();
-      if("MS003"==reason){
-          $('#cgo').attr("style" ,"display: block;margin-top: 10px;margin-left: 1%");
+    if($('#saveDraftSuccess').val()=='success'){
+      $('#saveDraft').modal('show');
+    }
+    var reason= $('#reasonSelect option:selected').val();
+    if("MS003"==reason){
+      $('#cgo').attr("style" ,"display: block;margin-top: 10px;margin-left: 1%");
 
-      }else  {
-          $('#cgo').attr("style" ,"display: none");
+    }else  {
+      $('#cgo').attr("style" ,"display: none");
 
-      }
-      if("MS008"==reason){
-          $('#selectHciNameAppeal').attr("style","display: block;margin-top: 20px");
+    }
+    if("MS008"==reason){
+      $('#selectHciNameAppeal').attr("style","display: block;margin-top: 20px");
 
-      }else {
-          $('#selectHciNameAppeal').attr("style","display: none");
-      }
-      if("MS004"==reason){
-          $('#licenceYear').attr("style","display: block;margin-top: 20px");
-      }else {
-          $('#licenceYear').attr("style","display: none");
-      }
-      if("MS007"==reason){
-          $('#othersReason').attr("style","display: block");
-      }else {
-          $('#othersReason').attr("style","display: none");
-      }
-      if(  $("input[name='selectHciName']").prop("checked")){
-          $('#proposedHciName').attr("style","display: block");
-      }else {
-          $('#proposedHciName').attr("style","display: none");
-      }
-      if(  $('#isFile').val()!=''){
-          $('#delete').attr("style","display: inline-block;margin-left: 20px");
-          $('#isDelete').val('Y');
-      }
+    }else {
+      $('#selectHciNameAppeal').attr("style","display: none");
+    }
+    if("MS004"==reason){
+      $('#licenceYear').attr("style","display: block;margin-top: 20px");
+    }else {
+      $('#licenceYear').attr("style","display: none");
+    }
+    if("MS007"==reason){
+      $('#othersReason').attr("style","display: block");
+    }else {
+      $('#othersReason').attr("style","display: none");
+    }
+    if(  $("input[name='selectHciName']").prop("checked")){
+      $('#proposedHciName').attr("style","display: block");
+    }else {
+      $('#proposedHciName').attr("style","display: none");
+    }
+    if(  $('#isFile').val()!=''){
+      $('#delete').attr("style","display: inline-block;margin-left: 20px");
+      $('#isDelete').val('Y');
+    }
 
   });
 
-$('#submit').click(function () {
+  $('#submit').click(function () {
     if("N" == $('#isDelete').val()){
-        uploadFileValidate();
+      uploadFileValidate();
     }
-  var error = $('#error_litterFile_Show').html();
-  if(error == undefined || error == ""){
+    var error = $('#error_litterFile_Show').html();
+    if(error == undefined || error == ""){
       Utils.submit('mainForm','submit','submit','','');
-   /* SOP.Crud.cfxSubmit("mainForm", "submit","submit","");*/
-  }
-});
+      /* SOP.Crud.cfxSubmit("mainForm", "submit","submit","");*/
+    }
+  });
 
+  var debug = true;//true: add debug logs when cloning
+  var evenMoreListeners = true;//demonstrat re-attaching javascript Event Listeners (Inline Event Listeners don't need to be re-attached)
+  if (evenMoreListeners) {
+    var allFleChoosers = $("input[type='file']");
+    addEventListenersTo(allFleChoosers);
+    function addEventListenersTo(fileChooser) {
+      fileChooser.change(function (event) { console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop()) });
+      fileChooser.click(function (event) { console.log("open( #" + event.target.id + " )") });
+    }
+  }
   function doUserRecUploadConfirmFile() {
     var file = $('#selectedFile').val();
     file= file.split("\\");
@@ -248,110 +258,117 @@ $('#submit').click(function () {
       $('#error_file').html("");
     }
     uploadFileValidate();
+    var fileElement = event.target;
+    if (fileElement.value == "") {
+      if (debug) { console.log("Restore( #" + fileElement.id + " ) : " + clone[fileElement.id].val().split("\\").pop()) }
+      clone[fileElement.id].insertBefore(fileElement); //'Restoring Clone'
+      $(fileElement).remove(); //'Removing Original'
+      if (evenMoreListeners) { addEventListenersTo(clone[fileElement.id]) }//If Needed Re-attach additional Event Listeners
+    }
   }
 
 
-function uploadFileValidate(){
-  var configFileSize = $("#configFileSize").val();
-  var error  = validateUploadSizeMaxOrEmpty(configFileSize,'selectedFile');
-  var flag = true;
-  if( error =="Y"){
-    $('#delete').attr("style","display: inline-block;margin-left: 20px");
-    $('#isDelete').val('Y');
-    $('#error_litterFile_Show').html("");
-    $('#error_file').html("");
-  }else if(error == "E"){
+  function uploadFileValidate(){
+    var configFileSize = $("#configFileSize").val();
+    var error  = validateUploadSizeMaxOrEmpty(configFileSize,'selectedFile');
+    var flag = true;
+    if( error =="Y"){
+      $('#delete').attr("style","display: inline-block;margin-left: 20px");
+      $('#isDelete').val('Y');
+      $('#error_litterFile_Show').html("");
+      $('#error_file').html("");
+    }else if(error == "E"){
+      deleteFileFunction();
+      $('#error_litterFile_Show').html("");
+      $('#error_file').html("");
+    } else if(error =="N"){
+      clearFileFunction();
+      flag = false;
+      $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of '+ configFileSize + 'M.');
+      $('#error_file').html("");
+    }
+    return flag;
+  }
+
+  $('#delete').click(function () {
     deleteFileFunction();
+  });
+
+  function deleteFileFunction(){
+    $('.selectedFile').val('');
+    $('#delete').attr("style","display: none");
+    $("span[name='fileName']").html('');
+    $('#isDelete').val('N');
     $('#error_litterFile_Show').html("");
     $('#error_file').html("");
-  } else if(error =="N"){
-    clearFileFunction();
-    flag = false;
-    $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of '+ configFileSize + 'M.');
-    $('#error_file').html("");
   }
-  return flag;
-}
 
-$('#delete').click(function () {
-  deleteFileFunction();
-});
+  function clearFileFunction(){
+    $('.selectedFile').val('');
+    $('#delete').attr("style","display: none");
+    $("span[name='fileName']").html('');
+    $('#isDelete').val('N');
+  }
 
-function deleteFileFunction(){
-  $('.selectedFile').val('');
-  $('#delete').attr("style","display: none");
-  $("span[name='fileName']").html('');
-  $('#isDelete').val('N');
-  $('#error_litterFile_Show').html("");
-  $('#error_file').html("");
-}
-
-function clearFileFunction(){
-  $('.selectedFile').val('');
-  $('#delete').attr("style","display: none");
-  $("span[name='fileName']").html('');
-  $('#isDelete').val('N');
-}
-
-$('#save').click(function () {
+  $('#save').click(function () {
     Utils.submit('mainForm','save','save','','');
-   /* SOP.Crud.cfxSubmit("mainForm", "save","save","");*/
-});
+    /* SOP.Crud.cfxSubmit("mainForm", "save","save","");*/
+  });
 
-$('#reasonSelect').change(function () {
+  $('#reasonSelect').change(function () {
 
-  var reason= $('#reasonSelect option:selected').val();
-  if("MS003"==reason){
+    var reason= $('#reasonSelect option:selected').val();
+    if("MS003"==reason){
       $('#cgo').attr("style" ,"display: block");
 
-  }else  {
+    }else  {
       $('#cgo').attr("style" ,"display: none");
 
-  }
-  if("MS008"==reason){
-    $('#selectHciNameAppeal').attr("style","display: block");
+    }
+    if("MS008"==reason){
+      $('#selectHciNameAppeal').attr("style","display: block");
 
-  }else {
+    }else {
       $('#selectHciNameAppeal').attr("style","display: none");
-  }
-  if("MS004"==reason){
+    }
+    if("MS004"==reason){
       $('#licenceYear').attr("style","display: block");
-  }else {
+    }else {
       $('#licenceYear').attr("style","display: none");
-  }
-  if("MS007"==reason){
+    }
+    if("MS007"==reason){
       $('#othersReason').attr("style","display: block");
-  }else {
+    }else {
       $('#othersReason').attr("style","display: none");
-  }
-    
-});
+    }
+
+  });
 
 
-function isCheck(obj) {
+  function isCheck(obj) {
 
-  if($(obj).prop("checked")){
+    if($(obj).prop("checked")){
       $('#proposedHciName').attr("style","display: block");
-  }else {
+    }else {
       $('#proposedHciName').attr("style","display: none");
-  }
+    }
 
-}
+  }
 
   function getFileName(o) {
-      var pos = o.lastIndexOf("\\");
-      return o.substring(pos + 1);
+    var pos = o.lastIndexOf("\\");
+    return o.substring(pos + 1);
   };
 
   function deletes() {
 
-      $('#control--runtime--1').attr("hidden");
+    $('#control--runtime--1').attr("hidden");
 
   }
 
   $('#cancel').click(function () {
-      Utils.submit('mainForm','cancel','cancel','','');
-   /*   SOP.Crud.cfxSubmit("mainForm", "cancel","cancel","");*/
+    Utils.submit('mainForm','cancel','cancel','','');
+    /*   SOP.Crud.cfxSubmit("mainForm", "cancel","cancel","");*/
 
   });
 
@@ -360,12 +377,12 @@ function isCheck(obj) {
 
   }
   function cancel() {
-      $('#saveDraft').modal('hide');
+    $('#saveDraft').modal('hide');
   }
 
   function jumpPage() {
-      Utils.submit('mainForm','cancel','cancel','','');
-     /* SOP.Crud.cfxSubmit("mainForm", "cancel","cancel","");*/
+    Utils.submit('mainForm','cancel','cancel','','');
+    /* SOP.Crud.cfxSubmit("mainForm", "cancel","cancel","");*/
   }
 </script>
 

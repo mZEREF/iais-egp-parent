@@ -5,12 +5,15 @@
         </h3>
     </div>
 </div>
-<c:forEach var="errMSg" items="${errList}" >
+<c:forEach var="errMSg" items="${errList}" varStatus="stat" >
     <div class="row">
         <div class="col-xs-12 col-md-6">
             <span class="error-msg">${errMSg}</span>
         </div>
     </div>
+    <c:if test="${!stat.last}">
+        <br/>
+    </c:if>
 </c:forEach>
 <div class="row">
     <div class="col-xs-12 col-md-7">

@@ -161,15 +161,6 @@
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('#support').find('div.modal-body').find('div.row div').removeClass("col-md-8 col-md-offset-2");
-        $('#support').find('div.modal-body').find('div.row div').css('width','100%');
-        $('#support').find('div.modal-body').find('div.row div').css('padding','0 5% 0 5%');
-        $('#deleteSupport').find('div.modal-body').find('div.row div').removeClass("col-md-8 col-md-offset-2");
-        $('#deleteSupport').find('div.modal-body').find('div.row div').css('width','100%');
-        $('#deleteSupport').find('div.modal-body').find('div.row div').css('padding','0 5% 0 5%');
-    });
-
     function submit(action) {
         $("[name='crud_action_type']").val(action);
         $('#mainForm').submit();

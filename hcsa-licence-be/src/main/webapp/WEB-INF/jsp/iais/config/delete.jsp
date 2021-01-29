@@ -164,7 +164,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Deputy Principal Officer (DPO)&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-7 control-label" >Nominee&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input  value="${DPO.id}" name="dpoId" style="display:none;" type="text">
             <input  readonly type="text" name="man-DeputyPrincipalOfficer" maxlength="2" value="${DPO.mandatoryCount}" placeholder="mandatory count">
@@ -315,28 +315,28 @@
         </div>
       </div>
 
-     <%-- <div class="form-group">
-        <div class="col-xs-12 col-md-8 marg-1">
-          <label class="col-xs-12 col-md-8 control-label" >Service Fees</label>
-          <div class="col-xs-10 col-md-4">
-            <div class="components">
-              <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
-            </div>
-          </div>
-        </div>
-      </div>
+      <%-- <div class="form-group">
+         <div class="col-xs-12 col-md-8 marg-1">
+           <label class="col-xs-12 col-md-8 control-label" >Service Fees</label>
+           <div class="col-xs-10 col-md-4">
+             <div class="components">
+               <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
+             </div>
+           </div>
+         </div>
+       </div>
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-8 marg-1">
-          <label class="col-xs-12 col-md-8 control-label" >Service Fee Bundles</label>
-          <div class="col-xs-10 col-md-4">
-            <div class="components">
-              <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
-            </div>
-          </div>
-        </div>
-      </div>
---%>
+       <div class="form-group">
+         <div class="col-xs-12 col-md-8 marg-1">
+           <label class="col-xs-12 col-md-8 control-label" >Service Fee Bundles</label>
+           <div class="col-xs-10 col-md-4">
+             <div class="components">
+               <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
+             </div>
+           </div>
+         </div>
+       </div>
+ --%>
       <div class="form-group">
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
           <div class="col-xs-10 col-md-6">
@@ -446,6 +446,7 @@
                       </c:if>
                       <c:if test="${routingStage.stageCode=='INS'}">
                         <c:forEach items="${routingStage.hcsaSvcSpeRoutingSchemeDtos}" var="hcsaSvcSpeRoutingSchemeDto">
+
                           <select  disabled name="RoutingScheme${routingStage.stageCode}${routingStages.key}${hcsaSvcSpeRoutingSchemeDto.insOder}"  >
                             <option value="" >Please Select</option>
                             <option value="common"
@@ -608,7 +609,8 @@
       <div class="col-lg-12 col-xs-12">
         <iais:action style="text-align:center;">
           <a class="btn btn-secondary"data-toggle="modal" data-target= "#cancel">Cancel</a>
-          <button class="btn btn-secondary" id="deleteConfirm" value="${hcsaServiceDto.id}" onclick="confirmDelete(this)" ><span class="mandatory">CONFIRM DELETE</span></button>
+          <a class="btn btn-secondary"data-toggle="modal" style="color: #ff0000" data-target= "#deleteConfirmYesOrNo">CONFIRM DELETE</a>
+          <input type="hidden" id="deleteConfirm" value="${hcsaServiceDto.id}">
         </iais:action>
         <div class="bg-title" style="text-align: center">
           <p style="text-align: center">Version ${hcsaServiceDto.version}</p>
@@ -621,7 +623,7 @@
 </div>
 <%@ include file="configRepeatJs.jsp" %>
 <iais:confirm msg="Are you sure you want to leave this page ?" callBack="kpi()" popupOrder="kpi" ></iais:confirm>
-
+<iais:confirm msg="Are you sure to delete ?" yesBtnDesc="NO" cancelBtnDesc="YES" yesBtnCls="btn btn-secondary" cancelBtnCls="btn btn-primary" cancelFunc="deleteConfirmYesOrNo()" callBack="cancelDelete()" popupOrder="deleteConfirmYesOrNo" ></iais:confirm>
 <iais:confirm msg="Are you sure you want to leave this page ?" callBack="checklists()" popupOrder="checklists" ></iais:confirm>
 
 <iais:confirm msg="Are you sure you want to leave this page ?" callBack="riskScore()" popupOrder="riskScore" ></iais:confirm>
@@ -648,72 +650,69 @@
 </style>
 <script type="text/javascript">
 
-    $(document).ready(function () {
-        let val = $("select[name='ServiceType']").val();
-        if("SVTP001"==val){
-            $('#selectCategoryId').attr("style","display:block");
-        } else if("SVTP002"==val){
-            $('#Subsumption').attr("style","display:block");
-            $('#Pre-requisite').attr("style","display:none");
-            $('#selectCategoryId').attr("style","display:none");
-        }else  if("SVTP003"==val){
-            $('#Pre-requisite').attr("style","display:block");
-            $('#Subsumption').attr("style","display:none");
-            $('#selectCategoryId').attr("style","display:block");
-        }else {
-            $('#Subsumption').attr("style","display:none");
-            $('#Pre-requisite').attr("style","display:none");
-            $('#selectCategoryId').attr("style","display:none");
-        }
-        a();
-    });
-
-    var  a = function upDown() {
-        let length = $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").length;
-        if (length == 1) {
-            $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").children('.up').attr("style","display: none");
-        } else {
-            $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").children('.up').removeAttr("style");
-        }
+  $(document).ready(function () {
+    let val = $("select[name='ServiceType']").val();
+    if("SVTP001"==val){
+      $('#selectCategoryId').attr("style","display:block");
+    } else if("SVTP002"==val){
+      $('#Subsumption').attr("style","display:block");
+      $('#Pre-requisite').attr("style","display:none");
+      $('#selectCategoryId').attr("style","display:none");
+    }else  if("SVTP003"==val){
+      $('#Pre-requisite').attr("style","display:block");
+      $('#Subsumption').attr("style","display:none");
+      $('#selectCategoryId').attr("style","display:block");
+    }else {
+      $('#Subsumption').attr("style","display:none");
+      $('#Pre-requisite').attr("style","display:none");
+      $('#selectCategoryId').attr("style","display:none");
     }
-    function kpi() {
+    a();
+  });
 
-        location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohKPIAndReminder",request)%>';
-
+  var  a = function upDown() {
+    let length = $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").length;
+    if (length == 1) {
+      $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").children('.up').attr("style","display: none");
+    } else {
+      $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").children('.up').removeAttr("style");
     }
+  }
+  function kpi() {
+
+    location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohKPIAndReminder",request)%>';
+
+  }
 
 
-    function  checklists(){
-        location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohChecklistConfiguration",request)%>';
-    }
+  function  checklists(){
+    location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohChecklistConfiguration",request)%>';
+  }
 
-    function riskScore(){
-        location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohRiskConigMenu",request)%>';
+  function riskScore(){
+    location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohRiskConigMenu",request)%>';
 
-    }
+  }
+  function deleteConfirmYesOrNo(){
+    var val = $('#deleteConfirm').val();
+    SOP.Crud.cfxSubmit("mainForm","delete",val,"");
+  }
+  function cancelDelete(){
+    SOP.Crud.cfxSubmit("mainForm","delete","","");
+  }
 
-    function confirmDelete(obj) {
-        var r=confirm("Are you sure to delete!");
-        if(r==true){
-            SOP.Crud.cfxSubmit("mainForm","delete",$(obj).val(),"");
-        }else {
+  function displays() {
+    $('#cancel').modal('hide');
+  }
+  function deleteConfirm() {
 
-            SOP.Crud.cfxSubmit("mainForm","delete","","");
-        }
-
-    }
-    function displays() {
-        $('#cancel').modal('hide');
-    }
-    function deleteConfirm() {
-
-        SOP.Crud.cfxSubmit("mainForm","delete",$('#deleteConfirm').val(),"");
+    SOP.Crud.cfxSubmit("mainForm","delete",$('#deleteConfirm').val(),"");
 
 
-    }
-    function cancel() {
-        SOP.Crud.cfxSubmit("mainForm","delete","back","");
-    }
+  }
+  function cancel() {
+    SOP.Crud.cfxSubmit("mainForm","delete","back","");
+  }
 
 
 </script>

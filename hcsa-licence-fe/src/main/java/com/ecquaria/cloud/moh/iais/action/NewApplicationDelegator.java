@@ -2618,7 +2618,6 @@ public class NewApplicationDelegator {
             RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
             appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
             appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
-            requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
             appSubmissionDtoByLicenceId.setAutoRfc(true);
             appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
             appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.NO);
@@ -3546,23 +3545,8 @@ public class NewApplicationDelegator {
                     //send eamil
 
                 }
-                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-                List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
-                List<AppPremisesOperationalUnitDto> premisesOperationalUnitDtos=IaisCommonUtils.genNewArrayList();
-                List<AppPremisesOperationalUnitDto> oldPremisesOperationalUnitDtos=IaisCommonUtils.genNewArrayList();
-                for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
-                    List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
-                    if(appPremisesOperationalUnitDtos!=null){
-                        premisesOperationalUnitDtos.addAll(appPremisesOperationalUnitDtos);
-                    }
-                }
-                for(AppGrpPremisesDto appGrpPremisesDto : oldAppSubmissionDtoAppGrpPremisesDtoList){
-                    List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
-                    if(appPremisesOperationalUnitDtos!=null){
-                        oldPremisesOperationalUnitDtos.addAll(appPremisesOperationalUnitDtos);
-                    }
-                }
-                if(!premisesOperationalUnitDtos.equals(oldPremisesOperationalUnitDtos)){
+                boolean b = eqAddFloorNo(appSubmissionDto, oldAppSubmissionDto);
+                if(b){
                     isAuto=false;
                 }
             }

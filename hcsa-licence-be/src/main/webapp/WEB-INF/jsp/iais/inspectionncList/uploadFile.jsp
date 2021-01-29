@@ -32,7 +32,7 @@
                                 <input  id = "selectedFileShowTextName" name = "selectedFileShowTextName"  type="text"   readonly>
                                 <small class="error"><span id="selectedFileShow" style="color: #D22727; font-size: 1.6rem"></span></small>
                             </div>
-                            <div hidden><input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file"></div>
+                            <div hidden><input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file" onclick="javascript:fileClicked(event)" onchange="javascript:fileChanged(event)"></div>
                         </div>
 
                     </div>
@@ -249,15 +249,34 @@
     });
 
 
-    $('#selectedFile').change(function () {
-        var file = $(this).val();
+    $('#selectedFile').change(
+        fileChange()
+    );
+    function fileChange(){
+        var file = $("#selectedFile").val();
         if(file != null && file !=""){
             $('#selectedFileShowTextName').val(getFileName(file));
+        }else {
+            $('#selectedFileShowTextName').val("");
         }
-    });
-
+    }
     function getFileName(o) {
         var pos = o.lastIndexOf("\\");
         return o.substring(pos + 1);
+    }
+
+    // FileChanged()
+    function fileChanged(event) {
+        var fileElement = event.target;
+        if (fileElement.value == "") {
+            clone[fileElement.id].insertBefore(fileElement); //'Restoring Clone'
+            $(fileElement).remove(); //'Removing Original'
+            if (evenMoreListeners) { addEventListenersTo(clone[fileElement.id]) }//If Needed Re-attach additional Event Listeners
+        }else {
+            $('#selectedFile').change(
+                fileChange()
+            );
+        }
+        //What ever else you want to do when File Chooser Changed
     }
 </script>

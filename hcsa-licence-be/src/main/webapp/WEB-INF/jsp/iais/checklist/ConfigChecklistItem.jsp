@@ -71,7 +71,7 @@
           <div class="form-group">
             <label class="col-xs-4 col-md-2 control-label" >Risk Level</label>
             <div class="col-xs-12 col-md-8 col-lg-9">
-              <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL" firstOption="Select Risk Level"></iais:select>
+              <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL" firstOption="Please Select"></iais:select>
             </div>
           </div>
 

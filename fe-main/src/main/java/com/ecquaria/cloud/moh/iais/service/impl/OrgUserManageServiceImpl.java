@@ -387,6 +387,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
           feUserDto.setEmail(myInfoDto.getEmail());
           feUserDto.setMobileNo(myInfoDto.getMobileNo());
           feUserDto.setDisplayName(myInfoDto.getUserName());
+          licenseeDto.setName(myInfoDto.getUserName());
           licenseeDto.setFloorNo(myInfoDto.getFloor());
           licenseeDto.setPostalCode(myInfoDto.getPostalCode());
           licenseeDto.setUnitNo(myInfoDto.getUnitNo());

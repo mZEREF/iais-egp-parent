@@ -64,7 +64,7 @@
             <c:if test="${AppSubmissionDto.appType=='APTY005'||AppSubmissionDto.appType=='APTY004'}">
                 <c:if test="${fn:length(appGrpPremisesDto.licenceDtos)>0}">
                     <div class="form-check col-sm-12" >
-                        <table>
+                        <table class="impactedLic">
                             <tr>
                                 <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence  </td>
                                 <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence No.</td>
@@ -74,7 +74,7 @@
                                 <tr>
                                     <td >
                                         <div class="col-xs-12 col-md-12 form-check" style="padding:0px 15px;margin-top:15px">
-                                            <img src="/hcsa-licence-web/img/20210124131101.png">
+                                            <img src="/hcsa-licence-web/img/20210125131101.png">
                                             <label style="font-weight: normal"><span class="check-square"></span>${licence.svcName}</label>
                                         </div></td>
                                     <td class="form-check col-sm-3">${licence.licenceNo}</td>

@@ -94,10 +94,12 @@
             <label class="col-xs-12 col-md-4 control-label">Letter Written to Licensee</label>
             <div class="col-xs-8 col-sm-6 col-md-5">
                 <div class="file-upload-gp">
-                    <input id="selectedFileView" name="selectedFileView" type="file" style="display: none;" aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                    <input id="selectedFileView" name="selectedFileView" type="file" style="display: none;" aria-label="selectedFile" onclick="javascript:fileClicked(event)" onchange="javascript:fileChangedIns(event)"
+                    ><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
                     <span id="licFileName"> &nbsp; &nbsp; &nbsp; &nbsp;${serListDto.appPremisesSpecialDocDto.docName}</span>
                     <span id="licFileNameDe" <c:if test="${empty serListDto.appPremisesSpecialDocDto}">hidden</c:if> >
-                                &nbsp;&nbsp;<button type="button" onclick="javascript:doDeleteFile()">Delete</button>
+                                &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm" onclick="javascript:doDeleteFile()">
+                                                <em class="fa fa-times"></em></button>
                 </span>
                     <input id="litterFile" name="litterFile" type="hidden" value="<c:out value="${serListDto.appPremisesSpecialDocDto.docName}"></c:out>" />
                     <input id="litterFileId" name="litterFileId" type="hidden" value="<iais:mask name="litterFileId" value="${serListDto.appPremisesSpecialDocDto.id}"/>"/>
@@ -106,7 +108,6 @@
                 </div>
             </div>
         </div>
-
 
     <div class="form-group">
         <label class="col-xs-12 col-md-4 control-label">TCU</label>
@@ -202,13 +203,24 @@
         return o.substring(pos + 1);
     }
 
-    $('#selectedFileView').change(function () {
+    $('#selectedFileView').change(fileChangeIns());
+    function fileChangedIns(event) {
+        var fileElement = event.target;
+        if (fileElement.value == "") {
+            clone[fileElement.id].insertBefore(fileElement); //'Restoring Clone'
+            $(fileElement).remove(); //'Removing Original'
+            if (evenMoreListeners) { addEventListenersTo(clone[fileElement.id]) }//If Needed Re-attach additional Event Listeners
+        }else {
+            $('#selectedFileView').change(fileChangeIns());
+        }
+    }
+    function fileChangeIns() {
         var maxSize = $("#fileMaxSizeForIns").val();
         var error  = validateUploadSizeMaxOrEmpty(maxSize,'selectedFileView');
-       if( error =="Y"){
-           var file = $(this).val();
-           var  fileName = getFileName(file);
-           if( fileName != null && fileName.trim() != ""){
+        if( error =="Y"){
+            var file = $("#selectedFileView").val();
+            var  fileName = getFileName(file);
+            if( fileName != null && fileName.trim() != ""){
                 if(fileName.length > 100){
                     doDeleteFile();
                     $('#error_litterFile_Show').html($("#fileMaxLengthMessage").val());
@@ -219,17 +231,16 @@
                     $('#litterFileId').val("");
                     $('#error_litterFile_Show').html("");
                 }
-           }else {
-               $('#error_litterFile_Show').html("");
-           }
-       }else {
-           if(error == "N"){
-               doDeleteFile();
-              $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of '+ maxSize + 'M.');
-           }
-       }
-    });
-
+            }else {
+                $('#error_litterFile_Show').html("");
+            }
+        }else {
+            if(error == "N"){
+                doDeleteFile();
+                $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of '+ maxSize + 'M.');
+            }
+        }
+    }
     function doDeleteFile() {
         $("#licFileNameDe").attr("hidden",true);
         $("#licFileName").html("");
