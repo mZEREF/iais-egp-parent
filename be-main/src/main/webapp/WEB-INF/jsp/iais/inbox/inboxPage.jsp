@@ -332,12 +332,12 @@
                     html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
                 }
 
-                html += '<th>Application No.</th>' +
-                    '<th>Service</th>' +
-                    '<th>Licence Expiry Date</th>' +
-                    '<th>Application Status</th>' +
-                    '<th>HCI Code</th>' +
-                    '<th>HCI Address</th>' +
+                html += '<th width="15%">Application No.</th>' +
+                    '<th width="15%">Service</th>' +
+                    '<th width="15%">Licence Expiry Date</th>' +
+                    '<th width="15%">Application Status</th>' +
+                    '<th width="15%">HCI Code</th>' +
+                    '<th width="25%">HCI Name / Address</th>' +
                     '</tr>' +
                     '</thead>' +
                     '<tbody>';
