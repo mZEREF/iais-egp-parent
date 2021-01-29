@@ -182,6 +182,7 @@ public class InspectionSendRecJobHandler extends IJobHandler {
                         applicationService.updateFEApplicaiton(aDto);
 
                         AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremCorrId).getEntity();
+                        appPremPreInspectionNcDto.setApplicationNo(appNo);
                         appPremPreInspectionNcDtos.add(appPremPreInspectionNcDto);
                         List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = fillUpCheckListGetAppClient.getAppNcItemByNcId(appPremPreInspectionNcDto.getId()).getEntity();
                         if(!IaisCommonUtils.isEmpty(appPremisesPreInspectionNcItemDtoList)){
