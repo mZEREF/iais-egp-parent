@@ -1324,10 +1324,10 @@ public class InterInboxDelegator {
         List<SelectOption> inboxServiceSelectList = IaisCommonUtils.genNewArrayList();
         inboxServiceSelectList.add(new SelectOption("BLB@", "Blood Banking"));
         inboxServiceSelectList.add(new SelectOption("CLB@", "Clinical Laboratory"));
-        inboxServiceSelectList.add(new SelectOption("RDS@", "Radiological Service"));
-        inboxServiceSelectList.add(new SelectOption("TSB@", "Tissue Banking"));
         inboxServiceSelectList.add(new SelectOption("NMA@", "Nuclear Medicine (Assay)"));
         inboxServiceSelectList.add(new SelectOption("NMI@", "Nuclear Medicine (Imaging)"));
+        inboxServiceSelectList.add(new SelectOption("RDS@", "Radiological Service"));
+        inboxServiceSelectList.add(new SelectOption("TSB@", "Tissue Banking"));
         ParamUtil.setRequestAttr(request, "inboxServiceSelect", inboxServiceSelectList);
 
         List<SelectOption> inboxTypSelectList = IaisCommonUtils.genNewArrayList();
@@ -1366,10 +1366,10 @@ public class InterInboxDelegator {
         List<SelectOption> appServiceTypeSelectList = IaisCommonUtils.genNewArrayList();
         appServiceTypeSelectList.add(new SelectOption("Blood Banking", "Blood Banking"));
         appServiceTypeSelectList.add(new SelectOption("Clinical Laboratory", "Clinical Laboratory"));
-        appServiceTypeSelectList.add(new SelectOption("Radiological Service", "Radiological Service"));
-        appServiceTypeSelectList.add(new SelectOption("Tissue Banking", "Tissue Banking"));
         appServiceTypeSelectList.add(new SelectOption("Nuclear Medicine (Assay)", "Nuclear Medicine (Assay)"));
         appServiceTypeSelectList.add(new SelectOption("Nuclear Medicine (Imaging)", "Nuclear Medicine (Imaging)"));
+        appServiceTypeSelectList.add(new SelectOption("Radiological Service", "Radiological Service"));
+        appServiceTypeSelectList.add(new SelectOption("Tissue Banking", "Tissue Banking"));
         ParamUtil.setRequestAttr(request, "appServiceType", appServiceTypeSelectList);
     }
 
