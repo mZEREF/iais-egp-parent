@@ -77,12 +77,12 @@
               <c:choose>
                 <c:when test="${appPremisesSpecialDocDto.docName == '' || appPremisesSpecialDocDto.docName == null }">
                               <span class="hidden delBtn">
-                                &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
+                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
                               </span>
                 </c:when>
                 <c:otherwise>
                               <span class="existFile delBtn">
-                                &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
+                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
                               </span>
                 </c:otherwise>
               </c:choose>
