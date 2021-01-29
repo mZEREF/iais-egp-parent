@@ -32,6 +32,14 @@
               </div>
               <iais:body>
                 <iais:section title="" id = "demoList">
+                  <div class="form-horizontal">
+                    <div class="form-group">
+                      <label class="col-xs-12 col-md-4 control-label">Role</label>
+                      <div class="col-xs-8 col-sm-6 col-md-6">
+                        <iais:select name="commonRoleId" cssClass="roleIds" options="commonPoolRoleIds" id="commonPoolRole" value="${poolRoleCheckDto.checkCurRole}"></iais:select>
+                      </div>
+                    </div>
+                  </div>
                   <div class="row">
                     <div class="col-xs-10 col-md-12">
                       <div class="components">
@@ -42,14 +50,6 @@
                   </div>
                   <p></p>
                   <div id="commonPool" class="collapse">
-                    <div class="form-horizontal">
-                      <div class="form-group">
-                        <label class="col-xs-12 col-md-4 control-label">Role</label>
-                        <div class="col-xs-8 col-sm-6 col-md-6">
-                          <iais:select name="commonRoleId" cssClass="roleIds" options="commonPoolRoleIds" id="commonPoolRole" value="${poolRoleCheckDto.checkCurRole}"></iais:select>
-                        </div>
-                      </div>
-                    </div>
                     <iais:row>
                       <iais:field value="Application No."/>
                       <iais:value width="18">
