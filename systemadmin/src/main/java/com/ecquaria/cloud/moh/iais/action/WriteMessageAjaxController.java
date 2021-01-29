@@ -94,14 +94,14 @@ public class WriteMessageAjaxController {
         if(!IaisCommonUtils.isEmpty(attachmentDtoList)){
             for(AttachmentDto temp : attachmentDtoList){
                 StringBuilder box = new StringBuilder();
-                box.append("<p class='fileList'>")
+                        box.append("<p class='fileList'>")
                         .append(temp.getDocName())
                         .append("&emsp;<button name='fileDeleteButton' value='")
                         .append(temp.getDocSize())
                         .append("' ")
-                        .append("type=\"button\" class=\"btn btn-danger btn-sm\" onclick=\"writeMessageDeleteFile('")
+                        .append("type=\"button\" class=\"btn btn-secondary btn-sm\" onclick=\"writeMessageDeleteFile('")
                         .append(temp.getId())
-                        .append("')\"><em class=\"fa fa-times\"></em></button></p>")
+                        .append("')\">Delete</button></p>")
                         .append("<input hidden name='fileSize' value='")
                         .append(temp.getDocSize())
                         .append("'/>\n");
