@@ -191,6 +191,7 @@
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>
+                                                <c:if test="${isGrpLic}">
                                                 <iais:row>
                                                     <iais:field value="To Cease"/>
                                                     <iais:value width="7">
@@ -216,6 +217,7 @@
                                                         </div>
                                                     </iais:value>
                                                 </iais:row>
+                                                </c:if>
                                             </iais:section>
                                         </div>
                                     </div>
