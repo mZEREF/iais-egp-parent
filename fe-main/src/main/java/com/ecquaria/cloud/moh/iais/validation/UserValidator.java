@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -13,10 +14,12 @@ import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
+import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,6 +32,8 @@ import java.util.Map;
 public class UserValidator implements CustomizeValidator {
     @Autowired
     OrgUserManageService orgUserManageService;
+    @Autowired
+    FeUserClient feUserClient;
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
@@ -43,6 +48,13 @@ public class UserValidator implements CustomizeValidator {
                 }
                 if (!b) {
                     map.put("identityNo", MessageUtil.getMessageDesc("USER_ERR014"));
+                }
+            }
+
+            if(RoleConsts.USER_ROLE_ORG_USER.equals(dto.getUserRole())){
+                List<FeUserDto> feUserDtoList = feUserClient.getAdminAccountByOrgId(dto.getOrgId()).getEntity();
+                if(feUserDtoList.size() == 1 && dto.getId().equals(feUserDtoList.get(0).getId())){
+                    map.put("userRole", MessageUtil.getMessageDesc("USER_ERR016"));
                 }
             }
 
