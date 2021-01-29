@@ -134,10 +134,10 @@
                                     </td>
                                     <td width="5%">
                                         <c:if test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_COM}">
-                                            <button type="button" class="btn btn-danger btn-sm"
+                                            <button type="button" class="btn btn-secondary-del btn-sm"
                                                     onclick="javascript:deleteFile(this,'<iais:mask name="interalFileId"
                                                                                                     value="${interalFile.id}"/>');">
-                                                <em class="fa fa-times"></em></button>
+                                                Delete</button>
                                         </c:if>
                                     </td>
                                 </tr>
