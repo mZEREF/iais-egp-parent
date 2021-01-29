@@ -1069,6 +1069,7 @@ public class NewApplicationDelegator {
             appSubmissionDto.setUserAgreement(true);
         } else {
             appSubmissionDto.setUserAgreement(false);
+            errorMap.put("fieldMandatory", (String) ParamUtil.getSessionAttr(bpc.request,"RFC_ERR004"));
         }
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, REQUESTINFORMATIONCONFIG);
         boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
@@ -1078,9 +1079,7 @@ public class NewApplicationDelegator {
                 appSubmissionDto.setCharityHci(true);
             }else{
                 appSubmissionDto.setCharityHci(false);
-                if("doSubmit".equals(action)){
-                    errorMap.put("charityHci","The field is mandatory");
-                }
+                errorMap.put("charityHci","GENERAL_ERR0006");
             }
         }
         if (requestInformationConfig == null && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
@@ -1109,12 +1108,14 @@ public class NewApplicationDelegator {
             }
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        if (!errorMap.isEmpty()) {
-            NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request),appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
-            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, "test");
-            return;
+        if("doSubmit".equals(action)){
+            if (!errorMap.isEmpty()) {
+                NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request),appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
+                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, "test");
+                return;
+            }
         }
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
     }
