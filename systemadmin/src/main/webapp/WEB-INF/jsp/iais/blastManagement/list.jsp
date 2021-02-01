@@ -84,7 +84,7 @@
                             <thead>
                             <tr align="center">
                                 <th></th>
-                                <th>S/N</th>
+                                <th>Message ID</th>
                                 <th>Message Name</th>
                                 <th>Distribution Name</th>
                                 <th>Mode of Delivery</th>
@@ -123,8 +123,7 @@
                                                 ></p>
                                             </td>
                                             <td>
-                                                <p><c:out
-                                                        value="${massIndex}"/></p>
+                                                <p><c:out value="${item.messageId}"/></p>
                                             </td>
                                             <td>
                                                 <p><a onclick="preview('${item.id}')"><c:out value="${item.msgName}"/></a>
