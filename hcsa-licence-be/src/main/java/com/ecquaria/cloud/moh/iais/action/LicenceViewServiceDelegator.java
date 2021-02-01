@@ -69,6 +69,7 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * LicenceViewServiceDelegator
@@ -997,7 +998,11 @@ public class LicenceViewServiceDelegator {
                 }
             }
         }
-
+        AtomicInteger i= new AtomicInteger();
+        reloadDisciplineAllocationMap.forEach((k,v)->{
+            i.addAndGet(v.size());
+        });
+        bpc.request.getSession().setAttribute("reloadDisciplineAllocationMap_size",i.intValue());
         ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
         ParamUtil.setSessionAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
 

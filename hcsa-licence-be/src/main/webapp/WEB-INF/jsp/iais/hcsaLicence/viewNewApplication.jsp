@@ -613,83 +613,85 @@
         <div class="form-check-gp">
           <div class="row">
             <div class="col-xs-12">
-              <table class="table discipline-table" border="1px">
-                <thead>
-                <tr>
-                  <th style="text-align: center">Premises</th>
-                  <th style="text-align: center">${stepNameMap['SVST001']}</th>
-                  <th style="text-align: center">Clinical Governance Officers</th>
-                </tr>
-                </thead>
-                <c:forEach var="appGrpPrem" items="${appSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
-                  <c:set var="hciNameOldAppSubmissionDtos"
-                         value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"/>
-                  <c:set var="conveyanceVehicleNoOldAppSubmissionDtos"
-                         value=" ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"/>
-                  <c:if test="${hciNameOldAppSubmissionDtos!='' && hciNameOldAppSubmissionDtos!=null}">
-                    <c:set value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"
-                           var="oldAppSubmissionDto"></c:set>
-                  </c:if>
-                  <c:set var="reloadMapValue" value="${appGrpPrem.premisesIndexNo}"/>
-                  <c:set var="oldReloadMapValue"
-                         value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesIndexNo}"></c:set>
-                  <c:forEach var="disciplineAllocation" items="${reloadDisciplineAllocationMap[reloadMapValue]}"
-                             varStatus="stat">
-                    <c:set value="${reloadOld[reloadMapValue]}" var="reloaded"></c:set>
-                    <tr>
-                      <c:if test="${stat.first}">
-                        <td style="text-align: center"
-                            rowspan="${reloadDisciplineAllocationMap[reloadMapValue].size()}">
-                          <div class="col-xs-6">
+              <c:if test="${reloadDisciplineAllocationMap_size>0}">
+                <table class="table discipline-table" border="1px">
+                  <thead>
+                  <tr>
+                    <th style="text-align: center">Premises</th>
+                    <th style="text-align: center">${stepNameMap['SVST001']}</th>
+                    <th style="text-align: center">Clinical Governance Officers</th>
+                  </tr>
+                  </thead>
+                  <c:forEach var="appGrpPrem" items="${appSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
+                    <c:set var="hciNameOldAppSubmissionDtos"
+                           value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"/>
+                    <c:set var="conveyanceVehicleNoOldAppSubmissionDtos"
+                           value=" ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"/>
+                    <c:if test="${hciNameOldAppSubmissionDtos!='' && hciNameOldAppSubmissionDtos!=null}">
+                      <c:set value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"
+                             var="oldAppSubmissionDto"></c:set>
+                    </c:if>
+                    <c:set var="reloadMapValue" value="${appGrpPrem.premisesIndexNo}"/>
+                    <c:set var="oldReloadMapValue"
+                           value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesIndexNo}"></c:set>
+                    <c:forEach var="disciplineAllocation" items="${reloadDisciplineAllocationMap[reloadMapValue]}"
+                               varStatus="stat">
+                      <c:set value="${reloadOld[reloadMapValue]}" var="reloaded"></c:set>
+                      <tr>
+                        <c:if test="${stat.first}">
+                          <td style="text-align: center"
+                              rowspan="${reloadDisciplineAllocationMap[reloadMapValue].size()}">
+                            <div class="col-xs-6">
                             <span class="newVal " attr="${appGrpPrem.address}"><c:out
                                     value="${appGrpPrem.address}"/></span>
 
-                          </div>
-                          <div class="col-xs-6">
+                            </div>
+                            <div class="col-xs-6">
                             <span class="oldVal "
                                   attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"
                                   style="display: none"><c:out
                                     value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/></span>
-                          </div>
+                            </div>
 
-                        </td>
-                      </c:if>
-                      <td style="text-align: center">
-                        <p>
-                        <div class="col-xs-6">
+                          </td>
+                        </c:if>
+                        <td style="text-align: center">
+                          <p>
+                          <div class="col-xs-6">
                           <span class="newVal " attr="${disciplineAllocation.chkLstName}${disciplineAllocation.check}">
                             <c:out value="${disciplineAllocation.chkLstName}"/>
                           </span>
-                        </div>
-                        <div class="col-xs-6">
+                          </div>
+                          <div class="col-xs-6">
                           <span class="oldVal "
                                 attr="${reloadOld[oldReloadMapValue][stat.index].chkLstName}${reloadOld[oldReloadMapValue][stat.index].check}"
                                 style="display: none"><c:out
                                   value="${reloadOld[oldReloadMapValue][stat.index].chkLstName}"/></span>
-                        </div>
-                        </p>
+                          </div>
+                          </p>
 
-                      </td>
-                      <td style="text-align: center">
-                        <p>
-                        <div class="col-xs-6">
+                        </td>
+                        <td style="text-align: center">
+                          <p>
+                          <div class="col-xs-6">
                           <span class="newVal "
                                 attr="${disciplineAllocation.cgoSelName}${disciplineAllocation.check}"><c:out
                                   value="${disciplineAllocation.cgoSelName}"/></span>
-                        </div>
-                        <div class="col-xs-6">
+                          </div>
+                          <div class="col-xs-6">
                           <span class="oldVal "
                                 attr="${reloadOld[oldReloadMapValue][stat.index].cgoSelName}${reloadOld[oldReloadMapValue][stat.index].check}"
                                 style="display: none"><c:out
                                   value="${reloadOld[oldReloadMapValue][stat.index].cgoSelName}"/></span>
-                        </div>
-                        </p>
-                      </td>
-                    </tr>
+                          </div>
+                          </p>
+                        </td>
+                      </tr>
+                    </c:forEach>
+                    </tbody>
                   </c:forEach>
-                  </tbody>
-                </c:forEach>
-              </table>
+                </table>
+              </c:if>
             </div>
           </div>
         </div>
