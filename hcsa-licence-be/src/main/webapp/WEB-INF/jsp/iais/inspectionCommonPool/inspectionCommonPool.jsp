@@ -238,7 +238,7 @@
                             html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:doInspectionCommonPoolAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + res.rows[i].serviceName + '<p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">Licence Expiry Date</p><p>' + res.rows[i].licenceExpiryDateStr + '<p></td>' +
-                                '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].appStatus + '</p></td>' +
+                                '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>Pending Task Assignment</p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">HCI Code</p><p>' + res.rows[i].hciCode + '</p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">HCI Name / Address</p><p>' + res.rows[i].hciAddress + '</p></td>' +
                                 '</tr>';

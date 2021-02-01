@@ -276,7 +276,11 @@ public class InspectionServiceImpl implements InspectionService {
                 //get Application data
                 ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(superPoolTaskQueryDto.getTaskRefNo()).getEntity();
                 superPoolTaskQueryDto.setAppNo(applicationDto.getApplicationNo());
-                superPoolTaskQueryDto.setAppStatus(MasterCodeUtil.getCodeDesc(applicationDto.getStatus()));
+                if(StringUtil.isEmpty(memberName) || HcsaConsts.HCSA_PREMISES_HCI_NULL.equals(memberName)) {
+                    superPoolTaskQueryDto.setAppStatus(MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT));
+                } else {
+                    superPoolTaskQueryDto.setAppStatus(MasterCodeUtil.getCodeDesc(applicationDto.getStatus()));
+                }
                 //get HCI data
                 AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(superPoolTaskQueryDto.getTaskRefNo());
                 String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
