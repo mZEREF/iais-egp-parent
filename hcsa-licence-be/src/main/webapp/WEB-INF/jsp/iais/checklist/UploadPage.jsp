@@ -25,6 +25,17 @@
     font-size: 12px;
   }
 
+  .btn.btn-danger{
+    font-size: 1rem;
+    font-weight: 700;
+    background: white;
+    border: 1px solid #333333;
+    color: black;
+    padding: 5px 15px;
+    text-transform: uppercase;
+    border-radius: 30px;
+  }
+
 </style>
 <div class="main-content">
   <form  method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
@@ -57,8 +68,8 @@
                   </span>
                   <span class="existFile delBtn hidden">
                       &nbsp;&nbsp;
-                      <button type="button" class="btn btn-danger btn-sm">
-                        <em class="fa fa-times"></em>
+                      <button type="button" class="btn btn-danger">
+                        Delete
                       </button>
                   </span>
                 </p>
