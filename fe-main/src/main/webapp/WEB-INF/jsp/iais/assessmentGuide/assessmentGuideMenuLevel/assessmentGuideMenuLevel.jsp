@@ -81,7 +81,7 @@
                     <span class="left-content">Withdraw my application<a href="javascript:void(0);"
                           class="btn-tooltip styleguide-tooltip"
                           data-toggle="tooltip" data-html="true"
-                          title="" data-original-title='An application that the Applicant intends to withdraw should be in a “non-approved” state and can be of the following application type: New / Renewal / Request for Change / Appeal / Cessation. Applicant selects the Application(s) from the Application inbox to proceed with the withdrawal request.'
+                          title="" data-original-title='An application that the Applicant intends to withdraw should be in a "non-approved" state and can be of the following application type: New / Renewal / Request for Change / Appeal / Cessation. Applicant selects the Application(s) from the Application inbox to proceed with the withdrawal request.'
                           style="position: absolute;left: 242px; top: 12px;z-index: 10">i</a></span>
                     <span class="right-content">For withdrawing my application</span>
                 </label>
