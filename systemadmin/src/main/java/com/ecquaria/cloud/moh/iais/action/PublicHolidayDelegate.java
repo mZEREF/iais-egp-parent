@@ -210,7 +210,7 @@ public class PublicHolidayDelegate {
         long size = file.getSize()/1024;
         if(size>5*1024){
             Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-            errMap.put("selectedFile", MessageUtil.getMessageDesc("UC_GENERAL_ERR0015"));
+            errMap.put("selectedFile", MessageUtil.getMessageDesc(MessageUtil.replaceMessage("GENERAL_ERR0019","sizeMax","5")));
             ParamUtil.setRequestAttr(bpc.request,"filename", filename);
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
         }else if("ics".equals(suffix)){
@@ -224,64 +224,69 @@ public class PublicHolidayDelegate {
                 }
                 bf.close();
                 inputReader.close();
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            }
+                int count = 5;
+                while (count < list.size() ){
+                    String[] begin = list.get(count).split(":");
+                    if("BEGIN".equals(begin[0])){
+                        PublicHolidayDto publicHolidayDto = new PublicHolidayDto();
+                        count ++;
+                        String[] start = list.get(count).split(":");
+                        count ++;
+                        String[] end = list.get(count).split(":");
+                        count = count + 6;
+                        String[] name = list.get(count).split(":");
+                        String phcode = getPublicCode(name[1],publicHolidayDtos);
+                        publicHolidayDto.setPhCode(phcode);
+                        if(StringUtil.isEmpty(publicHolidayDto.getPhCode())){
+                            continue;
+                        }
+                        publicHolidayDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                        publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                        count ++;
+                        int startInt = Integer.parseInt(start[1]);
+                        int endInt = Integer.parseInt(end[1]);
+                        String nextDay = start[1];
+                        while (Integer.parseInt(nextDay) < endInt){
+                            DateFormat dft = new SimpleDateFormat("yyyyMMdd");
+                            try {
+                                Date temp = dft.parse(String.valueOf(startInt));
+                                Calendar cld = Calendar.getInstance();
+                                cld.setTime(temp);
+                                cld.add(Calendar.DATE, 1);
+                                temp = cld.getTime();
+                                nextDay = dft.format(temp);
+                                publicHolidayDto.setFromDate(Formatter.parseDateTime(String.valueOf(startInt), "yyyyMMdd"));
 
-            int count = 5;
-            while (count < list.size() ){
-                String[] begin = list.get(count).split(":");
-                if("BEGIN".equals(begin[0])){
-                    PublicHolidayDto publicHolidayDto = new PublicHolidayDto();
-                    count ++;
-                    String[] start = list.get(count).split(":");
-                    count ++;
-                    String[] end = list.get(count).split(":");
-                    count = count + 6;
-                    String[] name = list.get(count).split(":");
-                    String phcode = getPublicCode(name[1],publicHolidayDtos);
-                    publicHolidayDto.setPhCode(phcode);
-                    if(StringUtil.isEmpty(publicHolidayDto.getPhCode())){
-                        continue;
-                    }
-                    publicHolidayDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                    publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    count ++;
-                    int startInt = Integer.parseInt(start[1]);
-                    int endInt = Integer.parseInt(end[1]);
-                    String nextDay = start[1];
-                    while (Integer.parseInt(nextDay) < endInt){
-                        DateFormat dft = new SimpleDateFormat("yyyyMMdd");
-                        try {
-                            Date temp = dft.parse(String.valueOf(startInt));
-                            Calendar cld = Calendar.getInstance();
-                            cld.setTime(temp);
-                            cld.add(Calendar.DATE, 1);
-                            temp = cld.getTime();
-                            nextDay = dft.format(temp);
-                            publicHolidayDto.setFromDate(Formatter.parseDateTime(String.valueOf(startInt), "yyyyMMdd"));
-
-                            Date todate= new  Date();
-                            Calendar calendar = Calendar.getInstance();
-                            calendar.setTime(Formatter.parseDateTime(String.valueOf(startInt), "yyyyMMdd"));
-                            calendar.add(Calendar.HOUR,23);
-                            calendar.add(Calendar.MINUTE,59);
-                            calendar.add(Calendar.SECOND,59);
-                            todate=calendar.getTime();
-                            publicHolidayDto.setToDate(todate);
-                            publicHolidayDtos.add(publicHolidayDto);
-                            startInt = Integer.parseInt(nextDay);
-                        } catch (ParseException e) {
-                            log.error(e.getMessage(), e);
+                                Date todate= new  Date();
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.setTime(Formatter.parseDateTime(String.valueOf(startInt), "yyyyMMdd"));
+                                calendar.add(Calendar.HOUR,23);
+                                calendar.add(Calendar.MINUTE,59);
+                                calendar.add(Calendar.SECOND,59);
+                                todate=calendar.getTime();
+                                publicHolidayDto.setToDate(todate);
+                                publicHolidayDtos.add(publicHolidayDto);
+                                startInt = Integer.parseInt(nextDay);
+                            } catch (ParseException e) {
+                                log.error(e.getMessage(), e);
+                            }
                         }
                     }
+                    count ++;
                 }
-                count ++;
+                publicHolidayService.createHolidays(publicHolidayDtos);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+                errMap.put("selectedFile", MessageUtil.getMessageDesc("OAPPT_ERR009"));
+                ParamUtil.setRequestAttr(bpc.request,"filename", filename);
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+            } finally {
+
             }
-            publicHolidayService.createHolidays(publicHolidayDtos);
         }else{
             Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-            errMap.put("selectedFile", MessageUtil.getMessageDesc("CHKL_ERR011"));
+            errMap.put("selectedFile", MessageUtil.getMessageDesc("OAPPT_ERR010"));
             ParamUtil.setRequestAttr(bpc.request,"filename", filename);
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
         }

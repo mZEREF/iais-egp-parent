@@ -106,11 +106,10 @@
                                     </c:choose>
                                 </tbody>
                             </table>
-                        </div>
-                        <div class="application-tab-footer">
-                            <div class="row">
-                                <div class="col-xs-11 col-md-11">
+                                <div class="col-xs-12 col-md-12">
                                     <div class="text-right">
+                                        <span style="float:left;" id="error_fileUploadError" name="iaisErrorMsg" class="error-msg"></span>
+                                        <span style="float:left;" id="error_selectedFile" name="iaisErrorMsg" class="error-msg"></span>
                                         <div class="file-upload-gp" style="display: inline">
                                             <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
                                         </div>
@@ -119,8 +118,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <p style="margin-left: 100px"><span id="error_selectedFile" name="iaisErrorMsg" class="error-msg"></span></p>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -197,7 +195,17 @@
     }
 
     $('#selectedFile').change(function () {
-        submit("upload");
+        $('#error_fileUploadError').html("");
+        $('#error_selectedFile').html("");
+        var maxFileSize = 5;
+        var error = validateUploadSizeMaxOrEmpty(maxFileSize, 'selectedFile');
+        if (error == "N"){
+            $('#error_fileUploadError').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+            $("#selectedFile").val('');
+        }else if(error == "Y") {
+            submit("upload");
+        }
+
     })
 
     $('#selectedFile').change(function () {
