@@ -44,9 +44,9 @@
     <div class="col-xs-12">
       <h3>${docConfig.docTitle}<c:if test="${docConfig.isMandatory}">&nbsp;<span class="mandatory">*</span></c:if></h3>
     </div>
-    <div class="col-xs-12">
+    <%--<div class="col-xs-12">
       <p>${docConfig.docDesc}</p>
-    </div>
+    </div>--%>
     <div class="col-xs-12">
       <div class="">
         <div class="document-upload-list">
@@ -98,9 +98,9 @@
       <div class="col-xs-12">
         <h3>premises${premStatus.index+1}: ${premDocConfig.docTitle}<c:if test="${premDocConfig.isMandatory}">&nbsp;<span class="mandatory">*</span></c:if></h3>
       </div>
-      <div class="col-xs-12">
+      <%--<div class="col-xs-12">
         <p>${premDocConfig.docDesc}</p>
-      </div>
+      </div>--%>
       <div class="col-xs-12">
         <div class="">
           <div class="document-upload-list">
