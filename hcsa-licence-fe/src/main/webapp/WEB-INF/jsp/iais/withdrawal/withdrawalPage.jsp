@@ -139,8 +139,7 @@
                                                 <div id="delFile" style="margin-top: 13px;color: #1F92FF;"
                                                      hidden="hidden">
                                                     <strong id="fileName">${file_upload_withdraw}</strong>
-                                                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteWdFile()"><em
-                                                            class="fa fa-times"></em></button>
+                                                    <span class="delBtn">&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm" onclick="deleteWdFile()">Delete</button></span>
                                                 </div>
                                             </div>
                                         </c:when>
