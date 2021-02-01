@@ -770,7 +770,14 @@
             dismissWaiting();
         }
     }
-
+    function keyPress() {
+        var keyCode = event.keyCode;
+        if (keyCode >= 48 && keyCode <= 57) {
+            event.returnValue = true;
+        }else {
+            event.returnValue = false;
+        }
+    }
     function doReqForInfo() {
         showWaiting();
         $("#selectDecisionMsg").hide();
