@@ -242,7 +242,12 @@ public class ResponseForInformationDelegator {
                         errMap.put("UploadFile"+doc.getId(),errDocument);
                     }else{
                         Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file,fileTypes,fileSize);
-                        //size
+                        //name size
+                        if(file.getName().length()>100){
+                            doc.setPassDocValidate(false);
+                            errMap.put("UploadFile"+doc.getId(), MessageUtil.getMessageDesc("GENERAL_ERR0022"));
+                        }
+                        //file size
                         if(!booleanMap.get("fileSize")){
                             doc.setPassDocValidate(false);
                             errMap.put("UploadFile"+doc.getId(), MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(systemParamConfig.getUploadFileLimit()),"sizeMax"));
@@ -281,6 +286,10 @@ public class ResponseForInformationDelegator {
                         if(!map.get("fileType")){
                             doc.setPassDocValidate(false);
                             errMap.put("UploadFile"+doc.getId(),MessageUtil.replaceMessage("GENERAL_ERR0018", systemParamConfig.getUploadFileType(),"fileType"));
+                        }
+                        if(filename.length()>100){
+                            doc.setPassDocValidate(false);
+                            errMap.put("UploadFile"+doc.getId(), MessageUtil.getMessageDesc("GENERAL_ERR0022"));
                         }
                     }
                 }
