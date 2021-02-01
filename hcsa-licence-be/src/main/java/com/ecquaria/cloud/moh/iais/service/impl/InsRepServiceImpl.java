@@ -916,7 +916,7 @@ public class InsRepServiceImpl implements InsRepService {
             String subStage = getSubStage(appPremisesCorrelationId, taskKey);
             String nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
             ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, nextStatus);
-            updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
+            updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT);
             completedTask(taskDto, applicationNo);
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
             String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
