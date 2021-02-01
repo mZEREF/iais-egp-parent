@@ -12,12 +12,12 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th width="20%">Document</th>
+                    <th width="30%">Document</th>
                     <th width="20%">File</th>
                     <th width="10%">Size</th>
-                    <th width="10%">Version</th>
-                    <th width="20%">Submitted By</th>
-                    <th width="20%">Date Submitted</th>
+                    <th width="20%">Version</th>
+                    <th width="10%">Submitted By</th>
+                    <th width="10%">Date Submitted</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -42,7 +42,7 @@
                     <c:forEach items="${applicationViewDto.appSupDocDtoList}"
                                var="appSupDocDto">
                         <tr>
-                            <td width="20%">
+                            <td width="30%">
                                 <p><c:out value="${appSupDocDto.file}"></c:out></p>
                             </td>
                             <td width="20%">
@@ -55,13 +55,13 @@
                             <td width="10%">
                                 <p><c:out value="${appSupDocDto.size}"></c:out></p>
                             </td>
-                            <td width="10%">
+                            <td width="20%">
                                 <p><c:out value="${appSupDocDto.version}"></c:out></p>
                             </td>
-                            <td width="20%">
+                            <td width="10%">
                                 <p><c:out value="${appSupDocDto.submittedBy}"></c:out></p>
                             </td>
-                            <td width="20%">
+                            <td width="10%">
                                 <p><c:out value="${appSupDocDto.dateSubmitted}"></c:out></p>
                             </td>
                         </tr>
@@ -84,8 +84,8 @@
                     <th width="20%">File</th>
                     <th width="10%">Size</th>
                     <th width="20%">Submitted By</th>
-                    <th width="15%">Date Submitted</th>
-                    <th width="5%">Action</th>
+                    <th width="10%">Date Submitted</th>
+                    <th width="10%">Action</th>
                 </tr>
                 </thead>
                 <tbody id="tbodyFileListId">
@@ -129,10 +129,10 @@
                                     <td width="20%">
                                         <p><c:out value="${interalFile.submitByName}"></c:out></p>
                                     </td>
-                                    <td width="15%">
+                                    <td width="10%">
                                         <p>${interalFile.submitDtString}</p>
                                     </td>
-                                    <td width="5%">
+                                    <td width="10%">
                                         <c:if test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_COM}">
                                             <button type="button" class="btn btn-secondary-del btn-sm"
                                                     onclick="javascript:deleteFile(this,'<iais:mask name="interalFileId"
