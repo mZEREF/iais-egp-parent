@@ -23,9 +23,11 @@ public class GetGiroXmlFromSftpAndSaveXmlJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s){
         try {
             JobLogger.log(StringUtil.changeForLog("GetGiroXmlFromSftpAndSaveXmlJobHandler start ..."));
+            log.info("------ GetGiroXmlFromSftpAndSaveXmlJobHandler start----");
             AuditTrailHelper.setupBatchJobAuditTrail(this);
             serviceConfigService.getGiroXmlFromSftpAndSaveXml();
             JobLogger.log(StringUtil.changeForLog("GetGiroXmlFromSftpAndSaveXmlJobHandler end ..."));
+            log.info("------ GetGiroXmlFromSftpAndSaveXmlJobHandler end----");
             return ReturnT.SUCCESS;
         }catch (Throwable e){
             log.error(e.getMessage(), e);
