@@ -84,7 +84,7 @@
                             <thead>
                             <tr align="center">
                                 <th></th>
-                                <th>Distribution List ID</th>
+                                <th>S/N</th>
                                 <th>Distribution Name</th>
                                 <th>Service</th>
                                 <th>Recipients Role</th>
