@@ -61,11 +61,12 @@
                                 <c:choose>
                                     <c:when test="${empty searchResult.rows}">
                                         <tr>
-                                            <td  colspan="10" >
-                                                <c:out value="${errMsg}"/>
+                                            <td colspan="9">
+                                                <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                                                 <!--No Record!!-->
                                             </td>
                                         </tr>
+                                        <input hidden id="rows" value="0">
                                     </c:when>
                                     <c:otherwise>
                                         <c:forEach var="item" items="${searchResult.rows}" varStatus="status">
