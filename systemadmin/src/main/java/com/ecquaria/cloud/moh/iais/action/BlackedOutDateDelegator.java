@@ -359,7 +359,7 @@ public class BlackedOutDateDelegator {
                 IaisEGPHelper.parseToDate(rdate, AppConsts.DEFAULT_DATE_FORMAT));
 
         if (!isAfterDate){
-            errorMap.put(CUSTOM_VALIDATEION_ATTR, "USER_ERR007");
+            errorMap.put(CUSTOM_VALIDATEION_ATTR, "OAPPT_ERR011");
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             return ;
