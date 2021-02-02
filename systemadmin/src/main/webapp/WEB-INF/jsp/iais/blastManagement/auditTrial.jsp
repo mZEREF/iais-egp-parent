@@ -111,7 +111,7 @@
                             <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
                         </div>
                         <div class="col-xs-6 col-sm-6 text-right ">
-                            <a class="btn btn-primary" href="${pageContext.request.contextPath}/audit-repo?editBlast=${editBlast}&mode=${mode}" title="Download">Download</a>
+                            <a class="btn btn-primary" href="${pageContext.request.contextPath}/audit-repo?editBlast=${editBlast}&mode=${mode}&createby=${createby}&createDt=${createDt}" title="Download">Download</a>
                         </div>
                     </div>
                 </div>
