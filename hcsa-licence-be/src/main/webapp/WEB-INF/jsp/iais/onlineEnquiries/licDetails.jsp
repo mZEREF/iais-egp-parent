@@ -337,8 +337,8 @@
                                                                     </tr>
                                                                     <c:if test="${personnel.licKeyPersonnelDto.psnType=='MedAlert'}">
                                                                         <tr>
-                                                                            <td align="right">Description</td>
-                                                                            <td>&nbsp;${personnel.keyPersonnelExtDto.description}<c:if test="${empty personnel.keyPersonnelExtDto.description}">-</c:if></td>
+                                                                            <td align="right">Preferred Mode of Receiving MedAlert</td>
+                                                                            <td>&nbsp;${personnel.keyPersonnelExtDto.preferredMode}<c:if test="${empty personnel.keyPersonnelExtDto.preferredMode}">-</c:if></td>
                                                                         </tr>
                                                                     </c:if>
                                                                     </tbody>

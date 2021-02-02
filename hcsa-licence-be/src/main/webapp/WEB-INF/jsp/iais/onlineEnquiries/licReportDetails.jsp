@@ -197,34 +197,27 @@
                                                                     <tbody>
                                                                     <tr>
                                                                         <td class="col-xs-6" align="right">Name</td>
-                                                                        <td class="col-xs-6">&nbsp;${member.name}<c:if
-                                                                                test="${empty member.name}">-</c:if></td>
+                                                                        <td class="col-xs-6">&nbsp;${member.name}<c:if test="${empty member.name}">-</c:if></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">Salutation</td>
-                                                                        <td>&nbsp;${member.salutation}<c:if
-                                                                                test="${empty member.salutation}">-</c:if></td>
+                                                                        <td>&nbsp;${member.salutation}<c:if test="${empty member.salutation}">-</c:if></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">ID Type</td>
-                                                                        <td>&nbsp;${member.idType}<c:if
-                                                                                test="${empty member.idType}">-</c:if></td>
+                                                                        <td>&nbsp;${member.idType}<c:if test="${empty member.idType}">-</c:if></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">ID No</td>
-                                                                        <td>&nbsp;${member.idNo}<c:if
-                                                                                test="${empty member.idNo}">-</c:if></td>
+                                                                        <td>&nbsp;${member.idNo}<c:if test="${empty member.idNo}">-</c:if></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">Designation</td>
-                                                                        <td>&nbsp;${member.designation}<c:if
-                                                                                test="${empty member.designation}">-</c:if></td>
+                                                                        <td>&nbsp;${member.designation}<c:if test="${empty member.designation}">-</c:if></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">Designation Appointment Date</td>
-                                                                        <td>&nbsp;<fmt:formatDate value="${member.apptDt}"
-                                                                                                  pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/><c:if
-                                                                                test="${empty member.apptDt}">-</c:if></td>
+                                                                        <td>&nbsp;<fmt:formatDate value="${member.apptDt}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /><c:if test="${empty member.apptDt}">-</c:if></td>
                                                                     </tr>
 
                                                                     </tbody>
@@ -245,85 +238,58 @@
                                                                 <tbody>
                                                                 <tr>
                                                                     <td class="col-xs-6" align="right">Name</td>
-                                                                    <td class="col-xs-6">
-                                                                        &nbsp;${organizationLicDto.licenseeDto.name}<c:if
-                                                                            test="${empty organizationLicDto.licenseeDto.name}">-</c:if></td>
+                                                                    <td class="col-xs-6">&nbsp;${organizationLicDto.licenseeDto.name}<c:if test="${empty organizationLicDto.licenseeDto.name}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">Salutation</td>
-                                                                    <td>
-                                                                        &nbsp;${organizationLicDto.licenseeIndividualDto.salutation}
-                                                                        <c:if test="${empty organizationLicDto.licenseeIndividualDto.salutation}">-</c:if></td>
+                                                                    <td>&nbsp;${organizationLicDto.licenseeIndividualDto.salutation}<c:if test="${empty organizationLicDto.licenseeIndividualDto.salutation}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">ID Type</td>
-                                                                    <td>
-                                                                        &nbsp;${organizationLicDto.licenseeIndividualDto.idType}
-                                                                        <c:if test="${empty organizationLicDto.licenseeIndividualDto.idType}">-</c:if></td>
+                                                                    <td>&nbsp;${organizationLicDto.licenseeIndividualDto.idType}<c:if test="${empty organizationLicDto.licenseeIndividualDto.idType}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">ID No</td>
-                                                                    <td>
-                                                                        &nbsp;${organizationLicDto.licenseeIndividualDto.idNo}
-                                                                        <c:if
-                                                                                test="${empty organizationLicDto.licenseeIndividualDto.idNo}">-</c:if></td>
+                                                                    <td>&nbsp;${organizationLicDto.licenseeIndividualDto.idNo}<c:if test="${empty organizationLicDto.licenseeIndividualDto.idNo}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td align="right">Postal code</td>
-                                                                    <td>&nbsp;${organizationLicDto.licenseeDto.postalCode}
-                                                                        <c:if
-                                                                                test="${empty organizationLicDto.licenseeDto.postalCode}">-</c:if></td>
+                                                                    <td align="right">Postal Code</td>
+                                                                    <td>&nbsp;${organizationLicDto.licenseeDto.postalCode}<c:if test="${empty organizationLicDto.licenseeDto.postalCode}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">Address Type</td>
-                                                                    <td>&nbsp;${organizationLicDto.licenseeDto.addrType}
-                                                                        <c:if
-                                                                                test="${empty organizationLicDto.licenseeDto.addrType}">-</c:if></td>
+                                                                    <td>&nbsp;${organizationLicDto.licenseeDto.addrType}<c:if test="${empty organizationLicDto.licenseeDto.addrType}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">Block No</td>
-                                                                    <td>&nbsp;${organizationLicDto.licenseeDto.blkNo}<c:if
-                                                                            test="${empty organizationLicDto.licenseeDto.blkNo}">-</c:if></td>
+                                                                    <td>&nbsp;${organizationLicDto.licenseeDto.blkNo}<c:if test="${empty organizationLicDto.licenseeDto.blkNo}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">Floor No</td>
-                                                                    <td>&nbsp;${organizationLicDto.licenseeDto.floorNo}<c:if
-                                                                            test="${empty organizationLicDto.licenseeDto.floorNo}">-</c:if></td>
+                                                                    <td>&nbsp;${organizationLicDto.licenseeDto.floorNo}<c:if test="${empty organizationLicDto.licenseeDto.floorNo}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">Unit No</td>
-                                                                    <td>&nbsp;${organizationLicDto.licenseeDto.unitNo}<c:if
-                                                                            test="${empty organizationLicDto.licenseeDto.unitNo}">-</c:if></td>
-                                                                </tr>
-                                                                <tr>
+                                                                    <td>&nbsp;${organizationLicDto.licenseeDto.unitNo}<c:if test="${empty organizationLicDto.licenseeDto.unitNo}">-</c:if></td>
+                                                                </tr><tr>
                                                                     <td align="right">Street Name</td>
-                                                                    <td>&nbsp;${organizationLicDto.licenseeDto.streetName}
-                                                                        <c:if
-                                                                                test="${empty organizationLicDto.licenseeDto.streetName}">-</c:if></td>
+                                                                    <td>&nbsp;${organizationLicDto.licenseeDto.streetName}<c:if test="${empty organizationLicDto.licenseeDto.streetName}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">Building Name</td>
-                                                                    <td>&nbsp;${organizationLicDto.licenseeDto.buildingName}
-                                                                        <c:if
-                                                                                test="${empty organizationLicDto.licenseeDto.buildingName}">-</c:if></td>
+                                                                    <td>&nbsp;${organizationLicDto.licenseeDto.buildingName}<c:if test="${empty organizationLicDto.licenseeDto.buildingName}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">Mobile No</td>
-                                                                    <td>
-                                                                        &nbsp;${organizationLicDto.licenseeIndividualDto.mobileNo}
-                                                                        <c:if test="${empty organizationLicDto.licenseeIndividualDto.mobileNo}">-</c:if></td>
+                                                                    <td>&nbsp;${organizationLicDto.licenseeIndividualDto.mobileNo}<c:if test="${empty organizationLicDto.licenseeIndividualDto.mobileNo}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">Office Telephone No</td>
-                                                                    <td>
-                                                                        &nbsp;${organizationLicDto.licenseeEntityDto.officeTelNo}
-                                                                        <c:if test="${empty organizationLicDto.licenseeEntityDto.officeTelNo}">-</c:if></td>
+                                                                    <td>&nbsp;${organizationLicDto.licenseeEntityDto.officeTelNo}<c:if test="${empty organizationLicDto.licenseeEntityDto.officeTelNo}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">Email Address</td>
-                                                                    <td>&nbsp;<c:out
-                                                                            value="${organizationLicDto.licenseeEntityDto.officeEmailAddr}"/><c:if
-                                                                            test="${empty organizationLicDto.licenseeEntityDto.officeEmailAddr}">-</c:if></td>
+                                                                    <td>&nbsp;<c:out value="${organizationLicDto.licenseeEntityDto.officeEmailAddr}"/><c:if test="${empty organizationLicDto.licenseeEntityDto.officeEmailAddr}">-</c:if></td>
                                                                 </tr>
                                                                 </tbody>
                                                             </table>
@@ -347,91 +313,62 @@
                                                                     <tbody>
                                                                     <tr>
                                                                         <td class="col-xs-6" align="right">Name</td>
-                                                                        <td class="col-xs-6">
-                                                                            &nbsp;${personnel.keyPersonnelDto.name}
-                                                                            <c:if test="${empty personnel.keyPersonnelDto.name}">-</c:if></td>
+                                                                        <td class="col-xs-6">&nbsp;${personnel.keyPersonnelDto.name}<c:if test="${empty personnel.keyPersonnelDto.name}">-</c:if></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">Salutation</td>
-                                                                        <td>&nbsp;${personnel.keyPersonnelDto.salutation}
-                                                                            <c:if
-                                                                                    test="${empty personnel.keyPersonnelDto.salutation}">-</c:if></td>
+                                                                        <td>&nbsp;${personnel.keyPersonnelDto.salutation}<c:if test="${empty personnel.keyPersonnelDto.salutation}">-</c:if></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">ID Type</td>
-                                                                        <td>&nbsp;${personnel.keyPersonnelDto.idType}<c:if
-                                                                                test="${empty personnel.keyPersonnelDto.idType}">-</c:if></td>
+                                                                        <td>&nbsp;${personnel.keyPersonnelDto.idType}<c:if test="${empty personnel.keyPersonnelDto.idType}">-</c:if></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">ID No</td>
-                                                                        <td>&nbsp;${personnel.keyPersonnelDto.idNo}<c:if
-                                                                                test="${empty personnel.keyPersonnelDto.idNo}">-</c:if></td>
+                                                                        <td>&nbsp;${personnel.keyPersonnelDto.idNo}<c:if test="${empty personnel.keyPersonnelDto.idNo}">-</c:if></td>
                                                                     </tr>
                                                                     <c:if test="${personnel.licKeyPersonnelDto.psnType!='MedAlert'}">
                                                                         <tr>
                                                                             <td align="right">Designation</td>
-                                                                            <td>
-                                                                                &nbsp;${personnel.keyPersonnelDto.designation}
-                                                                                <c:if
-                                                                                        test="${empty personnel.keyPersonnelDto.designation}">-</c:if></td>
+                                                                            <td>&nbsp;${personnel.keyPersonnelDto.designation}<c:if test="${empty personnel.keyPersonnelDto.designation}">-</c:if></td>
                                                                         </tr>
                                                                     </c:if>
                                                                     <c:if test="${personnel.licKeyPersonnelDto.psnType=='Clinical Governance Officer'}">
                                                                         <tr>
                                                                             <td align="right">Professional Type</td>
-                                                                            <td>
-                                                                                &nbsp;${personnel.keyPersonnelExtDto.professionType}
-                                                                                <c:if test="${empty personnel.keyPersonnelExtDto.professionType}">-</c:if></td>
+                                                                            <td>&nbsp;${personnel.keyPersonnelExtDto.professionType}<c:if test="${empty personnel.keyPersonnelExtDto.professionType}">-</c:if></td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td align="right">Professional Regn. No.</td>
-                                                                            <td>
-                                                                                &nbsp;${personnel.keyPersonnelExtDto.profRegNo}
-                                                                                <c:if
-                                                                                        test="${empty personnel.keyPersonnelExtDto.profRegNo}">-</c:if></td>
+                                                                            <td>&nbsp;${personnel.keyPersonnelExtDto.profRegNo}<c:if test="${empty personnel.keyPersonnelExtDto.profRegNo}">-</c:if></td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td align="right">Specialty</td>
-                                                                            <td>
-                                                                                &nbsp;${personnel.keyPersonnelExtDto.speciality}
-                                                                                <c:if test="${empty personnel.keyPersonnelExtDto.speciality}">-</c:if></td>
+                                                                            <td>&nbsp;${personnel.keyPersonnelExtDto.speciality}<c:if test="${empty personnel.keyPersonnelExtDto.speciality}">-</c:if></td>
                                                                         </tr>
                                                                         <tr>
-                                                                            <td align="right">Subspecialty or relevant
-                                                                                qualification
-                                                                            </td>
-                                                                            <td>
-                                                                                &nbsp;${personnel.keyPersonnelExtDto.subSpeciality}
-                                                                                <c:if test="${empty personnel.keyPersonnelExtDto.subSpeciality}">-</c:if></td>
+                                                                            <td align="right">Sub-specialty or relevant qualification</td>
+                                                                            <td>&nbsp;${personnel.keyPersonnelExtDto.subSpeciality}<c:if test="${empty personnel.keyPersonnelExtDto.subSpeciality}">-</c:if></td>
                                                                         </tr>
                                                                     </c:if>
                                                                     <tr>
                                                                         <td align="right">Mobile No</td>
-                                                                        <td>&nbsp;${personnel.keyPersonnelDto.mobileNo}<c:if
-                                                                                test="${empty personnel.keyPersonnelDto.mobileNo}">-</c:if></td>
+                                                                        <td>&nbsp;${personnel.keyPersonnelDto.mobileNo}<c:if test="${empty personnel.keyPersonnelDto.mobileNo}">-</c:if></td>
                                                                     </tr>
                                                                     <c:if test="${personnel.licKeyPersonnelDto.psnType!='MedAlert' && personnel.licKeyPersonnelDto.psnType!='Clinical Governance Officer'}">
                                                                         <tr>
                                                                             <td align="right">Office Telephone No</td>
-                                                                            <td>
-                                                                                &nbsp;${personnel.keyPersonnelDto.officeTelNo}
-                                                                                <c:if
-                                                                                        test="${empty personnel.keyPersonnelDto.officeTelNo}">-</c:if></td>
+                                                                            <td>&nbsp;${personnel.keyPersonnelDto.officeTelNo}<c:if test="${empty personnel.keyPersonnelDto.officeTelNo}">-</c:if></td>
                                                                         </tr>
                                                                     </c:if>
                                                                     <tr>
                                                                         <td align="right">Email Address</td>
-                                                                        <td>&nbsp;${personnel.keyPersonnelDto.emailAddr}
-                                                                            <c:if
-                                                                                    test="${empty personnel.keyPersonnelDto.emailAddr}">-</c:if></td>
+                                                                        <td>&nbsp;${personnel.keyPersonnelDto.emailAddr}<c:if test="${empty personnel.keyPersonnelDto.emailAddr}">-</c:if></td>
                                                                     </tr>
                                                                     <c:if test="${personnel.licKeyPersonnelDto.psnType=='MedAlert'}">
                                                                         <tr>
-                                                                            <td align="right">Description
-                                                                            </td>
-                                                                            <td>
-                                                                                &nbsp;${personnel.keyPersonnelExtDto.description}
-                                                                                <c:if test="${empty personnel.keyPersonnelExtDto.description}">-</c:if></td>
+                                                                            <td align="right">Preferred Mode of Receiving MedAlert</td>
+                                                                            <td>&nbsp;${personnel.keyPersonnelExtDto.preferredMode}<c:if test="${empty personnel.keyPersonnelExtDto.preferredMode}">-</c:if></td>
                                                                         </tr>
                                                                     </c:if>
                                                                     </tbody>
