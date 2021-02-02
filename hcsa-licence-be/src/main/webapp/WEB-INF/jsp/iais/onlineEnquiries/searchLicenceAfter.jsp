@@ -1,5 +1,4 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MiscUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
@@ -246,7 +245,7 @@
                                                         <input type="text" maxlength="6" onkeypress="keyPress()"
                                                                oncontextmenu="return false"
                                                                onpaste="return false;"
-                                                               style=" font-weight:normal; "
+                                                               style=" font-weight:normal; " oninput = "value=value.replace(/[^\d]/g,'')"
                                                                name="hci_postal_code"
                                                                value="${SearchParam.filters['hciPostalCode']}"/>
 

@@ -1,4 +1,3 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
@@ -185,7 +184,7 @@
                                                     <iais:field value="HCI Postal Code"/>
                                                     <div class="col-sm-7 col-md-4 col-xs-10">
 
-                                                        <input type="text" maxlength="6" onpaste="return false" oncontextmenu="return false" onpaste="return false;" onkeypress="keyPress()"  style=" font-weight:normal;" name="hci_postal_code" value="${SearchParam.filters['hciPostalCode']}" />
+                                                        <input type="text" maxlength="6" onpaste="return false" oncontextmenu="return false" onpaste="return false;" onkeypress="keyPress()" oninput = "value=value.replace(/[^\d]/g,'')" style=" font-weight:normal;" name="hci_postal_code" value="${SearchParam.filters['hciPostalCode']}" />
 
                                                     </div >
                                                 </iais:row>
