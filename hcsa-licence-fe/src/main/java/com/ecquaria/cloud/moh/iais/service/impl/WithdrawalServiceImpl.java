@@ -132,6 +132,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     @Override
     public void saveWithdrawn(List<WithdrawnDto> withdrawnDtoList, HttpServletRequest httpServletRequest) {
         boolean charity = NewApplicationHelper.isCharity(httpServletRequest);
+        log.info(StringUtil.changeForLog(charity +"-------> charity"));
         List<WithdrawnDto> autoApproveApplicationDtoList = IaisCommonUtils.genNewArrayList();
         withdrawnDtoList.forEach(h -> {
             String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity();
