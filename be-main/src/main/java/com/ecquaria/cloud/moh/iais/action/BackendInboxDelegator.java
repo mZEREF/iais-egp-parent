@@ -180,6 +180,7 @@ public class BackendInboxDelegator {
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
         List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext.getCurRoleId());
+        appStatusOption.sort((s1, s2) -> (s1.getText().compareTo(s2.getText())));
         SearchParam searchParamGroup = getSearchParam(bpc.request,false);
         ParamUtil.setSessionAttr(bpc.request, "backendinboxSearchParam", searchParamGroup);
 
