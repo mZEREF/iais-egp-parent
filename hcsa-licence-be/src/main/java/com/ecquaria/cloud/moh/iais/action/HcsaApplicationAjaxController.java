@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationUploadFileValidate;
@@ -42,7 +43,8 @@ public class HcsaApplicationAjaxController{
 
     @Autowired
     FileRepoClient fileRepoClient;
-
+    @Autowired
+    InsepctionNcCheckListService insepctionNcCheckListService;
     //upload file
     @RequestMapping(value = "/uploadInternalFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, method = RequestMethod.POST)
     @ResponseBody
@@ -151,7 +153,7 @@ public class HcsaApplicationAjaxController{
             for(AppIntranetDocDto appIntranetDocDto : appIntranetDocDtos){
                 if(appIntranetDocDto.getId().equalsIgnoreCase(guid)){
                     uploadFileClient.deleteAppIntranetDocsById( appIntranetDocDto.getId());
-                    fileRepoClient.removeFileById(appIntranetDocDto.getFileRepoId());
+                    insepctionNcCheckListService.removeFiles(appIntranetDocDto.getId());
                     appIntranetDocDe = appIntranetDocDto;
                 }
             }
