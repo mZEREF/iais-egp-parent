@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -160,7 +161,8 @@ public class HcsaApplicationDelegator {
 
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
-
+    @Autowired
+    private InsepctionNcCheckListService insepctionNcCheckListService;
 
     @Autowired
     private NotificationHelper notificationHelper;
@@ -1726,7 +1728,7 @@ public class HcsaApplicationDelegator {
                 String count = String.valueOf(riskResultDto.getTimeCount());
                 //String recommTime = count + " " + codeDesc;
                 recommendationSelectOption.add(new SelectOption(count + " " + dateType, riskResultDto.getLictureText()));
-                if (riskResultDto.isDafLicture()) {
+                if (riskResultDto.isDafLicture() && !ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)) {
                     //recommendationStr
                     ParamUtil.setRequestAttr(request, "recommendationStr", count + " " + dateType);
                 }
@@ -1782,6 +1784,8 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
+        //set risk score
+        setRiskScore(applicationDto,newCorrelationId);
         //send reject email
         if (ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
             try {
@@ -2310,6 +2314,30 @@ public class HcsaApplicationDelegator {
         }
 
         log.info(StringUtil.changeForLog("The routingTask end ..."));
+    }
+
+    private void setRiskScore(ApplicationDto applicationDto,String newCorrelationId){
+        log.debug(StringUtil.changeForLog("correlationId : " + newCorrelationId));
+        try {
+            if(applicationDto != null && !StringUtil.isEmpty(newCorrelationId)){
+                AppPremisesRecommendationDto appPreRecommentdationDtoInspectionDate =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(newCorrelationId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
+                if(appPreRecommentdationDtoInspectionDate != null){
+                    HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
+                    hcsaRiskScoreDto.setAppType(applicationDto.getApplicationType());
+                    hcsaRiskScoreDto.setLicId(applicationDto.getOriginLicenceId());
+                    List<ApplicationDto> applicationDtos = new ArrayList<>(1);
+                    applicationDtos.add(applicationDto);
+                    hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
+                    hcsaRiskScoreDto.setServiceId(applicationDto.getServiceId());
+                    HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
+                    String riskLevel = entity.getRiskLevel();
+                    log.debug(StringUtil.changeForLog("riskLevel : " + riskLevel));
+                    applicationDto.setRiskLevel(riskLevel);
+                }
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
     }
 
     private void doRefunds(List<AppReturnFeeDto> saveReturnFeeDtos) {
