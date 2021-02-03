@@ -75,7 +75,7 @@
                                                         <iais:select name="${num.count}reason${uid.count}"
                                                                      id="${num.count}reasonId${uid.count}"
                                                                      options="reasonOption" firstOption="Please Select"
-                                                                     onchange="javascirpt:changeReason(this.value);"
+                                                                     onchange="javascirpt:changeReasonCessBe(this.value);"
                                                                      value="${appCessHci.reason}"
                                                                      cssClass="nice-select cessationReasons" needSort="false"/>
                                                     </iais:value>
@@ -104,7 +104,7 @@
                                                                                    name="${num.count}patRadio${uid.count}"
                                                                                    value="yes"
                                                                                    <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if>
-                                                                                   onchange="javascirpt:changePatSelect(this.value);"
+                                                                                   onchange="javascirpt:changePatSelectCessBe(this.value);"
                                                                                    aria-invalid="false">
                                                                             <label class="form-check-label"
                                                                                    for=${num.count}radioYes${uid.count}"><span
@@ -119,7 +119,7 @@
                                                                                    name="${num.count}patRadio${uid.count}"
                                                                                    value="no"
                                                                                    <c:if test="${appCessHci.patNeedTrans == false}">checked</c:if>
-                                                                                   onchange="javascirpt:changePatSelect(this.value);"
+                                                                                   onchange="javascirpt:changePatSelectCessBe(this.value);"
                                                                                    aria-invalid="false">
                                                                             <label class="form-check-label"
                                                                                    for="${num.count}radioNo${uid.count}"><span
@@ -144,7 +144,7 @@
                                                                     options="patientsOption"
                                                                     firstOption="Please Select"
                                                                     id="${num.count}patientSelectId${uid.count}"
-                                                                    onchange="javascirpt:changePatient(this.value);"
+                                                                    onchange="javascirpt:changePatientCessBe(this.value);"
                                                                     value="${appCessHci.patientSelect}"
                                                                     cssClass="nice-select cessationTransfer" needSort="false"/>
                                                         </iais:value>
@@ -369,7 +369,7 @@
         submit(action);
     }
 
-    function changeReason() {
+    function changeReasonCessBe() {
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
                 if ($("#" + i + "reasonId" + j).val() == "CES001") {
@@ -381,7 +381,7 @@
         }
     }
 
-    function changePatient() {
+    function changePatientCessBe() {
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
                 if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
@@ -401,7 +401,8 @@
         }
     }
 
-    function changePatSelect() {
+    function changePatSelectCessBe() {
+        changePatientCessBe();
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
                 if ($('#' + i + 'radioYes' + j).is(':checked')) {
@@ -419,38 +420,9 @@
     }
 
     $(document).ready(function () {
-        for (var i = 1; i < 8; i++) {
-            for (var j = 1; j < 8; j++) {
-                if ($("#" + i + "reasonId" + j).val() == "CES001") {
-                    $("#" + i + "reason" + j).show();
-                } else if ($("#" + i + "reasonId" + j).val() != "CES001") {
-                    $("#" + i + "reason" + j).hide();
-                }
-                if ($('#' + i + 'radioYes' + j).is(':checked')) {
-                    $("#" + i + "patYes" + j).show();
-                    $("#" + i + "patNo" + j).hide();
-                } else if ($('#' + i + 'radioNo' + j).is(':checked')) {
-                    $("#" + i + "patYes" + j).hide();
-                    $("#" + i + "patHciName" + j).hide();
-                    $("#" + i + "patOthers" + j).hide();
-                    $("#" + i + "patRegNo" + j).hide();
-                    $("#" + i + "patNo" + j).show();
-                }
-                if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
-                    $("#" + i + "patOthers" + j).show();
-                    $("#" + i + "patHciName" + j).hide();
-                    $("#" + i + "patRegNo" + j).hide();
-                } else if ($("#" + i + "patientSelectId" + j).val() == "CES005") {
-                    $("#" + i + "patHciName" + j).show();
-                    $("#" + i + "patOthers" + j).hide();
-                    $("#" + i + "patRegNo" + j).hide();
-                } else if ($("#" + i + "patientSelectId" + j).val() == "CES006") {
-                    $("#" + i + "patRegNo" + j).show();
-                    $("#" + i + "patHciName" + j).hide();
-                    $("#" + i + "patOthers" + j).hide();
-                }
-            }
-        }
+        changePatientCessBe();
+        changeReasonCessBe();
+        changePatSelectCessBe();
     });
 
     $(document).ready(function () {
