@@ -682,6 +682,18 @@ public class MasterCodeDelegator {
         }
     }
 
+    private void fileValidation(HttpServletRequest request,String originalFilename,Map<String, String> errorMap){
+        String[] split = originalFilename.split("\\.");
+        if (!StringUtil.isEmpty(originalFilename)) {
+            if (split[0].length() > 100) {
+                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0022");
+                errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, errMsg);
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            }
+        }
+    }
+
     public void checkUploadFile(BaseProcessClass bpc) {
         List<Map<String,List<String>>> errResult = (List<Map<String, List<String>>>) ParamUtil.getSessionAttr(bpc.request,"ERR_RESULT_LIST_MAP");
         if (errResult != null && errResult.size()>0){
@@ -1194,7 +1206,9 @@ public class MasterCodeDelegator {
     }
 
     private Map<String, String> validationFile(HttpServletRequest request, MultipartFile file){
+        String originalFilename = file.getOriginalFilename();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
+        fileValidation(request,originalFilename,errorMap);
         if (file.isEmpty()){
             errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "GENERAL_ERR0020");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -1211,7 +1225,7 @@ public class MasterCodeDelegator {
         }
 
         if (FileUtils.outFileSize(file.getSize())){
-            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "GENERAL_ERR0004");
+            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "GENERAL_ERR0022");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return errorMap;

@@ -39,9 +39,14 @@
                     <div class="document-upload-list">
                         <div class="file-upload-gp">
                             <div class="fileNameDisplay"></div>
-                            <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
-                            <span id="delFile" hidden="hidden"><strong id="fileName"></strong><button type="button" class="btn btn-danger btn-sm" onclick="deleteWdFile()"> <em
-                                    class="fa fa-times"></em></button></span>
+                            <input id="selectedFile" name="selectedFile" class="selectedFile commDoc"
+                                   type="file" style="display: none;"
+                                   aria-label="selectedFile1"
+                                   onclick="fileClicked(event)"
+                                   onchange="fileChanged(event)">
+                            <a class="btn btn-file-upload btn-secondary"
+                               href="#">Upload</a>
+                            <span id="delFile" hidden="hidden"><strong id="fileName"></strong>&nbsp;&nbsp;<button type="button" class="btn btn-secondary-del btn-sm" onclick="deleteWdFile()">Delete</button></span>
                         </div>
                     </div>
                 </div>
@@ -70,12 +75,26 @@
         SOP.Crud.cfxSubmit("mainForm", "doUpload");
     });
 
-    $("#selectedFile").change(function () {
+    $(".selectedFile").change(function () {
+        // $("#delFile").removeAttr("hidden");
+        // var fileName = $("#selectedFile").val();
+        // console.log(typeof(fileName));
+        // if(fileName != null){
+        //     var pos = fileName.lastIndexOf("\\");
+        //     $("#fileName").html(fileName.substring(pos + 1));
+        // }
+        var file = $(this).val();
+        var fileName = getFileName(file);
+        $("#fileName").html(fileName);
         $("#delFile").removeAttr("hidden");
-        var fileName = $("#selectedFile").val();
-        var pos = fileName.lastIndexOf("\\");
-        $("#fileName").html(fileName.substring(pos + 1));
+        // $("#fileName").next().html('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>');
+        // $("#fileName").val('N');
     });
+
+    function getFileName(o) {
+        var pos = o.lastIndexOf("\\");
+        return o.substring(pos + 1);
+    }
 
     function deleteWdFile() {
         // document.getElementById("withdrawFile").files[0] = null;
