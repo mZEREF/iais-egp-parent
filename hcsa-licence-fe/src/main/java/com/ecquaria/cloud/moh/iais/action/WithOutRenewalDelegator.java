@@ -1863,7 +1863,7 @@ public class WithOutRenewalDelegator {
                     }
                 }
             }
-             if(appNoIndex == 1){
+             if(appNoIndex == 2){
                 temp = "has";
             }
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDtos.get(0).getServiceName());
