@@ -71,12 +71,6 @@ public final class ChecklistHelper {
             return true;
         }
 
-        originalFileName = originalFileName.substring(0, originalFileName.lastIndexOf("."));
-        if (FileUtils.fileNameLimitBy(originalFileName, FILE_NAME_LENGTH)){
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0022"));
-            return true;
-        }
-
         if (FileUtils.outFileSize(file.getSize())){
             int maxSize = SystemParamUtil.getFileMaxLimit();
             String replaceMsg = MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxSize),"sizeMax");
