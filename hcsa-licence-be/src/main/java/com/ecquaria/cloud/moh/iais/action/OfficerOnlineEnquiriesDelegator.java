@@ -410,7 +410,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(status.equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
                         filters.put("appGrpPmtStatus", status);
                     }else
-                    if(!status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+                    if(!status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)&&!status.equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)){
                         filters.put("appStatus", status);
                     }
                 }
@@ -567,7 +567,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(status.equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
                         filters.put("appGrpPmtStatus", status);
                     }else
-                    if(!status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+                    if(!status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)&&!status.equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)){
                         filters.put("appStatus", status);
                     }
                     appCount++;
@@ -708,6 +708,9 @@ public class OfficerOnlineEnquiriesDelegator {
             if(status!=null && status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
                 appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
             }
+            if(status!=null && status.equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)){
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
+            }
             if(!StringUtil.isEmpty(svcSubType) ){
                 List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
                 StringBuilder sb=new StringBuilder();
@@ -829,7 +832,7 @@ public class OfficerOnlineEnquiriesDelegator {
             }
         }
         String appStatus=ParamUtil.getString(request, "application_status");
-        if(!StringUtil.isEmpty(appStatus)&&appStatus.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+        if(!StringUtil.isEmpty(appStatus)&&(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_REJECTED))){
             licParam.getFilters().put("appStatus",appStatus);
         }
         ParamUtil.setSessionAttr(request,"SearchParam", licParam);
@@ -1034,7 +1037,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(parm.getFilters().get("appStatus").equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
                         filters.put("appGrpPmtStatus", parm.getFilters().get("appStatus"));
                     }else
-                    if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+                    if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)&&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)){
                         filters.put("appStatus", parm.getFilters().get("appStatus"));
                     }
                     appCount++;
@@ -1168,6 +1171,9 @@ public class OfficerOnlineEnquiriesDelegator {
             if (appParam != null) {
                 if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)) {
                     appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
+                }
+                if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)) {
+                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
                     List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
@@ -1275,7 +1281,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(parm.getFilters().get("appStatus").equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
                         filters.put("appGrpPmtStatus", parm.getFilters().get("appStatus"));
                     }else
-                    if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+                    if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)&&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)){
                         filters.put("appStatus", parm.getFilters().get("appStatus"));
                     }
                     appCount++;
@@ -1409,6 +1415,9 @@ public class OfficerOnlineEnquiriesDelegator {
             if (appParam != null) {
                 if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)) {
                     appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
+                }
+                if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)) {
+                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
                     List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
@@ -1556,7 +1565,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(parm.getFilters().get("appStatus").equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
                         filters.put("appGrpPmtStatus", parm.getFilters().get("appStatus"));
                     }else
-                    if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+                    if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)&&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)){
                         filters.put("appStatus", parm.getFilters().get("appStatus"));
                     }
                     appCount++;
@@ -1689,6 +1698,9 @@ public class OfficerOnlineEnquiriesDelegator {
                 appParam.setPageNo(0);
                 if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)) {
                     appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
+                }
+                if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)) {
+                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
                     List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
