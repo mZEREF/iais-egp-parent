@@ -71,9 +71,9 @@
                                 <thead>
                                 <tr>
                                     <iais:sortableHeader needSort="false" style="width:5%; padding-bottom:10px" field="" value="No."></iais:sortableHeader>
-                                    <iais:sortableHeader needSort="true" style="width:5%" field="CLAUSE_NO"
+                                    <iais:sortableHeader needSort="true" style="width:15%" field="CLAUSE_NO"
                                                          value="Regulation Clause Number"></iais:sortableHeader>
-                                    <iais:sortableHeader needSort="true" style="width:5%"  field="CLAUSE"
+                                    <iais:sortableHeader needSort="true" style="width:10%"  field="CLAUSE"
                                                          value="Regulations"></iais:sortableHeader>
                                     <iais:sortableHeader needSort="true" style="width:10%"  field="status" value="Status"></iais:sortableHeader>
                                     <iais:sortableHeader needSort="false" style="padding-bottom:10px" field="action" value="Action"></iais:sortableHeader>

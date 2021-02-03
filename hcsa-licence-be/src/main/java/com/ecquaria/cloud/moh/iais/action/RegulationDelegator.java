@@ -93,15 +93,10 @@ public class RegulationDelegator {
     public void doQuery(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         RegulationQueryDto regulation = new RegulationQueryDto();
-
         String clause = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE);
         String desc = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_DESC);
-
         regulation.setClauseNo(clause);
         regulation.setClause(desc);
-
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE, clause);
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_DESC, desc);
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(regulation, "search");
         if(validationResult != null && validationResult.isHasErrors()){
@@ -131,11 +126,8 @@ public class RegulationDelegator {
      */
     public void preLoad(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-
         QueryHelp.setMainSql("hcsaconfig", "regulationQuery", searchParam);
-
         SearchResult searchResult =  regulationService.searchRegulation(searchParam);
 
         ParamUtil.setSessionAttr(bpc.request, "regulationAttr", null);
@@ -310,8 +302,8 @@ public class RegulationDelegator {
     public void doCreateOrUpdate(BaseProcessClass bpc){
         String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
 
-        String clauseNo = ParamUtil.getString(bpc.request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE);
-        String clause = ParamUtil.getString(bpc.request, HcsaChecklistConstants.PARAM_REGULATION_DESC);
+        String clauseNo = ParamUtil.getString(bpc.request, "edit_regulationClauseNo");
+        String clause = ParamUtil.getString(bpc.request, "edit_regulationClause");
         HcsaChklSvcRegulationDto regulation = (HcsaChklSvcRegulationDto) ParamUtil.getSessionAttr(bpc.request, "regulationAttr");
         if (regulation == null){
             regulation = new HcsaChklSvcRegulationDto();
