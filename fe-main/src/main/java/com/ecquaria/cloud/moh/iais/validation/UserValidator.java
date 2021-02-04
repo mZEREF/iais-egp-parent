@@ -53,7 +53,7 @@ public class UserValidator implements CustomizeValidator {
 
             if(RoleConsts.USER_ROLE_ORG_USER.equals(dto.getUserRole())){
                 List<FeUserDto> feUserDtoList = feUserClient.getAdminAccountByOrgId(dto.getOrgId()).getEntity();
-                if(feUserDtoList.size() == 1 && dto.getId().equals(feUserDtoList.get(0).getId())){
+                if(!StringUtil.isEmpty(dto.getId()) && feUserDtoList.size() == 1 && dto.getId().equals(feUserDtoList.get(0).getId())){
                     map.put("userRole", MessageUtil.getMessageDesc("USER_ERR017"));
                 }
             }
