@@ -57,6 +57,7 @@
         $("[name='crud_action_value']").val(msgId);
         submit("preview");
     }
+
     $("#ANT_Search").click(function () {
         submit("search");
     });
