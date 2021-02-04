@@ -296,6 +296,11 @@ public class IntranetUserServiceImpl implements IntranetUserService {
             Document document = saxReader.read(xmlFile);
             //root
             Element root = document.getRootElement();
+            list = root.elements();
+            if (list != null) {
+                Element elementCheck = (Element)list.get(0);
+                elementCheck.element("roleId").getText();
+            }
             //ele
             list = root.elements();
             log.debug(StringUtil.changeForLog("start kai shi jie xi xml------------"));
