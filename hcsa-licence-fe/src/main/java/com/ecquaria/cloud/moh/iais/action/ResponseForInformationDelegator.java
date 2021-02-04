@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * ResponseForInformationDelegator
@@ -184,7 +185,7 @@ public class ResponseForInformationDelegator {
                 info.setUserReply(userReply);
             }
         }catch (Exception e){
-            log.info(e.getMessage(),e);
+            log.info("no info");
         }
         ParamUtil.setSessionAttr(bpc.request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
 
@@ -243,7 +244,8 @@ public class ResponseForInformationDelegator {
                     }else{
                         Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file,fileTypes,fileSize);
                         //name size
-                        if(file.getName().length()>100){
+                        int fileNameLen= Objects.requireNonNull(file.getOriginalFilename()).length();
+                        if(fileNameLen>100){
                             doc.setPassDocValidate(false);
                             errMap.put("UploadFile"+doc.getId(), MessageUtil.getMessageDesc("GENERAL_ERR0022"));
                         }
