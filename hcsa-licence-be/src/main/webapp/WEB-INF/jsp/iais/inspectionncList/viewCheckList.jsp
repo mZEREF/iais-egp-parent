@@ -44,7 +44,7 @@
                                 <div class="swiper-button-next"></div>
                             </div>
                             <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
-                            <div class="tab-content">
+                            <div class="tab-content" id="checkLsitItemArea">
                                 <div class="tab-pane ${(nowComTabIn == null || nowComTabIn== 'General') ? 'active' : ''}" id="General" role="tabpanel">
                                     <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.generalDo}"/>/<c:out value="${serListDto.generalTotal}"/><br>
                                     <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.generalNc}"/>
@@ -313,4 +313,17 @@
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "saveDraft");
     }
+
+    $(document).ready(function (){
+        readOnlyAllForCheckList('${applicationViewDto.applicationDto.status}');
+    });
+
+   function readOnlyAllForCheckList(status) {
+    if(status == 'APST032'){
+        $("#checkLsitItemArea textarea").attr('readonly','readonly');
+        $("#checkLsitItemArea textarea").attr('Enabled',false);
+        $("#checkLsitItemArea input[type='checkbox']").attr("disabled",true);
+        $("#checkLsitItemArea  input[type='radio']").attr("disabled",true)
+    }
+   }
 </script>

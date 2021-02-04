@@ -1,7 +1,7 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<div class="row">
+<div class="row" id="checklistEditArea">
     <input type="hidden" id="fileMaxSizeForIns" name="fileMaxSizeForIns" value="${applicationViewDto.systemMaxFileSize}">
     <input type="hidden" id="fileUploadTypeForIns" name="fileUploadTypeForIns" value="${applicationViewDto.systemFileType}">
     <div class="form-group">
@@ -16,29 +16,45 @@
     </div>
     <div class="form-group">
         <label class="col-xs-12 col-md-4 control-label">Inspection Start Time (HH MM)</label>
-        <div class="col-xs-8 col-sm-6 col-md-5">
-            <div style="margin-left: -15px" class="col-md-6">
+            <c:choose>
+                <c:when test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}">
+               <div class="col-xs-8 col-sm-6 col-md-5">
+                <div style="margin-left: -15px" class="col-md-6">
                     <iais:select name="startHour" options="hhSelections" value="${serListDto.startHour}" firstOption="--"></iais:select>
-            </div>
-            <div class="col-md-6">
+                </div>
+                <div class="col-md-6">
                     <iais:select name="startHourMin" options="ddSelections" value="${serListDto.startMin}" firstOption="--"></iais:select>
-            </div>
+                </div>
+               </div>
+            </c:when>
+                <c:otherwise>
+               <div class="col-xs-8 col-sm-6 col-md-5">
+                    <p> <span> ${serListDto.startHour} : ${serListDto.startMin}</span></p>
+                </div>
+                </c:otherwise>
+            </c:choose>
             <span class="error-msg" id="error_sTime" name="iaisErrorMsg"></span>
         </div>
-    </div>
-
     <div class="form-group">
         <label class="col-xs-12 col-md-4 control-label" >Inspection End Time (HH MM)</label>
-        <div class="col-xs-8 col-sm-6 col-md-5">
-            <div style="margin-left: -15px" class="col-md-6" >
+        <c:choose> <c:when test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}">
+            <div class="col-xs-8 col-sm-6 col-md-5">
+                <div style="margin-left: -15px" class="col-md-6" >
                     <iais:select name="endHour" options="hhSelections" value="${serListDto.endHour}" firstOption="--" ></iais:select>
-            </div>
-            <div class="col-md-6">
+                </div>
+                <div class="col-md-6">
                     <iais:select name="endHourMin" options="ddSelections" value="${serListDto.endMin}" firstOption="--"></iais:select>
+                </div>
             </div>
             <span class="error-msg" id="error_eTime" name="iaisErrorMsg"></span>
             <span class="error-msg" id="error_timevad" name="iaisErrorMsg"></span>
+        </c:when>
+        <c:otherwise>
+        <div class="col-xs-8 col-sm-6 col-md-5">
+            <p> <span>  ${serListDto.endHour} : ${serListDto.endMin}</span></p>
         </div>
+        </c:otherwise>
+       </c:choose>
     </div>
 
     <div class="form-group">
@@ -92,8 +108,13 @@
 
     <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Letter Written to Licensee</label>
-            <div class="col-xs-8 col-sm-6 col-md-5">
-                <div class="file-upload-gp">
+            <div class="col-xs-8 col-sm-6 col-md-5" >
+                  <c:if test="${applicationViewDto.applicationDto.status == ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}">
+                      <p>
+                      <span > &nbsp;${serListDto.appPremisesSpecialDocDto.docName}</span>
+                      </p>
+                  </c:if>
+                <div class="file-upload-gp" <c:if test="${applicationViewDto.applicationDto.status == ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}"> hidden</c:if>>
                     <input id="selectedFileView" name="selectedFileView" type="file" style="display: none;" aria-label="selectedFile" onclick="javascript:fileClicked(event)" onchange="javascript:fileChangedIns(event)"
                     ><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
                     <span id="licFileName"> &nbsp; &nbsp; &nbsp; &nbsp;${serListDto.appPremisesSpecialDocDto.docName}</span>
@@ -119,11 +140,20 @@
     </div>
 
     <div class="form-group" id="tcuLabel" >
-        <label class="col-xs-12 col-md-4 control-label">TCU Date <span style="color: red"> *</span></label>
+        <label class="col-xs-12 col-md-4 control-label">TCU Date <c:if test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}"><span style="color: red"> *</span></c:if></label>
+     <c:choose>
+    <c:when test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}">
         <div class="col-xs-8 col-sm-6 col-md-5">
             <iais:datePicker id = "tuc" name = "tuc" value="${serListDto.tuc}"></iais:datePicker>
             <span class="error-msg" id="error_tcuDate" name="iaisErrorMsg"></span>
         </div>
+    </c:when>
+    <c:otherwise>
+        <div class="col-xs-8 col-sm-6 col-md-5">
+        <p> <span>${serListDto.tuc}</span></p>
+        </div>
+    </c:otherwise>
+     </c:choose>
     </div>
 
     <c:if test="${ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK == applicationViewDto.applicationDto.applicationType && ApplicationConsts.AUDIT_TYPE_THEMATIC != applicationViewDto.licPremisesAuditDto.auditType}">
@@ -137,15 +167,25 @@
         </div>
     </div>
     <div class="form-group" id="frameworkOp" hidden>
-        <label class="col-xs-12 col-md-4 control-label">Which form of risk should it be recorded in risk score framework?<span style="color: red"> *</span></label>
+        <label class="col-xs-12 col-md-4 control-label">Which form of risk should it be recorded in risk score framework?<c:if test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}"><span style="color: red"> *</span></c:if></label>
         <div class="col-xs-8 col-sm-6 col-md-5">
-            <iais:select name="periods" options="frameworknOption" firstOption="Please Select" onchange="javascirpt:changeFramewordOption(this.value);"
-            value="${applicationViewDto.licPremisesAuditDto.includeRiskType}"/>
-            <span id="error_periods" name="iaisErrorMsg" class="error-msg"></span>
+            <c:choose>
+                <c:when test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}">
+                    <iais:select name="periods" options="frameworknOption" firstOption="Please Select" onchange="javascirpt:changeFramewordOption(this.value);"
+                                 value="${applicationViewDto.licPremisesAuditDto.includeRiskType}"/>
+                    <span id="error_periods" name="iaisErrorMsg" class="error-msg"></span>
+                </c:when>
+                <c:otherwise>
+                    <div>
+                    <iais:select name="periods" options="frameworknOption" firstOption="Please Select" onchange="javascirpt:changeFramewordOption(this.value);"
+                                 value="${applicationViewDto.licPremisesAuditDto.includeRiskType}" disabled="true"/>
+                    </div
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
     <div class="form-group" id="frameworkRe" hidden>
-        <label class="col-xs-12 col-md-4 control-label">Enforcement Remarks<span style="color: red"> *</span></label>
+        <label class="col-xs-12 col-md-4 control-label">Enforcement Remarks<c:if test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}"><span style="color: red"> *</span></c:if></label>
         <div class="col-xs-8 col-sm-6 col-md-5">
             <textarea name="frameworkRemarks" id="frameworkRemarks" cols="43" rows="5" maxlength=="2000"><c:out value="${applicationViewDto.licPremisesAuditDto.lgrRemarks}"></c:out></textarea>
             <br/>
@@ -188,7 +228,17 @@
         }
         changeframework();
         changeFramewordOption('${applicationViewDto.licPremisesAuditDto.includeRiskType}');
+        readOnlyArea('${applicationViewDto.applicationDto.status}');
     });
+
+    function readOnlyArea(status) {
+        if(status == 'APST032'){
+            $("#checklistEditArea textarea").attr('readonly','readonly');
+            $("#checklistEditArea textarea").attr('Enabled',false);
+            $("#tcuType").attr("disabled",true);
+            $("#framework").attr("disabled",true);
+        }
+    }
     function showTcuLabel(checkbox){
         if(checkbox.checked == true){
             $("#tcuLabel").show()
