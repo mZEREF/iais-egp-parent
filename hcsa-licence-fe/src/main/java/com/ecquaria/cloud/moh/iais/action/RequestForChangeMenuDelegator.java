@@ -1197,7 +1197,7 @@ public class RequestForChangeMenuDelegator {
                         applicationFeClient.saveApplicationDtos(entity);
                         String grpId = entity.get(0).getAppGrpId();
                         ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(grpId).getEntity();
-                        applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                        applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
                         applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
                     }
                 }else if(0.0==amount && !appSubmissionDto.isAutoRfc()){
@@ -1210,7 +1210,7 @@ public class RequestForChangeMenuDelegator {
                         applicationFeClient.saveApplicationDtos(entity);
                         String grpId = entity.get(0).getAppGrpId();
                         ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(grpId).getEntity();
-                        applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                        applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
                         applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
                     }
                 }
