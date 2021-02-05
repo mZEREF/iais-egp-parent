@@ -425,7 +425,7 @@
                       </c:if>
                     </div>
 
-                    <div class="col-xs-12 col-md-6"  style="margin-top: 1%;margin-bottom: 1%" >
+                    <div class="col-xs-12 col-md-6"  style="margin-top: 1%;margin-bottom: 1%;text-align:left" >
                       <input type="text" name="stageId${routingStage.stageCode}${routingStages.key}" value="${routingStage.routingSchemeId}" style="display:none;">
 
                       <select  disabled name="RoutingScheme${routingStage.stageCode}${routingStages.key}"   >
