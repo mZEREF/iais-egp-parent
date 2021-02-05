@@ -252,12 +252,11 @@ public class MasterCodeDelegator {
                 }
             }
             if (masterCodeDto.getSequence() != null) {
-                if (masterCodeDto.getSequence() == -1) {
+                if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2) {
                     errorMap.put("sequence", mcuperrErrMsg8);
+                    masterCodeDto.setSequence(null);
                 }
-                if (masterCodeDto.getSequence() == -2) {
-                    errorMap.put("sequence", mcuperrErrMsg8);
-                }
+
             }
             if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
                 validationResult.setHasErrors(true);
@@ -829,11 +828,9 @@ public class MasterCodeDelegator {
         if (validationResult != null && validationResult.isHasErrors()) {
             errorMap = validationResult.retrieveAll();
             if (masterCodeDto.getSequence() != null){
-                if (masterCodeDto.getSequence() == -1){
+                if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2){
                     errorMap.put("sequence", mcuperrErrMsg8);
-                }
-                if (masterCodeDto.getSequence() == -2){
-                    errorMap.put("sequence", mcuperrErrMsg8);
+                    masterCodeDto.setSequence(null);
                 }
             }
             if (AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
@@ -1005,11 +1002,9 @@ public class MasterCodeDelegator {
                 }
             }
             if (masterCodeDto.getSequence() != null) {
-                if (masterCodeDto.getSequence() == -1) {
+                if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2) {
                     errorMap.put("sequence", mcuperrErrMsg8);
-                }
-                if (masterCodeDto.getSequence() == -2) {
-                    errorMap.put("sequence", mcuperrErrMsg8);
+                    masterCodeDto.setSequence(null);
                 }
             }
             if(errorMap != null && errorMap.size() > 0){
@@ -1113,11 +1108,12 @@ public class MasterCodeDelegator {
             if (!isDouble(codeSequenceEd)) {
                 masterCodeDto.setSequence(-1);
             }else{
-                int codeCategorySequenceInt = ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_ED) * 1000;
+                double codeCategorySequenceInt = ParamUtil.getDouble(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_ED) * 1000;
                 if (codeCategorySequenceInt < 0){
                     masterCodeDto.setSequence(-2);
                 }else{
-                    masterCodeDto.setSequence(codeCategorySequenceInt);
+                    int i =  new Double(codeCategorySequenceInt).intValue();
+                    masterCodeDto.setSequence(i);
                 }
 
             }
@@ -1173,11 +1169,12 @@ public class MasterCodeDelegator {
             if (!isDouble(codeCategorySequence)) {
                 masterCodeDto.setSequence(-1);
             }else{
-                int codeCategorySequenceInt = ParamUtil.getInt(request, "codeCategorySequence") * 1000;
+                double codeCategorySequenceInt = ParamUtil.getDouble(request, "codeCategorySequence") * 1000;
                 if (codeCategorySequenceInt < 0){
                     masterCodeDto.setSequence(-2);
                 }else{
-                    masterCodeDto.setSequence(codeCategorySequenceInt);
+                    int i =  new Double(codeCategorySequenceInt).intValue();
+                    masterCodeDto.setSequence(i);
                 }
 
             }
