@@ -238,7 +238,7 @@
     function validatePayment(){
         var flag=false;
         var paymentMessageValidateMessage = $('#paymentMessageValidateMessage').val();
-        if($("input[name='payMethod']").size()<=0){
+        if($("input[name='payMethod']").length<=0){
             flag=true;
         }else {
             $("input[name='payMethod']").each(function () {

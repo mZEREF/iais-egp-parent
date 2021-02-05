@@ -367,7 +367,7 @@
     var addMAP = function(){
         $('#addMapBtn').click(function () {
             showWaiting();
-            var hasNumber = $('.medAlertContent').size() - 1;
+            var hasNumber = $('.medAlertContent').length - 1;
             console.log("hasNumber" + hasNumber);
             $.ajax({
                 url:'${pageContext.request.contextPath}/med-alert-person-html',

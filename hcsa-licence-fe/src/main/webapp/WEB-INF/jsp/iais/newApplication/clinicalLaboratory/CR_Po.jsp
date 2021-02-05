@@ -808,7 +808,7 @@
     var addPo = function(){
         $('#addPoBtn').click(function () {
             showWaiting();
-            var hasNumber = $('div.po-content').size() - 1;
+            var hasNumber = $('div.po-content').length - 1;
             console.log("hasNumber" + hasNumber);
             $.ajax({
                 url:'${pageContext.request.contextPath}/principal-officer-html',
@@ -861,7 +861,7 @@
     var addDpo = function(){
         $('#addDpoBtn').click(function () {
             showWaiting();
-            var hasNumber = $('.dpo-content').size() - 1;
+            var hasNumber = $('.dpo-content').length - 1;
             console.log("hasNumber" + hasNumber);
             $.ajax({
                 url:'${pageContext.request.contextPath}/deputy-principal-officer-html',
