@@ -8,7 +8,7 @@
 
 
 
-<div class="form-horizontal" style="margin-right: 80px">
+<div class="row form-horizontal" style="margin-right: 80px">
     <div class="form-group">
         <div class="col-xs-5 col-md-10">
             <div class="col-xs-10 col-md-12">
@@ -87,7 +87,7 @@
         </div>
 
 
-        <div class="text-right">
+        <div class="text-right" style="width:108%">
             <a class="btn btn-secondary" id="crud_clear_button" href="#">Clear</a>
             <a class="btn btn-primary" id="crud_search_export"
                href="${pageContext.request.contextPath}/audit-trail-file"
@@ -102,7 +102,7 @@
     <div class="tab-content">
         <div class="row">
             <iais:pagination param="auditTrailSearch" result="auditTrailSearchResult"/>
-            <div class="col-xs-11" style="width:95%">
+            <div class="col-xs-12"">
                 <h3>
                     <span>Search Results</span>
                 </h3>
@@ -112,7 +112,7 @@
                             <thead>
                             <tr>
                                 <iais:sortableHeader needSort="false" field="" value="No."></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true" field="operation_desc"
+                                <iais:sortableHeader needSort="true" field="operation_des c"
                                                      value="Operation"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true" field="domain"
                                                      value="Operation Type"></iais:sortableHeader>
