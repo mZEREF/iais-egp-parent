@@ -99,23 +99,25 @@
                         </c:if>
                         <c:if test="${!inspecTaskCreAndAssDto.fastTrackCheckFlag}">
                           <input type="checkbox" value="true" name="fastTrackCommon"
-                             <c:if test="${'true' eq inspecTaskCreAndAssDto.fastTrackCheck}">checked="checked"</c:if>/>
+                                 <c:if test="${'true' eq inspecTaskCreAndAssDto.fastTrackCheck}">checked="checked"</c:if>/>
                         </c:if>
                       </div>
                     </div>
                     <p></p>
                   </c:if>
                   <c:if test="${'INSPECTOR' eq iais_Login_User_Info_Attr.curRoleId || 'INSPECTOR_LEAD' eq iais_Login_User_Info_Attr.curRoleId}">
-                    <div class="row">
-                      <div class="col-md-2">
-                        <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)</label>
+                    <c:if test="${'common' eq inspecTaskCreAndAssDto.editHoursFlag}">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)</label>
+                        </div>
+                        <div class="col-md-2">
+                          <input type="text" maxlength="3" style="margin-bottom: 0px;" name="inspManHours" value="${inspecTaskCreAndAssDto.inspManHours}"/>
+                          <span class="error-msg" name="iaisErrorMsg" id="error_inspManHours"></span><p></p>
+                        </div>
                       </div>
-                      <div class="col-md-2">
-                        <input type="text" maxlength="3" style="margin-bottom: 0px;" name="inspManHours" value="${inspecTaskCreAndAssDto.inspManHours}"/>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_inspManHours"></span><p></p>
-                      </div>
-                    </div>
-                    <p></p>
+                      <p></p>
+                    </c:if>
                   </c:if>
                   <div class="row">
                     <div class="col-md-2">
