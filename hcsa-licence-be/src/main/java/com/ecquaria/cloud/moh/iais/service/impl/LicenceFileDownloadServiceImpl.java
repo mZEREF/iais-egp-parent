@@ -1015,7 +1015,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(application.getStatus())){
                         cession++;
                         applicationDtoList.add(application);
-                    }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
+                    }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())||ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE.equals(application.getStatus())){
                         cession++;
                     }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
                             ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
