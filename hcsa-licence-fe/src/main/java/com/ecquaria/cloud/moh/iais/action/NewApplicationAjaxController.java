@@ -1271,7 +1271,7 @@ public class NewApplicationAjaxController {
         byte[] bytes = null;
         if(appSubmissionDto != null){
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+            if(appSvcRelatedInfoDtos != null && appSvcRelatedInfoDtos.size()>0){
                 Map<String,String> paramMap = IaisCommonUtils.genNewHashMap();
 
                 List<String> svcNameList = IaisCommonUtils.genNewArrayList();
@@ -1288,7 +1288,27 @@ public class NewApplicationAjaxController {
 
                 String newAck005 = MessageUtil.getMessageDesc("NEW_ACK005");
                 String emptyStr = "N/A";
-                paramMap.put("serviceNameTitle", serviceNameTitle);
+                String appType = appSubmissionDto.getAppType();
+                String title;
+                StringBuilder newExtraTitle = new StringBuilder();
+                StringBuilder rfcExtraTitle = new StringBuilder();
+                if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+                    title = "New Licence Application";
+                    newExtraTitle.append("<h3 id=\"newSvc\">You are applying for ")
+                            .append(serviceNameTitle)
+                            .append("</h3>");
+                }else {
+                    title = "Amendment" ;
+                    String svcName = appSvcRelatedInfoDtos.get(0).getServiceName();
+                    rfcExtraTitle.append("<p class=\"center\">You are amending the <strong>")
+                            .append(svcName)
+                            .append("  licence (Licence No. ")
+                            .append(appSubmissionDto.getLicenceNo())
+                            .append("</strong>)</p>");
+                }
+                paramMap.put("title",title);
+                paramMap.put("rfcExtraTitle",rfcExtraTitle.toString());
+                paramMap.put("newExtraTitle",newExtraTitle.toString());
                 paramMap.put("serviceName",serviceName.toString());
                 paramMap.put("emailAddress",StringUtil.viewHtml(emailAddress));
                 paramMap.put("NEW_ACK005",StringUtil.viewHtml(newAck005));
