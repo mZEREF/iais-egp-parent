@@ -99,7 +99,7 @@
                                   <c:choose>
                                     <c:when test="${empty inspectionHistoryShowDtos}">
                                       <tr>
-                                        <td colspan="12" align="center">
+                                        <td colspan="12" align="left">
                                           <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                                           <!--No Record!!-->
                                         </td>
