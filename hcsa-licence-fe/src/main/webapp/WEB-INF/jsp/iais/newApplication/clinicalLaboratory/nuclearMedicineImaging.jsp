@@ -390,7 +390,7 @@
 
   $('.addListBtn').click(function () {
       showWaiting();
-      var HasNumber = $(".personnel-content").size();
+      var HasNumber = $(".personnel-content").length;
       console.log("HasNumber"+HasNumber);
       $.ajax({
           url:'${pageContext.request.contextPath}/nuclear-medicine-imaging-html',
