@@ -21,6 +21,7 @@
                         <div class="tab-content">
                             <div class="tab-pane active" id="paymentTab" role="tabpanel">
                                 <h2 style="border-bottom: none;">Payment Summary</h2>
+                                <div class="table-responsive">
                                 <table class="table">
                                     <thead>
                                     <tr>
@@ -297,6 +298,7 @@
                                     </tr>
                                     </tbody>
                                 </table>
+                                </div>
                                 <c:choose>
                                     <c:when test="${AppSubmissionDto.amountStr=='$0'}">
                                         <input type="hidden" value="false" name="noNeedPayment">

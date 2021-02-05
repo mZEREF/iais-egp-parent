@@ -51,6 +51,7 @@
                                 Transactional details:
                             </div>
                             <div class="col-xs-12">
+                                <div class="table-responsive">
                                 <table class="table">
                                     <thead>
                                     <tr>
@@ -146,6 +147,7 @@
                                     </c:choose>
                                     </tbody>
                                 </table>
+                                </div>
                             </div>
                         </div>
                     </c:when>

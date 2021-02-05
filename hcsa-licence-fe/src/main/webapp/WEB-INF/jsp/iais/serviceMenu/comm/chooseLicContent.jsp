@@ -17,6 +17,7 @@
 <div class="row">
     <div class="col-xs-12 col-md-3"></div>
     <div class="col-xs-12 col-md-6">
+        <div class="table-responsive">
         <table class="table">
             <thead>
                 <tr style="font-size: 16px;">
@@ -30,6 +31,7 @@
 
             <tbody id="licBodyDiv"></tbody>
         </table>
+        </div>
     </div>
 </div>
 <div class="row">
