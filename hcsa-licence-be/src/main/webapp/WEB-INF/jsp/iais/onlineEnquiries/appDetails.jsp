@@ -8,6 +8,7 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
+<div class="dashboard" >
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="crud_action_type" value="">
@@ -280,3 +281,4 @@
         </div>
     </div>
 </form>
+</div>
