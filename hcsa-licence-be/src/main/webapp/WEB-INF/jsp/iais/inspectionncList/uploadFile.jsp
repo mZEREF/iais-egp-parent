@@ -62,7 +62,8 @@
         $('#selectedFileShow').html('')
         $('#fileRemarkShow').html('')
         $('#fileRemark').val('');
-        $('#uploadDoc').dialog('close');
+        $('#uploadDoc').dialog().dialog('close');
+        $('#uploadDoc').dialog('open');
         doDeleteShowFileName();
     };
 
