@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -36,10 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Shicheng
@@ -350,6 +348,15 @@ public class InspectionMainServiceImpl implements InspectionMainService {
     @SearchTrack(catalog = "inspectionQuery",key = "AppByGroupAjax")
     public SearchResult<InspectionAppInGroupQueryDto> searchInspectionBeAppGroupAjax(SearchParam searchParam){
         return inspectionTaskClient.searchInspectionBeAppGroupAjax(searchParam).getEntity();
+    }
+
+    @Override
+    public AppPremisesRecommendationDto getAppRecomDtoByAppCorrId(String appCorrId, String recomType) {
+        Map<String, Object> paramMap = IaisCommonUtils.genNewHashMap();
+        paramMap.put("appCorrId", appCorrId);
+        paramMap.put("recomType", recomType);
+        AppPremisesRecommendationDto appPremisesRecommendationDto = inspectionTaskClient.getAppPremRecordByIdAndType(appCorrId,recomType).getEntity();
+        return appPremisesRecommendationDto;
     }
 
 }

@@ -348,7 +348,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 }
                 String oldFileGuid = serListDto.getOldFileGuid();
                 if(!StringUtil.isEmpty(oldFileGuid)){
-                    fileRepoClient.removeFileById(oldFileGuid);
+                    removeFiles(oldFileGuid);
                     serListDto.setOldFileGuid(null);
                 }
                 String guid = serListDto.getAppPremisesSpecialDocDto().getFileRepoId();
@@ -365,7 +365,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 fillUpCheckListGetAppClient.deleteAppIntranetDocsById(serListDto.getCopyAppPremisesSpecialDocDto().getId());
             }
             if(!StringUtil.isEmpty(oldFileGuid)){
-                fileRepoClient.removeFileById(oldFileGuid);
+                removeFiles(oldFileGuid);
                 serListDto.setOldFileGuid(null);
                 serListDto.setCopyAppPremisesSpecialDocDto(null);
             }
@@ -405,7 +405,10 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     public void removeFiles(String id){
         log.info(StringUtil.changeForLog("----- remove id : "+ id+"-------"));
         try {
-            fileRepoClient.removeFileById(id);
+            FileRepoDto fileRepoDto = new FileRepoDto();
+            fileRepoDto.setId(id);
+            fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            fileRepoClient.removeFileById(fileRepoDto);
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }

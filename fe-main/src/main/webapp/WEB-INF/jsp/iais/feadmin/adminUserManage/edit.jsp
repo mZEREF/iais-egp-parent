@@ -38,8 +38,8 @@
                                     <%@include file="/WEB-INF/jsp/iais/common/userForm.jsp"%>
                                     <c:choose>
                                         <c:when test="${isAdmin.equals('1')}">
-                                            <iais:row>
-                                                <iais:field value="Is Administrator" width="11"/>
+                                            <iais:row  style="margin-bottom:4px">
+                                                <iais:field value="Is Administrator" id="userRole" width="11"/>
                                                 <div class="col-md-3">
                                                     <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="admin" name="role" <c:if test="${inter_user_attr.userRole=='ORG_ADMIN'}">checked</c:if>></div>
                                                     <label class="col-md-2 control-label" >Yes</label>
@@ -49,6 +49,10 @@
                                                     <label class="col-md-2 control-label" >No</label>
                                                 </div>
                                             </iais:row>
+                                            <div>
+                                                <iais:field value="" width="11"/>
+                                                <span style="padding-left: 15px;" class="error-msg" name="errorMsg" id="error_userRole"></span>
+                                            </div>
                                             <iais:row>
                                                 <iais:field value="Is Active" width="11"/>
                                                 <div class="col-md-3">

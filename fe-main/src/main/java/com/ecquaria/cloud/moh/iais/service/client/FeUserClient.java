@@ -51,6 +51,8 @@ public interface FeUserClient {
     @GetMapping(path = "/iais-internet-user/user-account-orgid", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<FeUserDto>> getAccountByOrgId(@RequestParam(value = "orgId")String orgId);
 
+    @GetMapping(path = "/iais-internet-user/user-admin-account-orgid", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<FeUserDto>> getAdminAccountByOrgId(@RequestParam(value = "orgId")String orgId);
 
     @PostMapping(path = "/iais-internet-user/user-account/", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrganizationDto> createHalpAccount(@RequestBody OrganizationDto organizationDto);

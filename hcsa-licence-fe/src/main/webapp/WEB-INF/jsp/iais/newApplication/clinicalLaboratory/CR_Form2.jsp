@@ -738,7 +738,7 @@
         $('.assignContent:last').after(appendHtml);*/
         showWaiting();
         $('.hideen-div').addClass('hidden');
-        var number = $('.assign-psn-item').size();
+        var number = $('.assign-psn-item').length;
         var addNumber = ${HcsaSvcPersonnel.maximumCount} -number;
         $.ajax({
             url: '${pageContext.request.contextPath}/governance-officer-html',

@@ -39,4 +39,7 @@ public interface  AppPaymentStatusClient {
     @PostMapping(value = "/iais-payment/update-giropayment" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<GiroPaymentDto> updateGiroPaymentDto(@RequestBody GiroPaymentDto giroPaymentDto);
 
+    @GetMapping(value = "/iais-payment/get-giropaymentxmls-tag-status-xmltype",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<GiroPaymentXmlDto>> getGiroPaymentDtosByStatusAndXmlType(@RequestParam("tag") String tag,@RequestParam("status") String status,@RequestParam("xmlType")String xmlType);
+
 }

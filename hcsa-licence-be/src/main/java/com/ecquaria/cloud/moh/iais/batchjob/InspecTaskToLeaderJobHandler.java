@@ -161,7 +161,7 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
                 if (appInspStatusDto == null || StringUtil.isEmpty(appInspStatusDto.getAppPremCorreId())) {
                     continue;
                 }
-                if(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER.equals(appInspStatusDto.getStatus())){
+                if(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER.equals(appInspStatusDto.getStatus())) {
                     ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(appInspStatusDto.getAppPremCorreId()).getEntity();
                     ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
                     HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
@@ -169,39 +169,52 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
                     hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
                     hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
                     hcsaSvcStageWorkingGroupDto.setOrder(3);
-                    String workGroupId = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId();
-                    //get task type
-                    List<TaskDto> taskDtoList = organizationClient.getTaskByAppNoStatus(
-                            applicationDto.getApplicationNo(), TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
-                    List<TaskDto> createTasks = IaisCommonUtils.genNewArrayList();
-                    if(!IaisCommonUtils.isEmpty(taskDtoList)){
-                        List<String> leads = organizationClient.getInspectionLead(workGroupId).getEntity();
-                        if(!IaisCommonUtils.isEmpty(leads)) {
-                            //get task score
-                            List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
-                            applicationDtos.add(applicationDto);
-                            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = inspectionAssignTaskService.generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
-                            hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-                            //get lead by lead score
-                            List<TaskDto> taskScoreDtos = taskService.getTaskDtoScoresByWorkGroupId(workGroupId);
-                            String lead = getLeadWithTheFewestScores(taskScoreDtos, leads);
-                            TaskDto taskDto = taskDtoList.get(0);
-                            TaskDto taskDto1 = new TaskDto();
-                            taskDto1.setRefNo(appInspStatusDto.getAppPremCorreId());
-                            taskDto1.setTaskType(taskDto.getTaskType());
-                            taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
-                            taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
-                            taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
-                            taskDto1.setWkGrpId(workGroupId);
-                            taskDto1.setUserId(lead);
-                            taskDto1.setApplicationNo(taskDto.getApplicationNo());
-                            createTasks = prepareTaskList(taskDto1, hcsaSvcStageWorkingGroupDto, intranet, createTasks, hcsaSvcStageWorkingGroupDtos.get(0).getCount());//NOSONAR
-                        }
-                        if(!IaisCommonUtils.isEmpty(createTasks)) {
-                            taskService.createTasks(createTasks);
-                            appInspStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_REVIEW_CHECKLIST_EMAIL);
-                            appInspStatusDto.setAuditTrailDto(intranet);
-                            appInspectionStatusClient.update(appInspStatusDto);
+                    HcsaSvcStageWorkingGroupDto hsswgDto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
+                    if (hsswgDto != null) {
+                        String workGroupId = hsswgDto.getGroupId();
+                        //get task type
+                        List<TaskDto> taskDtoList = organizationClient.getTaskByAppNoStatus(
+                                applicationDto.getApplicationNo(), TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
+                        List<TaskDto> createTasks = IaisCommonUtils.genNewArrayList();
+                        if (!IaisCommonUtils.isEmpty(taskDtoList)) {
+                            List<String> leads = organizationClient.getInspectionLead(workGroupId).getEntity();
+                            if (!IaisCommonUtils.isEmpty(leads)) {
+                                //get task score
+                                List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+                                applicationDtos.add(applicationDto);
+                                List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = inspectionAssignTaskService.generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
+                                hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+                                //get lead by lead score
+                                List<TaskDto> taskScoreDtos = taskService.getTaskDtoScoresByWorkGroupId(workGroupId);
+                                String lead = getLeadWithTheFewestScores(taskScoreDtos, leads);
+                                TaskDto taskDto = taskDtoList.get(0);
+                                TaskDto taskDto1 = new TaskDto();
+                                taskDto1.setRefNo(appInspStatusDto.getAppPremCorreId());
+                                if (TaskConsts.TASK_SCHEME_TYPE_ROUND.equals(hsswgDto.getSchemeType())){
+                                    taskDto1.setTaskType(taskDto.getTaskType());
+                                } else if (TaskConsts.TASK_SCHEME_TYPE_COMMON.equals(hsswgDto.getSchemeType())){
+                                    taskDto1.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
+                                } else if (TaskConsts.TASK_SCHEME_TYPE_ASSIGN.equals(hsswgDto.getSchemeType())){
+                                    taskDto1.setTaskType(TaskConsts.TASK_TYPE_INSPECTION_SUPER);
+                                }
+                                taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
+                                taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
+                                taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
+                                taskDto1.setWkGrpId(workGroupId);
+                                if(TaskConsts.TASK_SCHEME_TYPE_ROUND.equals(hsswgDto.getSchemeType())){
+                                    taskDto1.setUserId(lead);
+                                } else {
+                                    taskDto1.setUserId(null);
+                                }
+                                taskDto1.setApplicationNo(taskDto.getApplicationNo());
+                                createTasks = prepareTaskList(taskDto1, hcsaSvcStageWorkingGroupDto, intranet, createTasks, hcsaSvcStageWorkingGroupDtos.get(0).getCount());//NOSONAR
+                            }
+                            if (!IaisCommonUtils.isEmpty(createTasks)) {
+                                taskService.createTasks(createTasks);
+                                appInspStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_REVIEW_CHECKLIST_EMAIL);
+                                appInspStatusDto.setAuditTrailDto(intranet);
+                                appInspectionStatusClient.update(appInspStatusDto);
+                            }
                         }
                     }
                 }

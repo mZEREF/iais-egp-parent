@@ -132,15 +132,17 @@
                                     <c:choose>
                                         <c:when test="${isDoView != 'Y'}">
                                             <div class="file-upload-gp">
-                                                <input id="selectedFile" type="file" style="display: none;" name = "selectedFile"
-                                                       aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary"
+                                                <input id="selectedFile" name="selectedFile" class="selectedFile commDoc"
+                                                       type="file" style="display: none;"
+                                                       aria-label="selectedFile1"
+                                                       onclick="fileClicked(event)"
+                                                       onchange="fileChanged(event)"/><a class="btn btn-file-upload btn-secondary"
                                                                                     href="javascript:void(0);">Upload</a>
 
                                                 <div id="delFile" style="margin-top: 13px;color: #1F92FF;"
                                                      hidden="hidden">
                                                     <strong id="fileName">${file_upload_withdraw}</strong>
-                                                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteWdFile()"><em
-                                                            class="fa fa-times"></em></button>
+                                                    <span class="delBtn">&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm" onclick="deleteWdFile()">Delete</button></span>
                                                 </div>
                                             </div>
                                         </c:when>

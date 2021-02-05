@@ -699,14 +699,8 @@ public class InspectEmailAo1Delegator {
     public void doCheckList(BaseProcessClass bpc){
         log.info("=======>>>>>doCheckList>>>>>>>>>>>>>>>>doCheckList");
         HttpServletRequest request = bpc.request;
-        InspectionFDtosDto serListDto = null;
-        serListDto = getServiceCheckListDataFormViewPage(request);
-        InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
-        AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
+        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SER_LIST_DTO);
         serListDto.setCheckListTab("chkList");
-        fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
-        ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
-        ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
         ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
     }
 
@@ -851,6 +845,5 @@ public class InspectEmailAo1Delegator {
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
         ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE+"Step2", crudActionType);
-        getOtherInfo(mulReq);
     }
 }

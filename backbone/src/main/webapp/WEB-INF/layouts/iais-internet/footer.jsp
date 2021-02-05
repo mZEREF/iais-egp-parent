@@ -8,7 +8,7 @@
             <div class="col-xs-12 col-md-7">
                 <div class="footer-link">
                     <ul class="list-inline">
-                        <li><a><label>HALP</label></a></li>
+                        <li><a href="<iais:code code='MRUS019'/>"><label>HALP</label></a></li>
                         <li><a href="<iais:code code='MRUS008'/>">Who we are</a></li>
                         <li><a href="<iais:code code='MRUS009'/>">Privacy Statement</a></li>
                         <li><a href="<iais:code code='MRUS010'/>">Terms Of Use</a></li>

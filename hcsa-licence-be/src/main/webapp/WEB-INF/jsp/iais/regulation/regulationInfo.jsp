@@ -40,7 +40,7 @@
             <div class="form-group">
                 <iais:field value="Regulation Clause Number" required="true"/>
                 <div class="col-xs-5 col-md-3" >
-                    <input type="text" name="regulationClauseNo" maxlength="100" value="${regulationAttr.clauseNo}" />
+                    <input type="text" name="edit_regulationClauseNo" maxlength="100" value="${regulationAttr.clauseNo}" />
                     <span id="error_clauseNo" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
@@ -49,7 +49,7 @@
             <div class="form-group">
                 <iais:field value="Regulations" required="true" />
                 <div class="col-xs-5 col-md-3" >
-                    <textarea cols="70" rows="7" name="regulationClause" id="regulationClause" maxlength="8000"><c:out value="${regulationAttr.clause}"> </c:out></textarea>
+                    <textarea cols="70" rows="7" name="edit_regulationClause" id="regulationClause" maxlength="8000"><c:out value="${regulationAttr.clause}"> </c:out></textarea>
                     <span id="error_clause" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>

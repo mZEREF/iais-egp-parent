@@ -1201,6 +1201,10 @@ public class MohIntranetUserDelegator {
             Element root = document.getRootElement();
             //ele
             list = root.elements();
+            if (list != null) {
+                Element elementCheck = (Element)list.get(0);
+                elementCheck.element("displayName").getText();
+            }
         } catch (Exception e) {
             OrgUserDto orgUserDto = new OrgUserDto();
             orgUserDto.setXmlError("error");
@@ -1299,7 +1303,11 @@ public class MohIntranetUserDelegator {
         List<String> errors = IaisCommonUtils.genNewArrayList();
         String xmlError = orgUserDto.getXmlError();
         if (!StringUtil.isEmpty(xmlError)) {
-            errors.add("Please upload correct format.");
+            if("errorName".equals(xmlError)){
+                errors.add("The filename should not be more than 100 characters");
+            }else {
+                errors.add("Please upload correct format");
+            }
             return errors;
         }
         String userId = orgUserDto.getUserId();
@@ -1309,72 +1317,72 @@ public class MohIntranetUserDelegator {
                 errors.add(error);
             }
         } else {
-            String error = "User ID is a mandatory field.";
+            String error = "User ID is a mandatory field";
             errors.add(error);
         }
         String displayName = orgUserDto.getDisplayName();
         if (StringUtil.isEmpty(displayName)) {
-            String error = "Display Name is a mandatory field.";
+            String error = "Display Name is a mandatory field";
             errors.add(error);
         }
 
         Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
         String startDateStr = orgUserDto.getStartDateStr();
         if (StringUtil.isEmpty(startDateStr)) {
-            String error = "Account Activation Start is a mandatory field.";
+            String error = "Account Activation Start is a mandatory field";
             errors.add(error);
         }
         if (!StringUtil.isEmpty(startDateStr) && accountActivateDatetime == null) {
-            String error = "Please key in a valid Account Activation Start date.";
+            String error = "Please key in a valid Account Activation Start date";
             errors.add(error);
         }
         Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
         String endDateStr = orgUserDto.getEndDateStr();
         if (StringUtil.isEmpty(endDateStr)) {
-            String error = "Account Activation End is a mandatory field.";
+            String error = "Account Activation End is a mandatory field";
             errors.add(error);
         }
         if (!StringUtil.isEmpty(endDateStr) && accountDeactivateDatetime == null) {
-            String error = "Please key in a valid Account Activation End date.";
+            String error = "Please key in a valid Account Activation End date";
             errors.add(error);
         }
         if (accountDeactivateDatetime != null && accountActivateDatetime != null) {
             boolean after = accountDeactivateDatetime.after(accountActivateDatetime);
             if (!after) {
-                String error = "Account Activation Start cannot be later than Account Activation End.";
+                String error = "Account Activation Start cannot be later than Account Activation End";
                 errors.add(error);
             }
         }
         String lastName = orgUserDto.getLastName();
         if (StringUtil.isEmpty(lastName)) {
-            String error = "Last Name is a mandatory field.";
+            String error = "Last Name is a mandatory field";
             errors.add(error);
         }
         String firstName = orgUserDto.getFirstName();
         if (StringUtil.isEmpty(firstName)) {
-            String error = "First Name is a mandatory field.";
+            String error = "First Name is a mandatory field";
             errors.add(error);
         }
         String email = orgUserDto.getEmail();
         if (StringUtil.isEmpty(email)) {
-            String error = "Email is a mandatory field.";
+            String error = "Email is a mandatory field";
             errors.add(error);
         } else {
             if (!ValidationUtils.isEmail(email)) {
-                String error = "Please key in a valid email address.";
+                String error = "Please key in a valid email address";
                 errors.add(error);
             }
         }
         String mobileNo = orgUserDto.getMobileNo();
         if (!StringUtil.isEmpty(mobileNo)) {
             if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                errors.add("Please key in a valid mobile number.");
+                errors.add("Please key in a valid mobile number");
             }
         }
         String officeTelNo = orgUserDto.getOfficeTelNo();
         if (!StringUtil.isEmpty(officeTelNo)) {
             if (!officeTelNo.matches("^[6][0-9]{7}$")) {
-                errors.add("Please key in a valid office number.");
+                errors.add("Please key in a valid office number");
             }
         }
         return errors;

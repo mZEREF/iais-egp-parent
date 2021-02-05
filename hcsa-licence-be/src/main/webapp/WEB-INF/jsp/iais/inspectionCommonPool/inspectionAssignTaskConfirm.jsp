@@ -103,20 +103,22 @@
                     <p></p>
                   </c:if>
                   <c:if test="${'INSPECTOR' eq iais_Login_User_Info_Attr.curRoleId || 'INSPECTOR_LEAD' eq iais_Login_User_Info_Attr.curRoleId}">
-                    <div class="row">
-                      <div class="col-md-2">
-                        <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)</label>
+                    <c:if test="${'common' eq inspecTaskCreAndAssDto.editHoursFlag}">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)</label>
+                        </div>
+                        <div class="col-md-6">
+                          <c:if test="${!empty inspecTaskCreAndAssDto.inspManHours}">
+                            <span style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.inspManHours}"/></span>
+                          </c:if>
+                          <c:if test="${empty inspecTaskCreAndAssDto.inspManHours}">
+                            <span style="font-size: 16px"><c:out value="-"/></span>
+                          </c:if>
+                        </div>
                       </div>
-                      <div class="col-md-6">
-                        <c:if test="${!empty inspecTaskCreAndAssDto.inspManHours}">
-                          <span style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.inspManHours}"/></span>
-                        </c:if>
-                        <c:if test="${empty inspecTaskCreAndAssDto.inspManHours}">
-                          <span style="font-size: 16px"><c:out value="-"/></span>
-                        </c:if>
-                      </div>
-                    </div>
-                    <p></p>
+                      <p></p>
+                    </c:if>
                   </c:if>
                   <div class="row">
                     <div class="col-md-2">

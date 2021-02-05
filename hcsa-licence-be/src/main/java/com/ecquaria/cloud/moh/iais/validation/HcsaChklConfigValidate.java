@@ -33,7 +33,7 @@ public class HcsaChklConfigValidate implements CustomizeValidator {
         Date eDate = IaisEGPHelper.parseToDate(eftEndDate);
 
         if (IaisEGPHelper.isAfterDate(eDate, sDate)){
-            errMap.put("configCustomValidation", MessageUtil.getMessageDesc("CHKL_ERR013"));
+            errMap.put("eftStartDate", MessageUtil.getMessageDesc("CHKL_ERR013"));
             return errMap;
         }
 

@@ -54,7 +54,7 @@
                                         <div id="uploadFileBox" class="file-upload-gp">
                                             <c:forEach var="attachmentDto" items="${blastManagementDto.attachmentDtos}"
                                                        varStatus="status">
-                                                <p class="fileList">${attachmentDto.docName}&emsp;<button type="button" class="btn btn-danger btn-sm" onclick="writeMessageDeleteFile('${attachmentDto.id}')"><em class="fa fa-times"></em></button><input hidden name='fileSize' value='${attachmentDto.docSize}'/></p>
+                                                <p class="fileList">${attachmentDto.docName}&emsp;<button type="button" class="btn btn-secondary btn-sm" onclick="writeMessageDeleteFile('${attachmentDto.id}')">Delete</button><input hidden name='fileSize' value='${attachmentDto.docSize}'/></p>
                                             </c:forEach>
                                         </div>
                                         <a class="btn btn-file-upload btn-secondary" href="#">Upload</a>

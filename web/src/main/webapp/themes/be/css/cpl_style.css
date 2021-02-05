@@ -1227,6 +1227,19 @@ body.navigation-open {
   text-transform: uppercase;
   border-radius: 30px;
 }
+/*
+  for be delete icon change,create by sz
+*/
+.btn.btn-secondary-del {
+  /* font-size: 1.6rem; */
+  /* font-weight: 700; */
+  background: white;
+  border: 1px solid #333333;
+  color: black;
+  /* padding: 12px 40px; */
+  text-transform: uppercase;
+  border-radius: 30px;
+}
 .btn.btn-secondary:active, .btn.btn-secondary:focus, .btn.btn-secondary.click {
   background: #E8E8E8;
   color: black;

@@ -12,8 +12,9 @@
  */
 package com.ecquaria.cloud.moh.iais.api.util;
 
+import com.ecquaria.cloud.helper.ConfigHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import ecq.commons.config.Config;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -30,6 +31,7 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * FileUtil.java
@@ -83,7 +85,7 @@ public class FileUtil {
 		}
 			
 		try {
-			generateFolder(fileName.substring(0, fileName.lastIndexOf(Config.get("sftp.linux.seperator"))));
+			generateFolder(fileName.substring(0, fileName.lastIndexOf(ConfigHelper.getString("giro.sftp.linux.seperator"))));
 		} catch (Exception e) {
 			log.error(StringUtil.changeForLog("generate folder for " + fileName + " error!" + e.getMessage()));
 			log.error(e.getMessage(), e);
@@ -196,7 +198,7 @@ public class FileUtil {
 	}
 
 	public static String getFileUrl(String filePath) {
-		return Config.get("file.server.url") + filePath;
+		return ConfigHelper.getString("file.server.url") + filePath;
 	}
 
 	public static boolean copyFile(String source, String target) {
@@ -278,5 +280,17 @@ public class FileUtil {
 	}
 
 	private FileUtil() {
+	}
+
+	public static String getContentByPostfixNotation(String postfixNotation,String downPath, List<String> remoteFileNames) throws Exception{
+		if(IaisCommonUtils.isEmpty(remoteFileNames)){
+			return "";
+		}
+		for(String remoteFileName : remoteFileNames){
+			if(remoteFileName.contains(postfixNotation)){
+				return FileUtil.getString(downPath + remoteFileName);
+			}
+		}
+		return "";
 	}
 }

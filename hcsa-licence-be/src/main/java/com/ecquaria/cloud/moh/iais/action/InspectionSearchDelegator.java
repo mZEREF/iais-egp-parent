@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -9,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
@@ -407,10 +409,9 @@ public class InspectionSearchDelegator {
             if(inspectionTaskPoolListDto.getTaskDto() != null){
                 String appPremCorrId = inspectionTaskPoolListDto.getTaskDto().getRefNo();
                 ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appPremCorrId);
+                ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
                 ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
-                if(StringUtil.isEmpty(inspectionTaskPoolListDto.getTaskDto().getUserId())){
-                    inspectionTaskPoolListDto.setEditHoursFlag(AppConsts.COMMON_POOL);
-                }
+                inspectionTaskPoolListDto = setEditHoursFlagByAppAndUser(inspectionTaskPoolListDto, applicationDto);
             }
             if(!(IaisCommonUtils.isEmpty(inspectionTaskPoolListDto.getInspectorOption()))){
                 inspectionTaskPoolListDto.setInspectorFlag(AppConsts.TRUE);
@@ -421,6 +422,23 @@ public class InspectionSearchDelegator {
 
         ParamUtil.setSessionAttr(bpc.request, "inspectionTaskPoolListDto", inspectionTaskPoolListDto);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", searchResult);
+    }
+
+    private InspectionTaskPoolListDto setEditHoursFlagByAppAndUser(InspectionTaskPoolListDto inspectionTaskPoolListDto, ApplicationDto applicationDto) {
+        List<String> appHoursStatusList = IaisCommonUtils.genNewArrayList();
+        appHoursStatusList.add(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL);
+        appHoursStatusList.add(ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT);
+        appHoursStatusList.add(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT);
+        String appStatus = "";
+        if(applicationDto != null) {
+            appStatus = applicationDto.getStatus();
+        }
+        if(StringUtil.isEmpty(inspectionTaskPoolListDto.getTaskDto().getUserId())){
+            if(appHoursStatusList.contains(appStatus)) {//NOSONAR
+                inspectionTaskPoolListDto.setEditHoursFlag(AppConsts.COMMON_POOL);
+            }
+        }
+        return inspectionTaskPoolListDto;
     }
 
     /**

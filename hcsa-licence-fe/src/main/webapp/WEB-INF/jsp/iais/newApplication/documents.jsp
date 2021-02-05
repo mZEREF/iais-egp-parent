@@ -94,14 +94,14 @@
                           <c:choose>
                             <c:when test="${file.docName == '' || file.docName == null }">
                               <span class="hidden delBtn">
-                                &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
+                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
                               </span>
                                 <br/>
                             </c:when>
                             <c:otherwise>
                               <%--<span class="existFile delBtn <c:if test="${!isClickEdit || AppSubmissionDto.onlySpecifiedSvc}">hidden</c:if>">--%>
                               <span class="existFile delBtn <c:if test="${!isClickEdit}">hidden</c:if>">
-                                &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
+                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
                               </span>
                                 <br/>
                             </c:otherwise>
@@ -137,12 +137,12 @@
                             <c:choose>
                               <c:when test="${primaryDoc.docName == '' || primaryDoc.docName == null }">
                               <span class="hidden delBtn">
-                                &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
+                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
                               </span>
                               </c:when>
                               <c:otherwise>
                                 <span class="existFile delBtn <c:if test="${!isClickEdit}">hidden</c:if>">
-                                &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
+                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
                               </span>
                               </c:otherwise>
                             </c:choose>
@@ -248,7 +248,7 @@
             if(file != null && file != '' && file != undefined){
                 var currGrp = $(obj).closest('.file-upload-gp');
                 currGrp.find('span:eq(0)').html(getFileName(file));
-                currGrp.find('span:eq(0)').next().html('&nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>');
+                currGrp.find('span:eq(0)').next().html('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>');
                 currGrp.find('span:eq(0)').next().removeClass("hidden");
                 currGrp.find('input delFlag').val('N');
             }

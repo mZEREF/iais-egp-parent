@@ -24,9 +24,11 @@ public class SendGiroXmlToSftpJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s){
         try {
             JobLogger.log(StringUtil.changeForLog("SendGiroXmlToSftpJobHandler start ..."));
+            log.info("-----SendGiroXmlToSftpJobHandler start ------");
             AuditTrailHelper.setupBatchJobAuditTrail(this);
             serviceConfigService.sendGiroXmlToSftp();
             JobLogger.log(StringUtil.changeForLog("SendGiroXmlToSftpJobHandler end ..."));
+            log.info("-----SendGiroXmlToSftpJobHandler end ------");
             return ReturnT.SUCCESS;
         }catch (Throwable e){
             log.error(e.getMessage(), e);

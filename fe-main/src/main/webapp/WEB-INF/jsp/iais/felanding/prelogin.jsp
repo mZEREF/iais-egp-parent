@@ -134,10 +134,7 @@
                 <h3>Healthcare Services Act (HCSA)</h3>
                 <ul>
                   <li>
-                    <p><a href="#">About HCSA</a></p>
-                  </li>
-                  <li>
-                    <p><a href="#">Bill phases &amp; timelines</a></p>
+                    <p><a href="https://www.moh.gov.sg/hcsa/about-hcsa">About HCSA</a></p>
                   </li>
                   <li>
                     <p><a href="#">Services under IAIS today</a></p>

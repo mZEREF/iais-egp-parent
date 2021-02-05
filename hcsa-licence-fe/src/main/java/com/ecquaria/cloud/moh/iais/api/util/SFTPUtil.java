@@ -18,6 +18,7 @@ package com.ecquaria.cloud.moh.iais.api.util;
  * @author zhuhua
  */
 
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -25,6 +26,7 @@ import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+import ecq.commons.config.Config;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -40,18 +42,8 @@ import java.util.Vector;
 @Slf4j
 public class SFTPUtil {
     
-	private static Properties property;
-	
-	static{
-		property = new Properties();
-		try {
-			property.load(SFTPUtil.class.getClassLoader().getResourceAsStream("application.properties"));
-		} catch (IOException ex) {
-			log.error(ex.getMessage(), ex);
-		}
-	}
-	
-	private static final String seperator = property.getProperty("sftp.linux.seperator");
+
+	private static final String seperator = ConfigHelper.getString("giro.sftp.linux.seperator");
     
 	private static ChannelSftp sftp = null;
 
@@ -61,8 +53,8 @@ public class SFTPUtil {
                 log.info(StringUtil.changeForLog("sftp is not null..."));
             } else {
             	JSch jsch = new JSch();
-            	Session sshSession = jsch.getSession(property.getProperty("sftp.username"), property.getProperty("sftp.host"), Integer.parseInt(property.getProperty("sftp.port")));
-            	sshSession.setPassword(property.getProperty("sftp.wordmima"));
+            	Session sshSession = jsch.getSession(ConfigHelper.getString("giro.sftp.username"),ConfigHelper.getString("giro.sftp.host"), Integer.parseInt(ConfigHelper.getString("giro.sftp.port")));
+            	sshSession.setPassword(ConfigHelper.getString("giro.sftp.wordmima"));
             	Properties sshConfig = new Properties();
             	sshConfig.put("StrictHostKeyChecking", "no");
             	sshSession.setConfig(sshConfig);

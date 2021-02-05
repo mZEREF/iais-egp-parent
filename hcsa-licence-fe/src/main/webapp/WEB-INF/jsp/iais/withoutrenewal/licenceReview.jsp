@@ -16,7 +16,7 @@
         font-size: 16px;
     }
 </style>
-<form class="" method="post" id="LicenceReviewForm" action=<%=process.runtime.continueURL()%>>
+<form class="table-responsive" method="post" id="LicenceReviewForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="switch_value" value=""/>
     <input type="hidden" id="checkSingle" value="${isSingle}"/>
     <input id="EditValue" type="hidden" name="EditValue" value="" />
@@ -256,6 +256,7 @@
         }else if(jQuery || (isSingle == 'N')) {
             $('#error_fieldMandatory').html("");
             $('[name="switch_value"]').val('doLicenceReview');
+            showWaiting();
             $('#LicenceReviewForm').submit();
         }
     });

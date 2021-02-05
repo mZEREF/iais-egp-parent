@@ -135,7 +135,7 @@
                                                                          options="patientsOption"
                                                                          firstOption="Please Select"
                                                                          id="${num.count}patientSelectId${uid.count}"
-                                                                         onchange="javascirpt:changePatient(this.value);"
+                                                                         onchange="javascirpt:changePatientCessBe(this.value);"
                                                                          value="${appCessHci.patientSelect}" cssClass="nice-select cessationTransfer"/>
                                                         </iais:value>
                                                     </iais:row>
@@ -191,6 +191,7 @@
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>
+                                                <c:if test="${isGrpLic}">
                                                 <iais:row>
                                                     <iais:field value="To Cease"/>
                                                     <iais:value width="7">
@@ -216,6 +217,7 @@
                                                         </div>
                                                     </iais:value>
                                                 </iais:row>
+                                                </c:if>
                                             </iais:section>
                                         </div>
                                     </div>
@@ -353,8 +355,7 @@
         $("[name='crud_action_type']").val(action);
         $("#mainForm").submit();
     }
-
-    function changeReason() {
+    function changeReasonCessBe() {
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
                 if ($("#" + i + "reasonId" + j).val() == "CES001") {
@@ -366,7 +367,7 @@
         }
     }
 
-    function changePatient() {
+    function changePatientCessBe() {
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
                 if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
@@ -386,7 +387,8 @@
         }
     }
 
-    function changePatSelect() {
+    function changePatSelectCessBe() {
+        changePatientCessBe();
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
                 if ($('#' + i + 'radioYes' + j).is(':checked')) {
@@ -402,41 +404,11 @@
             }
         }
     }
-
-
     $(document).ready(function () {
-        for (var i = 1; i < 8; i++) {
-            for (var j = 1; j < 8; j++) {
-                if ($("#" + i + "reasonId" + j).val() == "CES001") {
-                    $("#" + i + "reason" + j).show();
-                } else if ($("#" + i + "reasonId" + j).val() != "CES001") {
-                    $("#" + i + "reason" + j).hide();
-                }
-                if ($('#' + i + 'radioYes' + j).is(':checked')) {
-                    $("#" + i + "patYes" + j).show();
-                    $("#" + i + "patNo" + j).hide();
-                } else if ($('#' + i + 'radioNo' + j).is(':checked')) {
-                    $("#" + i + "patYes" + j).hide();
-                    $("#" + i + "patHciName" + j).hide();
-                    $("#" + i + "patOthers" + j).hide();
-                    $("#" + i + "patRegNo" + j).hide();
-                    $("#" + i + "patNo" + j).show();
-                }
-                if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
-                    $("#" + i + "patOthers" + j).show();
-                    $("#" + i + "patHciName" + j).hide();
-                    $("#" + i + "patRegNo" + j).hide();
-                } else if ($("#" + i + "patientSelectId" + j).val() == "CES005") {
-                    $("#" + i + "patHciName" + j).show();
-                    $("#" + i + "patOthers" + j).hide();
-                    $("#" + i + "patRegNo" + j).hide();
-                } else if ($("#" + i + "patientSelectId" + j).val() == "CES006") {
-                    $("#" + i + "patRegNo" + j).show();
-                    $("#" + i + "patHciName" + j).hide();
-                    $("#" + i + "patOthers" + j).hide();
-                }
-            }
-        }
+        changePatientCessBe();
+        changeReasonCessBe();
+        changePatSelectCessBe();
+
     });
 
     $(document).ready(function () {

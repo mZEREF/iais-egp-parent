@@ -61,11 +61,12 @@
                                 <c:choose>
                                     <c:when test="${empty searchResult.rows}">
                                         <tr>
-                                            <td  colspan="10" >
-                                                <c:out value="${errMsg}"/>
+                                            <td colspan="9">
+                                                <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                                                 <!--No Record!!-->
                                             </td>
                                         </tr>
+                                        <input hidden id="rows" value="0">
                                     </c:when>
                                     <c:otherwise>
                                         <c:forEach var="item" items="${searchResult.rows}" varStatus="status">
@@ -111,7 +112,7 @@
                             <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
                         </div>
                         <div class="col-xs-6 col-sm-6 text-right ">
-                            <a class="btn btn-primary" href="${pageContext.request.contextPath}/audit-repo?editBlast=${editBlast}&mode=${mode}" title="Download">Download</a>
+                            <a class="btn btn-primary" href="${pageContext.request.contextPath}/audit-repo?editBlast=${editBlast}&mode=${mode}&createby=${createby}&createDt=${createDt}" title="Download">Download</a>
                         </div>
                     </div>
                 </div>

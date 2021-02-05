@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
@@ -38,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
@@ -58,10 +60,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * BankedInboxDelegator
@@ -180,6 +179,7 @@ public class BackendInboxDelegator {
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
         List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext.getCurRoleId());
+        appStatusOption.sort((s1, s2) -> (s1.getText().compareTo(s2.getText())));
         SearchParam searchParamGroup = getSearchParam(bpc.request,false);
         ParamUtil.setSessionAttr(bpc.request, "backendinboxSearchParam", searchParamGroup);
 
@@ -912,6 +912,8 @@ public class BackendInboxDelegator {
         ParamUtil.setSessionAttr(bpc.request,"BackendInboxReturnFee",(Serializable) returnFeeMap);
         log.info(StringUtil.changeForLog("BackendInboxReturnFee:" + JsonUtil.parseToJson(returnFeeMap)));
         changePostInsForTodoAudit(applicationViewDto);
+        //set risk score
+        setRiskScore(applicationDto,newCorrelationId);
         //appeal save return fee
         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
@@ -1163,6 +1165,30 @@ public class BackendInboxDelegator {
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
         //0062460 update FE  application status.
         applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+    }
+
+    private void setRiskScore(ApplicationDto applicationDto,String newCorrelationId){
+        log.debug(StringUtil.changeForLog("correlationId : " + newCorrelationId));
+        try {
+            if(applicationDto != null && !StringUtil.isEmpty(newCorrelationId)){
+                AppPremisesRecommendationDto appPreRecommentdationDtoInspectionDate =inspectionService.getAppRecomDtoByAppCorrId(newCorrelationId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
+                if(appPreRecommentdationDtoInspectionDate != null){
+                    HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
+                    hcsaRiskScoreDto.setAppType(applicationDto.getApplicationType());
+                    hcsaRiskScoreDto.setLicId(applicationDto.getOriginLicenceId());
+                    List<ApplicationDto> applicationDtos = new ArrayList<>(1);
+                    applicationDtos.add(applicationDto);
+                    hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
+                    hcsaRiskScoreDto.setServiceId(applicationDto.getServiceId());
+                    HcsaRiskScoreDto entity = hcsaConfigMainClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
+                    String riskLevel = entity.getRiskLevel();
+                    log.debug(StringUtil.changeForLog("riskLevel : " + riskLevel));
+                    applicationDto.setRiskLevel(riskLevel);
+                }
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
     }
 
     public  void changePostInsForTodoAudit( ApplicationViewDto applicationViewDto ){

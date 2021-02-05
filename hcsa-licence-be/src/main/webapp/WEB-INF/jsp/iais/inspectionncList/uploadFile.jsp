@@ -62,7 +62,8 @@
         $('#selectedFileShow').html('')
         $('#fileRemarkShow').html('')
         $('#fileRemark').val('');
-        $('#uploadDoc').dialog('close');
+        $('#uploadDoc').dialog().dialog('close');
+        $('#uploadDoc').dialog('open');
         doDeleteShowFileName();
     };
 
@@ -113,8 +114,8 @@
                         removeNoData();
                     }
                     var tr = "<tr>"+"<td width=\"30%\"><p>" +data.docDesc+"</p></td>" +"<td  width=\"20%\"><p>"+  data.url +data.docName+"."+data.docType+"</p></td>"+
-                        "<td width=\"10%\"><p>" +data.docSize+"KB"+"</p></td>"+ "<td width=\"20%\"><p>" +data.submitByName+"</p></td>"+ "<td width=\"15%\"><p>" +data.submitDtString+"</p></td>"
-                        + "<td width=\"5%\">" + "  <button type=\"button\" class=\"btn btn-danger btn-sm\" onclick=\"javascript:deleteFile(this,'"+data.maskId+"');\"><i class=\"fa fa-times\"></i></button>" +"</td>"+"</tr>";
+                        "<td width=\"10%\"><p>" +data.docSize+"KB"+"</p></td>"+ "<td width=\"20%\"><p>" +data.submitByName+"</p></td>"+ "<td width=\"10%\"><p>" +data.submitDtString+"</p></td>"
+                        + "<td width=\"10%\">" + "  <button type=\"button\" class=\"btn btn-secondary-del btn-sm\" onclick=\"javascript:deleteFile(this,'"+data.maskId+"');\">Delete</button>" +"</td>"+"</tr>";
                     doAddTr(tr);
                     $("#cancelDoc").click();
                 }else if(data != null && data.fileSn ==-1){

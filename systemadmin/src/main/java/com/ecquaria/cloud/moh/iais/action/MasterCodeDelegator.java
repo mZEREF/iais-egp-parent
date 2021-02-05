@@ -252,12 +252,11 @@ public class MasterCodeDelegator {
                 }
             }
             if (masterCodeDto.getSequence() != null) {
-                if (masterCodeDto.getSequence() == -1) {
+                if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2) {
                     errorMap.put("sequence", mcuperrErrMsg8);
+                    masterCodeDto.setSequence(null);
                 }
-                if (masterCodeDto.getSequence() == -2) {
-                    errorMap.put("sequence", mcuperrErrMsg8);
-                }
+
             }
             if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
                 validationResult.setHasErrors(true);
@@ -682,6 +681,18 @@ public class MasterCodeDelegator {
         }
     }
 
+    private void fileValidation(HttpServletRequest request,String originalFilename,Map<String, String> errorMap){
+        String[] split = originalFilename.split("\\.");
+        if (!StringUtil.isEmpty(originalFilename)) {
+            if (split[0].length() > 100) {
+                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0022");
+                errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, errMsg);
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            }
+        }
+    }
+
     public void checkUploadFile(BaseProcessClass bpc) {
         List<Map<String,List<String>>> errResult = (List<Map<String, List<String>>>) ParamUtil.getSessionAttr(bpc.request,"ERR_RESULT_LIST_MAP");
         if (errResult != null && errResult.size()>0){
@@ -817,11 +828,9 @@ public class MasterCodeDelegator {
         if (validationResult != null && validationResult.isHasErrors()) {
             errorMap = validationResult.retrieveAll();
             if (masterCodeDto.getSequence() != null){
-                if (masterCodeDto.getSequence() == -1){
+                if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2){
                     errorMap.put("sequence", mcuperrErrMsg8);
-                }
-                if (masterCodeDto.getSequence() == -2){
-                    errorMap.put("sequence", mcuperrErrMsg8);
+                    masterCodeDto.setSequence(null);
                 }
             }
             if (AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
@@ -993,11 +1002,9 @@ public class MasterCodeDelegator {
                 }
             }
             if (masterCodeDto.getSequence() != null) {
-                if (masterCodeDto.getSequence() == -1) {
+                if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2) {
                     errorMap.put("sequence", mcuperrErrMsg8);
-                }
-                if (masterCodeDto.getSequence() == -2) {
-                    errorMap.put("sequence", mcuperrErrMsg8);
+                    masterCodeDto.setSequence(null);
                 }
             }
             if(errorMap != null && errorMap.size() > 0){
@@ -1101,11 +1108,12 @@ public class MasterCodeDelegator {
             if (!isDouble(codeSequenceEd)) {
                 masterCodeDto.setSequence(-1);
             }else{
-                int codeCategorySequenceInt = ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_ED) * 1000;
+                double codeCategorySequenceInt = ParamUtil.getDouble(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_ED) * 1000;
                 if (codeCategorySequenceInt < 0){
                     masterCodeDto.setSequence(-2);
                 }else{
-                    masterCodeDto.setSequence(codeCategorySequenceInt);
+                    int i =  new Double(codeCategorySequenceInt).intValue();
+                    masterCodeDto.setSequence(i);
                 }
 
             }
@@ -1161,11 +1169,12 @@ public class MasterCodeDelegator {
             if (!isDouble(codeCategorySequence)) {
                 masterCodeDto.setSequence(-1);
             }else{
-                int codeCategorySequenceInt = ParamUtil.getInt(request, "codeCategorySequence") * 1000;
+                double codeCategorySequenceInt = ParamUtil.getDouble(request, "codeCategorySequence") * 1000;
                 if (codeCategorySequenceInt < 0){
                     masterCodeDto.setSequence(-2);
                 }else{
-                    masterCodeDto.setSequence(codeCategorySequenceInt);
+                    int i =  new Double(codeCategorySequenceInt).intValue();
+                    masterCodeDto.setSequence(i);
                 }
 
             }
@@ -1194,7 +1203,9 @@ public class MasterCodeDelegator {
     }
 
     private Map<String, String> validationFile(HttpServletRequest request, MultipartFile file){
+        String originalFilename = file.getOriginalFilename();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
+        fileValidation(request,originalFilename,errorMap);
         if (file.isEmpty()){
             errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "GENERAL_ERR0020");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -1211,7 +1222,7 @@ public class MasterCodeDelegator {
         }
 
         if (FileUtils.outFileSize(file.getSize())){
-            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "GENERAL_ERR0004");
+            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "GENERAL_ERR0022");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return errorMap;

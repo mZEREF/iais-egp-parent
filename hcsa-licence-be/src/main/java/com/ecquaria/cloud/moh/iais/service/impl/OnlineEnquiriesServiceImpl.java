@@ -54,6 +54,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.DisciplinaryRecordResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -685,6 +686,13 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             licenseeDto.setEmilAddr(IaisEGPHelper.getLicenseeEmailAddrs(appInsRepDto.getLicenseeId()).get(0));
         }catch (Exception e){
             log.error(e.getMessage(), e);
+        }
+        List<TaskDto> taskDtos=taskService.getTaskbyApplicationNo(applicationViewDto.getApplicationDto().getApplicationNo());
+        for (TaskDto task:taskDtos
+        ) {
+            if((task.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)||task.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING))&&task.getUserId()==null){
+                applicationViewDto.setCurrentStatus(MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT));
+            }
         }
         ParamUtil.setRequestAttr(request,"applicationViewDto",applicationViewDto);
         ParamUtil.setRequestAttr(request,"licenseeDto",licenseeDto);

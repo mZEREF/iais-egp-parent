@@ -576,6 +576,8 @@ public class BlastManagementDelegator {
         QueryHelp.setMainSql("systemAdmin", "audit",auditSearchParam);
         SearchResult<EmailAuditTrailDto> searchResult = blastManagementListService.auditList(auditSearchParam);
         File file = null;
+        String createby =  ParamUtil.getString(request, "createby");
+        String createDt =  ParamUtil.getString(request, "createDt");
         try {
             if("SMS".equals(mode)){
                 List<EmailAuditTrailSMSDto> smsDtos = IaisCommonUtils.genNewArrayList();
@@ -587,6 +589,8 @@ public class BlastManagementDelegator {
                     emailAuditTrailSMSDto.setContent(item.getContent());
                     emailAuditTrailSMSDto.setNumberAttempts(item.getNumberAttempts());
                     emailAuditTrailSMSDto.setLogMsg(item.getLogMsg());
+                    emailAuditTrailSMSDto.setCreateBy(createby);
+                    emailAuditTrailSMSDto.setCreateDt(createDt);
                     String date = Formatter.formatDate(item.getSentTime());
                     emailAuditTrailSMSDto.setSentTime(date);
                     smsDtos.add(emailAuditTrailSMSDto);
@@ -616,6 +620,8 @@ public class BlastManagementDelegator {
                     emailAuditTrailEmailDto.setContent(item.getContent());
                     emailAuditTrailEmailDto.setNumberAttempts(item.getNumberAttempts());
                     emailAuditTrailEmailDto.setLogMsg(item.getLogMsg());
+                    emailAuditTrailEmailDto.setCreateBy(createby);
+                    emailAuditTrailEmailDto.setCreateDt(createDt);
                     String date = Formatter.formatDate(item.getSentTime());
                     emailAuditTrailEmailDto.setSentTime(date);
                     emailDtos.add(emailAuditTrailEmailDto);

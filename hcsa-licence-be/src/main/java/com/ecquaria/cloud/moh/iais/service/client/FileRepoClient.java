@@ -37,7 +37,6 @@ public interface FileRepoClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<FileRepoDto>> getFilesByIds(@RequestBody List<String> ids);
 
-    @DeleteMapping(value = "/no-file/{fileId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> removeFileById(@PathVariable("fileId")String fileId);
-
+    @DeleteMapping(value = "/no-file", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> removeFileById(@RequestBody FileRepoDto fileRepoDto);
 }

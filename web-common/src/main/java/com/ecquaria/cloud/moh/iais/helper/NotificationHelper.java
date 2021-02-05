@@ -224,6 +224,7 @@ public class NotificationHelper {
 		String refIdType = emailParam.getRefIdType();
 		String refId = emailParam.getRefId();
 		String recipientType =emailParam.getRecipientType();
+		boolean isSendNewLicensee=emailParam.isNeedSendNewLicensee();
 		HashMap<String, String> subjectParams = emailParam.getSubjectParams();
 		JobRemindMsgTrackingDto jrDto = emailParam.getJobRemindMsgTrackingDto();
 		String subject = emailParam.getSubject();
@@ -275,7 +276,7 @@ public class NotificationHelper {
 				subject = replaceText(subject, subjectParams);
 			}
 
-			sendMessage(mesContext, refId, refIdType, subject, maskParams, svcCodeList);
+			sendMessage(mesContext, refId, refIdType, subject, maskParams, svcCodeList,isSendNewLicensee);
 			if (jrDto != null) {
 				List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
 				jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -450,12 +451,12 @@ public class NotificationHelper {
 				+ templateId+"thread name is " + Thread.currentThread().getName()));
 	}
 
-	private void sendMessage(String mesContext, String appNo, String refIdType, String subject, HashMap<String, String> maskParams, List<String> svcCodeList) {
+	private void sendMessage(String mesContext, String appNo, String refIdType, String subject, HashMap<String, String> maskParams, List<String> svcCodeList,boolean isSendNewLicensee) {
 		String licenseeId;
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
 		if(grpDto != null) {
 			licenseeId = grpDto.getLicenseeId();
-			if(grpDto.getNewLicenseeId()!=null){
+			if(grpDto.getNewLicenseeId()!=null&&isSendNewLicensee){
 				licenseeId=grpDto.getNewLicenseeId();
 			}
 		} else {

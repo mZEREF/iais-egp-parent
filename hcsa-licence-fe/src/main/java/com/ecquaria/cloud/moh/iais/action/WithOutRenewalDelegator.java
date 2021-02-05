@@ -256,6 +256,7 @@ public class WithOutRenewalDelegator {
                 List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcId);
                 appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
                 //set doc info
+                requestForChangeService.svcDocToPresmise(appSubmissionDto);
                 List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
                 List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
                 boolean isRfi = false;
@@ -660,16 +661,6 @@ public class WithOutRenewalDelegator {
                                     amendmentFeeDto.setChangeInLocation(Boolean.FALSE);
                                 }
 
-                                if (flag) {
-                                    List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
-                                    if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
-                                        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                                            appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
-                                            appGrpPremisesDto.setSelfAssMtFlag(4);
-                                        }
-                                    }
-                                }
-
                                 appSubmissionDtoByLicenceId.setGroupLic(groupLic);
                                 appSubmissionDtoByLicenceId.setPartPremise(groupLic);
                                 appSubmissionDtoByLicenceId.setAmount(0.0);
@@ -679,6 +670,14 @@ public class WithOutRenewalDelegator {
                                 appGrpPremisesDtos.add(copyMutableObject);
                                 if (groupLic) {
                                     appGrpPremisesDtos.get(0).setGroupLicenceFlag(licenceDto.getId());
+                                }
+                                if (flag) {
+                                    if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
+                                        for (AppGrpPremisesDto appGrpPremisesDto1 : appGrpPremisesDtos) {
+                                            appGrpPremisesDto1.setNeedNewLicNo(Boolean.FALSE);
+                                            appGrpPremisesDto1.setSelfAssMtFlag(4);
+                                        }
+                                    }
                                 }
                                 appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremisesDtos);
                                 appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
@@ -1865,7 +1864,7 @@ public class WithOutRenewalDelegator {
                     }
                 }
             }
-             if(appNoIndex == 1){
+             if(appNoIndex == 2){
                 temp = "has";
             }
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDtos.get(0).getServiceName());

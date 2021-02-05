@@ -244,29 +244,39 @@ public class EmailAjaxController {
         String msg = MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_MSG;
         String na = MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_NA;
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
-
-        switch (deliveyMode){
-            case MsgTemplateConstants.MSG_TEMPLATE_TYPE_ALERT:
-                selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
-                break;
-            case MsgTemplateConstants.MSG_TEMPLATE_TYPE_BANNER_ALERT:
-                selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
-                break;
-            case MsgTemplateConstants.MSG_TEMPLATE_TYPE_SCHEDULED_MAINTENANCE:
-                selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
-                break;
-            case MsgTemplateConstants.MSG_TEMPLATE_TYPE_LETTER:
-                selectOptions.add(new SelectOption(email,MasterCodeUtil.getCodeDesc(email)));
-                selectOptions.add(new SelectOption(msg,MasterCodeUtil.getCodeDesc(msg)));
-                break;
-            case MsgTemplateConstants.MSG_TEMPLATE_TYPE_NOTIFICATION:
-                selectOptions.add(new SelectOption(email,MasterCodeUtil.getCodeDesc(email)));
-                selectOptions.add(new SelectOption(msg,MasterCodeUtil.getCodeDesc(msg)));
-                selectOptions.add(new SelectOption(sms,MasterCodeUtil.getCodeDesc(sms)));
-                break;
-            default: ;
+        if(StringUtil.isEmpty(deliveyMode)){
+            selectOptions.add(new SelectOption(email,MasterCodeUtil.getCodeDesc(email)));
+            selectOptions.add(new SelectOption(msg,MasterCodeUtil.getCodeDesc(msg)));
+            selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+            selectOptions.add(new SelectOption(sms,MasterCodeUtil.getCodeDesc(sms)));
+        }else{
+            switch (deliveyMode){
+                case MsgTemplateConstants.MSG_TEMPLATE_TYPE_ALERT:
+                    selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+                    break;
+                case MsgTemplateConstants.MSG_TEMPLATE_TYPE_BANNER_ALERT:
+                    selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+                    break;
+                case MsgTemplateConstants.MSG_TEMPLATE_TYPE_SCHEDULED_MAINTENANCE:
+                    selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+                    break;
+                case MsgTemplateConstants.MSG_TEMPLATE_TYPE_LETTER:
+                    selectOptions.add(new SelectOption(email,MasterCodeUtil.getCodeDesc(email)));
+                    selectOptions.add(new SelectOption(msg,MasterCodeUtil.getCodeDesc(msg)));
+                    break;
+                case MsgTemplateConstants.MSG_TEMPLATE_TYPE_NOTIFICATION:
+                    selectOptions.add(new SelectOption(email,MasterCodeUtil.getCodeDesc(email)));
+                    selectOptions.add(new SelectOption(msg,MasterCodeUtil.getCodeDesc(msg)));
+                    selectOptions.add(new SelectOption(sms,MasterCodeUtil.getCodeDesc(sms)));
+                    break;
+                default:
+                    selectOptions.add(new SelectOption(email,MasterCodeUtil.getCodeDesc(email)));
+                    selectOptions.add(new SelectOption(msg,MasterCodeUtil.getCodeDesc(msg)));
+                    selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+                    selectOptions.add(new SelectOption(sms,MasterCodeUtil.getCodeDesc(sms)));
+                    break;
+            }
         }
-
         return selectOptions;
     }
 

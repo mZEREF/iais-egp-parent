@@ -26,6 +26,7 @@ public class EmailParam {
     private String subject;
     private String recipientType;
     private String moduleType;
+    private boolean needSendNewLicensee =false;
     private boolean smsOnlyOfficerHour = true;
     private List<String> svcCodeList;
     private HashMap<String, String> maskParams;
