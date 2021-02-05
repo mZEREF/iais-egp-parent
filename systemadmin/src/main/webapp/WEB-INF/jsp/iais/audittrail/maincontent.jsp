@@ -102,7 +102,7 @@
     <div class="tab-content">
         <div class="row">
             <iais:pagination param="auditTrailSearch" result="auditTrailSearchResult"/>
-            <div class="col-xs-12"">
+            <div class="col-xs-12">
                 <h3>
                     <span>Search Results</span>
                 </h3>
