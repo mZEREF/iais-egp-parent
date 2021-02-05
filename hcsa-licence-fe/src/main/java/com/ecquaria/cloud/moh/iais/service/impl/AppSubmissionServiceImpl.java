@@ -1089,6 +1089,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
         appSubmissionDto.setAppGrpId(null);
         setRiskToDto(appSubmissionDto);
+        requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
     }
 
     @Override
