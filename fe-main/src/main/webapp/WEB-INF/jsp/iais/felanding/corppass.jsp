@@ -36,7 +36,7 @@
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <div class="prelogin" style="background-image: url('/web/themes/fe/img/prelogin-masthead-banner.jpg');">
           <div class="container">
-            <div class="col-xs-5">
+            <div class="col-md-5 col-xs-12">
               <div class="center-content">
                 <br>
 
