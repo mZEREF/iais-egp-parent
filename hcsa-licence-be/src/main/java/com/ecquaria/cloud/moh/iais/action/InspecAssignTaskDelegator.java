@@ -207,12 +207,29 @@ public class InspecAssignTaskDelegator {
             //set fastTrackFlag
             inspecTaskCreAndAssDto = setFastTrackFlag(inspecTaskCreAndAssDto, applicationDto);
             inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(appCorrelationId, commPools, loginContext, inspecTaskCreAndAssDto);
+            //set Edit Hours Flag
+            inspecTaskCreAndAssDto = setEditHoursFlagByAppAndUser(inspecTaskCreAndAssDto, applicationDto);
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         }
 
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
         ParamUtil.setSessionAttr(bpc.request,"cPoolSearchResult", searchResult);
+    }
+
+    private InspecTaskCreAndAssDto setEditHoursFlagByAppAndUser(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationDto applicationDto) {
+        List<String> appHoursStatusList = IaisCommonUtils.genNewArrayList();
+        appHoursStatusList.add(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL);
+        appHoursStatusList.add(ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT);
+        appHoursStatusList.add(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT);
+        String appStatus = "";
+        if(applicationDto != null) {
+            appStatus = applicationDto.getStatus();
+        }
+        if(appHoursStatusList.contains(appStatus)) {//NOSONAR
+            inspecTaskCreAndAssDto.setEditHoursFlag(AppConsts.COMMON_POOL);
+        }
+        return inspecTaskCreAndAssDto;
     }
 
     private InspecTaskCreAndAssDto setFastTrackFlag(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationDto applicationDto) {
