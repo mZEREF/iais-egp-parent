@@ -60,16 +60,16 @@
                           <li><span>The maximum file size for each upload is <c:out value="${inspSetMaskValueDto.sqlFileSize}"/>MB.</span></li>
                           <li><span>Acceptable file formats are <c:out value="${recFileTypeHint}"/>.</span></li>
                         </ul>
-                        <iais:row>
-                          <iais:value width="7">
+                        <div class="form-group">
+                          <div class="col-sm-7 col-md-8 col-xs-10">
                             <input class="selectedFile premDoc" id="recFileUpload" name = "selectedFile" type="file" onchange="javascript:doUserRecUploadConfirmFile(this.value)" style="display: none;" aria-label="selectedFile1"/>
                             <button type="button" class="btn btn-file-upload btn-secondary" onclick="javascript:doUserRecUploadConfirmUpload()">Upload</button>
                             <c:if test="${empty inspecUserRecUploadDto.fileRepoDtos}">
                               &nbsp;<label>No files selected.</label>
                             </c:if>
                             <br><span class="error-msg" name="iaisErrorMsg" id="error_recFile"></span>
-                          </iais:value>
-                        </iais:row>
+                          </div>
+                        </div>
                       </div>
                       <div class="row">
                         <div class="col-md-4">
