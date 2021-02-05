@@ -137,7 +137,7 @@
                       <c:if test="${fileRepoDto != null}">
                         <div class="fileList ">
                             <span class="filename server-site" id="140" style="font-size: 16px">
-                              <u><a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${fileRepoDto.id}"/>&fileRepoName=${fileRepoDto.fileName}" title="Download" class="downloadFile"><c:out value="${fileRepoDto.realFileName}"></c:out></a></u>
+                              <u><a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${fileRepoDto.id}"/>&fileRepoName=${fileRepoDto.fileName}" title="Download" class="downloadFile"><c:out value="${fileRepoDto.fileName}"></c:out></a></u>
                             </span>
                         </div>
                       </c:if>
