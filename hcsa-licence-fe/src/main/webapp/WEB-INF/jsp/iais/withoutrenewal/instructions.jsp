@@ -11,7 +11,7 @@
 <webui:setLayout name="iais-internet"/>
 <br/>
 <%@include file="../common/dashboard.jsp" %>
-<form class="form-horizontal" method="post" id="InstructionsForm" action=<%=process.runtime.continueURL()%>>
+<form class="form-horizontal table-responsive" method="post" id="InstructionsForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="switch_value" value=""/>
     <div class="main-content">
             <div class="container">

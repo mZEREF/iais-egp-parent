@@ -17,7 +17,7 @@
         margin-left: 9px;
     }
 </style>
-<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+<form method="post" class="table-responsive" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="crud_action_type"  value=""/>
     <div class="main-content">
         <div class="container">
