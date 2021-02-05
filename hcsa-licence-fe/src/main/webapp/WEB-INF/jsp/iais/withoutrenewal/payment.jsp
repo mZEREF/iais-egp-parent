@@ -11,7 +11,7 @@
 <webui:setLayout name="iais-internet"/>
 <br/>
 <%@include file="../common/dashboard.jsp" %>
-<form method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
+<form method="post" class="table-responsive" id="menuListForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="switch_value" value="">
     <input type="hidden" id="paymentMessageValidateMessage" value="${paymentMessageValidateMessage}">
