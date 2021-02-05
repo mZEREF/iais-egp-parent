@@ -256,6 +256,7 @@
         }else if(jQuery || (isSingle == 'N')) {
             $('#error_fieldMandatory').html("");
             $('[name="switch_value"]').val('doLicenceReview');
+            showWaiting();
             $('#LicenceReviewForm').submit();
         }
     });
