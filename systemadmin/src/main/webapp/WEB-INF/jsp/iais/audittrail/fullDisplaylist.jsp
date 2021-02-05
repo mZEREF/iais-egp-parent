@@ -21,17 +21,22 @@
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="collapseFlag" value="${param.collapseFlag}">
-            <div class="col-lg-10 col-xs-5">
-                <div class="center-content">
-                    <div class="intranet-content">
-                        <div class="bg-title">
-                            <h2>Audit Trail View</h2>
-                        </div>
-                        <%@ include file="maincontent.jsp"%>
+        <input type="hidden" name="auditId" id="auditId"/>
+
+
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">
+                <div class="intranet-content">
+                    <div class="bg-title">
+                        <h2>Audit Trail View</h2>
                     </div>
                 </div>
-            </div>
 
+                <div class="subcontent col-lg-11 col-sm-12">
+                    <%@ include file="maincontent.jsp"%>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
 
