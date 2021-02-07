@@ -67,13 +67,12 @@
                   <span class="fileNameDisplay">
                   </span>
                   <span class="existFile delBtn hidden">
-                      &nbsp;&nbsp;
                       <button type="button" class="btn btn-danger">
                         Delete
                       </button>
                   </span>
                 </p>
-              <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1">
+              <input id="selectedFile" name="selectedFile" type="file" style="display: none;"  onclick="fileClicked(event)" onchange="fileChanged(event)" aria-label="selectedFile1">
 
               <a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
             </div>
