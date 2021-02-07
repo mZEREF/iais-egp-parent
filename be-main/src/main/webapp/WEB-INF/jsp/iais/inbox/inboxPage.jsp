@@ -350,7 +350,12 @@
                     } else if (res[i].timeLimitWarning == "amber") {
                         color = "#DD9C00";
                     }
-                    var address = res[i].address;
+                    if(res[i].hciName == null || res[i].hciName == ''){
+                        var address = res[i].address;
+                    }else{
+                        var address = res[i].hciName + ' / ' +res[i].address;
+                    }
+
                     html += '<tr style = "color : ' + color + ';">';
                     if (hastaskList == "true") {
                         html += '<td><input type="checkbox" name="taskId" value="' + taskList[res[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
