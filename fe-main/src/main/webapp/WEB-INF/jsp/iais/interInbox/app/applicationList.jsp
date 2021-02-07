@@ -16,7 +16,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <iais:value>
-                        <label class="col-xs-5 col-md-5" for="appNoPath" style="margin-top:1%;">Search by Application No
+                        <label class="col-xs-5 col-md-5" for="appNoPath" style="margin-top:1%;">Search by Application No.
                             or Part of:</label>
                         <div class="col-xs-7 col-md-7">
                             <input id="appNoPath" name="appNoPath" type="text" maxlength="20"
