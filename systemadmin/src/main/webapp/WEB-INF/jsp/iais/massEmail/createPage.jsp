@@ -94,6 +94,9 @@
                                     <div class="file-upload-gp">
                                         <div class="filename fileNameDisplay">
                                             <c:out value="${fileName}"/>
+                                            <c:if test="${!empty fileName}">
+                                                &emsp;<button type='button' class='btn btn-secondary btn-sm' onclick='deleteFile()'>Delete</button>
+                                            </c:if>
                                         </div>
                                             <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1">
                                             <a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
@@ -169,6 +172,9 @@
             $("#addMobile").show();
         }
     })
+    function deleteFile(){
+        $(".filename").html("");
+    }
 
     $('#selectedFile').change(function (event) {
         var maxFileSize = 10;
@@ -181,7 +187,7 @@
             var files = event.target.files;
             $(".filename").html("");
             for(var i=0;i<files.length;i++){
-                $(".filename").append("<div class='fileNameDisplay'>"+files[i].name+"</div>");
+                $(".filename").append("<div class='fileNameDisplay'>"+files[i].name+"&emsp;<button type='button' class='btn btn-secondary btn-sm' onclick='deleteFile()'>Delete</button></div>");
             }
             SOP.Crud.cfxSubmit("mainForm","upload");
             $('#error_file').html('');
