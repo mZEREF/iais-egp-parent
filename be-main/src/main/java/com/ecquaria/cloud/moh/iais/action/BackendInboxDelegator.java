@@ -1501,29 +1501,28 @@ public class BackendInboxDelegator {
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
         log.info(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
         if(commPools != null && !commPools.isEmpty()){
-            StringBuilder sb = new StringBuilder("(");
             int i =0;
             log.info(StringUtil.changeForLog("commPools size = "+commPools.size()));
-
+            String sb = SqlHelper.constructInCondition("T5.corrid", commPools.size());
+            String sbAjax = SqlHelper.constructInCondition("T5.ID", commPools.size());
             for (TaskDto item: commPools) {
-                    sb.append(":itemKey").append(i).append(',');
-                searchParamGroup.addFilter("itemKey" + i,
+                searchParamGroup.addFilter("T5.corrid" + i,
                         item.getRefNo());
-                searchParamAjax.addFilter("itemKey" + i,
+                searchParamAjax.addFilter("T5.ID" + i,
                         item.getRefNo());
                     i++;
             }
-            while (!StringUtil.isEmpty(searchParamGroup.getFilters().get("itemKey" + i))){
-                searchParamGroup.removeFilter("itemKey" + i);
-                searchParamAjax.removeFilter("itemKey" + i);
+
+            while (!StringUtil.isEmpty(searchParamGroup.getFilters().get("T5.corrid" + i))){
+                searchParamGroup.removeFilter("T5.corrid" + i);
+                searchParamAjax.removeFilter("T5.ID" + i);
                 i++;
             }
             log.info(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
             log.info(StringUtil.changeForLog("commPools size = "+commPools.size()));
             log.info(StringUtil.changeForLog("i size = "+commPools.size()));
-            String inSql = sb.substring(0, sb.length() - 1) + ")";
-            searchParamGroup.addParam("remises_corr_id_in", inSql);
-            searchParamAjax.addParam("remises_corr_id_in", inSql);
+            searchParamGroup.addParam("remises_corr_id_in", sb);
+            searchParamAjax.addParam("remises_corr_id_in", sbAjax);
 
             if(!StringUtil.isEmpty(application_no)){
                 searchParamGroup.addFilter("application_no","%" +application_no +"%" ,true);
