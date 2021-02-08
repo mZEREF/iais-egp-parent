@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -155,7 +158,7 @@ public class EmailAjaxController {
     public @ResponseBody
     Map<String, String> distributionEditCheck(HttpServletRequest request, HttpServletResponse response) {
         String id =  ParamUtil.getMaskedString(request, "editDistribution");
-        Map<String, String> result = new HashMap<>();
+        Map<String, String> result = IaisCommonUtils.genNewHashMap();
         String editCheck = blastManagementListService.blastEditCheck(id);
         result.put("canEdit",editCheck);
         return result;
@@ -169,11 +172,41 @@ public class EmailAjaxController {
         ParamUtil.setSessionAttr(request,"nonWorking",null);
         ParamUtil.setSessionAttr(request,"searchStatus",null);
 
-        Map<String, String> result = new HashMap<>();
+        Map<String, String> result = IaisCommonUtils.genNewHashMap();
         result.put("remove","suc");
         return result;
     }
 
+    @RequestMapping(value = "recoverTextarea" , method = RequestMethod.POST)
+    public @ResponseBody Map<String, String> recoverTextarea(HttpServletRequest request){
+        String email = ParamUtil.getString(request, "email");
+        String mobile = ParamUtil.getString(request, "mobile");
+        List<String> emaillist = getListTextarea(email);
+        List<String> mobilelist = getListTextarea(mobile);
+        Map<String, String> result = IaisCommonUtils.genNewHashMap();
+        List<String> filelist = (List)ParamUtil.getSessionAttr(request,"massEmailFilelist");
+        emaillist.removeAll(filelist);
+        mobilelist.removeAll(filelist);
+        String emailString = StringUtils.join(emaillist, "\r\n");
+        String smsString = StringUtils.join(mobilelist, "\r\n");
+        result.put("mobile",smsString);
+        result.put("email",emailString);
+        return result;
+    }
+
+    private List<String> getListTextarea(String email){
+        List<String> emailAddress = IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(email)){
+            List<String> rnemaillist = Arrays.asList(email.split("\r\n"));
+            List<String> commaemaillist = Arrays.asList(email.split(" "));
+            if(rnemaillist.size() > commaemaillist.size() ){
+                emailAddress = rnemaillist;
+            }else{
+                emailAddress = commaemaillist;
+            }
+        }
+        return new ArrayList<>(emailAddress);
+    }
 
 
     @RequestMapping(value = "checkUse.do", method = RequestMethod.POST)

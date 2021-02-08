@@ -273,6 +273,7 @@ public class MassEmailDelegator {
             String mode = mulReq.getParameter("mode");
             List<String> filelist = IaisCommonUtils.genNewArrayList();
             filelist = getAllData(file,mode);
+            ParamUtil.setSessionAttr(bpc.request,"massEmailFilelist",(Serializable) getAllData(file,mode));
             if(SMS.equals(mode)){
                 List<String> address = getEmail(bpc,"mobile");
                 if(filelist != null && repeatList(filelist)){

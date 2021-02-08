@@ -182,7 +182,21 @@
         }
     })
     function deleteFile(){
-        $(".filename").html("");
+        $.ajax({
+            data:{email:$("#email").val(),
+                mobile:$("#mobile").val()},
+            type:"POST",
+            dataType:"json",
+            url:"/system-admin-web/emailAjax/recoverTextarea",
+            success:function (data) {
+                console.log(data)
+                $(".filename").html("");
+                $("#mobile").val(data.mobile);
+                $("#email").val(data.email);
+
+            }
+        })
+
     }
 
     $('#selectedFile').change(function (event) {
