@@ -462,7 +462,7 @@ public class InspectionSearchDelegator {
             ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionTaskPoolListDto, propertyName);
             Map<String, String> errorMap = validationResult.retrieveAll();
             boolean errorFlag = true;
-            if("create".equals(propertyName)){
+            if("create".equals(propertyName) || AppConsts.COMMON_POOL.equals(propertyName)){
                 List<SelectOption> inspectorCheck = inspectionTaskPoolListDto.getInspectorCheck();
                 if(inspectorCheck == null){
                     if(errorMap == null){

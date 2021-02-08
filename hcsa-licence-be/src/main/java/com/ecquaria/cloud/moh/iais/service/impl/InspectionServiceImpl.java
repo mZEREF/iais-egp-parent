@@ -336,7 +336,11 @@ public class InspectionServiceImpl implements InspectionService {
         inspectionTaskPoolListDto.setTaskDto(taskDto);
         inspectionTaskPoolListDto.setWorkGroupId(superPoolTaskQueryDto.getWorkGroupId());
         inspectionTaskPoolListDto.setInspectorLeads(leadName);
-        inspectionTaskPoolListDto.setApplicationStatus(applicationDto.getStatus());
+        if(taskDto != null && !StringUtil.isEmpty(taskDto.getUserId())) {
+            inspectionTaskPoolListDto.setApplicationStatus(applicationDto.getStatus());
+        } else {
+            inspectionTaskPoolListDto.setApplicationStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT);
+        }
         inspectionTaskPoolListDto.setApplicationNo(applicationDto.getApplicationNo());
         inspectionTaskPoolListDto.setApplicationType(applicationDto.getApplicationType());
         inspectionTaskPoolListDto.setSubmitDt(applicationGroupDto.getSubmitDt());
@@ -476,7 +480,7 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public String assignTaskForInspectors(InspectionTaskPoolListDto inspectionTaskPoolListDto, List<TaskDto> commPools, String internalRemarks,
-                                        ApplicationDto applicationDto, TaskDto taskDto, ApplicationViewDto applicationViewDto) {
+                                          ApplicationDto applicationDto, TaskDto taskDto, ApplicationViewDto applicationViewDto) {
         List<SelectOption> inspectorCheckList = inspectionTaskPoolListDto.getInspectorCheck();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         applicationDtos.add(applicationDto);
@@ -513,7 +517,7 @@ public class InspectionServiceImpl implements InspectionService {
                             if (inspectorCheckList != null && inspectorCheckList.size() > 0) {
                                 for (int i = 0; i < inspectorCheckList.size(); i++) {
                                     if (ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())) {
-                                         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
+                                        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
                                         applicationService.updateFEApplicaiton(applicationDto1);
                                         inspectionTaskPoolListDto.setApplicationStatus(applicationDto1.getStatus());
                                         createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), null, td.getWkGrpId());
