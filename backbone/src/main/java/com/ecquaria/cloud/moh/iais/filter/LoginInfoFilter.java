@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import sop.iwe.SessionManager;
+import sop.rbac.user.User;
 
 /**
  * LoginInfoFilter
@@ -38,11 +40,15 @@ public class LoginInfoFilter implements Filter {
         if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             String uri = request.getRequestURI();
+            User user = SessionManager.getInstance(request).getCurrentUser();
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            if (user == null && loginContext != null) {
+                ParamUtil.setSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER, null);
+            }
             if (uri.indexOf("FE_Landing") < 0 && uri.indexOf("FE_Corppass_Landing") < 0
                     && uri.indexOf("FE_Singpass_Landing") < 0 && uri.indexOf("halp-event-callback") < 0
                     && uri.indexOf("IntraLogin") < 0 && uri.indexOf("health") < 0
                     && uri.indexOf("/INTERNET/Payment") < 0 ) {
-                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
                 if (loginContext == null) {
                     log.info(StringUtil.changeForLog("No Login Context ===> " + uri));
                     ((HttpServletResponse) response).sendRedirect("https://" + request.getServerName() + "/main-web");

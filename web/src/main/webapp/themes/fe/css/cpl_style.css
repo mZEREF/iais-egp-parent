@@ -5632,3 +5632,25 @@ section.logo img {
 .datepicker {
   z-index:999 !important;
 }
+/************************************/
+/************** DSS Fixes 2 Feb/2021 *************/
+
+.profile-dropdown-mobile {
+  width: 142%;
+  margin-left: -43%;
+}
+
+
+/************** DSS mobile fix**********/
+
+@media only screen and (min-width: 320px) and (max-width: 767px) {
+
+  .profile-dropdown-mobile {
+    width: auto;
+    margin-left: 0;
+  }
+  .center-content {
+    padding: 30px 15px;
+  }
+
+}

@@ -1500,19 +1500,21 @@ public class AppealServiceImpl implements AppealService {
 
     private boolean isMaxCGOnumber(ApplicationDto applicationDto) {
         String serviceId = applicationDto.getServiceId();
-
-        List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationFeClient.getAppSvcKeyPersonnel(applicationDto).getEntity();
-        HcsaSvcPersonnelDto hcsaSvcPersonnelDto = appConfigClient.getHcsaSvcPersonnelDtoByServiceId(serviceId).getEntity();
-        if (hcsaSvcPersonnelDto != null) {
-            int maximumCount = hcsaSvcPersonnelDto.getMaximumCount();
-            int size = appSvcKeyPersonnelDtos.size();
-            if (size <= maximumCount) {
-                return false;
+        HcsaServiceDto activeHcsaServiceDtoById = serviceConfigService.getActiveHcsaServiceDtoById(serviceId);
+        if(activeHcsaServiceDtoById!=null){
+            List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationFeClient.getAppSvcKeyPersonnel(applicationDto).getEntity();
+            HcsaSvcPersonnelDto hcsaSvcPersonnelDto = appConfigClient.getHcsaSvcPersonnelDtoByServiceId(activeHcsaServiceDtoById.getId()).getEntity();
+            if (hcsaSvcPersonnelDto != null) {
+                int maximumCount = hcsaSvcPersonnelDto.getMaximumCount();
+                int size = appSvcKeyPersonnelDtos.size();
+                if (size <= maximumCount) {
+                    return false;
+                }
             }
+            return true;
         }
 
-        return true;
+        return false;
     }
-
 
 }

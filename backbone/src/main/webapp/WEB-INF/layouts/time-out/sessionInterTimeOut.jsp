@@ -82,7 +82,7 @@
         // call AJAX to extend the current session
         $.ajax({
             type:"GET",
-            url:BASE_CONTEXT_PATH + "/time-out/internet.extend",
+            url:BASE_CONTEXT_PATH + "/halp-time-out/internet.extend",
             async: false
         });
         initSessionTimeout();

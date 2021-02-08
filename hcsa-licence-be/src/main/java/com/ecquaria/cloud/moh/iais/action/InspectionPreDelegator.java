@@ -220,6 +220,7 @@ public class InspectionPreDelegator {
     public void inspectionPreInspectorStep1(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorStep1 start ...."));
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        ApplicationDto applicationDto = (ApplicationDto)ParamUtil.getSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONDTO);
         InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
         String preInspecRemarks = ParamUtil.getString(bpc.request,"preInspecRemarks");
         String processDec = ParamUtil.getRequestString(bpc.request,"selectValue");
@@ -246,10 +247,16 @@ public class InspectionPreDelegator {
             }
         } else if(InspectionConstants.SWITCH_ACTION_REQUEST_INFORMATION.equals(actionValue)){
             ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"prerfi");
-            //choose rfi app and don't check app pop-up windows, is error
             //NOSONAR
             if(preInspRfiCheck != null) {
-                validationResult = validateAppRfiCheck(validationResult, preInspRfiCheck, bpc);
+                //Request for information cannot be made at the same time
+                int appInspRfiResult = inspectionPreTaskService.preInspRfiTogether(applicationDto);
+                validationResult = validatePreInspRfiTogether(validationResult, appInspRfiResult);
+                Map<String, String> errorMap = validationResult.retrieveAll();
+                if(errorMap == null || errorMap.size() < 1) {
+                    //choose rfi app and don't check app pop-up windows is error
+                    validationResult = validateAppRfiCheck(validationResult, preInspRfiCheck, bpc);
+                }
             }
             if (validationResult.isHasErrors()) {
                 Map<String, String> errorMap = validationResult.retrieveAll();
@@ -277,6 +284,15 @@ public class InspectionPreDelegator {
 
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "actionValue", actionValue);
+    }
+
+    private ValidationResult validatePreInspRfiTogether(ValidationResult validationResult, int appInspRfiResult) {
+        if(appInspRfiResult > 0){
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            errorMap.put("preInspRfiTogether","GENERAL_ERR0045");
+            validationResult.setHasErrors(true);
+        }
+        return validationResult;
     }
 
     private ValidationResult validateAppRfiCheck(ValidationResult validationResult, List<String> preInspRfiCheck, BaseProcessClass bpc) {

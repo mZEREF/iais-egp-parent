@@ -84,14 +84,14 @@
                             <thead>
                             <tr align="center">
                                 <th></th>
-                                <th>S/N</th>
-                                <th>Distribution Name</th>
-                                <th>Service</th>
-                                <th>Recipients Role</th>
-                                <th>Mode of Delivery</th>
-                                <th>Created Date</th>
-                                <th>Created By</th>
-                                <th>Action</th>
+                                <iais:sortableHeader needSort="false" field="subject" value="S/N"/>
+                                <iais:sortableHeader needSort="true" field="DISTRIBUTION_NAME" value="Distribution Name"/>
+                                <iais:sortableHeader needSort="true" field="SERVICE_CODE" value="Service"/>
+                                <iais:sortableHeader needSort="true" field="RECIPIENTS_ROLE" value="Recipients Role"/>
+                                <iais:sortableHeader needSort="true" field="DELIVERY_MODE" value="Mode of Delivery"/>
+                                <iais:sortableHeader needSort="true" field="CREATED_DT" value="Created Date"/>
+                                <iais:sortableHeader needSort="true" field="CREATED_BY" value="Created By"/>
+                                <iais:sortableHeader needSort="false" field="" value="Action"/>
                             </tr>
                             </thead>
                             <tbody>
@@ -155,6 +155,8 @@
             </div>
         </div>
         <input hidden id="editDistribution" name="editDistribution" value="">
+        <input hidden id="fieldName" name="fieldName" value="">
+        <input hidden id="sortType" name="sortType" value="">
         <iais:confirm msg="The distribution list cannot be amended as it is still in used by other mass email or sms blast."  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
         <iais:confirm msg="Are you sure you want to delete this item?" yesBtnCls="okBtn btn btn-primary"  needCancel="true" callBack="deleteDis()" popupOrder="deleteSupport" ></iais:confirm>
     </form>
@@ -173,6 +175,14 @@ function addList() {
 function deleteList() {
     checkUse();
 }
+
+
+function sortRecords(sortFieldName, sortType) {
+    $("[name='fieldName']").val(sortFieldName);
+    $("[name='sortType']").val(sortType);
+    submit("search");
+}
+
 function cancel() {
     $('#support').modal('hide');
 }

@@ -67,6 +67,10 @@ public interface LicenceInboxClient {
 
     @GetMapping(path= "/hcsa-licence/licence-orgId/{orgId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto> getLicdtoByOrgId(@PathVariable(value = "orgId") String orgId);
+
+    @GetMapping(path= "/hcsa-licence/root-licence-orgId/{orgId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicenceDto> getRootLicenceDtoByOrgId(@PathVariable(value = "orgId") String orgId);
+
     @GetMapping(value = "/hcsa-licence//check-new-licensee")
     FeignResponseEntity<Boolean> checkIsNewLicsee(@RequestParam("licenseeId") String licenseeId);
 

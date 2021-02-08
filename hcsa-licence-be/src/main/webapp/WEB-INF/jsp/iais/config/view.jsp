@@ -409,7 +409,7 @@
                     </c:if>
                   </div>
 
-                  <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%">
+                  <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%;text-align:left">
                     <select  disabled name="RoutingScheme${routingStage.stageCode}"  >
                       <option value="">Please Select</option>
                       <option value="common"

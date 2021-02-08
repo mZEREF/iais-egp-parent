@@ -393,15 +393,15 @@
                             Operating Hours (Start) <span class="mandatory">*</span>
                         </label>
 
-                        <div class="col-xs-9 col-sm-5 col-md-6">
-                            <div class="col-md-3" style="padding-left: unset">
+                        <div class="col-xs-12 col-sm-5 col-md-6">
+                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                 <iais:select cssClass="onSiteStartHH" name="onSiteStartHH" options="premiseHours" value="${appGrpPremisesDto.onsiteStartHH}" firstOption="--"></iais:select>
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                            <div class="col-md-3" style="padding-left: unset">
+                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                 <iais:select cssClass="onSiteStartMM" name="onSiteStartMM" options="premiseMinute" value="${appGrpPremisesDto.onsiteStartMM}" firstOption="--"></iais:select>
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
                         </div>
                         <div  class="col-xs-12 col-md-4 "></div>
                         <div  class="col-xs-9 col-sm-5 col-md-6">
@@ -414,15 +414,15 @@
                             Operating Hours (End) <span class="mandatory">*</span>
                         </label>
 
-                        <div class="col-xs-9 col-sm-5 col-md-6">
-                            <div class="col-md-3" style="padding-left: unset">
+                        <div class="col-xs-12 col-sm-5 col-md-6">
+                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                 <iais:select cssClass="onSiteEndHH" name="onSiteEndHH" options="premiseHours" value="${appGrpPremisesDto.onsiteEndHH}" firstOption="--"></iais:select>
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                            <div class="col-md-3" style="padding-left: unset">
+                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                 <iais:select cssClass="onSiteEndMM" name="onSiteEndMM" options="premiseMinute" value="${appGrpPremisesDto.onsiteEndMM}" firstOption="--"></iais:select>
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
                         </div>
                         <div  class="col-xs-12 col-md-4 "></div>
                         <div class="col-xs-9 col-sm-5 col-md-6">
@@ -454,15 +454,15 @@
                                         <label class="col-xs-12 col-md-4 control-label">
                                             Public Holiday Operating Hours (Start)
                                         </label>
-                                        <div class="col-xs-9 col-sm-5 col-md-6">
-                                            <div class="col-md-3" style="padding-left: unset">
+                                        <div class="col-xs-12 col-sm-5 col-md-6">
+                                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                                 <iais:select cssClass="onSitePbHolDayStartHH" name="${premValue}onSitePbHolDayStartHH${phStat.index}" options="premiseHours" value="${ph.onsiteStartFromHH}" firstOption="--"></iais:select>
                                             </div>
-                                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                                            <div class="col-md-3" style="padding-left: unset">
+                                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                                 <iais:select cssClass="onSitePbHolDayStartMM" name="${premValue}onSitePbHolDayStartMM${phStat.index}" options="premiseMinute" value="${ph.onsiteStartFromMM}" firstOption="--"></iais:select>
                                             </div>
-                                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                         </div>
                                         <div class="col-xs-12 col-md-4 "></div>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
@@ -473,15 +473,15 @@
                                         <label class="col-xs-12 col-md-4 control-label">
                                             Public Holiday Operating Hours (End)
                                         </label>
-                                        <div class="col-xs-9 col-sm-5 col-md-6">
-                                            <div class="col-md-3" style="padding-left: unset">
+                                        <div class="col-xs-12 col-sm-5 col-md-6">
+                                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                                 <iais:select cssClass="onSitePbHolDayEndHH" name="${premValue}onSitePbHolDayEndHH${phStat.index}" options="premiseHours" value="${ph.onsiteEndToHH}" firstOption="--"></iais:select>
                                             </div>
-                                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                                            <div class="col-md-3" style="padding-left: unset">
+                                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                                 <iais:select cssClass="onSitePbHolDayEndMM" name="${premValue}onSitePbHolDayEndMM${phStat.index}" options="premiseMinute" value="${ph.onsiteEndToMM}" firstOption="--"></iais:select>
                                             </div>
-                                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                         </div>
                                         <div class="col-xs-12 col-md-4 "></div>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
@@ -504,15 +504,15 @@
                                     <label class="col-xs-12 col-md-4 control-label">
                                         Public Holiday Operating Hours (Start)
                                     </label>
-                                    <div class="col-xs-9 col-sm-5 col-md-6">
-                                        <div class="col-md-3" style="padding-left: unset">
+                                    <div class="col-xs-12 col-sm-5 col-md-6">
+                                        <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                             <iais:select cssClass="onSitePbHolDayStartHH" name="${premValue}onSitePbHolDayStartHH0" options="premiseHours" value="" firstOption="--"></iais:select>
                                         </div>
-                                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                                        <div class="col-md-3" style="padding-left: unset">
+                                        <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                        <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                             <iais:select cssClass="onSitePbHolDayStartMM" name="${premValue}onSitePbHolDayStartMM0" options="premiseMinute" value="" firstOption="--"></iais:select>
                                         </div>
-                                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                        <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                         <div class="col-xs-12 col-md-4 "></div>
                                         <span  class="error-msg"  name="iaisErrorMsg" id="error_onsiteStartToMM${premValue}${phStat.index}"></span>
                                     </div>
@@ -521,15 +521,15 @@
                                     <label class="col-xs-12 col-md-4 control-label">
                                         Public Holiday Operating Hours (End)
                                     </label>
-                                    <div class="col-xs-9 col-sm-5 col-md-6">
-                                        <div class="col-md-3" style="padding-left: unset">
+                                    <div class="col-xs-12 col-sm-5 col-md-6">
+                                        <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                             <iais:select cssClass="onSitePbHolDayEndHH" name="${premValue}onSitePbHolDayEndHH0" options="premiseHours" value="" firstOption="--"></iais:select>
                                         </div>
-                                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                                        <div class="col-md-3" style="padding-left: unset">
+                                        <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                        <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                             <iais:select cssClass="onSitePbHolDayEndMM" name="${premValue}onSitePbHolDayEndMM0" options="premiseMinute" value="" firstOption="--"></iais:select>
                                         </div>
-                                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                        <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                     </div>
                                     <div class="col-xs-12 col-md-4 "></div>
                                     <div class="col-xs-9 col-sm-5 col-md-6">
@@ -655,15 +655,15 @@
                         <label class="col-xs-12 col-md-4 control-label">
                             Operating Hours (Start) <span class="mandatory">*</span>
                         </label>
-                        <div class="col-xs-9 col-sm-5 col-md-6">
-                            <div class="col-md-3" style="padding-left: unset">
+                        <div class="col-xs-12 col-sm-5 col-md-6">
+                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                 <iais:select cssClass="conveyanceStartHH" name="conveyanceStartHH" options="premiseHours" value="${appGrpPremisesDto.conStartHH}" firstOption="--"></iais:select>
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                            <div class="col-md-3" style="padding-left: unset">
+                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                 <iais:select cssClass="conveyanceStartMM" name="conveyanceStartMM" options="premiseMinute" value="${appGrpPremisesDto.conStartMM}" firstOption="--"></iais:select>
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
                         </div>
                         <div  class="col-xs-12 col-md-4 "></div>
                         <div class="col-xs-9 col-sm-5 col-md-6">
@@ -674,15 +674,15 @@
                         <label class="col-xs-12 col-md-4 control-label">
                             Operating Hours (End) <span class="mandatory">*</span>
                         </label>
-                        <div class="col-xs-9 col-sm-5 col-md-6">
-                            <div class="col-md-3" style="padding-left: unset">
+                        <div class="col-xs-12 col-sm-5 col-md-6">
+                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                 <iais:select cssClass="conveyanceEndHH" name="conveyanceEndHH" options="premiseHours" value="${appGrpPremisesDto.conEndHH}" firstOption="--"></iais:select>
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                            <div class="col-md-3" style="padding-left: unset">
+                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                 <iais:select cssClass="conveyanceEndMM" name="conveyanceEndMM" options="premiseMinute" value="${appGrpPremisesDto.conEndMM}" firstOption="--"></iais:select>
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
 
                         </div>
                         <div  class="col-xs-12 col-md-4 "></div>
@@ -714,15 +714,15 @@
                                         <label class="col-xs-12 col-md-4 control-label">
                                             Public Holiday Operating Hours (Start)
                                         </label>
-                                        <div class="col-xs-9 col-sm-5 col-md-6">
-                                            <div class="col-md-3" style="padding-left: unset">
+                                        <div class="col-xs-12 col-sm-5 col-md-6">
+                                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                                 <iais:select cssClass="conveyancePbHolDayStartHH" name="${premValue}conveyancePbHolDayStartHH${phStat.index}" options="premiseHours" value="${ph.convStartFromHH}" firstOption="--"></iais:select>
                                             </div>
-                                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                                            <div class="col-md-3" style="padding-left: unset">
+                                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                                 <iais:select cssClass="conveyancePbHolDayStartMM" name="${premValue}conveyancePbHolDayStartMM${phStat.index}" options="premiseMinute" value="${ph.convStartFromMM}" firstOption="--"></iais:select>
                                             </div>
-                                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                         </div>
                                         <div  class="col-xs-12 col-md-4 "></div>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
@@ -733,15 +733,15 @@
                                         <label class="col-xs-12 col-md-4 control-label">
                                             Public Holiday Operating Hours (End)
                                         </label>
-                                        <div class="col-xs-9 col-sm-5 col-md-6">
-                                            <div class="col-md-3" style="padding-left: unset">
+                                        <div class="col-xs-12 col-sm-5 col-md-6">
+                                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                                 <iais:select cssClass="conveyancePbHolDayEndHH" name="${premValue}conveyancePbHolDayEndHH${phStat.index}" options="premiseHours" value="${ph.convEndToHH}" firstOption="--"></iais:select>
                                             </div>
-                                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                                            <div class="col-md-3" style="padding-left: unset">
+                                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                                 <iais:select cssClass="conveyancePbHolDayEndMM" name="${premValue}conveyancePbHolDayEndMM${phStat.index}" options="premiseMinute" value="${ph.convEndToMM}" firstOption="--"></iais:select>
                                             </div>
-                                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                         </div>
                                         <div  class="col-xs-12 col-md-4 "></div>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
@@ -764,15 +764,15 @@
                                     <label class="col-xs-12 col-md-4 control-label">
                                         Public Holiday Operating Hours (Start)
                                     </label>
-                                    <div class="col-xs-9 col-sm-5 col-md-6">
-                                        <div class="col-md-3" style="padding-left: unset">
+                                    <div class="col-xs-12 col-sm-5 col-md-6">
+                                        <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                             <iais:select cssClass="conveyancePbHolDayStartHH" name="${premValue}conveyancePbHolDayStartHH0" options="premiseHours" value="" firstOption="--"></iais:select>
                                         </div>
-                                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                                        <div class="col-md-3" style="padding-left: unset">
+                                        <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                        <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                             <iais:select cssClass="conveyancePbHolDayStartMM" name="${premValue}conveyancePbHolDayStartMM0" options="premiseMinute" value="" firstOption="--"></iais:select>
                                         </div>
-                                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                        <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                     </div>
                                     <div  class="col-xs-12 col-md-4 "></div>
                                     <div class="col-xs-9 col-sm-5 col-md-6">
@@ -783,15 +783,15 @@
                                     <label class="col-xs-12 col-md-4 control-label">
                                         Public Holiday Operating Hours (End)
                                     </label>
-                                    <div class="col-xs-9 col-sm-5 col-md-6">
-                                        <div class="col-md-3" style="padding-left: unset">
+                                    <div class="col-xs-12 col-sm-5 col-md-6">
+                                        <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                             <iais:select cssClass="conveyancePbHolDayEndHH" name="${premValue}conveyancePbHolDayEndHH0" options="premiseHours" value="" firstOption="--"></iais:select>
                                         </div>
-                                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                                        <div class="col-md-3" style="padding-left: unset">
+                                        <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                        <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                             <iais:select cssClass="conveyancePbHolDayEndMM" name="${premValue}conveyancePbHolDayEndMM0" options="premiseMinute" value="" firstOption="--"></iais:select>
                                         </div>
-                                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                        <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                     </div>
                                     <div  class="col-xs-12 col-md-4 "></div>
                                     <div class="col-xs-9 col-sm-5 col-md-6">
@@ -910,15 +910,15 @@
                         <label class="col-xs-12 col-md-4 control-label">
                             Operating Hours (Start) <span class="mandatory">*</span>
                         </label>
-                        <div class="col-xs-9 col-sm-5 col-md-6">
-                            <div class="col-md-3" style="padding-left: unset">
+                        <div class="col-xs-12 col-sm-5 col-md-6">
+                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                 <iais:select cssClass="offSiteStartHH" name="offSiteStartHH" options="premiseHours" value="${appGrpPremisesDto.offSiteStartHH}" firstOption="--"></iais:select>
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                            <div class="col-md-3" style="padding-left: unset">
+                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                 <iais:select cssClass="offSiteStartMM" name="offSiteStartMM" options="premiseMinute" value="${appGrpPremisesDto.offSiteStartMM}" firstOption="--"></iais:select>
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                            <div class="col-md-1 col-xs-10" style="padding-left: unset;padding-top: 3%">(MM)</div>
                         </div>
                         <div  class="col-xs-12 col-md-4 "></div>
                         <div class="col-xs-9 col-sm-5 col-md-6">
@@ -929,15 +929,15 @@
                         <label class="col-xs-12 col-md-4 control-label">
                             Operating Hours (End) <span class="mandatory">*</span>
                         </label>
-                        <div class="col-xs-9 col-sm-5 col-md-6">
-                            <div class="col-md-3" style="padding-left: unset">
+                        <div class="col-xs-12 col-sm-5 col-md-6">
+                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                 <iais:select cssClass="offSiteEndHH" name="offSiteEndHH" options="premiseHours" value="${appGrpPremisesDto.offSiteEndHH}" firstOption="--"></iais:select>
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                            <div class="col-md-3" style="padding-left: unset">
+                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                 <iais:select cssClass="offSiteEndMM" name="offSiteEndMM" options="premiseMinute" value="${appGrpPremisesDto.offSiteEndMM}" firstOption="--"></iais:select>
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
 
                         </div>
                         <div  class="col-xs-12 col-md-4 "></div>
@@ -969,15 +969,15 @@
                                         <label class="col-xs-12 col-md-4 control-label">
                                             Public Holiday Operating Hours (Start)
                                         </label>
-                                        <div class="col-xs-9 col-sm-5 col-md-6">
-                                            <div class="col-md-3" style="padding-left: unset">
+                                        <div class="col-xs-12 col-sm-5 col-md-6">
+                                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                                 <iais:select cssClass="offSitePbHolDayStartHH" name="${premValue}offSitePbHolDayStartHH${phStat.index}" options="premiseHours" value="${ph.offSiteStartFromHH}" firstOption="--"></iais:select>
                                             </div>
-                                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                                            <div class="col-md-3" style="padding-left: unset">
+                                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                                 <iais:select cssClass="offSitePbHolDayStartMM" name="${premValue}offSitePbHolDayStartMM${phStat.index}" options="premiseMinute" value="${ph.offSiteStartFromMM}" firstOption="--"></iais:select>
                                             </div>
-                                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                         </div>
                                         <div  class="col-xs-12 col-md-4 "></div>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
@@ -988,15 +988,15 @@
                                         <label class="col-xs-12 col-md-4 control-label">
                                             Public Holiday Operating Hours (End)
                                         </label>
-                                        <div class="col-xs-9 col-sm-5 col-md-6">
-                                            <div class="col-md-3" style="padding-left: unset">
+                                        <div class="col-xs-12 col-sm-5 col-md-6">
+                                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                                 <iais:select cssClass="offSitePbHolDayEndHH" name="${premValue}offSitePbHolDayEndHH${phStat.index}" options="premiseHours" value="${ph.offSiteEndToHH}" firstOption="--"></iais:select>
                                             </div>
-                                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                                            <div class="col-md-3" style="padding-left: unset">
+                                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                            <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                                 <iais:select cssClass="offSitePbHolDayEndMM" name="${premValue}offSitePbHolDayEndMM${phStat.index}" options="premiseMinute" value="${ph.offSiteEndToMM}" firstOption="--"></iais:select>
                                             </div>
-                                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                            <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                         </div>
                                         <div  class="col-xs-12 col-md-4 "></div>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
@@ -1019,15 +1019,15 @@
                                     <label class="col-xs-12 col-md-4 control-label">
                                         Public Holiday Operating Hours (Start)
                                     </label>
-                                    <div class="col-xs-9 col-sm-5 col-md-6">
-                                        <div class="col-md-3" style="padding-left: unset">
+                                    <div class="col-xs-12 col-sm-5 col-md-6">
+                                        <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                             <iais:select cssClass="offSitePbHolDayStartHH" name="${premValue}offSitePbHolDayStartHH0" options="premiseHours" value="" firstOption="--"></iais:select>
                                         </div>
-                                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                                        <div class="col-md-3" style="padding-left: unset">
+                                        <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                        <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                             <iais:select cssClass="offSitePbHolDayStartMM" name="${premValue}offSitePbHolDayStartMM0" options="premiseMinute" value="" firstOption="--"></iais:select>
                                         </div>
-                                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                        <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                     </div>
                                     <div  class="col-xs-12 col-md-4 "></div>
                                     <div class="col-xs-9 col-sm-5 col-md-6">
@@ -1038,15 +1038,15 @@
                                     <label class="col-xs-12 col-md-4 control-label">
                                         Public Holiday Operating Hours (End)
                                     </label>
-                                    <div class="col-xs-9 col-sm-5 col-md-6">
-                                        <div class="col-md-3" style="padding-left: unset">
+                                    <div class="col-xs-12 col-sm-5 col-md-6">
+                                        <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                             <iais:select cssClass="offSitePbHolDayEndHH" name="${premValue}offSitePbHolDayEndHH0" options="premiseHours" value="" firstOption="--"></iais:select>
                                         </div>
-                                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                                        <div class="col-md-3" style="padding-left: unset">
+                                        <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                        <div class="col-md-3 col-xs-10" style="padding-left: unset">
                                             <iais:select cssClass="offSitePbHolDayEndMM" name="${premValue}offSitePbHolDayEndMM0" options="premiseMinute" value="" firstOption="--"></iais:select>
                                         </div>
-                                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                        <div class="col-md-1 col-xs-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                     </div>
                                     <div  class="col-xs-12 col-md-4 "></div>
                                     <div class="col-xs-9 col-sm-5 col-md-6">

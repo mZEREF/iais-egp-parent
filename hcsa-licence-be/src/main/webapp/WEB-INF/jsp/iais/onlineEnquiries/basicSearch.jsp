@@ -11,10 +11,10 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
-<div class="main-content">
+<div class="main-content dashboard">
     <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <div class="col-lg-10 col-xs-5">
+        <div class="col-lg-12 col-xs-12">
             <div class="center-content">
                 <div class="intranet-content">
                     <div class="row form-horizontal">
@@ -22,7 +22,7 @@
                             <h2>Basic Search Criteria</h2>
                         </div>
                         <div class="form-group">
-                            <div class="col-xs-5 col-md-12">
+                            <div class="col-xs-12 col-md-12">
                                 <div class="col-xs-12 col-md-12">
                                     <div class="components">
                                         <a class="btn btn-secondary" data-toggle="collapse"

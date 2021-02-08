@@ -594,7 +594,9 @@ public class NewApplicationDelegator {
                 }
                 appSubmissionDtos.add(tranferSub);
             }
+            String transferFlag = appSubmissionDto.getTransferFlag();
             appSubmissionDto = tranferSub;
+            appSubmissionDto.setTransferFlag(transferFlag);
         }
         Double total = 0.0;
         if (!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) && !ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
@@ -616,7 +618,6 @@ public class NewApplicationDelegator {
             log.info(StringUtil.changeForLog("The amountStr is -->:" + amountStr));
             appSubmissionDto.setAmountStr(amountStr);
         }
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         if (appSubmissionDtos != null) {
             bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtos);
         }
@@ -634,7 +635,12 @@ public class NewApplicationDelegator {
             }
         }
         String flag = bpc.request.getParameter("flag");
-        bpc.request.setAttribute("transfer",flag);
+        if(!StringUtil.isEmpty(flag)){
+            appSubmissionDto.setTransferFlag(flag);
+        }
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        bpc.request.setAttribute("flag",appSubmissionDto.getTransferFlag());
+        bpc.request.setAttribute("transfer",appSubmissionDto.getTransferFlag());
         ParamUtil.setRequestAttr(bpc.request,"IsCharity",NewApplicationHelper.isCharity(bpc.request));
         boolean isGiroAcc = appSubmissionService.isGiroAccount(appSubmissionDto.getLicenseeId());
         ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);

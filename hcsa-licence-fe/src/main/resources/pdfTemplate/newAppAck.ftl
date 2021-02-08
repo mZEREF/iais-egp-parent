@@ -15,10 +15,10 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="dashboard-page-title">
-                <h1>New Licence Application</h1>
-                <br/><br/><h3 id="newSvc">
-                You are applying for ${serviceNameTitle}
-            </h3>
+                <h1>${title}</h1>
+                <br/>
+                ${rfcExtraTitle!""}
+                ${newExtraTitle!""}
             </div>
         </div>
     </div>

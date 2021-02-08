@@ -100,7 +100,7 @@ public class BlastManagementDelegator {
      * doPrepare
      * @param bpc
      */
-    public void prepare(BaseProcessClass bpc){
+    public void prepare(BaseProcessClass bpc) throws ParseException {
         SearchParam searchParam = getSearchParam(bpc.request,false);
 
         CrudHelper.doPaging(searchParam,bpc.request);
@@ -488,7 +488,7 @@ public class BlastManagementDelegator {
 
     @GetMapping(value = "/file-repo")
     public @ResponseBody
-    void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
         File file = null;
         SearchParam searchParam = getSearchParam(request,false);
 
@@ -591,7 +591,7 @@ public class BlastManagementDelegator {
                     emailAuditTrailSMSDto.setLogMsg(item.getLogMsg());
                     emailAuditTrailSMSDto.setCreateBy(createby);
                     emailAuditTrailSMSDto.setCreateDt(createDt);
-                    String date = Formatter.formatDate(item.getSentTime());
+                    String date = Formatter.formatDateTime(item.getSentTime());
                     emailAuditTrailSMSDto.setSentTime(date);
                     smsDtos.add(emailAuditTrailSMSDto);
                 }
@@ -622,7 +622,7 @@ public class BlastManagementDelegator {
                     emailAuditTrailEmailDto.setLogMsg(item.getLogMsg());
                     emailAuditTrailEmailDto.setCreateBy(createby);
                     emailAuditTrailEmailDto.setCreateDt(createDt);
-                    String date = Formatter.formatDate(item.getSentTime());
+                    String date = Formatter.formatDateTime(item.getSentTime());
                     emailAuditTrailEmailDto.setSentTime(date);
                     emailDtos.add(emailAuditTrailEmailDto);
                 }
@@ -659,10 +659,12 @@ public class BlastManagementDelegator {
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
     }
 
-    private String getDate(String date){
-        char indexChar = ".".charAt(0);
-        int index=date.lastIndexOf(indexChar);
-        return date.substring(0,index);
+    private String getDate(String date) throws ParseException {
+        date = date.replace(".0","");
+        Date dateDate = null;
+        dateDate = Formatter.parseDateTime(date,"yyyy-MM-dd HH:mm:ss");
+        date = Formatter.formatDateTime(dateDate,"dd/MM/yyyy HH:mm:ss");
+        return date;
     }
 
     private void getDistribution(BaseProcessClass bpc,String mode){

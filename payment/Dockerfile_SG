@@ -1,4 +1,4 @@
-FROM hub.ecquaria.com:8150/ecq/tomcat:9.0.38-jre8-alpine
+FROM hub.ecquaria.com:8150/ecq/tomcat:9.0.40-jre8-alpine
 
 RUN deluser --remove-home egpcloud
 RUN adduser -D -u 1000 iais

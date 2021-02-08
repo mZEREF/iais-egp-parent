@@ -99,7 +99,7 @@
                                   <c:choose>
                                     <c:when test="${empty inspectionHistoryShowDtos}">
                                       <tr>
-                                        <td colspan="12" align="center">
+                                        <td colspan="12" align="left">
                                           <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                                           <!--No Record!!-->
                                         </td>
@@ -200,14 +200,15 @@
                                   <c:forEach items="${inspectionPreTaskDto.preInspRfiOption}" var="name">
                                     <p>
                                       <input type="checkbox" name="preInspRfiCheck" id = "${name.value}PreInspRfiCheck"  value="<c:out value="${name.value}"/>"
-                                            <c:forEach items="${inspectionPreTaskDto.preInspRfiCheck}" var="checkName">
-                                              <c:if test="${name.value eq checkName}">checked="checked"</c:if>
-                                            </c:forEach>
+                                              <c:forEach items="${inspectionPreTaskDto.preInspRfiCheck}" var="checkName">
+                                                <c:if test="${name.value eq checkName}">checked="checked"</c:if>
+                                              </c:forEach>
                                       />
                                       <span style="font-size: 16px"><c:out value="${name.text}"/></span>
                                     </p>
                                   </c:forEach>
                                   <span class="error-msg" name="iaisErrorMsg" id="error_preInspRfiCheck"></span>
+                                  <span class="error-msg" name="iaisErrorMsg" id="error_preInspRfiTogether"></span>
                                 </c:if>
                               </iais:value>
                             </iais:row>

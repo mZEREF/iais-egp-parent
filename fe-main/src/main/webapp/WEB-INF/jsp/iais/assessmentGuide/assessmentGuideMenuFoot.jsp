@@ -1,5 +1,5 @@
 </div>
-<div class="col-lg-12 col-xs-12" style="padding-left: 20px">
+<div class="col-lg-12 col-xs-12" id="commBackBtn" style="padding-left: 20px">
     <a href="/main-web/eservice/INTERNET/MohInternetInbox"><em
             class="fa fa-angle-left"></em> Back</a>
 </div>

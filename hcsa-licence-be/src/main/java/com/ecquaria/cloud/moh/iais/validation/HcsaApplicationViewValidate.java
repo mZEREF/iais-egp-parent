@@ -177,6 +177,16 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                             errMap.put("rollBack", MessageUtil.replaceMessage("GENERAL_ERR0006","Route Back To", "field"));
                         }
                     } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage)){
+                        //Prevent duplicate submissions
+                        ApplicationService applicationService = SpringContextHelper.getContext().getBean(ApplicationServiceImpl.class);
+                        Integer rfiCount = applicationService.getAppBYGroupIdAndStatus(applicationViewDto.getApplicationDto().getAppGrpId(),
+                                ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
+                        log.debug(StringUtil.changeForLog("validate the rfiCount is -->:" + rfiCount));
+                        if (!(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()))) {
+                            if (rfiCount != 0) {
+                                errMap.put("nextStage","GENERAL_ERR0045");
+                            }
+                        }
                         boolean flowFlag = !isAppealType && !isWithdrawal && !isCessation;
                         if(flowFlag){
                             //rfiSelectValue

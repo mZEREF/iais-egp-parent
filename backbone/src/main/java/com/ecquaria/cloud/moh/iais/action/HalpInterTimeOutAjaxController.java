@@ -16,8 +16,8 @@ import java.util.Map;
  **/
 @Slf4j
 @Controller
-@RequestMapping("/time-out")
-public class InterTimeOutAjaxController {
+@RequestMapping("/halp-time-out")
+public class HalpInterTimeOutAjaxController {
 
     @RequestMapping(value = "internet.extend", method = RequestMethod.GET)
     public @ResponseBody

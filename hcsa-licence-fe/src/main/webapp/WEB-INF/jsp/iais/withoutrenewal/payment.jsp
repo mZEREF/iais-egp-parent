@@ -222,6 +222,7 @@
     });
 
     $('#proceed').click(function () {
+        showWaiting();
         var val = $('#renewNoNeedPay').val();
         if('$0'==val){
             $('[name="switch_value"]').val('doAcknowledgement');

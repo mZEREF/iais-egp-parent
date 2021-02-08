@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -423,6 +424,7 @@ public class InspectionRectificationProDelegator {
         FileRepoDto fileRepoDto = null;
         if(appPremisesSpecialDocDto != null && !StringUtil.isEmpty(appPremisesSpecialDocDto.getFileRepoId())) {
             fileRepoDto = inspectionRectificationProService.getFileReportById(appPremisesSpecialDocDto.getFileRepoId());
+            fileRepoDto = inspectionRectificationProService.getCheckListFileRealName(fileRepoDto, taskDto.getRefNo(), AppConsts.COMMON_STATUS_ACTIVE, ApplicationConsts.APP_DOC_TYPE_CHECK_LIST);
             inspectionReportDto.setPracticesFileId(appPremisesSpecialDocDto.getFileRepoId());
         }
         //get inspector lead

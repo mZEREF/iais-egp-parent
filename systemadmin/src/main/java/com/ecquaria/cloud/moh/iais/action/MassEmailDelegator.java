@@ -168,6 +168,8 @@ public class MassEmailDelegator {
     public void search(BaseProcessClass bpc){
         SearchParam searchParam = getSearchParam(bpc);
         String distributionName = ParamUtil.getRequestString(bpc.request,"distributionName");
+        String fieldName = ParamUtil.getRequestString(bpc.request,"fieldName");
+        String sortType = ParamUtil.getRequestString(bpc.request,"sortType");
         String[] roleString = ParamUtil.getStrings(bpc.request,"role");
 
         String roleshow  = "";
@@ -177,7 +179,13 @@ public class MassEmailDelegator {
         searchParam.getFilters().clear();
         searchParam.setPageNo(1);
         searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
-        searchParam.setSort("CREATED_DT", SearchParam.DESCENDING);
+        if(!StringUtil.isEmpty(fieldName) && !StringUtil.isEmpty(sortType)){
+            searchParam.setSort(fieldName, sortType);
+        }else{
+            if(IaisCommonUtils.isEmpty(searchParam.getSortMap())){
+                searchParam.setSort("CREATED_DT", SearchParam.DESCENDING);
+            }
+        }
         searchParam.addFilter("status", AppConsts.COMMON_STATUS_ACTIVE,true);
         if(!StringUtil.isEmpty(distributionName)){
             searchParam.addFilter("description", "%" + distributionName + "%",true);
@@ -265,6 +273,7 @@ public class MassEmailDelegator {
             String mode = mulReq.getParameter("mode");
             List<String> filelist = IaisCommonUtils.genNewArrayList();
             filelist = getAllData(file,mode);
+            ParamUtil.setSessionAttr(bpc.request,"massEmailFilelist",(Serializable) getAllData(file,mode));
             if(SMS.equals(mode)){
                 List<String> address = getEmail(bpc,"mobile");
                 if(filelist != null && repeatList(filelist)){

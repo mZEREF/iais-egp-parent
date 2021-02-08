@@ -340,7 +340,7 @@ public class InboxServiceImpl implements InboxService {
             errorMap.put("errorMessage2",errorMsg);
         }
         //Verify whether the new licence is generated
-        LicenceDto entity = licenceInboxClient.getLicdtoByOrgId(licenceId).getEntity();
+        LicenceDto entity = licenceInboxClient.getRootLicenceDtoByOrgId(licenceId).getEntity();
         if(entity != null){
             String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK013");
             errorMap.put("errorMessage2",errorMsg);
