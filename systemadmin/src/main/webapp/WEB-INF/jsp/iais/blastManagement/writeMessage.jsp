@@ -12,6 +12,15 @@
 %>
 <script src="<%=webroot%>js/tinymce/tinymce.min.js"></script>
 <script src="<%=webroot%>js/initTinyMce.js"></script>
+<style>
+    .btn.btn-sm {
+        font-size: .775rem;
+        font-weight: 500;
+        padding: 6px 10px;
+        text-transform: uppercase;
+        border-radius: 30px;
+    }
+</style>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
     <form class="form-horizontal" method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>

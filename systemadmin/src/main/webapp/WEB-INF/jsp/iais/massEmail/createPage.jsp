@@ -7,6 +7,15 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
+<style>
+    .btn.btn-sm {
+        font-size: .775rem;
+        font-weight: 500;
+        padding: 6px 10px;
+        text-transform: uppercase;
+        border-radius: 30px;
+    }
+</style>
 <div class="main-content">
     <form class="form-horizontal" method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="crud_action_type" value="">
