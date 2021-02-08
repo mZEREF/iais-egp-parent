@@ -271,11 +271,12 @@ public class InspectEmailAo1Delegator {
         String userId = loginContext.getUserId();
         ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,APP_VIEW_DTO);
         TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
-        String serviceId=applicationViewDto.getApplicationDto().getServiceId();
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"send".equals(currentAction)){
+        TaskDto taskDtoNew = taskService.getTaskById(taskDto.getId());
+        if(taskDtoNew.getTaskStatus().equals(TaskConsts.TASK_STATUS_COMPLETED)){
+            ParamUtil.setRequestAttr(request,"COMPLETED",Boolean.TRUE);
             return;
         }
+        String serviceId=applicationViewDto.getApplicationDto().getServiceId();
         String decision=ParamUtil.getString(request,"decision");
         if("Select".equals(decision)){decision=InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT;}
 
