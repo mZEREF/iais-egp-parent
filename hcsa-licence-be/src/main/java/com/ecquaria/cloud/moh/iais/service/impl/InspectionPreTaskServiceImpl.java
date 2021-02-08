@@ -767,6 +767,27 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         return applicationViewDto;
     }
 
+    @Override
+    public int preInspRfiTogether(ApplicationDto applicationDto) {
+        if(applicationDto != null) {
+            if(!StringUtil.isEmpty(applicationDto.getAppGrpId())) {
+                Integer appRfiCount =  applicationService.getAppBYGroupIdAndStatus(applicationDto.getAppGrpId(),
+                        ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
+                Integer selfRfiCount =  applicationService.getAppBYGroupIdAndStatus(applicationDto.getAppGrpId(),
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
+                if(appRfiCount == null){
+                    appRfiCount = 0;
+                }
+                if(selfRfiCount == null){
+                    selfRfiCount = 0;
+                }
+                int allCount = appRfiCount + selfRfiCount;
+                return allCount;
+            }
+        }
+        return 0;
+    }
+
     private HcsaRiskInspectionComplianceDto getRiskLevelByRefNo(String taskRefNo, String serviceCode) {
         HcsaRiskInspectionComplianceDto hcsaRiskInspectionComplianceDto = new HcsaRiskInspectionComplianceDto();
         AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(taskRefNo).getEntity();
