@@ -40,7 +40,8 @@
 
     pageContext.setAttribute("sURL", sURL);
   %>
-  <meta http-equiv="refresh" content="0;url=<c:out value='${sURL}'/>">
+  <meta http-equiv="refresh" content="0;url=${sURL}">
+<!--
   <div>
     <div>
       <div class="fb-rounded-box-content-error-Appexception fb-summary-info-error-Appexception">
@@ -58,5 +59,6 @@
       </div>
     </div>
   </div>
+  -->
 </body>
 </html>
