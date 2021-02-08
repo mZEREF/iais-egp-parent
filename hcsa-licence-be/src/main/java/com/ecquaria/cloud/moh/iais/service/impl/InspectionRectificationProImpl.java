@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspecti
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -523,6 +524,27 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             checklistItemDto = hcsaChklClient.getChklItemById(itemId).getEntity();
         }
         return checklistItemDto;
+    }
+
+    @Override
+    public FileRepoDto getCheckListFileRealName(FileRepoDto fileRepoDto, String refNo, String status, String checkListFileType) {
+        if(fileRepoDto == null){
+            fileRepoDto = new FileRepoDto();
+        }
+        AppIntranetDocDto appIntranetDocDto = fillUpCheckListGetAppClient.getAppIntranetDocByPremIdAndStatusAndAppDocType(refNo, status, checkListFileType).getEntity();
+        if(appIntranetDocDto != null) {
+            StringBuilder sb = new StringBuilder();
+            String fileName = appIntranetDocDto.getDocName();
+            String fileType = appIntranetDocDto.getDocType();
+            sb.append(fileName);
+            sb.append('.');
+            sb.append(fileType);
+            String fileRealName = sb.toString();
+            fileRepoDto.setRealFileName(fileRealName);
+        } else {
+            fileRepoDto.setRealFileName(fileRepoDto.getFileName());
+        }
+        return fileRepoDto;
     }
 
     private List<ChecklistItemDto> getCheckDtosByItemIds(List<String> itemIds) {
