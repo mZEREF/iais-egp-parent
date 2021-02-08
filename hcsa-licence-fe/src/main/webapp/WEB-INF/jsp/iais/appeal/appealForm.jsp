@@ -13,7 +13,7 @@
 <%@include file="./dashboard.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <div class="container">
-  <form id="mainForm" enctype="multipart/form-data"  class="__egovform" method="post" action=<%=process.runtime.continueURL()%> >
+  <form id="mainForm" enctype="multipart/form-data"  class="__egovform form-horizontal" method="post" action=<%=process.runtime.continueURL()%> >
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_value" id="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" id="crud_action_additional" value="">
@@ -114,7 +114,7 @@
       </div >
     <div  class="col-xs-12 col-md-10" style="margin-left: 2%" >
 
-      <textarea cols="120" style="font-size: 20px" rows="10" name="remarks" maxlength="300" >${appPremiseMiscDto.remarks}</textarea>
+      <textarea cols="120" style="font-size: 20px;width: 100%" rows="10" name="remarks" maxlength="300" >${appPremiseMiscDto.remarks}</textarea>
 
       <div> <span class="error-msg" id="error_remarks" name="iaisErrorMsg"></span></div>
 
@@ -131,7 +131,7 @@
       <div class="col-xs-12">
         <div class="document-upload-list">
           <div class="file-upload-gp">
-            <div class="fileContent col-xs-2">
+            <div class="fileContent col-xs-5">
               ${upFile.originalFilename}
               <input class="selectedFile"  id="selectedFile" name = "selectedFile"  onclick="fileClicked(event)"  type="file" style="display: none;" aria-label="selectedFile1" onchange="javascript:doUserRecUploadConfirmFile(event)">
               <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Upload</a>
