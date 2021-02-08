@@ -48,7 +48,7 @@
                     </div>
                   </div>
                   <p></p>
-                  <div id = "superPoolSearch">
+                  <div id = "superPoolSearch" class="collapse">
                     <iais:row>
                       <iais:field value="Application No."/>
                       <iais:value width="18">
