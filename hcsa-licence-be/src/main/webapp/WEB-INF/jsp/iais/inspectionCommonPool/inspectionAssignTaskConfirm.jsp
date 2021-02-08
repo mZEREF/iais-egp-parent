@@ -54,7 +54,7 @@
                       <label style="font-size: 16px">Application Status</label>
                     </div>
                     <div class="col-md-6">
-                      <span style="font-size: 16px"><iais:code code="${inspecTaskCreAndAssDto.applicationStatus}"/></span>
+                      <span style="font-size: 16px"><c:out value="Pending Task Assignment"/></span>
                     </div>
                   </div>
                   <p></p>
