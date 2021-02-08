@@ -2,6 +2,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.Formatter" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.Map" %>
+<%@ page import="com.ecquaria.cloud.ServerConfig" %>
 <%--
   Created by IntelliJ IDEA.
   User: MI
@@ -32,6 +33,12 @@
     Integer status = (Integer) errors.get("status");
     String error = (String) errors.get("error");
     String path = (String) errors.get("path");
+
+    String sURL = ServerConfig.getInstance().getSopSiteURL();
+    String sUserDomain = sop.iwe.SessionManager.getInstance(request)
+            .getCurrentUserDomain();
+
+    pageContext.setAttribute("sURL", sURL);
   %>
   <div>
     <div>
