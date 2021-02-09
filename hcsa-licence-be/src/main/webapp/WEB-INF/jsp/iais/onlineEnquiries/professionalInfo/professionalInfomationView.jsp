@@ -188,7 +188,7 @@
                                                        varStatus="status">
                                                 <tr>
                                                     <td></td>
-                                                    <td>${status.index + 1}</td>
+                                                    <td>${(status.index + 1) + (professionalInfoSearch.pageNo - 1) * professionalInfoSearch.pageSize}</td>
                                                     <td>${info.name}</td>
 
                                                     <td>
