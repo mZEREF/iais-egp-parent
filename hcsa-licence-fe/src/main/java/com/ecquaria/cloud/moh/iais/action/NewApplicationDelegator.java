@@ -4223,10 +4223,15 @@ public class NewApplicationDelegator {
     private void requestForChangeOrRenewLoading(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do requestForChangeLoading start ...."));
         String appType = (String) ParamUtil.getRequestAttr(bpc.request, "appType");
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getRequestAttr(bpc.request, RfcConst.APPSUBMISSIONDTORFCATTR);
         String currentEdit = (String) ParamUtil.getRequestAttr(bpc.request, RfcConst.RFC_CURRENT_EDIT);
-        if ((ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType))
-                && appSubmissionDto != null && !StringUtil.isEmpty(currentEdit)) {
+        boolean canDoEdit = (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType));
+        if(!canDoEdit || StringUtil.isEmpty(currentEdit)){
+            return;
+        }
+
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getRequestAttr(bpc.request, RfcConst.APPSUBMISSIONDTORFCATTR);
+        if (canDoEdit && appSubmissionDto != null) {
+            AuditTrailHelper.setAuditTrailInfoByAppType(appType);
             ParamUtil.setSessionAttr(bpc.request, "hasDetail", "Y");
             ParamUtil.setSessionAttr(bpc.request, "isSingle", "Y");
             AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
