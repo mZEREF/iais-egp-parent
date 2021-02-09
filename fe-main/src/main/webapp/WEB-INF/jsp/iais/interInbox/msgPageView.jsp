@@ -60,6 +60,7 @@
         }
     }
     function submit(action) {
+        showWaiting();
         $("[name='msg_action_type']").val(action);
         $("#msgForm").submit();
     }
@@ -122,7 +123,6 @@
     }
 
     function toMsgView(msgContent,msgId,msgType) {
-        showWaiting();
         pageAction();
         $("[name='crud_action_value']").val(msgContent);
         $("[name='msg_action_id']").val(msgId);
