@@ -84,15 +84,15 @@
                             <thead>
                             <tr align="center">
                                 <th></th>
-                                <th>S/N</th>
-                                <th>Message Name</th>
-                                <th>Distribution Name</th>
-                                <th>Mode of Delivery</th>
-                                <th>Scheduled Send Date</th>
-                                <th>Actual Send Date</th>
-                                <th>Attachment</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                <iais:sortableHeader needSort="false" field="subject" value="S/N"/>
+                                <iais:sortableHeader needSort="true" field="MSG_NAME" value="Message Name"/>
+                                <iais:sortableHeader needSort="true" field="DISTRIBUTION_NAME" value="Distribution Name"/>
+                                <iais:sortableHeader needSort="true" field="DELIVERY_MODE" value="Mode of Delivery"/>
+                                <iais:sortableHeader needSort="true" field="SCHEDULE_SEND_DATE" value="Scheduled Send Date"/>
+                                <iais:sortableHeader needSort="true" field="ACTUAL_SEND_DATE" value="Actual Send Date"/>
+                                <iais:sortableHeader needSort="true" field="DOC_NAME" value="Attachment"/>
+                                <iais:sortableHeader needSort="true" field="STATUS" value="Status"/>
+                                <<iais:sortableHeader needSort="false" field="subject" value="Action"/>
                             </tr>
                             </thead>
                             <tbody>
@@ -190,10 +190,17 @@
         <input hidden id="createby" name="createby" value="">
         <input hidden id="createDt" name="createDt" value="">
         <input hidden id="mode" name="mode" value="">
+        <input hidden id="fieldName" name="fieldName" value="">
+        <input hidden id="sortType" name="sortType" value="">
     </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
+    function sortRecords(sortFieldName, sortType) {
+        $("[name='fieldName']").val(sortFieldName);
+        $("[name='sortType']").val(sortType);
+        SOP.Crud.cfxSubmit("mainForm", "search");
+    }
     function addList() {
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "create");

@@ -235,6 +235,15 @@ public class BlastManagementDelegator {
         String msgName = ParamUtil.getRequestString(bpc.request,"msgName");
         String start = ParamUtil.getRequestString(bpc.request,"start");
         String end = ParamUtil.getRequestString(bpc.request,"end");
+        String fieldName = ParamUtil.getRequestString(bpc.request,"fieldName");
+        String sortType = ParamUtil.getRequestString(bpc.request,"sortType");
+        if(!StringUtil.isEmpty(fieldName) && !StringUtil.isEmpty(sortType)){
+            searchParam.setSort(fieldName, sortType);
+        }else{
+            if(IaisCommonUtils.isEmpty(searchParam.getSortMap())){
+                searchParam.setSort("SCHEDULE_SEND_DATE", SearchParam.DESCENDING);
+            }
+        }
         Date startDate = Formatter.parseDate(start);
         Date endDate = Formatter.parseDate(end);
 

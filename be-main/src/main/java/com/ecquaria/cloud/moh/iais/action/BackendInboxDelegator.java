@@ -179,6 +179,12 @@ public class BackendInboxDelegator {
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
         List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext.getCurRoleId());
+        String appStatusDefault = (String) ParamUtil.getSessionAttr(bpc.request, "application_status");
+
+        if(StringUtil.isEmpty(appStatusDefault) && appStatusOption.size() == 1 && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatusOption.get(0).getValue())){
+            appStatusDefault = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+        }
+
         appStatusOption.sort((s1, s2) -> (s1.getText().compareTo(s2.getText())));
         SearchParam searchParamGroup = getSearchParam(bpc.request,false);
         ParamUtil.setSessionAttr(bpc.request, "backendinboxSearchParam", searchParamGroup);
@@ -204,6 +210,7 @@ public class BackendInboxDelegator {
         ParamUtil.setRequestAttr(bpc.request, "hci_name", hci_name);
         ParamUtil.setRequestAttr(bpc.request, "hci_address", address);
         ParamUtil.setRequestAttr(bpc.request, "application_no", application_no);
+        ParamUtil.setSessionAttr(bpc.request, "application_status",appStatusDefault);
         ParamUtil.setRequestAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
         ParamUtil.setRequestAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
         ParamUtil.setRequestAttr(bpc.request, "workGroupIds", (Serializable) workGroupIds);
