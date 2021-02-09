@@ -245,7 +245,7 @@ public class InspectionSearchDelegator {
         String[] appCorIdStrs;
         if(!(StringUtil.isEmpty(memberValue))) {
             appCorIdStrs = memberValue.split(",");
-            String appCorrId = SqlHelper.constructInCondition("T5.APP_PREM_CORR_ID", appCorrId_list.size());
+            String appCorrId = SqlHelper.constructInCondition("T5.APP_PREM_CORR_ID", appCorIdStrs.length);
             searchParam.addParam("appCorId_list", appCorrId);
             for(int i = 0; i < appCorIdStrs.length; i++){
                 searchParam.addFilter("T5.APP_PREM_CORR_ID" + i, appCorIdStrs[i]);
