@@ -702,6 +702,7 @@ public class InsRepServiceImpl implements InsRepService {
         String groupId = hcsaSvcStageWorkingGroupDto1.getGroupId();
         String subStage = getSubStage(appPremisesCorrelationId, taskKey);
         List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+        applicationDtoList = removeFastTrackingAndTransfer(applicationDtoList);
         updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
         createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
         List<ApplicationDto> saveApplicationDtoList = IaisCommonUtils.genNewArrayList();
@@ -730,6 +731,21 @@ public class InsRepServiceImpl implements InsRepService {
                 taskService.createTasks(taskDtos);
             }
         }
+    }
+
+    private List<ApplicationDto> removeFastTrackingAndTransfer(List<ApplicationDto> applicationDtos) {
+        List<ApplicationDto> result = IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(applicationDtos)) {
+            for (ApplicationDto applicationDto : applicationDtos) {
+                if (ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(applicationDto.getStatus())) {
+                    continue;
+                }
+                if (!applicationDto.isFastTracking()) {
+                    result.add(applicationDto);
+                }
+            }
+        }
+        return result;
     }
 
     private void updateCurrentApplicationStatus(List<ApplicationDto> applicationDtos, String applicationId, String status) {
