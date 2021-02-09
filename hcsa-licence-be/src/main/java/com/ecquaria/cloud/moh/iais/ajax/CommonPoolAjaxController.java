@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.SystemSearchAssignPoolService;
@@ -163,15 +164,11 @@ public class CommonPoolAjaxController {
             searchParam.setPageNo(1);
             searchParam.setSort("REF_NO", SearchParam.ASCENDING);
             //set filters
-            StringBuilder sb = new StringBuilder("(");
             if (!IaisCommonUtils.isEmpty(appCorrId_list)) {
+                String appPremCorrId = SqlHelper.constructInCondition("T1.REF_NO", appCorrId_list.size());
+                searchParam.addParam("appCorrId_list", appPremCorrId);
                 for (int i = 0; i < appCorrId_list.size(); i++) {
-                    sb.append(":appCorrId").append(i).append(',');
-                }
-                String inSq1 = sb.substring(0, sb.length() - 1) + ")";
-                searchParam.addParam("appCorrId_list", inSq1);
-                for (int i = 0; i < appCorrId_list.size(); i++) {
-                    searchParam.addFilter("appCorrId" + i, appCorrId_list.get(i));
+                    searchParam.addFilter("T1.REF_NO" + i, appCorrId_list.get(i));
                 }
             }
 

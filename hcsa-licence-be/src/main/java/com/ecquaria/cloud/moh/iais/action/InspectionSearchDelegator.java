@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
@@ -133,16 +134,10 @@ public class InspectionSearchDelegator {
                 groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
                 List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds, loginContext);
                 List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(superPool);
-                StringBuilder sb = new StringBuilder("(");
+                String appPremCorrId = SqlHelper.constructInCondition("T1.ID", appCorrId_list.size());
+                searchParam.addParam("appCorrId_list", appPremCorrId);
                 for (int i = 0; i < appCorrId_list.size(); i++) {
-                    sb.append(":appCorrId")
-                            .append(i)
-                            .append(',');
-                }
-                String inSql = sb.substring(0, sb.length() - 1) + ")";
-                searchParam.addParam("appCorrId_list", inSql);
-                for (int i = 0; i < appCorrId_list.size(); i++) {
-                    searchParam.addFilter("appCorrId" + i, appCorrId_list.get(i));
+                    searchParam.addFilter("T1.ID" + i, appCorrId_list.get(i));
                 }
                 QueryHelp.setMainSql("inspectionQuery", "supervisorPoolSearch", searchParam);
                 searchResult = inspectionService.getSupPoolByParam(searchParam);
@@ -239,16 +234,10 @@ public class InspectionSearchDelegator {
         }
         List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds, loginContext);
         List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(superPool);
-        StringBuilder sb = new StringBuilder("(");
+        String appPremCorrId = SqlHelper.constructInCondition("T1.ID", appCorrId_list.size());
+        searchParam.addParam("appCorrId_list", appPremCorrId);
         for(int i = 0; i < appCorrId_list.size(); i++){
-            sb.append(":appCorrId")
-                    .append(i)
-                    .append(',');
-        }
-        String inSql = sb.substring(0, sb.length() - 1) + ")";
-        searchParam.addParam("appCorrId_list", inSql);
-        for(int i = 0; i < appCorrId_list.size(); i++){
-            searchParam.addFilter("appCorrId" + i, appCorrId_list.get(i));
+            searchParam.addFilter("T1.ID" + i, appCorrId_list.get(i));
         }
         if(!StringUtil.isEmpty(application_no)){
             searchParam.addFilter("application_no", application_no,true);
@@ -256,16 +245,10 @@ public class InspectionSearchDelegator {
         String[] appCorIdStrs;
         if(!(StringUtil.isEmpty(memberValue))) {
             appCorIdStrs = memberValue.split(",");
-            StringBuilder sb2 = new StringBuilder("(");
+            String appCorrId = SqlHelper.constructInCondition("T5.APP_PREM_CORR_ID", appCorrId_list.size());
+            searchParam.addParam("appCorId_list", appCorrId);
             for(int i = 0; i < appCorIdStrs.length; i++){
-                sb2.append(":appCorId")
-                        .append(i)
-                        .append(',');
-            }
-            String inSql2 = sb2.substring(0, sb2.length() - 1) + ")";
-            searchParam.addParam("appCorId_list", inSql2);
-            for(int i = 0; i < appCorIdStrs.length; i++){
-                searchParam.addFilter("appCorId" + i, appCorIdStrs[i]);
+                searchParam.addFilter("T5.APP_PREM_CORR_ID" + i, appCorIdStrs[i]);
             }
         }
         if(!StringUtil.isEmpty(application_type)){
