@@ -1058,7 +1058,7 @@ public class MohIntranetUserDelegator {
         orgUserDto.setRemarks(remarks);
         Date today = new Date();
         orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
-        if(startDate.after(today)){
+        if(startDate != null && startDate.after(today)){
             orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
         }
         orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
