@@ -137,8 +137,12 @@ KATALON_OFFLINE_LICENSE_CREDENTIALS = [file(
 CHECKOUT_DIRECTORY_AUTOMATED_TESTING="checkouts-at"
 
 // Specify the Gitlab URL used by the project -- note the use of single quote.
+// PROJECT_GITLAB_URL_AUTOMATED_TESTING =
+//     'https://${GIT_USERNAME}:${GIT_PASSWORD}@hub.ecquaria.com/gitlab/moh-iais/iais-qa.git'
+
+// use this first -- till iais-qa is ready...
 PROJECT_GITLAB_URL_AUTOMATED_TESTING =
-    'https://${GIT_USERNAME}:${GIT_PASSWORD}@hub.ecquaria.com/gitlab/moh-iais/iais-qa.git'
+    'https://${GIT_USERNAME}:${GIT_PASSWORD}@hub.ecquaria.com/gitlab/zam-public/my-first-web-ui-project.git'
 
 configurePipeline()
 
@@ -1050,10 +1054,10 @@ def runAutomatedTests(){
                             katalonc \
                                 -noSplash \
                                 -runMode=console \
-                                -projectPath="\$(pwd)/$CHECKOUT_DIRECTORY_AUTOMATED_TESTING/moh_iais.prj" \
+                                -projectPath="\$(pwd)/$CHECKOUT_DIRECTORY_AUTOMATED_TESTING/My First Web UI Project.prj" \
                                 -retry=0 \
-                                -testSuitePath="Test Suites/Automation Test Suite - SG_SIT" \
-                                -executionProfile="SG_SIT" \
+                                -testSuitePath="Test Suites/my_first_test_suite" \
+                                -executionProfile="default" \
                                 -browserType="$browserType" \
                                 -remoteWebDriverUrl="http://192.168.0.228:4444/wd/hub" \
                                 -remoteWebDriverType="Selenium"
@@ -1074,7 +1078,7 @@ def runAutomatedTests(){
 }
 
 def doAutomatedTestGate(){
-    def stageName = 'Automated Test Gate'
+    def stageName = 'Proceed Automation Test?'
     def inputId = 'atGate'
     def message = 'Proceed with automated testing?'
     def yesText = 'Proceed - Environment is ready'
