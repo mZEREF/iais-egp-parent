@@ -230,7 +230,7 @@ catch(err){
     currentBuild.result = 'FAILURE'
 }
 finally{
-    // sendEmailNotification()
+    sendEmailNotification()
 }
 
 /**
