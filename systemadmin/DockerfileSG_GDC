@@ -1,0 +1,16 @@
+FROM nexus3:5000/tomcat:9.0.36-jdk8-adoptopenjdk-hotspot
+
+ENV TZ=Asia/Singapore
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+COPY target/system-admin-web /usr/local/tomcat/webapps/system-admin-web
+COPY docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
+COPY docker/server.xml /usr/local/tomcat/conf/server.xml
+COPY docker/run.sh /run.sh
+COPY docker/admin.json /admin.json
+COPY glowroot /glowroot
+
+RUN chmod +x /usr/local/tomcat/bin/setenv.sh
+RUN chmod +x /run.sh
+
+
