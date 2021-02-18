@@ -1,5 +1,5 @@
 // List of email recipients.
-EMAILS_TO_NOTIFY = 'zamri@toppanecquaria.com'
+EMAILS_TO_NOTIFY = 'tanweijie@toppanecquaria.com, zamri@toppanecquaria.com'
 // Specify the connection URL to the Docker daemon.
 DOCKER_URL = 'tcp://hub.ecquaria.com:2375'
 // Destination directory when we do `git clone`.
@@ -209,17 +209,6 @@ try{
             currentBuild.result = 'ABORTED'
         }
         return
-    }
-
-    node{
-        docker.withServer(DOCKER_URL){
-            withEnv(['DOCKER_CERT_PATH=/var/jenkins_home/.docker']) {
-                releaseDockerImages()
-                createAndUploadVerificationPackage()
-                waitForVerifier()
-                createAndUploadDeploymentPackage()
-            }
-        }
     }
 
     currentBuild.result = 'SUCCESS'
