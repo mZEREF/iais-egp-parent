@@ -777,7 +777,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     @Override
     public List<Role> getRolesByDomain(String domain) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
-        map.put("userDomain", domain);
+        map.put("userDomains", domain);
         return egpUserClient.search(map).getEntity();
     }
 
