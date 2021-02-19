@@ -539,22 +539,7 @@
                                                                         </td>
                                                                         <td class="col-xs-4"></td>
                                                                     </tr>
-                                                                    <tr>
-                                                                        <td class="col-xs-4">
-                                                                            <p>&nbsp;Clinical Governance Officer(s)</p>
-                                                                        </td>
-                                                                        <td class="col-xs-4">
-                                                                            <c:if test="${insRepDto.clinicalGovernanceOfficer != null && not empty insRepDto.clinicalGovernanceOfficer}">
-                                                                                <p><c:forEach
-                                                                                        items="${insRepDto.clinicalGovernanceOfficer}"
-                                                                                        var="cgoName">
-                                                                                    &nbsp;<c:out value="${cgoName}"/><br>
-                                                                                </c:forEach></p>
-                                                                            </c:if>
-                                                                            <c:if test="${ empty insRepDto.clinicalGovernanceOfficer}">&nbsp;-</c:if>
-                                                                        </td>
-                                                                        <td class="col-xs-4"></td>
-                                                                    </tr>
+
                                                                     <tr>
                                                                         <td class="col-xs-4">
                                                                             <p>&nbsp;Principal Officer(s)</p>
