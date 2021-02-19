@@ -287,13 +287,10 @@ public class CommonPoolAjaxController {
             //set filters
             StringBuilder sb = new StringBuilder("(");
             if (!IaisCommonUtils.isEmpty(appCorrId_list)) {
+                String appPremCorrId = SqlHelper.constructInCondition("T1.REF_NO", appCorrId_list.size());
+                searchParam.addParam("appCorrId_list", appPremCorrId);
                 for (int i = 0; i < appCorrId_list.size(); i++) {
-                    sb.append(":appCorrId").append(i).append(',');
-                }
-                String inSq1 = sb.substring(0, sb.length() - 1) + ")";
-                searchParam.addParam("appCorrId_list", inSq1);
-                for (int i = 0; i < appCorrId_list.size(); i++) {
-                    searchParam.addFilter("appCorrId" + i, appCorrId_list.get(i));
+                    searchParam.addFilter("T1.REF_NO" + i, appCorrId_list.get(i));
                 }
             }
 
