@@ -2,10 +2,11 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
+import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Wenkang
@@ -31,9 +29,6 @@ public interface SystemAdminClient  {
 
     @RequestMapping(path = "/application-number")
     FeignResponseEntity<String> applicationNumber(@RequestParam(value = "type") String applicationType);
-
-    @RequestMapping(path="//api-postcodes/postal-code", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<PostCodeDto> getPostCodeByCode(@RequestParam(value = "postalCode") String postalCode);
 
     @GetMapping(path = "/iais-messageTemplate/template/{msgId}")
     FeignResponseEntity<MsgTemplateDto> getMsgTemplate(@PathVariable("msgId") String id);

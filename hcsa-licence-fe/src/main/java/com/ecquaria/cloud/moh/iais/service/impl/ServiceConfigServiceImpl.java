@@ -118,7 +118,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public PostCodeDto getPremisesByPostalCode(String postalCode) {
-        return systemAdminClient.getPostCodeByCode(postalCode).getEntity();
+        return feEicGatewayClient.getPostalCode(postalCode).getEntity();
     }
 
     @Override
