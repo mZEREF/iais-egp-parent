@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 public class PaymentNetsProxy extends PaymentProxy {
@@ -82,8 +83,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 			throw new PaymentException(e1);
 		}
 		PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
-		String merchantTxnRef = Formatter.formatDateTime(new Date(), "yyyyMMdd HH:mm:ss.SSS");
-		merchantTxnRef=merchantTxnRef.substring(0,merchantTxnRef.length()-1);
+		String merchantTxnRef = UUID.randomUUID().toString().replace("-","").substring(0,20);
 		String merchantTxnDtm = Formatter.formatDateTime(new Date(), "yyyyMMdd HH:mm:ss.SSS");
 		String amo = fields.get("vpc_Amount");
 		String amoOo= String.valueOf(Integer.parseInt(amo));
