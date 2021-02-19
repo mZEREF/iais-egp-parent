@@ -394,9 +394,9 @@ public interface ApplicationClient {
     @GetMapping(value = "/application-number-grp-premiese/{appPremcorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppInsRepDto> appGrpPremises(@PathVariable("appPremcorrId") String appPremcorrId);
 
-    @PostMapping(value="/halp-prs/getProfessionalDetail", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value="/halp-prs/prs-api/getProfessionalDetail", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List> getProfessionalDetail(@RequestBody ProfessionalParameterDto professionalParameterDto);
 
-    @PostMapping(value="/halp-prs/getDisciplinaryRecord", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value="/halp-prs/prs-api/getDisciplinaryRecord", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List> getDisciplinaryRecord(@RequestBody ProfessionalParameterDto professionalParameterDto);
 }
