@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -28,15 +27,8 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloudfeign.FeignException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -44,6 +36,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author weilu
@@ -56,20 +54,12 @@ public class ReCessationApplicationBeDelegator {
     @Autowired
     private CessationBeService cessationBeService;
     @Autowired
-    private BeEicGatewayClient beEicGatewayClient;
+    private ApplicationClient applicationClient;
     @Autowired
     private TaskService taskService;
     @Autowired
     private ApplicationViewService applicationViewService;
-    @Autowired
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
+
     @Value("${moh.halp.prs.enable}")
     private String prsFlag;
     private static final String APPCESSATIONDTO = "appCess";
@@ -276,10 +266,7 @@ public class ReCessationApplicationBeDelegator {
                         String format = simpleDateFormat.format(new Date());
                         professionalParameterDto.setTimestamp(format);
                         professionalParameterDto.setSignature("2222");
-                        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                        List<ProfessionalResponseDto> professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                                signature2.date(), signature2.authorization()).getEntity();
+                        List<ProfessionalResponseDto> professionalResponseDtos = applicationClient.getProfessionalDetail(professionalParameterDto).getEntity();
                         if (!IaisCommonUtils.isEmpty(professionalResponseDtos)) {
                             List<String> specialty = professionalResponseDtos.get(0).getSpecialty();
                             if (IaisCommonUtils.isEmpty(specialty)) {
