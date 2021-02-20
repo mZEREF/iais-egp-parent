@@ -32,7 +32,7 @@
                                     <label class="col-xs-12 col-md-4 control-label" for="userId">User ID:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="userId" type="text" maxlength="20" name="userId" value="${orgUserDto.userId}" disabled>
+                                            <input id="userId" style="border-color: rgb(237, 237, 237); color: rgb(153, 153, 153);" type="text" maxlength="20" name="userId" value="${orgUserDto.userId}" disabled>
                                             <span id="error_userId" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </iais:value>

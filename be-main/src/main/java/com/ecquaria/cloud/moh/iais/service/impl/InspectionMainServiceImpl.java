@@ -186,6 +186,7 @@ public class InspectionMainServiceImpl implements InspectionMainService {
         }
 
         List<SelectOption> appStatusOption = MasterCodeUtil.retrieveOptionsByCodes(statusStrs);
+        appStatusOption.sort((h1,h2)->h1.getText().compareTo(h2.getText()));
         return appStatusOption;
     }
 

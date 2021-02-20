@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 public class PaymentNetsProxy extends PaymentProxy {
@@ -82,8 +83,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 			throw new PaymentException(e1);
 		}
 		PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
-		String merchantTxnRef = Formatter.formatDateTime(new Date(), "yyyyMMdd HH:mm:ss.SSS");
-		merchantTxnRef=merchantTxnRef.substring(0,merchantTxnRef.length()-1);
+		String merchantTxnRef = UUID.randomUUID().toString().replace("-","").substring(0,20);
 		String merchantTxnDtm = Formatter.formatDateTime(new Date(), "yyyyMMdd HH:mm:ss.SSS");
 		String amo = fields.get("vpc_Amount");
 		String amoOo= String.valueOf(Integer.parseInt(amo));
@@ -96,7 +96,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String umId= GatewayConfig.eNetsUmId;
 		String keyId=GatewayConfig.eNetsKeyId;
 		String secretKey=GatewayConfig.eNetsSecretKey ;
-		String b2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/egov/back.jsp?reqNo="+reqNo;
+		String b2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/payment-web/back.jsp?reqNo="+reqNo;
 		String sessionId=bpc.getSession().getId();
 		String results;
 		String failUrl;

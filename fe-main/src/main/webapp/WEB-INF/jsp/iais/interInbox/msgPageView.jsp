@@ -60,6 +60,7 @@
         }
     }
     function submit(action) {
+        showWaiting();
         $("[name='msg_action_type']").val(action);
         $("#msgForm").submit();
     }

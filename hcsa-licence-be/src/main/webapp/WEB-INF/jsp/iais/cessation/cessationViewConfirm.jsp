@@ -172,7 +172,7 @@
                                             </div>
                                             <div id="patNo" hidden>
                                                 <iais:row>
-                                                    <iais:field value=""/>
+                                                    <iais:field value="Reason for no patients' records transfer"/>
                                                     <iais:value width="7">
                                                         <iais:input needDisabled="true" type="text"
                                                                     name="patNoRemarks"

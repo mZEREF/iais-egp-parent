@@ -20,12 +20,19 @@
     <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="collapseFlag" value="${param.collapseFlag}">
         <input type="hidden" name="operationType" value="${param.operationType}">
-        <input type="hidden" name="operation" value="${param.operation}">
-        <input type="hidden" name="user" value="${param.user}">
-        <input type="hidden" name="dataActivites" value="${param.dataActivites}">
-        <input type="hidden" name="startDate" value="${param.startDate}">
-        <input type="hidden" name="endDate" value="${param.endDate}">
             <br><br><br>
+            <tr height="100%">
+                <td style="width: 100%;" class="first last">
+                    <div id="control--printerFriendly--33" class="section control " style="overflow: visible;">
+                        <div class="control-set-font control-font-header section-header">
+                            <h2>Search Param</h2>
+                        </div>
+                        <div id="control--printerFriendly--33**errorMsg_section_top" class="error_placements"></div>
+                        <span id="searchParam"></span>
+                    </div>
+                </td>
+            </tr>
+        <br>
             <tr height="100%">
                 <td style="width: 100%;" class="first last">
                     <div id="control--printerFriendly--34" class="section control " style="overflow: visible;">
@@ -50,20 +57,23 @@
                 </td>
             </tr>
 
-
+        <br>
         <a class="back" id="Back" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a>
     </>
 </div>
 
 <input hidden id="hbeforeValue" value="<c:out value="${viewAuditActionData.beforeAction}"/>"/>
 <input hidden id="hafterValue" value="<c:out value="${viewAuditActionData.afterAction}"/>"/>
+<input hidden id="hsearchParam" value="<c:out value="${viewAuditActionData.viewParams}"/>"/>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script>
     $(document).ready(function() {
         let hbeforeValue = $("#hbeforeValue").val()
         let hafterValue = $("#hafterValue").val()
+        let hsearchParam = $("#hsearchParam").val()
         jsonToHtmlTable(hbeforeValue, 'beforeValue')
         jsonToHtmlTable(hafterValue, 'afterValue')
+        jsonToHtmlTable(hsearchParam, 'searchParam')
     })
 
     function doBack() {

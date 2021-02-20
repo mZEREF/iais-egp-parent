@@ -38,7 +38,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcQueryDto;
@@ -52,10 +51,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformati
 import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.DisciplinaryRecordResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -77,7 +74,6 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -85,12 +81,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.DateUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -99,6 +89,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * OnlineEnquiriesServiceImpl
@@ -145,18 +139,6 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     private LicenceViewService licenceViewService;
     @Autowired
     AcraUenBeClient acraUenBeClient;
-
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-
-    @Autowired
-    private BeEicGatewayClient beEicGatewayClient;
 
     @Override
     @SearchTrack(catalog = "ReqForInfoQuery", key = "licenseeQuery")
@@ -238,12 +220,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 per.setKeyPersonnelExtDto(new KeyPersonnelExtDto());
             }
             try {
-                switch (per.getKeyPersonnelExtDto().getPreferredMode()){
-                    case "1":per.getKeyPersonnelExtDto().setPreferredMode("Email");break;
-                    case "2":per.getKeyPersonnelExtDto().setPreferredMode("SMS");break;
-                    case "3":per.getKeyPersonnelExtDto().setPreferredMode("Email  SMS");break;
-                    default:per.getKeyPersonnelExtDto().setPreferredMode("-");break;
-                }
+                per.getKeyPersonnelExtDto().setDescription(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelExtDto().getDescription()));
             }catch (NullPointerException e){
                 log.error(e.getMessage(), e);
             }
@@ -338,10 +315,6 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         professionalParameterDto.setClientId("22222");
         professionalParameterDto.setTimestamp(DateUtil.formatDateTime(new Date(), "yyyyMMddHHmmssSSS"));
         professionalParameterDto.setSignature("2222");
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        List<DisciplinaryRecordResponseDto> list = beEicGatewayClient.getDisciplinaryRecord(professionalParameterDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
 
         RegistrationDetailDto detail = new RegistrationDetailDto();
 
@@ -392,6 +365,16 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             String name = appGrpPersonnelDto.getName();
             poNames.add(name);
         }
+        List<AppGrpPersonnelDto> cgos = appInsRepDto.getCgos();
+        List<String> cgoNames = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(cgos)){
+            for (AppGrpPersonnelDto appGrpPersonnelDto : cgos) {
+                String name = appGrpPersonnelDto.getName();
+                cgoNames.add(name);
+            }
+        }
+        inspectionReportDto.setPrincipalOfficers(poNames);
+        inspectionReportDto.setClinicalGovernanceOfficer(cgoNames);
         inspectionReportDto.setPrincipalOfficers(poNames);
 
 
@@ -427,22 +410,14 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 svcName = hcsaServiceDto.getSvcName();
             }
         }
-        try{
-            HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
-            hcsaRiskScoreDto.setAppType(applicationType);
-            hcsaRiskScoreDto.setLicId(licenceId);
-            List<ApplicationDto> applicationDtos = new ArrayList<>(1);
-            applicationDto.setNeedInsp(true);
-            applicationDtos.add(applicationDto);
-            hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
-            hcsaRiskScoreDto.setServiceId(serviceId);
-            hcsaRiskScoreDto.setBeExistAppId(applicationDto.getId());
-            HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
-            String riskLevel = entity.getRiskLevel();
-            inspectionReportDto.setRiskLevel(MasterCodeUtil.getCodeDesc(riskLevel));
-        }catch (Exception e){
-            inspectionReportDto.setRiskLevel("-");
-            log.info(e.getMessage(),e);
+        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremCorrByAppNo(applicationDto.getApplicationNo()).getEntity();
+        if(appPremisesCorrelationDto.getRiskScore()<=1){
+            inspectionReportDto.setRiskLevel("Low");
+        }else if (appPremisesCorrelationDto.getRiskScore()<=2)
+        {
+            inspectionReportDto.setRiskLevel("Moderate");
+        }else {
+            inspectionReportDto.setRiskLevel("High");
         }
 
         List<HcsaSvcSubtypeOrSubsumedDto> subsumedDtos = hcsaConfigClient.listSubCorrelationFooReport(serviceId).getEntity();
@@ -751,7 +726,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         applicationViewDto.getApplicationDto().setApplicationType(MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getApplicationType()));
         List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos=applicationClient.getAppSvcPremisesScopeListByCorreId(appCorrId).getEntity();
         for (AppSvcPremisesScopeDto a:appSvcPremisesScopeDtos
-             ) {
+        ) {
             HcsaServiceSubTypeDto hcsaServiceSubTypeDto=hcsaConfigClient.getHcsaServiceSubTypeById(a.getScopeName()).getEntity();
             if(hcsaServiceSubTypeDto!=null&&hcsaServiceSubTypeDto.getSubtypeName()!=null){
                 a.setScopeName(hcsaServiceSubTypeDto.getSubtypeName());

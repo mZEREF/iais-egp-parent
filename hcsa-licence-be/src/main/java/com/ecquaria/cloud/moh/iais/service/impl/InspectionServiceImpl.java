@@ -128,7 +128,6 @@ public class InspectionServiceImpl implements InspectionService {
     public List<String> getApplicationNoListByPool(List<TaskDto> commPools) {
         if(IaisCommonUtils.isEmpty(commPools)){
             List<String> appCorrIdList = IaisCommonUtils.genNewArrayList();
-            appCorrIdList.add(AppConsts.NO);
             return appCorrIdList;
         }
         Set<String> appCorrIdSet = IaisCommonUtils.genNewHashSet();

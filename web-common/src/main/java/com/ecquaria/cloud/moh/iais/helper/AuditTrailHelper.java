@@ -19,6 +19,7 @@ import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
@@ -230,5 +231,13 @@ public class AuditTrailHelper {
         atd.setLoginTime(new Date());
         atd.setOperation(AuditTrailConsts.OPERATION_LOGIN_FAIL);
         AuditTrailHelper.callSaveAuditTrail(atd);
+    }
+
+    public static void setAuditTrailInfoByAppType(String appType){
+        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+            auditFunction(AuditTrailConsts.MODULE_RENEW, AuditTrailConsts.FUNCTION_RENEW);
+        }else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
+            auditFunction(AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
+        }
     }
 }

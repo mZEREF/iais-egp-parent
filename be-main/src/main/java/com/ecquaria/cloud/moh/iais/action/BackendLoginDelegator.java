@@ -129,7 +129,7 @@ public class BackendLoginDelegator {
         OrgUserDto orgUserDto= (OrgUserDto) ParamUtil.getSessionAttr(request,"orgUserDto");
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
 
-        if (orgUserDto==null||orgUserDto.getUserDomain().equals(AppConsts.USER_DOMAIN_INTERNET)) {
+        if (orgUserDto==null||orgUserDto.getUserDomain().equals(AppConsts.USER_DOMAIN_INTERNET)||!orgUserDto.getStatus().equals(IntranetUserConstant.COMMON_STATUS_ACTIVE)) {
             // Add Audit Trail -- Start
             AuditTrailHelper.insertLoginFailureAuditTrail(request, null, userId, "LOGIN_ERR001");
             // End Audit Trail -- End

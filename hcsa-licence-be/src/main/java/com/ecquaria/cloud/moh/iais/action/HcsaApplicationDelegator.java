@@ -3627,6 +3627,7 @@ public class HcsaApplicationDelegator {
         boolean hasRollBackHistoryList = rollBackHistroyList != null && rollBackHistroyList.size() > 0;
         boolean isCessationOrWithdrawal = ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType);
         boolean finalStage = isFinalStage(taskDto, applicationViewDto);
+        boolean routeBackFlag = true;
         //if be cessation flow
         boolean isBeCessationFlow = false;
         if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)) {
@@ -3650,15 +3651,6 @@ public class HcsaApplicationDelegator {
         status.add(ApplicationConsts.PENDING_ASO_REPLY);
         status.add(ApplicationConsts.PENDING_PSO_REPLY);
         status.add(ApplicationConsts.PENDING_INP_REPLY);
-        if ((status.contains(applicationViewDto.getApplicationDto().getStatus())
-                || ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus()))
-                && RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId())) {
-
-        } else {
-            if (hasRollBackHistoryList) {
-                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROLLBACK, "Internal Route Back"));
-            }
-        }
         //62761
         Integer rfiCount = applicationService.getAppBYGroupIdAndStatus(applicationViewDto.getApplicationDto().getAppGrpId(),
                 ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
@@ -3673,6 +3665,16 @@ public class HcsaApplicationDelegator {
         if (!isBeCessationFlow && (hasRollBackHistoryList && RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus()))) {
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL, "Approve"));
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY, "Broadcast"));
+            if ((status.contains(applicationViewDto.getApplicationDto().getStatus())
+                    || ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus()))
+                    && RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId())) {
+
+            } else {
+                if (hasRollBackHistoryList) {
+                    routeBackFlag = false;
+                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROLLBACK, "Internal Route Back"));
+                }
+            }
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS, "Trigger to DMS"));
         }
         //if final stage
@@ -3684,6 +3686,15 @@ public class HcsaApplicationDelegator {
                     nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS, "Trigger to DMS"));
                 }
                 finalStage = true;
+            }
+        }
+        if ((status.contains(applicationViewDto.getApplicationDto().getStatus())
+                || ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus()))
+                && RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId())) {
+
+        } else {
+            if (hasRollBackHistoryList && routeBackFlag) {
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROLLBACK, "Internal Route Back"));
             }
         }
         ParamUtil.setSessionAttr(request, "finalStage", finalStage);

@@ -152,7 +152,7 @@ public class NewAppValidator implements CustomizeValidator {
                     map.put("emailAddr", "cannot be blank");
                 }
                 if(!StringUtil.isEmpty(officeTelNo)) {
-                    if (!officeTelNo.matches("^[6][0-9]{7}$")) {
+                    if (!officeTelNo.matches("^[3|6][0-9]{7}$")) {
                         map.put("officeTelNo", "Please key in a valid phone number");
                     }
                 }else {

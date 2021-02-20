@@ -60,7 +60,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>HCI Name</span></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Name of HCI</span></p>
                                 </div>
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.hciName}</span></p>
