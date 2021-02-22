@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -687,8 +688,8 @@ public class ConfigServiceDelegator {
                         hcsaSvcSpeRoutingSchemeDto2.setIsMandatory("true");
                         hcsaSvcSpeRoutingSchemeDto2.setStageId(id);
                         if(flag){
-                            hcsaSvcSpeRoutingSchemeDto1.setSchemeType(routingScheme);
-                            hcsaSvcSpeRoutingSchemeDto2.setSchemeType(routingScheme);
+                            hcsaSvcSpeRoutingSchemeDto1.setSchemeType(TaskConsts.TASK_SCHEME_TYPE_ROUND);
+                            hcsaSvcSpeRoutingSchemeDto2.setSchemeType(TaskConsts.TASK_SCHEME_TYPE_ROUND);
                         }
                         hcsaSvcSpeRoutingSchemeDto2.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                         hcsaSvcSpeRoutingSchemeDto2.setAppType(every);
