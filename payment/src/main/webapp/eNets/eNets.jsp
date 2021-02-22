@@ -23,7 +23,7 @@
     <fieldset>
         <legend></legend>
         <div id="ajaxResponse"></div>
-</fieldset>
+    </fieldset>
 </div>
 <%--<input type="button" value="checkout" onclick="payLoad()">--%>
 <script>
