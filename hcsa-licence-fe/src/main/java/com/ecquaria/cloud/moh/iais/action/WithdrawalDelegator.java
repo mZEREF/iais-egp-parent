@@ -75,6 +75,7 @@ public class WithdrawalDelegator {
         loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         log.debug(StringUtil.changeForLog("****The Start Step****"));
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
+        ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",null);
         String withdrawAppNo = ParamUtil.getMaskedString(bpc.request, "withdrawAppNo");
         String isDoView = ParamUtil.getString(bpc.request, "isDoView");
         ParamUtil.setSessionAttr(bpc.request, "isDoView", isDoView);
@@ -328,7 +329,10 @@ public class WithdrawalDelegator {
             for (int i =0;i<withdrawAppNos.length;i++){
                 WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
                 if (withdrawnDto == null){
-                    withdrawnDto = new WithdrawnDto();
+                    withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "withdrawDtoView");
+                    if (withdrawnDto == null){
+                        withdrawnDto = new WithdrawnDto();
+                    }
                 }
                 String appNo = withdrawAppNos[i];
                 ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
@@ -346,31 +350,38 @@ public class WithdrawalDelegator {
                     withdrawnDto.setWithdrawnRemarks(withdrawnRemarks);
                 }
                 ValidationResult validationResult = WebValidationHelper.validateProperty(withdrawnDto,"save");
+                Map<String, String> errorMap = validationResult.retrieveAll();
+                if (commonsMultipartFile !=null && commonsMultipartFile.getSize() > 0) {
+                    String originalFilename = commonsMultipartFile.getOriginalFilename();
+                    fileValidation(originalFilename,validationResult,errorMap);
+                    String fileRepoId = serviceConfigService.saveFileToRepo(commonsMultipartFile);
+                    AppPremisesSpecialDocDto appPremisesSpecialDocDto = new AppPremisesSpecialDocDto();
+                    appPremisesSpecialDocDto.setSubmitDt(new Date());
+                    appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
+                    appPremisesSpecialDocDto.setDocName(commonsMultipartFile.getOriginalFilename());
+                    appPremisesSpecialDocDto.setDocSize((int) commonsMultipartFile.getSize() / 1024);
+                    appPremisesSpecialDocDto.setMd5Code(FileUtil.genMd5FileChecksum(commonsMultipartFile.getBytes()));
+                    withdrawnDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
+                    withdrawnDto.setFileRepoId(fileRepoId);
+                    ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",commonsMultipartFile.getFileItem().getName());
+                }else{
+                    if (withdrawnDto.getAppPremisesSpecialDocDto() != null){
+                        AppPremisesSpecialDocDto appPremisesSpecialDocDto = withdrawnDto.getAppPremisesSpecialDocDto();
+                        String originalFilename = appPremisesSpecialDocDto.getDocName();
+                        fileValidation(originalFilename,validationResult,errorMap);
+                        ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",appPremisesSpecialDocDto.getDocName());
+                    }else{
+                        withdrawnDto.setAppPremisesSpecialDocDto(null);
+                    }
+                }
                 if(validationResult != null && validationResult.isHasErrors()){
-                    Map<String, String> errorMap = validationResult.retrieveAll();
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                     //isValid = IaisEGPConstant.NO;
-                    if (commonsMultipartFile !=null && commonsMultipartFile.getSize() > 0){
-                        ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",commonsMultipartFile.getFileItem().getName());
-                    }else{
-                        withdrawnDto.setAppPremisesSpecialDocDto(null);
-
-                    }
-                    ParamUtil.setRequestAttr(bpc.request,"withdrawDtoView",withdrawnDto);
+                    ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
                     wdIsValid = IaisEGPConstant.NO;
-                }else{
-                    if (commonsMultipartFile != null && commonsMultipartFile.getSize() > 0 ){
-                        String fileRepoId = serviceConfigService.saveFileToRepo(commonsMultipartFile);
-                        AppPremisesSpecialDocDto appPremisesSpecialDocDto = new AppPremisesSpecialDocDto();
-                        appPremisesSpecialDocDto.setSubmitDt(new Date());
-                        appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
-                        appPremisesSpecialDocDto.setDocName(commonsMultipartFile.getOriginalFilename());
-                        appPremisesSpecialDocDto.setDocSize((int)commonsMultipartFile.getSize() / 1024);
-                        appPremisesSpecialDocDto.setMd5Code(FileUtil.genMd5FileChecksum(commonsMultipartFile.getBytes()));
-                        withdrawnDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
-                        withdrawnDto.setFileRepoId(fileRepoId);
-                    }
+                }{
+                    ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
                     withdrawnDtoList.add(withdrawnDto);
                 }
 
@@ -399,5 +410,16 @@ public class WithdrawalDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,wdIsValid);
         ParamUtil.setRequestAttr(bpc.request, "addWithdrawnDtoList",addWithdrawnDtoList);
         return withdrawnDtoList;
+    }
+
+    private void fileValidation(String originalFilename,ValidationResult validationResult,Map<String, String> errorMap){
+//        String[] split = originalFilename.split("\\.");
+        if (!StringUtil.isEmpty(originalFilename)) {
+            if (originalFilename.length() >= 100) {
+                validationResult.setHasErrors(true);
+                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0022");
+                errorMap.put("withdrawalFile", errMsg);
+            }
+        }
     }
 }
