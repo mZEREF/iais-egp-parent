@@ -688,8 +688,8 @@ public class ConfigServiceDelegator {
                         hcsaSvcSpeRoutingSchemeDto2.setIsMandatory("true");
                         hcsaSvcSpeRoutingSchemeDto2.setStageId(id);
                         if(flag){
-                            hcsaSvcSpeRoutingSchemeDto1.setSchemeType(TaskConsts.TASK_SCHEME_TYPE_ROUND);
-                            hcsaSvcSpeRoutingSchemeDto2.setSchemeType(TaskConsts.TASK_SCHEME_TYPE_ROUND);
+                            hcsaSvcSpeRoutingSchemeDto1.setSchemeType(routingScheme);
+                            hcsaSvcSpeRoutingSchemeDto2.setSchemeType(routingScheme);
                         }
                         hcsaSvcSpeRoutingSchemeDto2.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                         hcsaSvcSpeRoutingSchemeDto2.setAppType(every);
