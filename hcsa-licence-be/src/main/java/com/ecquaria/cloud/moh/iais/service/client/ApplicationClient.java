@@ -41,7 +41,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SelfAssMtEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationLicenceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.DisciplinaryRecordResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -395,8 +397,8 @@ public interface ApplicationClient {
     FeignResponseEntity<AppInsRepDto> appGrpPremises(@PathVariable("appPremcorrId") String appPremcorrId);
 
     @PostMapping(value="/halp-prs/prs-api/getProfessionalDetail", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List> getProfessionalDetail(@RequestBody ProfessionalParameterDto professionalParameterDto);
+    FeignResponseEntity<List<ProfessionalResponseDto>> getProfessionalDetail(@RequestBody ProfessionalParameterDto professionalParameterDto);
 
     @PostMapping(value="/halp-prs/prs-api/getDisciplinaryRecord", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List> getDisciplinaryRecord(@RequestBody ProfessionalParameterDto professionalParameterDto);
+    FeignResponseEntity<List<DisciplinaryRecordResponseDto>> getDisciplinaryRecord(@RequestBody ProfessionalParameterDto professionalParameterDto);
 }
