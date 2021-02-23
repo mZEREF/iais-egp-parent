@@ -17,3 +17,5 @@ FE
 "System Management / Project Management" -- egov-project.xml
 2) admin  - login via SOP SMC  https://egp.sit.iinter.iais.com/console/process/SYSTEM/Index
 "Access Control / Menu Management" -- Menu.xml
+"Payment / Mechanism Management " -- egov-mechanism.xml
+"Payment / Client Management" -- egov-client.xml
