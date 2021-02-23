@@ -285,6 +285,11 @@ def sendEmailNotification(){
         subjectHeader = "Build failed: ${currentBuild.fullDisplayName}"
         emailBody = "Something went wrong with ${env.BUILD_URL}"
     }
+    else if (currentBuild.result == 'ABORTED')
+    {
+        subjectHeader = "Build aborted: ${currentBuild.fullDisplayName}"
+        emailBody = "Build aborted, see ${env.BUILD_URL}"
+    }
 
     // send email
     mail to: EMAILS_TO_NOTIFY, subject: subjectHeader, body: emailBody
