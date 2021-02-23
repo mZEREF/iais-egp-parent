@@ -414,6 +414,10 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
           }
       }
         GiroXmlPaymentDto grioXmlPaymentDto = getGiroXmlPaymentDtoByGiroPaymentXmlDtos(giroPaymentXmlDtos);
+        if( grioXmlPaymentDto.getINPUT_TRAILER().getTotalNoOfTransactions() <= 0 ){
+            log.info("-------- no find data need gen file ---------");
+            return;
+        }
         String xml = genXmlByGiroPaymentXmlDtos(grioXmlPaymentDto);
         String uploadGrioFileData = dbsFileDataByGiroXmlPaymentDto(grioXmlPaymentDto);
         String tag = genFileNameUploadSFTP();
@@ -522,7 +526,6 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         List<InputDetailDto> INPUT_DETAIL = IaisCommonUtils.genNewArrayList();
         InputTrailerDto inputTrailerDto = new InputTrailerDto();
         int totalNoOfTransactions = giroPaymentXmlDtos.size();
-        inputTrailerDto.setTotalNoOfTransactions(totalNoOfTransactions);
         double totalTransactionAmount = 0.0;
         String recordTypeData = ConfigHelper.getString("col.giro.dbs.data.record.type.dec","PAYMENT");
         String productTypeData =  ConfigHelper.getString("col.giro.dbs.data.product.type","COL");
@@ -640,6 +643,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             }
         }
         grioXmlPaymentDto.setINPUT_DETAIL(INPUT_DETAIL);
+        inputTrailerDto.setTotalNoOfTransactions(totalNoOfTransactions);
         inputTrailerDto.setTotalTransactionAmount(StringUtil.changeDoubleToStringForTwoDecimals(totalTransactionAmount));
         String recordTypeTra = ConfigHelper.getString("col.giro.dbs.trailer.record.type.dec","TRAILER");
         inputTrailerDto.setRecordType(  recordTypeTra);
@@ -667,6 +671,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         OrgGiroAccountInfoDto orgGiroAccountInfoDto = organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity();;
         if(orgGiroAccountInfoDto!= null && !StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())&& AppConsts.COMMON_STATUS_ACTIVE.equalsIgnoreCase(orgGiroAccountInfoDto.getStatus())){
             return orgGiroAccountInfoDto.getAcctNo();
+        }else if(orgGiroAccountInfoDto!= null && StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())){
+            return  ConfigHelper.getString("col.giro.test.account","");
         }
         return "";
     }
