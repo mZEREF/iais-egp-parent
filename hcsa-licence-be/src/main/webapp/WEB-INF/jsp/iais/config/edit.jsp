@@ -807,7 +807,7 @@
             $('#Pre-requisite').attr("style","display:style")
           $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Services');
           $("select[name='selectCategoryId']").next().attr('class','nice-select disabled');
-          $("select[name='selectCategoryId']").val('Special Licensable Services');
+          $("select[name='selectCategoryId']").val('Special Services');
         }else {
             $('#Subsumption').attr("style","display:none");
             $('#Pre-requisite').attr("style","display:none");
