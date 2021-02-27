@@ -132,7 +132,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     @Override
     public void saveWithdrawn(List<WithdrawnDto> withdrawnDtoList, HttpServletRequest httpServletRequest) {
         boolean charity = NewApplicationHelper.isCharity(httpServletRequest);
-        log.info(StringUtil.changeForLog(charity +"-------> charity"));
         List<WithdrawnDto> autoApproveApplicationDtoList = IaisCommonUtils.genNewArrayList();
         withdrawnDtoList.forEach(h -> {
             String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity();
@@ -178,6 +177,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             recallApplicationDto.setAppNo(newApplication.getApplicationNo());
             recallApplicationDto.setAppGrpId(oldApplication.getAppGrpId());
             recallApplicationDto.setCharity(charity);
+            recallApplicationDto.setResult(false);
             recallApplicationDto.setNewAppId(h.getNewApplicationId());
             if (!charity&&!StringUtil.isEmpty(oldApplicationGroupDtox.getPayMethod())
                     && !ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(oldApplication.getApplicationType())){
@@ -384,7 +384,8 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 }
                 msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
                 msgInfoMap.put("emailAddress",systemAddressOne);
-                msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date(),"dd/MM/yyyy"));
+                msgInfoMap.put("ApplicationDate",Formatter.formatDate(applicationGroupDto.getSubmitDt()));
+                msgInfoMap.put("Reminder",systemParamConfig.getPaymentReminder());
                 try {
                     EmailParam emailParam = sendNotification(msgInfoMap,applicationDto,MsgTemplateConstants.TEMPLATE_WITHDRAWAL_EMAIL);
                     notificationHelper.sendNotification(emailParam);
@@ -536,7 +537,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
         emailParam.setRefId(applicationDto.getApplicationNo());
         emailParam.setSubject(subject);
-        log.info(StringUtil.changeForLog("***************** send withdraw application Notification  end*****************"));
+        log.info(StringUtil.changeForLog("***************** send withdraw application Notification  end *****************"));
         return emailParam;
     }
 

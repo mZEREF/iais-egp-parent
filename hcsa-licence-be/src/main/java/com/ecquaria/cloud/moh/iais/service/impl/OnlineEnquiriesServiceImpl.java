@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -38,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcQueryDto;
@@ -81,6 +81,11 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.DateUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -89,10 +94,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * OnlineEnquiriesServiceImpl
@@ -272,15 +273,33 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                     complianceHistoryDtosByLicId(complianceHistoryDtos,applicationDto.getOriginLicenceId(),appIds);
                 }
                 AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+//                try {
+//                    complianceHistoryDto.setRemarks(appPremisesRecommendationDto.getRemarks());
+//                    if(appPremisesCorrelationDto.getRiskScore()<=1){
+//                        complianceHistoryDto.setRiskTag(MasterCodeUtil.getCodeDesc(RiskConsts.LOW));
+//                    }else if(appPremisesCorrelationDto.getRiskScore()<=2){
+//                        complianceHistoryDto.setRiskTag(MasterCodeUtil.getCodeDesc(RiskConsts.MODERRATE));
+//                    }else {
+//                        complianceHistoryDto.setRiskTag(MasterCodeUtil.getCodeDesc(RiskConsts.HIGH));
+//                    }
+//                }catch (NullPointerException e){
+//                    log.error(e.getMessage(), e);
+//                    complianceHistoryDto.setRiskTag("-");
+//                }
                 try {
                     complianceHistoryDto.setRemarks(appPremisesRecommendationDto.getRemarks());
-                    if(appPremisesCorrelationDto.getRiskScore()<=1){
-                        complianceHistoryDto.setRiskTag(MasterCodeUtil.getCodeDesc(RiskConsts.LOW));
-                    }else if(appPremisesCorrelationDto.getRiskScore()<=2){
-                        complianceHistoryDto.setRiskTag(MasterCodeUtil.getCodeDesc(RiskConsts.MODERRATE));
-                    }else {
-                        complianceHistoryDto.setRiskTag(MasterCodeUtil.getCodeDesc(RiskConsts.HIGH));
-                    }
+                    HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
+                    hcsaRiskScoreDto.setAppType(applicationDto.getApplicationType());
+                    hcsaRiskScoreDto.setLicId(licenceId);
+                    List<ApplicationDto> applicationDtos = new ArrayList<>(1);
+                    applicationDto.setNeedInsp(true);
+                    applicationDtos.add(applicationDto);
+                    hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
+                    hcsaRiskScoreDto.setServiceId(applicationDto.getServiceId());
+                    hcsaRiskScoreDto.setBeExistAppId(applicationDto.getId());
+                    HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
+                    String riskLevel = entity.getRiskLevel();
+                    complianceHistoryDto.setRiskTag(MasterCodeUtil.getCodeDesc(riskLevel));
                 }catch (NullPointerException e){
                     log.error(e.getMessage(), e);
                     complianceHistoryDto.setRiskTag("-");
@@ -410,15 +429,32 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 svcName = hcsaServiceDto.getSvcName();
             }
         }
-        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremCorrByAppNo(applicationDto.getApplicationNo()).getEntity();
-        if(appPremisesCorrelationDto.getRiskScore()<=1){
-            inspectionReportDto.setRiskLevel("Low");
-        }else if (appPremisesCorrelationDto.getRiskScore()<=2)
-        {
-            inspectionReportDto.setRiskLevel("Moderate");
-        }else {
-            inspectionReportDto.setRiskLevel("High");
+        try{
+            HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
+            hcsaRiskScoreDto.setAppType(applicationType);
+            hcsaRiskScoreDto.setLicId(licenceId);
+            List<ApplicationDto> applicationDtos = new ArrayList<>(1);
+            applicationDto.setNeedInsp(true);
+            applicationDtos.add(applicationDto);
+            hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
+            hcsaRiskScoreDto.setServiceId(serviceId);
+            hcsaRiskScoreDto.setBeExistAppId(applicationDto.getId());
+            HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
+            String riskLevel = entity.getRiskLevel();
+            inspectionReportDto.setRiskLevel(MasterCodeUtil.getCodeDesc(riskLevel));
+        }catch (Exception e){
+            inspectionReportDto.setRiskLevel("-");
+            log.info(e.getMessage(),e);
         }
+//        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremCorrByAppNo(applicationDto.getApplicationNo()).getEntity();
+//        if(appPremisesCorrelationDto.getRiskScore()<=1){
+//            inspectionReportDto.setRiskLevel("Low");
+//        }else if (appPremisesCorrelationDto.getRiskScore()<=2)
+//        {
+//            inspectionReportDto.setRiskLevel("Moderate");
+//        }else {
+//            inspectionReportDto.setRiskLevel("High");
+//        }
 
         List<HcsaSvcSubtypeOrSubsumedDto> subsumedDtos = hcsaConfigClient.listSubCorrelationFooReport(serviceId).getEntity();
         List<String> subsumedServices = IaisCommonUtils.genNewArrayList();
@@ -664,7 +700,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         }
         List<TaskDto> taskDtos=taskService.getTaskbyApplicationNo(applicationViewDto.getApplicationDto().getApplicationNo());
         for (TaskDto task:taskDtos
-        ) {
+             ) {
             if((task.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)||task.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING))&&task.getUserId()==null){
                 applicationViewDto.setCurrentStatus(MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT));
             }
@@ -726,7 +762,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         applicationViewDto.getApplicationDto().setApplicationType(MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getApplicationType()));
         List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos=applicationClient.getAppSvcPremisesScopeListByCorreId(appCorrId).getEntity();
         for (AppSvcPremisesScopeDto a:appSvcPremisesScopeDtos
-        ) {
+             ) {
             HcsaServiceSubTypeDto hcsaServiceSubTypeDto=hcsaConfigClient.getHcsaServiceSubTypeById(a.getScopeName()).getEntity();
             if(hcsaServiceSubTypeDto!=null&&hcsaServiceSubTypeDto.getSubtypeName()!=null){
                 a.setScopeName(hcsaServiceSubTypeDto.getSubtypeName());

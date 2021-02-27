@@ -45,21 +45,22 @@
                                             <td>${status.index + 1}</td>
                                             <td><c:out value="${selfAssessment.premises}"></c:out></td>
                                             <td><c:out value="${selfAssessment.svcName}"></c:out></td>
+                                            <td>
                                             <c:choose>
                                                 <c:when test="${hasSubmitted == 'Y'}">
-                                                    <td><button type="button" id="viewSelfAssessment${status.index}" value="<iais:mask name="selfAssessmentCorrId" value="${selfAssessment.corrId}"/>" class="btn btn-default btn-md" >View</button></td>
+                                                    <button type="button" id="viewSelfAssessment${status.index}" value="<iais:mask name="selfAssessmentCorrId" value="${selfAssessment.corrId}"/>" class="btn btn-default btn-md" >View</button>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <c:if test="${selfAssessment.canEdit == true}">
-                                                        <td><button type="button" id="editSelfAssessment${status.index}" value="<iais:mask name="selfAssessmentCorrId" value="${selfAssessment.corrId}"/>" class="btn btn-default btn-md" >Fill</button></td>
+                                                        <button type="button" id="editSelfAssessment${status.index}" value="<iais:mask name="selfAssessmentCorrId" value="${selfAssessment.corrId}"/>" class="btn btn-default btn-md" >Fill</button>
                                                     </c:if>
 
                                                     <c:if test="${selfAssessment.canEdit == false}">
-                                                        <td><button type="button" id="viewSelfAssessment${status.index}" value="<iais:mask name="selfAssessmentCorrId" value="${selfAssessment.corrId}"/>" class="btn btn-default btn-md" >View</button></td>
+                                                        <button type="button" id="viewSelfAssessment${status.index}" value="<iais:mask name="selfAssessmentCorrId" value="${selfAssessment.corrId}"/>" class="btn btn-default btn-md" >View</button>
                                                     </c:if>
-
                                                 </c:otherwise>
                                             </c:choose>
+                                        <button type="button" id="printSelfAssessment${status.index}" value="<iais:mask name="selfAssessmentCorrId" value="${selfAssessment.corrId}"/>" class="btn btn-default btn-md" >Print</button></td>
                                     </tr>
 
 
@@ -96,17 +97,19 @@
                 var length = $('#listLength').val();
                 for (var i = 0; i < length; i++){
                 $("#editSelfAssessment" + i).click(function (){
-                                        Utils.markSubmit('mainForm','loadSelfAssessment', 'selfAssessmentCorrId', $(this).val())
+                     Utils.markSubmit('mainForm','loadSelfAssessment', 'selfAssessmentCorrId', $(this).val())
                   });
 
                 $("#viewSelfAssessment" + i).click(function () {
                     Utils.markSubmit('mainForm','viewSelfAssessment', 'selfAssessmentCorrId', $(this).val())
+                });
+                $("#printSelfAssessment" + i).click(function () {
+                    showPopupWindow('/hcsa-licence-web/eservice/INTERNET/MohSelfAssessmentSubmit/1/viewSelfAssessment?selfAssessmentCorrId='
+                        + $(this).val() + '&loadPopupPrint=Y');  //for page "selfassessmentQuestion.jsp"
                 });
             }
 
             submitAllDataButtonId.onclick = (function () {
                 Utils.submit("mainForm", "submitAllSelfAssessment")
             });
-
-
         </script>

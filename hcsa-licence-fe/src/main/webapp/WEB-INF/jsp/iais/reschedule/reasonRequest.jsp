@@ -49,7 +49,7 @@
                                                     <iais:service value="${svcId}"></iais:service><br>
                                                 </c:forEach>
                                             </td>
-                                            <td><fmt:formatDate value="${pool.inspStartDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
+                                            <td><fmt:formatDate value="${pool.inspStartDate}" pattern="${AppConsts.DEFAULT_DATE_TIME_FORMAT}" /></td>
                                             <td style="float:left;">
                                                 <textarea  name="reason${pool.viewCorrId}" maxlength="500" rows="10" style=" font-weight:normal;"
                                                           cols="50" ></textarea><br>

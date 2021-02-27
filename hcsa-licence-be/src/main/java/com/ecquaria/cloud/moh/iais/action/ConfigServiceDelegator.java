@@ -61,25 +61,25 @@ public class ConfigServiceDelegator {
         String userId = loginContext.getUserId();
         OrgUserDto entity = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
         bpc.request.getSession().setAttribute("orgUserDto",entity);
-
     }
     private void removeSession(BaseProcessClass bpc){
         bpc.request.getSession().removeAttribute("hcsaServiceCategoryDtos");
         bpc.request.getSession().removeAttribute("categoryDtos");
+        bpc.request.getSession().removeAttribute("maskHcsaServiceCategory");
     }
     private Stack stack=new Stack();
     public void switchOr(BaseProcessClass bpc){
-        log.info("*********switchOr  start***********");
+    log.info("*********switchOr  start***********");
 
-        log.info("*********switchOr  end***********");
+    log.info("*********switchOr  end***********");
     }
     public void prepare(BaseProcessClass bpc){
         log.info("*********prepare  start***********");
 
     }
     /*
-     * list all service oder by service name (First ranking) , version (Second ranking)
-     * */
+    * list all service oder by service name (First ranking) , version (Second ranking)
+    * */
     public void list(BaseProcessClass bpc){
         log.info("*********list  start***********");
         List<HcsaServiceDto> allHcsaServices = configService.getAllHcsaServices();
@@ -87,9 +87,9 @@ public class ConfigServiceDelegator {
     }
 
     /*
-     * add new service
-     *
-     * */
+    * add new service
+    *
+    * */
     public void addNewService(BaseProcessClass bpc){
         log.info("*********addNewService  start***********");
         bpc.request.getSession().removeAttribute("routingStage");
@@ -100,8 +100,8 @@ public class ConfigServiceDelegator {
         }
     }
     /*
-     * update service to new version
-     * */
+    * update service to new version
+    * */
     public void saveOrUpdate(BaseProcessClass bpc) throws Exception{
         log.info("*********saveOrUpdate  start***********");
         HcsaServiceConfigDto dateOfHcsaService = getDateOfHcsaService(bpc.request);
@@ -116,9 +116,9 @@ public class ConfigServiceDelegator {
 
     }
     /*
-     * edit or choose other version service to edit
-     *
-     * */
+    * edit or choose other version service to edit
+    *
+    * */
     public void edit(BaseProcessClass bpc){
         log.info("*********edit  start***********");
         configService.viewPageInfo(bpc.request);
@@ -142,16 +142,16 @@ public class ConfigServiceDelegator {
     }
 
     /*
-     * view page
-     * */
+    * view page
+    * */
     public void editView(BaseProcessClass bpc){
         log.info("*********editView  start***********");
 
         configService.viewPageInfo(bpc.request);
     }
     /*
-     * delete service if service never used
-     * */
+    * delete service if service never used
+    * */
     public void delete(BaseProcessClass bpc){
 
         log.info("*********delete  start***********");
@@ -180,14 +180,14 @@ public class ConfigServiceDelegator {
 
     }
     /*
-     * get page all data
-     * -----------------------
-     * service name ,service code ...
-     * --------------------------
-     * ( NEW APPLICATION ) ; ( REQUEST FOR CHANGE ) ...BUTTON
-     * these info in session
+    * get page all data
+    * -----------------------
+    * service name ,service code ...
+    * --------------------------
+    * ( NEW APPLICATION ) ; ( REQUEST FOR CHANGE ) ...BUTTON
+    * these info in session
      *
-     * */
+    * */
     private HcsaServiceConfigDto getDateOfHcsaService(HttpServletRequest request)  {
         HcsaServiceConfigDto hcsaServiceConfigDto = new HcsaServiceConfigDto();
         HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
@@ -202,6 +202,8 @@ public class ConfigServiceDelegator {
         request.setAttribute("selectPreRequisite",selectPreRequisite);
         String serviceId = request.getParameter("serviceId");
         String selectCategoryId = request.getParameter("selectCategoryId");
+        Map<String, String> maskHcsaServiceCategory = configService.getMaskHcsaServiceCategory();
+        selectCategoryId= maskHcsaServiceCategory.get(selectCategoryId);
         String serviceName = request.getParameter("serviceName");
         String description = request.getParameter("description");
         String displayDescription = request.getParameter("displayDescription");
@@ -475,6 +477,7 @@ public class ConfigServiceDelegator {
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfig=IaisCommonUtils.genNewArrayList();
         String numberDocument = request.getParameter("NumberDocument");
         String[] descriptionServiceDocs = request.getParameterValues("descriptionServiceDoc");
+        String[] parameterValues = request.getParameterValues("selectDocPerson");
         String[] serviceDocMandatories = request.getParameterValues("serviceDocMandatory");
         String[] serviceDocPremises = request.getParameterValues("serviceDocPremises");
         String numberfields = request.getParameter("Numberfields");
@@ -493,6 +496,9 @@ public class ConfigServiceDelegator {
                     hcsaSvcDocConfigDto.setIsMandatory(Boolean.FALSE);
                 }else if("1".equals(serviceDocMandatories[i])){
                     hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
+                }
+                if(!"".equals(parameterValues[i])){
+                    hcsaSvcDocConfigDto.setDupForPerson(parameterValues[i]);
                 }
                 if("0".equals(serviceDocPremises[i])){
                     hcsaSvcDocConfigDto.setDupForPrem("0");
@@ -584,7 +590,7 @@ public class ConfigServiceDelegator {
                 String canApprove = request.getParameter("canApprove" + stageCode + every);
                 //for audi ins and post ins
                 if(flag&&"INS".equals(stageCode)){
-                    routingScheme="common";
+                    routingScheme="round";
                     workloadManhours="1";
                     isMandatory="mandatory";
                 }else if(flag&&"AO3".equals(stageCode)){

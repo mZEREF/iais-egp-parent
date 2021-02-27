@@ -3,12 +3,10 @@ package com.ecquaria.cloud.moh.iais.tags;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * ConfirmDialogTag
@@ -32,6 +30,7 @@ public class ConfirmDialogTag extends TagSupport {
     private String cancelBtnCls;
     private String cancelFunc;
     private boolean needEscapHtml;
+    private boolean needHeader;
 
     public ConfirmDialogTag() throws JspException {
         super();
@@ -52,6 +51,7 @@ public class ConfirmDialogTag extends TagSupport {
         setNeedCancel(true);
         setNeedFungDuoJi(true);
         setNeedEscapHtml(true);
+        setNeedHeader(false);
     }
 
     // Releases any resources we may have (or inherit)
@@ -75,13 +75,15 @@ public class ConfirmDialogTag extends TagSupport {
         html.append("\" style=\"left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%;");
         html.append("overflow: visible;bottom: inherit;right: inherit;\">");
         html.append("<div class=\"modal-dialog\" role=\"document\"><div class=\"modal-content\">");
-        html.append("<div class=\"modal-header\">");
-        html.append("<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span");
-        html.append(" aria-hidden=\"true\">&times;</span></button>");
-        if (StringUtil.isEmpty(title)) {
-            setTitle("Confirmation Box");
+        if (needHeader) {
+            html.append("<div class=\"modal-header\">");
+            html.append("<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span");
+            html.append(" aria-hidden=\"true\">&times;</span></button>");
+            if (StringUtil.isEmpty(title)) {
+                setTitle("Confirmation Box");
+            }
+            html.append(" <div class=\"modal-title\" id=\"gridSystemModalLabel\" style=\"font-size: 2rem;\">").append(StringUtil.viewHtml(title)).append("</div></div>");
         }
-        html.append(" <div class=\"modal-title\" id=\"gridSystemModalLabel\" style=\"font-size:2rem;\">").append(StringUtil.viewHtml(title)).append("</div></div>");
         html.append("<div class=\"modal-body\"><div class=\"row\">");
         if (needFungDuoJi) {
             html.append("<input type=\"hidden\" name=\"fangDuoJi").append(divId).append("\" id=\"fangDuoJi").append(divId).append("\"/>");
@@ -196,5 +198,9 @@ public class ConfirmDialogTag extends TagSupport {
 
     public void setNeedEscapHtml(boolean needEscapHtml) {
         this.needEscapHtml = needEscapHtml;
+    }
+
+    public void setNeedHeader(boolean needHeader) {
+        this.needHeader = needHeader;
     }
 }

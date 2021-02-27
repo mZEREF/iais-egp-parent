@@ -15,7 +15,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%
-} else if (AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(prop)) {
+    } else if (AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(prop)) {
 %>
 <webui:setLayout name="iais-intranet"/>
 <%

@@ -185,15 +185,68 @@
                                                     </iais:value>
                                                 </iais:row>
                                             </div>
+                                            <div id="patOthersMobileNo" hidden>
+                                                <iais:row>
+                                                    <iais:field value="Mobile No."/>
+                                                    <iais:value width="7">
+                                                        <iais:input type="text" needDisabled="true" value="${appCessHci.mobileNo}"
+                                                                    maxLength="8"
+                                                                    name="patOthersMobileNo"></iais:input>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </div>
+                                            <div id="patOthersEmailAddress" hidden>
+                                                <iais:row>
+                                                    <iais:field value="Email Address"/>
+                                                    <iais:value width="7">
+                                                        <iais:input type="text" needDisabled="true" value="${appCessHci.emailAddress}"
+                                                                    maxLength="66"
+                                                                    name="patOthersEmailAddress"></iais:input>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </div>
+                                            <div id="patOthersMobileNo" hidden>
+                                                <iais:row>
+                                                    <iais:field value="Mobile No." mandatory="true"/>
+                                                    <iais:value width="7">
+                                                        <iais:input type="text" needDisabled="true" value="${appCessHci.mobileNo}"
+                                                                    maxLength="8"
+                                                                    name="patOthersMobileNo"></iais:input>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </div>
+                                            <div id="patOthersEmailAddress" hidden>
+                                                <iais:row>
+                                                    <iais:field value="Email Address" mandatory="true"/>
+                                                    <iais:value width="7">
+                                                        <iais:input type="text" needDisabled="true" value="${appCessHci.emailAddress}"
+                                                                    maxLength="66"
+                                                                    name="patOthersEmailAddress"></iais:input>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </div>
                                             <div id="patNo" hidden>
                                                 <iais:row>
-                                                    <iais:field value=""/>
+                                                    <iais:field value="Reason for no patients' records transfer" mandatory="true"/>
                                                     <iais:value width="7">
                                                         <iais:input needDisabled="true" type="text"
                                                                     name="patNoRemarks"
                                                                     value="${appCessHci.patNoRemarks}"></iais:input>
                                                     </iais:value>
                                                 </iais:row>
+                                            </div>
+                                            <div class="form-group" id="patNoConfirmID" hidden>
+                                                <div class="col-xs-6 col-sm-4 col-md-6">
+                                                    <div class="form-check disabled">
+                                                        <input disabled class="form-check-input" id="patNoConfirm"
+                                                               type="checkbox"
+                                                               name="patNoConfirm"
+                                                               <c:if test="${appCessHci.patNoConfirm != null}">checked</c:if>>
+                                                        <label class="form-check-label" for="patNoConfirm"><span
+                                                                class="check-square"></span><iais:message key="CESS_DEC001"/><span style="color: red">*</span></label>
+                                                    </div>
+                                                    <span id="error_patNoConfirm" name="iaisErrorMsg" class="error-msg"></span>
+                                                </div>
                                             </div>
                                         </iais:section>
                                     </div>
@@ -210,9 +263,9 @@
                                     <table class="table-gp tablebox">
                                         <tr style="text-align:center">
                                             <th style="text-align:center;width: 0%">S/N</th>
-                                            <th style="text-align:center;width: 25%">Specified Service Licence No.
+                                            <th style="text-align:center;width: 25%">Special Licensable Service Licence No.
                                             </th>
-                                            <th style="text-align:center;width: 25%">Specified Service Name</th>
+                                            <th style="text-align:center;width: 25%">Special Licensable Service Name</th>
                                             <th style="text-align:center;width: 25%">Base Service Licence No.</th>
                                             <th style="text-align:center;width: 25%">Base Service Name</th>
                                         </tr>
@@ -346,14 +399,20 @@
             $("#patOthers").show();
             $("#patHciName").hide();
             $("#patRegNo").hide();
+            $("#patOthersMobileNo").show();
+            $("#patOthersEmailAddress").show();
         } else if ($("#patientSelectId").val() == "CES005") {
             $("#patHciName").show();
             $("#patOthers").hide();
             $("#patRegNo").hide();
+            $("#patOthersMobileNo").hide();
+            $("#patOthersEmailAddress").hide();
         } else if ($("#patientSelectId").val() == "CES006") {
             $("#patRegNo").show();
             $("#patHciName").hide();
             $("#patOthers").hide();
+            $("#patOthersMobileNo").hide();
+            $("#patOthersEmailAddress").hide();
         }
     }
 
@@ -361,47 +420,24 @@
         if ($('#radioYes').is(':checked')) {
             $("#patYes").show();
             $("#patNo").hide();
+            $("#patNoConfirmID").hide();
         } else if ($('#radioNo').is(':checked')) {
             $("#patNo").show();
             $("#patYes").hide();
             $("#patHciName").hide();
             $("#patOthers").hide();
             $("#patRegNo").hide();
+            $("#patOthersMobileNo").hide();
+            $("#patOthersEmailAddress").hide();
+            $("#patNoConfirmID").show();
         }
     }
 
-
     $(document).ready(function () {
-        if ($("#reasonId").val() == "CES001") {
-            $("#reason").show();
-        } else if ($("#reasonId").val() != "CES001") {
-            $("#reason").hide();
-        }
-        if ($('#radioYes').is(':checked')) {
-            $("#patYes").show();
-            $("#patNo").hide();
-        } else if ($('#radioNo').is(':checked')) {
-            $("#patYes").hide();
-            $("#patHciName").hide();
-            $("#patOthers").hide();
-            $("#patRegNo").hide();
-            $("#patNo").show();
-        }
-        if ($("#patientSelectId").val() == "CES004") {
-            $("#patOthers").show();
-            $("#patHciName").hide();
-            $("#patRegNo").hide();
-        } else if ($("#patientSelectId").val() == "CES005") {
-            $("#patHciName").show();
-            $("#patOthers").hide();
-            $("#patRegNo").hide();
-        } else if ($("#patientSelectId").val() == "CES006") {
-            $("#patRegNo").show();
-            $("#patHciName").hide();
-            $("#patOthers").hide();
-        }
+        changePatient();
+        changeReason();
+        changePatSelect();
     });
-
     $(document).ready(function () {
         if ($('#radioNo').is(':checked')) {
             $("#patYes").hide();

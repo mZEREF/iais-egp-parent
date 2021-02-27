@@ -61,6 +61,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -101,13 +102,13 @@ public class HcsaChklItemDelegator {
             ParamUtil.setSessionAttr(request, "currentValidateId", null);
         }
 
+        ParamUtil.setSessionAttr(request, "itemCheckboxReDisplay", null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_DESC, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_STATUS, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_ANSWER_TYPE, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_RISK_LEVEL, null);
-
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, null);
@@ -315,16 +316,18 @@ public class HcsaChklItemDelegator {
      */
     public void viewCloneData(BaseProcessClass bpc) throws IllegalAccessException {
         HttpServletRequest request = bpc.request;
-
-        String[] ckbItemId = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
-        if(ckbItemId == null || ckbItemId.length <= 0){
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+        IaisEGPHelper.setCheckboxStatus(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, "itemCheckboxReDisplay");
+        HashMap<String,String> checkedMap = (HashMap<String, String>) ParamUtil.getSessionAttr(request, "itemCheckboxReDisplay");
+        if(checkedMap == null || checkedMap.size() <= 0){
+            ParamUtil.setRequestAttr(request, "itemCheckboxReDisplay", null);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("cloneItemMsg", "CHKL_ERR045"));
             return;
         }
 
         int maxNum = paramConfig.getCloneChecklistMaxNum();
-        if(ckbItemId.length > maxNum){
+        if(checkedMap.size() > maxNum){
+            ParamUtil.setSessionAttr(request, "itemCheckboxReDisplay", null);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("cloneItemMsg",
                     MessageUtil.replaceMessage("CHKL_ERR026", String.valueOf(maxNum), "number")));
@@ -332,8 +335,8 @@ public class HcsaChklItemDelegator {
         }
 
         ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-        List<ChecklistItemDto> chklItemDtos = hcsaChklService.listChklItemByItemId(Arrays.asList(ckbItemId));
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, (Serializable) chklItemDtos);
+        List<ChecklistItemDto> item = hcsaChklService.listChklItemByItemId(new ArrayList<>(checkedMap.keySet()));
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, (Serializable) item);
 
     }
 
@@ -449,14 +452,12 @@ public class HcsaChklItemDelegator {
         }
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-
         //when configuring config, the same checklist item is not allowed
         filterItemInConfig(request, searchParam);
 
         QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
 
         SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
-
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT, searchResult);
 
     }
@@ -513,11 +514,12 @@ public class HcsaChklItemDelegator {
      */
     public void changePage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doPaging(searchParam, request);
+        IaisEGPHelper.setCheckboxStatus(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, "itemCheckboxReDisplay");
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH, searchParam);
     }
+
 
 
     /**
@@ -527,9 +529,9 @@ public class HcsaChklItemDelegator {
      */
     public void sortRecords(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doSorting(searchParam,bpc.request);
+        IaisEGPHelper.setCheckboxStatus(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, "itemCheckboxReDisplay");
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH, searchParam);
     }
 
@@ -630,7 +632,7 @@ public class HcsaChklItemDelegator {
         cklItem.setRiskLevel(riskLevel);
         cklItem.setAnswerType(answerType);
 
-
+        IaisEGPHelper.setCheckboxStatus(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, "itemCheckboxReDisplay");
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE, clause);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_DESC, desc);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM, cklItemStr);
@@ -674,7 +676,6 @@ public class HcsaChklItemDelegator {
         if(!StringUtil.isEmpty(status)){
             searchParam.addFilter(HcsaChecklistConstants.PARAM_STATUS, status, true);
         }
-
     }
 
     /**

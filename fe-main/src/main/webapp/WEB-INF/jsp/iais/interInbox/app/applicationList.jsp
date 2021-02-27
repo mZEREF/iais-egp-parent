@@ -126,10 +126,10 @@
                     <c:otherwise>
                         <c:forEach items="${appResult.rows}" var="app" varStatus="status">
                             <tr>
-                                <td hidden>
+                                <td style="display: none">
                                     <p class="appId"><iais:mask name="action_id_value" value="${app.id}"/></p>
                                     <p class="appSelfFlag">${app.selfAssmtFlag}</p>
-                                    <p class="appGroupId">${app.appGrpId}</p>
+                                     <p class="appGroupId">${app.appGrpId}</p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>
@@ -274,6 +274,18 @@
                                                     <option value="Delete">Delete</option>
                                                 </select>
                                             </c:if>
+                                            <c:if test="${app.status == 'APST032'}">
+                                                <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
+                                                    <option value="" selected>Select</option>
+                                                    <c:if test="${app.canInspection}">
+                                                        <option value="Inspection">Indicate Preferred Inspection Date</option>
+                                                    </c:if>
+                                                    <c:if test="${app.canRecall}">
+                                                        <option value="Recall">Recall</option>
+                                                    </c:if>
+                                                    <option value="Withdraw">Withdraw</option>
+                                                </select>
+                                            </c:if>
                                             <c:if test="${app.status == 'APST060'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
@@ -281,8 +293,8 @@
                                                 </select>
                                             </c:if>
                                             <c:if test="${app.status == 'APST002'
-                                                       || app.status == 'APST012' || app.status == 'APST038' || app.status == 'APST010'
-                                                          || app.status == 'APST011' || app.status == 'APST023' || app.status == 'APST027' || app.status == 'APST024'}">
+                                                       || app.status == 'APST012' || app.status == 'APST038'
+                                                       || app.status == 'APST010' || app.status == 'APST011' || app.status == 'APST023' || app.status == 'APST027' || app.status == 'APST024'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
                                                     <option value="Withdraw">Withdraw</option>
@@ -297,18 +309,36 @@
                                                     <option value="Withdraw">Withdraw</option>
                                                 </select>
                                             </c:if>
-                                            <c:if test="${app.status == 'APST005' || app.status == 'APST006' || app.status == 'APST045' || app.status == 'APST050'}">
+                                            <c:if test="${app.status == 'APST005'
+                                            || app.status == 'APST006' || app.status == 'APST045'
+                                            || app.status == 'APST050'}">
                                                 <select disabled>
                                                     <option>N/A</option>
                                                 </select>
                                             </c:if>
                                         </c:when>
                                         <c:when test="${app.applicationType == 'APTY006'}">
-                                            <c:if test="${app.status == 'APST007' || app.status == 'APST005' || app.status == 'APST006'
-                                            || app.status == 'APST050' || app.status == 'APST002'|| app.status == 'APST011' || app.status == 'APST012'
-                                            || app.status == 'APST090' || app.status == 'APST092' || app.status == 'APST092' || app.status == 'APST024' || app.status == 'APST023'}">
+                                            <c:if test="${app.status == 'APST007'
+                                            || app.status == 'APST005' || app.status == 'APST006'
+                                            || app.status == 'APST050' || app.status == 'APST002'
+                                            || app.status == 'APST011' || app.status == 'APST012'
+                                            || app.status == 'APST090' || app.status == 'APST092'
+                                            || app.status == 'APST092' || app.status == 'APST024'
+                                            || app.status == 'APST023' }">
                                                 <select disabled>
                                                     <option>N/A</option>
+                                                </select>
+                                            </c:if>
+                                            <c:if test="${app.status == 'APST032'}">
+                                                <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
+                                                    <option value="" selected>Select</option>
+                                                    <c:if test="${app.canInspection}">
+                                                        <option value="Inspection">Indicate Preferred Inspection Date</option>
+                                                    </c:if>
+                                                    <c:if test="${app.canRecall}">
+                                                        <option value="Recall">Recall</option>
+                                                    </c:if>
+                                                    <option value="Withdraw">Withdraw</option>
                                                 </select>
                                             </c:if>
                                         </c:when>
@@ -316,6 +346,18 @@
                                             <c:if test="${app.status == 'APST005'||app.status == 'APST075' || app.status == 'APST076' || app.status == 'APST050' || app.status == 'APST011'}">
                                                 <select disabled>
                                                     <option>N/A</option>
+                                                </select>
+                                            </c:if>
+                                            <c:if test="${app.status == 'APST032'}">
+                                                <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
+                                                    <option value="" selected>Select</option>
+                                                    <c:if test="${app.canInspection}">
+                                                        <option value="Inspection">Indicate Preferred Inspection Date</option>
+                                                    </c:if>
+                                                    <c:if test="${app.canRecall}">
+                                                        <option value="Recall">Recall</option>
+                                                    </c:if>
+                                                    <option value="Withdraw">Withdraw</option>
                                                 </select>
                                             </c:if>
                                         </c:when>
@@ -336,9 +378,9 @@
             <div class="modal fade" id="isAppealModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        </div>
+<%--                        <div class="modal-header">--%>
+<%--                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--                        </div>--%>
                         <div class="modal-body" style="text-align: center;">
                             <div class="row">
                                 <div class="col-md-12"><span style="font-size: 2rem;"> ${ARR} </span></div>

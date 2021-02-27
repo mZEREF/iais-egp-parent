@@ -799,7 +799,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     licenceFeeDto.setPremises(premisessTypes);
                     licenceFeeDto.setCharity(isCharity);
                     Boolean existingOnSiteLic = licenceClient.existingOnSiteOrConveLic(appSvcRelatedInfoDto.getServiceName(),appSubmissionDto.getLicenseeId()).getEntity();
-                    licenceFeeDto.setExistOnsite(existingOnSiteLic);
+                    if(premisessTypes.contains(ApplicationConsts.PREMISES_TYPE_OFF_SITE)){
+                        licenceFeeDto.setExistOnsite(existingOnSiteLic);
+                    }
                     if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                         String licenceId = appSubmissionDto.getLicenceId();
                         LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
@@ -1089,7 +1091,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
         appSubmissionDto.setAppGrpId(null);
         setRiskToDto(appSubmissionDto);
-        requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
     }
 
     @Override
@@ -1404,7 +1405,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public Map<String, String> doPreviewSubmitValidate(Map<String, String> previewAndSubmitMap, AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,BaseProcessClass bpc) {
-        StringBuilder sB = new StringBuilder(10);
+        StringBuilder sB = new StringBuilder(40);
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
         List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.PREMISES_HCI_LIST);
         String keyWord = MasterCodeUtil.getCodeDesc("MS001");
@@ -1432,11 +1433,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig = serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
             Map<String, String> map = doCheckBox(bpc, sB, allSvcAllPsnConfig, currentSvcAllPsnConfig, dto.get(i),systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType(),appSubmissionDto.getAppGrpPremisesDtoList());
             if (!map.isEmpty()) {
+                sB.append(serviceId);
                 previewAndSubmitMap.putAll(map);
                 previewAndSubmitMap.put("service", MessageUtil.replaceMessage("GENERAL_ERR0006","service","field"));
                 String mapStr = JsonUtil.parseToJson(map);
                 log.info(StringUtil.changeForLog("map json str:" + mapStr));
-                sB.append(serviceId);
             }
             NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),map,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
         }

@@ -31,7 +31,7 @@
       </div>
     </div>
   </div>
-
+  <div>
     <div class="form-group">
       <div class="col-xs-12 col-md-10" style="margin-left: 1%">
         <div class="col-xs-12 col-md-6" style="margin-bottom: 20px">
@@ -41,33 +41,33 @@
             <c:forEach items="${selectOptionList}" var="selectOption">
               <option value="${selectOption.value}" <c:if test="${appPremiseMiscDto.reason==selectOption.value}">selected="selected"</c:if> >${selectOption.text}</option>
             </c:forEach>
-           <%-- <c:if test="${rejectEqDay==true}">
-              <c:if test="${type=='application'}"><c:if test="${applicationAPPROVED=='APPROVED'}">
-                <option value="MS001" <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option></c:if>
-              </c:if>
-            </c:if>
-            <c:if test="${feeEqDay==true}">
-              <c:if test="${lateFee==true}">
-                <option value="MS002" <c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option>
-              </c:if>
-            </c:if>
-            <c:if test="${cgoEqDay==true}">
-              <c:if test="${maxCGOnumber==true}">
-                <c:if test="${type=='application'}">
-                  <option value="MS003" <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option>
-                </c:if>
-              </c:if>
-            </c:if>
-            <c:if test="${nameEqDay==true}">
-              <c:if test="${type=='application'}"><option value="MS008" <c:if test="${appPremiseMiscDto.reason=='MS008'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option></c:if>
-            </c:if>
-            <c:if test="${periodEqDay==true}">
-              <c:if test="${type=='licence'}"> <option value="MS004" <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option></c:if>
-            </c:if>
-            <c:if test="${otherEqDay==true}">
-              <option value="MS007" <c:if test="${appPremiseMiscDto.reason=='MS007'}">selected="selected"</c:if>>Others</option>
-            </c:if>--%>
-             <%--<option value="MS006" <c:if test="${appPremiseMiscDto.reason=='MS006'}">selected="selected"</c:if>>Appeal against revocation</option>--%>
+            <%-- <c:if test="${rejectEqDay==true}">
+               <c:if test="${type=='application'}"><c:if test="${applicationAPPROVED=='APPROVED'}">
+                 <option value="MS001" <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option></c:if>
+               </c:if>
+             </c:if>
+             <c:if test="${feeEqDay==true}">
+               <c:if test="${lateFee==true}">
+                 <option value="MS002" <c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option>
+               </c:if>
+             </c:if>
+             <c:if test="${cgoEqDay==true}">
+               <c:if test="${maxCGOnumber==true}">
+                 <c:if test="${type=='application'}">
+                   <option value="MS003" <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option>
+                 </c:if>
+               </c:if>
+             </c:if>
+             <c:if test="${nameEqDay==true}">
+               <c:if test="${type=='application'}"><option value="MS008" <c:if test="${appPremiseMiscDto.reason=='MS008'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option></c:if>
+             </c:if>
+             <c:if test="${periodEqDay==true}">
+               <c:if test="${type=='licence'}"> <option value="MS004" <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option></c:if>
+             </c:if>
+             <c:if test="${otherEqDay==true}">
+               <option value="MS007" <c:if test="${appPremiseMiscDto.reason=='MS007'}">selected="selected"</c:if>>Others</option>
+             </c:if>--%>
+            <%--<option value="MS006" <c:if test="${appPremiseMiscDto.reason=='MS006'}">selected="selected"</c:if>>Appeal against revocation</option>--%>
           </select>
 
           <div style="margin-top: 1%"> <span  class="error-msg" name="iaisErrorMsg" id="error_reason"></span></div>
@@ -101,7 +101,9 @@
         </div>
 
       </div>
-      </div>
+    </div>
+  </div>
+
     <div style="display: none;margin-top: 10px;margin-left: 1%" id="cgo" class="col-xs-12 col-md-9" >
       <%--     <a class="btn  btn-secondary" onclick="deletes()" style="margin-left: 20px;"  >delete</a>--%>
       <%@include file="cgo.jsp"%>
@@ -119,7 +121,6 @@
       <div> <span class="error-msg" id="error_remarks" name="iaisErrorMsg"></span></div>
 
     </div>
-
 
     <div class="form-group">
   <div >

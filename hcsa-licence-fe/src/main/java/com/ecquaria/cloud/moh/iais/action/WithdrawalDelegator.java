@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.bcel.generic.I2F;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -323,6 +324,7 @@ public class WithdrawalDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String withdrawnReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
         String paramAppNos = ParamUtil.getString(mulReq, "withdraw_app_list");
+        String isDoView = ParamUtil.getString(bpc.request, "isDoView");
         List<WithdrawnDto> withdrawnDtoList = IaisCommonUtils.genNewArrayList();
         if (!StringUtil.isEmpty(paramAppNos)){
             String[] withdrawAppNos = paramAppNos.split("#");
@@ -377,14 +379,17 @@ public class WithdrawalDelegator {
                 if(validationResult != null && validationResult.isHasErrors()){
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                    //isValid = IaisEGPConstant.NO;
-                    ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
+                    //isValid = IaisEGPConstant.NO;\
+                    if (StringUtil.isEmpty(isDoView) && "Y".equals(isDoView)){
+                        ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
+                    }
                     wdIsValid = IaisEGPConstant.NO;
                 }{
-                    ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
+                    if (StringUtil.isEmpty(isDoView) && "Y".equals(isDoView)){
+                        ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
+                    }
                     withdrawnDtoList.add(withdrawnDto);
                 }
-
             }
         }
         String applicationNo =  (String)ParamUtil.getSessionAttr(bpc.request, "withdrawAppNo");

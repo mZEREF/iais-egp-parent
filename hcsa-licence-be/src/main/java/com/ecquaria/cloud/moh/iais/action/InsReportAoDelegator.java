@@ -134,7 +134,6 @@ public class InsReportAoDelegator {
         log.debug(StringUtil.changeForLog("the inspectorReportAction start ...."));
         InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, INSREPDTO);
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, APPLICATIONVIEWDTO);
-        AppPremisesRecommendationDto appPremisesRecommendationDto = (AppPremisesRecommendationDto)ParamUtil.getSessionAttr(bpc.request, RECOMMENDATION_DTO);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         AppPremisesCorrelationDto newAppPremisesCorrelationDto = applicationViewDto.getNewAppPremisesCorrelationDto();
         String newCorrelationId = newAppPremisesCorrelationDto.getId();

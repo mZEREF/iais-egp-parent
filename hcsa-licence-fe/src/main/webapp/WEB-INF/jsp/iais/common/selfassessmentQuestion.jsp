@@ -48,12 +48,7 @@
                 </div>
             </div>
         </div>
-
-
-
         <%@include file="/WEB-INF/jsp/iais/common/checklistAnswer.jsp"%>
-
-
         <br>
     </c:otherwise>
 </c:choose>

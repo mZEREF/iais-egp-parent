@@ -13,12 +13,13 @@
 				oev.service_id,
                 oev.APP_CORR_ID APP_CORR_ID,
                 oev.HCI_CODE,oev.HCI_NAME,
-                oev.BLK_NO,
-                oev.FLOOR_NO,
-                oev.UNIT_NO,
-                oev.STREET_NAME,
-                oev.BUILDING_NAME,
-                oev.POSTAL_CODE,
+                oev.lic_hci_code,oev.lic_hci_name,
+                oev.BLK_NO,oev.lic_BLK_NO,
+                oev.FLOOR_NO,oev.lic_FLOOR_NO,
+                oev.UNIT_NO,oev.lic_UNIT_NO,
+                oev.STREET_NAME,oev.lic_STREET_NAME,
+                oev.BUILDING_NAME,oev.lic_BUILDING_NAME,
+                oev.POSTAL_CODE,oev.lic_postal_code,
                 oev.APP_LICENSEE_ID as APP_LICENSEE_ID,
                 oev.LIC_APP_ID as LIC_APP_ID,
                 oev.LICENCE_ID as LICENCE_ID,
@@ -28,7 +29,7 @@
                 oev.start_date as start_date,
                 oev.expiry_date as expiry_date,
                 oev.lic_licensee_id as lic_licensee_id,
-                oev.RISK_SCORE
+                oev.RISK_SCORE ,oev.LAST_IS_NC ,oev.SEC_IS_NC
             FROM onlineEnquiryView oev
             WHERE 1=1
             <#if licence_status??> AND oev.LicSTATUS = :licence_status</#if>

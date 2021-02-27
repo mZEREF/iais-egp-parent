@@ -79,7 +79,7 @@
             <select name="selectCategoryId" disabled >
               <option value="">Please Select</option>
               <c:forEach items="${categoryDtos}" var="categoryDto">
-                <option value="${categoryDto.id}" <c:if test="${hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
+                <option  <c:if test="${hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
               </c:forEach>
             </select>
           </div>
@@ -234,6 +234,16 @@
                 <input style="white-space: nowrap" class="form-check-input" disabled <c:if test="${doc.dupForPrem=='1'}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocPremises">
                 <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
               </div>
+              <div class="col-xs-12 col-md-3 form-check" style="margin-top: 1%">
+                <select disabled>
+                  <option value="">To duplicate for the personnel?</option>
+                  <option <c:if test="${doc.dupForPerson=='PO'}">selected</c:if> value="PO">Principal Officer (PO)</option>
+                  <option <c:if test="${doc.dupForPerson=='DPO'}">selected</c:if> value="DPO">Nominee</option>
+                  <option <c:if test="${doc.dupForPerson=='CGO'}">selected</c:if> value="CGO">Clinical Governance Officer (CGO)</option>
+                  <option <c:if test="${doc.dupForPerson=='SVCPSN'}">selected</c:if> value="SVCPSN">Service Personnel</option>
+                  <option <c:if test="${doc.dupForPerson=='MAP'}">selected</c:if> value="MAP">MedAlert Person </option>
+                </select>
+              </div>
             </div>
           </div>
         </c:forEach>
@@ -315,28 +325,28 @@
         </div>
       </div>
 
-      <%-- <div class="form-group">
-         <div class="col-xs-12 col-md-8 marg-1">
-           <label class="col-xs-12 col-md-8 control-label" >Service Fees</label>
-           <div class="col-xs-10 col-md-4">
-             <div class="components">
-               <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
-             </div>
-           </div>
-         </div>
-       </div>
+     <%-- <div class="form-group">
+        <div class="col-xs-12 col-md-8 marg-1">
+          <label class="col-xs-12 col-md-8 control-label" >Service Fees</label>
+          <div class="col-xs-10 col-md-4">
+            <div class="components">
+              <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
 
-       <div class="form-group">
-         <div class="col-xs-12 col-md-8 marg-1">
-           <label class="col-xs-12 col-md-8 control-label" >Service Fee Bundles</label>
-           <div class="col-xs-10 col-md-4">
-             <div class="components">
-               <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
-             </div>
-           </div>
-         </div>
-       </div>
- --%>
+      <div class="form-group">
+        <div class="col-xs-12 col-md-8 marg-1">
+          <label class="col-xs-12 col-md-8 control-label" >Service Fee Bundles</label>
+          <div class="col-xs-10 col-md-4">
+            <div class="components">
+              <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+--%>
       <div class="form-group">
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
           <div class="col-xs-10 col-md-6">
@@ -650,69 +660,69 @@
 </style>
 <script type="text/javascript">
 
-  $(document).ready(function () {
-    let val = $("select[name='ServiceType']").val();
-    if("SVTP001"==val){
-      $('#selectCategoryId').attr("style","display:block");
-    } else if("SVTP002"==val){
-      $('#Subsumption').attr("style","display:block");
-      $('#Pre-requisite').attr("style","display:none");
-      $('#selectCategoryId').attr("style","display:none");
-    }else  if("SVTP003"==val){
-      $('#Pre-requisite').attr("style","display:block");
-      $('#Subsumption').attr("style","display:none");
-      $('#selectCategoryId').attr("style","display:block");
-    }else {
-      $('#Subsumption').attr("style","display:none");
-      $('#Pre-requisite').attr("style","display:none");
-      $('#selectCategoryId').attr("style","display:none");
+    $(document).ready(function () {
+        let val = $("select[name='ServiceType']").val();
+        if("SVTP001"==val){
+            $('#selectCategoryId').attr("style","display:block");
+        } else if("SVTP002"==val){
+            $('#Subsumption').attr("style","display:block");
+            $('#Pre-requisite').attr("style","display:none");
+            $('#selectCategoryId').attr("style","display:none");
+        }else  if("SVTP003"==val){
+            $('#Pre-requisite').attr("style","display:block");
+            $('#Subsumption').attr("style","display:none");
+            $('#selectCategoryId').attr("style","display:block");
+        }else {
+            $('#Subsumption').attr("style","display:none");
+            $('#Pre-requisite').attr("style","display:none");
+            $('#selectCategoryId').attr("style","display:none");
+        }
+        a();
+    });
+
+    var  a = function upDown() {
+        let length = $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").length;
+        if (length == 1) {
+            $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").children('.up').attr("style","display: none");
+        } else {
+            $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").children('.up').removeAttr("style");
+        }
     }
-    a();
-  });
+    function kpi() {
 
-  var  a = function upDown() {
-    let length = $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").length;
-    if (length == 1) {
-      $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").children('.up').attr("style","display: none");
-    } else {
-      $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").children('.up').removeAttr("style");
+        location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohKPIAndReminder",request)%>';
+
     }
-  }
-  function kpi() {
-
-    location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohKPIAndReminder",request)%>';
-
-  }
 
 
-  function  checklists(){
-    location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohChecklistConfiguration",request)%>';
-  }
+    function  checklists(){
+        location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohChecklistConfiguration",request)%>';
+    }
 
-  function riskScore(){
-    location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohRiskConigMenu",request)%>';
+    function riskScore(){
+        location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohRiskConigMenu",request)%>';
 
-  }
-  function deleteConfirmYesOrNo(){
-    var val = $('#deleteConfirm').val();
-    SOP.Crud.cfxSubmit("mainForm","delete",val,"");
-  }
-  function cancelDelete(){
-    SOP.Crud.cfxSubmit("mainForm","delete","","");
-  }
+    }
+    function deleteConfirmYesOrNo(){
+      var val = $('#deleteConfirm').val();
+      SOP.Crud.cfxSubmit("mainForm","delete",val,"");
+    }
+    function cancelDelete(){
+      SOP.Crud.cfxSubmit("mainForm","delete","","");
+    }
 
-  function displays() {
-    $('#cancel').modal('hide');
-  }
-  function deleteConfirm() {
+    function displays() {
+        $('#cancel').modal('hide');
+    }
+    function deleteConfirm() {
 
-    SOP.Crud.cfxSubmit("mainForm","delete",$('#deleteConfirm').val(),"");
+        SOP.Crud.cfxSubmit("mainForm","delete",$('#deleteConfirm').val(),"");
 
 
-  }
-  function cancel() {
-    SOP.Crud.cfxSubmit("mainForm","delete","back","");
-  }
+    }
+    function cancel() {
+        SOP.Crud.cfxSubmit("mainForm","delete","back","");
+    }
 
 
 </script>

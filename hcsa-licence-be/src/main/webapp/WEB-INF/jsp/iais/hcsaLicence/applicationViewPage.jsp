@@ -468,6 +468,7 @@
             $('.fastTrack').addClass('hidden');
         }
         appealAoFillBack();
+        checkDms();
     });
 
     function checkInspectionShow(){
@@ -509,11 +510,15 @@
 
     //check DMS decision value
     $("[name='decisionValues']").change(function selectChange() {
+        checkDms();
+    });
+
+    function checkDms() {
         var isRequestForChange = $('#isRequestForChange').val();
         if(isRequestForChange != 'Y'){
             checkRecommendationDMS();
         }
-    });
+    }
 
     function checkRecommendationDMS(){
         if ('${applicationViewDto.applicationDto.status}' == 'APST014'){
@@ -653,6 +658,7 @@
             $('#routeBackReviewBox').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#comments').addClass('hidden');
+            checkAppealPso();
         } else if (selectValue == "PROCRFI") {
             $("#chooseInspectionBox").addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
@@ -714,6 +720,7 @@
             $('#comments').addClass('hidden');
             $('#appealRecommendationFalse').addClass('hidden');
             $('#appealRecommendationTrue').removeClass('hidden');
+            checkAppealPso();
         } else if (selectValue == "PROCRFI") {
             $("#chooseInspectionBox").addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
@@ -779,7 +786,19 @@
         }
     }
 
+    $('#rollBack').change(function selectRollBackChange() {
+        checkAppealPso();
+    });
 
+    function checkAppealPso(){
+        if('${applicationViewDto.applicationDto.status}' == 'APST012'){
+            $('#appealRecommendationTrue').addClass('hidden');
+            $('#appealRecommendationFalse').removeClass('hidden');
+        }else{
+            $('#appealRecommendationTrue').removeClass('hidden');
+            $('#appealRecommendationFalse').addClass('hidden');
+        }
+    }
 
 
     $('#verifiedDropdown').change(function verifiedChange() {

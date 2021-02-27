@@ -7,7 +7,7 @@ import java.util.Properties;
 
 @Slf4j
 public class GatewayConfig {
-
+	
 	static Properties properties = new Properties();
 	static{
 		try {

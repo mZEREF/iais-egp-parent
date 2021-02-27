@@ -122,7 +122,7 @@ public class InspecTaskToLeaderBatchJob {
                             report = report + 1;
                         }
                         continue;
-                        //in ASO/PSO
+                    //in ASO/PSO
                     } else if(StringUtil.isEmpty(appPremCorrId) && StringUtil.isEmpty(status)) {
                         continue;
                     }
@@ -135,7 +135,7 @@ public class InspecTaskToLeaderBatchJob {
                         createTask(0, 1, allApp, fastInspectionList);
                         appInspectionStatusDtos.remove(i);
                         i--;
-                        //Other Application
+                    //Other Application
                     } else {
                         if(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER.equals(status)){
                             leadTask = leadTask + 1;

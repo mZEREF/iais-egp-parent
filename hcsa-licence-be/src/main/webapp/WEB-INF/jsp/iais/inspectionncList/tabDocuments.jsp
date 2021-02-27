@@ -112,7 +112,14 @@
                                        varStatus="status">
                                 <tr>
                                     <td width="30%">
-                                        <p><c:out value="${interalFile.docDesc}"></c:out></p>
+                                        <p>
+                                            <c:if test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_CHECK_LIST}">
+                                                Letter Written to Licensee
+                                            </c:if>
+                                            <c:if test="${interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_CHECK_LIST}">
+                                             <c:out value="${interalFile.docDesc}"></c:out>
+                                            </c:if>
+                                        </p>
                                     </td>
                                     <td width="20%">
                                         <p>

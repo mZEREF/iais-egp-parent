@@ -89,7 +89,7 @@
                               </c:if>
                             </td>
                             <td>
-                              <input class="form-check-input" type="checkbox"  aria-invalid="false" <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>
+                              <input class="form-check-input" type="checkbox" name="inspWpTeamAmPmCheck" aria-invalid="false" <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>
                               <c:if test="${nonwkrDay.am == true}">
                               checked="checked"
                               </c:if>
@@ -97,7 +97,7 @@
                                       value="<iais:mask name="nonWkrDayId" value="${nonwkrDay.id}"/>">
                             </td>
                             <td>
-                              <input class="form-check-input" type="checkbox"  aria-invalid="false" <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>
+                              <input class="form-check-input" type="checkbox" name="inspWpTeamAmPmCheck" aria-invalid="false" <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>
                                       <c:if test="${nonwkrDay.pm == true}">
                                       checked="checked"
                               </c:if>
@@ -176,26 +176,30 @@
       }
     });
 
-    $("input[type=checkbox]").click(function(){
-      if($(this).data("prohibit") == 1){
-        $("#error_nonworking").show()
-        if($(this).attr('checked')){
-          $(this).prop('checked', false);
-        }else{
-          $(this).prop('checked', true);
+    window.onload = function () {
+        let checkBs = document.getElementsByName('inspWpTeamAmPmCheck');
+        for(let i = 0; i < checkBs.length; i++){
+            checkBs[i].onclick = function () {
+                if($(this).data("prohibit") == 1){
+                    $("#error_nonworking").show()
+                    if($(this).attr('checked')){
+                        $(this).prop('checked', true);
+                    }else{
+                        $(this).prop('checked', false);
+                    }
+                }else {
+                    $("#error_nonworking").hide()
+                    var id = $(this).attr('id').substring(2);
+                    if ($('#am' + id).attr('checked') && $('#pm' + id).attr('checked')) {
+                        $('#nradio' + id).prop('checked', true);
+                    } else {
+                        $('#yradio' + id).prop('checked', true);
+                    }
+                    change(id);
+                }
+            }
         }
-      }else {
-        $("#error_nonworking").hide()
-        var action = $(this).val();
-        var id = $(this).attr('id').substring(2);
-        if ($('#am' + id).attr('checked') && $('#pm' + id).attr('checked')) {
-          $('#nradio' + id).prop('checked', true);
-        } else {
-          $('#yradio' + id).prop('checked', true);
-        }
-        change(id);
-      }
-    });
+    };
 
     function change(id) {
       console.log('change')

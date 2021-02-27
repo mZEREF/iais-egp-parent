@@ -67,7 +67,7 @@
                                                 </div>
                                                 <p></p><br><br>
                                                 <iais:row>
-                                                    <iais:field value="Cessation Reasons"/>
+                                                    <iais:field value="Cessation Reasons" mandatory="true"/>
                                                     <iais:value width="7">
                                                         <iais:select disabled="true"
                                                                      id="${num.count}reasonId${uid.count}"
@@ -78,7 +78,7 @@
                                                 </iais:row>
                                                 <div id="${num.count}reason${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value="Others"/>
+                                                        <iais:field value="Others" mandatory="true"/>
                                                         <iais:value width="7">
                                                             <iais:input needDisabled="true" type="text"
                                                                         name="${num.count}otherReason${uid.count}"
@@ -87,7 +87,7 @@
                                                     </iais:row>
                                                 </div>
                                                 <iais:row>
-                                                    <iais:field value="Patients' Record will be transferred"/>
+                                                    <iais:field value="Patients' Record will be transferred" mandatory="true"/>
                                                     <iais:value>
                                                         <div class="col-xs-12 col-sm-4 col-md-3">
                                                             <div class="form-check-gp">
@@ -128,7 +128,7 @@
                                                 <div id="${num.count}patYes${uid.count}" hidden>
                                                     <iais:row>
                                                         <iais:field width="7"
-                                                                    value="Who will take over your patients' case records?"/>
+                                                                    value="Who will take over your patients' case records?" mandatory="true"/>
                                                         <iais:value width="7">
                                                             <iais:select disabled="true"
                                                                          name="${num.count}patientSelect${uid.count}"
@@ -142,7 +142,7 @@
                                                 </div>
                                                 <div id="${num.count}patHciName${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value="HCI Name"/>
+                                                        <iais:field value="HCI Name" mandatory="true"/>
                                                         <iais:value width="7">
                                                             <iais:input type="text" needDisabled="true"
                                                                         value="${appCessHci.patHciName}" maxLength="100"
@@ -152,7 +152,7 @@
                                                 </div>
                                                 <div id="${num.count}patRegNo${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value="Professional Regn. No."/>
+                                                        <iais:field value="Professional Regn. No." mandatory="true"/>
                                                         <iais:value width="7">
                                                             <iais:input needDisabled="true" cssClass="disabled"
                                                                         type="text"
@@ -163,7 +163,7 @@
                                                 </div>
                                                 <div id="${num.count}patOthers${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value="Others"/>
+                                                        <iais:field value="Others" mandatory="true"/>
                                                         <iais:value width="7">
                                                             <iais:input needDisabled="true" type="text"
                                                                         name="${num.count}patOthers${uid.count}"
@@ -171,19 +171,29 @@
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>
-                                                <div id="${num.count}patOthers${uid.count}" hidden>
+                                                <div id="${num.count}patOthersMobileNo${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value="Reason for no patients' records transfer"/>
+                                                        <iais:field value="Mobile No." mandatory="true"/>
                                                         <iais:value width="7">
-                                                            <iais:input needDisabled="true" type="text"
-                                                                        name="${num.count}patOthers${uid.count}"
-                                                                        value="${appCessHci.patOthers}"></iais:input>
+                                                            <iais:input type="text" value="${appCessHci.mobileNo}"
+                                                                        maxLength="8"
+                                                                        name="${num.count}patOthersMobileNo${uid.count}"></iais:input>
+                                                        </iais:value>
+                                                    </iais:row>
+                                                </div>
+                                                <div id="${num.count}patOthersEmailAddress${uid.count}" hidden>
+                                                    <iais:row>
+                                                        <iais:field value="Email Address" mandatory="true"/>
+                                                        <iais:value width="7">
+                                                            <iais:input type="text" value="${appCessHci.emailAddress}"
+                                                                        maxLength="66"
+                                                                        name="${num.count}patOthersEmailAddress${uid.count}"></iais:input>
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>
                                                 <div id="${num.count}patNo${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value="Reason for no patients' records transfer"/>
+                                                        <iais:field value="Reason for no patients' records transfer" mandatory="true"/>
                                                         <iais:value width="7">
                                                             <iais:input needDisabled="true" type="text"
                                                                         name="${num.count}patNoRemarks${uid.count}"
@@ -191,9 +201,23 @@
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>
+                                                <div class="form-group" id="${num.count}patNoConfirmID${uid.count}"
+                                                     hidden>
+                                                    <div class="col-xs-6 col-sm-4 col-md-6">
+                                                        <div class="form-check disabled">
+                                                            <input disabled class="form-check-input" id="patNoConfirm"
+                                                                   type="checkbox"
+                                                                   name="${num.count}patNoConfirm${uid.count}"
+                                                                   <c:if test="${appCessHci.patNoConfirm != null}">checked</c:if>>
+                                                            <label class="form-check-label" for="patNoConfirm"><span
+                                                                    class="check-square"></span><iais:message key="CESS_DEC001"/><span style="color: red">*</span></label>
+                                                        </div>
+                                                        <span id="error_${num.count}patNoConfirm${uid.count}" name="iaisErrorMsg" class="error-msg"></span>
+                                                    </div>
+                                                </div>
                                                 <c:if test="${isGrpLic}">
                                                 <iais:row>
-                                                    <iais:field value="To Cease"/>
+                                                    <iais:field value="To Cease" mandatory="true"/>
                                                     <iais:value width="7">
                                                         <div class="form-check-gp">
                                                             <div class="row">
@@ -233,9 +257,9 @@
                                         <table class="table-gp tablebox">
                                             <tr style="text-align:center">
                                                 <th style="text-align:center;width: 0%">S/N</th>
-                                                <th style="text-align:center;width: 25%">Specified Service Licence No.
+                                                <th style="text-align:center;width: 25%">Special Licensable Service Licence No.
                                                 </th>
-                                                <th style="text-align:center;width: 25%">Specified Service Name</th>
+                                                <th style="text-align:center;width: 25%">Special Licensable Service Name</th>
                                                 <th style="text-align:center;width: 25%">Base Service Licence No.</th>
                                                 <th style="text-align:center;width: 25%">Base Service Name</th>
                                             </tr>
@@ -372,16 +396,22 @@
             for (var j = 1; j < 8; j++) {
                 if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
                     $("#" + i + "patOthers" + j).show();
+                    $("#" + i + "patOthersMobileNo" + j).show();
+                    $("#" + i + "patOthersEmailAddress" + j).show();
                     $("#" + i + "patHciName" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                 } else if ($("#" + i + "patientSelectId" + j).val() == "CES005") {
                     $("#" + i + "patHciName" + j).show();
                     $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersMobileNo" + j).hide();
+                    $("#" + i + "patOthersEmailAddress" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                 } else if ($("#" + i + "patientSelectId" + j).val() == "CES006") {
                     $("#" + i + "patRegNo" + j).show();
                     $("#" + i + "patHciName" + j).hide();
                     $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersMobileNo" + j).hide();
+                    $("#" + i + "patOthersEmailAddress" + j).hide();
                 }
             }
         }
@@ -394,12 +424,16 @@
                 if ($('#' + i + 'radioYes' + j).is(':checked')) {
                     $("#" + i + "patYes" + j).show();
                     $("#" + i + "patNo" + j).hide();
+                    $("#"+ i +"patNoConfirmID"+ j).hide();
                 } else if ($('#' + i + 'radioNo' + j).is(':checked')) {
                     $("#" + i + "patNo" + j).show();
                     $("#" + i + "patYes" + j).hide();
                     $("#" + i + "patHciName" + j).hide();
                     $("#" + i + "patOthers" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
+                    $("#" + i + "patOthersMobileNo" + j).hide();
+                    $("#" + i + "patOthersEmailAddress" + j).hide();
+                    $("#"+ i +"patNoConfirmID"+ j).show();
                 }
             }
         }

@@ -227,7 +227,6 @@ public class AppealDelegator {
         bpc.getSession().removeAttribute("rejectEqDay");
         bpc.getSession().removeAttribute("periodEqDay");
         bpc.getSession().removeAttribute("selectOptionList");
-        bpc.getSession().removeAttribute("selectOptionList");
         //set upload file config
         setFileConfig(bpc.request);
         log.info("end**************start************");

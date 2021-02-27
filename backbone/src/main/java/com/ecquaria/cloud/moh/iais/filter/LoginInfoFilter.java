@@ -4,6 +4,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.usersession.UserSession;
+import com.ecquaria.cloud.usersession.client.UserSessionService;
+import com.ecquaria.cloudfeign.FeignException;
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -16,8 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import sop.iwe.SessionManager;
-import sop.rbac.user.User;
 
 /**
  * LoginInfoFilter
@@ -40,9 +41,20 @@ public class LoginInfoFilter implements Filter {
         if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             String uri = request.getRequestURI();
-            User user = SessionManager.getInstance(request).getCurrentUser();
+            UserSessionService userSessionService = UserSessionService.getInstance();
+            UserSession userSession = null;
+            try {
+                userSession = userSessionService.retrieveOne(request.getSession().getId());
+                if (userSession != null) {
+                    log.debug("UserSession Id ==>" + userSession.getSessionId() + " Status =>" + userSession.getStatus());
+                }
+            } catch (FeignException e) {
+                log.error(e.getMessage(), e);
+            }
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            if (user == null && loginContext != null) {
+            if (userSession == null || !"Active".equals(userSession.getStatus())) {
+                log.info(StringUtil.changeForLog("<== User session invalid ==>"));
+                loginContext = null;
                 ParamUtil.setSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER, null);
             }
             if (uri.indexOf("FE_Landing") < 0 && uri.indexOf("FE_Corppass_Landing") < 0

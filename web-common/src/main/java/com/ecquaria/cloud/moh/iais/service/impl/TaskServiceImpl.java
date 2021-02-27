@@ -11,10 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -271,7 +268,7 @@ public class TaskServiceImpl implements TaskService {
                             //create history
                             log.debug(StringUtil.changeForLog("the appPremisesCorrelationId is -->;"+appPremisesCorrelationDto.getId()));
                             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
-                                    createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),
+                                    createAppPremisesRoutingHistory(applicationDto,applicationDto.getStatus(),
                                             stageId,null,createHistoryRoleId,auditTrailDto);
                             appPremisesRoutingHistoryDto.setWrkGrpId(workGroupId);
                             appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
@@ -519,17 +516,18 @@ public class TaskServiceImpl implements TaskService {
 
     private boolean checkTaskAppStatus(String status,String correlationId){
         boolean flag = true;
+        boolean inspectionFlowOver = true;
         boolean pendingRfi = ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status);
         log.debug(StringUtil.changeForLog("checkTaskAppStatus pendingRfi : " + pendingRfi));
         AppInspectionStatusDto inspectionStatusDto = hcsaAppClient.getAppInspectionStatusByPremId(correlationId).getEntity();
         //in inspection && not the end
-        boolean inInspection = (inspectionStatusDto != null) && !InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(inspectionStatusDto.getStatus());
-        log.debug(StringUtil.changeForLog("checkTaskAppStatus inInspection : " + inInspection));
+        if(inspectionStatusDto != null){
+            inspectionFlowOver = InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(inspectionStatusDto.getStatus());
+        }
+        log.debug(StringUtil.changeForLog("checkTaskAppStatus inInspection : " + inspectionFlowOver));
         log.debug(StringUtil.changeForLog("checkTaskAppStatus status : " + status));
         log.debug(StringUtil.changeForLog("checkTaskAppStatus inInspection : " + correlationId));
-        if(pendingRfi || inInspection){
-            flag = false;
-        }
+        flag = !pendingRfi && inspectionFlowOver;
         log.debug(StringUtil.changeForLog("checkTaskAppStatus flag : " + flag));
         return flag;
     }
@@ -594,16 +592,17 @@ public class TaskServiceImpl implements TaskService {
     private List<AppPremisesCorrelationDto> getAppPremisesCorrelationId(String appId){
         return  taskApplicationClient.getAppPremisesCorrelationsByAppId(appId).getEntity();
     }
-    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus,
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(ApplicationDto applicationDto, String appStatus,
                                                                          String stageId, String internalRemarks,String roleId,
                                                                          AuditTrailDto auditTrailDto){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-        appPremisesRoutingHistoryDto.setApplicationNo(appNo);
+        ApplicationGroupDto entity = hcsaAppClient.getAppGrpById(applicationDto.getAppGrpId()).getEntity();
+        appPremisesRoutingHistoryDto.setApplicationNo(applicationDto.getApplicationNo());
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-        appPremisesRoutingHistoryDto.setActionby(auditTrailDto == null ?
-                AppConsts.USER_ID_SYSTEM : auditTrailDto.getMohUserGuid());
+        appPremisesRoutingHistoryDto.setActionby(entity==null? AppConsts.USER_ID_SYSTEM: entity.getSubmitBy() == null ?
+                AppConsts.USER_ID_SYSTEM : entity.getSubmitBy());
         appPremisesRoutingHistoryDto.setRoleId(roleId);
         appPremisesRoutingHistoryDto.setAuditTrailDto(auditTrailDto);
         return appPremisesRoutingHistoryDto;

@@ -17,6 +17,8 @@
 <input type="hidden" id="txnReq" name="txnReq" value='${txnReq}'>
 <input type="hidden" id="keyId" name="keyId" value='${API_KEY}'>
 <input type="hidden" id="hmac" name="hmac" value='${newHMAC}'>
+<input type="hidden" id="failUrl" name="failUrl" value='${failUrl}'>
+
 <div id="anotherSection">
     <fieldset>
         <legend></legend>
@@ -30,6 +32,7 @@
         var keyId = $('#keyId').val();
         var hmac = $('#hmac').val();
         sendPayLoad(txnReq,hmac ,keyId );
+        window.setTimeout(goPyBack, 60000);
     }
 </script>
 </body>
@@ -40,5 +43,8 @@
         var keyId = $('#keyId').val();
         var hmac = $('#hmac').val();
         sendPayLoad(txnReq,hmac,keyId  );
+    }
+    function goPyBack(){
+        location.href=$('#failUrl').val();
     }
 </script>

@@ -75,7 +75,6 @@ public class PublicHolidayDelegate {
      */
     public void initial(BaseProcessClass bpc){
         initialSearchParam(bpc);
-
     }
 
     private void initialSearchParam(BaseProcessClass bpc){
@@ -177,16 +176,15 @@ public class PublicHolidayDelegate {
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IntranetUserConstant.FALSE);
 
             }else{
-                Date todate= new  Date();
-                Calendar   calendar = Calendar.getInstance();
+                Calendar calendar = Calendar.getInstance();
                 calendar.setTime(fromDate);
                 calendar.add(Calendar.HOUR,23);
                 calendar.add(Calendar.MINUTE,59);
                 calendar.add(Calendar.SECOND,59);
-                todate=calendar.getTime();
-                publicHolidayDto.setToDate(todate);
+                Date toDate = calendar.getTime();
+                publicHolidayDto.setToDate(toDate);
                 publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                PublicHolidayDto resDto = publicHolidayService.updateHoliday(publicHolidayDto);
+                publicHolidayService.updateHoliday(publicHolidayDto);
                 ParamUtil.setSessionAttr(bpc.request,"holiday",null);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IntranetUserConstant.TRUE);
                 ParamUtil.setSessionAttr(bpc.request,"year",null);
@@ -216,7 +214,6 @@ public class PublicHolidayDelegate {
         }else if("ics".equals(suffix)){
             try {
                 InputStreamReader inputReader = new InputStreamReader(file.getInputStream());
-
                 BufferedReader bf = new BufferedReader(inputReader);
                 String str;
                 while ((str = bf.readLine()) != null) {
@@ -257,13 +254,12 @@ public class PublicHolidayDelegate {
                                 nextDay = dft.format(temp);
                                 publicHolidayDto.setFromDate(Formatter.parseDateTime(String.valueOf(startInt), "yyyyMMdd"));
 
-                                Date todate= new  Date();
                                 Calendar calendar = Calendar.getInstance();
                                 calendar.setTime(Formatter.parseDateTime(String.valueOf(startInt), "yyyyMMdd"));
                                 calendar.add(Calendar.HOUR,23);
                                 calendar.add(Calendar.MINUTE,59);
                                 calendar.add(Calendar.SECOND,59);
-                                todate=calendar.getTime();
+                                Date todate = calendar.getTime();
                                 publicHolidayDto.setToDate(todate);
                                 publicHolidayDtos.add(publicHolidayDto);
                                 startInt = Integer.parseInt(nextDay);
@@ -274,15 +270,18 @@ public class PublicHolidayDelegate {
                     }
                     count ++;
                 }
-                publicHolidayService.createHolidays(publicHolidayDtos);
+                //filter holidays(To prevent the repeat)
+                List<PublicHolidayDto> allActivePubHolDays = publicHolidayService.getAllActivePubHoliDay();
+                publicHolidayDtos = publicHolidayService.filterPreventDays(publicHolidayDtos, allActivePubHolDays);
+                if(!IaisCommonUtils.isEmpty(publicHolidayDtos)) {
+                    publicHolidayService.createHolidays(publicHolidayDtos);
+                }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
                 errMap.put("selectedFile", MessageUtil.getMessageDesc("OAPPT_ERR009"));
                 ParamUtil.setRequestAttr(bpc.request,"filename", filename);
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
-            } finally {
-
             }
         }else{
             Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
@@ -441,16 +440,15 @@ public class PublicHolidayDelegate {
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IntranetUserConstant.FALSE);
             }else{
-                Date todate= new  Date();
-                Calendar   calendar = Calendar.getInstance();
+                Calendar calendar = Calendar.getInstance();
                 calendar.setTime(fromDate);
                 calendar.add(Calendar.HOUR,23);
                 calendar.add(Calendar.MINUTE,59);
                 calendar.add(Calendar.SECOND,59);
-                todate=calendar.getTime();
-                publicHolidayDto.setToDate(todate);
+                Date toDate = calendar.getTime();
+                publicHolidayDto.setToDate(toDate);
                 publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                PublicHolidayDto resDto = publicHolidayService.createHoliday(publicHolidayDto);
+                publicHolidayService.createHoliday(publicHolidayDto);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IntranetUserConstant.TRUE);
                 ParamUtil.setSessionAttr(bpc.request,"year",null);
             }

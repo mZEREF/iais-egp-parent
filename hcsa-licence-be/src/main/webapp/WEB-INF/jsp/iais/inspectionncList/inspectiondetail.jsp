@@ -51,7 +51,14 @@
         </c:when>
         <c:otherwise>
         <div class="col-xs-8 col-sm-6 col-md-5">
-            <p> <span>  ${serListDto.endHour} : ${serListDto.endMin}</span></p>
+            <p> <span>
+                  <c:if test="${(empty serListDto.endHour) && (empty serListDto.endMin)}">
+                  </c:if>
+                  <c:if test="${(not empty serListDto.endHour) && (not empty serListDto.endMin)}">
+                    ${serListDto.endHour} : ${serListDto.endMin}
+                 </c:if>
+                </span>
+            </p>
         </div>
         </c:otherwise>
        </c:choose>
@@ -91,7 +98,7 @@
     </div>
 
     <div class="form-group">
-        <label class="col-xs-12 col-md-4 control-label">Remarks</label>
+        <label class="col-xs-12 col-md-4 control-label">Internal Remarks</label>
         <div class="col-xs-8 col-sm-6 col-md-5">
             <textarea cols="43" rows="5" name="tcuRemark" id="tcuRemark" maxlength="300"><c:out value="${serListDto.tcuRemark}"></c:out></textarea>
             <span class="error-msg" id="error_tcuRemark" name="iaisErrorMsg"></span>
@@ -176,10 +183,8 @@
                     <span id="error_periods" name="iaisErrorMsg" class="error-msg"></span>
                 </c:when>
                 <c:otherwise>
-                    <div>
                     <iais:select name="periods" options="frameworknOption" firstOption="Please Select" onchange="javascirpt:changeFramewordOption(this.value);"
                                  value="${applicationViewDto.licPremisesAuditDto.includeRiskType}" disabled="true"/>
-                    </div
                 </c:otherwise>
             </c:choose>
         </div>

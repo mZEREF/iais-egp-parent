@@ -217,7 +217,7 @@
     });
 
     $('#BACK').click(function () {
-        $('[name="switch_value"]').val('licenceReview');
+        $('[name="switch_value"]').val('paymentBack');
         $('#menuListForm').submit();
     });
 

@@ -15,6 +15,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
@@ -203,7 +205,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         }
         File zipFile =new File(sharedOutPath);
         MiscUtil.checkDirs(zipFile);
-        try (OutputStream outputStream = Files.newOutputStream(Paths.get(outFolder + l + AppServicesConsts.ZIP_NAME));
+        try (OutputStream outputStream = Files.newOutputStream(Paths.get(outFolder + l + AppServicesConsts.ZIP_NAME));//Destination compressed folder
                 CheckedOutputStream cos=new CheckedOutputStream(outputStream,new CRC32());
                ZipOutputStream zos=new ZipOutputStream(cos)) {
 
@@ -391,7 +393,8 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppGroupMiscDto> appGroupMiscs = applicationListDto.getAppGroupMiscs();
         List<AppFeeDetailsDto> appFeeDetails = applicationListDto.getAppFeeDetails();
         List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = applicationListDto.getAppPremisesOperationalUnits();
-
+        List<AppPremEventPeriodDto> appPremEventPeriods = applicationListDto.getAppPremEventPeriods();
+        List<AppPremOpenPeriodDto> appPremOpenPeriods = applicationListDto.getAppPremOpenPeriods();
         List<ApplicationListFileDto> applicationListFileDtoList=IaisCommonUtils.genNewArrayList();
         for(ApplicationGroupDto every :applicationGroup){
 
@@ -431,7 +434,8 @@ public class UploadFileServiceImpl implements UploadFileService {
             List<AppPremiseMiscDto> appPremiseMiscDtoList=IaisCommonUtils.genNewArrayList();
 
             List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList=IaisCommonUtils.genNewArrayList();
-
+            List<AppPremEventPeriodDto > appPremEventPeriodDtoList=IaisCommonUtils.genNewArrayList();
+            List<AppPremOpenPeriodDto> appPremOpenPeriodDtoList=IaisCommonUtils.genNewArrayList();
             List<AppEditSelectDto> appEditSelectDtos=IaisCommonUtils.genNewArrayList();
             List<AppGroupMiscDto> appGroupMiscDtos=IaisCommonUtils.genNewArrayList();
             List<AppFeeDetailsDto> appFeeDetailsDtos =IaisCommonUtils.genNewArrayList();
@@ -456,6 +460,23 @@ public class UploadFileServiceImpl implements UploadFileService {
                             appPremisesOperationalUnitDtoList.add(appPremisesOperationalUnitDto);
                         }
                     }
+                    if(appPremEventPeriods!=null){
+                        for(AppPremEventPeriodDto appPremEventPeriodDto: appPremEventPeriods){
+                            String appGrpPremId = appPremEventPeriodDto.getAppGrpPremId();
+                            if(appliGrpPremisesDtoId.equals(appGrpPremId)){
+                                appPremEventPeriodDtoList.add(appPremEventPeriodDto);
+                            }
+                        }
+                    }
+                  if(appPremOpenPeriods!=null){
+                      for(AppPremOpenPeriodDto appPremOpenPeriodDto : appPremOpenPeriods){
+                          String appGrpPremId = appPremOpenPeriodDto.getAppGrpPremId();
+                          if(appliGrpPremisesDtoId.equals(appGrpPremId)){
+                              appPremOpenPeriodDtoList.add(appPremOpenPeriodDto);
+                          }
+                      }
+                  }
+
                 }
             }
             if(appGroupMiscs!=null){
@@ -615,6 +636,8 @@ public class UploadFileServiceImpl implements UploadFileService {
             applicationListFileDto.setAppGroupMiscs(appGroupMiscDtos);
             applicationListFileDto.setAppFeeDetails(appFeeDetailsDtos);
             applicationListFileDto.setAppPremisesOperationalUnits(appPremisesOperationalUnitDtoList);
+            applicationListFileDto.setAppPremEventPeriods(appPremEventPeriodDtoList);
+            applicationListFileDto.setAppPremOpenPeriods(appPremOpenPeriodDtoList);
             applicationListFileDtoList.add(applicationListFileDto);
         }
         return applicationListFileDtoList;

@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
@@ -28,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
@@ -61,6 +63,7 @@ import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -362,7 +365,10 @@ public class NewApplicationHelper {
                     ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
                     || rfi != null){
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
-                ParamUtil.setSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
+                Object sessionAttr = ParamUtil.getSessionAttr(request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+                if(sessionAttr==null){
+                    ParamUtil.setSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
+                }
             }
         }
         return appSubmissionDto;
@@ -789,69 +795,30 @@ public class NewApplicationHelper {
         if(appGrpPremisesDto == null){
             return appGrpPremisesDto;
         }
-        String premType = appGrpPremisesDto.getPremisesType();
-        Time wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
-        Time wrkTimeTo = appGrpPremisesDto.getWrkTimeTo();
-        if(!StringUtil.isEmpty(wrkTimeFrom)){
-            LocalTime localTimeFrom = wrkTimeFrom.toLocalTime();
-            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                appGrpPremisesDto.setOnsiteStartHH(String.valueOf(localTimeFrom.getHour()));
-                appGrpPremisesDto.setOnsiteStartMM(String.valueOf(localTimeFrom.getMinute()));
-            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                appGrpPremisesDto.setConStartHH(String.valueOf(localTimeFrom.getHour()));
-                appGrpPremisesDto.setConStartMM(String.valueOf(localTimeFrom.getMinute()));
-            }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premType)){
-                appGrpPremisesDto.setOffSiteStartHH(String.valueOf(localTimeFrom.getHour()));
-                appGrpPremisesDto.setOffSiteStartMM(String.valueOf(localTimeFrom.getMinute()));
+        List<OperationHoursReloadDto> weeklyDtos = appGrpPremisesDto.getWeeklyDtoList();
+        if(!IaisCommonUtils.isEmpty(weeklyDtos)){
+            for(OperationHoursReloadDto weeklyDto:weeklyDtos){
+                setReloadTime(weeklyDto);
             }
         }
-        if(!StringUtil.isEmpty(wrkTimeTo)){
-            LocalTime localTimeTo = wrkTimeTo.toLocalTime();
-            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                appGrpPremisesDto.setOnsiteEndHH(String.valueOf(localTimeTo.getHour()));
-                appGrpPremisesDto.setOnsiteEndMM(String.valueOf(localTimeTo.getMinute()));
-            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                appGrpPremisesDto.setConEndHH(String.valueOf(localTimeTo.getHour()));
-                appGrpPremisesDto.setConEndMM(String.valueOf(localTimeTo.getMinute()));
-            }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premType)){
-                appGrpPremisesDto.setOffSiteEndHH(String.valueOf(localTimeTo.getHour()));
-                appGrpPremisesDto.setOffSiteEndMM(String.valueOf(localTimeTo.getMinute()));
-            }
 
+        List<OperationHoursReloadDto> phDtos = appGrpPremisesDto.getPhDtoList();
+        if(!IaisCommonUtils.isEmpty(phDtos)){
+            for(OperationHoursReloadDto phDto:phDtos){
+                setReloadTime(phDto);
+            }
         }
-        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = appGrpPremisesDto.getAppPremPhOpenPeriodList();
-        if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriods)){
-            for(AppPremPhOpenPeriodDto appPremPhOpenPeriod:appPremPhOpenPeriods){
-                if(appPremPhOpenPeriod.getPhDate() != null){
-                    appPremPhOpenPeriod.setPhDateStr(appPremPhOpenPeriod.getPhDate());
+
+        List<AppPremEventPeriodDto> eventDtos = appGrpPremisesDto.getEventDtoList();
+        if(!IaisCommonUtils.isEmpty(eventDtos)){
+            for(AppPremEventPeriodDto eventDto:eventDtos){
+                Date start = eventDto.getStartDate();
+                if(start != null){
+                    eventDto.setStartDateStr(Formatter.formatDate(start));
                 }
-                Time start = appPremPhOpenPeriod.getStartFrom();
-                Time end = appPremPhOpenPeriod.getEndTo();
-                if(!StringUtil.isEmpty(start)){
-                    LocalTime localTimeStart = start.toLocalTime();
-                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                        appPremPhOpenPeriod.setOnsiteStartFromHH(String.valueOf(localTimeStart.getHour()));
-                        appPremPhOpenPeriod.setOnsiteStartFromMM(String.valueOf(localTimeStart.getMinute()));
-                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                        appPremPhOpenPeriod.setConvStartFromHH(String.valueOf(localTimeStart.getHour()));
-                        appPremPhOpenPeriod.setConvStartFromMM(String.valueOf(localTimeStart.getMinute()));
-                    }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premType)){
-                        appPremPhOpenPeriod.setOffSiteStartFromHH(String.valueOf(localTimeStart.getHour()));
-                        appPremPhOpenPeriod.setOffSiteStartFromMM(String.valueOf(localTimeStart.getMinute()));
-                    }
-                }
-                if(!StringUtil.isEmpty(end)){
-                    LocalTime localTimeEnd = end.toLocalTime();
-                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                        appPremPhOpenPeriod.setOnsiteEndToHH(String.valueOf(localTimeEnd.getHour()));
-                        appPremPhOpenPeriod.setOnsiteEndToMM(String.valueOf(localTimeEnd.getMinute()));
-                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                        appPremPhOpenPeriod.setConvEndToHH(String.valueOf(localTimeEnd.getHour()));
-                        appPremPhOpenPeriod.setConvEndToMM(String.valueOf(localTimeEnd.getMinute()));
-                    }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premType)){
-                        appPremPhOpenPeriod.setOffSiteEndToHH(String.valueOf(localTimeEnd.getHour()));
-                        appPremPhOpenPeriod.setOffSiteEndToMM(String.valueOf(localTimeEnd.getMinute()));
-                    }
+                Date end = eventDto.getEndDate();
+                if(end != null){
+                    eventDto.setEndDateStr(Formatter.formatDate(end));
                 }
             }
         }
@@ -936,7 +903,7 @@ public class NewApplicationHelper {
                     for(AppSvcPrincipalOfficersDto appSvcMedAlertPsnDto:appSvcMedAlertPsnDtos) {
                         AppSvcPrincipalOfficersDto psnDto = psnMap.get(appSvcMedAlertPsnDto.getIdNo());
                         if(psnDto != null){
-                            psnDto.setPreferredMode(appSvcMedAlertPsnDto.getPreferredMode());
+
                         }else{
                             psnDto = appSvcMedAlertPsnDto;
                         }
@@ -1076,10 +1043,6 @@ public class NewApplicationHelper {
                     }
                 }
 
-                String preferredMode = medAlertPsnDtos.get(i).getPreferredMode();
-                if(StringUtil.isEmpty(preferredMode)){
-                    errMap.put("preferredModeVal"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Preferred Mode of Receiving MedAlert ","field"));
-                }
 
             }
 
@@ -1182,7 +1145,17 @@ public class NewApplicationHelper {
                         log.info(StringUtil.changeForLog("person spcOpts is empty"));
                     }
                     SelectOption sp = new SelectOption("other", "Others");
-                    specialityOpts.add(sp);
+                    boolean flag=false;
+                    for(SelectOption selectOption : specialityOpts){
+                        String value = selectOption.getValue();
+                        if("other".equals(value)){
+                            flag=true;
+                            break;
+                        }
+                    }
+                    if(!flag){
+                        specialityOpts.add(sp);
+                    }
                     person.setSpcOptList(specialityOpts);
                     String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, person.getSpeciality());
                     person.setSpecialityHtml(specialtySelectStr);
@@ -1199,7 +1172,7 @@ public class NewApplicationHelper {
                     person.setOfficeTelNo(psnDto.getOfficeTelNo());
                 }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())){
-                    person.setPreferredMode(psnDto.getPreferredMode());
+
                 }
                 //person.setLicPerson(true);
                 //for person dtos
@@ -1309,7 +1282,17 @@ public class NewApplicationHelper {
                         log.info(StringUtil.changeForLog("person spcOpts is empty"));
                     }
                     SelectOption otherSp = new SelectOption("other", "Others");
-                    specialityOpts.add(otherSp);
+                    boolean flag=false;
+                    for(SelectOption selectOption : specialityOpts){
+                        String value = selectOption.getValue();
+                        if("other".equals(value)){
+                            flag=true;
+                            break;
+                        }
+                    }
+                    if(!flag){
+                        specialityOpts.add(otherSp);
+                    }
                     person.setSpcOptList(specialityOpts);
 
                     boolean canMatch = false;
@@ -1336,7 +1319,7 @@ public class NewApplicationHelper {
                     person.setOfficeTelNo(psnDto.getOfficeTelNo());
                 }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())){
-                    person.setPreferredMode(psnDto.getPreferredMode());
+
                 }
                 //person.setLicPerson(true);
                 //for person dtos
@@ -1433,7 +1416,7 @@ public class NewApplicationHelper {
                         person.setOfficeTelNo(psnDto.getOfficeTelNo());
                     }
                     if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())) {
-                        person.setPreferredMode(psnDto.getPreferredMode());
+
                     }
 
                     person.setLicPerson(true);
@@ -1516,7 +1499,7 @@ public class NewApplicationHelper {
                     AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,true);
 
 //                    person.setDesignation(psnDto.getDesignation());
-                    person.setPreferredMode(psnDto.getPreferredMode());
+
                     person.setProfessionType(psnDto.getProfessionType());
                     person.setProfRegNo(psnDto.getProfRegNo());
                     person.setSpeciality(psnDto.getSpeciality());
@@ -1706,17 +1689,27 @@ public class NewApplicationHelper {
     }
 
     public static void setTimeList(HttpServletRequest request){
+        List<SelectOption> timeHourList = getTimeHourList();
+        List<SelectOption> timeMinList = getTimeMinList();
+        ParamUtil.setRequestAttr(request, "premiseHours", timeHourList);
+        ParamUtil.setRequestAttr(request, "premiseMinute", timeMinList);
+
+    }
+
+    public static List<SelectOption> getTimeHourList(){
         List<SelectOption> timeHourList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i< 24;i++){
             timeHourList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
         }
+        return timeHourList;
+    }
+
+    public static List<SelectOption> getTimeMinList(){
         List<SelectOption> timeMinList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i< 60;i++){
             timeMinList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
         }
-        ParamUtil.setRequestAttr(request, "premiseHours", timeHourList);
-        ParamUtil.setRequestAttr(request, "premiseMinute", timeMinList);
-
+        return timeMinList;
     }
 
     public static void setPremSelect(HttpServletRequest request,Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap){
@@ -2053,12 +2046,13 @@ public class NewApplicationHelper {
                 }
             }
             //confirm with mingde , person_ext field can edit anytime
-            appPsnEditDto.setPreferredMode(true);
+            appPsnEditDto.setDesignation(true);
             appPsnEditDto.setSubSpeciality(true);
             appPsnEditDto.setSpecialityOther(true);
             appPsnEditDto.setSpeciality(true);
             appPsnEditDto.setProfRegNo(true);
             appPsnEditDto.setProfessionType(true);
+
             if(ApplicationConsts.PERSON_LOADING_TYPE_BLUR.equals(person.getLoadingType())){
                 appPsnEditDto.setIdType(true);
                 appPsnEditDto.setIdNo(true);
@@ -2482,6 +2476,70 @@ public class NewApplicationHelper {
         }
     }
 
+    public static String generateMultipleDropDown(Map<String, String> pageAttr, List<SelectOption> selectOptionList, String firestOption, List<String> checkValList){
+        StringBuilder result = new StringBuilder();
+        if(!IaisCommonUtils.isEmpty(selectOptionList) && !IaisCommonUtils.isEmpty(pageAttr)){
+            String id = pageAttr.get("id");
+            if(StringUtil.isEmpty(id)){
+                id = "";
+            }
+            result.append("<div class=\"row\"><div class=\"col-md-12\">")
+                    .append("<div style=\"height: 200px; border: 1px solid darkgrey;overflow: scroll\" id=\"")
+                    .append(id)
+                    .append("Clear\">");
+            int i = 0;
+            for(SelectOption sp:selectOptionList){
+                String alignId = pageAttr.get("name") + i;
+                result.append("<label class=\"checkbox-custom check-primary\" style=\"margin-left: 2px\">")
+                        .append("<input value=\"")
+                        .append(sp.getValue())
+                        .append("\"");
+                for(Map.Entry<String, String> entry : pageAttr.entrySet()){
+                    result.append(entry.getKey())
+                            .append("=\"");
+                            if("id".equals(entry.getKey())){
+                                result.append(alignId)
+                                        .append('\"');
+                            }else{
+                                result.append(entry.getValue())
+                                        .append('\"');
+                            }
+                }
+                result.append("type=\"checkbox\">")
+                        .append(" <label for=\"")
+                        .append(alignId)
+                        .append("\">")
+                        .append("<span>")
+                        .append(sp.getText())
+                        .append("</span>")
+                        .append("</label>")
+                        .append("</label><br>");
+                i++;
+            }
+            result.append("</div></div></div>");
+        }
+
+        return result.toString();
+    }
+
+    public static List<SelectOption> genWorkingDaySp(){
+        List<SelectOption> workingDaySp = IaisCommonUtils.genNewArrayList();
+        SelectOption sp1 = new SelectOption("Mon","Monday");
+        SelectOption sp2 = new SelectOption("Tue","Tuesday");
+        SelectOption sp3 = new SelectOption("Wed","Wednesday");
+        SelectOption sp4 = new SelectOption("Thu","Thursday");
+        SelectOption sp5 = new SelectOption("Fri","Friday");
+        SelectOption sp6 = new SelectOption("Sat","Saturday");
+        SelectOption sp7 = new SelectOption("Sun","Sunday");
+        workingDaySp.add(sp1);
+        workingDaySp.add(sp2);
+        workingDaySp.add(sp3);
+        workingDaySp.add(sp4);
+        workingDaySp.add(sp5);
+        workingDaySp.add(sp6);
+        workingDaySp.add(sp7);
+        return workingDaySp;
+    }
 
     //=============================================================================
     //private method
@@ -2670,7 +2728,7 @@ public class NewApplicationHelper {
         psnDto.setMobileNo(appSvcCgoDto.getMobileNo());
         psnDto.setOfficeTelNo(appSvcCgoDto.getOfficeTelNo());
         psnDto.setEmailAddr(appSvcCgoDto.getEmailAddr());
-        psnDto.setPreferredMode(appSvcCgoDto.getPreferredMode());
+
         psnDto.setProfessionType(appSvcCgoDto.getProfessionType());
         psnDto.setProfRegNo(appSvcCgoDto.getProfRegNo());
         psnDto.setSpeciality(appSvcCgoDto.getSpeciality());
@@ -2721,10 +2779,7 @@ public class NewApplicationHelper {
                 //sync other field
                 String officeTelNo = selPerson.getOfficeTelNo();
                 appSvcCgoDto.setOfficeTelNo(officeTelNo);
-                String preferredMode = selPerson.getPreferredMode();
-                if(!StringUtil.isEmpty(preferredMode)){
-                    appSvcCgoDto.setPreferredMode(preferredMode);
-                }
+
                 //
                 appSvcCgoDto.setNeedSpcOptList(selPerson.isNeedSpcOptList());
                 List<SelectOption> spcOptList = selPerson.getSpcOptList();
@@ -2770,10 +2825,7 @@ public class NewApplicationHelper {
                 }else if(!StringUtil.isEmpty(preferredMode)){
                     person.setPreferredMode(preferredMode);
                 }*/
-                String preferredMode = selPerson.getPreferredMode();
-                if(!StringUtil.isEmpty(preferredMode)){
-                    person.setPreferredMode(preferredMode);
-                }
+
                 //sync other field
                 String designation = selPerson.getDesignation();
                 String professionType = selPerson.getProfessionType();
@@ -2907,6 +2959,27 @@ public class NewApplicationHelper {
             }
         }
         return appSvcPersonExtDto;
+    }
+
+    private static void setReloadTime(OperationHoursReloadDto operationHoursReloadDto){
+        List<String> selectValList = operationHoursReloadDto.getSelectValList();
+        if(!IaisCommonUtils.isEmpty(selectValList)){
+            String [] selectArr = (String[]) selectValList.toArray(new String[selectValList.size()]);
+            String phSelect = ParamUtil.StringsToString(selectArr);
+            operationHoursReloadDto.setSelectVal(phSelect);
+        }
+        Time startTime = operationHoursReloadDto.getStartFrom();
+        Time endTime = operationHoursReloadDto.getEndTo();
+        if(startTime != null){
+            LocalTime localTimeStart = startTime.toLocalTime();
+            operationHoursReloadDto.setStartFromHH(String.valueOf(localTimeStart.getHour()));
+            operationHoursReloadDto.setStartFromMM(String.valueOf(localTimeStart.getMinute()));
+        }
+        if(endTime != null){
+            LocalTime localTimeStart = endTime.toLocalTime();
+            operationHoursReloadDto.setEndToHH(String.valueOf(localTimeStart.getHour()));
+            operationHoursReloadDto.setEndToMM(String.valueOf(localTimeStart.getMinute()));
+        }
     }
 
 /*

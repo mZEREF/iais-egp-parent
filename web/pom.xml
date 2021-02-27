@@ -84,23 +84,6 @@
                 </snapshotRepository>
             </distributionManagement>
         </profile>
-        <profile>
-            <id>sg-gdc-nexus</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <distributionManagement>
-                <repository>
-                    <id>moh-iais-nexus</id>
-                    <name>Nexus Releases</name>
-                    <url>${sg.gdc.nexus}</url>
-                </repository>
-                <snapshotRepository>
-                    <id>moh-iais-nexus</id>
-                    <name>Nexus Snapshot</name>
-                    <url>${sg.gdc.nexus.snapshot}</url>
-                </snapshotRepository>
-            </distributionManagement>
-        </profile>
+
     </profiles>
 </project>

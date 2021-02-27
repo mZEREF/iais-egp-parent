@@ -8,6 +8,7 @@
 
 <script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/sop/reset.js"></script>
 <script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/egov/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/egov/jquery-upgrade-patch.js"></script>
 <script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/sop/jquery.cookie.js"></script>
 <script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/sop/jquery.dimensions.js"></script>
 <script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/sop/jquery.positionBy.js"></script>
@@ -20,7 +21,6 @@
 <%
     String dateFormatJava =  ConsistencyHelper.getDateFormat();
     request.getSession().setAttribute("dateFormatJava",dateFormatJava);
-    String rootCommonWeb = IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
 <script type="text/javascript">
     var webContextPath = "<%=EgpcloudPortFactory.webContext%>";
@@ -40,9 +40,6 @@
 <script type="text/javascript" src="<%=EngineHelper.getContextPath()%>/javascripts/sop/sopweb-base.js.jsp"></script>
 <script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/sop/tooltip.js"></script>
 <script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/sop/timepicker.js"></script>
-
-<script type="text/javascript" src="<%=rootCommonWeb%>js/jquery-migrate.1.4.1.js"></script>
-<script type="text/javascript" src="<%=rootCommonWeb%>js/jquery-migrate.3.0.0.js"></script>
 <!-- END: javascript -->
 <%
     boolean aBoolean = ConfigHelper.getBoolean("owasp.csrf.enable", false);

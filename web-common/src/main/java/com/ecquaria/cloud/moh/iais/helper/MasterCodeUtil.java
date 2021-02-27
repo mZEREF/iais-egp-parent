@@ -95,6 +95,8 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_WRONG_TYPE                       = "02FC2CBE-ADC5-EA11-BE84-000C29F371DC";
     public static final String CATE_ID_PUBLIC_HOLIDAY                   = "21ADE137-CE1D-EB11-8B7A-000C293F0C99";
     public static final String CATE_ID_AUDIT_TRAIL_OPERATION_TYPE       = "6BB07B6A-F168-EA11-BE82-000C29F371DC";
+    public static final String CATE_ID_EVERY_DAY_NAME                   = "5F97C14F-345A-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_MOH_RELATED_URLS                 = "B61C07F8-ACED-EA11-8B79-000C293F0C99";
     /**
      * @description: refresh the master codes into cache
      *

@@ -50,7 +50,6 @@
                     <tbody>
                     <tr height="1">
                       <td class="first last" style="width: 100%;">
-
                             <div id="control--runtime--" class="control control-caption-horizontal">
                               <div class=" form-group form-horizontal formgap" <c:if test="${status.first}">style="width:194%;"</c:if> >
                                 <div class="col-sm-4 control-label formtext control">
@@ -81,7 +80,6 @@
                                 </div>
                               </div>
                             </div>
-
                         <div class="profile-info-gp hidden"></div>
                         <div id="newOfficer" class="new-officer-form hidden">
                           <table class="control-grid" >
@@ -198,7 +196,6 @@
                                       <label id="control--runtime--31--label" class="control-label control-set-font control-font-label">
                                         Professional Regn. No.
                                       </label>
-                                      <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-7">
@@ -336,9 +333,9 @@
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      </div>
+<%--      <div class="modal-header">--%>
+<%--        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--      </div>--%>
       <div class="modal-body" style="text-align: center;">
         <div class="row">
           <div class="col-md-12"><span style="font-size: 2rem;">PRS  mock server down</span></div>

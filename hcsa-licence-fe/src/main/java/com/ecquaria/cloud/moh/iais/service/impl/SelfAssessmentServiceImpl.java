@@ -124,6 +124,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 .filter(i -> !ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(i.getStatus()))
                 .filter(i -> !ApplicationConsts.APPLICATION_STATUS_RECALLED.equals(i.getStatus())).collect(Collectors.toList());
 
+
         //common data
         ChecklistConfigDto common = appConfigClient.getMaxVersionCommonConfig().getEntity();
         LinkedHashMap<String, List<PremCheckItem>> sqMap  = FeSelfChecklistHelper.loadPremisesQuestion(common, false);
@@ -226,9 +227,8 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         }
 
         //uat bug 108659
-        appList = appList.stream()
-                .filter(i -> !ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(i.getStatus()))
-                .filter(i -> !ApplicationConsts.APPLICATION_STATUS_RECALLED.equals(i.getStatus())).collect(Collectors.toList());
+        appList = appList.stream().filter(i -> !ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(i.getStatus())
+        || !ApplicationConsts.APPLICATION_STATUS_RECALLED.equals(i.getStatus())).collect(Collectors.toList());
 
         for(ApplicationDto app : appList){
            String appId = app.getId();
@@ -239,6 +239,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 dataByCorrId.forEach(i -> viewData.add(i));
             }
         }
+
 
         return viewData;
     }
@@ -450,7 +451,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         FeignResponseEntity<Integer> result = applicationFeClient.getApplicationSelfAssMtStatusByGroupId(groupId);
         if (HttpStatus.SC_OK == result.getStatusCode()){
             int status = result.getEntity().intValue();
-            if (ApplicationConsts.SUBMITTED_SELF_ASSESSMENT == status){
+            if (ApplicationConsts.SUBMITTED_SELF_ASSESSMENT.equals(status)){
                 return Boolean.TRUE;
             }
         }
@@ -466,8 +467,8 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         }
 
         //if prohibit , should't submit and that  cannot access this module
-        return applicationDto.getSelfAssMtFlag() == ApplicationConsts.SUBMITTED_SELF_ASSESSMENT
-                || applicationDto.getSelfAssMtFlag() == ApplicationConsts.PROHIBIT_SUBMIT_RFI_SELF_ASSESSMENT ? Boolean.TRUE : Boolean.FALSE;
+        return applicationDto.getSelfAssMtFlag().equals(ApplicationConsts.SUBMITTED_SELF_ASSESSMENT)
+                || applicationDto.getSelfAssMtFlag().equals(ApplicationConsts.PROHIBIT_SUBMIT_RFI_SELF_ASSESSMENT) ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override

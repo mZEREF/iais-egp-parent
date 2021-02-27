@@ -461,12 +461,12 @@ public class AppealServiceImpl implements AppealService {
             request.getSession().setAttribute("rejectEqDay",rejectEqDay);
             if(cgoEqDay){
                 boolean maxCGOnumber = isMaxCGOnumber(applicationDto);
-                if (!maxCGOnumber) {
+                if (maxCGOnumber) {
                     SelectOption selectOption1=new SelectOption();
                     selectOption1.setValue("MS003");
                     selectOption1.setText("Appeal for appointment of additional CGO to a service");
                     selectOptionList.add(selectOption1);
-                    request.getSession().setAttribute("maxCGOnumber", !maxCGOnumber);
+                    request.getSession().setAttribute("maxCGOnumber", maxCGOnumber);
                 }
             }
             if(feeEqDay){
@@ -1507,7 +1507,7 @@ public class AppealServiceImpl implements AppealService {
             if (hcsaSvcPersonnelDto != null) {
                 int maximumCount = hcsaSvcPersonnelDto.getMaximumCount();
                 int size = appSvcKeyPersonnelDtos.size();
-                if (size <= maximumCount) {
+                if (size < maximumCount) {
                     return false;
                 }
             }
@@ -1516,5 +1516,6 @@ public class AppealServiceImpl implements AppealService {
 
         return false;
     }
+
 
 }

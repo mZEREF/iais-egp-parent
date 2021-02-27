@@ -13,11 +13,11 @@
 
                     <c:choose>
                         <c:when test="${ReloadDeputyPrincipalOfficers.size() == 0}">
-                            <p><strong>Deputy Principal Officer (Optional)</strong>: You have not assigned anyone for this role</p>
+                            <p><strong>Nominee (Optional)</strong>: You have not assigned anyone for this role</p>
                         </c:when>
                         <c:otherwise>
                             <c:forEach items="${ReloadDeputyPrincipalOfficers}" var="dpo" varStatus="stat">
-                                <p><strong>Deputy Principal Officer ${stat.index+1} (Optional)</strong>: ${dpo.name },${dpo.idNo}(${dpo.idType })</p>
+                                <p><strong>Nominee ${stat.index+1} (Optional)</strong>: ${dpo.name },${dpo.idNo}(${dpo.idType })</p>
                             </c:forEach>
                         </c:otherwise>
                     </c:choose>

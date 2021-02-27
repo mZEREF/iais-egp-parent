@@ -21,8 +21,10 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
+import com.ecquaria.cloudfeign.FeignException;
 import com.ncs.secureconnect.sim.common.LoginInfo;
 import com.ncs.secureconnect.sim.lite.SIMUtil;
+import ecq.commons.exception.BaseException;
 import lombok.extern.slf4j.Slf4j;
 import ncs.secureconnect.sim.entities.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -199,7 +201,7 @@ public class FESingpassLandingDelegator {
      * @param bpc
      * @throws
      */
-    public void initSingpassInfo(BaseProcessClass bpc){
+    public void initSingpassInfo(BaseProcessClass bpc) throws FeignException, BaseException {
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
         log.info("initSingpassInfo===========>>>Start");
@@ -242,6 +244,9 @@ public class FESingpassLandingDelegator {
                 user.setDisplayName(createdUser.getDisplayName());
                 user.setUserDomain(createdUser.getUserDomain());
                 user.setId(createdUser.getUserId());
+
+                //create egp user
+                orgUserManageService.createClientUser(createdUser);
                 FeLoginHelper.initUserInfo(request, user);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }
@@ -252,7 +257,7 @@ public class FESingpassLandingDelegator {
         log.info("initSingpassInfo===========>>>End");
     }
 
-    public void initLoginInfo(BaseProcessClass bpc){
+    public void initLoginInfo(BaseProcessClass bpc) throws FeignException, BaseException {
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);

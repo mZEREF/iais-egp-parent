@@ -62,12 +62,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 
 /**
@@ -801,9 +796,9 @@ public class ClinicalLaboratoryDelegator {
             String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
 
             Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP);
+            Map<String,AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.LICPERSONSELECTMAP);
             if ("next".equals(crud_action_additional)) {
                 //List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST);
-                Map<String,AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.LICPERSONSELECTMAP);
                 for(int i=0;i<appSvcCgoDtoList.size();i++ ){
                     AppSvcCgoDto appSvcCgoDto = appSvcCgoDtoList.get(i);
                     String profRegNo = appSvcCgoDto.getProfRegNo();
@@ -857,13 +852,14 @@ public class ClinicalLaboratoryDelegator {
                     }
                     //sync person dropdown and submisson dto
                     personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcCgoDtos,svcCode);
-                    ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
                 } else {
                     //set audit
                     NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errList,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.GOVERNANCEOFFICERS);
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errList));
                     coMap.put("information", "");
+                    Map<String,AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto,licPersonMap,personMap);
+                    ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) newPersonMap);
                     return;
                 }
                 bpc.request.getSession().setAttribute("coMap", coMap);
@@ -871,8 +867,9 @@ public class ClinicalLaboratoryDelegator {
                 //sync person dropdown and submisson dto
                 List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
                 personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcCgoDtos,svcCode);
-                ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
             }
+            Map<String,AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto,licPersonMap,personMap);
+            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) newPersonMap);
         }
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers end ...."));
     }
@@ -1081,9 +1078,9 @@ public class ClinicalLaboratoryDelegator {
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
             String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
             Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP);
+            Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
             if ("next".equals(crud_action_additional)) {
                 List<AppSvcPrincipalOfficersDto> poDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto");
-                Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
                 map = NewApplicationHelper.doValidatePo(poDto, licPersonMap,svcCode);
                 if (appSubmissionDto.isNeedEditController()) {
 //                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
@@ -1109,7 +1106,6 @@ public class ClinicalLaboratoryDelegator {
                     }
                     //sync person dropdown and submisson dto
                     personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcPrincipalOfficersDtoList,svcCode);
-                    ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
                 } else {
                     coMap.put("information", "");
                 }
@@ -1117,8 +1113,9 @@ public class ClinicalLaboratoryDelegator {
             }else{
                 //sync person dropdown and submisson dto
                 personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcPrincipalOfficersDtoList,svcCode);
-                ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
             }
+            Map<String,AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto,licPersonMap,personMap);
+            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) newPersonMap);
             if (!map.isEmpty()) {
                 //set audit
                 NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),map,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
@@ -1228,7 +1225,7 @@ public class ClinicalLaboratoryDelegator {
                             appSvcDocDto.setMd5Code(md5Code);
                             appSvcDocDto.setPremisesVal("");
                             appSvcDocDto.setPremisesType("");
-                            appSvcDocDto.setVersion(getAppSvcDocVersion(hcsaSvcDocConfigDto.getId(),oldDocs,isRfi,md5Code,oldSubmissionDto.getAppGrpId(),null));
+                            appSvcDocDto.setVersion(getAppSvcDocVersion(hcsaSvcDocConfigDto.getId(),oldDocs,isRfi,md5Code,oldSubmissionDto.getAppGrpId(),oldSubmissionDto.getRfiAppNo()));
                             commonsMultipartFileMap.put(docConfigId, file);
                             //wait api change to get fileRepoId
                             appSvcDocDtoList.add(appSvcDocDto);
@@ -1625,6 +1622,7 @@ public class ClinicalLaboratoryDelegator {
             String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
             String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
             Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP);
+            Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
             if ("next".equals(nextStep)) {
                 if (appSubmissionDto.isNeedEditController()) {
 //                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
@@ -1634,7 +1632,6 @@ public class ClinicalLaboratoryDelegator {
                     appEditSelectDto.setServiceEdit(true);
                     appSubmissionDto.setChangeSelectDto(appEditSelectDto);
                 }
-                Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
                 Map<String, String> errorMap = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap, svcCode);
                 HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                 Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
@@ -1651,17 +1648,19 @@ public class ClinicalLaboratoryDelegator {
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.MEDALERT_PERSON);
                     //todo change(medAlert page is the final svc page,will jump to preview page)
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,AppServicesConsts.NAVTABS_SERVICEFORMS);
+                    Map<String,AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto,licPersonMap,personMap);
+                    ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) newPersonMap);
                     return;
                 } else {
                     //sync person dropdown and submisson dto
                     personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcMedAlertPersonList,svcCode);
-                    ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
                 }
             }else{
                 //sync person dropdown and submisson dto
                 personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcMedAlertPersonList,svcCode);
-                ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
             }
+            Map<String,AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto,licPersonMap,personMap);
+            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) newPersonMap);
             ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
         }
 
@@ -2970,7 +2969,6 @@ public class ClinicalLaboratoryDelegator {
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(request, currentSvcId);
         int length = assignSelect.length;
         //new and not rfi
-        int preferredModeLength = 0;
         for (int i = 0; i < length; i++) {
             AppPsnEditDto appPsnEditDto = new AppPsnEditDto();
             AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
@@ -3013,7 +3011,6 @@ public class ClinicalLaboratoryDelegator {
                             //change arr index
                             --i;
                             --length;
-                            ++preferredModeLength;
                             continue;
                         }
                     }
@@ -3032,7 +3029,6 @@ public class ClinicalLaboratoryDelegator {
             }
             log.info(StringUtil.changeForLog("chooseExisting:"+chooseExisting));
             log.info(StringUtil.changeForLog("getPageData:"+getPageData));
-            String[] preferredModes = ParamUtil.getStrings(request, "preferredMode" + preferredModeLength);
             String assignSel = assignSelect[i];
             if(chooseExisting){
                 if(loadingByBlur){
@@ -3065,15 +3061,6 @@ public class ClinicalLaboratoryDelegator {
                 if (appPsnEditDto.isEmailAddr()) {
                     emailAddress = NewApplicationHelper.setPsnValue(emailAddress, i, appSvcPrincipalOfficersDto, "emailAddr");
                 }
-                if (appPsnEditDto.isPreferredMode()) {
-                    if (preferredModes != null) {
-                        if (preferredModes.length == 2) {
-                            appSvcPrincipalOfficersDto.setPreferredMode("3");
-                        } else {
-                            appSvcPrincipalOfficersDto.setPreferredMode(preferredModes[0]);
-                        }
-                    }
-                }
                 if(StringUtil.isEmpty(appSvcPrincipalOfficersDto.getCgoIndexNo())){
                     appSvcPrincipalOfficersDto.setCgoIndexNo(UUID.randomUUID().toString());
                 }
@@ -3093,7 +3080,6 @@ public class ClinicalLaboratoryDelegator {
                 idType = removeArrIndex(idType, i);
                 --i;
                 --length;
-                ++preferredModeLength;
             }else if(getPageData){
                 String mapIndexNo = mapIndexNos[i];
                 if (StringUtil.isEmpty(mapIndexNo)) {
@@ -3115,14 +3101,6 @@ public class ClinicalLaboratoryDelegator {
                     }
                 }
                 appSvcPrincipalOfficersDto.setEmailAddr(emailAddr);
-                if (preferredModes != null) {
-                    if (preferredModes.length == 2) {
-                        appSvcPrincipalOfficersDto.setPreferredMode("3");
-                    } else {
-                        appSvcPrincipalOfficersDto.setPreferredMode(preferredModes[0]);
-                    }
-                }
-                ++preferredModeLength;
                 if (needEdit && AppConsts.YES.equals(licPsn)) {
                     appSvcPrincipalOfficersDto.setLicPerson(true);
                     AppSvcPrincipalOfficersDto licsPerson = NewApplicationHelper.getPsnInfoFromLic(request, NewApplicationHelper.getPersonKey(appSvcPrincipalOfficersDto.getIdType(),appSvcPrincipalOfficersDto.getIdNo()));
@@ -3227,10 +3205,11 @@ public class ClinicalLaboratoryDelegator {
         appPsnEditDto.setSpeciality(false);
         appPsnEditDto.setSpecialityOther(false);
         appPsnEditDto.setSubSpeciality(false);
-        appPsnEditDto.setPreferredMode(false);
+        appPsnEditDto.setDesignation(false);
     }
 
     private Map<String,AppSvcPersonAndExtDto> syncDropDownAndPsn(Map<String,AppSvcPersonAndExtDto> personMap,AppSubmissionDto appSubmissionDto,List<AppSvcPrincipalOfficersDto> personList,String svcCode){
+        List<AppSvcPrincipalOfficersDto> newPersonList = IaisCommonUtils.genNewArrayList();
         for(AppSvcPrincipalOfficersDto person:personList){
             String idType = person.getIdType();
             String idNo = person.getIdNo();
@@ -3239,12 +3218,13 @@ public class ClinicalLaboratoryDelegator {
             //personnel data=>sync , personnel ext data => the same svc =>sync
             boolean needSync = !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo) && !StringUtil.isEmpty(name);
             if(needSync){
-                //set person into dropdown
-                personMap = NewApplicationHelper.setPsnIntoSelMap(personMap, personList, svcCode);
-                //sync data
-                NewApplicationHelper.syncPsnData(appSubmissionDto, personMap);
+                newPersonList.add(person);
             }
         }
+        //set person into dropdown
+        personMap = NewApplicationHelper.setPsnIntoSelMap(personMap, newPersonList, svcCode);
+        //sync data
+        NewApplicationHelper.syncPsnData(appSubmissionDto, personMap);
         return personMap;
     }
 
@@ -3315,5 +3295,54 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         return version;
+    }
+
+    private Set<String> getNewPersonKeySet(AppSubmissionDto appSubmissionDto){
+        Set<String> personKeySet = IaisCommonUtils.genNewHashSet();
+        if(appSubmissionDto != null){
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                    List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+                    if(!IaisCommonUtils.isEmpty(appSvcCgoDtos)){
+                        for(AppSvcCgoDto psn:appSvcCgoDtos){
+                            personKeySet.add(NewApplicationHelper.getPersonKey(psn.getIdType(),psn.getIdNo()));
+                        }
+                    }
+                    List<AppSvcPrincipalOfficersDto> appSvcPoDpoDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+                    if(!IaisCommonUtils.isEmpty(appSvcPoDpoDtos)){
+                        for(AppSvcPrincipalOfficersDto psn:appSvcPoDpoDtos){
+                            personKeySet.add(NewApplicationHelper.getPersonKey(psn.getIdType(),psn.getIdNo()));
+                        }
+                    }
+                    List<AppSvcPrincipalOfficersDto> appSvcMapDtos = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+                    if(!IaisCommonUtils.isEmpty(appSvcMapDtos)){
+                        for(AppSvcPrincipalOfficersDto psn:appSvcMapDtos){
+                            personKeySet.add(NewApplicationHelper.getPersonKey(psn.getIdType(),psn.getIdNo()));
+                        }
+                    }
+                }
+            }
+        }
+        return personKeySet;
+    }
+
+    private Map<String,AppSvcPersonAndExtDto> removeDirtyDataFromPsnDropDown(AppSubmissionDto appSubmissionDto,Map<String,AppSvcPersonAndExtDto> licPersonMap,Map<String,AppSvcPersonAndExtDto> personMap){
+        //add new person key
+        Set<String> personKeySet = new HashSet<>(licPersonMap.keySet());
+        if(personKeySet == null){
+            personKeySet = IaisCommonUtils.genNewHashSet();
+        }
+        Set<String> newPersonKeySet = getNewPersonKeySet(appSubmissionDto);
+        personKeySet.addAll(newPersonKeySet);
+        //filter removed person
+        Map<String,AppSvcPersonAndExtDto> newPersonMap = IaisCommonUtils.genNewHashMap();
+        Set<String> finalPersonKeySet = personKeySet;
+        personMap.forEach((k, v)->{
+            if(finalPersonKeySet.contains(k)){
+                newPersonMap.put(k,v);
+            }
+        });
+        return newPersonMap;
     }
 }

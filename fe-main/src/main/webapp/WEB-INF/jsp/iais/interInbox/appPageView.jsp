@@ -85,6 +85,12 @@
         submit('appSort');
     }
     $(function () {
+        $(".appDoSelectActive").find('ul li').each(function (k,v) {
+            if($(this).data('value') == 'Inspection'){
+                $(this).css('padding-bottom','18px');
+            }
+        });
+
         if ('${appIsAppealed}') {
             $('#isAppealModal').modal('show');
         }

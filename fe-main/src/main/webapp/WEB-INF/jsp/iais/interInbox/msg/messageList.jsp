@@ -119,9 +119,9 @@
                 <div class="modal fade" id="archiveModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            </div>
+<%--                            <div class="modal-header">--%>
+<%--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--                            </div>--%>
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-md-12"><span style="font-size: 2rem">Please select at least one record</span></div>
@@ -138,9 +138,9 @@
                 <div class="modal fade" id="isArchivedModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            </div>
+<%--                            <div class="modal-header">--%>
+<%--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--                            </div>--%>
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-md-12"><span style="font-size: 2rem">The message(s) is/are archived</span></div>
@@ -156,10 +156,10 @@
                 <div class="modal fade" id="doArchiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <div class="modal-title" id="gridSystemModalLabel" style="font-size: 2rem;">Confirmation Box</div>
-                            </div>
+<%--                            <div class="modal-header">--%>
+<%--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--                                <div class="modal-title" id="gridSystemModalLabel" style="font-size:2rem;">Confirmation Box</div>--%>
+<%--                            </div>--%>
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-md-12"><span style="font-size: 2rem">Are you sure you want to archive ?</span></div>

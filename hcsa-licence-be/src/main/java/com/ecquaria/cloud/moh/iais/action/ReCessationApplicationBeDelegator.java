@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -29,6 +30,13 @@ import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloudfeign.FeignException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -36,12 +44,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author weilu
@@ -65,6 +67,7 @@ public class ReCessationApplicationBeDelegator {
     private static final String APPCESSATIONDTO = "appCess";
     private static final String READINFO = "readInfo";
     private static final String WHICHTODO = "whichTodo";
+    private static final String TRANSFORMNO = "patNoConfirm";
     private static final String EFFECTIVEDATE = "effectiveDate";
     private static final String REASON = "reason";
     private static final String OTHERREASON = "otherReason";
@@ -74,6 +77,8 @@ public class ReCessationApplicationBeDelegator {
     private static final String PATHCINAME = "patHciName";
     private static final String PATREGNO = "patRegNo";
     private static final String PATOTHERS = "patOthers";
+    private static final String PATOTHERSMOBILENO = "patOthersMobileNo";
+    private static final String PATOTHERSEMAILADDRESS = "patOthersEmailAddress";
     private static final String ERROR = "GENERAL_ERR0006";
 
 
@@ -208,6 +213,9 @@ public class ReCessationApplicationBeDelegator {
         String patHciName = ParamUtil.getRequestString(httpServletRequest, PATHCINAME);
         String patRegNo = ParamUtil.getRequestString(httpServletRequest, PATREGNO );
         String patOthers = ParamUtil.getRequestString(httpServletRequest, PATOTHERS);
+        String patMobile = ParamUtil.getRequestString(httpServletRequest, PATOTHERSMOBILENO );
+        String patEmailAddress = ParamUtil.getRequestString(httpServletRequest,  PATOTHERSEMAILADDRESS);
+        String patNoConfirm = ParamUtil.getRequestString(bpc.request, TRANSFORMNO);
         AppCessationDto appCessationDto =  new AppCessationDto();
         Date date = DateUtil.parseDate(effectiveDateStr, "dd/MM/yyyy");
         appCessationDto.setEffectiveDate(date);
@@ -233,6 +241,11 @@ public class ReCessationApplicationBeDelegator {
         appCessHciDto.setPatOthers(patOthers);
         appCessationDto.setPatNoRemarks(patNoRemarks);
         appCessHciDto.setPatNoRemarks(patNoRemarks);
+        appCessationDto.setMobileNo(patMobile);
+        appCessHciDto.setMobileNo(patMobile);
+        appCessationDto.setEmailAddress(patEmailAddress);
+        appCessHciDto.setEmailAddress(patEmailAddress);
+        appCessHciDto.setPatNoConfirm(patNoConfirm);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtoSave",appCessationDto);
         if (ApplicationConsts.CESSATION_REASON_OTHER.equals(cessationReason)) {
             if (StringUtil.isEmpty(otherReason)) {
@@ -279,12 +292,33 @@ public class ReCessationApplicationBeDelegator {
                 }
 
             }
-            if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patientSelect) && StringUtil.isEmpty(patOthers)) {
-                errorMap.put(PATOTHERS, MessageUtil.replaceMessage(ERROR, "Others", "field"));
+            if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patientSelect)) {
+                if(StringUtil.isEmpty(patOthers)){
+                    errorMap.put(PATOTHERS , MessageUtil.replaceMessage(ERROR, "Others", "field"));
+                }
+                if(StringUtil.isEmpty(patMobile)){
+                    errorMap.put(PATOTHERSMOBILENO , MessageUtil.replaceMessage(ERROR, PATOTHERSMOBILENO, "field"));
+                }else {
+                    if (!patMobile.matches("^[8|9][0-9]{7}$")) {
+                        errorMap.put( PATOTHERSMOBILENO , "GENERAL_ERR0007");
+                    }
+                }
+                if(StringUtil.isEmpty(patEmailAddress)){
+                    errorMap.put(PATOTHERSEMAILADDRESS , MessageUtil.replaceMessage(ERROR, PATOTHERSEMAILADDRESS, "field"));
+                }else {
+                    if(!ValidationUtils.isEmail(patEmailAddress)){
+                        errorMap.put( PATOTHERSEMAILADDRESS ,"GENERAL_ERR0014");
+                    }
+                }
             }
         }
-        if ("no".equals(patRadio) && StringUtil.isEmpty(patNoRemarks)) {
-            errorMap.put(PATNOREMARKS, MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field"));
+        if ("no".equals(patRadio)) {
+            if (StringUtil.isEmpty(patNoRemarks)) {
+                errorMap.put( PATNOREMARKS, MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field"));
+            }
+            if(StringUtil.isEmpty(patNoConfirm)){
+                errorMap.put( "patNoConfirm", MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field"));
+            }
         }
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTO, appCessLicDto);
         return errorMap;

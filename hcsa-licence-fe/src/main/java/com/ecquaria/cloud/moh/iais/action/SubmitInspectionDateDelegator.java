@@ -125,7 +125,7 @@ public class SubmitInspectionDateDelegator {
         if (sDate != null && eDate != null){
             boolean isAfterDate = IaisEGPHelper.isAfterDateSecond(sDate, eDate);
             if (!isAfterDate){
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("inspEndDate", "UC_INSP_ACK019"));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("inspStartDate", "UC_INSP_ACK019"));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 return;
             }

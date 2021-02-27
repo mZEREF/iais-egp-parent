@@ -8,6 +8,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.PaymentRedisHelper;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
+import com.ecquaria.cloudfeign.FeignException;
+import ecq.commons.exception.BaseException;
 import ecq.commons.helper.StringHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
@@ -34,14 +36,14 @@ public class PaymentDelegator {
     @Autowired
     private PaymentRedisHelper redisCacheHelper;
 
-    public void start(BaseProcessClass bpc) throws UnsupportedEncodingException {
+    public void start(BaseProcessClass bpc) throws UnsupportedEncodingException, FeignException, BaseException {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>payment");
         log.info(StringUtil.changeForLog("==========>getSessionID:"+bpc.getSession().getId()));
         HttpServletRequest request=bpc.request;
 
         String reqNo= ParamUtil.getRequestString(request,"reqNo");
         PaymentRequestDto paymentRequestDto=paymentClient.getPaymentRequestDtoByReqRefNo(reqNo).getEntity();
-        String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+"/payment-web/process/EGPCLOUD/PaymentCallBack";
+        String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+"/egov/process/EGPCLOUD/PaymentCallBack";
         StringBuilder bud = new StringBuilder();
         String header =  ParamUtil.getRequestString(request,"hmac");
         System.out.println("MerchantApp:b2sTxnEndUrl : hmac: " + header);
@@ -51,7 +53,7 @@ public class PaymentDelegator {
         System.out.println("MerchantApp:b2sTxnEndUrl : data, message: " + message);
         System.out.println("====>  old Session ID : " + paymentRequestDto.getQueryCode());
         System.out.println("====>  new Session ID : " + bpc.request.getSession().getId());
-        redisCacheHelper.copySessionAttr(paymentRequestDto.getQueryCode(),bpc.request.getSession());
+        redisCacheHelper.copySessionAttr(paymentRequestDto.getQueryCode(),bpc.request);
         String sessionIdStr= (String) ParamUtil.getSessionAttr(request,"sessionNetsId");
         sessionIdStr = new String(Base64.decodeBase64(sessionIdStr.getBytes(StandardCharsets.UTF_8)),StandardCharsets.UTF_8);
         String tinyKey = null;

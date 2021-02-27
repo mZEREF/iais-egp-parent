@@ -72,7 +72,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -275,11 +277,30 @@ public class InspectionMergeSendNcEmailDelegator {
                         }
                         mapTableTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder1.toString()));
                     }
-                    //mapTemplate.put("ServiceName", applicationViewDto.getServiceType());
                     if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||appPreRecommentdationDto.getRemarks()!=null)){
-                        stringBuilder2.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(appPreRecommentdationDto.getBestPractice())).append(TD).append(StringUtil.viewHtml(appPreRecommentdationDto.getRemarks())).append("</td></tr>");
+                        String[] observations=appPreRecommentdationDto.getRemarks().split("\n");
+                        String[] recommendations=appPreRecommentdationDto.getBestPractice().split("\n");
+                        if(recommendations.length>=observations.length){
+                            for (int i=0;i<recommendations.length;i++){
+                                if(i<observations.length){
+                                    stringBuilder2.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(recommendations[i])).append(TD).append(StringUtil.viewHtml(observations[i])).append("</td></tr>");
+                                }else {
+                                    stringBuilder2.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(recommendations[i])).append(TD).append(StringUtil.viewHtml("")).append("</td></tr>");
+                                }
+                                sn++;
+
+                            }
+                        }else {
+                            for (int i=0;i<observations.length;i++){
+                                if(i<recommendations.length){
+                                    stringBuilder2.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(recommendations[i])).append(TD).append(StringUtil.viewHtml(observations[i])).append("</td></tr>");
+                                }else {
+                                    stringBuilder2.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml("")).append(TD).append(StringUtil.viewHtml(observations[i])).append("</td></tr>");
+                                }
+                                sn++;
+                            }
+                        }
                         mapTableTemplate.put("Observation_Recommendation",StringUtil.viewHtml(stringBuilder2.toString()));
-                        sn++;
                     }
                 }catch (Exception e){
                     log.error(e.getMessage(), e);
@@ -508,17 +529,11 @@ public class InspectionMergeSendNcEmailDelegator {
 
                 for (String s : appPremCorrIdsNoNc) {
                     ApplicationViewDto applicationViewDto1 = applicationViewService.searchByCorrelationIdo(s);
-                    List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNo(applicationViewDto1.getApplicationDto().getApplicationNo());
-                    AppPremisesRoutingHistoryDto appPremisesRoutingHisDto = appPremisesRoutingHistoryDtos.get(0);
-                    String upDt = appPremisesRoutingHistoryDtos.get(0).getUpdatedDt();
-                    for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtos) {
-                        if (appPremisesRoutingHistoryDto.getUpdatedDt() != null && appPremisesRoutingHistoryDto.getRoleId() != null) {
-                            if (appPremisesRoutingHistoryDto.getUpdatedDt().compareTo(upDt) >= 0 && appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_INSPECTIOR)) {
-                                appPremisesRoutingHisDto = appPremisesRoutingHistoryDto;
-                            }
-                            upDt = appPremisesRoutingHistoryDto.getUpdatedDt();
-                        }
-                    }
+                    List<String> roleIds = new ArrayList<>();
+                    roleIds.add(RoleConsts.USER_ROLE_INSPECTIOR);
+                    List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNoAndRoleIds(applicationViewDto1.getApplicationDto().getApplicationNo(),roleIds);
+                    appPremisesRoutingHistoryDtos.sort(Comparator.comparing(AppPremisesRoutingHistoryDto::getUpdatedDt));
+                    AppPremisesRoutingHistoryDto appPremisesRoutingHisDto = appPremisesRoutingHistoryDtos.get(appPremisesRoutingHistoryDtos.size()-1);
 
                     applicationViewDto1.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT);
                     applicationViewService.updateApplicaiton(applicationViewDto1.getApplicationDto());

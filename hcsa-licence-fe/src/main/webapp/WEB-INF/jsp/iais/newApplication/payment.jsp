@@ -89,7 +89,7 @@
                                                     <tr>
                                                         <td class="breakdown">
                                                             <p>&nbsp;&nbsp;
-                                                                <em>Complex Specified Services
+                                                                <em>Complex Special Licensable Services
                                                                     <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()}) </c:if>
                                                                     (1 x ${AppSubmissionDto.appGrpPremisesDtoList.size()} premises)
                                                                 </em>
@@ -157,7 +157,7 @@
                                                 </c:if>
                                                 <tr>
                                                     <td>
-                                                        <p><em>Complex Specified Services <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()})</c:if></em></p>
+                                                        <p><em>Complex Special Licensable Services <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()})</c:if></em></p>
                                                         <c:forEach var="svcName" items="${complexSpecifiedFeeExt.svcNames}">
                                                             <p>- <c:out value="${svcName}"></c:out></p>
                                                         </c:forEach>
@@ -243,7 +243,7 @@
                                                     <c:if test="${simpleSpecifiedFeeExt.svcNames.size()>0 }">
                                                         <tr>
                                                             <td>
-                                                                <p>&nbsp;&nbsp;Simple Specified Services</p>
+                                                                <p>&nbsp;&nbsp;Simple Special Licensable Services</p>
                                                                 <c:forEach var="svcName" items="${simpleSpecifiedFeeExt.svcNames}">
                                                                     <p>&nbsp;&nbsp;- <c:out value="${svcName}"></c:out></p>
                                                                 </c:forEach>
@@ -267,7 +267,7 @@
                                                     <c:if test="${complexSpecifiedFeeExt.svcNames.size()>0 }">
                                                         <tr>
                                                             <td class="breakdown">
-                                                                <p>&nbsp;&nbsp;<em>Complex Specified Services <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()})</c:if></em></p>
+                                                                <p>&nbsp;&nbsp;<em>Complex Special Licensable Services <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()})</c:if></em></p>
                                                                 <c:forEach var="svcName" items="${complexSpecifiedFeeExt.svcNames}">
                                                                     <p>&nbsp;&nbsp;- <c:out value="${svcName}"></c:out></p>
                                                                 </c:forEach>
@@ -325,24 +325,15 @@
         unbindAllTabs();
     });
 
-    $('.proceed').click(function () {
-       /* var flag=false;
-        if($("input[name='payMethod']").size()<=0){
-            flag=true;
-        }else {
-            $("input[name='payMethod']").each(function () {
-
-                if ( $(this).prop("checked")){
-                    flag=true;
-                }
-            });
-        }
-        if(!flag){
-            $('#error_pay').html("The field is mandatory.");
-            return;
-        }*/
+    $('#BACK').click(function () {
         showWaiting();
-        submit('jumpBank',null,null);
+        submit('preview','back',null);
+    });
+
+    $('.proceed').click(function () {
+
+        showWaiting();
+        submit('jumpBank','next',null);
     });
 </script>
 

@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -64,6 +65,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -796,5 +798,19 @@ public final class IaisEGPHelper extends EGPHelper {
         authorization.append("signature=").append("");
         authorization.append("timestamp=").append("System.currentTimeMillis()");
         return authorization.toString();
+    }
+
+    public static void setCheckboxStatus(HttpServletRequest request, String checkboxName, String redisplayName){
+        String[] checked = ParamUtil.getStrings(request, checkboxName);
+        HashMap<String,String> checkedMap = (HashMap<String, String>) ParamUtil.getSessionAttr(request, redisplayName);
+        if (checked != null){
+            if (checkedMap == null){
+                checkedMap = IaisCommonUtils.genNewHashMap();
+            }
+            for (String s : checked){
+                checkedMap.put(MaskUtil.unMaskValue(checkboxName, s), "checked");
+            }
+        }
+        ParamUtil.setSessionAttr(request, redisplayName, checkedMap);
     }
 }

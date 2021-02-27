@@ -294,7 +294,7 @@
               <div class="row dpoDropDownDiv">
                 <div class="form-group form-horizontal formgap">
                   <div class="col-sm-6 col-md-4" style="font-size: 1.6rem;">
-                    Deputy Principal Officer (Optional)
+                    Nominee (Optional)
                   </div>
                   <c:if test="${DeputyPrincipalOfficersMandatory> 0}">
                   <div class="col-sm-5 col-md-8" >
@@ -318,12 +318,12 @@
       </div>
       <div class="deputy-content panel panel-default hidden">
         <div class="panel-heading " id="headingDeputy" role="tab">
-          <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#deputyContent" aria-expanded="true" aria-controls="deputyContent">Deputy Principal Officer (Optional)</a></h4>
+          <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#deputyContent" aria-expanded="true" aria-controls="deputyContent">Nominee (Optional)</a></h4>
         </div>
         <div class="deputy-content panel-collapse collapse <c:if test="${DeputyPrincipalOfficersMandatory> 0}">in</c:if>" id="deputyContent" role="tabpanel" aria-labelledby="headingDeputy">
           <div class="panel-body">
             <div class="panel-main-content">
-              <h2>Deputy Principal Officer</h2>
+              <h2>Nominee</h2>
               <div class="dpo-content">
               </div>
               <c:if test="${DeputyPrincipalOfficersMandatory>0}">
@@ -350,7 +350,7 @@
                         <div class=" form-group form-horizontal formgap">
                           <div class="col-sm-6 control-label formtext col-md-8">
                             <div class="cgo-header" style="font-size: 18px;">
-                              <strong>Deputy Principal Officer <label class="assign-psn-item"><c:if test="${ReloadDeputyPrincipalOfficers.size() > 1}">${status.index+1}</c:if></label></strong>
+                              <strong>Nominee <label class="assign-psn-item"><c:if test="${ReloadDeputyPrincipalOfficers.size() > 1}">${status.index+1}</c:if></label></strong>
                             </div>
                           </div>
                           <div class="col-sm-5 col-md-4 text-right" >
@@ -383,7 +383,7 @@
                       <div class="control control-caption-horizontal <c:if test="${'true' == canEditDpoEdit && '1' == DeputyPoFlag && '-1' != deputy.assignSelect}">hidden</c:if>">
                         <div class=" form-group form-horizontal formgap">
                           <div class="col-sm-6 control-label formtext col-md-4" style="font-size: 1.6rem;">
-                            Assign a Deputy Principal Officer
+                            Assign a Nominee
                             <span class="mandatory">*</span>
                           </div>
                           <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
@@ -525,7 +525,7 @@
               </c:choose>
               <div class="row <c:if test="${!needAddPsn}">hidden</c:if>" id="addPsnDiv-dpo">
                 <div class="col-sm-5">
-                  <span id="addDpoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Deputy Principal Officer</span>
+                  <span id="addDpoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Nominee</span>
                 </div>
                 <div  class="col-sm-5 col-md-5">
                   <span class="dpoErrorMsg" style="color: red;margin-left: -75px;"></span>

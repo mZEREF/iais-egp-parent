@@ -1166,6 +1166,7 @@ public class ServiceMenuDelegator {
             ParamUtil.setSessionAttr(bpc.request, "baseSvcIdList", (Serializable) baseSvcIds);
             ParamUtil.setSessionAttr(bpc.request, "speSvcIdList", (Serializable) speSvcIds);
             ParamUtil.setSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST, (Serializable) appSvcRelatedInfoDtos);
+            log.debug(StringUtil.changeForLog("control switch service Info:"+JsonUtil.parseToJson(appSvcRelatedInfoDtos)));
         }
         ParamUtil.setRequestAttr(bpc.request,"switch",action);
         log.info(StringUtil.changeForLog("control switch end ..."));

@@ -10,8 +10,28 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.CheckCoLocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelTypeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
@@ -26,11 +46,23 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +73,12 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.sql.Time;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static java.util.regex.Pattern.compile;
@@ -438,6 +475,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         List<String> list = IaisCommonUtils.genNewArrayList();//NOSONAR
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        int migrated = appSubmissionDto.getMigrated();
         Set<String> distinctVehicleNo = IaisCommonUtils.genNewHashSet();
         List<String> oldPremiseHciList = IaisCommonUtils.genNewArrayList();
         //new rfi
@@ -479,7 +517,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     List<AppPremisesOperationalUnitDto> operationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
                     List<String> floorUnitList = IaisCommonUtils.genNewArrayList();
                     if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
-                        String onsiteStartHH = appGrpPremisesDtoList.get(i).getOnsiteStartHH();
+                        /*String onsiteStartHH = appGrpPremisesDtoList.get(i).getOnsiteStartHH();
                         String onsiteStartMM = appGrpPremisesDtoList.get(i).getOnsiteStartMM();
                         int startDate = 0;
                         int endDate = 0;
@@ -502,7 +540,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     errorMap.put("onsiteStartMM" + i, "NEW_ERR0015");
                                 }
                             }
-                        }
+                        }*/
 
                         String locateWithOthers = appGrpPremisesDtoList.get(i).getLocateWithOthers();
                         if (StringUtil.isEmpty(locateWithOthers)) {
@@ -510,15 +548,15 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         }
 
                         //set  time
-                        if (!errorMap.containsKey("onsiteStartMM" + i) && !errorMap.containsKey("onsiteEndMM" + i)) {
+                       /* if (!errorMap.containsKey("onsiteStartMM" + i) && !errorMap.containsKey("onsiteEndMM" + i)) {
                             LocalTime startTime = LocalTime.of(Integer.parseInt(onsiteStartHH), Integer.parseInt(onsiteStartMM));
                             appGrpPremisesDtoList.get(i).setWrkTimeFrom(Time.valueOf(startTime));
 
                             LocalTime endTime = LocalTime.of(Integer.parseInt(onsiteEndHH), Integer.parseInt(onsiteEndMM));
                             appGrpPremisesDtoList.get(i).setWrkTimeTo(Time.valueOf(endTime));
-                        }
+                        }*/
 
-                        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
+                        /*List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
                         if (!IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)) {
                             for (int j = 0; j < appPremPhOpenPeriodList.size(); j++) {
                                 AppPremPhOpenPeriodDto appPremPhOpenPeriodDto = appPremPhOpenPeriodList.get(j);
@@ -626,7 +664,61 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     appPremPhOpenPeriodDto.setEndTo(Time.valueOf(endTime));
                                 }
                             }
+                        }*/
+                        //weekly
+                        List<OperationHoursReloadDto> weeklyDtos = appGrpPremisesDto.getWeeklyDtoList();
+                        String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+                        if(IaisCommonUtils.isEmpty(weeklyDtos)){
+                            errorMap.put("onSiteWeekly" + i+0,emptyErrMsg);
+                            errorMap.put("onSiteWeeklyStart" + i+0,emptyErrMsg);
+                            errorMap.put("onSiteWeeklyEnd" + i+0,emptyErrMsg);
+                        }else {
+                            int j = 0;
+                            for(OperationHoursReloadDto weeklyDto:weeklyDtos){
+                                Map<String,String> errNameMap = IaisCommonUtils.genNewHashMap();
+                                errNameMap.put("select","onSiteWeekly");
+                                errNameMap.put("start","onSiteWeeklyStart");
+                                errNameMap.put("end","onSiteWeeklyEnd");
+                                doOperationHoursValidate(weeklyDto,errorMap,errNameMap,i+""+j);
+                                j++;
+                            }
+                            appGrpPremisesDto.setWeeklyDtoList(weeklyDtos);
                         }
+                        //ph
+                        List<OperationHoursReloadDto> phDtos = appGrpPremisesDto.getPhDtoList();
+                        if(!IaisCommonUtils.isEmpty(phDtos)){
+                            int j = 0;
+                            for(OperationHoursReloadDto phDto:phDtos){
+                                Map<String,String> errNameMap = IaisCommonUtils.genNewHashMap();
+                                errNameMap.put("select","onSitePubHoliday");
+                                errNameMap.put("start","onSitePhStart");
+                                errNameMap.put("end","onSitePhEnd");
+                                doOperationHoursValidate(phDto,errorMap,errNameMap,i+""+j);
+                                j++;
+                            }
+                            appGrpPremisesDto.setPhDtoList(phDtos);
+                        }
+                        //weekly
+                        List<AppPremEventPeriodDto> eventDtos = appGrpPremisesDto.getEventDtoList();
+                        if(!IaisCommonUtils.isEmpty(eventDtos)){
+                            int j = 0;
+                            for(AppPremEventPeriodDto eventDto:eventDtos){
+                                String eventName = eventDto.getEventName();
+                                Date startDate  = eventDto.getStartDate();
+                                Date endDate  = eventDto.getEndDate();
+                                if(StringUtil.isEmpty(eventName)){
+                                    errorMap.put("onSiteEvent" + i+j,emptyErrMsg);
+                                }
+                                if(startDate == null){
+                                    errorMap.put("onSiteEventStart" + i+j,emptyErrMsg);
+                                }
+                                if(endDate == null){
+                                    errorMap.put("onSiteEventEnd" + i+j,emptyErrMsg);
+                                }
+                                j++;
+                            }
+                        }
+
                         String ScdfRefNo = appGrpPremisesDtoList.get(i).getScdfRefNo();
                         if(!StringUtil.isEmpty(ScdfRefNo) && ScdfRefNo.length() > 66){
                             String general_err0041=NewApplicationHelper.repLength("Fire Safety & Shelter Bureau Ref. No.","66");
@@ -640,6 +732,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         }
 
                         String hciName = appGrpPremisesDtoList.get(i).getHciName();
+                        //migrated licence need  judge
                         if (StringUtil.isEmpty(hciName)) {
                             errorMap.put("hciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "HCI Name", "field"));
                         } else {
@@ -647,14 +740,20 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 String general_err0041=NewApplicationHelper.repLength("HCI Name","100");
                                 errorMap.put("hciName" + i, general_err0041);
                             }
-                            if (masterCodeDto != null) {
-                                String[] s = masterCodeDto.split(" ");
-                                for (int index = 0; index < s.length; index++) {
-                                    if (hciName.toUpperCase().contains(s[index].toUpperCase())) {
-                                        errorMap.put("hciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", s[index].toUpperCase(), "keywords"));
+                            int hciNameChanged = appGrpPremisesDtoList.get(i).getHciNameChanged();
+                            if(2==hciNameChanged){
+                                //no need validate hci name have keyword (is migrated and hci name never changed)
+                            }else {
+                                if (masterCodeDto != null) {
+                                    String[] s = masterCodeDto.split(" ");
+                                    for (int index = 0; index < s.length; index++) {
+                                        if (hciName.toUpperCase().contains(s[index].toUpperCase())) {
+                                            errorMap.put("hciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", s[index].toUpperCase(), "keywords"));
+                                        }
                                     }
                                 }
                             }
+
                             if (StringUtil.isEmpty(licenseeId)) {
                                 //licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
                                 log.debug(StringUtil.changeForLog("can not found licenseeId"));
@@ -806,7 +905,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                         }
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
-                        String conStartHH = appGrpPremisesDtoList.get(i).getConStartHH();
+                        /*String conStartHH = appGrpPremisesDtoList.get(i).getConStartHH();
                         String conStartMM = appGrpPremisesDtoList.get(i).getConStartMM();
                         int conStartDate = 0;
                         int conEndDate = 0;
@@ -842,8 +941,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             LocalTime endTime = LocalTime.of(Integer.parseInt(conEndHH), Integer.parseInt(conEndMM));
                             appGrpPremisesDtoList.get(i).setWrkTimeTo(Time.valueOf(endTime));
                         }
-
-                        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
+*/
+                        /*List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
                         if (appPremPhOpenPeriodList != null) {
                             for (int j = 0; j < appPremPhOpenPeriodList.size(); j++) {
                                 AppPremPhOpenPeriodDto appPremPhOpenPeriodDto = appPremPhOpenPeriodList.get(j);
@@ -950,7 +1049,62 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     appPremPhOpenPeriodDto.setEndTo(Time.valueOf(endTime));
                                 }
                             }
+                        }*/
+
+                        //weekly
+                        List<OperationHoursReloadDto> weeklyDtos = appGrpPremisesDto.getWeeklyDtoList();
+                        String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+                        if(IaisCommonUtils.isEmpty(weeklyDtos)){
+                            errorMap.put("conveyanceWeekly" + i+0,emptyErrMsg);
+                            errorMap.put("conveyanceWeeklyStart" + i+0,emptyErrMsg);
+                            errorMap.put("conveyanceWeeklyEnd" + i+0,emptyErrMsg);
+                        }else {
+                            int j = 0;
+                            for(OperationHoursReloadDto weeklyDto:weeklyDtos){
+                                Map<String,String> errNameMap = IaisCommonUtils.genNewHashMap();
+                                errNameMap.put("select","conveyanceWeekly");
+                                errNameMap.put("start","conveyanceWeeklyStart");
+                                errNameMap.put("end","conveyanceWeeklyEnd");
+                                doOperationHoursValidate(weeklyDto,errorMap,errNameMap,i+""+j);
+                                j++;
+                            }
+                            appGrpPremisesDto.setWeeklyDtoList(weeklyDtos);
                         }
+                        //ph
+                        List<OperationHoursReloadDto> phDtos = appGrpPremisesDto.getPhDtoList();
+                        if(!IaisCommonUtils.isEmpty(phDtos)){
+                            int j = 0;
+                            for(OperationHoursReloadDto phDto:phDtos){
+                                Map<String,String> errNameMap = IaisCommonUtils.genNewHashMap();
+                                errNameMap.put("select","conveyancePubHoliday");
+                                errNameMap.put("start","conveyancePhStart");
+                                errNameMap.put("end","conveyancePhEnd");
+                                doOperationHoursValidate(phDto,errorMap,errNameMap,i+""+j);
+                                j++;
+                            }
+                            appGrpPremisesDto.setPhDtoList(phDtos);
+                        }
+                        //weekly
+                        List<AppPremEventPeriodDto> eventDtos = appGrpPremisesDto.getEventDtoList();
+                        if(!IaisCommonUtils.isEmpty(eventDtos)){
+                            int j = 0;
+                            for(AppPremEventPeriodDto eventDto:eventDtos){
+                                String eventName = eventDto.getEventName();
+                                Date startDate  = eventDto.getStartDate();
+                                Date endDate  = eventDto.getEndDate();
+                                if(StringUtil.isEmpty(eventName)){
+                                    errorMap.put("conveyanceEvent" + i+j,emptyErrMsg);
+                                }
+                                if(startDate == null){
+                                    errorMap.put("conveyanceEventStart" + i+j,emptyErrMsg);
+                                }
+                                if(endDate == null){
+                                    errorMap.put("conveyanceEventEnd" + i+j,emptyErrMsg);
+                                }
+                                j++;
+                            }
+                        }
+
                         String buildingName = appGrpPremisesDtoList.get(i).getConveyanceBuildingName();
                         if(!StringUtil.isEmpty(buildingName) && buildingName.length() > 66){
                             String general_err0041=NewApplicationHelper.repLength("Building Name","66");
@@ -1084,6 +1238,60 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         }
                     } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premiseType)) {
 
+                        //weekly
+                        List<OperationHoursReloadDto> weeklyDtos = appGrpPremisesDto.getWeeklyDtoList();
+                        String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+                        if(IaisCommonUtils.isEmpty(weeklyDtos)){
+                            errorMap.put("offSiteWeekly" + i+0,emptyErrMsg);
+                            errorMap.put("offSiteWeeklyStart" + i+0,emptyErrMsg);
+                            errorMap.put("offSiteWeeklyEnd" + i+0,emptyErrMsg);
+                        }else {
+                            int j = 0;
+                            for(OperationHoursReloadDto weeklyDto:weeklyDtos){
+                                Map<String,String> errNameMap = IaisCommonUtils.genNewHashMap();
+                                errNameMap.put("select","offSiteWeekly");
+                                errNameMap.put("start","offSiteWeeklyStart");
+                                errNameMap.put("end","offSiteWeeklyEnd");
+                                doOperationHoursValidate(weeklyDto,errorMap,errNameMap,i+""+j);
+                                j++;
+                            }
+                            appGrpPremisesDto.setWeeklyDtoList(weeklyDtos);
+                        }
+                        //ph
+                        List<OperationHoursReloadDto> phDtos = appGrpPremisesDto.getPhDtoList();
+                        if(!IaisCommonUtils.isEmpty(phDtos)){
+                            int j = 0;
+                            for(OperationHoursReloadDto phDto:phDtos){
+                                Map<String,String> errNameMap = IaisCommonUtils.genNewHashMap();
+                                errNameMap.put("select","offSitePubHoliday");
+                                errNameMap.put("start","offSitePhStart");
+                                errNameMap.put("end","offSitePhEnd");
+                                doOperationHoursValidate(phDto,errorMap,errNameMap,i+""+j);
+                                j++;
+                            }
+                            appGrpPremisesDto.setPhDtoList(phDtos);
+                        }
+                        //weekly
+                        List<AppPremEventPeriodDto> eventDtos = appGrpPremisesDto.getEventDtoList();
+                        if(!IaisCommonUtils.isEmpty(eventDtos)){
+                            int j = 0;
+                            for(AppPremEventPeriodDto eventDto:eventDtos){
+                                String eventName = eventDto.getEventName();
+                                Date startDate  = eventDto.getStartDate();
+                                Date endDate  = eventDto.getEndDate();
+                                if(StringUtil.isEmpty(eventName)){
+                                    errorMap.put("offSiteEvent" + i+j,emptyErrMsg);
+                                }
+                                if(startDate == null){
+                                    errorMap.put("offSiteEventStart" + i+j,emptyErrMsg);
+                                }
+                                if(endDate == null){
+                                    errorMap.put("offSiteEventEnd" + i+j,emptyErrMsg);
+                                }
+                                j++;
+                            }
+                        }
+
                         String buildingName = appGrpPremisesDtoList.get(i).getOffSiteBuildingName();
                         if(!StringUtil.isEmpty(buildingName) && buildingName.length() > 66){
                             String general_err0041=NewApplicationHelper.repLength("Building Name","66");
@@ -1180,7 +1388,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         } else {
                             errorMap.put("offSitePostalCode" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Postal Code ", "field"));
                         }
-                        String offSiteStartHH = appGrpPremisesDtoList.get(i).getOffSiteStartHH();
+                        /*String offSiteStartHH = appGrpPremisesDtoList.get(i).getOffSiteStartHH();
                         String offSiteStartMM = appGrpPremisesDtoList.get(i).getOffSiteStartMM();
                         int startDate = 0;
                         int endDate = 0;
@@ -1214,8 +1422,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             LocalTime endTime = LocalTime.of(Integer.parseInt(offSiteEndHH), Integer.parseInt(offSiteEndMM));
                             appGrpPremisesDtoList.get(i).setWrkTimeTo(Time.valueOf(endTime));
                         }
-
-                        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
+*/
+                        /*List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
                         if (appPremPhOpenPeriodList != null) {
 
                             for (int j = 0; j < appPremPhOpenPeriodList.size(); j++) {
@@ -1326,7 +1534,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     appPremPhOpenPeriodDto.setEndTo(Time.valueOf(endTime));
                                 }
                             }
-                        }
+                        }*/
                         //0062204
                         String currentHci = IaisCommonUtils.genPremisesKey(offSitePostalCode, appGrpPremisesDto.getOffSiteBlockNo(), appGrpPremisesDto.getOffSiteFloorNo(), appGrpPremisesDto.getOffSiteUnitNo());
                         String postalCodeErr = errorMap.get("offSitePostalCode" + i);
@@ -1972,6 +2180,44 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     }
                 }
                 opLength++;
+            }
+        }
+
+    }
+
+    private static void doOperationHoursValidate(OperationHoursReloadDto operationHoursReloadDto,Map<String,String>errorMap,Map<String,String> errNameMap,String count){
+        boolean hasErr = false;
+        String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+        boolean selectAllDay = operationHoursReloadDto.isSelectAllDay();
+        String selectVal = operationHoursReloadDto.getSelectVal();
+        String startHH = operationHoursReloadDto.getStartFromHH();
+        String startMM = operationHoursReloadDto.getStartFromMM();
+        String endHH = operationHoursReloadDto.getEndToHH();
+        String endMM = operationHoursReloadDto.getEndToMM();
+        if(StringUtil.isEmpty(selectVal)){
+            errorMap.put(errNameMap.get("select") + count,emptyErrMsg);
+            hasErr = true;
+        }
+        if(selectAllDay){
+            if(!hasErr){
+                operationHoursReloadDto.setStartFrom(Time.valueOf(LocalTime.of(0,0,0)));
+                operationHoursReloadDto.setEndTo(Time.valueOf(LocalTime.of(0,0,0)));
+            }
+        }else{
+            if(StringUtil.isEmpty(startHH) || StringUtil.isEmpty(startMM)){
+                errorMap.put(errNameMap.get("start") + count,emptyErrMsg);
+                hasErr = true;
+            }
+            if(StringUtil.isEmpty(endHH) || StringUtil.isEmpty(endMM)){
+                errorMap.put(errNameMap.get("end") + count,emptyErrMsg);
+                hasErr = true;
+            }
+
+            if(!hasErr){
+                LocalTime startTime = LocalTime.of(Integer.parseInt(startHH), Integer.parseInt(startMM));
+                operationHoursReloadDto.setStartFrom(Time.valueOf(startTime));
+                LocalTime endTime = LocalTime.of(Integer.parseInt(endHH), Integer.parseInt(endMM));
+                operationHoursReloadDto.setEndTo(Time.valueOf(endTime));
             }
         }
 

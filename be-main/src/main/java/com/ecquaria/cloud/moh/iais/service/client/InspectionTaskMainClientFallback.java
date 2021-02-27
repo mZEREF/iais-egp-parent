@@ -108,6 +108,9 @@ public class InspectionTaskMainClientFallback implements InspectionTaskMainClien
 
     @Override
     public FeignResponseEntity<AppPremisesRecommendationDto> getAppPremRecordByIdAndType(String appPremId, String recomType) {
-        return null;
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
     }
 }

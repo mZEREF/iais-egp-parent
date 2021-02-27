@@ -22,6 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ecq.commons.helper.StringHelper;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONObject;
 import org.apache.commons.codec.binary.Base64;
 import sop.config.ConfigUtil;
 import sop.util.DateUtil;
@@ -96,10 +97,12 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String umId= GatewayConfig.eNetsUmId;
 		String keyId=GatewayConfig.eNetsKeyId;
 		String secretKey=GatewayConfig.eNetsSecretKey ;
-		String b2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/payment-web/back.jsp?reqNo="+reqNo;
+		String b2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/egov/back.jsp?reqNo="+reqNo;
 		String sessionId=bpc.getSession().getId();
 		String results;
 		String failUrl;
+		results="?result="+ MaskUtil.maskValue("result",PaymentTransactionEntity.TRANS_STATUS_FAILED)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",reqNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo","TRN-000");
+		failUrl =AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+returnUrl+results;
 		try {
 			String appGrgNo=reqNo.substring(0,reqNo.indexOf('_'));
 			List<PaymentRequestDto> paymentRequestDto1s = PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNoLike(appGrgNo).getEntity();
@@ -163,8 +166,6 @@ public class PaymentNetsProxy extends PaymentProxy {
 			txnRep = mapper.writeValueAsString(soapiTxnQueryReq);
 		} catch (JsonProcessingException e) {
 			log.debug(e.getMessage(),e);
-			results="?result="+ MaskUtil.maskValue("result",PaymentTransactionEntity.TRANS_STATUS_FAILED)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",reqNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo","TRN-000");
-			failUrl =AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+returnUrl+results;
 			try {
 				RedirectUtil.redirect(failUrl, bpc.request, bpc.response);
 			} catch (IOException ex) {
@@ -179,6 +180,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		} catch (Exception e) {
 			log.info(e.getMessage(),e);
 		}
+		ParamUtil.setSessionAttr(bpc.request,"failUrl",failUrl);
 		ParamUtil.setSessionAttr(bpc.request,"txnReq",txnRep);
 		ParamUtil.setSessionAttr(bpc.request,"API_KEY",keyId);
 		ParamUtil.setSessionAttr(bpc.request,"newHMAC",hmac);
@@ -258,11 +260,16 @@ public class PaymentNetsProxy extends PaymentProxy {
 		msg.setMerchantTxnRef(paymentRequestDto.getMerchantTxnRef());
 		msg.setNetsMidIndicator("U");
 		soapiTxnQueryReq.setMsg(msg);
-		String eNetsStatus= "1";
-		try {
-			eNetsStatus = PaymentBaiduriProxyUtil.getPaymentService().sendTxnQueryReqToGW(secretKey,keyId,soapiTxnQueryReq);
-		} catch (Exception e) {
-			log.debug(e.getMessage(),e);
+		JSONObject jsonObject = JSONObject.fromObject(txnRes);
+		Soapi txnResObj = (Soapi) JSONObject.toBean(jsonObject, Soapi.class);
+		String eNetsStatus= txnResObj.getMsg().getNetsTxnStatus();
+		if(!header.equals(generatedHmac)){
+			try {
+				eNetsStatus = PaymentBaiduriProxyUtil.getPaymentService().sendTxnQueryReqToGW(secretKey,keyId,soapiTxnQueryReq);
+			} catch (Exception e) {
+				log.info("eNets EIC failed!!!");
+				log.debug(e.getMessage(),e);
+			}
 		}
 		if("0".equals(eNetsStatus)){
 			status = PaymentTransactionEntity.TRANS_STATUS_SUCCESS;

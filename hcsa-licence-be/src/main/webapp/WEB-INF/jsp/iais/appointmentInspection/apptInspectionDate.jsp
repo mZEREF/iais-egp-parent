@@ -83,37 +83,37 @@
                             <div class="table-gp">
                               <table class="apptApp table">
                                 <thead>
-                                  <tr align="center">
-                                    <th>Application No</th>
-                                    <th>Application Status</th>
-                                    <th>MOH Officer(s)</th>
-                                  </tr>
+                                <tr align="center">
+                                  <th>Application No</th>
+                                  <th>Application Status</th>
+                                  <th>MOH Officer(s)</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                  <c:choose>
-                                    <c:when test="${empty apptInspectionDateDto.applicationInfoShow}">
+                                <c:choose>
+                                  <c:when test="${empty apptInspectionDateDto.applicationInfoShow}">
+                                    <tr>
+                                      <td colspan="7">
+                                        <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                      </td>
+                                    </tr>
+                                  </c:when>
+                                  <c:otherwise>
+                                    <c:forEach var="appInfoShow" items="${apptInspectionDateDto.applicationInfoShow}">
                                       <tr>
-                                        <td colspan="7">
-                                          <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                        <td><c:out value="${appInfoShow.applicationNo}"/></td>
+                                        <td><iais:code code="${appInfoShow.status}"/></td>
+                                        <td>
+                                          <c:if test="${appInfoShow.userDisName != null}">
+                                            <c:forEach var="worker" items="${appInfoShow.userDisName}" varStatus="status">
+                                              <c:out value="${worker}"/><br>
+                                            </c:forEach>
+                                          </c:if>
                                         </td>
                                       </tr>
-                                    </c:when>
-                                    <c:otherwise>
-                                      <c:forEach var="appInfoShow" items="${apptInspectionDateDto.applicationInfoShow}">
-                                        <tr>
-                                          <td><c:out value="${appInfoShow.applicationNo}"/></td>
-                                          <td><iais:code code="${appInfoShow.status}"/></td>
-                                          <td>
-                                            <c:if test="${appInfoShow.userDisName != null}">
-                                              <c:forEach var="worker" items="${appInfoShow.userDisName}" varStatus="status">
-                                                <c:out value="${worker}"/><br>
-                                              </c:forEach>
-                                            </c:if>
-                                          </td>
-                                        </tr>
-                                      </c:forEach>
-                                    </c:otherwise>
-                                  </c:choose>
+                                    </c:forEach>
+                                  </c:otherwise>
+                                </c:choose>
                                 </tbody>
                               </table>
                             </div>
@@ -144,7 +144,7 @@
                               <div id="apptThreeInspDate">
                                 <div class="row" id = "apptDateTitle">
                                   <div class="col-md-4">
-                                    <label style="font-size: 16px">Available Appointment Dates</label>
+                                    <label style="font-size: 16px">Available Appointment Date</label>
                                   </div>
                                 </div>
                               </div>
@@ -164,14 +164,19 @@
                                 <button id="apptSpecInspDate" class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
                                 <button id="disApptSpecInspDate" class="btn btn-primary disabled" style="float:right" type="button">Assign Specific Date</button>
                                 <span style="float:right">&nbsp;</span>
-                                <button id="disApptSysInspDate" class="btn btn-primary disabled" disabled style="float:right" type="button">Allow System to Propose Dates</button>
-                                <button id="apptSysInspDate" class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateConfirm()">Allow System to Propose Dates</button>
+                                <button id="disApptSysInspDate" class="btn btn-primary disabled" disabled style="float:right" type="button">Confirm System-proposed Date</button>
+                                <button id="apptSysInspDate" class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateConfirm()">Confirm System-proposed Date</button>
                               </iais:action>
                             </c:if>
                             <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag && 'APTY007' eq applicationViewDto.applicationDto.applicationType}">
                               <iais:action>
                                 <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
                                 <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
+                              </iais:action>
+                            </c:if>
+                            <c:if test="${'SUCCESS' ne apptInspectionDateDto.actionButtonFlag}">
+                              <iais:action>
+                                <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
                               </iais:action>
                             </c:if>
                             <br><br><br>

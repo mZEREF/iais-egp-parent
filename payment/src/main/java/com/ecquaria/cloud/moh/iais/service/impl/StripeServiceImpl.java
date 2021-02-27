@@ -34,10 +34,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -206,7 +202,7 @@ public class StripeServiceImpl implements StripeService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         ApiResource.RequestMethod method=ApiResource.RequestMethod.POST;
         RequestOptions options=RequestOptions.getDefault();
-        // Accept
+    // Accept
         headers.set("Accept", "application/json");
         // Accept-Charset
         headers.set("Accept-Charset", ApiResource.CHARSET.name());
@@ -299,41 +295,4 @@ public class StripeServiceImpl implements StripeService {
         Session session=ApiResource.GSON.fromJson(response.getBody(), Session.class);
         return session;
     }
-    private static com.stripe.net.HttpHeaders buildHeaders(ApiResource.RequestMethod method, RequestOptions options) throws AuthenticationException {
-        Map<String, List<String>> headerMap = new HashMap<String, List<String>>();
-        // Accept
-        headerMap.put("Accept", Arrays.asList("application/json"));
-        // Accept-Charset
-        headerMap.put("Accept-Charset", Arrays.asList(ApiResource.CHARSET.name()));
-        // Authorization
-        String apiKey = options.getApiKey();
-        if (apiKey == null) {
-            throw new AuthenticationException("No API key provided. Set your API key using `Stripe.apiKey = \"<API-KEY>\"`. You can generate API keys from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", null, null, 0);
-        } else if (apiKey.isEmpty()) {
-            throw new AuthenticationException("Your API key is invalid, as it is an empty string. You can double-check your API key from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", null, null, 0);
-        } else if (StringUtils.containsWhitespace(apiKey)) {
-            throw new AuthenticationException("Your API key is invalid, as it contains whitespace. You can double-check your API key from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", null, null, 0);
-        }
-        headerMap.put("Authorization", Arrays.asList(String.format("Bearer %s", apiKey)));
-        // Stripe-Version
-        if (options.getStripeVersionOverride() != null) {
-            headerMap.put("Stripe-Version", Arrays.asList(options.getStripeVersionOverride()));
-        } else if (options.getStripeVersion() != null) {
-            headerMap.put("Stripe-Version", Arrays.asList(options.getStripeVersion()));
-        } else {
-            throw new IllegalStateException("Either `stripeVersion` or `stripeVersionOverride` value must be set.");
-        }
-        // Stripe-Account
-        if (options.getStripeAccount() != null) {
-            headerMap.put("Stripe-Account", Arrays.asList(options.getStripeAccount()));
-        }
-        // Idempotency-Key
-        if (options.getIdempotencyKey() != null) {
-            headerMap.put("Idempotency-Key", Arrays.asList(options.getIdempotencyKey()));
-        } else if (method == ApiResource.RequestMethod.POST) {
-            headerMap.put("Idempotency-Key", Arrays.asList(UUID.randomUUID().toString()));
-        }
-        return com.stripe.net.HttpHeaders.of(headerMap);
-    }
-
 }

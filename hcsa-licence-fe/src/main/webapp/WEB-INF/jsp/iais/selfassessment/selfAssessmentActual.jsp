@@ -23,18 +23,25 @@
             <input type="hidden" name="tabIndex" value="<iais:mask name="tabIndex" value="${requestScope.tabIndex}"/>">
             <input type="hidden" name="prevTabIndex" value="<iais:mask name="prevTabIndex" value="${requestScope.prevTabIndex}"/>">
             <input type="hidden" name="selfAssessmentCorrId" value="${param.selfAssessmentCorrId}"/>
+            <input type="hidden" name="loadPopupPrint" value="${param.loadPopupPrint}" />
+            <div id="printContent">
             <%@ include file="/WEB-INF/jsp/iais/common/selfassessmentQuestion.jsp" %>
-                <iais:action style="text-align:left;">
-                    <a  id="backLastPageId" ><em class="fa fa-angle-left"> </em> Back</a>
-                </iais:action>
+            </div>
+                <div class="print-hidden-flag">
+                    <iais:action style="text-align:left;">
+                        <a  id="backLastPageId" ><em class="fa fa-angle-left"> </em> Back</a>
+                    </iais:action>
 
-            <td>
-                    <div class="text-right text-center-mobile">
-                        <a class="btn btn-secondary <c:if test="${canEditAnswerFlag eq 'true'}">disabled</c:if>" id="clearButtonId" href="javascript:void(0);">Clear</a>
-                        <a class="btn btn-primary next <c:if test="${canEditAnswerFlag eq 'true'}">disabled</c:if>" id="submitButtonId" href="javascript:void(0);">Submit</a>
-                    </div>
-                </td>
-                <br>
+                    <td>
+                        <div class="text-right text-center-mobile">
+                            <a class="btn btn-secondary <c:if test="${canEditAnswerFlag eq 'true'}">disabled</c:if>" id="clearButtonId" href="javascript:void(0);">Clear</a>
+                            <a class="btn btn-primary next <c:if test="${canEditAnswerFlag eq 'true'}">disabled</c:if>" id="submitButtonId" href="javascript:void(0);">Submit</a>
+                        </div>
+                    </td>
+
+                    <br>
+
+                </div>
         </form>
     </div>
 </div>
@@ -44,26 +51,14 @@
 
 <script>
     function draftAnswer(value, key){
-        /*var action = $('#mainForm').attr("action");*/
-        var tabIndex = $("[name='tabIndex']").val();
         $("[name ="+key+ "]").val(value);
-        /*$.post(
-            action,
-            {
-                tabIndex:tabIndex,
-                [key]:value,
-                crud_action_type: 'draftItem',
-            },
-
-        )
-        async: false*/
     }
 
     function switchNextStep(index){
         $("[name='tabIndex']").val(index);
         $("[name='crud_action_type']").val("switchNextStep");
-        var mainForm = document.getElementById('mainForm');
-        mainForm.submit();;
+        let mainForm = document.getElementById('mainForm');
+        mainForm.submit();
     }
 
     function doSubmit(){
@@ -71,7 +66,7 @@
     }
 
     clearButtonId.onclick = (function () {
-        var tabIndex = $("[name='tabIndex']").val();
+        let tabIndex = $("[name='tabIndex']").val();
         /*$("input[type='radio']").removeAttr('checked');*/
         //clear answer with current tab
         SOP.Crud.cfxSubmit("mainForm", "clearAnswer", tabIndex);
@@ -79,6 +74,19 @@
 
     submitButtonId.onclick = (function () {
         SOP.Crud.cfxSubmit("mainForm", "draftItem");
+    });
+
+    $(document).ready(function () {
+        let val = $("input[name='loadPopupPrint']").val();
+        if (val == null || val == ''){
+            val = getQueryVariable('loadPopupPrint');
+            $("input[name='loadPopupPrint']").val(val);
+        }
+
+        if(val != null && 'Y' == val){
+            $('.print-hidden-flag').addClass("hidden")
+            printpage('printContent');
+        }
     });
 
 </script>

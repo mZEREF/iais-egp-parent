@@ -102,9 +102,9 @@
                 <div class="modal fade" id="deleteModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            </div>
+<%--                            <div class="modal-header">--%>
+<%--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--                            </div>--%>
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-md-12"><span style="font-size: 2rem">This account has been used for log in before and hence is not eligible for deletion.</span></div>
@@ -123,11 +123,11 @@
                      style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                        aria-hidden="true">&times;</span></button>
-                                <div class="modal-title" id="gridSystemModalLabel" style="font-size: 2rem;">Confirmation Box</div>
-                            </div>
+<%--                            <div class="modal-header">--%>
+<%--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span--%>
+<%--                                        aria-hidden="true">&times;</span></button>--%>
+<%--                                <div class="modal-title" id="gridSystemModalLabel" style="font-size: 2rem;">Confirmation Box</div>--%>
+<%--                            </div>--%>
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-md-12"><span style="font-size: 2rem">Do you confirm the modification ?</span>

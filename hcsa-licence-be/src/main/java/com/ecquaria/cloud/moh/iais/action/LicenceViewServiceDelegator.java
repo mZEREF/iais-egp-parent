@@ -113,7 +113,6 @@ public class LicenceViewServiceDelegator {
 
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
-
     @Value("${moh.halp.prs.enable}")
     private String prsFlag;
     /**
@@ -1292,7 +1291,7 @@ public class LicenceViewServiceDelegator {
                 appSvcCgoDto.setSpeciality("");
                 appSvcCgoDto.setOfficeTelNo("");
                 appSvcCgoDto.setMobileNo("");
-                appSvcCgoDto.setPreferredMode("");
+                appSvcCgoDto.setDescription("");
                 appSvcCgoDto.setName("");
                 appSvcCgoDto.setEmailAddr("");
                 appSvcCgoDto.setIdType("");
@@ -1423,7 +1422,7 @@ public class LicenceViewServiceDelegator {
             appSvcPrincipalOfficersDtoList = new ArrayList<>(olAppSvcPrincipalOfficersDtoList.size());
             for (int i = 0; i < olAppSvcPrincipalOfficersDtoList.size(); i++) {
                 AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
-                appSvcPrincipalOfficersDto.setPreferredMode("");
+                appSvcPrincipalOfficersDto.setDescription("");
                 appSvcPrincipalOfficersDto.setOfficeTelNo("");
                 appSvcPrincipalOfficersDto.setName("");
                 appSvcPrincipalOfficersDto.setSalutation("");
@@ -1440,7 +1439,8 @@ public class LicenceViewServiceDelegator {
             if (size < oldSize) {
                 for(int i = 0;i < oldSize-size;i++){
                     AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
-                    appSvcPrincipalOfficersDto.setPreferredMode("");
+
+                    appSvcPrincipalOfficersDto.setDescription("");
                     appSvcPrincipalOfficersDto.setOfficeTelNo("");
                     appSvcPrincipalOfficersDto.setName("");
                     appSvcPrincipalOfficersDto.setSalutation("");
@@ -1453,7 +1453,8 @@ public class LicenceViewServiceDelegator {
             }else  if(oldSize<size){
                 for(int i=0;i<size-oldSize;i++){
                     AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
-                    appSvcPrincipalOfficersDto.setPreferredMode("");
+
+                    appSvcPrincipalOfficersDto.setDescription("");
                     appSvcPrincipalOfficersDto.setOfficeTelNo("");
                     appSvcPrincipalOfficersDto.setName("");
                     appSvcPrincipalOfficersDto.setSalutation("");
@@ -1725,7 +1726,7 @@ public class LicenceViewServiceDelegator {
             appSvcCgoDto.setProfRegNo("");
             appSvcCgoDto.setOfficeTelNo("");
             appSvcCgoDto.setMobileNo("");
-            appSvcCgoDto.setPreferredMode("");
+            appSvcCgoDto.setDescription("");
             appSvcCgoDto.setName("");
             appSvcCgoDto.setEmailAddr("");
             appSvcCgoDto.setIdType("");

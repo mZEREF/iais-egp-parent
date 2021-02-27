@@ -43,7 +43,7 @@
             <li><span><iais:service value="${baseItem}"></iais:service></span> (Base Service)</li>
           </c:forEach>
           <c:forEach var="specifiedItem" items="${speSvcIdList}" varStatus="status">
-            <li><span><iais:service value="${specifiedItem}"></iais:service></span> (Specified Service)</li>
+            <li><span><iais:service value="${specifiedItem}"></iais:service></span> (Special Licensable Service)</li>
           </c:forEach>
         </ul>
         <div class="gray-content-box">

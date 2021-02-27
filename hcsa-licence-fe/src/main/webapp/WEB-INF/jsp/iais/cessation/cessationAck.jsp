@@ -17,6 +17,7 @@
             <div class="row">
                 <div class="col-lg-12 col-xs-12 cesform-box">
                         <p><iais:message key="CESS_ACK001"/></p>
+                    <div class="table-responsive">
                         <table class="table">
                             <thead>
                             <tr>
@@ -55,6 +56,7 @@
                             </c:forEach>
                             </tbody>
                         </table>
+                    </div>
                 </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-6">

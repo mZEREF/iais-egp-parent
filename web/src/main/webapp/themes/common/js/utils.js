@@ -155,6 +155,26 @@ function initMemoryPage(paginationDiv, checkType, pageNo) {
     });
 }
 
+function getQueryVariable(variable)
+{
+    let query = window.location.search.substring(1);
+    let vars = query.split("&");
+    for (let i = 0; i< vars.length; i++) {
+        let pair = vars[i].split("=");
+        if(pair[0] == variable) return pair[1];
+    }
+
+    return null;
+}
+
+function printpage(id) {
+    let newStr = document.getElementById(id).innerHTML;
+    let oldStr = document.body.innerHTML;
+    document.body.innerHTML = newStr;
+    window.print();
+    document.body.innerHTML = oldStr;
+}
+
 function changeMemoryPage(paginationDiv, checkType, pageNo) {
     var ids = "NA";
     if (checkType == 1) {

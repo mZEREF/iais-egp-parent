@@ -137,8 +137,8 @@
                 JOIN lic_premises lp on lp.LICENCE_ID  = lic.ID
                 JOIN premises p on p.ID  = lp.PREMISES_ID
                 JOIN (
-                	select count(*) as premCount,lp2.LICENCE_ID from hcsal.dbo.lic_premises lp2
-                	JOIN hcsal.dbo.premises p2 on lp2.PREMISES_ID = p2.ID GROUP  by lp2.LICENCE_ID
+                	select count(*) as premCount,lp2.LICENCE_ID from lic_premises lp2
+                	JOIN premises p2 on lp2.PREMISES_ID = p2.ID GROUP  by lp2.LICENCE_ID
                 )p3 on lic.id = p3.licence_id
             WHERE 1=1
             <#if id??> AND CHARINDEX(:id, lic.id) >0</#if>
@@ -213,9 +213,9 @@
     <sql key = "appPersonnelQuery" remarks = "Query Application Data by condition">
         <![CDATA[
             SELECT DISTINCT T3.ID
-                FROM hcsal.dbo.key_personnel T1
-                join hcsal.dbo.lic_key_personnel T2 on T1.ID = T2.PERSON_ID
-                join hcsal.dbo.licence T3 on t2.LICENCE_ID = t3.ID
+                FROM key_personnel T1
+                join lic_key_personnel T2 on T1.ID = T2.PERSON_ID
+                join licence T3 on t2.LICENCE_ID = t3.ID
                 AND t3.STATUS = 'LICEST001'
 			    <#if licenseeId??>AND t3.LICENSEE_ID =:licenseeId</#if>
 			    <#if idNo??> AND T1.ID_NO =:idNo</#if>

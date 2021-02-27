@@ -25,6 +25,7 @@
       <input type="hidden" id="actionValue" name="actionValue" value="">
       <input type="hidden" id="maxFileSize" name="maxFileSize" value="${inspSetMaskValueDto.sqlFileSize}">
       <input type="hidden" id="fileId" name="fileId" value="">
+      <input type="hidden" id="remarksError" name="remarksError" value="">
       <div class="main-content">
         <div class="row">
           <div class="col-lg-12 col-xs-12">
@@ -38,12 +39,14 @@
                         <tr align="center">
                           <th>NC Clause</th>
                           <th>Checklist Question</th>
+                          <th>Remarks</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
                           <td><c:out value="${inspecUserRecUploadDto.checkClause}"/></td>
                           <td><c:out value="${inspecUserRecUploadDto.checkQuestion}"/></td>
+                          <td><c:out value="${inspecUserRecUploadDto.appPremisesPreInspectionNcItemDto.beRemarks}"/></td>
                         </tr>
                         </tbody>
                       </table>
@@ -92,13 +95,14 @@
                     </c:if>
                     <div class="row">
                       <div class="col-md-4">
-                        <h3 style="margin-bottom: 0px;border-bottom: 0px solid;">Remarks</h3>
+                        <h3 style="margin-bottom: 0px;border-bottom: 0px solid;">Remarks<span style="color: red"> *</span></h3>
                       </div>
                     </div>
                     <iais:row>
                       <div class="col-sm-7 col-md-6 col-xs-10" style="">
                         <textarea id="uploadRemarks" name="uploadRemarks" cols="70" rows="7" maxlength="300"><c:out value="${inspecUserRecUploadDto.uploadRemarks}"></c:out></textarea>
                         <br><span class="error-msg" name="iaisErrorMsg" id="error_remarks"></span>
+                        <span class="error-msg"><c:out value="${inspecUserRecUploadDto.remarksMsg}"></c:out></span>
                       </div>
                     </iais:row>
                     <iais:action >
@@ -138,6 +142,8 @@
 
     function doUserRecUploadConfirmDel(fileId) {
         showWaiting();
+        let remarksError = $("#error_remarks").text();
+        $("#remarksError").val(remarksError);
         $("#actionValue").val('delete');
         $("#fileId").val(fileId);
         userRecUploadConfirmSubmit('delete');
@@ -156,6 +162,8 @@
             $('#error_recFile').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
             dismissWaiting();
         } else {
+            let remarksError = $("#error_remarks").text();
+            $("#remarksError").val(remarksError);
             $("#actionValue").val('add');
             userRecUploadConfirmSubmit('add');
         }

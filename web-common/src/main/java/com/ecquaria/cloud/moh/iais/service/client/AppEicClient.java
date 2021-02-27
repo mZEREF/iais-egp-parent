@@ -31,5 +31,5 @@ public interface AppEicClient {
     FeignResponseEntity<EicRequestTrackingDto> getPendingRecordByReferenceNumber(@PathVariable("referenceNumber") String referenceNumber);
 
     @PutMapping(path = "/eicTracking/eic-request", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Map<String, String>> saveEicTrack(@RequestBody EicRequestTrackingDto eicRequestTrackingDto);
+    FeignResponseEntity<EicRequestTrackingDto> saveEicTrack(@RequestBody EicRequestTrackingDto eicRequestTrackingDto);
 }

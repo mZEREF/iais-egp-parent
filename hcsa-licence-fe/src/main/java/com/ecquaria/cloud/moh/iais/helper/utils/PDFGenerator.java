@@ -42,7 +42,6 @@ public class PDFGenerator {
 		ITextFontResolver resolver = renderer.getFontResolver();
 		resolver.addFont(fontPath, encoding, embedded);
 	}
-
 	public void generate(OutputStream os, String ftlName, Map<String, String> params) throws IOException, TemplateException,DocumentException {
 		if (StringUtils.isEmpty(ftlName) || IaisCommonUtils.isEmpty(params)){
 			log.error("params is empty !!!");
@@ -71,7 +70,6 @@ public class PDFGenerator {
 			IaisCommonUtils.deleteTempFile(optHtmlFile);
 		}
 	}
-
 	public byte[] convertHtmlToPDF(String ftlName, Map<String, String> params) throws IOException, TemplateException{
 		byte[] bytes = null;
 		if (StringUtils.isEmpty(ftlName) || IaisCommonUtils.isEmpty(params)){

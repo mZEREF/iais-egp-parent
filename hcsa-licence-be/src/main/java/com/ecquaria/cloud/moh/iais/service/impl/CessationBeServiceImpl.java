@@ -355,6 +355,8 @@ public class CessationBeServiceImpl implements CessationBeService {
                 if (patNeedTrans) {
                     String patTransType = appCessMiscDto.getPatTransType();
                     String patTransTo = appCessMiscDto.getPatTransTo();
+                    String mobileNo = appCessMiscDto.getMobileNo();
+                    String emailAddress = appCessMiscDto.getEmailAddress();
 
                     appCessHciDto.setPatientSelect(patTransType);
                     if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
@@ -365,10 +367,13 @@ public class CessationBeServiceImpl implements CessationBeService {
                     }
                     if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
                         appCessHciDto.setPatOthers(patTransTo);
+                        appCessHciDto.setMobileNo(mobileNo);
+                        appCessHciDto.setEmailAddress(emailAddress);
                     }
                 } else {
                     String remarks = appCessMiscDto.getPatNoReason();
                     appCessHciDto.setPatNoRemarks(remarks);
+                    appCessHciDto.setPatNoConfirm("no");
                 }
             }
         }
@@ -524,25 +529,33 @@ public class CessationBeServiceImpl implements CessationBeService {
         String patRegNo = appCessationDto.getPatRegNo();
         String patOthers = appCessationDto.getPatOthers();
         String patNoRemarks = appCessationDto.getPatNoRemarks();
+        String emailAddress = appCessationDto.getEmailAddress();
+        String mobileNo = appCessationDto.getMobileNo();
         for (String appId : appIds) {
             AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
             appCessMiscDto.setAppealType(ApplicationConsts.CESSATION_TYPE_APPLICATION);
             appCessMiscDto.setEffectiveDate(effectiveDate);
             appCessMiscDto.setReason(reason);
-            appCessMiscDto.setOtherReason(otherReason);
             appCessMiscDto.setPatNeedTrans(patNeedTrans);
-            appCessMiscDto.setPatNoReason(patNoRemarks);
             appCessMiscDto.setPatTransType(patientSelect);
             appCessMiscDto.setAppId(appId);
             appCessMiscDto.setAuditTrailDto(currentAuditTrailDto);
-            if (!StringUtil.isEmpty(patHciName)) {
-                appCessMiscDto.setPatTransTo(patHciName);
+            //reason
+            if(ApplicationConsts.CESSATION_REASON_OTHER.equals(reason)){
+                appCessMiscDto.setOtherReason(otherReason);
             }
-            if (!StringUtil.isEmpty(patRegNo)) {
-                appCessMiscDto.setPatTransTo(patRegNo);
-            }
-            if (!StringUtil.isEmpty(patOthers)) {
-                appCessMiscDto.setPatTransTo(patOthers);
+            if(patNeedTrans){
+                if(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect)) {
+                    appCessMiscDto.setPatTransTo(patHciName);
+                }else if(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect)){
+                    appCessMiscDto.setPatTransTo(patRegNo);
+                }else {
+                    appCessMiscDto.setPatTransTo(patOthers);
+                    appCessMiscDto.setMobileNo(mobileNo);
+                    appCessMiscDto.setEmailAddress(emailAddress);
+                }
+            }else {
+                appCessMiscDto.setPatNoReason(patNoRemarks);
             }
             appCessMiscDtos.add(appCessMiscDto);
         }

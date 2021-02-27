@@ -396,6 +396,9 @@ public interface ApplicationClient {
     @GetMapping(value = "/application-number-grp-premiese/{appPremcorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppInsRepDto> appGrpPremises(@PathVariable("appPremcorrId") String appPremcorrId);
 
+    @GetMapping(value = "/iais-application-group-be/app-grp-pmtStatus/{pmtStatus}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity< List<ApplicationGroupDto>> getApplicationGroupByPmtStatus(@PathVariable("pmtStatus") String pmtStatus);
+
     @PostMapping(value="/halp-prs/prs-api/getProfessionalDetail", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ProfessionalResponseDto>> getProfessionalDetail(@RequestBody ProfessionalParameterDto professionalParameterDto);
 

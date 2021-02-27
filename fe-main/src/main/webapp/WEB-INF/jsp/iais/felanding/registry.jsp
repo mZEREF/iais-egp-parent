@@ -31,7 +31,7 @@
         <div class="row">
           <div class="col-xs-12">
             <div class="prelogin-title">
-              <h1>Integrated Application and <br class="hidden-xs"> Inspection System (IAIS)</h1>
+              <h1>Healthcare Application and <br class="hidden-xs"> Licensing Portal (HALP)</h1>
             </div>
           </div>
         </div>
@@ -86,7 +86,7 @@
                             </div>
                             <div class="updatePremise hidden">
                               <div class="form-check-gp">
-                                <p class="form-check-title">If you (or your organisation) have a UEN number, we recommend that you register for a CorpPass to access all the digital services available on IAIS.</p>
+                                <p class="form-check-title">If you (or your organisation) have a UEN number, we recommend that you register for a CorpPass to access all the digital services available on HALP.</p>
 
                                 <a class="btn btn-primary corpPass"  href="https://www.corppass.gov.sg/cpauth/login/homepage?TAM_OP=login" style="background: #1F92FF; color: white"  >Register for CorpPass</a>
 

@@ -273,27 +273,29 @@ public class InsReportDelegator {
         } else {
             appPremisesRecommendationDto.setRemarks(remarks);
             appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
-            appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.APPROVED);
             appPremisesRecommendationDto.setRecomInDate(licDate);
-            if (OTHERS.equals(periods) && !StringUtil.isEmpty(chrono) && !StringUtil.isEmpty(number)) {
-                appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-                Integer num = Integer.valueOf(number);
-                if(AppointmentConstants.RECURRENCE_YEAR.equals(chrono)){
-                    chrono = AppointmentConstants.RECURRENCE_MONTH ;
-                    num = Integer.valueOf(Integer.parseInt(number) * 12);
+            if(InspectionReportConstants.APPROVED.equals(recommendation)||InspectionReportConstants.APPROVEDLTC.equals(recommendation)){
+                appPremisesRecommendationDto.setRecomDecision(recommendation);
+                if (OTHERS.equals(periods) && !StringUtil.isEmpty(chrono) && !StringUtil.isEmpty(number)) {
+                    appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+                    Integer num = Integer.valueOf(number);
+                    if(AppointmentConstants.RECURRENCE_YEAR.equals(chrono)){
+                        chrono = AppointmentConstants.RECURRENCE_MONTH ;
+                        num = Integer.valueOf(Integer.parseInt(number) * 12);
+                    }
+                    appPremisesRecommendationDto.setChronoUnit(chrono);
+                    appPremisesRecommendationDto.setRecomInNumber(num);
+                    appPremisesRecommendationDto.setRecommendation(recommendation);
+                } else if (!StringUtil.isEmpty(periods) && !OTHERS.equals(periods) && InspectionReportConstants.APPROVEDLTC.equals(recommendation) || InspectionReportConstants.APPROVED.equals(recommendation)) {
+                    String[] splitPeriods = periods.split("\\s+");
+                    String count = splitPeriods[0];
+                    String dateType = splitPeriods[1];
+                    appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+                    appPremisesRecommendationDto.setChronoUnit(dateType);
+                    appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(count));
+                    appPremisesRecommendationDto.setRecommendation(recommendation);
                 }
-                appPremisesRecommendationDto.setChronoUnit(chrono);
-                appPremisesRecommendationDto.setRecomInNumber(num);
-                appPremisesRecommendationDto.setRecommendation(recommendation);
-            } else if (!StringUtil.isEmpty(periods) && !OTHERS.equals(periods) && InspectionReportConstants.APPROVEDLTC.equals(recommendation) || InspectionReportConstants.APPROVED.equals(recommendation)) {
-                String[] splitPeriods = periods.split("\\s+");
-                String count = splitPeriods[0];
-                String dateType = splitPeriods[1];
-                appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-                appPremisesRecommendationDto.setChronoUnit(dateType);
-                appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(count));
-                appPremisesRecommendationDto.setRecommendation(recommendation);
-            } else if (InspectionReportConstants.REJECTED.equals(recommendation)) {
+            }else {
                 appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
                 appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.REJECTED);
                 appPremisesRecommendationDto.setRecomInNumber(0);

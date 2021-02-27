@@ -133,6 +133,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 															.setProductData(
 																	SessionCreateParams.LineItem.PriceData.ProductData.builder()
 																			.setName(AppConsts.MOH_SYSTEM_NAME)
+																			.setDescription(reqNo)
 																			.build())
 															.build())
 											.build())

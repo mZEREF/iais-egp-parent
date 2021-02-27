@@ -70,7 +70,7 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
                                 }
                             }
                         }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getRemark())){
-                            errMap.put(temp.getSectionNameShow()+temp.getItemId()+"com",MessageUtil.replaceMessage(ERR0010,"Remarks","field"));
+                            errMap.put(temp.getSectionNameShow()+temp.getItemId()+"comRemark",MessageUtil.replaceMessage(ERR0010,"Remarks","field"));
                             if(isError){
                                 isError = false;
                             }
@@ -100,7 +100,7 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
                             }
                         }
                     }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getRemark())){
-                        errMap.put(fDto.getSubName()+temp.getSectionNameShow()+temp.getItemId(),MessageUtil.replaceMessage(ERR0010,"Remarks","field"));
+                        errMap.put(fDto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"Remark",MessageUtil.replaceMessage(ERR0010,"Remarks","field"));
                         if(isError){
                             isError = false;
                         }
@@ -127,7 +127,7 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
                             }
 
                         } else if(!"Yes".equalsIgnoreCase(temp.getAdAnswer()) && StringUtil.isEmpty(temp.getRemark())){
-                            errMap.put(temp.getId()+"adhoc",MessageUtil.replaceMessage(ERR0010,"Remarks","field"));
+                            errMap.put(temp.getId()+"adhocRemark",MessageUtil.replaceMessage(ERR0010,"Remarks","field"));
                             if(isError){
                                 isError = false;
                             }

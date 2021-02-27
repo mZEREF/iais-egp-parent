@@ -35,7 +35,7 @@ import java.util.HashMap;
 @Service
 @Slf4j
 public class SystemParameterServiceImpl implements SystemParameterService {
-    private final static  HashMap<String, Long> propertiesBitIndex =  new HashMap<>();;
+    private final static  HashMap<String, Long> propertiesBitIndex =  new HashMap<>();
     private final static String SYSTEM_PARAM_EDIT_OFFSET = "cache_system_param_edit_offset";
 
     @Autowired

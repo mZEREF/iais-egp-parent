@@ -87,7 +87,7 @@
                                                         <p>Principal Officer</p>
                                                     </c:when>
                                                     <c:when test="${'DPO'==psnType}">
-                                                        <p>Deputy Principal Officer</p>
+                                                        <p>Nominee</p>
                                                     </c:when>
                                                     <c:when test="${'MAP'==psnType}">
                                                         <p>MedAlert</p>
@@ -106,7 +106,7 @@
                                 </div>
                                 <br/>
                                 <div class="form-check-gp" id="editSelect" hidden>
-                                    <p class="form-check-title">What would you like to edit?</p>
+                                    <p class="form-check-title">What would you like to edit?<span style="color: red">*</span></p>
                                     <div class="form-check progress-step-check" style="width: 33%">
                                         <input class="form-check-input" id="checkitem1"
                                                <c:if test="${editSelectResult=='update'}">checked</c:if> type="radio"
@@ -126,7 +126,7 @@
                                 <br/><br/>
                                 <div id="show" class="form-horizontal">
                                     <iais:row>
-                                        <iais:field value="Name " width="12"/>
+                                        <iais:field value="Name " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
                                             <iais:select name="salutationShow"
                                                          codeCategory="CATE_ID_SALUTATION"
@@ -141,7 +141,7 @@
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="ID No. " width="12"/>
+                                        <iais:field value="ID No. " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
                                             <iais:select name="idTypeShow"
                                                          value="${personnelEditDto.idType}"
@@ -196,7 +196,7 @@
                                 </div>
                                 <div id="update" class="form-horizontal" hidden>
                                     <iais:row>
-                                        <iais:field value="Name " width="12"/>
+                                        <iais:field value="Name " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
                                             <iais:select name="salutation"
                                                          codeCategory="CATE_ID_SALUTATION"
@@ -212,7 +212,7 @@
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="ID No. " width="12"/>
+                                        <iais:field value="ID No. " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
                                             <iais:select name="idType"
                                                          value="${personnelEditDto.idType}"
@@ -274,7 +274,7 @@
                                 <br/><br/><br/><br/>
                                 <div id="newPerson" hidden class="form-horizontal">
                                     <iais:row>
-                                        <iais:field value="Name " width="12"/>
+                                        <iais:field value="Name " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
                                             <iais:select name="salutation1"
                                                          codeCategory="CATE_ID_SALUTATION"
@@ -288,7 +288,7 @@
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="ID No. " width="12"/>
+                                        <iais:field value="ID No. " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
                                             <iais:select name="idType1"
                                                          value="${newPerson.idType}"
@@ -336,7 +336,7 @@
                                 </div>
                                 <div id="newPersonExist" hidden class="form-horizontal">
                                     <iais:row>
-                                        <iais:field value="Name " width="12"/>
+                                        <iais:field value="Name " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
                                             <iais:select disabled="true" name="salutation2"
                                                          codeCategory="CATE_ID_SALUTATION"
@@ -350,7 +350,7 @@
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="ID No. " width="12"/>
+                                        <iais:field value="ID No. " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
                                             <iais:select disabled="true" name="idType2"
                                                          value="${newPerson.idType}"

@@ -85,9 +85,19 @@
             </div>
         </div>
 </form>
+<iais:confirm msg="GENERAL_ERR0043"  needCancel="false" callBack="tagConfirmCallbacksupportReport()" popupOrder="supportReport" ></iais:confirm>
 <script>
     $('#proceed').click(function () {
         $('[name="switch_value"]').val('doInstructions');
         $('#InstructionsForm').submit();
     });
+    function tagConfirmCallbacksupportReport(){
+        $('#supportReport').modal('hide');
+    }
+    $(document).ready(function () {
+        if('${isSingle}' == 'N'){
+            $('#supportReport').modal('show');
+        }
+    });
+
 </script>

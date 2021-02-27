@@ -15,6 +15,7 @@
 <form method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type_form_value" value="">
+    <input type="hidden" name="crud_action_additional" value=""/>
     <div class="dashboard" id="comDashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
     <div class="container">
         <div class="navigation-gp">
@@ -111,9 +112,15 @@
     $(document).ready(function () {
         $('#comDashboard div.navigation-gp').css('margin-left','6.5%');
     });
+
+    $('#BACK').click(function () {
+        showWaiting();
+        doSubmitForm('prePremisesEdit','','back');
+    });
+
     $('#proceed').click(function () {
         /*var flag=false;
-        if($("input[name='payMethod']").size()<=0){
+        if($("input[name='payMethod']").length<=0){
             flag=true;
         }else {
             $("input[name='payMethod']").each(function () {
@@ -126,7 +133,7 @@
             $('#error_pay').html("The field is mandatory.");
             return;
         }*/
-        doSubmitForm('jumpBank','', '');
+        doSubmitForm('jumpBank','', 'next');
     });
 
 </script>

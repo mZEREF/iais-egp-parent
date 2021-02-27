@@ -29,40 +29,42 @@
         </div>
     </div>
 </c:if>
+<c:if test="${applicationDto.applicationType == 'APTY008'}">
+    <%@include file="cessationViewApp.jsp" %>
+</c:if>
 <c:if test="${applicationDto.applicationType != 'APTY008'}">
     <%@ include file="./inboxView/dashboard.jsp" %>
 </c:if>
-<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <input type="hidden" name="crud_action_type_tab" value="">
-    <div class="main-content">
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="tab-gp steps-tab">
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="previewTab" role="tabpanel">
-                                <div class="preview-gp">
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div class="panel-group" id="accordion" role="tablist"
-                                                 aria-multiselectable="true" style="margin-top: 40px" >
-                                                <c:if test="${applicationDto.applicationType == 'APTY008'}">
-                                                    <%@include file="cessationViewApp.jsp" %>
-                                                </c:if>
-                                                <c:if test="${applicationDto.applicationType != 'APTY008'}">
-                                                    <%@include file="inboxView/inboxPremise.jsp" %>
-                                                    <%@include file="inboxView/inboxPrimary.jsp" %>
-                                                    <%@include file="inboxView/viewForm.jsp" %>
-                                                </c:if>
+<c:if test="${applicationDto.applicationType != 'APTY008'}">
+    <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+        <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+        <input type="hidden" name="crud_action_type_tab" value="">
+        <div class="main-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="tab-gp steps-tab">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="previewTab" role="tabpanel">
+                                    <div class="preview-gp">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="panel-group" id="accordion" role="tablist"
+                                                     aria-multiselectable="true" style="margin-top: 40px" >
+                                                    <c:if test="${applicationDto.applicationType != 'APTY008'}">
+                                                        <%@include file="inboxView/inboxPremise.jsp" %>
+                                                        <%@include file="inboxView/inboxPrimary.jsp" %>
+                                                        <%@include file="inboxView/viewForm.jsp" %>
+                                                    </c:if>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="container">
-                                            <div class="col-xs-12 col-md-6 text-left">
-                                                <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em
-                                                        class="fa fa-angle-left"></em> Back</a>
+                                        <div class="row">
+                                            <div class="container">
+                                                <div class="col-xs-12 col-md-6 text-left">
+                                                    <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em
+                                                            class="fa fa-angle-left"></em> Back</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -73,5 +75,6 @@
                 </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
+</c:if>
+

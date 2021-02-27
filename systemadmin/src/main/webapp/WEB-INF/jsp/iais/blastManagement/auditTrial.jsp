@@ -120,6 +120,7 @@
         </div>
       <input hidden id="editBlast" name="editBlast" value="${editBlast}">
       <input hidden id="mode" name="mode" value="${mode}">
+      <input hidden id="msgId" name="msgId" value="${msgId}">
     </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>

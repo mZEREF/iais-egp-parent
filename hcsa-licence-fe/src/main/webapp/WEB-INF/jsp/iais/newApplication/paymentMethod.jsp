@@ -60,6 +60,9 @@
 <%--        </c:otherwise>--%>
 <%--    </c:choose>--%>
     <div class="col-xs-12 col-sm-6">
+        <c:if test="${('APTY002' == AppSubmissionDto.appType || 'APTY005' == AppSubmissionDto.appType || 'APTY004' == AppSubmissionDto.appType ) && requestInformationConfig == null}">
+            <a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a>
+        </c:if>
     </div>
     <div class="col-xs-12 col-sm-6">
         <p class="text-right text-center-mobile"><iais:input type="button" id="proceed" cssClass="proceed btn btn-primary" value="Proceed"></iais:input></p>

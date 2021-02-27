@@ -19,8 +19,10 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
+import com.ecquaria.cloudfeign.FeignException;
 import com.ncs.secureconnect.sim.common.LoginInfo;
 import com.ncs.secureconnect.sim.lite.SIMUtil4Corpass;
+import ecq.commons.exception.BaseException;
 import lombok.extern.slf4j.Slf4j;
 import ncs.secureconnect.sim.entities.Constants;
 import ncs.secureconnect.sim.entities.corpass.UserInfoToken;
@@ -180,7 +182,7 @@ public class FECorppassLandingDelegator {
      * @param bpc
      * @throws
      */
-    public void loginUser(BaseProcessClass bpc){
+    public void loginUser(BaseProcessClass bpc) throws FeignException, BaseException {
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO);
         String uen = userSession.getUenNo();
         String identityNo =  userSession.getIdentityNo();
@@ -217,7 +219,7 @@ public class FECorppassLandingDelegator {
      * @param bpc
      * @throws
      */
-    public void initCorppassUserInfo(BaseProcessClass bpc) {
+    public void initCorppassUserInfo(BaseProcessClass bpc) throws FeignException, BaseException {
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
 
@@ -262,6 +264,9 @@ public class FECorppassLandingDelegator {
                 user.setDisplayName(postUpdate.getDisplayName());
                 user.setUserDomain(postUpdate.getUserDomain());
                 user.setId(postUpdate.getUserId());
+
+                //create egp user
+                orgUserManageService.createClientUser(postUpdate);
                 FeLoginHelper.initUserInfo(request, user);
 
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);

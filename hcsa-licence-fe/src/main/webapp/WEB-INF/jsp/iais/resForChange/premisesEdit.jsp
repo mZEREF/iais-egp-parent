@@ -72,12 +72,13 @@
     <div class="modal fade" id="ackMessageConfim" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          </div>
-          <div class="modal-body" style="text-align: center;">
+<%--          <div class="modal-header">--%>
+<%--            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--            <div class="modal-title" style="font-size: 2rem;">Confirmation Box</div>--%>
+<%--          </div>--%>
+          <div class="modal-body" >
             <div class="row">
-              <div class="col-md-12"><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
+              <div class="col-md-12 " style="margin-left: 10%;margin-right: 10%"><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
             </div>
           </div>
           <div class="row " style="margin-top: 5%;margin-bottom: 5%">
@@ -88,16 +89,16 @@
       </div>
     </div>
     <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
-<%--    <div class="modal fade" id="hciNameUsed" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+   <%-- <div class="modal fade" id="hciNameUsed" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <div class="modal-title" style="font-size: 2rem;">Confirmation Box</div>
+            <h4 class="modal-title">Confirmation Box</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           </div>
           <div class="modal-body" style="text-align: center;">
             <div class="row">
-              <div class=""><span style="font-size: 2rem;">${newAppPopUpMsg}</span></div>
+              <div class=""><span style="font-size: 16px;">${newAppPopUpMsg}</span></div>
             </div>
           </div>
           <div class="row " style="margin-top: 5%;margin-bottom: 5%">

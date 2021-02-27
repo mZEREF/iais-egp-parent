@@ -43,9 +43,10 @@
         <!--for ph -->
         <input class="premValue" type="hidden" name="premValue" value="${status.index}"/>
         <input class="premisesIndexNo" type="hidden" name="premisesIndexNo" value="${appGrpPremisesDto.premisesIndexNo}"/>
+
         <c:choose>
-            <c:when test="${appGrpPremisesDto.appPremPhOpenPeriodList != null && appGrpPremisesDto.appPremPhOpenPeriodList.size()>0}">
-                <input class="phLength" type="hidden" name="phLength" value="${appGrpPremisesDto.appPremPhOpenPeriodList.size()}"/>
+            <c:when test="${appGrpPremisesDto.phDtoList != null && appGrpPremisesDto.phDtoList.size()>1}">
+                <input class="phLength" type="hidden" name="phLength" value="${appGrpPremisesDto.phDtoList.size()}"/>
             </c:when>
             <c:otherwise>
                 <input class="phLength" type="hidden" name="phLength" value="1"/>
@@ -58,6 +59,31 @@
             </c:when>
             <c:otherwise>
                 <input class="opLength" type="hidden" name="opLength" value="0"/>
+            </c:otherwise>
+        </c:choose>
+
+        <c:choose>
+            <c:when test="${appGrpPremisesDto.clickRetrieve}">
+                <input class="retrieveflag" type="hidden" name="retrieveflag" value="1"/>
+            </c:when>
+            <c:otherwise>
+                <input class="retrieveflag" type="hidden" name="retrieveflag" value="0"/>
+            </c:otherwise>
+        </c:choose>
+        <c:choose>
+            <c:when test="${appGrpPremisesDto.weeklyDtoList != null && appGrpPremisesDto.weeklyDtoList.size()>1}">
+                <input class="weeklyLength" type="hidden" name="weeklyLength" value="${appGrpPremisesDto.weeklyDtoList.size()}"/>
+            </c:when>
+            <c:otherwise>
+                <input class="weeklyLength" type="hidden" name="weeklyLength" value="1"/>
+            </c:otherwise>
+        </c:choose>
+        <c:choose>
+            <c:when test="${appGrpPremisesDto.eventDtoList != null && appGrpPremisesDto.eventDtoList.size()>1}">
+                <input class="eventLength" type="hidden" name="eventLength" value="${appGrpPremisesDto.eventDtoList.size()}"/>
+            </c:when>
+            <c:otherwise>
+                <input class="eventLength" type="hidden" name="eventLength" value="1"/>
             </c:otherwise>
         </c:choose>
         <div class="col-xs-12">
@@ -74,7 +100,7 @@
                                 <tr>
                                     <td >
                                         <div class="col-xs-12 col-md-12 form-check" style="padding:0px 15px;margin-top:15px">
-                                            <img src="/hcsa-licence-web/img/20210125131101.png">
+                                            <img src="/hcsa-licence-web/img/20210124131101.png">
                                             <label style="font-weight: normal"><span class="check-square"></span>${licence.svcName}</label>
                                         </div></td>
                                     <td class="form-check col-sm-3">${licence.licenceNo}</td>
@@ -386,9 +412,414 @@
                                 <span class="error-msg " name="iaisErrorMsg" id="error_isOtherLic${status.index}"></span>
                             </div>
                         </iais:value>
-
                     </iais:row>
-                    <div class="form-group">
+
+                    <iais:row>
+                        <div class="col-md-12">
+                            <label class="control-label">Operating Hours</label>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="control-label">Weekly <span class="mandatory">*</span></label>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="control-label">Start</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="control-label">End</label>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="control-label">All day</label>
+                        </div>
+                    </iais:row>
+
+                    <c:set var="weeklyList" value="${appGrpPremisesDto.weeklyDtoList}"/>
+                    <div class="weeklyContent">
+                        <c:choose>
+                            <c:when test="${weeklyList.size()>0 && 'ONSITE' == appGrpPremisesDto.premisesType}">
+                                <c:forEach begin="0" end="${weeklyList.size()-1}" step="1" varStatus="weeklyStat">
+                                    <c:set var="weekly" value="${weeklyList[weeklyStat.index]}"/>
+                                    <iais:row cssClass="weeklyDiv">
+                                        <c:if test="${weeklyStat.index>0}">
+                                            <div class="col-md-12">
+                                                <label class="control-label">Weekly <span class="mandatory">*</span></label>
+                                            </div>
+                                        </c:if>
+                                        <div>
+                                            <div class="col-md-4">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <iais:multipleSelect name="${premValue}onSiteWeekly${weeklyStat.index}" selectValue="${weekly.selectVal}" options="weeklyOpList" ></iais:multipleSelect>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_onSiteWeekly${status.index}${weeklyStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="onSiteWeeklyStartHH" name="${premValue}onSiteWeeklyStartHH${weeklyStat.index}" options="premiseHours" value="${weekly.startFromHH}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (HH)
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="onSiteWeeklyStartMM" name="${premValue}onSiteWeeklyStartMM${weeklyStat.index}" options="premiseMinute" value="${weekly.startFromMM}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (MM)
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_onSiteWeeklyStart${status.index}${weeklyStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="onSiteWeeklyEndHH" name="${premValue}onSiteWeeklyEndHH${weeklyStat.index}" options="premiseHours" value="${weekly.endToHH}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (HH)
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="onSiteWeeklyEndMM" name="${premValue}onSiteWeeklyEndMM${weeklyStat.index}" options="premiseMinute" value="${weekly.endToMM}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (MM)
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_onSiteWeeklyEnd${status.index}${weeklyStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="row">
+                                                    <div class="col-md-6 text-center">
+                                                        <input class="form-check-input" name="${premValue}onSiteWeeklyAllDay${weeklyStat.index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${weekly.selectAllDay}">checked="checked"</c:if> >
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <c:if test="${weeklyStat.index>0}">
+                                                            <div class="fa fa-times-circle del-size-36 text-danger weeklyDel"></div>
+                                                        </c:if>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </iais:row>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="suffix" value="0"/>
+                                <iais:row cssClass="weeklyDiv">
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <iais:multipleSelect name="${premValue}onSiteWeekly${suffix}" selectValue="" options="weeklyOpList" ></iais:multipleSelect>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="onSiteWeeklyStartHH" name="${premValue}onSiteWeeklyStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (HH)
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="onSiteWeeklyStartMM" name="${premValue}onSiteWeeklyStartMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (MM)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="onSiteWeeklyEndHH" name="${premValue}onSiteWeeklyEndHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (HH)
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="onSiteWeeklyEndMM" name="${premValue}onSiteWeeklyEndMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (MM)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="row">
+                                                <div class="col-md-6 text-center">
+                                                    <input class="form-check-input" name="${premValue}onSiteWeeklyAllDay${suffix}"  type="checkbox" aria-invalid="false" value="true"  >
+                                                </div>
+                                                <div class="col-md-6">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </iais:row>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <iais:row cssClass="addWeeklyDiv">
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-4">
+                                <a class="addWeekly" style="text-decoration:none;">+ Add Weekly</a>
+                            </iais:value>
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-8">
+
+                            </iais:value>
+                        </iais:row>
+                    </div>
+
+                    <c:set var="phList" value="${appGrpPremisesDto.phDtoList}"/>
+                    <div class="pubHolDayContent">
+                        <c:choose>
+                            <c:when test="${phList.size()>0 && 'ONSITE' == appGrpPremisesDto.premisesType}">
+                                <c:forEach begin="0" end="${phList.size()-1}" step="1" varStatus="phyStat">
+                                    <c:set var="ph" value="${phList[phyStat.index]}"/>
+                                    <iais:row cssClass="pubHolidayDiv">
+                                        <div class="col-md-12">
+                                            <label class="control-label">Public Holiday</label>
+                                        </div>
+                                        <div>
+                                            <div class="col-md-4">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <iais:multipleSelect name="${premValue}onSitePubHoliday${phyStat.index}" selectValue="${ph.selectVal}" options="phOpList" ></iais:multipleSelect>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_onSitePubHoliday${status.index}${phyStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="onSitePhStartHH" name="${premValue}onSitePhStartHH${phyStat.index}" options="premiseHours" value="${ph.startFromHH}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (HH)
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="onSitePhStartMM" name="${premValue}onSitePhStartMM${phyStat.index}" options="premiseMinute" value="${ph.startFromMM}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (MM)
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_onSitePhStart${status.index}${phyStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="onSitePhEndHH" name="${premValue}onSitePhEndHH${phyStat.index}" options="premiseHours" value="${ph.endToHH}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (HH)
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="onSitePhEndMM" name="${premValue}onSitePhEndMM${phyStat.index}" options="premiseMinute" value="${ph.endToMM}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (MM)
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_onSitePhEnd${status.index}${phyStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="row">
+                                                    <div class="col-md-6 text-center">
+                                                        <input class="form-check-input" name="${premValue}onSitePhAllDay${phyStat.index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${ph.selectAllDay}">checked="checked"</c:if> >
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <c:if test="${phyStat.index>0}">
+                                                            <div class="fa fa-times-circle del-size-36 text-danger pubHolidayDel"></div>
+                                                        </c:if>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </iais:row>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="suffix" value="0"/>
+                                <iais:row>
+                                    <div class="col-md-4">
+                                        <label class="control-label">Public Holiday</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                    </div>
+                                </iais:row>
+                                <iais:row cssClass="pubHolidayDiv">
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <iais:multipleSelect name="${premValue}onSitePubHoliday${suffix}" selectValue="" options="phOpList" ></iais:multipleSelect>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="onSitePhStartHH" name="${premValue}onSitePhStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (HH)
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="onSitePhStartMM" name="${premValue}onSitePhStartMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (MM)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="onSitePhEndHH" name="${premValue}onSitePhEndHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (HH)
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="onSitePhEndMM" name="${premValue}onSitePhEndMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (MM)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="row">
+                                                <div class="col-md-6 text-center">
+                                                    <input class="form-check-input" name="${premValue}onSitePhAllDay${suffix}"  type="checkbox" aria-invalid="false" value="true" >
+                                                </div>
+                                                <div class="col-md-6">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </iais:row>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <iais:row cssClass="addPhDiv">
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-4">
+                                <a class="addPubHolDay" style="text-decoration:none;">+ Add PH</a>
+                            </iais:value>
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-8">
+
+                            </iais:value>
+                        </iais:row>
+                    </div>
+
+                    <c:set var="eventList" value="${appGrpPremisesDto.eventDtoList}"/>
+                    <div class="eventContent">
+                        <c:choose>
+                            <c:when test="${eventList.size()>0 && 'ONSITE' == appGrpPremisesDto.premisesType}">
+                                <c:forEach begin="0" end="${eventList.size()-1}" step="1" varStatus="eventStat">
+                                    <c:set var="event" value="${eventList[eventStat.index]}"/>
+                                    <iais:row cssClass="eventDiv">
+                                        <div class="col-md-12">
+                                            <label class="control-label">Event</label>
+                                        </div>
+                                        <div>
+                                            <div class="col-md-4">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <iais:input type="text" cssClass="onSiteEvent" name="${premValue}onSiteEvent${eventStat.index}" value="${event.eventName}" />
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_onSiteEvent${status.index}${eventStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <iais:datePicker cssClass="onSiteEventStart" name="${premValue}onSiteEventStart${eventStat.index}" value="${event.startDateStr}" />
+                                                <span class="error-msg " name="iaisErrorMsg" id="error_onSiteEventStart${status.index}${eventStat.index}"></span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <iais:datePicker cssClass="onSiteEventEnd" name="${premValue}onSiteEventEnd${eventStat.index}" value="${event.endDateStr}" />
+                                                <span class="error-msg " name="iaisErrorMsg" id="error_onSiteEventEnd${status.index}${eventStat.index}"></span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="row">
+                                                    <div class="col-md-6 text-center">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <c:if test="${eventStat.index>0}">
+                                                            <div class="fa fa-times-circle del-size-36 text-danger eventDel"></div>
+                                                        </c:if>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </iais:row>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="suffix" value="0"/>
+                                <iais:row>
+                                    <div class="col-md-4">
+                                        <label class="control-label">Event</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                    </div>
+                                </iais:row>
+                                <iais:row cssClass="eventDiv">
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="row">
+                                                <div class="col-md-10">
+                                                    <iais:input type="text" cssClass="onSiteEvent" name="${premValue}onSiteEvent${suffix}" value="" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <iais:datePicker cssClass="onSiteEventStart" name="${premValue}onSiteEventStart${suffix}" value="" />
+                                        </div>
+                                        <div class="col-md-3">
+                                            <iais:datePicker cssClass="onSiteEventEnd" name="${premValue}onSiteEventEnd${suffix}" value="" />
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="row">
+                                                <div class="col-md-6 text-center">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <c:if test="${eventStat.index>0}">
+                                                        <div class="fa fa-times-circle del-size-36 text-danger eventDel"></div>
+                                                    </c:if>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </iais:row>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <iais:row cssClass="addEventDiv">
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-4">
+                                <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
+                            </iais:value>
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-8">
+
+                            </iais:value>
+                        </iais:row>
+                    </div>
+
+                    <%--<div class="form-group">
                         <label class="col-xs-12 col-md-4 control-label">
                             Operating Hours (Start) <span class="mandatory">*</span>
                         </label>
@@ -545,7 +976,7 @@
                             <button class="addPubHolDay btn btn-primary" type="button">Add Public Holiday</button>
                         </div>
                     </div>
-                    </c:if>
+                    </c:if>--%>
                 </div>
             </div>
 
@@ -651,7 +1082,412 @@
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceBuildingName${status.index}"></span>
                         </iais:value>
                     </iais:row>
-                    <div class="form-group">
+
+                    <iais:row>
+                        <div class="col-md-12">
+                            <label class="control-label">Operating Hours</label>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="control-label">Weekly</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="control-label">Start</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="control-label">End</label>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="control-label">All day</label>
+                        </div>
+                    </iais:row>
+
+                    <c:set var="weeklyList" value="${appGrpPremisesDto.weeklyDtoList}"/>
+                    <div class="weeklyContent">
+                        <c:choose>
+                            <c:when test="${weeklyList.size()>0 && 'CONVEYANCE' == appGrpPremisesDto.premisesType}">
+                                <c:forEach begin="0" end="${weeklyList.size()-1}" step="1" varStatus="weeklyStat">
+                                    <c:set var="weekly" value="${weeklyList[weeklyStat.index]}"/>
+                                    <iais:row cssClass="weeklyDiv">
+                                        <c:if test="${weeklyStat.index>0}">
+                                            <div class="col-md-12">
+                                                <label class="control-label">Weekly <span class="mandatory">*</span></label>
+                                            </div>
+                                        </c:if>
+                                        <div>
+                                            <div class="col-md-4">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <iais:multipleSelect name="${premValue}conveyanceWeekly${weeklyStat.index}" selectValue="${weekly.selectVal}" options="weeklyOpList" ></iais:multipleSelect>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_conveyanceWeekly${status.index}${weeklyStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="conveyanceWeeklyStartHH" name="${premValue}conveyanceWeeklyStartHH${weeklyStat.index}" options="premiseHours" value="${weekly.startFromHH}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (HH)
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="conveyanceWeeklyStartMM" name="${premValue}conveyanceWeeklyStartMM${weeklyStat.index}" options="premiseMinute" value="${weekly.startFromMM}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (MM)
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_conveyanceWeeklyStart${status.index}${weeklyStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="conveyanceWeeklyEndHH" name="${premValue}conveyanceWeeklyEndHH${weeklyStat.index}" options="premiseHours" value="${weekly.endToHH}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (HH)
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="conveyanceWeeklyEndMM" name="${premValue}conveyanceWeeklyEndMM${weeklyStat.index}" options="premiseMinute" value="${weekly.endToMM}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (MM)
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_conveyanceWeeklyEnd${status.index}${weeklyStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="row">
+                                                    <div class="col-md-6 text-center">
+                                                        <input class="form-check-input" name="${premValue}conveyanceWeeklyAllDay${weeklyStat.index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${weekly.selectAllDay}">checked="checked"</c:if> >
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <c:if test="${weeklyStat.index>0}">
+                                                            <div class="fa fa-times-circle del-size-36 text-danger weeklyDel"></div>
+                                                        </c:if>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </iais:row>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="suffix" value="0"/>
+                                <iais:row cssClass="weeklyDiv">
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <iais:multipleSelect name="${premValue}conveyanceWeekly${suffix}" selectValue="" options="weeklyOpList" ></iais:multipleSelect>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="conveyanceWeeklyStartHH" name="${premValue}conveyanceWeeklyStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (HH)
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="conveyanceWeeklyStartMM" name="${premValue}conveyanceWeeklyStartMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (MM)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="conveyanceWeeklyEndHH" name="${premValue}conveyanceWeeklyEndHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (HH)
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="conveyanceWeeklyEndMM" name="${premValue}conveyanceWeeklyEndMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (MM)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="row">
+                                                <div class="col-md-6 text-center">
+                                                    <input class="form-check-input" name="${premValue}conveyanceWeeklyAllDay${suffix}"  type="checkbox" aria-invalid="false" value="true"  >
+                                                </div>
+                                                <div class="col-md-6">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </iais:row>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <iais:row cssClass="addWeeklyDiv">
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-4">
+                                <a class="addWeekly" style="text-decoration:none;">+ Add Weekly</a>
+                            </iais:value>
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-8">
+
+                            </iais:value>
+                        </iais:row>
+                    </div>
+
+                    <c:set var="phList" value="${appGrpPremisesDto.phDtoList}"/>
+                    <div class="pubHolDayContent">
+                        <c:choose>
+                            <c:when test="${phList.size()>0 && 'CONVEYANCE' == appGrpPremisesDto.premisesType}">
+                                <c:forEach begin="0" end="${phList.size()-1}" step="1" varStatus="phyStat">
+                                    <c:set var="ph" value="${phList[phyStat.index]}"/>
+                                    <iais:row cssClass="pubHolidayDiv">
+                                        <div class="col-md-12">
+                                            <label class="control-label">Public Holiday</label>
+                                        </div>
+                                        <div>
+                                            <div class="col-md-4">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <iais:multipleSelect name="${premValue}conveyancePubHoliday${phyStat.index}" selectValue="${ph.selectVal}" options="phOpList" ></iais:multipleSelect>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_conveyancePubHoliday${status.index}${phyStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="conveyancePhStartHH" name="${premValue}conveyancePhStartHH${phyStat.index}" options="premiseHours" value="${ph.startFromHH}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (HH)
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="conveyancePhStartMM" name="${premValue}conveyancePhStartMM${phyStat.index}" options="premiseMinute" value="${ph.startFromMM}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (MM)
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_conveyancePhStart${status.index}${phyStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="conveyancePhEndHH" name="${premValue}conveyancePhEndHH${phyStat.index}" options="premiseHours" value="${ph.endToHH}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (HH)
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="conveyancePhEndMM" name="${premValue}conveyancePhEndMM${phyStat.index}" options="premiseMinute" value="${ph.endToMM}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (MM)
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_conveyancePhEnd${status.index}${phyStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="row">
+                                                    <div class="col-md-6 text-center">
+                                                        <input class="form-check-input" name="${premValue}conveyancePhAllDay${phyStat.index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${ph.selectAllDay}">checked="checked"</c:if> >
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <c:if test="${phyStat.index>0}">
+                                                            <div class="fa fa-times-circle del-size-36 text-danger pubHolidayDel"></div>
+                                                        </c:if>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </iais:row>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="suffix" value="0"/>
+                                <iais:row>
+                                    <div class="col-md-4">
+                                        <label class="control-label">Public Holiday</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                    </div>
+                                </iais:row>
+                                <iais:row cssClass="pubHolidayDiv">
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <iais:multipleSelect name="${premValue}conveyancePubHoliday${suffix}" selectValue="" options="phOpList" ></iais:multipleSelect>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="conveyancePhStartHH" name="${premValue}conveyancePhStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (HH)
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="conveyancePhStartMM" name="${premValue}conveyancePhStartMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (MM)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="conveyancePhEndHH" name="${premValue}conveyancePhEndHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (HH)
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="conveyancePhEndMM" name="${premValue}conveyancePhEndMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (MM)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="row">
+                                                <div class="col-md-6 text-center">
+                                                    <input class="form-check-input" name="${premValue}conveyancePhAllDay${suffix}"  type="checkbox" aria-invalid="false" value="true" >
+                                                </div>
+                                                <div class="col-md-6">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </iais:row>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <iais:row cssClass="addPhDiv">
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-4">
+                                <a class="addPubHolDay" style="text-decoration:none;">+ Add PH</a>
+                            </iais:value>
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-8">
+
+                            </iais:value>
+                        </iais:row>
+                    </div>
+
+                    <c:set var="eventList" value="${appGrpPremisesDto.eventDtoList}"/>
+                    <div class="eventContent">
+                        <c:choose>
+                            <c:when test="${eventList.size()>0 && 'CONVEYANCE' == appGrpPremisesDto.premisesType}">
+                                <c:forEach begin="0" end="${eventList.size()-1}" step="1" varStatus="eventStat">
+                                    <c:set var="event" value="${eventList[eventStat.index]}"/>
+                                    <iais:row cssClass="eventDiv">
+                                        <div class="col-md-12">
+                                            <label class="control-label">Event</label>
+                                        </div>
+                                        <div>
+                                            <div class="col-md-4">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <iais:input type="text" cssClass="conveyanceEvent" name="${premValue}conveyanceEvent${eventStat.index}" value="${event.eventName}" />
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_conveyanceEvent${status.index}${eventStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <iais:datePicker cssClass="conveyanceEventStart" name="${premValue}conveyanceEventStart${eventStat.index}" value="${event.startDateStr}" />
+                                                <span class="error-msg " name="iaisErrorMsg" id="error_conveyanceEventStart${status.index}${eventStat.index}"></span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <iais:datePicker cssClass="conveyanceEventEnd" name="${premValue}conveyanceEventEnd${eventStat.index}" value="${event.endDateStr}" />
+                                                <span class="error-msg " name="iaisErrorMsg" id="error_conveyanceEventEnd${status.index}${eventStat.index}"></span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="row">
+                                                    <div class="col-md-6 text-center">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <c:if test="${eventStat.index>0}">
+                                                            <div class="fa fa-times-circle del-size-36 text-danger eventDel"></div>
+                                                        </c:if>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </iais:row>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="suffix" value="0"/>
+                                <iais:row>
+                                    <div class="col-md-4">
+                                        <label class="control-label">Event</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                    </div>
+                                </iais:row>
+                                <iais:row cssClass="eventDiv">
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <iais:input type="text" cssClass="conveyanceEvent" name="${premValue}conveyanceEvent${suffix}" value="" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <iais:datePicker cssClass="conveyanceEventStart" name="${premValue}conveyanceEventStart${suffix}" value="" />
+                                        </div>
+                                        <div class="col-md-3">
+                                            <iais:datePicker cssClass="conveyanceEventEnd" name="${premValue}conveyanceEventEnd${suffix}" value="" />
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="row">
+                                                <div class="col-md-6 text-center">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <c:if test="${eventStat.index>0}">
+                                                        <div class="fa fa-times-circle del-size-36 text-danger eventDel"></div>
+                                                    </c:if>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </iais:row>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <iais:row cssClass="addEventDiv">
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-4">
+                                <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
+                            </iais:value>
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-8">
+
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                    <%--<div class="form-group">
                         <label class="col-xs-12 col-md-4 control-label">
                             Operating Hours (Start) <span class="mandatory">*</span>
                         </label>
@@ -807,7 +1643,7 @@
                                 <button class="addPubHolDay btn btn-primary" type="button">Add Public Holiday</button>
                             </div>
                         </div>
-                    </c:if>
+                    </c:if>--%>
                 </div>
             </div>
 
@@ -906,7 +1742,413 @@
                             <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteBuildingName${status.index}"></span>
                         </iais:value>
                     </iais:row>
-                    <div class="form-group">
+
+                    <iais:row>
+                        <div class="col-md-12">
+                            <label class="control-label">Operating Hours</label>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="control-label">Weekly</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="control-label">Start</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="control-label">End</label>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="control-label">All day</label>
+                        </div>
+                    </iais:row>
+
+                    <c:set var="weeklyList" value="${appGrpPremisesDto.weeklyDtoList}"/>
+                    <div class="weeklyContent">
+                        <c:choose>
+                            <c:when test="${weeklyList.size()>0 && 'OFFSITE' == appGrpPremisesDto.premisesType}">
+                                <c:forEach begin="0" end="${weeklyList.size()-1}" step="1" varStatus="weeklyStat">
+                                    <c:set var="weekly" value="${weeklyList[weeklyStat.index]}"/>
+                                    <iais:row cssClass="weeklyDiv">
+                                        <c:if test="${weeklyStat.index>0}">
+                                            <div class="col-md-12">
+                                                <label class="control-label">Weekly <span class="mandatory">*</span></label>
+                                            </div>
+                                        </c:if>
+                                        <div>
+                                            <div class="col-md-4">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <iais:multipleSelect name="${premValue}offSiteWeekly${weeklyStat.index}" selectValue="${weekly.selectVal}" options="weeklyOpList" ></iais:multipleSelect>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_offSiteWeekly${status.index}${weeklyStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="offSiteWeeklyStartHH" name="${premValue}offSiteWeeklyStartHH${weeklyStat.index}" options="premiseHours" value="${weekly.startFromHH}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (HH)
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="offSiteWeeklyStartMM" name="${premValue}offSiteWeeklyStartMM${weeklyStat.index}" options="premiseMinute" value="${weekly.startFromMM}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (MM)
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_offSiteWeeklyStart${status.index}${weeklyStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="offSiteWeeklyEndHH" name="${premValue}offSiteWeeklyEndHH${weeklyStat.index}" options="premiseHours" value="${weekly.endToHH}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (HH)
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="offSiteWeeklyEndMM" name="${premValue}offSiteWeeklyEndMM${weeklyStat.index}" options="premiseMinute" value="${weekly.endToMM}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (MM)
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_offSiteWeeklyEnd${status.index}${weeklyStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="row">
+                                                    <div class="col-md-6 text-center">
+                                                        <input class="form-check-input" name="${premValue}offSiteWeeklyAllDay${weeklyStat.index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${weekly.selectAllDay}">checked="checked"</c:if> >
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <c:if test="${weeklyStat.index>0}">
+                                                            <div class="fa fa-times-circle del-size-36 text-danger weeklyDel"></div>
+                                                        </c:if>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </iais:row>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="suffix" value="0"/>
+                                <iais:row cssClass="weeklyDiv">
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <iais:multipleSelect name="${premValue}offSiteWeekly${suffix}" selectValue="" options="weeklyOpList" ></iais:multipleSelect>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="offSiteWeeklyStartHH" name="${premValue}offSiteWeeklyStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (HH)
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="offSiteWeeklyStartMM" name="${premValue}offSiteWeeklyStartMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (MM)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="offSiteWeeklyEndHH" name="${premValue}offSiteWeeklyEndHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (HH)
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="offSiteWeeklyEndMM" name="${premValue}offSiteWeeklyEndMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (MM)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="row">
+                                                <div class="col-md-6 text-center">
+                                                    <input class="form-check-input" name="${premValue}offSiteWeeklyAllDay${suffix}"  type="checkbox" aria-invalid="false" value="true"  >
+                                                </div>
+                                                <div class="col-md-6">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </iais:row>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <iais:row cssClass="addWeeklyDiv">
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-4">
+                                <a class="addWeekly" style="text-decoration:none;">+ Add Weekly</a>
+                            </iais:value>
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-8">
+
+                            </iais:value>
+                        </iais:row>
+                    </div>
+
+                    <c:set var="phList" value="${appGrpPremisesDto.phDtoList}"/>
+                    <div class="pubHolDayContent">
+                        <c:choose>
+                            <c:when test="${phList.size()>0 && 'OFFSITE' == appGrpPremisesDto.premisesType}">
+                                <c:forEach begin="0" end="${phList.size()-1}" step="1" varStatus="phyStat">
+                                    <c:set var="ph" value="${phList[phyStat.index]}"/>
+                                    <iais:row cssClass="pubHolidayDiv">
+                                        <div class="col-md-12">
+                                            <label class="control-label">Public Holiday</label>
+                                        </div>
+                                        <div>
+                                            <div class="col-md-4">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <iais:multipleSelect name="${premValue}offSitePubHoliday${phyStat.index}" selectValue="${ph.selectVal}" options="phOpList" ></iais:multipleSelect>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_offSitePubHoliday${status.index}${phyStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="offSitePhStartHH" name="${premValue}offSitePhStartHH${phyStat.index}" options="premiseHours" value="${ph.startFromHH}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (HH)
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="offSitePhStartMM" name="${premValue}offSitePhStartMM${phyStat.index}" options="premiseMinute" value="${ph.startFromMM}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (MM)
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_offSitePhStart${status.index}${phyStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="offSitePhEndHH" name="${premValue}offSitePhEndHH${phyStat.index}" options="premiseHours" value="${ph.endToHH}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (HH)
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <iais:select cssClass="offSitePhEndMM" name="${premValue}offSitePhEndMM${phyStat.index}" options="premiseMinute" value="${ph.endToMM}" firstOption="--"></iais:select>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                        (MM)
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_offSitePhEnd${status.index}${phyStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="row">
+                                                    <div class="col-md-6 text-center">
+                                                        <input class="form-check-input" name="${premValue}offSitePhAllDay${phyStat.index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${ph.selectAllDay}">checked="checked"</c:if> >
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <c:if test="${phyStat.index>0}">
+                                                            <div class="fa fa-times-circle del-size-36 text-danger pubHolidayDel"></div>
+                                                        </c:if>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </iais:row>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="suffix" value="0"/>
+                                <iais:row>
+                                    <div class="col-md-4">
+                                        <label class="control-label">Public Holiday</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                    </div>
+                                </iais:row>
+                                <iais:row cssClass="pubHolidayDiv">
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="row">
+                                                <div class="col-md-10">
+                                                    <iais:multipleSelect name="${premValue}offSitePubHoliday${suffix}" selectValue="" options="phOpList" ></iais:multipleSelect>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="offSitePhStartHH" name="${premValue}offSitePhStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (HH)
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="offSitePhStartMM" name="${premValue}offSitePhStartMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (MM)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="offSitePhEndHH" name="${premValue}offSitePhEndHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (HH)
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <iais:select cssClass="offSitePhEndMM" name="${premValue}offSitePhEndMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
+                                                </div>
+                                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                                    (MM)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="row">
+                                                <div class="col-md-6 text-center">
+                                                    <input class="form-check-input" name="${premValue}offSitePhAllDay${suffix}"  type="checkbox" aria-invalid="false" value="true" >
+                                                </div>
+                                                <div class="col-md-6">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </iais:row>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <iais:row cssClass="addPhDiv">
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-4">
+                                <a class="addPubHolDay" style="text-decoration:none;">+ Add PH</a>
+                            </iais:value>
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-8">
+
+                            </iais:value>
+                        </iais:row>
+                    </div>
+
+                    <c:set var="eventList" value="${appGrpPremisesDto.eventDtoList}"/>
+                    <div class="eventContent">
+                        <c:choose>
+                            <c:when test="${eventList.size()>0 && 'OFFSITE' == appGrpPremisesDto.premisesType}">
+                                <c:forEach begin="0" end="${eventList.size()-1}" step="1" varStatus="eventStat">
+                                    <c:set var="event" value="${eventList[eventStat.index]}"/>
+                                    <iais:row cssClass="eventDiv">
+                                        <div class="col-md-12">
+                                            <label class="control-label">Event</label>
+                                        </div>
+                                        <div>
+                                            <div class="col-md-4">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <iais:input type="text" cssClass="offSiteEvent" name="${premValue}offSiteEvent${eventStat.index}" value="${event.eventName}" />
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_offSiteEvent${status.index}${eventStat.index}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <iais:datePicker cssClass="offSiteEventStart" name="${premValue}offSiteEventStart${eventStat.index}" value="${event.startDateStr}" />
+                                                <span class="error-msg " name="iaisErrorMsg" id="error_offSiteEventStart${status.index}${eventStat.index}"></span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <iais:datePicker cssClass="offSiteEventEnd" name="${premValue}offSiteEventEnd${eventStat.index}" value="${event.endDateStr}" />
+                                                <span class="error-msg " name="iaisErrorMsg" id="error_offSiteEventEnd${status.index}${eventStat.index}"></span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="row">
+                                                    <div class="col-md-6 text-center">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <c:if test="${eventStat.index>0}">
+                                                            <div class="fa fa-times-circle del-size-36 text-danger eventDel"></div>
+                                                        </c:if>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </iais:row>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="suffix" value="0"/>
+                                <iais:row>
+                                    <div class="col-md-4">
+                                        <label class="control-label">Event</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                    </div>
+                                </iais:row>
+                                <iais:row cssClass="eventDiv">
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <iais:input type="text" cssClass="offSiteEvent" name="${premValue}offSiteEvent${suffix}" value="" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <iais:datePicker cssClass="offSiteEventStart" name="${premValue}offSiteEventStart${suffix}" value="" />
+                                        </div>
+                                        <div class="col-md-3">
+                                            <iais:datePicker cssClass="offSiteEventEnd" name="${premValue}offSiteEventEnd${suffix}" value="" />
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="row">
+                                                <div class="col-md-6 text-center">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <c:if test="${eventStat.index>0}">
+                                                        <div class="fa fa-times-circle del-size-36 text-danger eventDel"></div>
+                                                    </c:if>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </iais:row>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <iais:row cssClass="addEventDiv">
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-4">
+                                <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
+                            </iais:value>
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-8">
+
+                            </iais:value>
+                        </iais:row>
+                    </div>
+
+                    <%--<div class="form-group">
                         <label class="col-xs-12 col-md-4 control-label">
                             Operating Hours (Start) <span class="mandatory">*</span>
                         </label>
@@ -1062,7 +2304,7 @@
                             <button class="addPubHolDay btn btn-primary" type="button">Add Public Holiday</button>
                         </div>
                     </div>
-                    </c:if>
+                    </c:if>--%>
                 </div>
             </div>
 

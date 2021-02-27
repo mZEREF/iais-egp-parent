@@ -1502,7 +1502,7 @@ public class BackendInboxDelegator {
 
         String application_no = ParamUtil.getRequestString(bpc.request, "application_no");
         String application_type = ParamUtil.getRequestString(bpc.request, "application_type");
-        String application_status = ParamUtil.getRequestString(bpc.request, "application_status");
+        String application_status = ParamUtil.getString(bpc.request, "application_status");
         String hci_code = ParamUtil.getRequestString(bpc.request, "hci_code");
         String hci_address = ParamUtil.getRequestString(bpc.request, "hci_address");
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");

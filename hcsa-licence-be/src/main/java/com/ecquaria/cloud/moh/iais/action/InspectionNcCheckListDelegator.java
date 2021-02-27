@@ -287,7 +287,7 @@ public class InspectionNcCheckListDelegator {
                 LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
                 // SAVE OTHER TASKS
                 fillupChklistService.saveOtherTasks((List<TaskDto>)ParamUtil.getSessionAttr(request,TASKDTOLIST),taskDto);
-                fillupChklistService.routingTask(taskDto,ParamUtil.getString(request,"RemarksForHistory"),loginContext,flag);
+                fillupChklistService.routingTask(taskDto,serListDto.getRemarksForHistory(),loginContext,flag);
             }
        }
 
@@ -303,7 +303,7 @@ public class InspectionNcCheckListDelegator {
         String bestpractice = ParamUtil.getString(request,"bestpractice");
         String tcuremark = ParamUtil.getString(request,"tcuRemark");
         String otherOfficers = ParamUtil.getString(request,"otherinspector");
-
+        serListDto.setRemarksForHistory( ParamUtil.getString(request,"RemarksForHistory"));
         //startHour   startHourMin  endHour endHourMin
         String inspectionDate = ParamUtil.getString(request,"inspectionDate");
         String startHour = ParamUtil.getString(request,"startHour");

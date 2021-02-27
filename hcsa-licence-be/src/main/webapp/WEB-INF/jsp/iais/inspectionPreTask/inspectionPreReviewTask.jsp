@@ -200,9 +200,9 @@
                                   <c:forEach items="${inspectionPreTaskDto.preInspRfiOption}" var="name">
                                     <p>
                                       <input type="checkbox" name="preInspRfiCheck" id = "${name.value}PreInspRfiCheck"  value="<c:out value="${name.value}"/>"
-                                              <c:forEach items="${inspectionPreTaskDto.preInspRfiCheck}" var="checkName">
-                                                <c:if test="${name.value eq checkName}">checked="checked"</c:if>
-                                              </c:forEach>
+                                            <c:forEach items="${inspectionPreTaskDto.preInspRfiCheck}" var="checkName">
+                                              <c:if test="${name.value eq checkName}">checked="checked"</c:if>
+                                            </c:forEach>
                                       />
                                       <span style="font-size: 16px"><c:out value="${name.text}"/></span>
                                     </p>

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -8,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.lowagie.text.pdf.codec.Base64;
-import ecq.commons.config.Config;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class MyInfoAjax {
 	private static  String[] ss = {"name","email", "mobileno","regadd"};
     public MyInfoDto getMyInfo(String NircNum){
 
-		String flag = Config.get("moh.halp.myinfo.enable");
+		String flag = ConfigHelper.getString("moh.halp.myinfo.enable");
 		if("Y".equalsIgnoreCase(flag)){
 
 			if(StringUtil.isEmpty(NircNum)){
@@ -69,35 +69,34 @@ public class MyInfoAjax {
 		JSONObject jsonObject = JSONObject.fromObject(response);
 		JSONObject jsonObjectRegadd = jsonObject.getJSONObject("regadd");
 		if (!jsonObjectRegadd.isNullObject()) {
-		
-		    String floor = jsonObjectRegadd.getString("floor");
+		    String floor = getStringKeyByObjName("floor",jsonObjectRegadd);
 		    if (!StringUtil.isEmpty(floor) && !"null".equalsIgnoreCase(floor))
 				dto.setFloor(floor);
 
-		    String postal = jsonObjectRegadd.getString("postal");
+		    String postal = getStringKeyByObjName("postal",jsonObjectRegadd);
             if (!StringUtil.isEmpty(postal) && !"null".equalsIgnoreCase(postal))
 				dto.setPostalCode(postal);
 
-            String unit = jsonObjectRegadd.getString("unit");
+            String unit = getStringKeyByObjName("unit",jsonObjectRegadd);
             if (!StringUtil.isEmpty(unit) && !"null".equalsIgnoreCase(unit))
 				dto.setUnitNo(unit);
 
-            String block = jsonObjectRegadd.getString("block");
+            String block = getStringKeyByObjName("block",jsonObjectRegadd);
             if (!StringUtil.isEmpty(block) && !"null".equalsIgnoreCase(block))
                dto.setBlockNo(block);
 
-            String building = jsonObjectRegadd.getString("building");
+            String building = getStringKeyByObjName("building",jsonObjectRegadd);
             if (!StringUtil.isEmpty(building) && !"null".equalsIgnoreCase(building))
 				dto.setBuildingName(building);
 
-            String street = jsonObjectRegadd.getString("street");
+            String street = getStringKeyByObjName("street",jsonObjectRegadd);
             if (!StringUtil.isEmpty(street) && !"null".equalsIgnoreCase(street))
 				dto.setStreetName(street);
 
 		}
 		JSONObject jsonObjectMobileno = jsonObject.getJSONObject("mobileno");
 		if (!jsonObjectMobileno.isNullObject()) {
-			String mobileno = jsonObjectMobileno.getString("nbr");
+			String mobileno = getStringKeyByObjName("nbr",jsonObjectMobileno);
 			if (!StringUtil.isEmpty(mobileno) && !"null".equalsIgnoreCase(mobileno))
 				dto.setMobileNo(mobileno);
 		}
@@ -116,14 +115,23 @@ public class MyInfoAjax {
 		return dto;
 	}
 
+	private String getStringKeyByObjName(String objName,JSONObject jsonObject){
+		JSONObject floorJson = jsonObject.getJSONObject(objName);
+		if(!floorJson.isNullObject()){
+			return floorJson.getString("value");
+		}
+		return "";
+	}
+
+
 	private  String getMyInfoResponse(String idNum) throws Exception {
-    	String keyStore                     = Config.get("myinfo.jws.priclientkey");
-		String	appId 						= Config.get("myinfo.application.id");
-		String 	clientId 					= Config.get("myinfo.client.id");
-		String singPassEServiceId 			= Config.get("myinfo.singpass.eservice.id");
-		String	realm 						= Config.get("myinfo.realm");
+    	String keyStore                     = ConfigHelper.getString("myinfo.jws.priclientkey");
+		String	appId 						= ConfigHelper.getString("myinfo.application.id");
+		String 	clientId 					= ConfigHelper.getString("myinfo.client.id");
+		String singPassEServiceId 			= ConfigHelper.getString("myinfo.singpass.eservice.id");
+		String	realm 						= ConfigHelper.getString("myinfo.realm");
 		//String txnNo					    = "Moh" + Formatter.formatDateTime(new Date(), Formatter.DATE_REF_NUMBER);
-		String txnNo                        =Config.get("myinfo.txnNo");
+		String txnNo                        =ConfigHelper.getString("myinfo.txnNo");
 		List<String> list = getAttrList();
 		String baseStr = null;
         String authorization = null;
@@ -147,7 +155,7 @@ public class MyInfoAjax {
             log.error(e.getMessage(), e);
             throw new RuntimeException("A response from MyInfo has not been received. Please try again later.",e);
         }
-         String myInfoPath                     = Config.get("myinfo.path.prdfix");
+         String myInfoPath                     = ConfigHelper.getString("myinfo.path.prdfix");
         if(StringUtil.isEmpty(myInfoPath)){
         	log.info("-----myinfo.path.prdfix is null---------");
         	return null;

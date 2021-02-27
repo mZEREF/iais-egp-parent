@@ -101,7 +101,7 @@
         </div>
     </div>
     <div class="col-xs-10 col-xs-offset-1 col-lg-offset-0 col-lg-2">
-        <div class="dropdown profile-dropdown" style="width: 142%;margin-left: -43%">
+        <div class="dropdown profile-dropdown">
             <a class="profile-btn btn" id="profileBtn" data-toggle="dropdown" href="javascript:;" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">${iais_Login_User_Info_Attr.userName}</a>
             <ol class="dropdown-menu" aria-labelledby="profileBtn">
                 <li class="management-account"><a href="/main-web/eservice/INTERNET/MohFeAdminUserManagement">Manage Account</a></li>

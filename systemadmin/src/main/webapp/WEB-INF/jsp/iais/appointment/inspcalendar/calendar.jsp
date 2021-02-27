@@ -145,7 +145,7 @@
                     <c:choose>
                       <c:when test="${empty inspectorCalenDarResultAttr.rows}">
                         <tr>
-                          <td colspan="6">
+                          <td colspan="9">
                             <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                           </td>
                         </tr>
@@ -163,13 +163,12 @@
                             <td><iais:code code="${calendar.recurrence}"></iais:code></td>
                             <td><fmt:formatDate value="${calendar.recurrenceEndate}" pattern="dd/MM/yyyy"/></td>
                             <td>
-
-                                <button type="button"   onclick="doDelete('<iais:mask name="nonAvailId" value="${calendar.id}"/>')"  class="btn btn-default btn-sm" >Delete</button>
+                                <button type="button" onclick="doDelete('<iais:mask name="nonAvailId" value="${calendar.id}"/>')" data-toggle= "modal" data-target= "#deleteNonDate" class="btn btn-default btn-sm" >Delete</button>
                                 <button type="button"  onclick="doEdit('<iais:mask name="nonAvailId" value="${calendar.id}"/>')" class="btn btn-default btn-sm" >Update</button>
                             </td>
                           </tr>
                         </c:forEach>
-
+                        <iais:confirm yesBtnCls="btn btn-primary" msg="Are you sure you want to delete this item?" callBack="deleteThisNonDate()" popupOrder="deleteNonDate" needCancel="true"></iais:confirm>
                       </c:otherwise>
                     </c:choose>
                     </tbody>
@@ -206,7 +205,11 @@
 
     function doDelete(val) {
         $('#nonAvailId').val(val);
-        SOP.Crud.cfxSubmit("mainForm", "delete", val);
+    }
+
+    function deleteThisNonDate() {
+        var valueId = $('#nonAvailId').val();
+        SOP.Crud.cfxSubmit("mainForm", "delete", valueId);
     }
     
     function doClear() {

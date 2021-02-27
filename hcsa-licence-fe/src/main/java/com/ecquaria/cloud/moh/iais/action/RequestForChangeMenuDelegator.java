@@ -63,6 +63,7 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.rfcutil.EqRequestForChangeSubmitResultChange;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -393,6 +394,10 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, "oldAppSubmissionDto", oldAppSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Premises Amendment");
         ParamUtil.setRequestAttr(bpc.request, "premisesList", AppConsts.YES);
+        List<SelectOption> weeklyOpList = NewApplicationHelper.genWorkingDaySp();
+        ParamUtil.setRequestAttr(bpc.request,"weeklyOpList",weeklyOpList);
+        List<SelectOption> phOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
+        ParamUtil.setRequestAttr(bpc.request,"phOpList",phOpList);
         log.debug(StringUtil.changeForLog("the do preparePremisesEdit end ...."));
         ParamUtil.setRequestAttr(bpc.request, "not_view", "notView");
     }
@@ -693,6 +698,7 @@ public class RequestForChangeMenuDelegator {
         }
         List<AppSubmissionDto> appSubmissionDtos1 = IaisCommonUtils.genNewArrayList();
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
+            String licenceId = appSubmissionDto.getLicenceId();
             NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
             appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
@@ -706,6 +712,7 @@ public class RequestForChangeMenuDelegator {
             if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
                 for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                     appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+                    appGrpPremisesDto.setGroupLicenceFlag(licenceId);
                 }
             }
             //judge is the preInspection
@@ -1095,7 +1102,7 @@ public class RequestForChangeMenuDelegator {
         List<SelectOption> personelRoles = IaisCommonUtils.genNewArrayList();
         SelectOption sp1 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, "Clinical Governance Officer");
         SelectOption sp2 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, "Principal Officer");
-        SelectOption sp3 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, "Deputy Principal Officer");
+        SelectOption sp3 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, "Nominee");
         SelectOption sp4 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, "MedAlert");
         personelRoles.add(sp1);
         personelRoles.add(sp2);
@@ -1483,7 +1490,7 @@ public class RequestForChangeMenuDelegator {
 
 
 
-        boolean eqGrpPremises = NewApplicationDelegator.eqGrpPremises(appGrpPremisesDtoList1, oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList);
+        boolean eqGrpPremises = EqRequestForChangeSubmitResultChange.eqGrpPremises(appGrpPremisesDtoList1, oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList);
         if (!eqGrpPremises) {
             ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
@@ -1778,14 +1785,23 @@ public class RequestForChangeMenuDelegator {
         String noNeedPayment = bpc.request.getParameter("noNeedPayment");
         log.debug(StringUtil.changeForLog("payMethod:"+payMethod));
         log.debug(StringUtil.changeForLog("noNeedPayment:"+noNeedPayment));
-        if (0.0 != appSubmissionDtos.get(0).getAmount() && StringUtil.isEmpty(payMethod)) {
-            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-            errorMap.put("pay",MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field"));
-            boolean isRfi = false;
-            NewApplicationHelper.setAudiErrMap(isRfi,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,errorMap,null,appSubmissionDtos.get(0).getLicenceNo());
-            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"prePayment");
-            return;
+        String action = ParamUtil.getString(bpc.request,"crud_action_additional");
+        if("next".equals(action)){
+            if (0.0 != appSubmissionDtos.get(0).getAmount() && StringUtil.isEmpty(payMethod)) {
+                Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                errorMap.put("pay",MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field"));
+                boolean isRfi = false;
+                NewApplicationHelper.setAudiErrMap(isRfi,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,errorMap,null,appSubmissionDtos.get(0).getLicenceNo());
+                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"prePayment");
+                return;
+            }
+        }else {
+            AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
+            appSubmissionDto.setAppGrpNo(null);
+            appSubmissionDto.setId(null);
+            appSubmissionDto.setAppGrpId(null);
+            ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
         }
 
         log.info(StringUtil.changeForLog("do doPayValidate end ..."));

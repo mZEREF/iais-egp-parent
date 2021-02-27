@@ -106,34 +106,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="control control-caption-horizontal">
-                        <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext col-md-5">
-                                <label class="control-label control-set-font control-font-label">Preferred Mode of Receiving MedAlert</label>
-                                <span class="mandatory">*</span>
-                            </div>
-                            <div class="preferredModeDiv">
-                                <div class="col-md-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input preferredMode" type="checkbox" name="preferredMode(0)" value="1" aria-invalid="false">
-                                        <label class="form-check-label"><span class="check-square"></span>
-                                            Email
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input preferredMode" type="checkbox" name="preferredMode(0)" value="2" aria-invalid="false">
-                                        <label class="form-check-label"><span class="check-square"></span>
-                                            SMS
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </div>
             <br/>
         </div>

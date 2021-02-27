@@ -1023,6 +1023,7 @@ public class LicenceApproveBatchjob {
                     break;
                 }
                 log.debug(StringUtil.changeForLog("The appGrpPremisesDtos.size() is -->;" + appGrpPremisesEntityDtos.size()));
+                //
                 //create lic_premises
                 List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationListDto.getAppPremisesCorrelationDtos();
                 //create LicPremisesScopeDto
@@ -1255,8 +1256,36 @@ public class LicenceApproveBatchjob {
                     premisesOperationalUnitDtos.add(premisesOperationalUnitDto);
                 }
             }
+            //weekly
+            List<AppPremOpenPeriodDto> appWeeklyDtos = appGrpPremisesEntityDto.getWeeklyDtos();
+            List<LicPremOpenPeriodDto> licWeeklyDtos = IaisCommonUtils.genNewArrayList();
+            if(!IaisCommonUtils.isEmpty(appWeeklyDtos)){
+                log.info(StringUtil.changeForLog("The licence Generate appWeeklyDtos.size() is -->:"+appWeeklyDtos.size()));
+                for(AppPremOpenPeriodDto appWeeklyDto:appWeeklyDtos){
+                    LicPremOpenPeriodDto licWeeklyDto= MiscUtil.transferEntityDto(appWeeklyDto, LicPremOpenPeriodDto.class);
+                    licWeeklyDto.setId(null);
+                    licWeeklyDto.setPremId(null);
+                    licWeeklyDtos.add(licWeeklyDto);
+                }
+            }
+
+            //event
+            List<AppPremEventPeriodDto> appEventDtos = appGrpPremisesEntityDto.getEventDtos();
+            List<LicPremEventPeriodDto> licEventDtos = IaisCommonUtils.genNewArrayList();
+            if(!IaisCommonUtils.isEmpty(appEventDtos)){
+                log.info(StringUtil.changeForLog("The licence Generate appEventDtos.size() is -->:"+appEventDtos.size()));
+                for(AppPremEventPeriodDto appEventDto:appEventDtos){
+                    LicPremEventPeriodDto licEventDto = MiscUtil.transferEntityDto(appEventDto,LicPremEventPeriodDto.class);
+                    licEventDto.setId(null);
+                    licEventDto.setPremId(null);
+                    licEventDtos.add(licEventDto);
+                }
+            }
+
             premisesDto.setLicPremPhOpenPeriodDtos(licPremPhOpenPeriodDtos);
             premisesDto.setPremisesOperationalUnitDtos(premisesOperationalUnitDtos);
+            premisesDto.setWeeklyDtos(licWeeklyDtos);
+            premisesDto.setEventDtos(licEventDtos);
             premisesGroupDto.setPremisesDto(premisesDto);
             //create lic_premises
             String premisesId = appGrpPremisesEntityDto.getId();

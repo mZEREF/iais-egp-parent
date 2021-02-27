@@ -15,6 +15,10 @@
     .okBtn{
         float: right;margin-left: 5px;
     }
+    td p{
+        word-wrap: break-word;
+        word-break: break-all;
+    }
 </style>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
@@ -84,15 +88,15 @@
                             <thead>
                             <tr align="center">
                                 <th></th>
-                                <iais:sortableHeader needSort="false" field="subject" value="S/N"/>
-                                <iais:sortableHeader needSort="true" field="MSG_NAME" value="Message Name"/>
-                                <iais:sortableHeader needSort="true" field="DISTRIBUTION_NAME" value="Distribution Name"/>
-                                <iais:sortableHeader needSort="true" field="DELIVERY_MODE" value="Mode of Delivery"/>
-                                <iais:sortableHeader needSort="true" field="SCHEDULE_SEND_DATE" value="Scheduled Send Date"/>
-                                <iais:sortableHeader needSort="true" field="ACTUAL_SEND_DATE" value="Actual Send Date"/>
-                                <iais:sortableHeader needSort="true" field="DOC_NAME" value="Attachment"/>
-                                <iais:sortableHeader needSort="true" field="STATUS" value="Status"/>
-                                <<iais:sortableHeader needSort="false" field="subject" value="Action"/>
+                                <iais:sortableHeader needSort="false" field="subject" value="S/N" style="width:10%"/>
+                                <iais:sortableHeader needSort="true" field="MSG_NAME" value="Message Name" style="width:15%"/>
+                                <iais:sortableHeader needSort="true" field="DISTRIBUTION_NAME" value="Distribution Name" style="width:15%"/>
+                                <iais:sortableHeader needSort="true" field="DELIVERY_MODE" value="Mode of Delivery" style="width:10%"/>
+                                <iais:sortableHeader needSort="true" field="SCHEDULE_SEND_DATE" value="Scheduled Send Date" style="width:10%"/>
+                                <iais:sortableHeader needSort="true" field="ACTUAL_SEND_DATE" value="Actual Send Date" style="width:10%"/>
+                                <iais:sortableHeader needSort="true" field="DOC_NAME" value="Attachment" style="width:12%"/>
+                                <iais:sortableHeader needSort="true" field="STATUS" value="Status" style="width:10%"/>
+                                <iais:sortableHeader needSort="false" field="subject" value="Action" style="width:8%"/>
                             </tr>
                             </thead>
                             <tbody>
@@ -111,7 +115,7 @@
                                         <c:set var="massIndex" value="${(status.index + 1) + (blastSearchParam.pageNo - 1) * blastSearchParam.pageSize}"></c:set>
                                         <tr style="display: table-row;">
                                             <td>
-                                                <p><input type="checkbox" id="edit${massIndex}" name="editBlast" value="<iais:mask name="editBlast" value="${item.id}"/>"
+                                                <p><input type="checkbox" id="edit${massIndex}" name="editBlast" value="<iais:mask name='editBlast' value='${item.id}'/>"
                                                     <c:choose>
                                                     <c:when test="${!empty item.actual}">
                                                         data-edit = "0"
@@ -123,8 +127,7 @@
                                                 ></p>
                                             </td>
                                             <td>
-                                                <p><c:out
-                                                        value="${massIndex}"/></p>
+                                                <p><c:out  value="${massIndex}"/></p>
                                             </td>
                                             <td>
                                                 <p><a onclick="preview('${item.id}')"><c:out value="${item.msgName}"/></a>

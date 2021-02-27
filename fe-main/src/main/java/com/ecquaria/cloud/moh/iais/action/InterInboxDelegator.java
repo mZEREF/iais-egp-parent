@@ -510,12 +510,10 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         String licMaskId = ParamUtil.getString(bpc.request, "licenceNo");
         String licId = ParamUtil.getMaskedString(bpc.request,licMaskId);
-
         LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
         if(licenceDto != null){
-            //68594
             boolean isActive = licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus());
-            boolean isApprove= licenceDto!=null && ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus());
+           boolean isApprove= licenceDto!=null && ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus());
             if(!isActive && !isApprove){
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("INBOX_ACK011"));
                 List<String> licIdValues = IaisCommonUtils.genNewArrayList();
@@ -1215,7 +1213,7 @@ public class InterInboxDelegator {
             log.info(StringUtil.changeForLog("delete draft start ..."));
             inboxService.deleteDraftByNo(draft);
 
-            AuditTrailDto auditTrailDto = new AuditTrailDto();
+            AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
             auditTrailDto.setApplicationNum(draft);
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_DELETE);
             AuditTrailHelper.callSaveAuditTrail(auditTrailDto);

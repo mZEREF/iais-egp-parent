@@ -190,9 +190,9 @@
                                                     <td><c:out
                                                             value="${pool.licenceStatus}"/></td>
                                                     <td><c:out
-                                                            value="${pool.getTwoLastComplianceHistory()}"/></td>
+                                                            value="${pool.twoLastComplianceHistory}"/></td>
                                                     <td><c:out
-                                                            value="${pool.getLastComplianceHistory()}"/></td>
+                                                            value="${pool.lastComplianceHistory}"/></td>
                                                     <td><c:out
                                                             value="${pool.currentRiskTagging}"/></td>
                                                 </tr>

@@ -152,6 +152,7 @@ public class OnlineApptAjaxController {
                     boolean dateFlag = getStartEndDateFlag(appointmentDto);
                     if(dateFlag) {
                         try {
+                            appointmentDto.setResultNum(1);
                             FeignResponseEntity<List<ApptRequestDto>> result = appointmentClient.getUserCalendarByUserId(appointmentDto);
                             Map<String, Collection<String>> headers = result.getHeaders();
                             //Has it been blown up
@@ -193,7 +194,7 @@ public class OnlineApptAjaxController {
                     apptInspectionDateDto.setSpecificApptDto(specificApptDto);
                     ParamUtil.setSessionAttr(request, "apptInspectionDateDto", apptInspectionDateDto);
                 }
-            //Audit Task
+                //Audit Task
             } else {
                 TaskDto taskDto = apptInspectionDateDto.getTaskDto();
                 //get Applicant set start date and end date from appGroup

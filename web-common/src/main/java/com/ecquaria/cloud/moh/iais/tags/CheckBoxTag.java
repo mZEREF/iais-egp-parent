@@ -8,6 +8,7 @@ package com.ecquaria.cloud.moh.iais.tags;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -15,8 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspTagException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -143,12 +144,12 @@ public final class CheckBoxTag extends DivTagSupport {
     @Override
     public int doStartTag() {
         StringBuilder html = new StringBuilder();
-        html.append("<div class=\"form-check-gp\">");
+
         try {
             if (!StringUtil.isEmpty(codeCategory)) {
-
+                html.append("<div class=\"form-check-gp\">");
                 //not in <c:forEach> style
-               setCodeCategory(MasterCodeUtil.getCategoryId(codeCategory));
+                setCodeCategory(MasterCodeUtil.getCategoryId(codeCategory));
                 html.append("<label>");
                 html.append(labelName);
                 html.append("</label>");
@@ -206,15 +207,22 @@ public final class CheckBoxTag extends DivTagSupport {
                         html.append("</div>");
                     }
                 }
+
+                html.append("</div>");
             }else {
                 //in <c:forEach> style
-                html.append("<input name =\"").append(name).append('\"').append("id = \"").append(checkboxId).append('\"').append("type=\"checkbox\"").append("value=").append('\"').append(value).append('\"');
+                html.append("<input name =\"").append(name).append('\"').append("id = \"").append(checkboxId).append('\"')
+                        .append("type=\"checkbox\"").append("value=").append('\"').append(MaskUtil.maskValue(name, value)).append('\"');
+                HashMap<String,String> checkedMap = (HashMap<String, String>) ParamUtil.getSessionAttr(request, forName);
+                if (checkedMap != null){
+                    if (checkedMap.containsKey(value)){
+                        html.append(" checked = \"checked\"");
+                    }
+                }
+                html.append("/>");
             }
 
-            html.append("</div>");
-
             log.info(html.toString());
-
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (IOException e) {
             log.error(e.getMessage(), e);

@@ -349,7 +349,9 @@
 
                     <tr>
                         <td class="col-xs-4">
-                            <p>Rectified Within KPI?</p>
+                            <p>Rectified Within KPI? <p>Rectified Within KPI? <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
+                                                                                 data-html="true"
+                                                                                 data-original-title="<p>This is a sample message for KPI, pending MOH to provide.</p>">i</a></p></p>
                         </td>
                         <td class="col-xs-4">
                             <p><c:out value="${insRepDto.rectifiedWithinKPI}"></c:out></p>

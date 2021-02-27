@@ -75,7 +75,6 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -619,18 +618,15 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
         cancelOrConfirmApptDate(apptCalendarStatusDto);
         //url
-        String applicationNo = apptInspectionDateDto.getTaskDto().getApplicationNo();
-        String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
-                MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE + applicationNo;
-        HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-        maskParams.put("applicationNo", applicationNo);
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         String applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
         //send email
         Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, applicantId, applicationViewDto, urlId, applicationDtos);
-        createMessage(url, applicationNo, maskParams, map, applicationDtos);
+        //send msg
+        String applicationNo = apptInspectionDateDto.getTaskDto().getApplicationNo();
+        createMessage(loginUrl, applicationNo, map, applicationDtos);
         //update app Info and insp Info
-        updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_SPECIFIC_INSP_DATE, InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE);
+        updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), apptInspectionDateDto.getTaskDto(), inspDate, apptInspectionDateDto);
     }
 
     private void cancelOrConfirmApptDate(ApptCalendarStatusDto apptCalendarStatusDto) {
@@ -701,19 +697,15 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         cancelOrConfirmApptDate(apptCalendarStatusDto);
         //send message and email
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
-        String applicationNo = apptInspectionDateDto.getTaskDto().getApplicationNo();
-        String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
-                MessageConstants.MESSAGE_INBOX_URL_APPT_SYS_INSP_DATE + applicationNo;
-        HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-        maskParams.put("applicationNo", applicationNo);
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         String applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
         //send email
         Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, applicantId, applicationViewDto, urlId, applicationDtos);
-        //get service code to send message
-        createMessage(url, applicationNo, maskParams, map, applicationDtos);
+        //send msg
+        String applicationNo = apptInspectionDateDto.getTaskDto().getApplicationNo();
+        createMessage(loginUrl, applicationNo, map, applicationDtos);
         //save data to app table
-        updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_INSPECTION_DATE, InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE);
+        updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), apptInspectionDateDto.getTaskDto(), inspDate, apptInspectionDateDto);
     }
 
     private List<AppPremisesInspecApptDto> setAudiTrailDtoInspAppt(List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList, AuditTrailDto currentAuditTrailDto) {
@@ -1098,18 +1090,31 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         appEicClient.updateStatus(eicRequestTrackingDtos);
     }
 
-    private void updateStatusAndCreateHistory(List<TaskDto> taskDtos, String inspecStatus, String processDec) {
-        for(TaskDto taskDto : taskDtos) {
-            String refNo = taskDto.getRefNo();
-            ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(refNo);
-            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-            ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING);
+    private void updateStatusAndCreateHistory(List<TaskDto> taskDtos, TaskDto taskDto, Date saveDate, ApptInspectionDateDto apptInspectionDateDto) {
+        for(TaskDto taskDto1 : taskDtos) {
+            String appPremCorrId = taskDto1.getRefNo();
+            AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+            //save Inspection date
+            createOrUpdateRecommendation(appPremisesRecommendationDto, appPremCorrId, saveDate);
+            //update Inspection status
+            updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
+            //Application data
+            ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
+            ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
             applicationService.updateFEApplicaiton(applicationDto1);
-            updateInspectionStatus(refNo, inspecStatus);
-            inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, processDec, taskDto.getRoleId(), HcsaConsts.ROUTING_STAGE_PRE, taskDto.getWkGrpId());
-            inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, null, null, taskDto.getWkGrpId());
+            if (taskDto != null) {
+                inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, apptInspectionDateDto.getProcessDec(), taskDto.getRoleId(), HcsaConsts.ROUTING_STAGE_PRE, taskDto.getWkGrpId());
+                inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, taskDto.getRoleId(), HcsaConsts.ROUTING_STAGE_PRE, taskDto.getWkGrpId());
+            }
         }
         updateTaskDtoList(taskDtos);
+        List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
+        for (TaskDto taskDto2 : taskDtos) {
+            int score = taskDto2.getScore();
+            TaskDto tDto = createTaskDto(taskDto2, taskDto2.getUserId(), score);
+            taskDtoList.add(tDto);
+        }
+        taskService.createTasks(taskDtoList);
     }
 
     private void updateInspectionStatus(String appPremCorrId, String status) {
@@ -1207,7 +1212,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         return map;
     }
 
-    private void createMessage(String url, String appNo, HashMap<String, String> maskParams, Map<String, Object> map, List<ApplicationDto> applicationDtos) {
+    private void createMessage(String url, String appNo, Map<String, Object> map, List<ApplicationDto> applicationDtos) {
         List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
         for(ApplicationDto applicationDto : applicationDtos){
             String serviceId = applicationDto.getServiceId();
@@ -1223,9 +1228,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         emailParam.setTemplateContent(map);
         emailParam.setQueryCode(appNo);
         emailParam.setReqRefNum(appNo);
-        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         emailParam.setRefId(appNo);
-        emailParam.setMaskParams(maskParams);
         emailParam.setSvcCodeList(serviceCodes);
         notificationHelper.sendNotification(emailParam);
     }

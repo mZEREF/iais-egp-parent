@@ -230,13 +230,24 @@ public class BlastManagementDelegator {
      * @param bpc
      */
     public void search(BaseProcessClass bpc) throws ParseException {
+        String fieldName = ParamUtil.getRequestString(bpc.request,"fieldName");
+        String sortType = ParamUtil.getRequestString(bpc.request,"sortType");
+        int pageNo = 1;
+        int pageSize = SystemParamUtil.getDefaultPageSize();
+        //if sort,get page no
+        if(!StringUtil.isEmpty(fieldName) && !StringUtil.isEmpty(sortType)){
+            SearchParam searchParamPageNo = getSearchParam(bpc.request,false);
+            pageNo = searchParamPageNo.getPageNo();
+            pageSize = searchParamPageNo.getPageSize();
+        }
         SearchParam searchParam = getSearchParam(bpc.request,true);
+        searchParam.setPageNo(pageNo);
+        searchParam.setPageSize(pageSize);
         String descriptionSwitch = ParamUtil.getRequestString(bpc.request,"descriptionSwitch");
         String msgName = ParamUtil.getRequestString(bpc.request,"msgName");
         String start = ParamUtil.getRequestString(bpc.request,"start");
         String end = ParamUtil.getRequestString(bpc.request,"end");
-        String fieldName = ParamUtil.getRequestString(bpc.request,"fieldName");
-        String sortType = ParamUtil.getRequestString(bpc.request,"sortType");
+
         if(!StringUtil.isEmpty(fieldName) && !StringUtil.isEmpty(sortType)){
             searchParam.setSort(fieldName, sortType);
         }else{
@@ -256,7 +267,6 @@ public class BlastManagementDelegator {
         }else{
             searchParam.getParams().clear();
             searchParam.getFilters().clear();
-            searchParam.setPageNo(1);
             if(!StringUtil.isEmpty(descriptionSwitch)){
                 searchParam.addFilter("description", "%" + descriptionSwitch + "%",true);
             }
@@ -771,6 +781,7 @@ public class BlastManagementDelegator {
         ParamUtil.setRequestAttr(bpc.request,"searchResult",searchResult);
         ParamUtil.setRequestAttr(bpc.request,"auditSearchParam",auditSearchParam);
         ParamUtil.setRequestAttr(bpc.request,"mode",mode);
+        ParamUtil.setRequestAttr(bpc.request,"msgId",msgid);
         ParamUtil.setRequestAttr(bpc.request,"createDt",createDt);
         ParamUtil.setRequestAttr(bpc.request,"createby",createby);
         ParamUtil.setRequestAttr(bpc.request,"editBlast",msgid);

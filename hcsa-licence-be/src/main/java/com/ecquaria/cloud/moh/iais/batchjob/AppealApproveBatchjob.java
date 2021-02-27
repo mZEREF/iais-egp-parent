@@ -310,7 +310,8 @@ public class AppealApproveBatchjob {
         if(applicationGroupDto!=null && appPremisesRecommendationDto !=null && newAppPremisesRecommendationDto!=null && appealApplicationDto!=null){
             String recomDecision = newAppPremisesRecommendationDto.getRecomDecision();
             if("approve".equals(recomDecision) || InspectionReportConstants.RFC_APPROVED.equals(recomDecision) || InspectionReportConstants.APPROVED.equals(recomDecision)){
-                rollBackApplication.add(appealApplicationDto);
+
+                    rollBackApplication.add(appealApplicationDto);
                     ApplicationDto newAppealApplicaitonDto = (ApplicationDto) CopyUtil.copyMutableObject(appealApplicationDto);
                     newAppealApplicaitonDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                     appealApplicaiton.add(newAppealApplicaitonDto);

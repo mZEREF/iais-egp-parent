@@ -151,7 +151,7 @@
                                     </div>
                                 </c:if>
                                 <div class="col-xs-12 col-sm-3">
-                                    <div class="text-right text-center-mobile" id="submitButton"><a id="SUBMIT" class="btn btn-primary">Submit and Pay</a></div>
+                                    <div class="text-right text-center-mobile" id="submitButton"><a id="SUBMIT" class="btn btn-primary">Make Payment</a></div>
                                     <div class="text-right text-center-mobile hidden" id="nextButton"><a id="Next" class="btn btn-primary">Preview the Next Service</a></div>
                                 </div>
                             </div>
@@ -165,12 +165,13 @@
     <div class="modal fade" id="rfcPending" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body" style="text-align: center;">
+<%--                <div class="modal-header">--%>
+<%--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--                    <div class="modal-title" style="font-size: 2rem;">Confirmation Box</div>--%>
+<%--                </div>--%>
+                <div class="modal-body" >
                     <div class="row">
-                        <div class="col-md-12"><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
+                        <div class="col-md-12" style="margin-left: 10%;margin-right: 10%"><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
                     </div>
                 </div>
                 <div class="row " style="margin-top: 5%;margin-bottom: 5%">

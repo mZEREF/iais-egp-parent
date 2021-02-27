@@ -1,6 +1,9 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaServiceClient;
@@ -8,16 +11,11 @@ import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicmEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.OnlineApptEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
+import java.util.Date;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * @Author: yichen
@@ -96,28 +94,33 @@ public final class EicRequestTrackingHelper {
         eicRequestTrackingDto.setFirstActionAt(now);
         eicRequestTrackingDto.setLastActionAt(now);
 
+        saveEicTrack(client, eicRequestTrackingDto);
+
+        return eicRequestTrackingDto;
+    }
+
+    public EicRequestTrackingDto saveEicTrack(int client, EicRequestTrackingDto eicRequestTrackingDto) {
         switch (client){
             case EicClientConstant.APPLICATION_CLIENT:
-                appEicClient.saveEicTrack(eicRequestTrackingDto);
+                eicRequestTrackingDto = appEicClient.saveEicTrack(eicRequestTrackingDto).getEntity();
                 break;
             case EicClientConstant.ORGANIZATION_CLIENT:
-                orgTrackingClient.saveEicTrack(eicRequestTrackingDto);
+                eicRequestTrackingDto = orgTrackingClient.saveEicTrack(eicRequestTrackingDto).getEntity();
                 break;
             case EicClientConstant.SYSTEM_ADMIN_CLIENT:
-                eicClient.saveEicTrack(eicRequestTrackingDto);
+                eicRequestTrackingDto = eicClient.saveEicTrack(eicRequestTrackingDto).getEntity();
                 break;
             case EicClientConstant.ONLINE_APPT_CLIENT:
-                onlineApptEicClient.saveEicTrack(eicRequestTrackingDto);
+                eicRequestTrackingDto = onlineApptEicClient.saveEicTrack(eicRequestTrackingDto).getEntity();
                 break;
             case EicClientConstant.HCSA_CONFIG:
-                hcsaConfigClient.saveEicTrack(eicRequestTrackingDto);
+                eicRequestTrackingDto = hcsaConfigClient.saveEicTrack(eicRequestTrackingDto).getEntity();
                 break;
             case EicClientConstant.LICENCE_CLIENT:
-                licEicClient.saveEicTrack(eicRequestTrackingDto);
+                eicRequestTrackingDto = licEicClient.saveEicTrack(eicRequestTrackingDto).getEntity();
                 break;
         }
 
         return eicRequestTrackingDto;
     }
-
 }

@@ -153,6 +153,7 @@ public class EventbusCallBackDelegate {
             }catch (ClassNotFoundException e){
 
             }
+
         }else if(EventBusConsts.OPERATION__AUDIT_TASK_CANCELED.equalsIgnoreCase(operation)){
             log.info("-------cancel audit task call back ----");
             invokeMethod(submissionId, eventRefNum,

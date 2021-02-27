@@ -67,14 +67,12 @@
                                     <div class="application-tab-footer">
                                         <div class="row">
                                             <div class="col-xs-12 col-sm-3">
-                                                <c:choose>
-                                                    <c:when test="${DoDraftConfig == null}">
-                                                        <a id = "Back" class="back" ><em class="fa fa-angle-left"></em> Back</a>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <a id = "RFC_BACK" class="back" ><em class="fa fa-angle-left"></em> Back</a>
-                                                    </c:otherwise>
-                                                </c:choose>
+                                                <c:if test="${DoDraftConfig == null}">
+                                                <a id = "Back" class="back" ><em class="fa fa-angle-left"></em> Back</a>
+                                                </c:if>
+                                                <c:if test="${RFC_DRAFT_NO!=null}">
+                                                    <a class="back"  id="RFC_BACK"><em class="fa fa-angle-left"></em> Back</a>
+                                                </c:if>
                                             </div>
                                             <div class="col-xs-12 col-sm-3">
                                                 <div class="button-group">
@@ -129,8 +127,8 @@
         window.print();
 
     });
-
     $('#RFC_BACK').click(function (){
         location.href="https://${pageContext.request.serverName}/main-web<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox?initPage=initApp",request)%>";
     });
+
 </script>

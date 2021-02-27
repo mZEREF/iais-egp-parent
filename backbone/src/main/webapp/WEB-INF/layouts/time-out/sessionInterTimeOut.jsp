@@ -20,7 +20,7 @@
       <div class="modal-body">
         <div class="row">
           <input type="hidden" name="fangDuoJirejectDate" id="fangDuoJirejectDate">
-          <div class="col-md-12" style="margin-left: 10%; margin-right: 10%">
+          <div class="col-md-12">
             <div style="line-height:18px;">Your session will be invalid in <label style="margin-bottom: 0px;" id="countdownLbl">0<%=(timeout - warning)%>:00</label> minute(s). You can only extend the session by clicking Extend button.</div>
           </div>
         </div>

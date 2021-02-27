@@ -16,6 +16,12 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
+import com.ecquaria.cloud.security.AuthenticationConfig;
+import com.ecquaria.cloud.usersession.UserSession;
+import com.ecquaria.cloud.usersession.UserSessionUtil;
+import com.ecquaria.cloud.usersession.client.UserSessionService;
+import com.ecquaria.cloudfeign.FeignException;
+import ecq.commons.exception.BaseException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -30,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -68,7 +75,8 @@ public class BackendLoginDelegator {
     public void preLogin(BaseProcessClass bpc){
     }
 
-    public void doLogin(BaseProcessClass bpc) throws InvalidKeySpecException, NoSuchAlgorithmException {
+    public void doLogin(BaseProcessClass bpc) throws InvalidKeySpecException, NoSuchAlgorithmException,
+                        FeignException, BaseException {
         if (fakeLogin) {
             HttpServletRequest request = bpc.request;
             JwtVerify verifier = new JwtVerify();
@@ -81,7 +89,7 @@ public class BackendLoginDelegator {
         }
     }
 
-    public void doLogin(String userId, HttpServletRequest request) {
+    public void doLogin(String userId, HttpServletRequest request) throws FeignException, BaseException {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         OrgUserDto orgUserDto = null;
         try {
@@ -108,6 +116,16 @@ public class BackendLoginDelegator {
         user.setPassword("$2a$12$BaTEVyvwaRuop2SdFoK5jOZvK8tnycxVNx1MYVGjbd1vPEQLcaK4K");
         user.setId(orgUserDto.getUserId());
 
+        String conInfo = AuthenticationConfig.getConcurrentUserSession();
+        if (AuthenticationConfig.VALUE_CONCURRENT_USER_SESSION_CLOSE_OLD.equals(conInfo)) {
+            List<UserSession> usesses = UserSessionService.getInstance()
+                    .retrieveActiveSessionByUserDomainAndUserId(user.getUserDomain(), user.getId());
+            if (usesses != null && usesses.size() > 0) {
+                for (UserSession us : usesses) {
+                    UserSessionUtil.killUserSession(us.getSessionId());
+                }
+            }
+        }
         SessionManager.getInstance(request).imitateLogin(user, true, true);
         SessionManager.getInstance(request).initSopLoginInfo(request);
 

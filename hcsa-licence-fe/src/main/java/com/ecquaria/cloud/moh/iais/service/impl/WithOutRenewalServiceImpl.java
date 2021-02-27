@@ -201,11 +201,11 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                     newMatE.setName(newMatDto.getName());
                     newMatE.setMobileNo(newMatDto.getMobileNo());
                     newMatE.setEmailAddr(newMatDto.getEmailAddr());
-                    newMatE.setEmailAddr(newMatDto.getPreferredMode());
+                    newMatE.setDescription(newMatDto.getDescription());
                     oldMatE.setName(oldMatDto.getName());
                     oldMatE.setMobileNo(oldMatDto.getMobileNo());
                     oldMatE.setEmailAddr(oldMatDto.getEmailAddr());
-                    oldMatE.setEmailAddr(oldMatDto.getPreferredMode());
+                    oldMatE.setDescription(oldMatDto.getDescription());
                     if (!newMatE.equals(oldMatE)) {
                         return true;
                     }
@@ -407,11 +407,11 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                     newMatE.setName(newMatDto.getName());
                     newMatE.setMobileNo(newMatDto.getMobileNo());
                     newMatE.setEmailAddr(newMatDto.getEmailAddr());
-                    newMatE.setPreferredMode(newMatDto.getPreferredMode());
+                    newMatE.setDescription(newMatDto.getDescription());
                     oldMatE.setName(oldMatDto.getName());
                     oldMatE.setMobileNo(oldMatDto.getMobileNo());
                     oldMatE.setEmailAddr(oldMatDto.getEmailAddr());
-                    oldMatE.setPreferredMode(oldMatDto.getPreferredMode());
+                    oldMatE.setDescription(oldMatDto.getDescription());
                     if (!newMatE.equals(oldMatE) && idNo.equals(idNo1)) {
                         idNos.add(idNo);
                     }

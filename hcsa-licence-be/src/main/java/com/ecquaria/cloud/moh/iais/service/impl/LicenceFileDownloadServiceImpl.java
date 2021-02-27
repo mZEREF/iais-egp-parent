@@ -592,21 +592,21 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 if(f.isFile()){
                     try {
                         FileRepoDto fileRepoDto = new FileRepoDto();
-
-                        fileRepoDto.setId(f.getName());
+                        String name = f.getName();//file_id
+                        fileRepoDto.setId(name);
                         fileRepoDto.setAuditTrailDto(intranet);
                         String s = f.getName().replaceAll("-", "");
                         //not use generateFile function.this have floder name have dian
                         File file1 = new File(file.getPath()+File.separator, s);
                         flag=f.renameTo(file1);
-                        fileRepoDto.setFileName(s);
+                        fileRepoDto.setFileName(f.getName());
                         fileRepoDto.setRelativePath(AppServicesConsts.COMPRESS+File.separator+fileNames+
                                 File.separator+groupPath+File.separator+"folder"+File.separator+groupPath+File.separator+"files");
                         fileRepoDtos.add(fileRepoDto);
                         eventDto.setFileRepoList(fileRepoDtos);
                         flag=true;
                         log.info(StringUtil.changeForLog(f.getPath()+"file path------"));
-
+                        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(fileRepoDto)+"fileRepoDto------"));
                     }catch (Exception e){
                         log.info(StringUtil.changeForLog(e+e.getMessage()+"--------error- save file"));
                         continue;
@@ -656,7 +656,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             taskDtoList.add(newTaskDto);
                             //create history
                             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
-                                    createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),appStatus,
+                                    createAppPremisesRoutingHistory(applicationDto,appStatus,
                                             taskDto.getTaskKey(),null,taskDto.getRoleId(),auditTrailDto);
                             appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
                             rollBackApplicationDtos.add(applicationDto);
@@ -683,16 +683,17 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         log.debug(StringUtil.changeForLog("the do getRoutingTaskForRequestForInformation end ...."));
         return  result;
     }
-    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus,
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(ApplicationDto applicationDto, String appStatus,
                                                                          String stageId, String internalRemarks,String roleId,
                                                                          AuditTrailDto auditTrailDto){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-        appPremisesRoutingHistoryDto.setApplicationNo(appNo);
+        appPremisesRoutingHistoryDto.setApplicationNo(applicationDto.getApplicationNo());
+        ApplicationGroupDto entity = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-        appPremisesRoutingHistoryDto.setActionby(auditTrailDto == null ?
-                AppConsts.USER_ID_SYSTEM : auditTrailDto.getMohUserGuid());
+        appPremisesRoutingHistoryDto.setActionby(entity==null ?  AppConsts.USER_ID_SYSTEM:entity.getSubmitBy() == null ?
+                AppConsts.USER_ID_SYSTEM : entity.getSubmitBy());
         appPremisesRoutingHistoryDto.setRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN);
         appPremisesRoutingHistoryDto.setAuditTrailDto(auditTrailDto);
         return appPremisesRoutingHistoryDto;

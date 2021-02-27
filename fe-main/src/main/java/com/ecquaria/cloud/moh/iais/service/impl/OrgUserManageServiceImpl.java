@@ -154,10 +154,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             log.error(StringUtil.changeForLog("encounter failure when sync user account to be"), e);
         }
 
-        //create egp user
-        FeUserDto postCreateUser = postCreate.getFeUserDto();
-        createClientUser(postCreateUser);
 
+        FeUserDto postCreateUser = postCreate.getFeUserDto();
         return postCreateUser;
     }
 

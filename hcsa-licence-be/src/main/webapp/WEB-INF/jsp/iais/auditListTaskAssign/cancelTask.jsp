@@ -85,7 +85,6 @@
 </div>
 <iais:confirm msg='Please click "Yes" to confirm cancellation.' title="  " needCancel="true" callBack="cancelAuditBack()" popupOrder="actionCancel" yesBtnDesc="Yes" cancelBtnDesc="No"></iais:confirm>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
-<%@ include file="/WEB-INF/jsp/include/yesNoConfirm.jsp" %>
 <script type="text/javascript">
     function cancel(act) {
         showWaiting();
@@ -95,9 +94,6 @@
     function cancelAudit(act) {
         $('#actionCancel').modal('show');
         $('#cancelActionValue').val(act);
-       /* showPopupConfirmation({"msg":"Please click \"Yes\" to confirm cancellation.",
-            'confirmCallback':'cancelAuditBack','data':{"act":act},"confirmBtn" : "Yes","cancelBtn":"No"
-        });*/
     }
 
     function cancelAuditBack() {

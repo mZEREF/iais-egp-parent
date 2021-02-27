@@ -27,7 +27,6 @@
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="currentValidateId" value="">
     <input type="hidden" id="currentMaskId" name="currentMaskId" value="">
-    <input type="hidden" id="itemCheckboxReDisplay" name="itemCheckboxReDisplay" value="${param.itemCheckbox}">
 
       <div class="bg-title"><h2>Checklist Item Management</h2></div>
 
@@ -37,8 +36,6 @@
 
     <br><br>
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
-
-
         <div class="form-horizontal">
           <div class="form-group">
             <iais:field value="Regulation Clause Number" ></iais:field>
@@ -87,13 +84,15 @@
                   <a class="btn btn-secondary" id="exportButtonId" href="${pageContext.request.contextPath}/checklist-item-file?action=checklistItem" onclick="$('#exportButtonId').attr('class', 'btn btn-secondary disabled') ">Export Checklist Item</a>
                   <a class="btn btn-secondary" id="exportTemplateButtonId"   onclick="$('#exportTemplateButtonId').attr('class', 'btn btn-secondary disabled'); exportToConfigTemplate()">Export Checklist Configurations</a>
                   <a class="btn btn-primary next" id="crud_search_button" value="doSearch" href="#">Search</a>
-                  <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
+                  <a class="btn btn-secondary" id="crud_clear_button" onclick="$('#status').val('')" href="#">Clear</a>
                 </div>
               </div>
             </div>
           </div>
 
         </div>
+
+
         <div class="tab-content">
           <div class="row">
             <div class="col-xs-12">
@@ -141,9 +140,8 @@
                         <c:forEach var="item" items="${checklistItemResult.rows}" varStatus="status">
                           <tr>
                             <td class="row_no">${(status.index + 1) + (checklistItemSearch.pageNo - 1) * checklistItemSearch.pageSize}</td>
-                            <td><iais:checkbox name="itemCheckbox" checkboxId="itemCheckbox" request="${pageContext.request}"  value="${item.itemId}"></iais:checkbox></td>
+                            <td><iais:checkbox name="itemCheckbox" checkboxId="itemCheckbox" request="${pageContext.request}"  value="${item.itemId}" forName="itemCheckboxReDisplay"></iais:checkbox></td>
                             <%--<td><input name="itemCheckbox" id="itemCheckbox" type="checkbox" value=""/>--%>
-                            </td>
                             <td>${item.regulationClauseNo}</td>
                             <td>${item.regulationClause}</td>
                             <td>${item.checklistItem}</td>
@@ -153,18 +151,16 @@
                               <td>
                                 <c:if test="${item.status == 'CMSTAT001'}">
                                 <button type="button" class="btn btn-default btn-sm"
-
                                         onclick="javascript:prepareEditItem('<iais:mask name="currentMaskId" value="${item.itemId}"/>');">Edit
                                 </button>
-                                  <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" data-target="#DeleteTemplateModal" >Delete</button>
-
-                                  <div class="modal fade" id="DeleteTemplateModal" tabindex="-1" role="dialog" aria-labelledby="DeleteTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                                  <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" data-target="#DeleteTemplateModal${status.index + 1}" >Delete</button>
+                                  <div class="modal fade" id="DeleteTemplateModal${status.index + 1}" tabindex="-1" role="dialog" aria-labelledby="DeleteTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                                     <div class="modal-dialog" role="document">
                                       <div class="modal-content">
-                                        <div class="modal-header">
-                                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                          <div class="modal-title" id="gridSystemModalLabel" style="font-size: 2rem;">Confirmation Box</div>
-                                        </div>
+<%--                                        <div class="modal-header">--%>
+<%--                                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--                                          <div class="modal-title" id="gridSystemModalLabel" style="font-size:2rem;">Confirmation Box</div>--%>
+<%--                                        </div>--%>
                                         <div class="modal-body">
                                           <div class="row">
                                             <div class="col-md-12"><span style="font-size: 2rem">Do you confirm the delete ?</span></div>
@@ -177,7 +173,6 @@
                                       </div>
                                     </div>
                                   </div>
-
                                 </c:if>
                                 <c:if test="${item.status == 'CMSTAT003'}">
                                   <button type="button" class="btn btn-default btn-sm"

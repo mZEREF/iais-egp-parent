@@ -5,7 +5,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <div class="modal-title" id="myModalLabel" style="font-size: 2rem;">Upload Internal Document</div>
+                <div class="modal-title" id="myModalLabel" style="font-size:2rem;">Upload Internal Document</div>
             </div>
             <div class="modal-body">
                 <form id="fileUploadForm" name="fileUploadForm" enctype="multipart/form-data"

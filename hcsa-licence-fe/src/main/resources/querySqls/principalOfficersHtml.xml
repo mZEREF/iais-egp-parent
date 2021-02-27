@@ -154,7 +154,7 @@
                 <div class=" form-group form-horizontal formgap">
                   <div class="col-sm-6 control-label formtext col-md-8">
                     <div class="cgo-header" style="font-size: 18px;">
-                      <strong>Deputy Principal Officer <label class="assign-psn-item">(dpoOfficerCount)</label></strong>
+                      <strong>Nominee <label class="assign-psn-item">(dpoOfficerCount)</label></strong>
                     </div>
                   </div>
                   <div class="col-sm-5 col-md-4 text-right" >
@@ -167,7 +167,7 @@
               <div class="control control-caption-horizontal">
                 <div class=" form-group form-horizontal formgap">
                   <div class="col-sm-6 control-label formtext col-md-4" style="font-size: 1.6rem;">
-                    Assign a Deputy Principal Officer
+                    Assign a Nominee
                     <span class="mandatory">*</span>
                   </div>
                   <div class="col-sm-5 col-md-8">

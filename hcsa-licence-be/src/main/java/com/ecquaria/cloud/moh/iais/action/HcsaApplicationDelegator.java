@@ -360,6 +360,9 @@ public class HcsaApplicationDelegator {
                 } else {
                     recommendationStr = "other";
                 }
+                if(isAppealType && StringUtil.isEmpty(appealRecommendationValues)){
+                    recommendationStr = "";
+                }
             }
             boolean isFinalStage = (boolean) ParamUtil.getSessionAttr(bpc.request, "finalStage");
             boolean isCessationOrWithdrawalFinalStage = (isCessation || isWithdrawal) && isFinalStage;
@@ -1006,6 +1009,41 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do broadcastReply end ...."));
     }
 
+    private void deleteTempWorkingGroup(ApplicationDto applicationDto,BaseProcessClass bpc){
+        try{
+            //delete workgroup
+            BroadcastOrganizationDto broadcastOrganizationDto1 = broadcastService.getBroadcastOrganizationDto(
+                    applicationDto.getApplicationNo(), AppConsts.DOMAIN_TEMPORARY);
+            BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
+            WorkingGroupDto workingGroupDto = broadcastOrganizationDto1.getWorkingGroupDto();
+            broadcastOrganizationDto.setRollBackworkingGroupDto((WorkingGroupDto) CopyUtil.copyMutableObject(workingGroupDto));
+            workingGroupDto = changeStatusWrokGroup(workingGroupDto, AppConsts.COMMON_STATUS_DELETED);
+            if (workingGroupDto != null) {
+                log.debug(StringUtil.changeForLog("temp workingGroup != null delete"));
+                workingGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            }
+            broadcastOrganizationDto.setWorkingGroupDto(workingGroupDto);
+            List<UserGroupCorrelationDto> userGroupCorrelationDtos = broadcastOrganizationDto1.getUserGroupCorrelationDtoList();
+            List<UserGroupCorrelationDto> cloneUserGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
+            CopyUtil.copyMutableObjectList(userGroupCorrelationDtos, cloneUserGroupCorrelationDtos);
+            broadcastOrganizationDto.setRollBackUserGroupCorrelationDtoList(cloneUserGroupCorrelationDtos);
+            userGroupCorrelationDtos = changeStatusUserGroupCorrelationDtos(userGroupCorrelationDtos, AppConsts.COMMON_STATUS_DELETED);
+            broadcastOrganizationDto.setUserGroupCorrelationDtoList(userGroupCorrelationDtos);
+
+            //save the broadcast
+            broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            String evenRefNum = String.valueOf(System.currentTimeMillis());
+            broadcastOrganizationDto.setEventRefNo(evenRefNum);
+            String submissionId = generateIdClient.getSeqId().getEntity();
+            log.debug(StringUtil.changeForLog(submissionId));
+            broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto, bpc.process, submissionId);
+            log.debug(StringUtil.changeForLog("delete temp workingGroup end"));
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+
+    }
+
 
     /**
      * StartStep: replay
@@ -1016,12 +1054,15 @@ public class HcsaApplicationDelegator {
     public void replay(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do replay start ...."));
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String nextStatus = ApplicationConsts.APPLICATION_STATUS_REPLY;
         String getHistoryStatus = applicationViewDto.getApplicationDto().getStatus();
         if (ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(getHistoryStatus)) {
             getHistoryStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
             nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+            //delete template working group
+            deleteTempWorkingGroup(applicationDto,bpc);
         } else if (ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(getHistoryStatus)) {
             nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
         }
@@ -1055,7 +1096,6 @@ public class HcsaApplicationDelegator {
         } else {
             String componentValue = historyExtDto.getComponentValue();
             if ("N".equals(componentValue)) {
-                ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
                 ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                 List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationDto.getServiceId(),
                         stageId, applicationDto.getApplicationType(), applicationGroupDto.getIsPreInspection());
@@ -1557,7 +1597,7 @@ public class HcsaApplicationDelegator {
                 ParamUtil.setRequestAttr(bpc.request, "insRepDto", insRepDto);
                 String appType = applicationViewDto.getApplicationDto().getApplicationType();
                 ParamUtil.setRequestAttr(bpc.request, "appType", appType);
-                initAoRecommendation(correlationId, bpc, applicationViewDto.getApplicationDto().getApplicationType());
+                initAoRecommendation(correlationId, bpc,appType);
             }
         }
     }
@@ -1571,7 +1611,6 @@ public class HcsaApplicationDelegator {
         AppPremisesRecommendationDto initRecommendationDto = new AppPremisesRecommendationDto();
         if (appPremisesRecommendationDto != null) {
             String reportRemarks = appPremisesRecommendationDto.getRemarks();
-            initRecommendationDto.setRemarks(reportRemarks);
             initRecommendationDto.setRemarks(reportRemarks);
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
             if (recomInNumber != null) {
@@ -1728,7 +1767,7 @@ public class HcsaApplicationDelegator {
                 String count = String.valueOf(riskResultDto.getTimeCount());
                 //String recommTime = count + " " + codeDesc;
                 recommendationSelectOption.add(new SelectOption(count + " " + dateType, riskResultDto.getLictureText()));
-                if (riskResultDto.isDafLicture()) {
+                if (riskResultDto.isDafLicture() && !ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)) {
                     //recommendationStr
                     ParamUtil.setRequestAttr(request, "recommendationStr", count + " " + dateType);
                 }
@@ -2350,7 +2389,8 @@ public class HcsaApplicationDelegator {
                 saveReturnFeeDtosStripe.add(appreturn);
             }
         }
-        List<PaymentRequestDto> paymentRequestDtos= applicationService.eicFeStripeRefund(saveReturnFeeDtosStripe);        for (PaymentRequestDto refund : paymentRequestDtos
+        List<PaymentRequestDto> paymentRequestDtos= applicationService.eicFeStripeRefund(saveReturnFeeDtosStripe);
+        for (PaymentRequestDto refund : paymentRequestDtos
         ) {
             for (AppReturnFeeDto appreturn : saveReturnFeeDtos
             ) {
@@ -3244,6 +3284,8 @@ public class HcsaApplicationDelegator {
             String otherReason = appCessMiscDto.getOtherReason();
             String patTransType = appCessMiscDto.getPatTransType();
             String patTransTo = appCessMiscDto.getPatTransTo();
+            String mobileNo = appCessMiscDto.getMobileNo();
+            String emailAddress = appCessMiscDto.getEmailAddress();
             appCessHciDto.setPatientSelect(patTransType);
             appCessHciDto.setReason(reason);
             appCessHciDto.setOtherReason(otherReason);
@@ -3256,16 +3298,23 @@ public class HcsaApplicationDelegator {
                     appCessHciDto.setPatientSelect(patTransType);
                     if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
                         appCessHciDto.setPatHciName(patTransTo);
+                        appCessHciDto.setPatNeedTrans(Boolean.TRUE);
                     }
                     if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
                         appCessHciDto.setPatRegNo(patTransTo);
+                        appCessHciDto.setPatNeedTrans(Boolean.TRUE);
                     }
                     if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
                         appCessHciDto.setPatOthers(patTransTo);
+                        appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+                        appCessHciDto.setMobileNo(mobileNo);
+                        appCessHciDto.setEmailAddress(emailAddress);
                     }
                 } else {
                     String remarks = appCessMiscDto.getPatNoReason();
                     appCessHciDto.setPatNoRemarks(remarks);
+                    appCessHciDto.setPatNoConfirm("no");
+                    appCessHciDto.setPatNeedTrans(Boolean.FALSE);
                 }
                 List<AppCessHciDto> appCessHciDtos = IaisCommonUtils.genNewArrayList();
                 appCessHciDtos.add(appCessHciDto);

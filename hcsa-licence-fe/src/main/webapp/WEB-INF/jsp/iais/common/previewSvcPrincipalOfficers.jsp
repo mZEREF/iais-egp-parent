@@ -32,7 +32,7 @@
                         <c:if test="${po.psnType=='DPO'}">
                             <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
                                 <c:set var="dpoIndex" value="${dpoIndex=dpoIndex+1}"></c:set>
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Deputy Principal Officer<c:if test="${dpoSize > 1}"> ${dpoIndex}</c:if>:</strong></p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Nominee<c:if test="${dpoSize > 1}"> ${dpoIndex}</c:if>:</strong></p>
                             </div>
                         </c:if>
                         <table class="col-xs-8">

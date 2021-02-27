@@ -47,7 +47,7 @@
                                                         Principal Officer
                                                     </c:when>
                                                     <c:when test="${assessList == 'DPO'}">
-                                                        Deputy Principal Officer
+                                                        Nominee
                                                     </c:when>
                                                     <c:when test="${assessList == 'MAP'}">
                                                         MedAlert
@@ -65,7 +65,7 @@
                                                                 Principal Officer
                                                             </c:when>
                                                             <c:when test="${assessList == 'DPO'}">
-                                                                Deputy Principal Officer
+                                                                Nominee
                                                             </c:when>
                                                             <c:when test="${assessList == 'MAP'}">
                                                                 MedAlert
@@ -81,7 +81,7 @@
                                                                 Principal Officer,
                                                             </c:when>
                                                             <c:when test="${assessList == 'DPO'}">
-                                                                Deputy Principal Officer,
+                                                                Nominee,
                                                             </c:when>
                                                             <c:when test="${assessList == 'MAP'}">
                                                                 MedAlert,

@@ -124,7 +124,7 @@
   <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
   <iais:confirm msg="There is a pending application for a licence associated to this premises" callBack="" popupOrder="ackMessageConfim"></iais:confirm>
   <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
- <%-- <div class="modal fade" id="hciNameUsed" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+  <%--<div class="modal fade" id="hciNameUsed" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -193,6 +193,13 @@
         addOperational();
 
         operationDel();
+
+        addWeekly();
+
+        removeWeekly();
+
+        removePh();
+
         //Binding method
         $('#Back').click(function(){
             showWaiting();

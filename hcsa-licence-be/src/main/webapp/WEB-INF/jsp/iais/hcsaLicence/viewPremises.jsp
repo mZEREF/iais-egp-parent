@@ -99,23 +99,6 @@
                                     </div>
                                   </div>
 
-                                  <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        Vehicle No
-                                      </div>
-                                      <div class="col-md-6">
-                                        <div  class="col-md-6">
-                                          <span class="newVal " attr="${appGrpPremDto.conveyanceVehicleNo}"><c:out value="${appGrpPremDto.conveyanceVehicleNo}"/></span>
-                                        </div>
-                                        <div  class="col-md-6">
-                                             <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"
-                                                   style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"/></span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </c:if>
-
                                   <c:if test="${'ONSITE'==appGrpPremDto.premisesType}">
                                     <div class="row">
                                       <div class="col-md-6">
@@ -151,45 +134,59 @@
                                         </div>
                                       </div>
                                     </div>
-
-                                    <div class="row">
-                                      <div class="col-md-6">
+                                  </c:if>
+                                  <div class="row">
+                                    <div class="col-md-6">
                                       HCI Name
                                       <a class="btn-tooltip styleguide-tooltip" id="hciNameClick" <c:if test="${empty appGrpPremDto.applicationViewHciNameDtos}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
                                     </div>
-                                      <div  class="col-md-7" style="position: absolute;z-index: 100;left: 40%;background-color: #EEEEEE;display: none;margin-top: 2%;overflow-y: scroll" id="hciNameShowOrHidden">
-                                          <p>The HCI name is currently used by another licensee</p>
-                                          <br>
-                                          <table    border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
-                                            <tr>
-                                              <td  class="col-md-4">Name of Licensee</td>
-                                              <td  class="col-md-4">HCI Name</td>
-                                              <td  class="col-md-4">Service Name</td>
-                                            </tr>
-                                            <c:forEach items="${appGrpPremDto.applicationViewHciNameDtos}" var="applicationViewHciNameDtos">
-                                            <tr>
-                                              <td>${applicationViewHciNameDtos.licensee}</td>
-                                              <td>${applicationViewHciNameDtos.hciName}</td>
-                                              <td>${applicationViewHciNameDtos.serviceName}</td>
-                                            </tr>
-                                            </c:forEach>
-                                          </table>
+                                    <div  class="col-md-7" style="position: absolute;z-index: 100;left: 40%;background-color: #EEEEEE;display: none;margin-top: 2%;overflow-y: scroll" id="hciNameShowOrHidden">
+                                      <p>The HCI name is currently used by another licensee</p>
+                                      <br>
+                                      <table    border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
+                                        <tr>
+                                          <td  class="col-md-4">Name of Licensee</td>
+                                          <td  class="col-md-4">HCI Name</td>
+                                          <td  class="col-md-4">Service Name</td>
+                                        </tr>
+                                        <c:forEach items="${appGrpPremDto.applicationViewHciNameDtos}" var="applicationViewHciNameDtos">
+                                          <tr>
+                                            <td>${applicationViewHciNameDtos.licensee}</td>
+                                            <td>${applicationViewHciNameDtos.hciName}</td>
+                                            <td>${applicationViewHciNameDtos.serviceName}</td>
+                                          </tr>
+                                        </c:forEach>
+                                      </table>
 
-                                      </div>
+                                    </div>
 
+                                    <div class="col-md-6">
                                       <div class="col-md-6">
-                                        <div class="col-md-6">
-                                                <span class="newVal " attr="${appGrpPremDto.hciName}"><c:out value="${appGrpPremDto.hciName}"/></span>
-                                        </div>
-                                        <div class="col-md-6">
+                                        <span class="newVal " attr="${appGrpPremDto.hciName}"><c:out value="${appGrpPremDto.hciName}"/></span>
+                                      </div>
+                                      <div class="col-md-6">
                                              <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"
                                                    style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"/></span>
 
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        Vehicle No
+                                      </div>
+                                      <div class="col-md-6">
+                                        <div  class="col-md-6">
+                                          <span class="newVal " attr="${appGrpPremDto.conveyanceVehicleNo}"><c:out value="${appGrpPremDto.conveyanceVehicleNo}"/></span>
+                                        </div>
+                                        <div  class="col-md-6">
+                                             <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"
+                                                   style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"/></span>
                                         </div>
                                       </div>
                                     </div>
                                   </c:if>
-
                                   <div class="row">
                                     <div class="col-md-6">
                                       Postal Code

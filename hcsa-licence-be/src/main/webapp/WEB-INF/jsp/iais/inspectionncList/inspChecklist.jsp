@@ -16,11 +16,11 @@
                 <th>No.</th>
                 <th>Regulation Clause Number</th>
                 <th  width="30%">Item</th>
-                <th>Yes</th>
-                <th>No</th>
-                <th>N/A</th>
+                <th class="text-center">Yes</th>
+                <th class="text-center">No</th>
+                <th class="text-center">N/A</th>
                 <th>Remarks</th>
-                <th>Rectified</th>
+                <th class="text-center">Rectified</th>
             </tr>
             </thead>
             <tbody>
@@ -31,10 +31,10 @@
                     <div class="modal fade" id="DeleteTemplateModal${item.incqDto.itemId}Ins${inspectorsStatus.index}" tabindex="-1" role="dialog" aria-labelledby="regOutsideWindow" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <div class="modal-title" style="font-size: 2rem;"></div>
-                                </div>
+<%--                                <div class="modal-header">--%>
+<%--                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--                                    <div class="modal-title" style="font-size: 2rem;"></div>--%>
+<%--                                </div>--%>
                                 <div class="modal-body">
                                     <div class="row">
                                         <div class="col-md-8 col-md-offset-2" style="width: 100%; margin: 0;white-space:pre-wrap;"><span  style="font-size: 2rem">${item.incqDto.regClause}</span></div>

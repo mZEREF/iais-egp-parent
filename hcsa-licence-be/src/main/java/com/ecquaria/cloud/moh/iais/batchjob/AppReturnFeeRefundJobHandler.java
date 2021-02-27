@@ -61,7 +61,8 @@ public class AppReturnFeeRefundJobHandler extends IJobHandler {
                 saveReturnFeeDtosStripe.add(appreturn);
             }
         }
-        List<PaymentRequestDto> paymentRequestDtos= applicationService.eicFeStripeRefund(saveReturnFeeDtosStripe);        for (PaymentRequestDto refund:paymentRequestDtos
+        List<PaymentRequestDto> paymentRequestDtos= applicationService.eicFeStripeRefund(saveReturnFeeDtosStripe);
+        for (PaymentRequestDto refund:paymentRequestDtos
         ) {
             for (AppReturnFeeDto appreturn:saveReturnFeeDtos
             ) {

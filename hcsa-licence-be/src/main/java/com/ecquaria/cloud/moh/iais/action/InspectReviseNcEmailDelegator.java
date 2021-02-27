@@ -556,28 +556,6 @@ public class InspectReviseNcEmailDelegator {
         inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
         List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(correlationId);
         AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(correlationId,InspectionConstants.RECOM_TYPE_TCU);
-        if(appPreRecommentdationDto!=null&&appPreRecommentdationDto.getBestPractice()!=null){
-            inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
-        }
-        //Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-        //InspecEmailDelegator.makeEmail(inspectionEmailTemplateDto, map);
-//        if(!ncAnswerDtos.isEmpty()){
-//            StringBuilder stringBuilder=new StringBuilder();
-//            int i=0;
-//            for (NcAnswerDto ncAnswerDto:ncAnswerDtos
-//            ) {
-//                stringBuilder.append("<tr><td>").append(++i);
-//                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
-//                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getClause()));
-//                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
-//                stringBuilder.append("</td></tr>");
-//            }
-//            map.put("NC_DETAILS",stringBuilder.toString());
-//        }
-//        if(inspectionEmailTemplateDto.getBestPractices()!=null){
-//            map.put("BEST_PRACTICE",inspectionEmailTemplateDto.getBestPractices());
-//        }
-        //map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
         String mesContext;
         {
             List<String> leads = organizationClient.getInspectionLead(taskDto.getWkGrpId()).getEntity();
@@ -642,13 +620,32 @@ public class InspectReviseNcEmailDelegator {
                 }
                 mapTableTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
             }
-            //mapTemplate.put("ServiceName", applicationViewDto.getServiceType());
             if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||appPreRecommentdationDto.getRemarks()!=null)){
-                String stringBuilder = "<tr><td>" + 1 +
-                        TD + StringUtil.viewHtml(appPreRecommentdationDto.getBestPractice()) +
-                        TD + StringUtil.viewHtml(appPreRecommentdationDto.getRemarks()) +
-                        "</td></tr>";
-                mapTableTemplate.put("Observation_Recommendation",StringUtil.viewHtml(stringBuilder));
+                int sn=1;
+                String[] observations=appPreRecommentdationDto.getRemarks().split("\n");
+                String[] recommendations=appPreRecommentdationDto.getBestPractice().split("\n");
+                StringBuilder stringBuilder=new StringBuilder();
+                if(recommendations.length>=observations.length){
+                    for (int i=0;i<recommendations.length;i++){
+                        if(i<observations.length){
+                            stringBuilder.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(recommendations[i])).append(TD).append(StringUtil.viewHtml(observations[i])).append("</td></tr>");
+                        }else {
+                            stringBuilder.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(recommendations[i])).append(TD).append(StringUtil.viewHtml("")).append("</td></tr>");
+                        }
+                        sn++;
+
+                    }
+                }else {
+                    for (int i=0;i<observations.length;i++){
+                        if(i<recommendations.length){
+                            stringBuilder.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(recommendations[i])).append(TD).append(StringUtil.viewHtml(observations[i])).append("</td></tr>");
+                        }else {
+                            stringBuilder.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml("")).append(TD).append(StringUtil.viewHtml(observations[i])).append("</td></tr>");
+                        }
+                        sn++;
+                    }
+                }
+                mapTableTemplate.put("Observation_Recommendation",StringUtil.viewHtml(stringBuilder.toString()));
             }
             msgTableTemplateDto.setMessageContent(MsgUtil.getTemplateMessageByContent(msgTableTemplateDto.getMessageContent(),mapTableTemplate));
 

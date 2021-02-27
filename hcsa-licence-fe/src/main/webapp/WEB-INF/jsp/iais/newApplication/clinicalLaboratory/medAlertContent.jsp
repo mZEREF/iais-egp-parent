@@ -7,7 +7,9 @@
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 <div class="row">
     <div class="col-xs-12">
-        <h2>MedAlert Person</h2>
+        <p style="font-weight: 600;font-size: 2.2rem">MedAlert Person</p>
+        <p>MedAlert Person is the person appointed to receive the medical alert notification and circulars issued by MOH.</p>
+        <hr>
         <div class="row">
             <c:if test="${AppSubmissionDto.needEditController }">
                 <c:set var="isClickEdit" value="false"/>
@@ -188,33 +190,20 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                   <%-- <div class="row">
                         <div class="control control-caption-horizontal">
                             <div class=" form-group form-horizontal formgap">
                                 <div class="col-sm-3 control-label formtext col-md-5">
-                                    <label  class="control-label control-set-font control-font-label">Preferred Mode of Receiving MedAlert</label>
+                                    <label  class="control-label control-set-font control-font-label">Description</label>
                                     <span class="mandatory">*</span>
                                 </div>
-                                <div class="col-sm-3 control-label formtext col-md-7 preferredModeDiv">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-check">
-                                                <input class="form-check-input preferredMode" id="EmailCheckbox" type="checkbox" name="preferredMode${status.index}" value = "1" aria-invalid="false" <c:if test="${'1' ==medAlertPsn.preferredMode || '3' ==medAlertPsn.preferredMode}">checked="checked"</c:if> >
-                                                <label class="form-check-label" for="EmailCheckbox"><span class="check-square"></span>Email</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-check">
-                                                <input class="form-check-input preferredMode" id="SMSCheckbox" type="checkbox" name="preferredMode${status.index}" value = "2" aria-invalid="false" <c:if test="${'2' ==medAlertPsn.preferredMode || '3' ==medAlertPsn.preferredMode}">checked="checked"</c:if>>
-                                                <label class="form-check-label" for="SMSCheckbox"><span class="check-square"></span>SMS</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="error-msg" id="error_preferredModeVal${status.index}" name="iaisErrorMsg"></span>
+                                <div class="col-sm-4 col-md-7">
+                                    <iais:input maxLength="66" type="text" name="description" value="${medAlertPsn.description}"></iais:input>
+                                    <span class="error-msg" id="error_descriptionModeVal${status.index}" name="iaisErrorMsg"></span>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>--%>
                 </div>
                 <br/>
             </div>
@@ -425,7 +414,7 @@
         $contentEle.find('div.nice-select').removeClass('disabled');
         $contentEle.find('input[type="text"]').css('border-color','');
         $contentEle.find('input[type="text"]').css('color','');
-        $contentEle.find('.preferredMode').prop('disabled',false);
+        $contentEle.find('.description').prop('disabled',false);
         //get data from page
         $contentEle.find('select[name="assignSel"] option[value="newOfficer"]').prop('selected',true);
         var mapSelectVal = $contentEle.find('select[name="assignSel"]').val();
@@ -512,17 +501,9 @@
             $mapContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
         }
 
-        var preferredMode = data.preferredMode;
-        if(preferredMode != null && preferredMode !='undefined' && preferredMode != ''){
-            if('3' == preferredMode){
-                $mapContentEle.find('input.preferredMode').prop('checked',true);
-            }else{
-                $mapContentEle.find('input.preferredMode').each(function () {
-                    if(preferredMode == $(this).val()){
-                        $(this).prop('checked',true);
-                    }
-                });
-            }
+        var description = data.description;
+        if(description != null && description !='undefined' && description != ''){
+            $mapContentEle.find('input[name="description"]').val(data.description);
         }
 
 

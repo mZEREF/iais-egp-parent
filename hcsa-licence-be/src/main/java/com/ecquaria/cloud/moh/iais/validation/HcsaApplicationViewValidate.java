@@ -145,7 +145,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             //normal flow
             String nextStage = ParamUtil.getRequestString(request, "nextStage");
             //verify appeal type
-            if(!ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage)){
+            if(!ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage) && !ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(status)){
                 //appeal rfi recommendation is not required
                 appealTypeValidate(errMap,request,applicationType,roleId,taskDto.getTaskKey());
             }
@@ -293,7 +293,10 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         boolean isAsoPso = isPso || isAso;
         boolean isAppealType = ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType);
         String appealRecommendationValues = ParamUtil.getString(request, "appealRecommendationValues");
-        boolean isAppealApprove = "appealApprove".equals(appealRecommendationValues);
+        if(StringUtil.isEmpty(appealRecommendationValues)){
+            appealRecommendationValues = ParamUtil.getString(request,"decisionValues");
+        }
+        boolean isAppealApprove = "appealApprove".equals(appealRecommendationValues) || "decisionApproval".equals(appealRecommendationValues);
         if("other".equals(recommendationStr) || (isAppealType && isChangePeriodAppealType && isAsoPso && isAppealApprove)){
             if(!isAppealType){
                 ParamUtil.setRequestAttr(request,"selectDecisionValue",DECISION_APPROVAL);

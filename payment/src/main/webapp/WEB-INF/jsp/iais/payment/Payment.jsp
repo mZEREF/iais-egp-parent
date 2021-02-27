@@ -5,7 +5,7 @@
 <%
 
     String sessionId= (String) ParamUtil.getSessionAttr(request,"sessionNetsId");
-    String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+"/payment-web/process/EGPCLOUD/PaymentCallBack";
+    String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+"/egov/process/EGPCLOUD/PaymentCallBack";
     StringBuilder bud = new StringBuilder();
     bud.append(url).append("?sessionId=").append(sessionId);
     String header =  ParamUtil.getRequestString(request,"hmac");

@@ -179,31 +179,26 @@ public class SystemParameterDelegator {
         editDto.setAuditTrailDto(att);
         editDto.setValue(value);
         editDto.setDescription(description);
-        boolean exclusive = parameterService.getPropertyOffsetStatus(editDto.getPropertiesKey());
-        if (!exclusive){
-            ValidationResult validationResult = WebValidationHelper.validateProperty(editDto, "edit");
-            if(validationResult != null && validationResult.isHasErrors()){
-                Map<String,String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+        ValidationResult validationResult = WebValidationHelper.validateProperty(editDto, "edit");
+        if(validationResult != null && validationResult.isHasErrors()){
+            Map<String,String> errorMap = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+        }else {
+            boolean status =  parameterService.getPropertyOffsetStatus(editDto.getPropertiesKey());
+            if(status){
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("customErrorMessage",
+                        MessageUtil.getMessageDesc("SYSPAM_ERROR0009")));
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             }else {
                 beforeSave(editDto);
-                exclusive =  parameterService.getPropertyOffsetStatus(editDto.getPropertiesKey());
-                if(!exclusive){
-                    parameterService.setPropertyOffset(editDto.getPropertiesKey(), true);
-                    parameterService.saveSystemParameter(editDto);
-                    parameterService.setPropertyOffset(editDto.getPropertiesKey(), false);
-                    ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-                    ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("SYSPAM_ACK001"));
-                    ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAMETER_REQUEST_DTO, editDto);
-                }
+                parameterService.setPropertyOffset(editDto.getPropertiesKey(), true);
+                parameterService.saveSystemParameter(editDto);
+                parameterService.setPropertyOffset(editDto.getPropertiesKey(), false);
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+                ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("SYSPAM_ACK001"));
+                ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAMETER_REQUEST_DTO, editDto);
             }
-        }
-
-        if (exclusive){
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("customErrorMessage",
-                    MessageUtil.getMessageDesc("SYSPAM_ERROR0009")));
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }
     }
 

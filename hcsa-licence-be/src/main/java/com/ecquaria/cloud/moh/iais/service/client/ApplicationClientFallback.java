@@ -960,6 +960,14 @@ public class ApplicationClientFallback implements ApplicationClient{
     }
 
     @Override
+    public FeignResponseEntity<List<ApplicationGroupDto>> getApplicationGroupByPmtStatus(String pmtStatus) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<ProfessionalResponseDto>> getProfessionalDetail(ProfessionalParameterDto professionalParameterDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

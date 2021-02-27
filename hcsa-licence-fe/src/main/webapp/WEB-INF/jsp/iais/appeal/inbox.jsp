@@ -120,12 +120,12 @@
           <div class="col-xs-12" style="margin-bottom: 20px;">
             <div class="document-upload-list">
               <div class="file-upload-gp">
-                <div class="fileContent">
+                <div class="fileContent ">
                   ${upFile.originalFilename}
                 </div>
                 <span name="iaisErrorMsg" class="error-msg" id="error_file"></span>
                 <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
-                <div class="col-xs-12 col-md-4" style="margin-left: 1%">
+                <div class="col-xs-12 col-md-4" style="margin-left: 1%" >
                   <span  name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
                   <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${fileReportIdForAppeal}"/>&fileRepoName=${filename}" title="Download" class="downloadFile">${filename}</a></span>
                   <input type="text" disabled value="Y" style="display: none" name="isDelete" id="isDelete">

@@ -397,6 +397,7 @@ public class RequestForChangeDelegator {
                    errorMsg = MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxFile),"sizeMax");
                    error.put("selectedFileError",errorMsg);
                }
+
                log.info(StringUtil.changeForLog("The errorMsg is -->:"+errorMsg));
                if(!StringUtil.isEmpty(errorMsg)){
                    appPremisesSpecialDocDto.setErrorMsg(errorMsg);

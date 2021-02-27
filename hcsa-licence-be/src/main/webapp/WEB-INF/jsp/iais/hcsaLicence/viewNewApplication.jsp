@@ -465,6 +465,7 @@
                     </p>
                   </td>
                 </tr>
+                
                 <c:choose>
                   <c:when test="${'other' == cgo.speciality && 'other' == currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
                     <tr>
@@ -1395,7 +1396,7 @@
                   <c:set var="poIndex" value="${poIndex+1}"></c:set>
                 </c:if>
                 <c:if test="${po.psnType =='DPO'}">
-                  <p><strong class="col-xs-6">Deputy Principal Officer <c:if
+                  <p><strong class="col-xs-6">Nominee <c:if
                           test="${DPO_SIZE>1}">${dpoIndex}</c:if>:</strong></p>
                   <c:set var="dpoIndex" value="${dpoIndex+1}"></c:set>
                 </c:if>
@@ -1880,44 +1881,6 @@
                               style="display: none"><c:out
                                 value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].emailAddr}"/></span>
                     </div>
-
-                  </td>
-                </tr>
-                <tr>
-                  <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Preferred
-                      Mode of Receiving MedAlert</p>
-                  </td>
-                  <td>
-
-                    <div class="col-xs-6">
-                           <span class="newVal " attr="${appSvcMedAlertPerson.preferredMode}">
-                            <c:choose>
-                              <c:when test="${appSvcMedAlertPerson.preferredMode=='1'}">
-                                <c:out value="Email"/>
-                              </c:when>
-                              <c:when test="${appSvcMedAlertPerson.preferredMode==2}">
-                                <c:out value="SMS"/>
-                              </c:when>
-                              <c:when test="${appSvcMedAlertPerson.preferredMode==3}">
-                                <c:out value="Email  SMS"/>
-                              </c:when>
-                            </c:choose>
-                         </span>
-                    </div>
-
-                    <div class="col-xs-6">
-                      <span class="oldVal "
-                            attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode}"
-                            style="display: none">
-                           <c:choose>
-                             <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode=='1'}">Email</c:when>
-                             <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode=='2'}">SMS</c:when>
-                             <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode=='3'}">Email SMS</c:when>
-                           </c:choose>
-                      </span>
-                    </div>
-
 
                   </td>
                 </tr>

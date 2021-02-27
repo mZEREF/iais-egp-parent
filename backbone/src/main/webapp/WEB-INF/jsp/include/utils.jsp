@@ -52,12 +52,12 @@
         },
 
         disableButton: function (obj, id) {
-            if ($(obj).attr("checked")){
+            if ($(obj).prop("checked")){
                 $('#' + id).attr("class", "btn btn-primary next");
             }else {
                 $('#' + id).attr("class", "btn btn-primary disabled");
             }
-        }
+        },
     }
 
     $("#crud_search_button").click(function () {
@@ -101,8 +101,6 @@
         document.getElementById('crud_action_type').value = 'doBack';
         document.getElementById("mainForm").submit();
     })
-
-
 
     function jsonToHtmlTable(str, id) {
         if (str == undefined || str == '' ){
@@ -153,6 +151,5 @@
             return true
         }
     }
-
 
 </script>

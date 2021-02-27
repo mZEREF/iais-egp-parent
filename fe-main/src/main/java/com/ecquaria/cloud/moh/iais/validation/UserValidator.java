@@ -77,10 +77,13 @@ public class UserValidator implements CustomizeValidator {
             if (IaisEGPConstant.YES.equals(isNeedValidateField)){
                 if(dto.getId() == null && dto.getIdentityNo() != null){
                     String idType = IaisEGPHelper.checkIdentityNoType(dto.getIdentityNo());
-                    FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNricAndType(dto.getIdentityNo(), idType);
-                    if(feUserDto != null){
-                        map.put("identityNo", MessageUtil.getMessageDesc("USER_ERR015"));
+                    if(!StringUtil.isEmpty(dto.getIdentityNo()) && !StringUtil.isEmpty(idType)){
+                        FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNricAndType(dto.getIdentityNo(), idType);
+                        if(feUserDto != null){
+                            map.put("idNo", MessageUtil.getMessageDesc("USER_ERR015"));
+                        }
                     }
+
                 }
             }
         return map;

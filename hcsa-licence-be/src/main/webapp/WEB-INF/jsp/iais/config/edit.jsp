@@ -115,7 +115,7 @@
             <select name="selectCategoryId" >
               <option value="">Please Select</option>
               <c:forEach items="${categoryDtos}" var="categoryDto">
-                <option value="${categoryDto.id}" <c:if test="${hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
+                <option value="${categoryDto.name}" <c:if test="${hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
               </c:forEach>
             </select>
             <span id="error_serviceCategory" class="error-msg" name="iaisErrorMsg"></span>
@@ -196,8 +196,8 @@
         <div class="col-xs-12 col-md-9" >
           <label class="col-xs-12 col-md-7 control-label" >Principal Officer (PO)&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2" >
-            <input type="text" name="poId" style="display: none" maxlength="2" value="${PO.id}">
             <input type="text" name="man-principalOfficer" maxlength="2" value="${PO.pageMandatoryCount}" placeholder="minimum count">
+            <input type="text" name="poId" style="display: none" maxlength="2" value="${PO.id}">
             <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount0"></span>
           </div>
           <div class="col-xs-12 col-md-2" >
@@ -210,7 +210,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Deputy Principal Officer (DPO)&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-7 control-label" >Nominee&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input value="${DPO.id}" name="dpoId" style="display:none;" maxlength="2" type="text">
             <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" value="${DPO.pageMandatoryCount}" placeholder="minimum count">
@@ -298,6 +298,16 @@
                 <input type="hidden" name="serviceDocPremises" <c:choose><c:when test="${doc.dupForPrem=='1'}">value="1"</c:when><c:otherwise>value="0"</c:otherwise></c:choose>>
                 <input style="white-space: nowrap" class="form-check-input" <c:if test="${doc.dupForPrem=='1'}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocPremises">
                 <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
+              </div>
+              <div class="col-xs-12 col-md-3 form-check" style="margin-top: 1%">
+                <select name="selectDocPerson">
+                  <option value="">To duplicate for the personnel?</option>
+                  <option <c:if test="${doc.dupForPerson=='PO'}">selected</c:if> value="PO">Principal Officer (PO)</option>
+                  <option <c:if test="${doc.dupForPerson=='DPO'}">selected</c:if> value="DPO">Nominee</option>
+                  <option <c:if test="${doc.dupForPerson=='CGO'}">selected</c:if> value="CGO">Clinical Governance Officer (CGO)</option>
+                  <option <c:if test="${doc.dupForPerson=='SVCPSN'}">selected</c:if> value="SVCPSN">Service Personnel</option>
+                  <option <c:if test="${doc.dupForPerson=='MAP'}">selected</c:if> value="MAP">MedAlert Person </option>
+                </select>
               </div>
               <div class="col-xs-12 col-md-5" style="margin-right: 2%">
               </div>
@@ -481,7 +491,7 @@
 
       <div class="form-group" style="display: none" id="${routingStages.key}" >
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
-          <table border="1px" style="text-align: center" >
+          <table border="1px" style="text-align: center" valign="middle" >
             <tr>
               <th style="width: 10% ;height: 40px;text-align: center;padding: 1% 0% 1% "> Application Type&nbsp;<span class="mandatory" >*</span></th>
               <th  style="width: 20% ;height: 40px;text-align: center"> Service Workflow Routing Stages&nbsp;<span class="mandatory" >*</span></th>
@@ -787,19 +797,22 @@
         if("SVTP001"==val){
             $('#selectCategoryId').attr("style","display:block");
             $('#Subsumption').attr("style","display:none");
+
         } else if("SVTP002"==val){
           $('#Subsumption').attr("style","display:style");
           $('#Pre-requisite').attr("style","display:none");
+
         }else if("SVTP003"==val){
             $('#Subsumption').attr("style","display:none");
-            $('#Pre-requisite').attr("style","display:style");
-          $("select[name='selectCategoryId']").next().find('.current').html('Specified Services');
+            $('#Pre-requisite').attr("style","display:style")
+          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Services');
           $("select[name='selectCategoryId']").next().attr('class','nice-select disabled');
-          $("select[name='selectCategoryId']").val('06639A5E-D8FA-E911-BE7B-000C29F371DC');
+          $("select[name='selectCategoryId']").val('Special Licensable Services');
         }else {
             $('#Subsumption').attr("style","display:none");
             $('#Pre-requisite').attr("style","display:none");
             $('#selectCategoryId').attr("style","display:none");
+          $("select[name='selectCategoryId']").next().attr('class','nice-select');
         }
 
     });
@@ -834,9 +847,9 @@
             $('#Pre-requisite').attr("style","display:block");
             $('#Subsumption').attr("style","display:none");
             $('#selectCategoryId').attr("style","display:block");
-          $("select[name='selectCategoryId']").next().find('.current').html('Specified Services');
+          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Services');
           $("select[name='selectCategoryId']").next().attr('class','nice-select disabled');
-          $("select[name='selectCategoryId']").val('06639A5E-D8FA-E911-BE7B-000C29F371DC')
+          $("select[name='selectCategoryId']").val('Special Licensable Services')
         }else {
             $('#Subsumption').attr("style","display:none");
             $('#Pre-requisite').attr("style","display:none");
@@ -1004,6 +1017,9 @@
     });
     $('#Numberfields').keyup(function () {
         let val = $('#Numberfields').val();
+        if(val==''){
+          val='0';
+        }
         let number = parseInt(val);
         let jQuery = $(this).closest("div.form-group").next(".Numberfields").children();
         let number1 = parseInt(jQuery.length);
@@ -1039,6 +1055,9 @@
 
     $('#NumberDocument').keyup(function () {
         let val = $('#NumberDocument').val();
+        if(val==''){
+          val='0';
+        }
         let number = parseInt(val);
         let jQuery = $(this).closest("div.form-group").next(".serviceNumberfields").children();
         let number1 = parseInt(jQuery.length);
@@ -1060,6 +1079,27 @@
                     "                <input type=\"hidden\" name=\"serviceDocPremises\" value=\"0\">\n" +
                     "                <input style=\"white-space: nowrap\" class=\"form-check-input\"  type=\"checkbox\" onclick=\"serviceCheckboxOnclick(this)\" name=\"descriptionServiceDocPremises\">\n" +
                     "                <label style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>To duplicate for individual premises ?</label>\n" +
+                    "              </div>\n" +
+                    "              <div class=\"col-xs-12 col-md-3 form-check\" style=\"margin-top: 1%\">\n" +
+                    "                <select name=\"selectDocPerson\" style=\"display: none;\">\n" +
+                    "                   <option value=\"\">To duplicate for the personnel?</option>\n" +
+                    "                   <option value=\"PO\">Principal Officer (PO)?</option>\n" +
+                    "                   <option value=\"DPO\">Nominee?</option>\n" +
+                    "                   <option value=\"CGO\">Clinical Governance Officer (CGO)?</option>\n" +
+                    "                   <option value=\"SVCPSN\">Service Personnel ?</option>\n" +
+                    "                   <option value=\"MAP\">MedAlert Person ?</option>\n" +
+                    "                 </select>\n" +
+                    "  <div class=\"nice-select\" tabindex=\"0\">\n"+
+                    "   <span class=\"current\">To duplicate for the personnel?</span>\n"+
+                    "   <ul class=\"list\">\n"+
+                    "     <li data-value=\"\" class=\"option selected\">To duplicate for the personnel?</li>\n"+
+                    "     <li data-value=\"PO\" class=\"option\">Principal Officer (PO)</li>\n"+
+                    "     <li data-value=\"DPO\" class=\"option\">Nominee</li>\n"+
+                    "     <li data-value=\"CGO\" class=\"option\">Clinical Governance Officer (CGO)</li>\n"+
+                    "     <li data-value=\"SVCPSN\" class=\"option\">Service Personnel</li>\n"+
+                    "     <li data-value=\"MAP\" class=\"option\">MedAlert Person </li>\n"+
+                    "   </ul>\n"+
+                    "  </div>\n"+
                     "              </div>\n" +
                     "            </div>\n" +
                     "          </div>");

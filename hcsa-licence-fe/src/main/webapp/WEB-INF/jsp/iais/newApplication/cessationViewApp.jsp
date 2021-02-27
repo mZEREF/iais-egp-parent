@@ -1,93 +1,97 @@
 <div class="main-content">
     <div class="container">
-        <br/>
         <div class="row">
-            <br/>
-            <c:if test="${not empty confirmDtos}">
-                <c:forEach items="${confirmDtos}" var="appCess" varStatus="num">
-                    <div class="col-lg-12 col-xs-12 cesform-box">
-                        <div class="row">
-                            <div class="license-info-box">
-                                <div class="col-lg-6 col-xs-12">
-                                    <div class="license-info">
-                                        <p class="lic-no">Licence Number</p>
-                                        <h4><c:out value="${appCess.licenceNo}"/></h4>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-xs-12">
-                                    <div class="license-info">
-                                        <p class="serv-name">Service Name</p>
-                                        <h4><c:out value="${appCess.svcName}"/></h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <c:forEach items="${appCess.appCessHciDtos}" var="appCessHci" varStatus="uid">
-                                <div class="col-lg-12 col-xs-12">
-                                    <div class="table-gp tablebox">
-                                        <div class="topheader">
-                                            <c:if test="${appCessHci.hciName==null}">
-                                                <h4><c:out value="${appCessHci.hciCode}"/></h4>
-                                            </c:if>
-                                            <c:if test="${appCessHci.hciName!=null}">
-                                                <h4><c:out value="${appCessHci.hciName}"/> - <c:out
-                                                        value="${appCessHci.hciCode}"/></h4>
-                                            </c:if>
-                                            <p><c:out value="${appCessHci.hciAddress}"/></p>
-                                        </div>
-
-                                        <iais:section title="" id="potentialAuditableHCIs">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <label style="font-size: 16px">Effective Date</label>
-                                                </div>
-                                                <div class="col-md-5">
-                                                <span style="font-size: 16px"><fmt:formatDate
-                                                        value="${appCessHci.effectiveDate}"
-                                                        pattern="dd/MM/yyyy"/></span>
-                                                    <span style="font-size: 16px;float:right"><a
-                                                            class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
-                                                            data-html="true" href="javascript:void(0);"
-                                                            data-original-title="<p>The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">
-                                                                i</a></span>
-                                                </div>
+            <div class="col-xs-12">
+                <div class="instruction-content center-content">
+                    <br/>
+                    <div class="row">
+                        <form id="mainForm" class="form-horizontal"
+                              enctype="multipart/form-data"
+                              action=<%=process.runtime.continueURL()%>>
+                            <c:forEach items="${confirmDtos}" var="appCess" varStatus="num">
+                            <div class="col-lg-12 col-xs-12 cesform-box">
+                                <div class="row">
+                                    <div class="license-info-box">
+                                        <div class="col-lg-6 col-xs-12">
+                                            <div class="license-info">
+                                                <p class="lic-no">Licence Number</p>
+                                                <h4><c:out value="${appCess.licenceNo}"/></h4>
                                             </div>
-                                            <p></p><br><br>
-                                            <iais:row>
-                                                <iais:field value="Cessation Reasons"/>
-                                                <iais:value width="7">
-                                                    <iais:select disabled="true"
-                                                                 id="${num.count}reasonId${uid.count}"
-                                                                 name="${num.count}reason${uid.count}"
-                                                                 options="reasonOption"
-                                                                 value="${appCessHci.reason}"/>
-                                                </iais:value>
-                                            </iais:row>
-                                            <div id="${num.count}reason${uid.count}" hidden>
-                                                <iais:row>
-                                                    <iais:field value="Others"/>
-                                                    <iais:value width="7">
+                                        </div>
+                                        <div class="col-lg-6 col-xs-12">
+                                            <div class="license-info">
+                                                <p class="serv-name">Service Name</p>
+                                                <h4><c:out value="${appCess.svcName}"/></h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <c:forEach items="${appCess.appCessHciDtos}" var="appCessHci" varStatus="uid">
+                                        <div class="col-lg-12 col-xs-12">
+                                            <div class="table-gp tablebox">
+                                                <div class="topheader">
+                                                    <c:if test="${appCessHci.hciName==null}">
+                                                        <h4><c:out value="${appCessHci.hciCode}"/></h4>
+                                                    </c:if>
+                                                    <c:if test="${appCessHci.hciName!=null}">
+                                                        <h4><c:out value="${appCessHci.hciName}"/> - <c:out
+                                                                value="${appCessHci.hciCode}"/></h4>
+                                                    </c:if>
+                                                    <p><c:out value="${appCessHci.hciAddress}"/></p>
+                                                </div>
+                                                <input type="hidden" name="sopEngineTabRef"
+                                                       value="<%=process.rtStatus.getTabRef()%>">
+                                                <input type="hidden" name="crud_action_type" value="">
+                                                <input type="hidden" name="crud_action_value" value="">
+                                                <div class="form-group">
+                                                    <label class="col-xs-12 col-md-6 control-label">Effective
+                                                        Date <span style="color: red">*</span></label>
+                                                    <div class="col-xs-12 col-sm-4 col-md-3">
+                                                        <fmt:formatDate value="${appCessHci.effectiveDate}"
+                                                                        pattern="dd/MM/yyyy"/>
+                                                    </div>
+                                                    <div class="col-xs-8 col-sm-2 col-md-2">
+                                                        <a class="btn-tooltip styleguide-tooltip"
+                                                           data-toggle="tooltip" data-html="true"
+                                                           title="&lt;p&gt;The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.&lt;/p&gt;">i</a>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-12 col-md-6 control-label">Cession
+                                                        Reasons <span style="color: red">*</span></label>
+                                                    <div class="col-xs-12 col-sm-4 col-md-3">
+                                                        <iais:select disabled="true"
+                                                                     id="${num.count}reasonId${uid.count}"
+                                                                     name="${num.count}reason${uid.count}"
+                                                                     options="reasonOption"
+                                                                     value="${appCessHci.reason}"
+                                                                     cssClass="nice-select cessationReasons"/>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" id="${num.count}reason${uid.count}" hidden>
+                                                    <label class="col-xs-12 col-md-6 control-label ">Others <span
+                                                            style="color: red">*</span></label>
+                                                    <div class="col-xs-12 col-sm-4 col-md-3">
                                                         <iais:input needDisabled="true" type="text"
                                                                     name="${num.count}otherReason${uid.count}"
-                                                                    value="${appCessHci.otherReason}"></iais:input>
-                                                    </iais:value>
-                                                </iais:row>
-                                            </div>
-                                            <iais:row>
-                                                <iais:field value="Patients' Record will be transferred"/>
-                                                <iais:value>
+                                                                    value="${appCessHci.otherReason}"/>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-12 col-md-6 control-label">Ratient's Record
+                                                        will be transferred <span style="color: red">*</span></label>
                                                     <div class="col-xs-12 col-sm-4 col-md-3">
                                                         <div class="form-check-gp">
                                                             <div class="row">
                                                                 <div class="col-xs-12 col-md-3">
                                                                     <div class="form-check">
                                                                         <input class="form-check-input"
+                                                                               id="${num.count}radioYes${uid.count}"
                                                                                type="radio"
                                                                                name="${num.count}patRadio${uid.count}"
                                                                                value="yes"
-                                                                               id="${num.count}radioYes${uid.count}"
                                                                                <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if>
-                                                                               aria-invalid="false"
-                                                                               disabled>
+                                                                               onchange="javascirpt:changePatSelectCessFe(this.value);"
+                                                                               aria-invalid="false" disabled>
                                                                         <label class="form-check-label"
                                                                                for=${num.count}radioYes${uid.count}"><span
                                                                                 class="check-circle"></span>Yes</label>
@@ -95,133 +99,207 @@
                                                                 </div>
                                                                 <div class="col-xs-12 col-md-3">
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="radio"
+                                                                        <input class="form-check-input"
+                                                                               id="${num.count}radioNo${uid.count}"
+                                                                               type="radio"
                                                                                name="${num.count}patRadio${uid.count}"
                                                                                value="no"
-                                                                               id="${num.count}radioNo${uid.count}"
                                                                                <c:if test="${appCessHci.patNeedTrans == false}">checked</c:if>
-                                                                               aria-invalid="false"
-                                                                               disabled>
+                                                                               onchange="javascirpt:changePatSelectCessFe(this.value);"
+                                                                               aria-invalid="false" disabled>
                                                                         <label class="form-check-label"
                                                                                for="${num.count}radioNo${uid.count}"><span
                                                                                 class="check-circle"></span>No</label>
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                            <div><span
+                                                                    id="error_${num.count}patRadio${uid.count}"
+                                                                    name="iaisErrorMsg"
+                                                                    class="error-msg"></span>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </iais:value>
-                                            </iais:row>
-                                            <div id="${num.count}patYes${uid.count}" hidden>
-                                                <iais:row>
-                                                    <iais:field width="7"
-                                                                value="Who will take over your patients' case records?"/>
-                                                    <iais:value width="7">
+                                                </div>
+                                                <div class="form-group" id="${num.count}patYes${uid.count}" hidden>
+                                                    <label class="col-xs-12 col-md-6 control-label">Who will
+                                                        take over your patients' case records?<span
+                                                                style="color: red">*</span></label>
+                                                    <div class="col-xs-6 col-sm-4 col-md-3">
                                                         <iais:select disabled="true"
                                                                      name="${num.count}patientSelect${uid.count}"
                                                                      options="patientsOption"
                                                                      firstOption="Please Select"
                                                                      id="${num.count}patientSelectId${uid.count}"
-                                                                     onchange="javascirpt:changePatient(this.value);"
-                                                                     value="${appCessHci.patientSelect}"/>
-                                                    </iais:value>
-                                                </iais:row>
-                                            </div>
-                                            <div id="${num.count}patHciName${uid.count}" hidden>
-                                                <iais:row>
-                                                    <iais:field value="HCI Name"/>
-                                                    <iais:value width="7">
+                                                                     onchange="javascirpt:changePatientCessFe(this.value);"
+                                                                     value="${appCessHci.patientSelect}"
+                                                                     cssClass="nice-select cessationTransfer"/>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" id="${num.count}patHciName${uid.count}"
+                                                     hidden>
+                                                    <label class="col-xs-12 col-md-6 control-label">HCI
+                                                        Name <span style="color: #ff0000">*</span></label>
+                                                    <div class="col-xs-6 col-sm-4 col-md-3">
                                                         <iais:input type="text" needDisabled="true"
                                                                     value="${appCessHci.patHciName}" maxLength="100"
-                                                                    name="${num.count}patHciName${uid.count}"></iais:input>
-                                                    </iais:value>
-                                                </iais:row>
-                                            </div>
-                                            <div id="${num.count}patRegNo${uid.count}" hidden>
-                                                <iais:row>
-                                                    <iais:field value="Professional Regn. No."/>
-                                                    <iais:value width="7">
+                                                                    name="${num.count}patHciName${uid.count}"/>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group"
+                                                     id="${num.count}patOthersMobileNo${uid.count}" hidden>
+                                                    <label class="col-xs-12 col-md-6 control-label">patOthers'mobile
+                                                        No. <span style="color: red">*</span></label>
+                                                    <div class="col-xs-6 col-sm-4 col-md-3">
+                                                        <iais:input type="text" needDisabled="true"
+                                                                    value="${appCessHci.mobileNo}"
+                                                                    maxLength="8"
+                                                                    name="${num.count}patOthersMobileNo${uid.count}"/>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group"
+                                                     id="${num.count}patOthersEmailAddress${uid.count}" hidden>
+                                                    <label class="col-xs-12 col-md-6 control-label">patOthers'email
+                                                        Address <span style="color: red">*</span></label>
+                                                    <div class="col-xs-6 col-sm-4 col-md-3">
+                                                        <iais:input type="text" value="${appCessHci.emailAddress}"
+                                                                    maxLength="66" needDisabled="true"
+                                                                    name="${num.count}patOthersEmailAddress${uid.count}"/>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" id="${num.count}patRegNo${uid.count}"
+                                                     hidden>
+                                                    <label class="col-xs-12 col-md-6 control-label">Professional
+                                                        Regn. No. <span style="color: #ff0000">*</span></label>
+                                                    <div class="col-xs-6 col-sm-4 col-md-3">
                                                         <iais:input needDisabled="true" cssClass="disabled"
                                                                     type="text"
                                                                     name="${num.count}patRegNo${uid.count}"
-                                                                    value="${appCessHci.patRegNo}"></iais:input>
-                                                    </iais:value>
-                                                </iais:row>
-                                            </div>
-                                            <div id="${num.count}patOthers${uid.count}" hidden>
-                                                <iais:row>
-                                                    <iais:field value="Others"/>
-                                                    <iais:value width="7">
+                                                                    value="${appCessHci.patRegNo}"/>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" id="${num.count}patOthers${uid.count}"
+                                                     hidden>
+                                                    <label class="col-xs-12 col-md-6 control-label">Others <span
+                                                            style="color: red">*</span></label>
+                                                    <div class="col-xs-6 col-sm-4 col-md-3">
                                                         <iais:input needDisabled="true" type="text"
                                                                     name="${num.count}patOthers${uid.count}"
-                                                                    value="${appCessHci.patOthers}"></iais:input>
-                                                    </iais:value>
-                                                </iais:row>
-                                            </div>
-                                            <div id="${num.count}patNo${uid.count}" hidden>
-                                                <iais:row>
-                                                    <iais:field value="Reason for no patients' records transfer"/>
-                                                    <iais:value width="7">
+                                                                    value="${appCessHci.patOthers}"/>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" id="${num.count}patNo${uid.count}" hidden>
+                                                    <label class="col-xs-12 col-md-6 control-label">Reason for
+                                                        no patients' records transfer <span style="color: red">*</span></label>
+                                                    <div class="col-xs-6 col-sm-4 col-md-3">
                                                         <iais:input needDisabled="true" type="text"
                                                                     name="${num.count}patNoRemarks${uid.count}"
-                                                                    value="${appCessHci.patNoRemarks}"></iais:input>
-                                                    </iais:value>
-                                                </iais:row>
+                                                                    value="${appCessHci.patNoRemarks}"/>
+                                                    </div>
+                                                </div>
+                                                <c:if test="${isGrpLic}">
+                                                    <div>
+                                                        <div class="form-group">
+                                                            <label class="col-xs-12 col-md-6 control-label">To
+                                                                Cease <span style="color: red">*</span></label>
+                                                            <div class="col-xs-6 col-sm-4 col-md-3">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input"
+                                                                           id="icon5checkboxSample"
+                                                                           type="checkbox"
+                                                                           name="${num.count}whichTodo${uid.count}"
+                                                                           value="${appCessHci.premiseId}"
+                                                                           <c:if test="${appCessHci.premiseIdChecked != null}">checked</c:if>
+                                                                           aria-invalid="false" disabled>
+                                                                    <label class="form-check-label"
+                                                                           for="icon5checkboxSample"><span
+                                                                            class="check-square"></span></label>
+                                                                    <span id="error_whichTodo"
+                                                                          name="iaisErrorMsg"
+                                                                          class="error-msg"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </c:if>
+                                                <c:if test="${!isGrpLic}">
+                                                    <div hidden>
+                                                        <input class="form-check-input" type="text"
+                                                               name="${num.count}whichTodo${uid.count}"
+                                                               value="${appCessHci.premiseId}">
+                                                    </div>
+                                                </c:if>
                                             </div>
-                                        </iais:section>
-                                    </div>
+                                        </div>
+                                    </c:forEach>
                                 </div>
+                                <c:if test="${specLicInfo !=null}">
+                                    <c:forEach items="${specLicInfo}" var="map">
+                                        <c:set var="licNo" value="${map.key}"></c:set>
+                                        <c:if test="${appCess.licenceNo==licNo}">
+                                            <div><h4>The following specified healthcare services will also be ceased as
+                                                their
+                                                underlying licensable healthcare service(s) is/are listed above.</h4>
+                                            </div>
+                                            <table class="table-gp tablebox">
+                                                <tr style="text-align:center">
+                                                    <th style="text-align:center;width: 0%">S/N</th>
+                                                    <th style="text-align:center;width: 25%">Special Licensable Service
+                                                        Licence No.
+                                                    </th>
+                                                    <th style="text-align:center;width: 25%">Special Licensable Service
+                                                        Name
+                                                    </th>
+                                                    <th style="text-align:center;width: 25%">Base Service Licence No.
+                                                    </th>
+                                                    <th style="text-align:center;width: 25%">Base Service Name</th>
+                                                </tr>
+                                                <c:forEach items="${map.value}" var="spec" varStatus="index">
+                                                    <tr style="text-align:center">
+                                                        <td>
+                                                            <p><c:out value="${index.count}"/></p>
+                                                        </td>
+                                                        <td>
+                                                            <p><c:out value="${spec.specLicNo}"/></p>
+                                                        </td>
+                                                        <td>
+                                                            <p><c:out value="${spec.specSvcName}"/></p>
+                                                        </td>
+                                                        <td>
+                                                            <p><c:out value="${spec.baseLicNo}"/></p>
+                                                        </td>
+                                                        <td>
+                                                            <p><c:out value="${spec.baseSvcName}"/></p>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </table>
+                                        </c:if>
+                                    </c:forEach>
+                                </c:if>
+                            </div>
                             </c:forEach>
-                        </div>
-                        <c:if test="${not empty specLicInfo }">
-                            <div><h4>The following specified healthcare services will also be ceased as their
-                                underlying licensable healthcare service(s) is/are listed above.</h4></div>
-                            <table class="table-gp tablebox">
-                                <tr style="text-align:center">
-                                    <th style="text-align:center;width: 0%">S/N</th>
-                                    <th style="text-align:center;width: 25%">Specified Service Licence No.</th>
-                                    <th style="text-align:center;width: 25%">Specified Service Name</th>
-                                    <th style="text-align:center;width: 25%">Base Service Licence No.</th>
-                                    <th style="text-align:center;width: 25%">Base Service Name</th>
-                                </tr>
-                                <c:forEach items="${specLicInfo}" var="spec" varStatus="index">
-                                    <tr style="text-align:center">
-                                        <td>
-                                            <p><c:out value="${index.count}"/></p>
-                                        </td>
-                                        <td>
-                                            <p><c:out value="${spec.specLicNo}"/></p>
-                                        </td>
-                                        <td>
-                                            <p><c:out value="${spec.specSvcName}"/></p>
-                                        </td>
-                                        <td>
-                                            <p><c:out value="${spec.baseLicNo}"/></p>
-                                        </td>
-                                        <td>
-                                            <p><c:out value="${spec.baseSvcName}"/></p>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                            </table>
-                        </c:if>
+
                     </div>
-                </c:forEach>
-            </c:if>
+                    </form>
+                    <br/>
+                    <span style="padding-right: 10%" class="components">
+                        <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em
+                                class="fa fa-angle-left"></em> Back</a>
+                    </span>
+                </div>
+            </div>
         </div>
-        <br/>
     </div>
 </div>
-</form>
-
 <style>
     .col-md-5 {
         width: 31%;
     }
 
-    .col-md-4 {
-        width: 35%;
-    }
+    /*.col-md-6 {*/
+    /*    width: 35%;*/
+    /*}*/
 
     #effectiveDate {
         margin-bottom: 0px;
@@ -234,6 +312,7 @@
 <script type="text/javascript">
 
     function confirmSubmit(action) {
+        showWaiting();
         $("[name='crud_action_type']").val(action);
         $("#mainForm").submit();
     }
@@ -243,7 +322,7 @@
         $("#mainForm").submit();
     }
 
-    function changeReason() {
+    function changeReasonCessFe() {
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
                 if ($("#" + i + "reasonId" + j).val() == "CES001") {
@@ -255,27 +334,34 @@
         }
     }
 
-    function changePatient() {
+    function changePatientCessFe() {
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
                 if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
                     $("#" + i + "patOthers" + j).show();
                     $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "patOthersMobileNo" + j).show();
+                    $("#" + i + "patOthersEmailAddress" + j).show();
                     $("#" + i + "patRegNo" + j).hide();
                 } else if ($("#" + i + "patientSelectId" + j).val() == "CES005") {
                     $("#" + i + "patHciName" + j).show();
                     $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersMobileNo" + j).hide();
+                    $("#" + i + "patOthersEmailAddress" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                 } else if ($("#" + i + "patientSelectId" + j).val() == "CES006") {
                     $("#" + i + "patRegNo" + j).show();
                     $("#" + i + "patHciName" + j).hide();
                     $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersMobileNo" + j).hide();
+                    $("#" + i + "patOthersEmailAddress" + j).hide();
                 }
             }
         }
     }
 
-    function changePatSelect() {
+    function changePatSelectCessFe() {
+        changePatientCessFe();
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
                 if ($('#' + i + 'radioYes' + j).is(':checked')) {
@@ -291,41 +377,11 @@
             }
         }
     }
-
 
     $(document).ready(function () {
-        for (var i = 1; i < 8; i++) {
-            for (var j = 1; j < 8; j++) {
-                if ($("#" + i + "reasonId" + j).val() == "CES001") {
-                    $("#" + i + "reason" + j).show();
-                } else if ($("#" + i + "reasonId" + j).val() != "CES001") {
-                    $("#" + i + "reason" + j).hide();
-                }
-                if ($('#' + i + 'radioYes' + j).is(':checked')) {
-                    $("#" + i + "patYes" + j).show();
-                    $("#" + i + "patNo" + j).hide();
-                } else if ($('#' + i + 'radioNo' + j).is(':checked')) {
-                    $("#" + i + "patYes" + j).hide();
-                    $("#" + i + "patHciName" + j).hide();
-                    $("#" + i + "patOthers" + j).hide();
-                    $("#" + i + "patRegNo" + j).hide();
-                    $("#" + i + "patNo" + j).show();
-                }
-                if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
-                    $("#" + i + "patOthers" + j).show();
-                    $("#" + i + "patHciName" + j).hide();
-                    $("#" + i + "patRegNo" + j).hide();
-                } else if ($("#" + i + "patientSelectId" + j).val() == "CES005") {
-                    $("#" + i + "patHciName" + j).show();
-                    $("#" + i + "patOthers" + j).hide();
-                    $("#" + i + "patRegNo" + j).hide();
-                } else if ($("#" + i + "patientSelectId" + j).val() == "CES006") {
-                    $("#" + i + "patRegNo" + j).show();
-                    $("#" + i + "patHciName" + j).hide();
-                    $("#" + i + "patOthers" + j).hide();
-                }
-            }
-        }
+        changeReasonCessFe();
+        changePatientCessFe();
+        changePatSelectCessFe();
     });
 
     $(document).ready(function () {

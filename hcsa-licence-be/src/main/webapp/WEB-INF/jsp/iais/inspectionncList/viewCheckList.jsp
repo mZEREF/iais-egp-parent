@@ -65,14 +65,14 @@
                                                     <th>No.</th>
                                                     <th>Regulation Clause Number</th>
                                                     <th  width="30%">Item</th>
-                                                    <th>Yes</th>
-                                                    <th>No</th>
-                                                    <th>N/A</th>
+                                                    <th class="text-center">Yes</th>
+                                                    <th class="text-center">No</th>
+                                                    <th class="text-center">N/A</th>
                                                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK != applicationViewDto.applicationDto.applicationType && (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status)}">
                                                     <th>Self-assessment Answer</th>
                                                     </c:if>
                                                     <th>Remarks</th>
-                                                    <th>Rectified</th>
+                                                    <th class="text-center">Rectified</th>
                                                     <th></th>
                                                 </tr>
                                                 </thead>
@@ -84,10 +84,10 @@
                                                         <div class="modal fade" id="DeleteTemplateModal${item.incqDto.itemId}" tabindex="-1" role="dialog" aria-labelledby="regOutsideWindow" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                                                             <div class="modal-dialog" role="document">
                                                                 <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                                        <div class="modal-title" style="font-size: 2rem;"></div>
-                                                                    </div>
+<%--                                                                    <div class="modal-header">--%>
+<%--                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--                                                                        <div class="modal-title" style="font-size:2rem;"></div>--%>
+<%--                                                                    </div>--%>
                                                                     <div class="modal-body">
                                                                         <div class="row">
                                                                             <div class="col-md-8 col-md-offset-2" style="width: 100%; margin: 0;white-space:pre-wrap;"><span  style="font-size: 2rem">${item.incqDto.regClause}</span></div>
@@ -111,6 +111,9 @@
                                                         </c:if>
                                                         <td>
                                                             <textarea cols="35" rows="4" name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comremark" id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comremark" maxlength="500"><c:out value="${item.incqDto.remark}"/></textarea>
+                                                            <br/>
+                                                            <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}comRemark" var = "err"/>
+                                                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                         </td>
                                                         <td class="text-center">
                                                             <div id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
@@ -145,14 +148,14 @@
                                                           <th>No.</th>
                                                           <th>Regulation Clause Number</th>
                                                           <th  width="30%">Item</th>
-                                                          <th>Yes</th>
-                                                          <th>No</th>
-                                                          <th>N/A</th>
+                                                          <th class="text-center">Yes</th>
+                                                          <th class="text-center">No</th>
+                                                          <th class="text-center">N/A</th>
                                                           <c:if test="${ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK != applicationViewDto.applicationDto.applicationType && (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status)}">
                                                               <th >Self-assessment Answer</th>
                                                           </c:if>
                                                           <th>Remarks</th>
-                                                          <th>Rectified</th>
+                                                          <th class="text-center">Rectified</th>
                                                           <th></th>
                                                       </tr>
                                                       </thead>
@@ -163,11 +166,11 @@
                                                               <td><a data-toggle="modal" data-target="#DeleteTemplateModal${item.incqDto.itemId}">${item.incqDto.regClauseNo}</a> </td>
                                                               <div class="modal fade" id="DeleteTemplateModal${item.incqDto.itemId}" tabindex="-1" role="dialog" aria-labelledby="regOutsideWindow" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                                                                   <div class="modal-dialog" role="document">
-                                                                      <div class="modal-content">
-                                                                          <div class="modal-header">
-                                                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                                              <div class="modal-title" style="font-size: 2rem;"></div>
-                                                                          </div>
+<%--                                                                      <div class="modal-content">--%>
+<%--                                                                          <div class="modal-header">--%>
+<%--                                                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--                                                                              <div class="modal-title" style="font-size:2rem;"></div>--%>
+<%--                                                                          </div>--%>
                                                                           <div class="modal-body">
                                                                               <div class="row">
                                                                                   <div class="col-md-8 col-md-offset-2" style="width: 100%; margin: 0;white-space:pre-wrap;"><span style="font-size: 2rem">${item.incqDto.regClause}</span></div>
@@ -178,7 +181,6 @@
                                                                           </div>
                                                                       </div>
                                                                   </div>
-                                                              </div>
                                                               <td><span>${item.incqDto.checklistItem}</span></td>
                                                               <c:set value = "${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}" var = "ckkId"/>
                                                               <td class="text-center"><input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" /></td>
@@ -191,6 +193,9 @@
                                                               </c:if>
                                                               <td>
                                                                   <textarea cols="35" rows="4" name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>remark" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxRemark" maxlength="500"><c:out value="${item.incqDto.remark}"/></textarea>
+                                                                  <br/>
+                                                                  <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}Remark" var = "err"/>
+                                                                  <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                               </td>
                                                               <td class="text-center">
                                                                   <div id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>ck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
@@ -220,11 +225,11 @@
                                                       <tr>
                                                           <th>No.</th>
                                                           <th  width="35%">Item</th>
-                                                          <th>Yes</th>
-                                                          <th>No</th>
-                                                          <th>N/A</th>
+                                                          <th class="text-center">Yes</th>
+                                                          <th class="text-center">No</th>
+                                                          <th class="text-center">N/A</th>
                                                           <th>Remarks</th>
-                                                          <th>Rectified</th>
+                                                          <th class="text-center">Rectified</th>
                                                           <th></th>
                                                       </tr>
                                                       </thead>
@@ -242,6 +247,9 @@
                                                               <td class="text-center"><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'N/A'}">checked</c:if> value="N/A"/></td>
                                                               <td>
                                                                   <textarea cols="35" rows="4" name="<c:out value="${item.id}"/>adhocremark" id="<c:out value="${item.id}"/>adhocitemCheckboxRemark" id="" maxlength="500"><c:out value="${item.remark}"/></textarea>
+                                                                  <br/>
+                                                                  <c:set value = "error_${item.id}adhocRemark" var = "err"/>
+                                                                  <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                               </td>
                                                               <td class="text-center">
                                                                   <div id="<c:out value="${item.id}"/>ck"<c:if test="${item.adAnswer != 'No'}">hidden</c:if>>
