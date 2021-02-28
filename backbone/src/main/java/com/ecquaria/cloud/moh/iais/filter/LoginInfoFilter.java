@@ -45,9 +45,6 @@ public class LoginInfoFilter implements Filter {
             UserSession userSession = null;
             try {
                 userSession = userSessionService.retrieveOne(request.getSession().getId());
-                if (userSession != null) {
-                    log.debug("UserSession Id ==>" + userSession.getSessionId() + " Status =>" + userSession.getStatus());
-                }
             } catch (FeignException e) {
                 log.error(e.getMessage(), e);
             }
