@@ -144,7 +144,7 @@
                 }
 
             } catch(e) {
-                console.log('error：'+ str + '!!!'+ e);
+                console.log('error：'+ e);
                 return false;
             }
         }else if (typeof str == 'object'){

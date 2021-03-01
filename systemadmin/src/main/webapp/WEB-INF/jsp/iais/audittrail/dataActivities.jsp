@@ -57,6 +57,19 @@
                 </td>
             </tr>
 
+            <br>
+            <tr height="100%">
+                <td style="width: 100%;" class="first last">
+                    <div  class="section control " style="overflow: visible;">
+                        <div class="control-set-font control-font-header section-header">
+                            <h2>Validation Fail Detail</h2>
+                        </div>
+                        <div class="error_placements"></div>
+                        <span id="validationFail"></span>
+                    </div>
+                </td>
+            </tr>
+
         <br>
         <a class="back" id="Back" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a>
     </>
@@ -65,19 +78,45 @@
 <input hidden id="hbeforeValue" value="<c:out value="${viewAuditActionData.beforeAction}"/>"/>
 <input hidden id="hafterValue" value="<c:out value="${viewAuditActionData.afterAction}"/>"/>
 <input hidden id="hsearchParam" value="<c:out value="${viewAuditActionData.viewParams}"/>"/>
+<input hidden id="hvalidationFail" value="<c:out value="${viewAuditActionData.validationFail}"/>"/>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script>
     $(document).ready(function() {
         let hbeforeValue = $("#hbeforeValue").val()
         let hafterValue = $("#hafterValue").val()
         let hsearchParam = $("#hsearchParam").val()
+        let hvalidationFail = $("#hvalidationFail").val()
+        if(hvalidationFail.length > 0){
+            let failDetail = JSON.parse(hvalidationFail)
+            let failDetailLen = failDetail.length;
+
+            if(failDetailLen > 0){
+                let detailJson = "{"
+                failDetail.forEach((item,index,array)=>{
+                    for(var key in item){
+                    if(item.hasOwnProperty(key)){
+                           //"key": "value"
+                           detailJson += "\"" + key + "\"" + " : " + "\"" + item[key] + "\""
+                           if(failDetailLen != index + 1){
+                                detailJson += ","
+                           }
+                        }
+                    }
+                })
+                detailJson += "}"
+                jsonToHtmlTable(detailJson, 'validationFail')
+            }
+        }
+
+
         jsonToHtmlTable(hbeforeValue, 'beforeValue')
         jsonToHtmlTable(hafterValue, 'afterValue')
         jsonToHtmlTable(hsearchParam, 'searchParam')
+
     })
 
     function doBack() {
-        $("input[name='switch_action_type']").val("doBack");
-        $("#mainForm").submit();
+        $("input[name='switch_action_type']").val("doBack")
+        $("#mainForm").submit()
     }
 </script>
