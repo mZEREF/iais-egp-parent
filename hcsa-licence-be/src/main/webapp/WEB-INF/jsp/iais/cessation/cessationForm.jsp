@@ -154,12 +154,31 @@
                                                     <iais:row>
                                                         <iais:field value="HCI Name" mandatory="true"/>
                                                         <iais:value width="7">
-                                                            <iais:input type="text" value="${appCessHci.patHciName}"
-                                                                        maxLength="100"
-                                                                        name="${num.count}patHciName${uid.count}"></iais:input>
+                                                                <input type="text" maxLength="100"
+                                                                       name="${num.count}patHciName${uid.count}"
+                                                                       onblur="javascript:getHci(this);"
+                                                                       id="${num.count}hciName${uid.count}"
+                                                                       value="${appCessHci.patHciName}">
+                                                                <span id="error_${num.count}patHciName${uid.count}"
+                                                                      name="iaisErrorMsg" class="error-msg"></span>
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>
+                                                <div id="${num.count}hciName${uid.count}" hidden>
+                                                    <iais:row>
+                                                        <iais:field value=""/>
+                                                        <iais:value width="7">
+                                                            <div class="nameLoad"></div>
+                                                            <div class="addressLoad"></div>
+                                                        </iais:value>
+                                                    </iais:row>
+                                                </div>
+<%--                                                <div class="form-group-hciname" id="${num.count}hciName${uid.count}" hidden>--%>
+<%--                                                    <label class="col-xs-12 col-md-6 control-label"></label>--%>
+<%--                                                    <div class="col-xs-6 col-sm-4 col-md-3">--%>
+<%--                                                        --%>
+<%--                                                    </div>--%>
+<%--                                                </div>--%>
                                                 <div id="${num.count}patRegNo${uid.count}" hidden>
                                                     <iais:row>
                                                         <iais:field value="Professional Regn. No." mandatory="true"/>
@@ -422,6 +441,43 @@
         submit(action);
     }
 
+    function getHci(obj) {
+        var value = $(obj).val();
+        loadHci(value, obj);
+    }
+
+    const loadHci = function (hciNameCode, obj) {
+        const jsonData = {
+            'hciNameCode': hciNameCode,
+        };
+        $.ajax({
+            'url': '${pageContext.request.contextPath}/hci-info?stamp='+new Date().getTime(),
+            'dataType': 'json',
+            'data': jsonData,
+            'type': 'GET',
+            'success': function (data) {
+                loadJsp(data,obj);
+            },
+            'error': function (data) {
+                deleteJsp(data,obj);
+            }
+        });
+    };
+
+    const loadJsp = function (data, obj) {
+        var hciNme = $(obj).closest('.form-group').parent().next();
+        hciNme.show();
+        hciNme.find('.nameLoad').html(data.hciName);
+        hciNme.find('.addressLoad').html(data.hciAddress);
+    }
+
+    const deleteJsp = function (data, obj) {
+        var hciNme = $(obj).closest('.form-group').next('.form-group');
+        hciNme.hide();
+    }
+
+
+
     function changeReasonCessBe() {
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
@@ -486,6 +542,11 @@
         changePatientCessBe();
         changeReasonCessBe();
         changePatSelectCessBe();
+        for (var i = 1; i < 8; i++) {
+            for (var j = 1; j < 8; j++) {
+                $( "#" + i + "hciName" + j).trigger('blur')
+            }
+        }
     });
 
     $(document).ready(function () {

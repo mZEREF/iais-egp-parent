@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -230,6 +231,15 @@ public class ReCessationApplicationBeDelegator {
         }else {
             appCessationDto.setPatNeedTrans(Boolean.FALSE);
             appCessHciDto.setPatNeedTrans(Boolean.FALSE);
+        }
+        if(!StringUtil.isEmpty(patHciName)){
+            PremisesDto premisesDto = cessationBeService.getPremiseByHciCodeName(patHciName);
+            String hciAddressPat = premisesDto.getHciAddress();
+            String hciNamePat = premisesDto.getHciName();
+            appCessHciDto.setHciNamePat(hciNamePat);
+            appCessationDto.setHciNamePat(hciNamePat);
+            appCessHciDto.setHciAddressPat(hciAddressPat);
+            appCessationDto.setHciAddressPat(hciAddressPat);
         }
         appCessationDto.setPatientSelect(patientSelect);
         appCessHciDto.setPatientSelect(patientSelect);

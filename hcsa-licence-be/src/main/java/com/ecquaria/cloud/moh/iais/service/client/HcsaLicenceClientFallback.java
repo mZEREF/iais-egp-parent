@@ -558,4 +558,12 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<PremisesDto> getPremiseDtoByHciCodeOrName(String hciCodeName) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 }

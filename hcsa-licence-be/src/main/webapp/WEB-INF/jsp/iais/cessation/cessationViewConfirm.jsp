@@ -139,6 +139,15 @@
                                                     </iais:value>
                                                 </iais:row>
                                             </div>
+                                            <div id="hciName" hidden>
+                                                <iais:row>
+                                                    <iais:field value=""/>
+                                                    <iais:value width="7">
+                                                        <div><c:out value="${appCessHci.hciNamePat}"></c:out></div>
+                                                        <div><c:out value="${appCessHci.hciAddressPat}"></c:out></div>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </div>
                                             <div id="patRegNo" hidden>
                                                 <iais:row>
                                                     <iais:field value="Professional Regn. No."/>
@@ -334,11 +343,13 @@
         if ($("#patientSelectId").val() == "CES004") {
             $("#patOthers").show();
             $("#patHciName").hide();
+            $("#hciName").hide();
             $("#patRegNo").hide();
             $("#patOthersMobileNo").show();
             $("#patOthersEmailAddress").show();
         } else if ($("#patientSelectId").val() == "CES005") {
             $("#patHciName").show();
+            $("#hciName").show();
             $("#patOthers").hide();
             $("#patRegNo").hide();
             $("#patOthersMobileNo").hide();
@@ -346,6 +357,7 @@
         } else if ($("#patientSelectId").val() == "CES006") {
             $("#patRegNo").show();
             $("#patHciName").hide();
+            $("#hciName").hide();
             $("#patOthers").hide();
             $("#patOthersMobileNo").hide();
             $("#patOthersEmailAddress").hide();
@@ -361,6 +373,7 @@
             $("#patNo").show();
             $("#patYes").hide();
             $("#patHciName").hide();
+            $("#hciName").hide();
             $("#patOthers").hide();
             $("#patRegNo").hide();
             $("#patOthersMobileNo").hide();
@@ -381,6 +394,7 @@
         if ($('#radioNo').is(':checked')) {
             $("#patYes").hide();
             $("#patHciName").hide();
+            $("#hciName").hide();
             $("#patOthers").hide();
             $("#patRegNo").hide();
             $("#div").hide();

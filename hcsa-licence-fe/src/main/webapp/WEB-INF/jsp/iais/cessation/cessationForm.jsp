@@ -446,7 +446,6 @@
     function getHci(obj) {
         var value = $(obj).val();
         loadHci(value, obj);
-
     }
 
     const loadHci = function (hciNameCode, obj) {

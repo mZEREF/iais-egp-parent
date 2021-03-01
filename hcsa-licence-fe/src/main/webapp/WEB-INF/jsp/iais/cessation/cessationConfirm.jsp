@@ -157,7 +157,7 @@
                                                         </div>
                                                     </div>
                                                 <div class="form-group" id="${num.count}hciName${uid.count}">
-                                                    <label class="col-xs-12 col-md-6 control-label">asda</label>
+                                                    <label class="col-xs-12 col-md-6 control-label"></label>
                                                     <div class="col-xs-6 col-sm-4 col-md-3">
                                                         <span><c:out value="${appCessHci.hciNamePat}"></c:out></span>
                                                         <span><c:out value="${appCessHci.hciAddressPat}"></c:out></span>

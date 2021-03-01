@@ -32,10 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
@@ -3299,6 +3296,11 @@ public class HcsaApplicationDelegator {
                     if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
                         appCessHciDto.setPatHciName(patTransTo);
                         appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+                        PremisesDto premisesDto = cessationBeService.getPremiseByHciCodeName(patTransTo);
+                        String hciAddressPat = premisesDto.getHciAddress();
+                        String hciNamePat = premisesDto.getHciName();
+                        appCessHciDto.setHciNamePat(hciNamePat);
+                        appCessHciDto.setHciAddressPat(hciAddressPat);
                     }
                     if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
                         appCessHciDto.setPatRegNo(patTransTo);

@@ -222,4 +222,7 @@ public interface HcsaLicenceClient {
 
     @PostMapping(value = "/hcsa-licence/licence-orgId-corrId/savePostInsGroupDto",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PostInsGroupDto> savePostInsGroupDto(@RequestBody PostInsGroupDto postInsGroupDto);
+
+    @GetMapping(value = "/hcsa-licence/get-premise-hciCodeName-be",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PremisesDto> getPremiseDtoByHciCodeOrName(@RequestParam("hciCodeName") String hciCodeName);
 }
