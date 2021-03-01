@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ItemTemplate;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -62,7 +63,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -778,25 +778,28 @@ public class HcsaChklItemDelegator {
 
         try {
             File inputFile = ResourceUtils.getFile("classpath:template/Checklist_Config_Upload_Template.xlsx");
-            String[] sCkBox = (String[]) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
-            if (sCkBox == null || sCkBox.length <= 0) {
+            String[] checked = (String[]) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
+            if (checked == null || checked.length <= 0) {
                 FileUtils.writeFileResponseProcessContent(request, inputFile);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
                 return;
             }
 
-            List<String> queryIds = Arrays.asList(sCkBox);
-            if (inputFile.exists() && inputFile.isFile()) {
-                List<ChecklistItemDto> item = hcsaChklService.listChklItemByItemId(queryIds);
+            List<String> ids = IaisCommonUtils.genNewArrayList();
+            for (String i : checked){
+                ids.add(MaskUtil.unMaskValue(HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, i));
+            }
 
+            if (inputFile.exists() && inputFile.isFile()) {
+                List<ChecklistItemDto> item = hcsaChklService.listChklItemByItemId(ids);
                 List<ConfigExcelItemDto> uploadTemplate = IaisCommonUtils.genNewArrayList();
+
                 for (ChecklistItemDto i : item) {
                     ConfigExcelItemDto template = new ConfigExcelItemDto();
                     template.setItemId(i.getItemId());
                     template.setChecklistItem(i.getChecklistItem());
                     uploadTemplate.add(template);
                 }
-
 
                 Map<Integer, List<Integer>> unlockMap = IaisEGPHelper.generateUnlockMap(8, 8);
 
